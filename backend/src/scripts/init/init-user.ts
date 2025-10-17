@@ -1,11 +1,11 @@
 import {betterAuth} from "better-auth";
 import {drizzleAdapter} from "better-auth/adapters/drizzle";
-import {users, accounts} from '../db/schema/auth-schema.ts';
+import {users, accounts} from '../../db/schema/auth-schema.ts';
 import {eq} from "drizzle-orm";
 import pg from "pg";
-import envConfig from "../config/env.config.ts";
+import envConfig from "../../config/env.config.ts";
 import {drizzle} from "drizzle-orm/node-postgres";
-import * as schema from '../db/schema/index.ts';
+import * as schema from '../../db/schema/index.ts';
 
 import dotenv from 'dotenv';
 dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env' });

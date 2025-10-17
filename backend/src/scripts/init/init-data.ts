@@ -1,10 +1,10 @@
 import pg from "pg";
-import envConfig from "../config/env.config.ts";
+import envConfig from "../../config/env.config.ts";
 import {drizzle} from "drizzle-orm/node-postgres";
 import {eq, and} from "drizzle-orm";
-import * as schema from '../db/schema/index.ts';
+import * as schema from '../../db/schema/index.ts';
 import dotenv from 'dotenv';
-import {bookCategory, bookGroup, educationGrades, bookStats, EnumBookStats, EnumDataType, EnumDataStatus} from "../db/schema/index.ts";
+import {bookCategory, bookGroup, educationGrades, bookStats, EnumBookStats, EnumDataType, EnumDataStatus} from "../../db/schema/index.ts";
 
 dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env' });
 
