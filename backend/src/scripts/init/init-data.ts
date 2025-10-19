@@ -4,7 +4,9 @@ import {drizzle} from "drizzle-orm/node-postgres";
 import {eq, and} from "drizzle-orm";
 import * as schema from '../../db/schema/index.ts';
 import dotenv from 'dotenv';
-import {bookCategory, bookGroup, educationGrades, bookStats, EnumBookStats, EnumDataType, EnumDataStatus} from "../../db/schema/index.ts";
+import {bookCategory, bookGroup} from "../../db/schema/book-schema.ts";
+import {educationGrades} from "../../db/schema/education-schema.ts";
+import {EnumContentType, EnumContentStatus} from "../../db/schema/enum-app.ts";
 
 dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env' });
 
@@ -23,8 +25,8 @@ async function seed() {
         id: 1,
         appVersion: 1,
         dbVersion: 250101,
-        dataType: EnumDataType.book,
-        status: EnumDataStatus.published,
+        dataType: EnumContentType.book,
+        status: EnumContentStatus.published,
         name: "",
         note: "Initial Data"},
     ]
@@ -208,80 +210,6 @@ async function seed() {
         }
       } catch (error) {
         console.error(`Error processing group: ${group.name}`, error);
-      }
-    }
-
-    // -------------------------------------------------------------
-    // Insert books category stats data with existence check
-    // -------------------------------------------------------------
-    const booksCategoryData_ = await db.select().from(bookCategory);
-    for (const category of booksCategoryData_) {
-      const categoryDataExists = await db
-        .select({ id: bookStats.id })
-        .from(bookStats)
-        .where(
-          and(
-            eq(bookStats.referenceId, category.id),
-            eq(bookStats.type, EnumBookStats.category)
-          )
-        )
-        .then((result: { id: string }[]) => !!result[0]?.id);
-
-      if (!categoryDataExists) {
-        await db
-          .insert(bookStats)
-          .values({
-            referenceId: category.id,
-            type: EnumBookStats.category,
-            total: 0
-          });
-      } else {
-        await db
-          .update(bookStats)
-          .set({ total: 0 })
-          .where(
-            and(
-              eq(bookStats.referenceId, category.id),
-              eq(bookStats.type, EnumBookStats.category)
-            )
-          );
-      }
-    }
-
-    // -------------------------------------------------------------
-    // Insert books group stats data with existence check
-    // -------------------------------------------------------------
-    const booksGroupData_ = await db.select().from(bookGroup);
-    for (const group of booksGroupData_) {
-      const groupDataExists = await db
-        .select({ id: bookStats.id })
-        .from(bookStats)
-        .where(
-          and(
-            eq(bookStats.referenceId, group.id),
-            eq(bookStats.type, EnumBookStats.group)
-          )
-        )
-        .then((result: { id: string }[]) => !!result[0]?.id);
-
-      if (!groupDataExists) {
-        await db
-          .insert(bookStats)
-          .values({
-            referenceId: group.id,
-            type: EnumBookStats.group,
-            total: 0
-          });
-      } else {
-        await db
-          .update(bookStats)
-          .set({ total: 0 })
-          .where(
-            and(
-              eq(bookStats.referenceId, group.id),
-              eq(bookStats.type, EnumBookStats.group)
-            )
-          );
       }
     }
   }

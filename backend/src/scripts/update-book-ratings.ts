@@ -14,9 +14,6 @@
 import { db } from '../db/index.ts';
 import { books, bookEventStats, userBookInteractions } from '../db/schema/book-schema.ts';
 import { eq, sql, and, isNotNull } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import pg from 'pg';
-import envConfig from '../config/env.config.ts';
 
 async function updateBookRatings() {
   console.log('Starting book ratings update process...');

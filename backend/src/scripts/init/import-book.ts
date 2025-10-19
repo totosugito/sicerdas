@@ -3,7 +3,8 @@ import pg from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
 import * as schema from '../../db/schema/index.ts';
-import { books, EnumDataStatus } from '../../db/schema/index.ts';
+import { books } from '../../db/schema/book-schema.ts';
+import { EnumContentStatus } from '../../db/schema/enum-app.ts';
 import envConfig from '../../config/env.config.ts';
 import dotenv from 'dotenv';
 
@@ -97,7 +98,7 @@ async function importBooks() {
         }
         
         // Map status
-        const status = jsonBook.ItemHide === 1 ? EnumDataStatus.archived : EnumDataStatus.published;
+        const status = jsonBook.ItemHide === 1 ? EnumContentStatus.archived : EnumContentStatus.published;
         
         // Check if book already exists by bookId
         const existingBook = await db
