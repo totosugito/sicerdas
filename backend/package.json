@@ -29,7 +29,8 @@
     "db:drop": "drizzle-kit drop",
     "db:push_dev": "cross-env NODE_ENV=development drizzle-kit push",
     "db:init_user_dev": "cross-env NODE_ENV=development ts-node src/scripts/init/init-user.ts --trace-warnings",
-    "db:init_data_dev": "cross-env NODE_ENV=development ts-node src/scripts/init/init-data.ts --trace-warnings",        "db:import_book_dev": "cross-env NODE_ENV=development ts-node src/scripts/init/import-book.ts --trace-warnings",
+    "db:init_data_dev": "cross-env NODE_ENV=development ts-node src/scripts/init/init-data.ts --trace-warnings",        
+    "db:import_book_dev": "cross-env NODE_ENV=development ts-node src/scripts/init/import-book.ts --trace-warnings",
     "db:book_update_ratings": "cross-env NODE_ENV=development ts-node src/scripts/update-book-ratings.ts --trace-warnings"
   },
   "dependencies": {

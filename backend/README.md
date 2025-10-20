@@ -50,3 +50,11 @@ Reset password flow
 2. get token from email link.
 3. call /reset-password endpoint with new password and token.
 
+## D. Backup
+### 1. Backup
+pg_dump -U postgres -d sicerdas | pv | gzip > sicerdas_$(date +%F).sql.gz
+C:/laragon/bin/postgresql/postgresql-18.0-2/bin/pg_dump.exe -U postgres -d sicerdas | pv | gzip > sicerdas_$(date +%F).sql.gz
+
+### 2. Restore
+pv sicerdas_2025-08-27.sql.gz | gunzip | psql -h localhost -U postgres -d sicerdas
+pv sicerdas_2025-08-27.sql.gz | gunzip | C:/laragon/bin/postgresql/postgresql-18.0-2/bin/psql.exe -h localhost -U postgres -d sicerdas

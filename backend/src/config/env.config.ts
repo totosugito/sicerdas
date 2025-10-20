@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+
 export const LogLevel = {
   trace: 'trace',
   debug: 'debug',
@@ -11,13 +12,13 @@ export const schema = Type.Object({
   POSTGRES_USER: Type.String(),
   POSTGRES_PASSWORD: Type.String(),
   POSTGRES_DB: Type.String(),
-  POSTGRES_PORT: Type.Number({ default: 5432 }),
+  POSTGRES_PORT: Type.Number({default: 5432}),
   LOG_LEVEL: Type.Enum(LogLevel),
-  HOST: Type.String({ default: 'localhost' }),
-  PORT: Type.Number({ default: 5550 }),
-  FRONTEND_URL: Type.String({ default: 'http://localhost:5573' }),
-  COOKIE_PREFIX: Type.String({ default: 'cookie' }),
-  BETTER_AUTH_SECRET: Type.String({ default: 'secret' }),
+  HOST: Type.String({default: 'localhost'}),
+  PORT: Type.Number({default: 5550}),
+  FRONTEND_URL: Type.String({default: 'http://localhost:5573'}),
+  COOKIE_PREFIX: Type.String({default: 'cookie'}),
+  BETTER_AUTH_SECRET: Type.String({default: 'secret'}),
   GOOGLE_CLIENT_ID: Type.Optional(Type.String()),
   GOOGLE_CLIENT_SECRET: Type.Optional(Type.String()),
 });
@@ -28,9 +29,9 @@ for (const key of Object.keys(schema.properties)) {
 }
 
 // set env file
-dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env' });
+dotenv.config({path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env'});
 
-import { type Static, Type } from '@sinclair/typebox';
+import {type Static, Type} from '@sinclair/typebox';
 import envSchema from 'env-schema';
 
 const env = envSchema<Static<typeof schema>>({
@@ -49,11 +50,12 @@ export default {
     host: env.HOST,
     port: env.PORT,
     frontendUrl: env.FRONTEND_URL,
-    uploadsUrl: process.env.NODE_ENV === 'development' ?
-      `https://${env.HOST}:${env.PORT}` : `https://${env.FRONTEND_URL}`,
+    uploadsUrl: process.env.NODE_ENV === 'development' ? `https://${env.HOST}:${env.PORT}` : `https://${env.FRONTEND_URL}`,
     uploadsUserDir: 'uploads/users',
     trustedOrigins: [
       env.HOST,
+      'http://localhost',
+      'http://127.0.0.1',
       `http://${env.HOST}:${env.PORT}`,
       `http://${env.FRONTEND_URL}`,
       `https://${env.HOST}:${env.PORT}`,
