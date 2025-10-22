@@ -3,11 +3,26 @@ import { fileURLToPath } from 'node:url';
 import AutoLoad from '@fastify/autoload';
 import Fastify, { type FastifyServerOptions } from 'fastify';
 import fastifyStatic from '@fastify/static';
+import i18n from 'fastify-i18n';
+import { readFileSync } from 'node:fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Load locale files
+// const enMessages = JSON.parse(readFileSync(path.join(__dirname, 'locales', 'en.json'), 'utf-8'));
+const idMessages = JSON.parse(readFileSync(path.join(__dirname, 'locales', 'id.json'), 'utf-8'));
+
 export async function buildApp(options?: FastifyServerOptions) {
   const server = Fastify(options);
+
+  // Configure i18n with proper options for fastify-i18n v3
+  server.register(i18n, {
+    fallbackLocale: 'id',
+    messages: {
+      // en: enMessages,
+      id: idMessages
+    }
+  });
 
   // Auto-load plugins
   await server.register(AutoLoad, {
@@ -32,15 +47,6 @@ export async function buildApp(options?: FastifyServerOptions) {
       res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
     },
   });
-
-  // Then load only "routes/v1/user" with a prefix "/v1"
-  // server.register(AutoLoad, {
-  //   dir: path.join(__dirname, 'routes/v1/user'),
-  //   options: { prefix: '/api/v1' }, // 👈 this is the key
-  //   autoHooks: true,
-  //   // ignorePattern: /api[\\/]v1[\\/]user[\\/].*\.(ts|js)$/i, // More robust path matching
-  //   cascadeHooks: true,
-  // });
 
   // Set error handler
   server.setErrorHandler((err, request, reply) => {

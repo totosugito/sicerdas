@@ -21,6 +21,9 @@ export const schema = Type.Object({
   BETTER_AUTH_SECRET: Type.String({default: 'secret'}),
   GOOGLE_CLIENT_ID: Type.Optional(Type.String()),
   GOOGLE_CLIENT_SECRET: Type.Optional(Type.String()),
+  BREVO_API_KEY: Type.Optional(Type.String()),
+  NO_REPLY_EMAIL: Type.Optional(Type.String()),
+  NO_REPLY_EMAIL_NAME: Type.Optional(Type.String()),
 });
 
 // Delete only keys defined in schema from process.env
@@ -50,8 +53,8 @@ export default {
     host: env.HOST,
     port: env.PORT,
     frontendUrl: env.FRONTEND_URL,
-    uploadsUrl: process.env.NODE_ENV === 'development' ? `https://${env.HOST}:${env.PORT}` : `https://${env.FRONTEND_URL}`,
-    uploadsUserDir: 'uploads/users',
+    uploadsUrl: process.env.NODE_ENV === 'development' ? `http://${env.HOST}:${env.PORT}/uploads` : `https://${env.FRONTEND_URL}/uploads`,
+    uploadsUserDir: 'users',
     trustedOrigins: [
       env.HOST,
       'http://localhost',
@@ -66,6 +69,15 @@ export default {
     google: {
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+    },
+  },
+  email: {
+    brevo: {
+      apiKey: env.BREVO_API_KEY,
+    },
+    noReply: {
+      email: env.NO_REPLY_EMAIL,
+      name: env.NO_REPLY_EMAIL_NAME,
     },
   },
   db: {

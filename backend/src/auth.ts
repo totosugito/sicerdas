@@ -3,6 +3,23 @@ import {drizzleAdapter} from 'better-auth/adapters/drizzle';
 import {admin, openAPI} from 'better-auth/plugins';
 import {db} from './db/index.ts';
 import envConfig from "./config/env.config.ts";
+import fs from 'fs';
+import path from 'path';
+import {fileURLToPath} from 'url';
+
+// Brevo email client
+import Brevo from '@getbrevo/brevo';
+
+// Initialize Brevo API client if API key is provided
+let apiInstance: Brevo.TransactionalEmailsApi | null = null;
+if (envConfig.email?.brevo?.apiKey) {
+  apiInstance = new Brevo.TransactionalEmailsApi();
+  apiInstance.setApiKey(0, envConfig.email.brevo.apiKey); // 0 corresponds to 'apiKey'
+}
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -36,20 +53,46 @@ const auth = betterAuth({
     minPasswordLength: 1,
     maxPasswordLength: 128,
     autoSignIn: true,
-    sendResetPassword: async ({user, url}) => {
-      // Simulate sending a reset password email
-      console.info(`Simulating sending reset password link to ${user.email} with URL: ${url}`);
+    sendResetPassword: async ({user, url, token}, request) => {
+      // Only send email if Brevo is configured
+      if (!apiInstance) {
+        console.warn('Brevo API key not configured. Skipping email sending.');
+        return Promise.resolve();
+      }
 
-      // Return a resolved promise with no value
-      return Promise.resolve();
+      try {
+        // Read the email template
+        const templatePath = path.join(__dirname, 'templates', 'request-password-reset.html');
+        let htmlContent = fs.readFileSync(templatePath, 'utf8');
+        
+        // Replace placeholders with actual values
+        htmlContent = htmlContent
+          .replace(/{{name}}/g, user.name || user.email)
+          .replace(/{{email}}/g, user.email)
+          .replace(/{{resetLink}}/g, url)
+          .replace(/{{year}}/g, new Date().getFullYear().toString());
+
+        // Create email object
+        const sendSmtpEmail = new Brevo.SendSmtpEmail();
+        sendSmtpEmail.subject = 'Reset Password';
+        sendSmtpEmail.htmlContent = htmlContent;
+        sendSmtpEmail.sender = {
+          name: 'SiCerdas No-Reply', // envConfig.email.noReply.name,
+          email: 'no-reply@sicerdas.com' //envConfig.email.noReply.email
+        };
+        sendSmtpEmail.to = [{
+          email: user.email,
+          name: user.name || user.email,
+        }];
+
+        // Send email
+        await apiInstance.sendTransacEmail(sendSmtpEmail);
+        console.info(`Password reset email sent to ${user.email}`);
+      } catch (error) {
+        console.error('Failed to send password reset email:', error);
+        // We don't reject the promise as we don't want to break the auth flow
+      }
     },
-    // sendResetPassword: async ({user, url, token}, request) => {
-    //   await sendEmail({
-    //     to: user.email,
-    //     subject: "Reset your password",
-    //     text: `Click the link to reset your password: ${url}`,
-    //   });
-    // },
     resetPasswordTokenExpiresIn: 3600, // 1 hour
   },
 

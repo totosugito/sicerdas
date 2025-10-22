@@ -2,7 +2,7 @@ import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
 import {withErrorHandler} from "../../utils/withErrorHandler.ts";
 import { db } from '../../db/index.ts';
-import { users } from '../../db/schema/index.ts';
+import { users } from '../../db/schema/auth-schema.ts';
 import { eq } from 'drizzle-orm';
 import { getUserAvatarUrl } from '../../utils/app-utils.ts';
 
@@ -61,7 +61,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (!email || !password) {
         return reply.status(400).send({
           success: false,
-          message: 'Email and password are required',
+          message: req.i18n.t('auth.emailAndPasswordRequired'),
         } as const);
       }
 
@@ -74,7 +74,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           password: password
         }),
         headers: {
-          'content-type': 'application/json'
+          'content-type': 'application/json',
+          'accept-language': req.headers['accept-language'] || 'id', 
         }
       });
 
@@ -83,7 +84,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (!authData.user) {
         return reply.status(401).send({
           success: false,
-          message: 'Authentication failed: Invalid email or password'
+          message: req.i18n.t('auth.invalidCredentials')
         } as const);
       }
 
@@ -105,7 +106,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (!userWithRole) {
         return reply.status(404).send({
           success: false,
-          message: 'User not found in database'
+          message: req.i18n.t('auth.userNotFound')
         } as const);
       }
 
