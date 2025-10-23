@@ -3,8 +3,10 @@ const APP_URL_API = APP_BASE_URL + "/api"
 const APP_URL_V1 = APP_URL_API + "/v1"
 export const AppApi = {
   auth: {
-    login: APP_URL_API + "/auth/sign-in-email",
-    logout: APP_URL_V1 + "/user/logout",
+    signIn: APP_URL_API + "/auth/sign-in-email",
+    signUp: APP_URL_API + "/auth/sign-up/email",
+    logout: APP_URL_API + "/user/logout",
+    forgotPassword: APP_URL_API + "/auth/request-password-reset-email"
   },
   admin: {
     user: {
@@ -29,19 +31,4 @@ export const AppApi = {
     create: APP_URL_V1 + "/book/create",
     crud: APP_URL_V1 + "/book",
   }
-}
-
-export const AppRoute = {
-  dashboard: {
-    dashboard: "/",
-  },
-  project: {
-    list: "/project/list",
-    detail: "/project/$id",
-  },
-  admin: {
-    user: {
-      list: "/admin/users",
-    }
-  },
 }

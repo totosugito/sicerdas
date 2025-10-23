@@ -2,7 +2,7 @@ import {MdOutlineDashboard, MdOutlineWorkHistory} from "react-icons/md";
 import {TbFileReport} from "react-icons/tb";
 import {HiOutlineDocumentChartBar, HiOutlineUsers} from "react-icons/hi2";
 import {LuTable2} from "react-icons/lu";
-import {AppRoute} from "@/constants/api";
+import {AppRoute} from "@/constants/app-route";
 import { CiBoxList } from "react-icons/ci";
 import { GoFileDirectory } from "react-icons/go";
 import { AiOutlineDashboard } from "react-icons/ai";

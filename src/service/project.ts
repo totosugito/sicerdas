@@ -1,6 +1,6 @@
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {fetchApi} from "@/lib/fetch-api";
-import {AppApi} from "@/constants/api";
+import {AppApi} from "@/constants/app-api";
 
 export const useProjectList = (params: { sort?: string; order?: 'asc' | 'desc' }) => {
   return useQuery({

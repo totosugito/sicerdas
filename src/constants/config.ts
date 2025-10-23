@@ -14,7 +14,7 @@ export const APP_CONFIG = {
     password: "",
   },
   path: {
-    defaultPublic: "/login",
+    defaultPublic: "/sign-in",
     defaultPrivate: "/",
   },
   cloud: 'https://s3.nevaobjects.id/sicerdas'

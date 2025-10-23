@@ -4,16 +4,18 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LoginFormValues } from "@/types/auth";
 import { FormInput, FormPassword } from "@/components/custom/forms";
-import { Loader2, Mail, Lock, LogIn } from "lucide-react";
+import { Loader2, Mail, Lock, LogIn, AlertCircle } from "lucide-react";
 import { signInFormData, createSignInSchema } from "./templates/sign-in-template";
 import { useTranslation } from 'react-i18next';
+import { AppRoute } from "@/constants/app-route";
 
 type Props = {
   onFormSubmit: SubmitHandler<LoginFormValues>
-  loading?: boolean
+  loading?: boolean,
+  errorMessage?: string,
 }
 
-export const LoginForm = ({ onFormSubmit, loading }: Props) => {
+export const SignInForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
   const { t } = useTranslation();
   
   // Create schema with translated error messages
@@ -44,6 +46,12 @@ export const LoginForm = ({ onFormSubmit, loading }: Props) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onFormSubmit)} className="space-y-5">
+        {errorMessage && (
+          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 flex items-start space-x-2">
+            <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-destructive font-medium">{errorMessage}</div>
+          </div>
+        )}
         <div className="space-y-4">
           <div className="relative">
             <Mail className="absolute left-3 top-9.5 h-4 w-4 text-muted-foreground" />
@@ -68,7 +76,7 @@ export const LoginForm = ({ onFormSubmit, loading }: Props) => {
             <input type="checkbox" className="rounded border-border" />
             <span>{t("labels.rememberMe")}</span>
           </label>
-          <a href="#" className="text-primary hover:text-primary/80 font-medium transition-colors">
+          <a href={AppRoute.auth.forgotPassword.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
             {t("labels.forgotPassword")}
           </a>
         </div>
@@ -94,7 +102,7 @@ export const LoginForm = ({ onFormSubmit, loading }: Props) => {
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
             {t("signIn.newUser")}{" "}
-            <a href="#" className="text-primary hover:text-primary/80 font-medium transition-colors">
+            <a href={AppRoute.auth.signUp.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
               {t("labels.signUp")}
             </a>
           </p>

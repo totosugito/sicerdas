@@ -82,7 +82,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const authData = response.json();
 
       if (!authData.user) {
-        return reply.status(401).send({
+        return reply.status(400).send({
           success: false,
           message: req.i18n.t('auth.invalidCredentials')
         } as const);

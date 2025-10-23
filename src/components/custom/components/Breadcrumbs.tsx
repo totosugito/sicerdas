@@ -9,7 +9,7 @@ import {
 import {useBreadcrumbs} from '@/hooks/use-breadcrumbs';
 // import {TbSlash} from "react-icons/tb";
 import {Fragment} from 'react';
-import {AppRoute} from "@/constants/api";
+import {AppRoute} from "@/constants/app-route";
 import AppLogo from "@/assets/app/logo.png"
 
 export function Breadcrumbs() {

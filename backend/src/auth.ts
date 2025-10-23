@@ -52,7 +52,7 @@ const auth = betterAuth({
     requireEmailVerification: false,
     minPasswordLength: 1,
     maxPasswordLength: 128,
-    autoSignIn: true,
+    autoSignIn: false,
     sendResetPassword: async ({user, url, token}, request) => {
       // Only send email if Brevo is configured
       if (!apiInstance) {

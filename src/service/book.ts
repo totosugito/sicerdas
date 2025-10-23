@@ -1,4 +1,4 @@
-import { AppApi } from "@/constants/api";
+import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 

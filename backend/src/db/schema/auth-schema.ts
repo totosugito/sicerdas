@@ -135,7 +135,7 @@ export const accounts = pgTable('users_accounts', {
  * Fields:
  * - id: Unique identifier for the verification record
  * - identifier: Unique identifier for the verification (e.g., email address)
- * - value: The verification code/token
+ * - value: The user id
  * - expiresAt: When the verification code expires
  * - createdAt: When the verification record was created
  * - updatedAt: When the verification record was last updated
@@ -144,7 +144,7 @@ export const accounts = pgTable('users_accounts', {
  * - Used for email verification, password reset, and other account confirmation flows
  * - The identifier field can store email addresses or other unique identifiers
  * - Verification codes are time-limited for security
- * - The value field stores the actual verification token
+ * - The value field stores the user id
  * - Automatic cleanup of expired records should be implemented via cron job
  */
 export const verifications = pgTable("users_verifications", {

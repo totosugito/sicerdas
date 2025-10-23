@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { AuthContext, AuthProps } from '@/types/auth'
-import {authClient} from "@/lib/auth-client";
-import {useAppStore} from "@/stores/useAppStore";
+import { authClient } from "@/lib/auth-client";
+import { useAppStore } from "@/stores/useAppStore";
 
 const AuthContextTag = React.createContext<AuthContext | null>(null)
 
@@ -28,20 +28,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // On initial mount, fetch session
   React.useEffect(() => {
     (async () => {
-      const {data: session} = await authClient.getSession()
 
-      let userData: AuthProps = {token: null, user: null};
-      if (session?.user && session?.session?.token) {
-        userData = {
-          token: session.session.token,
-          user: session.user
+      try {
+        const { data: session } = await authClient.getSession()
+        let userData: AuthProps = { token: null, user: null };
+        if (session?.user && session?.session?.token) {
+          userData = {
+            token: session.session.token,
+            user: session.user
+          }
+
+          authStore.login(userData)
+          setUser(userData)
+        } else {
+          authStore.logout()
+          // appStore.resetAll();
+          setUser(null)
         }
-
-        authStore.login(userData)
-        setUser(userData)
-      } else {
+      } catch (error) {
+        console.log(error)
         authStore.logout()
-        // appStore.resetAll();
         setUser(null)
       }
 

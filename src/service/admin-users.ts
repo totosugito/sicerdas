@@ -1,6 +1,6 @@
 import {useMutation, useQuery, UseQueryOptions} from "@tanstack/react-query";
 import {fetchApi} from "@/lib/fetch-api";
-import {AppApi} from "@/constants/api";
+import {AppApi} from "@/constants/app-api";
 
 export const useAdminUserList = (params: { sort?: string; order?: 'asc' | 'desc'; page?: number; limit?: number }) => {
   return useQuery({

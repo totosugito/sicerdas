@@ -16,7 +16,7 @@ import {Button} from "@/components/ui/button";
 import {FaRegUser} from "react-icons/fa";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {useAuthStore} from "@/stores/useAuthStore";
-import {useLogoutMutation} from "@/service/auth";
+import {useLogoutMutation} from "@/service/auth-api";
 import {ModalProps, DialogModal} from "@/components/custom/components";
 
 type Props = {

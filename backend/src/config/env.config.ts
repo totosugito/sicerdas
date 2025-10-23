@@ -57,8 +57,6 @@ export default {
     uploadsUserDir: 'users',
     trustedOrigins: [
       env.HOST,
-      'http://localhost',
-      'http://127.0.0.1',
       `http://${env.HOST}:${env.PORT}`,
       `http://${env.FRONTEND_URL}`,
       `https://${env.HOST}:${env.PORT}`,
