@@ -1,7 +1,7 @@
 import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import React, {useState} from "react";
-import {FaEye, FaEyeSlash} from "react-icons/fa6";
+import {Eye, EyeOff} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {UseFormReturn} from "react-hook-form";
 
@@ -36,7 +36,6 @@ export const FormPassword = ({form, item, ...props}: FormPasswordProps) => {
               <Input
                 type={showPassword ? "text" : "password"}
                 placeholder={item.placeholder}
-                className="input w-full"
                 readOnly={item?.readonly}
                 {...props}
                 {...field}
@@ -45,9 +44,10 @@ export const FormPassword = ({form, item, ...props}: FormPasswordProps) => {
               <Button
                 type="button"
                 variant={"ghost"}
-                className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-neutral-400"
+                size="icon"
+                className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground/90 hover:text-foreground/90"
                 onClick={togglePasswordVisibility}>
-                {showPassword ? <FaEyeSlash/> : <FaEye/>}
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </Button>
             </div>
           </FormControl>

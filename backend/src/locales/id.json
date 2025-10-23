@@ -19,5 +19,8 @@
       "changePassword": "Ubah Kata Sandi",
       "deleteAccount": "Hapus Akun"
     }
+  },
+  "login": {
+    "signInDescription": ""
   }
 }
