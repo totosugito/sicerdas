@@ -11,3 +11,5 @@ yarn.lock
 src/routeTree.gen.ts
 /backend/src/db/migrations/
 ./scripts/venv/
+test
+.vscode

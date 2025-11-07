@@ -87,7 +87,7 @@ const auth = betterAuth({
 
         // Send email
         await apiInstance.sendTransacEmail(sendSmtpEmail);
-        console.info(`Password reset email sent to ${user.email}`);
+        // console.info(`Password reset email sent to ${user.email}`);
       } catch (error) {
         console.error('Failed to send password reset email:', error);
         // We don't reject the promise as we don't want to break the auth flow

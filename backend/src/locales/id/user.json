@@ -1,0 +1,13 @@
+{
+  "profile": {
+    "title": "Profil Pengguna",
+    "name": "Nama",
+    "email": "Email",
+    "avatar": "Avatar"
+  },
+  "actions": {
+    "update": "Perbarui Profil",
+    "changePassword": "Ubah Kata Sandi",
+    "deleteAccount": "Hapus Akun"
+  }
+}
