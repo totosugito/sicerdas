@@ -6,62 +6,59 @@ import {users, verifications} from "../../db/schema/auth-schema.ts";
 import {eq, and, gte, count} from "drizzle-orm";
 import {PASSWORD_RESET_RATE_LIMIT, PASSWORD_RESET_RATE_LIMIT_WINDOW_MS} from "../../config/app-constant.ts";
 
-// Response schemas
-const ErrorResponse = Type.Object({
-  success: Type.Boolean({ default: false }),
-  message: Type.String(),
-});
-
-const SuccessResponse = Type.Object({
-  success: Type.Boolean({ default: true }),
-  message: Type.String(),
-});
-
+/**
+ * Request password reset
+ * 
+ * Expected JSON body input parameters:
+ * - email: string - User's email address
+ * - redirectTo: string (optional) - URL to redirect after password reset
+ * 
+ * @param {string} email - Required. User's email address
+ * @param {string} [redirectTo] - Optional. URL to redirect after password reset
+ */
 const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
-    url: '/request-password-reset-email',
+    url: '/auth-request-password-reset',
     method: 'POST',
     schema: {
       tags: ['Auth'],
       summary: 'Request password reset',
-      description: 'Send password reset email to user',
-      consumes: ['multipart/form-data'],
+      description: 'Send password reset email to user. Expected JSON body fields: email, redirectTo (optional)',
+      consumes: ['application/json'],
+      body: Type.Object({
+        email: Type.String({ format: 'email' }),
+        redirectTo: Type.Optional(Type.String())
+      }),
       response: {
-        200: SuccessResponse,
-        400: ErrorResponse,
-        404: ErrorResponse,
-        429: ErrorResponse, // Too Many Requests
-        500: ErrorResponse
+        200: Type.Object({
+          success: Type.Boolean({ default: true }),
+          message: Type.String(),
+        }),
+        // Updated to use proper HTTP status codes with Fastify Sensible
+        '4xx': Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String()
+        }),
+        '5xx': Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String()
+        })
       }
     },
     handler: withErrorHandler(async (req, reply) => {
-      // Parse form data into a key-value object
-      const formData = new Map<string, string>();
-      if (typeof req.parts === 'function') {
-        for await (const part of req.parts()) {
-          if (part.type === 'field') {
-            formData.set(part.fieldname, part.value as string);
-          }
-        }
-      }
-      const { email, redirectTo } = Object.fromEntries(formData);
+      // Extract data directly from request body for JSON input
+      const { email, redirectTo } = req.body as { email: string; redirectTo?: string };
 
-      // Validate required fields
+      // Validate required fields using Fastify Sensible badRequest
       if (!email) {
-        return reply.status(400).send({
-          success: false,
-          message: req.i18n.t('auth.emailRequired'),
-        } as const);
+        return reply.badRequest(req.i18n.t('auth.emailRequired'));
       }
 
       // Check if email exists in users table and get user ID
       const existingUser = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.email, email));
       
       if (existingUser.length === 0) {
-        return reply.status(404).send({
-          success: false,
-          message: req.i18n.t('auth.userNotFound'),
-        } as const);
+        return reply.notFound(req.i18n.t('auth.userNotFound'));
       }
 
       const userId = existingUser[0].id;
@@ -84,10 +81,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const requestCount = requestCountResult[0]?.count || 0;
 
       if (requestCount >= PASSWORD_RESET_RATE_LIMIT) {
-        return reply.status(429).send({
-          success: false,
-          message: req.i18n.t('auth.passwordResetRateLimitExceeded'),
-        } as const);
+        return reply.tooManyRequests(req.i18n.t('auth.passwordResetRateLimitExceeded'));
       }
 
       // Use Fastify's built-in inject method to call the better-auth API

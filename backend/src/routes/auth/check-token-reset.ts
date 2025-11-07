@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 
 const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
     app.route({
-        url: '/check-reset-token',
+        url: '/check-token-reset',
         method: 'POST',
         schema: {
             tags: ['Auth'],

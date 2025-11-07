@@ -7,11 +7,6 @@ import { eq } from 'drizzle-orm';
 import { getUserAvatarUrl } from '../../utils/app-utils.ts';
 
 // Response schemas
-const ErrorResponse = Type.Object({
-  success: Type.Boolean({ default: false }),
-  message: Type.String(),
-});
-
 const UserResponse = Type.Object({
   id: Type.String({ format: 'uuid' }),
   email: Type.String({ format: 'email' }),
@@ -29,6 +24,16 @@ const AuthResponse = Type.Object({
   token: Type.String(),
 });
 
+/**
+ * Sign in with email and password
+ * 
+ * Expected form-data input parameters:
+ * - email: string - User's email address
+ * - password: string - User's password
+ * 
+ * @param {string} email - Required. User's email address
+ * @param {string} password - Required. User's password
+ */
 const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
     url: '/sign-in-email',
@@ -36,13 +41,19 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ['Auth'],
       summary: 'Sign in with email and password',
-      description: 'Authenticate user with email and password and return user data with access token',
+      description: 'Authenticate user with email and password and return user data with access token. Expected form-data fields: email, password',
       consumes: ['multipart/form-data'],
       response: {
         200: AuthResponse,
-        400: ErrorResponse,
-        404: ErrorResponse,
-        500: ErrorResponse
+        // Updated to use proper HTTP status codes with Fastify Sensible
+        '4xx': Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String()
+        }),
+        '5xx': Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String()
+        })
       }
     },
     handler: withErrorHandler(async (req, reply) => {
@@ -57,12 +68,9 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
       const { email, password } = Object.fromEntries(formData);
 
-      // Validate required fields
+      // Validate required fields using Fastify Sensible badRequest
       if (!email || !password) {
-        return reply.status(400).send({
-          success: false,
-          message: req.i18n.t('auth.emailAndPasswordRequired'),
-        } as const);
+        return reply.badRequest(req.i18n.t('auth.emailAndPasswordRequired'));
       }
 
       // Use Fastify's built-in inject method
@@ -82,10 +90,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const authData = response.json();
 
       if (!authData.user) {
-        return reply.status(400).send({
-          success: false,
-          message: req.i18n.t('auth.invalidCredentials')
-        } as const);
+        return reply.badRequest(req.i18n.t('auth.invalidCredentials'));
       }
 
       // Fetch the user with role from the database
@@ -104,10 +109,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!userWithRole) {
-        return reply.status(404).send({
-          success: false,
-          message: req.i18n.t('auth.userNotFound')
-        } as const);
+        return reply.notFound(req.i18n.t('auth.userNotFound'));
       }
 
       // Forward the response
