@@ -2,6 +2,7 @@ import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessag
 import React from "react";
 import {DatePicker} from "@/components/custom/components";
 import {UseFormReturn} from "react-hook-form";
+import { cn } from "@/lib/utils";
 
 export type FormDatePickerProps = {
   form: UseFormReturn<any>;
@@ -13,16 +14,17 @@ export type FormDatePickerProps = {
   };
   disabled?: boolean
   className?: string
+  labelClassName?: string;  // Added labelClassName prop
 }
 
-export const FormDatePicker = ({form, item, ...props} : FormDatePickerProps) => {
+export const FormDatePicker = ({form, item, labelClassName = "", ...props} : FormDatePickerProps) => {
   return(
     <FormField
       control={form.control}
       name={item.name}
       render={({field}) => (
         <FormItem>
-          <FormLabel>{item.label}</FormLabel>
+          <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
           <FormControl>
             <DatePicker {...props} value={field.value} onChange={field.onChange}/>
           </FormControl>

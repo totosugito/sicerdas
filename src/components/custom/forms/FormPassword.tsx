@@ -4,6 +4,7 @@ import React, {useState} from "react";
 import {Eye, EyeOff} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {UseFormReturn} from "react-hook-form";
+import {cn} from "@/lib/utils";
 
 export type FormPasswordProps = {
   form: UseFormReturn<any>;
@@ -16,9 +17,10 @@ export type FormPasswordProps = {
   };
   disabled?: boolean
   className?: string
+  labelClassName?: string  // Added labelClassName prop
 }
 
-export const FormPassword = ({form, item, ...props}: FormPasswordProps) => {
+export const FormPassword = ({form, item, labelClassName = "", ...props}: FormPasswordProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -30,7 +32,7 @@ export const FormPassword = ({form, item, ...props}: FormPasswordProps) => {
       name={item.name}
       render={({field}) => (
         <FormItem>
-          <FormLabel>{item.label}</FormLabel>
+          <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
           <FormControl>
             <div className="relative">
               <Input

@@ -2,6 +2,7 @@ import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessag
 import {Checkbox} from "@/components/ui/checkbox";
 import React from "react";
 import {UseFormReturn} from "react-hook-form";
+import { cn } from "@/lib/utils";
 
 export type FormCheckboxProps = {
   form: UseFormReturn<any>;
@@ -12,11 +13,13 @@ export type FormCheckboxProps = {
   };
   disabled?: boolean;
   className?: string;
+  labelClassName?: string;  // Added labelClassName prop
 }
 
 export const FormCheckbox = ({
                        form,
                        item,
+                       labelClassName = "",  // Added labelClassName prop
                        ...props
                      }: FormCheckboxProps) => {
   return (
@@ -33,7 +36,7 @@ export const FormCheckbox = ({
             />
           </FormControl>
           <div className="space-y-1 leading-none">
-            <FormLabel className="">{item.label}</FormLabel>
+            <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
             {item.description && <FormDescription>{item.description}</FormDescription>}
           </div>
           <FormMessage />

@@ -16,16 +16,17 @@ export type FormSelectProps = {
   };
   disabled?: boolean
   className?: string
+  labelClassName?: string;  // Added labelClassName prop
 }
 
-export const FormSelect = ({form, item, ...props}: FormSelectProps) => {
+export const FormSelect = ({form, item, labelClassName = "", ...props}: FormSelectProps) => {
   return (
     <FormField
       control={form.control}
       name={item.name}
       render={({field}) => (
         <FormItem>
-          <FormLabel>{item.label}</FormLabel>
+          <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
           <Select
             onValueChange={field.onChange}
             value={field.value}

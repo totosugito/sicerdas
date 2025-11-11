@@ -18,9 +18,11 @@ type Props = {
   item: any,
   disabled?: boolean,
   className?: string,
-  wrapperClassName?: string
+  wrapperClassName?: string,
+  labelClassName?: string  // Added labelClassName prop
 }
-export const ControlForm = forwardRef(({form, item, className, wrapperClassName, ...props}:
+
+export const ControlForm = forwardRef(({form, item, className, wrapperClassName, labelClassName = "text-foreground font-medium", ...props}:
                                 Props, ref) => {
   const defaultClassName = "focus-visible:ring-[0px]";
   return (
@@ -32,35 +34,35 @@ export const ControlForm = forwardRef(({form, item, className, wrapperClassName,
           const itemType = item.type;
           if (itemType === "password") {
             return (<FormPassword {...field} form={form} className={cn(defaultClassName, className)}
-                                  item={item} {...props}/>);
+                                  item={item} labelClassName={labelClassName} {...props}/>);
           } else if (item.type === "number") {
             return (
-              <FormNumber {...field} form={form} item={item} className={cn(defaultClassName, className)} {...props}/>);
+              <FormNumber {...field} form={form} item={item} className={cn(defaultClassName, className)} labelClassName={labelClassName} {...props}/>);
           } else if (itemType === "select") {
             return (
-              <FormSelect {...field} form={form} item={item} {...props} className={cn(defaultClassName, className)}/>);
+              <FormSelect {...field} form={form} item={item} {...props} className={cn(defaultClassName, className)} labelClassName={labelClassName}/>);
           } else if (itemType === "combobox") {
             return (<FormCombobox {...field} form={form} item={item}
-                                  className={cn(defaultClassName, className)} {...props}/>);
+                                  className={cn(defaultClassName, className)} labelClassName={labelClassName} {...props}/>);
           } else if (itemType === "multiselect") {
             return (<FormMultiSelect {...field} form={form} item={item}
-                                     className={cn(defaultClassName, className)} {...props}/>);
+                                     className={cn(defaultClassName, className)} labelClassName={labelClassName} {...props}/>);
           } else if (itemType === "date") {
             return (<FormDatePicker {...field} form={form} item={item}
-                                    className={cn(defaultClassName, className)} {...props}/>);
+                                    className={cn(defaultClassName, className)} labelClassName={labelClassName} {...props}/>);
           } else if (itemType === "textarea") {
             return (<FormTextArea {...field} form={form} item={item}
-                                  className={cn(defaultClassName, className)} {...props}/>);
+                                  className={cn(defaultClassName, className)} labelClassName={labelClassName} {...props}/>);
           } else if (itemType === "upload") {
             return (
-              <FormUpload {...field} {...props} form={form} item={item} className={cn(defaultClassName, className)}/>);
+              <FormUpload {...field} {...props} form={form} item={item} className={cn(defaultClassName, className)} labelClassName={labelClassName}/>);
           } else if (itemType === "checkbox") {
-            return (<FormCheckbox form={form} item={item} className={cn(defaultClassName, className)} {...props}/>);
+            return (<FormCheckbox form={form} item={item} className={cn(defaultClassName, className)} labelClassName={labelClassName} {...props}/>);
           } else if(itemType === "switch") {
-            return (<FormSwitch form={form} item={item} className={cn(defaultClassName, className)} {...props}/>);
+            return (<FormSwitch form={form} item={item} className={cn(defaultClassName, className)} labelClassName={labelClassName} {...props}/>);
           } else {
             return (
-              <FormInput {...field} form={form} item={item} className={cn(defaultClassName, className)} {...props}/>);
+              <FormInput {...field} form={form} item={item} className={cn(defaultClassName, className)} labelClassName={labelClassName} {...props}/>);
           }
         }}
       />

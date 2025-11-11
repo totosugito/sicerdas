@@ -15,6 +15,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import {useEffect} from "react";
 import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import { UseFormReturn } from "react-hook-form";
+import { cn } from "@/lib/utils";
 
 export type FormUploadProps = {
   form: UseFormReturn<any>;
@@ -29,6 +30,7 @@ export type FormUploadProps = {
   };
   disabled?: boolean
   className?: string
+  labelClassName?: string;  // Added labelClassName prop
 }
 
 const getFileIcon = (file: { file: File | { type: string; name: string } }) => {
@@ -66,7 +68,7 @@ const getFileIcon = (file: { file: File | { type: string; name: string } }) => {
   return <FileIcon className="size-4 opacity-60"/>
 }
 
-export const FormUpload = ({form, item}: FormUploadProps) => {
+export const FormUpload = ({form, item, labelClassName = ""}: FormUploadProps) => {
   const [
     {files, isDragging, errors},
     {
@@ -148,7 +150,7 @@ export const FormUpload = ({form, item}: FormUploadProps) => {
       name={item.name}
       render={({field}) => (
         <FormItem>
-          <FormLabel>{item.label}</FormLabel>
+          <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
           <FormControl>
 
             <div className="flex flex-col gap-2">

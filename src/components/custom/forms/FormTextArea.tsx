@@ -2,6 +2,7 @@ import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessag
 import React from "react";
 import {Textarea} from "@/components/ui/textarea";
 import {UseFormReturn} from "react-hook-form";
+import { cn } from "@/lib/utils";
 
 export type FormTextAreaProps = {
   form: UseFormReturn<any>;
@@ -16,9 +17,10 @@ export type FormTextAreaProps = {
   };
   disabled?: boolean
   className?: string
+  labelClassName?: string;  // Added labelClassName prop
 }
 
-export const FormTextArea = ({form, item, ...props} : FormTextAreaProps) => {
+export const FormTextArea = ({form, item, labelClassName = "", ...props} : FormTextAreaProps) => {
   const defaultRows = item?.minRows ?? 2;
   const maxRows = item?.maxRows ?? 10;
 
@@ -28,7 +30,7 @@ export const FormTextArea = ({form, item, ...props} : FormTextAreaProps) => {
       name={item.name}
       render={({field}) => (
         <FormItem>
-          <FormLabel>{item.label}</FormLabel>
+          <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
           <FormControl>
             <Textarea
               placeholder={item.placeholder}

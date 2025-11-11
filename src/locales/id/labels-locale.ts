@@ -1,0 +1,18 @@
+export default {
+    signIn: "Masuk",
+    signUp: "Daftar",
+    signOut: "Keluar",
+    signingUp: "Mendaftarkan",
+    forgotPassword: "Lupa Kata Sandi",
+    resetPassword: "Atur Ulang Kata Sandi",
+    cancel: "Batal",
+    save: "Simpan",
+    close: "Tutup",
+    edit: "Edit",
+    delete: "Hapus",
+    add: "Tambah",
+    emailAddress: "Alamat Email",
+    password: "Kata Sandi",
+    fullName: "Nama Lengkap",
+    rememberMe: "Ingat Saya",
+}

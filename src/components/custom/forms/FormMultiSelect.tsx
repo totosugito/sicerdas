@@ -1,6 +1,7 @@
 import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {MultiSelect} from "@/components/custom/components";
 import { UseFormReturn } from "react-hook-form";
+import { cn } from "@/lib/utils";
 
 export type FormMultiSelectProps = {
   form: UseFormReturn<any>;
@@ -16,16 +17,17 @@ export type FormMultiSelectProps = {
   };
   disabled?: boolean
   className?: string
+  labelClassName?: string;  // Added labelClassName prop
 }
 
-export const FormMultiSelect = ({form, item, ...props} : FormMultiSelectProps) => {
+export const FormMultiSelect = ({form, item, labelClassName = "", ...props} : FormMultiSelectProps) => {
   return(
     <FormField
       control={form.control}
       name={item.name}
       render={({field}) => (
         <FormItem>
-          <FormLabel>{item.label}</FormLabel>
+          <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
           <FormControl>
             <MultiSelect
               {...props}

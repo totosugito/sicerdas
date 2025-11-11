@@ -25,9 +25,10 @@ export type FormComboboxProps = {
   };
   disabled?: boolean
   className?: string
+  labelClassName?: string;  // Added labelClassName prop
 }
 
-export const FormCombobox = ({form, item, ...props}: FormComboboxProps) => {
+export const FormCombobox = ({form, item, labelClassName = "", ...props}: FormComboboxProps) => {
   const [open, setOpen] = React.useState(false)
 
   const selectedRef = React.useRef<HTMLDivElement>(null);
@@ -47,7 +48,7 @@ export const FormCombobox = ({form, item, ...props}: FormComboboxProps) => {
       name={item.name}
       render={({field}) => (
         <FormItem>
-          <FormLabel>{item.label}</FormLabel>
+          <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
           <Popover open={open} onOpenChange={
             setOpen
           //   (v) => {

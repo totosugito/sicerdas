@@ -2,6 +2,7 @@ import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessag
 import {Input} from "@/components/ui/input";
 import React from "react";
 import {UseFormReturn} from "react-hook-form";
+import {cn} from "@/lib/utils";
 
 export type FormInputProps = {
   form: UseFormReturn<any>;
@@ -13,11 +14,13 @@ export type FormInputProps = {
   };
   disabled?: boolean;
   className?: string;
+  labelClassName?: string;  // Added labelClassName prop
 }
 
 export const FormInput = ({
                      form,
                      item,
+                     labelClassName = "",  // Added labelClassName prop
                      ...props
                    }: FormInputProps) => {
   return (
@@ -26,7 +29,7 @@ export const FormInput = ({
       name={item.name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className={""}>{item.label}</FormLabel>
+          <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
           <FormControl>
             <Input
               placeholder={item.placeholder}
