@@ -26,7 +26,7 @@ export const FormInput = ({
       name={item.name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{item.label}</FormLabel>
+          <FormLabel className={""}>{item.label}</FormLabel>
           <FormControl>
             <Input
               placeholder={item.placeholder}

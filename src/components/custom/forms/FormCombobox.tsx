@@ -48,11 +48,14 @@ export const FormCombobox = ({form, item, ...props}: FormComboboxProps) => {
       render={({field}) => (
         <FormItem>
           <FormLabel>{item.label}</FormLabel>
-          <Popover open={open} onOpenChange={(v) => {
-            if(!item?.readonly) {
-              setOpen(v);
-            }
-          }} {...props} modal={true}>
+          <Popover open={open} onOpenChange={
+            setOpen
+          //   (v) => {
+          //   if(!item?.readonly) {
+          //     setOpen(v);
+          //   }
+          // }
+          } {...props} modal={true}>
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
@@ -60,6 +63,7 @@ export const FormCombobox = ({form, item, ...props}: FormComboboxProps) => {
                   role="combobox"
                   aria-expanded={open}
                   className={cn(`w-full justify-between font-normal ${field.value ? "" : "text-muted-foreground"}`)}
+                  disabled={props?.disabled}
                 >
                   {field.value
                     ? item?.options.find((it: any) => it.value === field.value)?.label
@@ -69,7 +73,11 @@ export const FormCombobox = ({form, item, ...props}: FormComboboxProps) => {
               </FormControl>
             </PopoverTrigger>
             <PopoverContent className="p-0 overflow-y-auto">
-              <Command>
+              <Command filter={(value, search) => {
+                const option = item?.options.find((it: any) => it.value === value);
+                if (!option) return 0;
+                return option.label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
+              }}>
                 <CommandInput placeholder={item?.searchPlaceholder ?? "Search..."} className="h-9"/>
                 <CommandList>
                   <CommandEmpty>No item found.</CommandEmpty>

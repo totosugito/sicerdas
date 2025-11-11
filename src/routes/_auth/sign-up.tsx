@@ -74,7 +74,7 @@ function SignUpComponent() {
               {t("signUp.title")}
             </span>
           </h1>
-          <p className="text-sm text-muted-foreground/80">{t("signUp.tagline")}</p>
+          {/* <p className="text-sm text-muted-foreground/80">{t("signUp.tagline")}</p> */}
         </div>
 
         {/* Sign Up card */}

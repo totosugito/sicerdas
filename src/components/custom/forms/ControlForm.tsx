@@ -11,6 +11,7 @@ import {FormTextArea} from "./FormTextArea";
 import {FormUpload} from "./FormUpload";
 import {FormCheckbox} from "./FormCheckbox";
 import {cn} from "@/lib/utils";
+import { FormSwitch } from "./FormSwitch";
 
 type Props = {
   form: UseFormReturn<any>;
@@ -55,6 +56,8 @@ export const ControlForm = forwardRef(({form, item, className, wrapperClassName,
               <FormUpload {...field} {...props} form={form} item={item} className={cn(defaultClassName, className)}/>);
           } else if (itemType === "checkbox") {
             return (<FormCheckbox form={form} item={item} className={cn(defaultClassName, className)} {...props}/>);
+          } else if(itemType === "switch") {
+            return (<FormSwitch form={form} item={item} className={cn(defaultClassName, className)} {...props}/>);
           } else {
             return (
               <FormInput {...field} form={form} item={item} className={cn(defaultClassName, className)} {...props}/>);

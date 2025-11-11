@@ -11,3 +11,4 @@ export {type FormUploadProps, FormUpload} from "./FormUpload";
 export {type FormCheckboxProps, FormCheckbox} from "./FormCheckbox";
 export {ControlForm} from "./ControlForm";
 export {type FormInputFileProps, FormInputFile} from "./FormInputFile";
+export {type FormSwitchProps, FormSwitch} from "./FormSwitch";

@@ -24,12 +24,13 @@ const forgotPasswordFormData = {
     } satisfies ForgotPasswordFormValues
 }
 
+// Updated to return JSON object instead of FormData to match backend expectations
 const createForgotPasswordBodyParam = (data: Record<string, any>) => {
-    const formData = new FormData();
-    formData.append('email', data?.email ?? "");
-    // Add redirect URL
-    formData.append('redirectTo', `${window.location.origin}/reset-password`);
-    return formData;
+    return {
+        email: data?.email ?? "",
+        // Add redirect URL
+        redirectTo: `${window.location.origin}/reset-password`
+    };
 }
 
 export { forgotPasswordFormData, createForgotPasswordBodyParam, createForgotPasswordSchema }

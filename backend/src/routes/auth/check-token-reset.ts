@@ -5,6 +5,14 @@ import { db } from "../../db/index.ts";
 import { verifications } from "../../db/schema/auth-schema.ts";
 import { eq } from "drizzle-orm";
 
+/**
+ * Check password reset token
+ * 
+ * Expected JSON body input parameters:
+ * - token: string - Password reset token to validate
+ * 
+ * @param {string} token - Required. Password reset token to validate
+ */
 const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
     app.route({
         url: '/check-token-reset',
@@ -12,7 +20,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         schema: {
             tags: ['Auth'],
             summary: 'Check password reset token',
-            description: 'Verify if a password reset token is valid and not expired',
+            description: 'Verify if a password reset token is valid and not expired. Expected JSON body fields: token',
             consumes: ['application/json'],
             body: Type.Object({
                 token: Type.String()
@@ -41,7 +49,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             // Validate required fields using Fastify Sensible badRequest
             if (!token) {
-                return reply.badRequest(req.i18n.t('auth.emailRequired'));
+                return reply.badRequest(req.i18n.t('auth.tokenRequired'));
             }
 
             // Check if token exists in verifications table and is not expired
