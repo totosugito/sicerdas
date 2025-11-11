@@ -1,0 +1,16 @@
+export default {
+    title: "Reset Password",
+    description: "Atur Ulang Kata Sandi Akun Anda",
+    instructions: "Masukkan kata sandi baru Anda dan konfirmasi kata sandi",
+    successMessage: "Kata sandi Anda berhasil diatur ulang.",
+    errorMessage: "Gagal mengatur ulang kata sandi. Silakan coba lagi.",
+    invalidToken: "Token reset password tidak valid atau telah kedaluwarsa.",
+    backToSignIn: "Kembali ke halaman Masuk",
+    tryAgain: "Coba Lagi",
+    successTitle: "Sukses Reset Password",
+    validatingToken: "Memvalidasi token reset password...",
+    newPasswordPlaceholder: "Masukkan kata sandi baru",
+    confirmPasswordPlaceholder: "Konfirmasi kata sandi baru",
+    newPassword: "Kata Sandi Baru",
+    confirmPassword: "Konfirmasi Kata Sandi",
+}

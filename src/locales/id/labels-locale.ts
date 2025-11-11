@@ -5,6 +5,7 @@ export default {
     signingUp: "Mendaftarkan",
     forgotPassword: "Lupa Kata Sandi",
     resetPassword: "Atur Ulang Kata Sandi",
+    resettingPassword: "Mengatur Ulang Kata Sandi",
     cancel: "Batal",
     save: "Simpan",
     close: "Tutup",
@@ -13,6 +14,8 @@ export default {
     add: "Tambah",
     emailAddress: "Alamat Email",
     password: "Kata Sandi",
+    newPassword: "Kata Sandi Baru",
+    confirmPassword: "Konfirmasi Kata Sandi",
     fullName: "Nama Lengkap",
     rememberMe: "Ingat Saya",
 }

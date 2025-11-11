@@ -1,4 +1,4 @@
-import {useMutation} from "@tanstack/react-query";
+import {useMutation, useQuery} from "@tanstack/react-query";
 import {useAuth} from "@/hooks/use-auth";
 import {useNavigate, useRouter} from "@tanstack/react-router";
 import {fetchApi} from "@/lib/fetch-api";
@@ -49,6 +49,32 @@ export const useForgotPasswordMutation = () => {
       const response = await fetchApi({method: "POST", url: AppApi.auth.forgotPassword, body: body, headers: {'Content-Type': 'application/json'}});
       return(response);
     },
+  });
+}
+
+export const useResetPasswordMutation = () => {
+  return useMutation({
+    mutationKey: ['resetPassword'],
+    mutationFn: async ({body}: { body: Record<string, any> }) => {
+      const response = await fetchApi({method: "POST", url: AppApi.auth.resetPassword, body: body, headers: {'Content-Type': 'application/json'}});
+      return(response);
+    },
+  });
+}
+
+export const useCheckResetTokenQuery = (token: string | undefined) => {
+  return useQuery({
+    queryKey: ['checkResetToken', token],
+    queryFn: async () => {
+      if (!token) {
+        throw new Error("Token is required");
+      }
+      
+      const response = await fetchApi({method: "POST", url: AppApi.auth.checkResetToken, body: { token }, headers: {'Content-Type': 'application/json'}});
+      return response;
+    },
+    enabled: !!token, // Only run the query if token exists
+    retry: false, // Don't retry on failure
   });
 }
 

@@ -4,6 +4,8 @@ import labels from './labels-locale';
 import signIn from './sign-in-locale';
 import signUp from './sign-up-locale';
 import forgotPassword from './forgot-password-locale';
+import resetPassword from './reset-password-locale';
+import message from './message-locale';
 
 const localeId = {
   translation: {
@@ -12,7 +14,9 @@ const localeId = {
     labels: labels,
     signIn: signIn,
     signUp: signUp,
-    forgotPassword: forgotPassword
+    forgotPassword: forgotPassword,
+    resetPassword: resetPassword,
+    message: message
   }
 }
 

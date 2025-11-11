@@ -6,7 +6,9 @@ export const AppApi = {
     signIn: APP_URL_API + "/auth/sign-in-email",
     signUp: APP_URL_API + "/auth/sign-up/email",
     logout: APP_URL_API + "/user/logout",
-    forgotPassword: APP_URL_API + "/auth/auth-request-password-reset"
+    forgotPassword: APP_URL_API + "/auth/auth-request-password-reset",
+    resetPassword: APP_URL_API + "/auth/auth-reset-password",
+    checkResetToken: APP_URL_API + "/auth/check-token-reset"
   },
   admin: {
     user: {

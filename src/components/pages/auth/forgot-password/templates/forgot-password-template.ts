@@ -7,7 +7,7 @@ export type ForgotPasswordFormValues = {
 
 // We'll create the schema dynamically in the component where we have access to translations
 const createForgotPasswordSchema = (t: (key: string) => string) => z.object({
-  email: z.string().email({ message: t("message.invalidEmail") }),
+  email: z.string().email({ message: t("forgotPassword.invalidEmail") }),
 });
 
 const forgotPasswordFormData = {
@@ -15,8 +15,8 @@ const forgotPasswordFormData = {
         email: {
             type: "text",
             name: "email",
-            label: "labels.emailAddress",
-            placeholder: "signIn.emailPlaceholder",
+            label: "forgotPassword.emailAddress",
+            placeholder: "forgotPassword.emailPlaceholder",
         }
     },
     defaultValue: {

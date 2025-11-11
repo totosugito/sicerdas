@@ -62,7 +62,7 @@ function LoginComponent() {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-0 shadow-lg">
               <img src='/images/sicerdas-transparent-v1.png' className='p-1 w-15 h-15' />
             </div>
-            <div className="text-xl font-bold tracking-tight text-foreground">
+            <div className="text-lg font-bold tracking-tight text-foreground">
               <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 {t("app.appName")}
               </span>
@@ -83,7 +83,7 @@ function LoginComponent() {
 
         {/* Footer */}
         <div className="text-center mt-6 text-sm text-muted-foreground/70">
-          <p>© {new Date().getFullYear()} {t("signIn.footerCopyright")}</p>
+          <p>© {new Date().getFullYear()} {t("app.footerCopyright")}</p>
         </div>
       </div>
     </div>

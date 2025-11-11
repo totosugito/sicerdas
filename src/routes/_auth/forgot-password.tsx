@@ -55,24 +55,30 @@ function ForgotPasswordComponent() {
   // Success View
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-background to-indigo-50 flex items-center justify-center p-4 relative dark:from-blue-950/30 dark:to-indigo-950/30">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center p-4 relative">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--accent)/0.1),transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.1),transparent_50%)]" />
         <div className="relative z-10 w-full max-w-md">
           {/* Header section */}
           <div className="text-center mb-4">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-emerald-500/15 dark:bg-emerald-500/20 rounded-full mb-4 backdrop-blur-sm border border-emerald-500/40 dark:border-emerald-500/30">
-              <CheckCircle className="w-10 h-10 text-emerald-500" />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-0 shadow-lg">
+              <CheckCircle className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-foreground mb-2">
-              <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                {t("signIn.title")}
+            <div className="text-lg font-bold tracking-tight text-foreground">
+              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                {t("app.appName")}
+              </span>
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+              <span className="">
+                {t("forgotPassword.title")}
               </span>
             </h1>
           </div>
 
           {/* Success card */}
-          <div className="bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl p-8 shadow-2xl transition-all">
+          <div className="bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl p-8 shadow-xl transition-all">
             <div className="text-center mb-6">
-              <h2 className="text-2xl font-semibold text-foreground mb-2">{t("forgotPassword.title")}</h2>
+              <h2 className="text-2xl font-semibold text-foreground mb-2">{t("forgotPassword.successTitle")}</h2>
               <p className="text-muted-foreground">
                 {successMessage || t("forgotPassword.successMessage")}
               </p>
@@ -84,8 +90,8 @@ function ForgotPasswordComponent() {
           </div>
 
           {/* Footer */}
-          <div className="text-center mt-8 text-xs text-muted-foreground/70">
-            <p>© {new Date().getFullYear()} {t("signIn.footerCopyright")}</p>
+          <div className="text-center mt-6 text-sm text-muted-foreground/70">
+            <p>© {new Date().getFullYear()} {t("app.footerCopyright")}</p>
           </div>
         </div>
       </div>
@@ -95,22 +101,28 @@ function ForgotPasswordComponent() {
   // Error View (when there's an error but not success)
   if (errorMessage) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-background to-indigo-50 flex items-center justify-center p-4 relative dark:from-blue-950/30 dark:to-indigo-950/30">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center p-4 relative">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--accent)/0.1),transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.1),transparent_50%)]" />
         <div className="relative z-10 w-full max-w-md">
           {/* Header section */}
           <div className="text-center mb-4">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-destructive/15 dark:bg-destructive/20 rounded-full mb-4 backdrop-blur-sm border border-destructive/40 dark:border-destructive/30">
-              <AlertCircle className="w-10 h-10 text-destructive" />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-0 shadow-lg">
+              <AlertCircle className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-foreground mb-2">
-              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                {t("signIn.title")}
+            <div className="text-lg font-bold tracking-tight text-foreground">
+              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                {t("app.appName")}
+              </span>
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+              <span className="">
+                {t("forgotPassword.title")}
               </span>
             </h1>
           </div>
 
           {/* Error card */}
-          <div className="bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl p-8 shadow-2xl transition-all">
+          <div className="bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl p-8 shadow-xl transition-all">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-semibold text-foreground mb-2">{t("forgotPassword.title")}</h2>
               <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 flex items-start space-x-2 mb-4">
@@ -129,8 +141,8 @@ function ForgotPasswordComponent() {
           </div>
 
           {/* Footer */}
-          <div className="text-center mt-8 text-xs text-muted-foreground/70">
-            <p>© {new Date().getFullYear()} {t("signIn.footerCopyright")}</p>
+          <div className="text-center mt-6 text-sm text-muted-foreground/70">
+            <p>© {new Date().getFullYear()} {t("app.footerCopyright")}</p>
           </div>
         </div>
       </div>
@@ -139,45 +151,51 @@ function ForgotPasswordComponent() {
 
   // Default Form View
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-background to-indigo-50 flex items-center justify-center p-4 relative dark:from-blue-950/30 dark:to-indigo-950/30">
-      {/* Main content */}
-      <div className="relative z-10 w-full max-w-md">
-        {/* Header section */}
-        <div className="text-center mb-4">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-500/15 dark:bg-blue-500/20 rounded-full mb-4 backdrop-blur-sm border border-blue-500/40 dark:border-blue-500/30">
-            <MailQuestion className="w-10 h-10 text-blue-500" />
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-muted">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--accent)/0.1),transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.1),transparent_50%)]" />
+      
+      <div className="w-full max-w-md relative">
+        {/* Card with glass morphism effect */}
+        <div className="bg-card/80 backdrop-blur-xl rounded-2xl shadow-xl border border-border/50 p-8 space-y-6 relative overflow-hidden">
+          {/* Subtle gradient overlay */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent" />
+          
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-0 shadow-lg">
+              <img src='/images/forgot-password.png' className='p-1 w-15 h-15' />
+            </div>
+            <div className="text-lg font-bold tracking-tight text-foreground">
+              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                {t("app.appName")}
+              </span>
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+              <span className="">
+                {t("forgotPassword.title")}
+              </span>
+            </h1>
+            <p className="text-muted-foreground">
+              {t("forgotPassword.instructions")}
+            </p>
           </div>
-          <h1 className="text-4xl font-bold text-foreground mb-2">
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              {t("signIn.title")}
-            </span>
-          </h1>
-        </div>
 
-        {/* Forgot Password card */}
-        <div className="bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl p-8 shadow-2xl transition-all hover:shadow-3xl hover:border-blue-500/30">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-semibold text-foreground mb-2">{t("forgotPassword.title")}</h2>
-            <p className="text-muted-foreground">{t("forgotPassword.instructions")}</p>
-          </div>
-
-          <ForgotPasswordForm 
-            onFormSubmit={onFormSubmit} 
-            loading={forgotPasswordMutation.isPending} 
-          />
+          {/* Forgot password form */}
+          <ForgotPasswordForm onFormSubmit={onFormSubmit} loading={forgotPasswordMutation.isPending} errorMessage={errorMessage} />
           
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
-              <a href={AppRoute.auth.signIn.url} className="text-blue-600 hover:text-blue-500 font-medium transition-colors dark:text-blue-400 dark:hover:text-blue-300">
-                {t("forgotPassword.backToSignIn")}
+              {t("forgotPassword.backToSignIn")}{" "}
+              <a href={AppRoute.auth.signIn.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
+                {t("labels.signIn")}
               </a>
             </p>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-8 text-xs text-muted-foreground/70">
-          <p>© {new Date().getFullYear()} {t("signIn.footerCopyright")}</p>
+        <div className="text-center mt-6 text-sm text-muted-foreground/70">
+          <p>© {new Date().getFullYear()} {t("app.footerCopyright")}</p>
         </div>
       </div>
     </div>
