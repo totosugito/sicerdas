@@ -14,12 +14,14 @@ export type FormSwitchProps = {
   disabled?: boolean;
   className?: string;
   labelClassName?: string;  // Added labelClassName prop
+  showMessage?: boolean;  // Added showMessage prop
 }
 
 export const FormSwitch = ({
                        form,
                        item,
                        labelClassName = "",  // Added labelClassName prop
+                       showMessage = true,  // Added showMessage prop
                        ...props
                      }: FormSwitchProps) => {
   return (
@@ -39,7 +41,7 @@ export const FormSwitch = ({
             <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
             {item.description && <FormDescription>{item.description}</FormDescription>}
           </div>
-          <FormMessage />
+          {showMessage && <FormMessage />}
         </FormItem>
       )}
     />

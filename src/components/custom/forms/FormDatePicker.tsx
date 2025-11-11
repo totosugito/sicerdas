@@ -15,9 +15,10 @@ export type FormDatePickerProps = {
   disabled?: boolean
   className?: string
   labelClassName?: string;  // Added labelClassName prop
+  showMessage?: boolean;  // Added showMessage prop
 }
 
-export const FormDatePicker = ({form, item, labelClassName = "", ...props} : FormDatePickerProps) => {
+export const FormDatePicker = ({form, item, labelClassName = "", showMessage = true, ...props} : FormDatePickerProps) => {
   return(
     <FormField
       control={form.control}
@@ -29,7 +30,7 @@ export const FormDatePicker = ({form, item, labelClassName = "", ...props} : For
             <DatePicker {...props} value={field.value} onChange={field.onChange}/>
           </FormControl>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
-          <FormMessage/>
+          {showMessage && <FormMessage/>}
         </FormItem>
       )}
     />

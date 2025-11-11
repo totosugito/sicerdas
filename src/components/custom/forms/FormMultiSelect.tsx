@@ -18,9 +18,10 @@ export type FormMultiSelectProps = {
   disabled?: boolean
   className?: string
   labelClassName?: string;  // Added labelClassName prop
+  showMessage?: boolean;  // Added showMessage prop
 }
 
-export const FormMultiSelect = ({form, item, labelClassName = "", ...props} : FormMultiSelectProps) => {
+export const FormMultiSelect = ({form, item, labelClassName = "", showMessage = true, ...props} : FormMultiSelectProps) => {
   return(
     <FormField
       control={form.control}
@@ -38,7 +39,7 @@ export const FormMultiSelect = ({form, item, labelClassName = "", ...props} : Fo
               maxCount={item?.maxCount ?? 3}/>
           </FormControl>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
-          <FormMessage/>
+          {showMessage && <FormMessage/>}
         </FormItem>
       )}
     />

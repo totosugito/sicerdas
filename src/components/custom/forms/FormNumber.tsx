@@ -19,12 +19,14 @@ export type FormNumberProps = {
   disabled?: boolean;
   className?: string;
   labelClassName?: string;  // Added labelClassName prop
+  showMessage?: boolean;  // Added showMessage prop
 }
 
 export const FormNumber = ({
   form,
   item,
   labelClassName = "",  // Added labelClassName prop
+  showMessage = true,  // Added showMessage prop
   ...props
 }: FormNumberProps) => {
   return (
@@ -57,7 +59,7 @@ export const FormNumber = ({
             />
           </FormControl>
           {item.description && <FormDescription>{item.description}</FormDescription>}
-          <FormMessage />
+          {showMessage && <FormMessage />}
         </FormItem>
       )}
     />

@@ -14,9 +14,10 @@ export type FormDateRangePickerProps = {
     to?: Date
   };
   disabled?: boolean
+  showMessage?: boolean;  // Added showMessage prop
 }
 
-export const FormDateRangePicker = ({form, item, ...props} : {form: any, item: FormDateRangePickerProps | any}) => {
+export const FormDateRangePicker = ({form, item, showMessage = true, ...props}: FormDateRangePickerProps) => {
   return(
     <FormField
       control={form.control}
@@ -30,7 +31,7 @@ export const FormDateRangePicker = ({form, item, ...props} : {form: any, item: F
             }}/>
           </FormControl>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
-          <FormMessage/>
+          {showMessage && <FormMessage/>}
         </FormItem>
       )}
     />

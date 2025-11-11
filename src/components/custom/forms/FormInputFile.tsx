@@ -23,11 +23,13 @@ export type FormInputFileProps = {
   };
   disabled?: boolean;
   className?: string;
+  showMessage?: boolean;  // Added showMessage prop
 }
 
 export const FormInputFile = ({
   form,
   item,
+  showMessage = true,  // Added showMessage prop
   ...props
 }: FormInputFileProps) => {
   // Extract parameters from item with defaults
@@ -335,7 +337,7 @@ export const FormInputFile = ({
             )}
           </FormControl>
           {item.description && <FormDescription>{item.description}</FormDescription>}
-          <FormMessage />
+          {showMessage && <FormMessage />}
         </FormItem>
       )}
     />

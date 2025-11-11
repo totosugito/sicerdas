@@ -14,12 +14,14 @@ export type FormCheckboxProps = {
   disabled?: boolean;
   className?: string;
   labelClassName?: string;  // Added labelClassName prop
+  showMessage?: boolean;  // Added showMessage prop
 }
 
 export const FormCheckbox = ({
                        form,
                        item,
                        labelClassName = "",  // Added labelClassName prop
+                       showMessage = true,  // Added showMessage prop
                        ...props
                      }: FormCheckboxProps) => {
   return (
@@ -39,7 +41,7 @@ export const FormCheckbox = ({
             <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
             {item.description && <FormDescription>{item.description}</FormDescription>}
           </div>
-          <FormMessage />
+          {showMessage && <FormMessage />}
         </FormItem>
       )}
     />

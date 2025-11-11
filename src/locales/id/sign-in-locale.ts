@@ -8,4 +8,6 @@ export default {
     emailPlaceholder: "siswa@contoh.com",
     passwordPlaceholder: "Masukkan kata sandi",
     newUser: "Pengguna Baru?",
+    invalidEmail: "Email tidak valid",
+    passwordRequired: "Kata sandi diperlukan",
 }

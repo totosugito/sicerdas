@@ -17,9 +17,10 @@ export type FormSelectProps = {
   disabled?: boolean
   className?: string
   labelClassName?: string;  // Added labelClassName prop
+  showMessage?: boolean;  // Added showMessage prop
 }
 
-export const FormSelect = ({form, item, labelClassName = "", ...props}: FormSelectProps) => {
+export const FormSelect = ({form, item, labelClassName = "", showMessage = true, ...props}: FormSelectProps) => {
   return (
     <FormField
       control={form.control}
@@ -72,7 +73,7 @@ export const FormSelect = ({form, item, labelClassName = "", ...props}: FormSele
             </SelectContent>
           </Select>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
-          <FormMessage/>
+          {showMessage && <FormMessage/>}
         </FormItem>
       )}
     />

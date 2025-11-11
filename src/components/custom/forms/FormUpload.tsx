@@ -31,6 +31,7 @@ export type FormUploadProps = {
   disabled?: boolean
   className?: string
   labelClassName?: string;  // Added labelClassName prop
+  showMessage?: boolean;  // Added showMessage prop
 }
 
 const getFileIcon = (file: { file: File | { type: string; name: string } }) => {
@@ -68,7 +69,7 @@ const getFileIcon = (file: { file: File | { type: string; name: string } }) => {
   return <FileIcon className="size-4 opacity-60"/>
 }
 
-export const FormUpload = ({form, item, labelClassName = ""}: FormUploadProps) => {
+export const FormUpload = ({form, item, labelClassName = "", showMessage = true}: FormUploadProps) => {
   const [
     {files, isDragging, errors},
     {
@@ -249,7 +250,7 @@ export const FormUpload = ({form, item, labelClassName = ""}: FormUploadProps) =
             </div>
           </FormControl>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
-          <FormMessage/>
+          {showMessage && <FormMessage/>}
         </FormItem>
       )}
     />

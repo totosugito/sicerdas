@@ -1,3 +1,4 @@
+import app from './app-locale';
 import home from './home-locale';
 import labels from './labels-locale';
 import signIn from './sign-in-locale';
@@ -6,6 +7,7 @@ import forgotPassword from './forgot-password-locale';
 
 const localeId = {
   translation: {
+    app: app,
     home: home,
     labels: labels,
     signIn: signIn,

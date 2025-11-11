@@ -26,9 +26,10 @@ export type FormComboboxProps = {
   disabled?: boolean
   className?: string
   labelClassName?: string;  // Added labelClassName prop
+  showMessage?: boolean;  // Added showMessage prop
 }
 
-export const FormCombobox = ({form, item, labelClassName = "", ...props}: FormComboboxProps) => {
+export const FormCombobox = ({form, item, labelClassName = "", showMessage = true, ...props}: FormComboboxProps) => {
   const [open, setOpen] = React.useState(false)
 
   const selectedRef = React.useRef<HTMLDivElement>(null);
@@ -110,7 +111,7 @@ export const FormCombobox = ({form, item, labelClassName = "", ...props}: FormCo
             </PopoverContent>
           </Popover>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
-          <FormMessage/>
+          {showMessage && <FormMessage/>}
         </FormItem>
       )}
     />

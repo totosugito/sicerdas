@@ -59,6 +59,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
               form={form}
               item={translatedFormData.form.email}
               className="pl-10 h-12"
+              showMessage={false}
             />
           </div>
           <div className="relative">
@@ -67,6 +68,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
               form={form}
               item={translatedFormData.form.password}
               className="pl-10 h-12"
+              showMessage={false}
             />
           </div>
         </div>

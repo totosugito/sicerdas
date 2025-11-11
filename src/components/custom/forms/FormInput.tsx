@@ -15,12 +15,14 @@ export type FormInputProps = {
   disabled?: boolean;
   className?: string;
   labelClassName?: string;  // Added labelClassName prop
+  showMessage?: boolean;  // Added showMessage prop
 }
 
 export const FormInput = ({
                      form,
                      item,
                      labelClassName = "",  // Added labelClassName prop
+                     showMessage = true,  // Added showMessage prop
                      ...props
                    }: FormInputProps) => {
   return (
@@ -38,7 +40,7 @@ export const FormInput = ({
             />
           </FormControl>
           {item.description && <FormDescription>{item.description}</FormDescription>}
-          <FormMessage />
+          {showMessage && <FormMessage />}
         </FormItem>
       )}
     />

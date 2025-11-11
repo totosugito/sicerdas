@@ -18,9 +18,10 @@ export type FormTextAreaProps = {
   disabled?: boolean
   className?: string
   labelClassName?: string;  // Added labelClassName prop
+  showMessage?: boolean;  // Added showMessage prop
 }
 
-export const FormTextArea = ({form, item, labelClassName = "", ...props} : FormTextAreaProps) => {
+export const FormTextArea = ({form, item, labelClassName = "", showMessage = true, ...props} : FormTextAreaProps) => {
   const defaultRows = item?.minRows ?? 2;
   const maxRows = item?.maxRows ?? 10;
 
@@ -42,7 +43,7 @@ export const FormTextArea = ({form, item, labelClassName = "", ...props} : FormT
             />
           </FormControl>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
-          <FormMessage/>
+          {showMessage && <FormMessage/>}
         </FormItem>
       )}
     />

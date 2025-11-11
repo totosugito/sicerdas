@@ -18,9 +18,10 @@ export type FormPasswordProps = {
   disabled?: boolean
   className?: string
   labelClassName?: string  // Added labelClassName prop
+  showMessage?: boolean  // Added showMessage prop
 }
 
-export const FormPassword = ({form, item, labelClassName = "", ...props}: FormPasswordProps) => {
+export const FormPassword = ({form, item, labelClassName = "", showMessage = true, ...props}: FormPasswordProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -54,7 +55,7 @@ export const FormPassword = ({form, item, labelClassName = "", ...props}: FormPa
             </div>
           </FormControl>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
-          <FormMessage/>
+          {showMessage && <FormMessage/>}
         </FormItem>
       )}
     />

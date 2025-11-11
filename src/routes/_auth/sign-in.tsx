@@ -8,7 +8,6 @@ import { SubmitHandler } from 'react-hook-form'
 import { LoginFormValues } from "@/types/auth";
 import { useLoginMutation } from "@/service/auth-api";
 import { useTranslation } from 'react-i18next';
-import { LogIn } from 'lucide-react';
 import { createSignInBodyParam, SignInForm } from '@/components/pages/auth/sign-in';
 import { useState } from 'react';
 
@@ -60,11 +59,16 @@ function LoginComponent() {
           
           {/* Header */}
           <div className="text-center space-y-2">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-4 shadow-lg">
-              <img src='/images/sicerdas-transparent-v1.png' className='p-1 w-10 h-10' />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-0 shadow-lg">
+              <img src='/images/sicerdas-transparent-v1.png' className='p-1 w-15 h-15' />
+            </div>
+            <div className="text-xl font-bold tracking-tight text-foreground">
+              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                {t("app.appName")}
+              </span>
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-foreground">
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <span className="">
                 {t("signIn.title")}
               </span>
             </h1>
