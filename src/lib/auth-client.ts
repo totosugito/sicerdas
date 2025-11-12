@@ -1,4 +1,5 @@
 import { createAuthClient } from "better-auth/react"
+import { emailOTPClient } from "better-auth/client/plugins"
 
 const APP_BASE_URL = import.meta.env.VITE_APP_BASE_URL
 export const authClient = createAuthClient({
@@ -14,6 +15,7 @@ export const authClient = createAuthClient({
       enabled: true,
     },
   },
+  plugins: [emailOTPClient()],
   // session: {
   //   cookieCache: {
   //     enabled: true,

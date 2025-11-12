@@ -8,7 +8,10 @@ export const AppApi = {
     logout: APP_URL_API + "/user/logout",
     forgotPassword: APP_URL_API + "/auth/auth-request-password-reset",
     resetPassword: APP_URL_API + "/auth/auth-reset-password",
-    checkResetToken: APP_URL_API + "/auth/check-token-reset"
+    checkResetToken: APP_URL_API + "/auth/check-token-reset",
+    emailOtpForgetPassword: APP_URL_API + "/auth/email-otp-forget-password",
+    emailOtpVerifyForgetPassword: APP_URL_API + "/auth/email-otp-verify-forget-password",
+    emailOtpResetPassword: APP_URL_API + "/auth/email-otp-reset-password",
   },
   admin: {
     user: {

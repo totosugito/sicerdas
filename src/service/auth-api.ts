@@ -52,6 +52,16 @@ export const useForgotPasswordMutation = () => {
   });
 }
 
+export const useEmailOtpForgetPasswordMutation = () => {
+  return useMutation({
+    mutationKey: ['emailOtpForgetPassword'],
+    mutationFn: async ({body}: { body: Record<string, any> }) => {
+      const response = await fetchApi({method: "POST", url: AppApi.auth.emailOtpForgetPassword, body: body, headers: {'Content-Type': 'application/json'}});
+      return(response);
+    },
+  });
+}
+
 export const useResetPasswordMutation = () => {
   return useMutation({
     mutationKey: ['resetPassword'],
@@ -75,6 +85,26 @@ export const useCheckResetTokenQuery = (token: string | undefined) => {
     },
     enabled: !!token, // Only run the query if token exists
     retry: false, // Don't retry on failure
+  });
+}
+
+export const useEmailOtpVerifyForgetPasswordMutation = () => {
+  return useMutation({
+    mutationKey: ['emailOtpVerifyForgetPassword'],
+    mutationFn: async ({body}: { body: Record<string, any> }) => {
+      const response = await fetchApi({method: "POST", url: AppApi.auth.emailOtpVerifyForgetPassword, body: body, headers: {'Content-Type': 'application/json'}});
+      return(response);
+    },
+  });
+}
+
+export const useEmailOtpResetPasswordMutation = () => {
+  return useMutation({
+    mutationKey: ['emailOtpResetPassword'],
+    mutationFn: async ({body}: { body: Record<string, any> }) => {
+      const response = await fetchApi({method: "POST", url: AppApi.auth.emailOtpResetPassword, body: body, headers: {'Content-Type': 'application/json'}});
+      return(response);
+    },
   });
 }
 

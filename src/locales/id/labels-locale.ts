@@ -6,6 +6,8 @@ export default {
     forgotPassword: "Lupa Kata Sandi",
     resetPassword: "Atur Ulang Kata Sandi",
     resettingPassword: "Mengatur Ulang Kata Sandi",
+    verifyOtp: "Verifikasi OTP",
+    verifyingOtp: "Memverifikasi OTP",
     cancel: "Batal",
     save: "Simpan",
     close: "Tutup",
@@ -18,4 +20,5 @@ export default {
     confirmPassword: "Konfirmasi Kata Sandi",
     fullName: "Nama Lengkap",
     rememberMe: "Ingat Saya",
+    otpCode: "Kode OTP",
 }

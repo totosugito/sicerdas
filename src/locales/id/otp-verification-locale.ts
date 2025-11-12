@@ -1,0 +1,17 @@
+export default {
+    title: "Verifikasi OTP",
+    description: "Verifikasi Kode OTP",
+    instructions: "Masukkan kode OTP yang telah dikirim ke email Anda",
+    successMessage: "Verifikasi OTP berhasil.",
+    errorMessage: "Gagal memverifikasi OTP. Silakan coba lagi.",
+    verificationError: "Gagal memverifikasi kode OTP. Silakan coba lagi.",
+    invalidOtp: "Kode OTP tidak valid.",
+    otpVerified: "Kode OTP berhasil diverifikasi.",
+    emailNotVerified: "Email belum diverifikasi.",
+    backToSignIn: "Kembali ke halaman Masuk",
+    tryAgain: "Coba Lagi",
+    successTitle: "Sukses Verifikasi OTP",
+    verifyingOtp: "Memverifikasi kode OTP...",
+    otpCode: "Kode OTP",
+    otpPlaceholder: "Masukkan kode OTP",
+}

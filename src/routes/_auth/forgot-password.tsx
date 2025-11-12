@@ -2,9 +2,9 @@ import {
   createFileRoute,
 } from '@tanstack/react-router'
 import { SubmitHandler } from 'react-hook-form'
-import { useForgotPasswordMutation } from "@/service/auth-api";
+import { useEmailOtpForgetPasswordMutation } from "@/service/auth-api";
 import { useTranslation } from 'react-i18next';
-import { MailQuestion, AlertCircle, CheckCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle } from 'lucide-react';
 import { ForgotPasswordForm, ForgotPasswordFormValues, createForgotPasswordBodyParam } from '@/components/pages/auth/forgot-password';
 import { useState } from 'react';
 import { AppRoute } from '@/constants/app-route';
@@ -18,7 +18,7 @@ function ForgotPasswordComponent() {
   const { t } = useTranslation();
   const navigate = Route.useNavigate()
 
-  const forgotPasswordMutation = useForgotPasswordMutation();
+  const emailOtpForgetPassowrdMutation = useEmailOtpForgetPasswordMutation();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -27,21 +27,23 @@ function ForgotPasswordComponent() {
     setErrorMessage(undefined);
     setSuccessMessage(undefined);
     setIsSuccess(false);
-    forgotPasswordMutation.mutate(
+    emailOtpForgetPassowrdMutation.mutate(
       { body: createForgotPasswordBodyParam(data) },
       {
-        onSuccess: (data: any) => {
+        onSuccess: (responseData: any) => {
           // Store the success message from API response
-          const message = data?.message || t("forgotPassword.successMessage");
+          const message = responseData?.message || t("forgotPassword.successMessage");
           setSuccessMessage(message);
           setIsSuccess(true);
+          // Redirect to OTP verification page with email parameter from form data
+          navigate({ to: AppRoute.auth.otpVerification.url, search: { email: data.email } });
         },
         onError: (error: Record<string, any>) => {
           // Handle different types of errors
           const errorMsg = error?.response?.data?.message || 
-                          error?.response?.data?.error || 
-                          error?.message ||
-                          t("forgotPassword.errorMessage");
+                        error?.response?.data?.error || 
+                        error?.message ||
+                        t("forgotPassword.errorMessage");
           setErrorMessage(errorMsg);
         },
       }
@@ -181,7 +183,7 @@ function ForgotPasswordComponent() {
           </div>
 
           {/* Forgot password form */}
-          <ForgotPasswordForm onFormSubmit={onFormSubmit} loading={forgotPasswordMutation.isPending} errorMessage={errorMessage} />
+          <ForgotPasswordForm onFormSubmit={onFormSubmit} loading={emailOtpForgetPassowrdMutation.isPending} errorMessage={errorMessage} />
           
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">

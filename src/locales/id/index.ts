@@ -5,6 +5,7 @@ import signIn from './sign-in-locale';
 import signUp from './sign-up-locale';
 import forgotPassword from './forgot-password-locale';
 import resetPassword from './reset-password-locale';
+import otpVerification from './otp-verification-locale';
 import message from './message-locale';
 
 const localeId = {
@@ -16,6 +17,7 @@ const localeId = {
     signUp: signUp,
     forgotPassword: forgotPassword,
     resetPassword: resetPassword,
+    otpVerification: otpVerification,
     message: message
   }
 }

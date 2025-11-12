@@ -18,6 +18,14 @@ export const AppRoute = {
       url: "/reset-password",
       breadcrumb: []
     },
+    resetPasswordEmail: {
+      url: "/reset-password-email",
+      breadcrumb: []
+    },
+    otpVerification: {
+      url: "/otp-verification",
+      breadcrumb: []
+    },
   },
   dashboard: {
     dashboard: "/",

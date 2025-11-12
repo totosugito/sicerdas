@@ -1,72 +1,41 @@
 import {
   createFileRoute,
-  redirect,
 } from '@tanstack/react-router'
 import { SubmitHandler } from 'react-hook-form'
-import { useResetPasswordMutation, useCheckResetTokenQuery } from "@/service/auth-api";
+import { useForgotPasswordMutation } from "@/service/auth-api";
 import { useTranslation } from 'react-i18next';
-import { Lock, AlertCircle, CheckCircle } from 'lucide-react';
-import { ResetPasswordForm, ResetPasswordFormValues, createResetPasswordBodyParam } from '@/components/pages/auth/reset-password';
-import { useState, useEffect } from 'react';
+import { AlertCircle, CheckCircle } from 'lucide-react';
+import { ForgotPasswordForm, ForgotPasswordFormValues, createForgotPasswordBodyParam } from '@/components/pages/auth/forgot-password-email';
+import { useState } from 'react';
 import { AppRoute } from '@/constants/app-route';
 import { Button } from '@/components/ui/button';
-import { z } from 'zod';
+import { NotFoundError } from '@/components/custom/errors';
 
-export const Route = createFileRoute('/_auth/reset-password')({
-  validateSearch: z.object({
-    token: z.string().optional(),
-    email: z.string().optional(),
-  }),
-  beforeLoad: ({ search }) => {
-    // Redirect to sign in if no token or email is provided
-    if (!search.token && !search.email) {
-      throw redirect({ to: AppRoute.auth.signIn.url });
-    }
-  },
-  component: ResetPasswordComponent,
+export const Route = createFileRoute('/_auth/forgot-password-email')({
+  component: ForgotPasswordComponent,
 })
 
-function ResetPasswordComponent() {
+function ForgotPasswordComponent() {
+
+  return(<NotFoundError/>)
   const { t } = useTranslation();
   const navigate = Route.useNavigate()
-  const search = Route.useSearch()
 
-  // Check token validity
-  const tokenCheckQuery = useCheckResetTokenQuery(search.token);
-  const resetPasswordMutation = useResetPasswordMutation();
+  const forgotPasswordMutation = useForgotPasswordMutation();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // Handle token validation errors
-  useEffect(() => {
-    if (tokenCheckQuery.isError) {
-      const error = tokenCheckQuery.error as any;
-      const errorMsg = error?.response?.data?.message || 
-                      error?.response?.data?.error || 
-                      error?.message ||
-                      t("resetPassword.invalidToken");
-      setErrorMessage(errorMsg);
-    }
-  }, [tokenCheckQuery.isError, tokenCheckQuery.error, t]);
-
-  const onFormSubmit: SubmitHandler<ResetPasswordFormValues> = (data) => {
+  const onFormSubmit: SubmitHandler<ForgotPasswordFormValues> = (data) => {
     setErrorMessage(undefined);
     setSuccessMessage(undefined);
     setIsSuccess(false);
-    
-    // Add token to the data
-    const dataWithToken = {
-      ...data,
-      token: search.token
-    };
-    
-    resetPasswordMutation.mutate(
-      { body: createResetPasswordBodyParam(dataWithToken) },
+    forgotPasswordMutation.mutate(
+      { body: createForgotPasswordBodyParam(data) },
       {
         onSuccess: (data: any) => {
           // Store the success message from API response
-          const message = data?.message || t("resetPassword.successMessage");
+          const message = data?.message || t("forgotPassword.successMessage");
           setSuccessMessage(message);
           setIsSuccess(true);
         },
@@ -75,7 +44,7 @@ function ResetPasswordComponent() {
           const errorMsg = error?.response?.data?.message || 
                           error?.response?.data?.error || 
                           error?.message ||
-                          t("resetPassword.errorMessage");
+                          t("forgotPassword.errorMessage");
           setErrorMessage(errorMsg);
         },
       }
@@ -84,52 +53,6 @@ function ResetPasswordComponent() {
 
   const handleBackToLogin = () => {
     navigate({ to: AppRoute.auth.signIn.url });
-  }
-
-  // Show loading state while checking token
-  if (tokenCheckQuery.isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center p-4 relative">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--accent)/0.1),transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.1),transparent_50%)]" />
-        <div className="relative z-10 w-full max-w-md">
-          {/* Header section */}
-          <div className="text-center mb-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-0 shadow-lg">
-              <Lock className="w-8 h-8 text-white" />
-            </div>
-            <div className="text-lg font-bold tracking-tight text-foreground">
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                {t("app.appName")}
-              </span>
-            </div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">
-              <span className="">
-                {t("resetPassword.title")}
-              </span>
-            </h1>
-          </div>
-
-          {/* Loading card */}
-          <div className="bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl p-8 shadow-xl transition-all">
-            <div className="text-center mb-6">
-              {/* <h2 className="text-2xl font-semibold text-foreground mb-2">{t("resetPassword.title")}</h2> */}
-              <p className="text-muted-foreground">
-                {t("resetPassword.validatingToken")}
-              </p>
-            </div>
-            
-            <div className="flex justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="text-center mt-6 text-sm text-muted-foreground/70">
-            <p>© {new Date().getFullYear()} {t("app.footerCopyright")}</p>
-          </div>
-        </div>
-      </div>
-    );
   }
 
   // Success View
@@ -150,7 +73,7 @@ function ResetPasswordComponent() {
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-foreground">
               <span className="">
-                {t("resetPassword.title")}
+                {t("forgotPassword.title")}
               </span>
             </h1>
           </div>
@@ -158,14 +81,14 @@ function ResetPasswordComponent() {
           {/* Success card */}
           <div className="bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl p-8 shadow-xl transition-all">
             <div className="text-center mb-6">
-              <h2 className="text-2xl font-semibold text-foreground mb-2">{t("resetPassword.successTitle")}</h2>
+              <h2 className="text-2xl font-semibold text-foreground mb-2">{t("forgotPassword.successTitle")}</h2>
               <p className="text-muted-foreground">
-                {successMessage || t("resetPassword.successMessage")}
+                {successMessage || t("forgotPassword.successMessage")}
               </p>
             </div>
             
             <Button onClick={handleBackToLogin} className="w-full h-12">
-              {t("resetPassword.backToSignIn")}
+              {t("forgotPassword.backToSignIn")}
             </Button>
           </div>
 
@@ -196,7 +119,7 @@ function ResetPasswordComponent() {
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-foreground">
               <span className="">
-                {t("resetPassword.title")}
+                {t("forgotPassword.title")}
               </span>
             </h1>
           </div>
@@ -204,18 +127,18 @@ function ResetPasswordComponent() {
           {/* Error card */}
           <div className="bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl p-8 shadow-xl transition-all">
             <div className="text-center mb-6">
-              {/* <h2 className="text-2xl font-semibold text-foreground mb-2">{t("resetPassword.title")}</h2> */}
+              <h2 className="text-2xl font-semibold text-foreground mb-2">{t("forgotPassword.title")}</h2>
               <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 flex items-start space-x-2 mb-4">
                 <div className="text-sm text-destructive font-medium">{errorMessage}</div>
               </div>
             </div>
             
             <div className="flex flex-col gap-3">
-              {/* <Button onClick={() => setErrorMessage(undefined)} className="w-full h-12">
-                {t("resetPassword.tryAgain")}
-              </Button> */}
-              <Button onClick={handleBackToLogin} className="w-full h-12">
-                {t("resetPassword.backToSignIn")}
+              <Button onClick={() => setErrorMessage(undefined)} className="w-full h-12">
+                {t("forgotPassword.tryAgain")}
+              </Button>
+              <Button variant="outline" onClick={handleBackToLogin} className="w-full h-12">
+                {t("forgotPassword.backToSignIn")}
               </Button>
             </div>
           </div>
@@ -229,7 +152,7 @@ function ResetPasswordComponent() {
     );
   }
 
-  // Default Form View - only show if token is valid
+  // Default Form View
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-muted">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--accent)/0.1),transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.1),transparent_50%)]" />
@@ -243,7 +166,7 @@ function ResetPasswordComponent() {
           {/* Header */}
           <div className="text-center space-y-2">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-0 shadow-lg">
-              <Lock className="w-8 h-8 text-white" />
+              <img src='/images/forgot-password.png' className='p-1 w-15 h-15' />
             </div>
             <div className="text-lg font-bold tracking-tight text-foreground">
               <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -252,20 +175,20 @@ function ResetPasswordComponent() {
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-foreground">
               <span className="">
-                {t("resetPassword.title")}
+                {t("forgotPassword.title")}
               </span>
             </h1>
             <p className="text-muted-foreground">
-              {t("resetPassword.instructions")}
+              {t("forgotPassword.instructions")}
             </p>
           </div>
 
-          {/* Reset password form */}
-          <ResetPasswordForm onFormSubmit={onFormSubmit} loading={resetPasswordMutation.isPending} errorMessage={errorMessage} />
+          {/* Forgot password form */}
+          <ForgotPasswordForm onFormSubmit={onFormSubmit} loading={forgotPasswordMutation.isPending} errorMessage={errorMessage} />
           
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
-              {t("resetPassword.backToSignIn")}{" "}
+              {t("forgotPassword.backToSignIn")}{" "}
               <a href={AppRoute.auth.signIn.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
                 {t("labels.signIn")}
               </a>
@@ -282,4 +205,4 @@ function ResetPasswordComponent() {
   )
 }
 
-export default ResetPasswordComponent
+export default ForgotPasswordComponent

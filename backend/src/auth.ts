@@ -1,6 +1,6 @@
 import {betterAuth} from 'better-auth';
 import {drizzleAdapter} from 'better-auth/adapters/drizzle';
-import {admin, openAPI} from 'better-auth/plugins';
+import {admin, openAPI, emailOTP} from 'better-auth/plugins';
 import {db} from './db/index.ts';
 import envConfig from "./config/env.config.ts";
 import fs from 'fs';
@@ -30,6 +30,54 @@ const auth = betterAuth({
     admin(),
     openAPI({
       path: '/docs',
+    }),
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "sign-in") {
+          // Send the OTP for sign in
+        } else if (type === "email-verification") {
+          // Send the OTP for email verification
+        } else {
+          // Send the OTP for password reset
+          // Only send email if Brevo is configured
+          if (!apiInstance) {
+            console.warn('Brevo API key not configured. Skipping email sending.');
+            return Promise.resolve();
+          }
+
+          try {
+            // Read the email template
+            const templatePath = path.join(__dirname, 'templates', 'reset-password-otp.html');
+            let htmlContent = fs.readFileSync(templatePath, 'utf8');
+            
+            // Replace placeholders with actual values
+            htmlContent = htmlContent
+              .replace(/{{name}}/g, email.split('@')[0]) // Using email prefix as name
+              .replace(/{{email}}/g, email)
+              .replace(/{{otp}}/g, otp)
+              .replace(/{{year}}/g, new Date().getFullYear().toString());
+
+            // Create email object
+            const sendSmtpEmail = new Brevo.SendSmtpEmail();
+            sendSmtpEmail.subject = 'Kode OTP Reset Kata Sandi';
+            sendSmtpEmail.htmlContent = htmlContent;
+            sendSmtpEmail.sender = {
+              name: 'SiCerdas No-Reply',
+              email: 'no-reply@sicerdas.com'
+            };
+            sendSmtpEmail.to = [{
+              email: email,
+              name: email.split('@')[0],
+            }];
+
+            // Send email
+            await apiInstance.sendTransacEmail(sendSmtpEmail);
+          } catch (error) {
+            console.error('Failed to send password reset OTP email:', error);
+            // We don't reject the promise as we don't want to break the auth flow
+          }
+        }
+      },
     }),
   ],
   socialProviders: {
