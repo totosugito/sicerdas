@@ -17,5 +17,6 @@ export const APP_CONFIG = {
     defaultPublic: "/sign-in",
     defaultPrivate: "/",
   },
-  cloud: 'https://s3.nevaobjects.id/sicerdas'
+  cloud: 'https://s3.nevaobjects.id/sicerdas',
+  RESEND_OTP_DELAY: 10, // 2 minutes
 }

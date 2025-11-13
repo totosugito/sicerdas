@@ -1,5 +1,3 @@
-
-
 export const AppRoute = {
   auth: {
     signUp: {
@@ -10,10 +8,6 @@ export const AppRoute = {
       url: "/sign-in",
       breadcrumb: []
     },
-    forgotPassword: {
-      url: "/forgot-password",
-      breadcrumb: []
-    },
     resetPassword: {
       url: "/reset-password",
       breadcrumb: []
@@ -22,8 +16,16 @@ export const AppRoute = {
       url: "/reset-password-email",
       breadcrumb: []
     },
+    otpForgetPassword: {
+      url: "/otp-forget-password",
+      breadcrumb: []
+    },
     otpVerification: {
       url: "/otp-verification",
+      breadcrumb: []
+    },
+    otpResetPassword: {
+      url: "/otp-reset-password",
       breadcrumb: []
     },
   },

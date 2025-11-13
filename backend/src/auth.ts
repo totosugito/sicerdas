@@ -32,6 +32,8 @@ const auth = betterAuth({
       path: '/docs',
     }),
     emailOTP({
+      otpLength: 6,
+      expiresIn: 60 * 60, // 1 hour
       async sendVerificationOTP({ email, otp, type }) {
         if (type === "sign-in") {
           // Send the OTP for sign in

@@ -2,16 +2,21 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod"
-import { FormInput } from "@/components/custom/forms";
-import { Loader2, Mail, ShieldCheck } from "lucide-react";
+import { Loader2, ShieldCheck } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import { AlertCircle } from "lucide-react";
 import * as z from "zod";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 
 // Create schema for OTP verification
 const createOtpVerificationSchema = (t: (key: string) => string) => z.object({
   email: z.string().email({ message: t("message.invalidEmail") }).min(1, { message: t("message.emailRequired") }),
-  otp: z.string().min(1, { message: t("message.otpRequired") }),
+  otp: z.string().min(6, { message: t("message.otpRequired") }),
 });
 
 export type OtpVerificationFormValues = {
@@ -88,30 +93,57 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
           </div>
         )}
         <div className="space-y-4">
-          <div className="relative">
-            <Mail className="absolute left-3 top-9.5 h-4 w-4 text-muted-foreground" />
-            <FormInput
-              form={form}
-              item={translatedFormData.form.email}
-              className="pl-10 h-12"
-              showMessage={false}
-              disabled={!!email}
-            />
-          </div>
-          <div className="relative">
-            <ShieldCheck className="absolute left-3 top-9.5 h-4 w-4 text-muted-foreground" />
-            <FormInput
-              form={form}
-              item={translatedFormData.form.otp}
-              className="pl-10 h-12"
-              showMessage={false}
-            />
-          </div>
+          {/* Email is now handled via props, no need to display input */}
+          <input type="hidden" {...form.register("email")} value={email || ""} />
+          <FormField
+            control={form.control}
+            name="otp"
+            render={({ field }) => (
+              <FormItem className="flex flex-col items-center">
+                <FormControl>
+                  <InputOTP
+                    maxLength={6}
+                    {...field}
+                    onChange={(value) => field.onChange(value)}
+                    disabled={loading}
+                  >
+                    <InputOTPGroup className="flex flex-row gap-2">
+                      <InputOTPSlot 
+                        index={0} 
+                        className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
+                      />
+                      <InputOTPSlot 
+                        index={1} 
+                        className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
+                      />
+                      <InputOTPSlot 
+                        index={2} 
+                        className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
+                      />
+                      <InputOTPSlot 
+                        index={3} 
+                        className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
+                      />
+                      <InputOTPSlot 
+                        index={4} 
+                        className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
+                      />
+                      <InputOTPSlot 
+                        index={5} 
+                        className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
+                      />
+                    </InputOTPGroup>
+                  </InputOTP>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <Button
           type="submit"
-          className="w-full h-12"
+          className="w-full h-12 mt-2"
           disabled={loading}
         >
           {loading ? (

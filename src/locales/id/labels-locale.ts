@@ -21,4 +21,6 @@ export default {
     fullName: "Nama Lengkap",
     rememberMe: "Ingat Saya",
     otpCode: "Kode OTP",
+    resendOtp: "Kirim Ulang OTP",
+    sending: "Mengirim",
 }

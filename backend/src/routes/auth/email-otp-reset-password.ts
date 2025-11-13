@@ -58,7 +58,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       if (!otp) {
-        return reply.badRequest(req.i18n.t('auth.tokenRequired'));
+        return reply.badRequest(req.i18n.t('auth.otpRequired'));
       }
 
       if (!password) {

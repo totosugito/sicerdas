@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormInput } from "@/components/custom/forms";
 import { Loader2, Mail, ArrowRight } from "lucide-react";
-import { forgotPasswordFormData, createForgotPasswordSchema } from "./templates/forgot-password-template";
+import { forgotPasswordFormData, createForgotPasswordSchema } from "./templates/forget-password-template";
 import { useTranslation } from 'react-i18next';
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
   errorMessage?: string,
 }
 
-export const ForgotPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
+export const ForgetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
   const { t } = useTranslation();
   
   // Create schema with translated error messages

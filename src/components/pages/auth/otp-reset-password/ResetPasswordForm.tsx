@@ -58,7 +58,7 @@ export const ResetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props
               form={form}
               item={translatedFormData.form.password}
               className="pl-10 h-12"
-              showMessage={false}
+              showMessage={true}
             />
           </div>
           <div className="relative">
@@ -67,7 +67,7 @@ export const ResetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props
               form={form}
               item={translatedFormData.form.confirmPassword}
               className="pl-10 h-12"
-              showMessage={false}
+              showMessage={true}
             />
           </div>
         </div>

@@ -13,4 +13,5 @@ export default {
     confirmPasswordPlaceholder: "Konfirmasi kata sandi baru",
     newPassword: "Kata Sandi Baru",
     confirmPassword: "Konfirmasi Kata Sandi",
+    errorTitle: "Gagal Reset Password",
 }

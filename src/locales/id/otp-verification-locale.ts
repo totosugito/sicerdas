@@ -1,7 +1,7 @@
 export default {
     title: "Verifikasi OTP",
     description: "Verifikasi Kode OTP",
-    instructions: "Masukkan kode OTP yang telah dikirim ke email Anda",
+    instructions: "Masukkan kode OTP yang telah dikirim ke email Anda. Jika tidak ditemukan, silakan periksa folder spam email Anda.",
     successMessage: "Verifikasi OTP berhasil.",
     errorMessage: "Gagal memverifikasi OTP. Silakan coba lagi.",
     verificationError: "Gagal memverifikasi kode OTP. Silakan coba lagi.",
@@ -14,4 +14,9 @@ export default {
     verifyingOtp: "Memverifikasi kode OTP...",
     otpCode: "Kode OTP",
     otpPlaceholder: "Masukkan kode OTP",
+    timerText: "Kirim ulang kode dalam",
+    resendOtp: "Kirim Ulang OTP",
+    resendOtpError: "Gagal mengirim ulang kode OTP. Silakan coba lagi.",
+    resendOtpSuccess: "Kode OTP berhasil dikirim ulang ke email Anda.",
+    sending: "Mengirim...",
 }

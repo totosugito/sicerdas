@@ -78,7 +78,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
             <input type="checkbox" className="rounded border-border" />
             <span>{t("labels.rememberMe")}</span>
           </label>
-          <a href={AppRoute.auth.forgotPassword.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
+          <a href={AppRoute.auth.otpForgetPassword.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
             {t("labels.forgotPassword")}
           </a>
         </div>
