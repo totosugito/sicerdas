@@ -1,7 +1,7 @@
 import {createFileRoute, Outlet} from '@tanstack/react-router'
 import * as React from "react";
 
-export const Route = createFileRoute('/__authenticated/admin')({
+export const Route = createFileRoute('/_private/admin')({
   // loader: ({context}) => {
   //   console.log("router admin", !context?.auth)
   //   if (!context?.auth?.isAuthenticated) {
