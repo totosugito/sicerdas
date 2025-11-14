@@ -4,21 +4,27 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/index.ts";
 import { users, userProfile } from "../../db/schema/auth-schema.ts";
 import { eq } from "drizzle-orm";
+import { getUserAvatarUrl } from "../../utils/app-utils.ts";
 
 // Response schemas
-const UserResponse = Type.Object({
-  id: Type.String({ format: 'uuid' }),
-  email: Type.String({ format: 'email' }),
-  name: Type.Union([Type.String(), Type.Null()]),
-  emailVerified: Type.Boolean(),
-  createdAt: Type.String({ format: 'date-time' }),
-  updatedAt: Type.String({ format: 'date-time' })
-});
-
 const UpdateUserResponse = Type.Object({
   success: Type.Boolean({ default: true }),
   message: Type.String(),
-  data: UserResponse
+  data: Type.Object({
+    id: Type.String({ format: 'uuid' }),
+    email: Type.String({ format: 'email' }),
+    name: Type.Union([Type.String(), Type.Null()]),
+    image: Type.Union([Type.String({ format: 'uri' }), Type.Null()]),
+    emailVerified: Type.Boolean(),
+    school: Type.Union([Type.String(), Type.Null()]),
+    grade: Type.Union([Type.String(), Type.Null()]),
+    phone: Type.Union([Type.String(), Type.Null()]),
+    address: Type.Union([Type.String(), Type.Null()]),
+    bio: Type.Union([Type.String(), Type.Null()]),
+    dateOfBirth: Type.Union([Type.String(), Type.Null()]),
+    createdAt: Type.String({ format: 'date-time' }),
+    updatedAt: Type.String({ format: 'date-time' })
+  })
 });
 
 /**
@@ -48,16 +54,16 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ['User'],
       summary: 'Update user profile',
-      description: 'Update the current user\'s profile information. Expected JSON body fields: name, school, grade, phone, address, bio, dateOfBirth (all optional)',
+      description: 'Update the current user\'s profile information. Expected JSON body fields: name, school, grade, phone, address, bio, dateOfBirth (all optional). Invalid dateOfBirth formats will be ignored.',
       consumes: ['application/json'],
       body: Type.Object({
-        name: Type.Optional(Type.String({ minLength: 1 })),
+        name: Type.Optional(Type.String({ minLength: 2 })),
         school: Type.Optional(Type.String({ minLength: 0 })),
         grade: Type.Optional(Type.String({ minLength: 0 })),
         phone: Type.Optional(Type.String({ minLength: 0 })),
         address: Type.Optional(Type.String({ minLength: 0 })),
         bio: Type.Optional(Type.String({ minLength: 0 })),
-        dateOfBirth: Type.Optional(Type.String({ pattern: '^\\d{4}-\\d{2}-\\d{2}$' })), // YYYY-MM-DD format
+        dateOfBirth: Type.Optional(Type.String()), // Removed strict pattern validation to allow flexible handling
       }),
       response: {
         200: UpdateUserResponse,
@@ -91,9 +97,14 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         .filter(([key]) => !restrictedFields.includes(key))
         .reduce((obj, [key, value]) => {
           // Handle dateOfBirth conversion if provided
-          if (key === 'dateOfBirth' && typeof value === 'string' && value) {
-            // Convert YYYY-MM-DD string to Date object
-            obj[key] = new Date(value);
+          if (key === 'dateOfBirth') {
+            // Validate date format (YYYY-MM-DD)
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            if (dateRegex.test(value)) {
+              obj[key] = new Date(value as string);
+            } else {
+              obj[key] = null;
+            }
           } else {
             obj[key] = value;
           }
@@ -104,14 +115,15 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (Object.keys(safeUpdateData).length === 0) {
         return reply.badRequest(req.i18n.t('user.noValidUpdateData'));
       }
+      console.log('Updating user with data:', safeUpdateData);
 
       // Separate user and profile data
       const userFields = ['name'];
       const profileFields = ['school', 'grade', 'phone', 'address', 'bio', 'dateOfBirth'];
-      
+
       const userData: Record<string, unknown> = {};
       const profileData: Record<string, unknown> = {};
-      
+
       Object.entries(safeUpdateData).forEach(([key, value]) => {
         if (userFields.includes(key)) {
           userData[key] = value;
@@ -158,6 +170,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
           id: true,
           email: true,
           name: true,
+          image: true,
           emailVerified: true,
           createdAt: true,
           updatedAt: true
@@ -168,15 +181,59 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         return reply.notFound(req.i18n.t('user.userNotFound'));
       }
 
+      // Get user profile information
+      let profile = await db.query.userProfile.findFirst({
+        where: eq(userProfile.id, userId),
+        columns: {
+          school: true,
+          grade: true,
+          phone: true,
+          address: true,
+          bio: true,
+          dateOfBirth: true
+        }
+      });
+
+      // If no profile exists, create one
+      if (!profile) {
+        const now = new Date();
+        await db.insert(userProfile).values({
+          id: userId,
+          school: "",
+          grade: "",
+          phone: "",
+          address: "",
+          bio: "",
+          dateOfBirth: null,
+          createdAt: now,
+          updatedAt: now,
+        }).onConflictDoNothing();
+
+        // Fetch the newly created profile
+        profile = await db.query.userProfile.findFirst({
+          where: eq(userProfile.id, userId),
+          columns: {
+            school: true,
+            grade: true,
+            phone: true,
+            address: true,
+            bio: true,
+            dateOfBirth: true
+          }
+        });
+      }
+
       return reply.status(200).send({
         success: true,
         message: req.i18n.t('user.userUpdatedSuccessfully'),
         data: {
           ...updatedUser,
-          // Ensure dates are properly serialized
-          createdAt: updatedUser.createdAt.toISOString(),
-          updatedAt: updatedUser.updatedAt.toISOString(),
-          emailVerified: Boolean(updatedUser.emailVerified)
+          ...(profile || {}),
+          image: getUserAvatarUrl(updatedUser.image),
+          createdAt: updatedUser.createdAt,
+          updatedAt: updatedUser.updatedAt,
+          emailVerified: Boolean(updatedUser.emailVerified),
+          dateOfBirth: profile?.dateOfBirth
         }
       });
     })

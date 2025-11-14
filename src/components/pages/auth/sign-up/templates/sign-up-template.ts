@@ -1,10 +1,9 @@
 import { z } from "zod"
-import { APP_CONFIG } from "@/constants/config"
 
 // We'll create the schema dynamically in the component where we have access to translations
 const createSignUpSchema = (t: (key: string) => string) => z.object({
   name: z.string().min(1, { message: t("message.nameRequired") }),
-  email: z.string().email({ message: t("message.invalidEmail") }),
+  email: z.email({ message: t("message.invalidEmail") }),
   password: z.string().min(1, { message: t("message.passwordRequired") }),
 });
 

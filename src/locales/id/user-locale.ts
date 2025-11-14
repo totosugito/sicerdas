@@ -3,7 +3,7 @@ export default {
         title: "Profil Pengguna",
         description: "Kelola pengaturan dan preferensi akun Anda.",
         tabs: {
-            editProfile: "Informasi Profil",
+            editProfile: "Profil",
             personalInfo: "Data Pribadi",
             password: "Kata Sandi",
             notifications: "Notifikasi",
@@ -13,7 +13,7 @@ export default {
             privacy: "Privasi"
         },
         information: {
-            title: "Informasi Profil",
+            title: "Profil",
             fullName: "Nama Lengkap",
             fullNamePlaceholder: "Nama lengkap Anda",
             fullNameError: "Nama lengkap harus terdiri dari minimal 2 karakter",
@@ -24,20 +24,23 @@ export default {
             bioPlaceholder: "Ceritakan tentang diri Anda",
             bioDescription: "Deskripsi singkat untuk profil Anda.",
             changeAvatar: "Ubah Avatar",
-            updateError: "Gagal memperbarui profil. Silakan coba lagi."
+            updateError: "Gagal memperbarui profil. Silakan coba lagi.",
+            updateSuccess: "Profil berhasil diperbarui."
         },
         personalInfo: {
             title: "Data Pribadi",
-            firstName: "Nama Depan",
-            firstNamePlaceholder: "Nama depan",
-            firstNameError: "Nama depan wajib diisi",
-            lastName: "Nama Belakang",
-            lastNamePlaceholder: "Nama belakang",
-            lastNameError: "Nama belakang wajib diisi",
             phoneNumber: "Nomor Telepon",
             phoneNumberPlaceholder: "Nomor telepon",
             address: "Alamat",
-            addressPlaceholder: "Alamat Anda"
+            addressPlaceholder: "Alamat Anda",
+            school: "Sekolah",
+            schoolPlaceholder: "Nama sekolah",
+            grade: "Kelas",
+            gradePlaceholder: "Kelas Anda",
+            dateOfBirth: "Tanggal Lahir",
+            dateOfBirthPlaceholder: "Tanggal lahir",
+            updateError: "Gagal memperbarui data pribadi. Silakan coba lagi.",
+            updateSuccess: "Data pribadi berhasil diperbarui."
         },
         security: {
             title: "Ubah Kata Sandi",
@@ -50,7 +53,9 @@ export default {
             confirmPassword: "Konfirmasi Kata Sandi Baru",
             confirmPasswordPlaceholder: "Konfirmasi kata sandi baru Anda",
             passwordMismatchError: "Kata sandi tidak cocok",
-            updatePassword: "Perbarui Kata Sandi"
+            updatePassword: "Perbarui Kata Sandi",
+            updateError: "Gagal memperbarui kata sandi. Silakan coba lagi.",
+            updateSuccess: "Kata sandi berhasil diperbarui."
         },
         privacy: {
             title: "Pengaturan Privasi",

@@ -4,7 +4,7 @@ import { LoginFormValues } from "@/types/auth"
 
 // We'll create the schema dynamically in the component where we have access to translations
 const createSignInSchema = (t: (key: string) => string) => z.object({
-  email: z.string().email({ message: t("signIn.invalidEmail") }),
+  email: z.email({ message: t("signIn.invalidEmail") }),
   password: z.string().min(1, { message: t("signIn.passwordRequired") }),
 });
 

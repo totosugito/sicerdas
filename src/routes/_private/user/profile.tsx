@@ -6,9 +6,11 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ProfileHeader, TabNavigation, ProfileInfoForm, PersonalInfoForm, SecurityForm, PrivacyForm, 
-    createProfileInfoFormData
+    createProfileInfoFormData, createPersonalInfoFormData, createSecurityFormData
 } from '@/components/pages/user/profile'
-import { useUserProfileQuery, useUpdateUserProfileMutation } from '@/service/user-api'
+import { useUserProfileQuery, useUpdateUserProfileMutation, useChangeUserPasswordMutation } from '@/service/user-api'
+import { showNotifSuccess } from '@/lib/show-notif'
+import { string_to_date } from '@/lib/my-utils'
 
 export const Route = createFileRoute('/_private/user/profile')({
     component: RouteComponent,
@@ -22,23 +24,9 @@ function RouteComponent() {
     
     // Define schemas for each tab inside the component to access the translation function
     const profileFormData = createProfileInfoFormData(t);
+    const personalInfoFormData = createPersonalInfoFormData(t);
+    const securityFormData = createSecurityFormData(t);
     
-    const personalInfoSchema = z.object({
-        firstName: z.string().min(1, t('user.profile.personalInfo.firstNameError')),
-        lastName: z.string().min(1, t('user.profile.personalInfo.lastNameError')),
-        phone: z.string().optional(),
-        address: z.string().optional(),
-    })
-
-    const securitySchema = z.object({
-        currentPassword: z.string().min(6, t('user.profile.security.passwordMinLengthError')),
-        newPassword: z.string().min(6, t('user.profile.security.passwordMinLengthError')),
-        confirmPassword: z.string().min(6, t('user.profile.security.passwordMinLengthError')),
-    }).refine((data) => data.newPassword === data.confirmPassword, {
-        message: t('user.profile.security.passwordMismatchError'),
-        path: ["confirmPassword"],
-    })
-
     const privacySchema = z.object({
         profileVisibility: z.boolean(),
         emailNotifications: z.boolean(),
@@ -51,24 +39,19 @@ function RouteComponent() {
         defaultValues: profileFormData.defaultValue,
     })
 
-    const personalInfoForm = useForm<z.infer<typeof personalInfoSchema>>({
-        resolver: zodResolver(personalInfoSchema),
-        defaultValues: {
-            firstName: '',
-            lastName: '',
-            phone: '',
-            address: '',
-        },
+    const personalInfoForm = useForm<z.infer<typeof personalInfoFormData.schema>>({
+        resolver: zodResolver(personalInfoFormData.schema),
+        defaultValues: personalInfoFormData.defaultValue,
+    })
+
+    const securityForm = useForm<z.infer<typeof securityFormData.schema>>({
+        resolver: zodResolver(securityFormData.schema),
+        defaultValues: securityFormData.defaultValue,
     })
 
     // Populate forms with user data when it loads
     React.useEffect(() => {
         if (userProfile) {
-            // Split full name into first and last name
-            const nameParts = userProfile.name?.split(' ') || [];
-            const firstName = nameParts[0] || '';
-            const lastName = nameParts.slice(1).join(' ') || '';
-            
             profileForm.reset({
                 name: userProfile.name || '',
                 email: userProfile.email || '',
@@ -76,22 +59,14 @@ function RouteComponent() {
             });
             
             personalInfoForm.reset({
-                firstName,
-                lastName,
                 phone: userProfile.phone || '',
                 address: userProfile.address || '',
+                school: userProfile.school || '',
+                grade: userProfile.grade || '',
+                dateOfBirth: userProfile.dateOfBirth ? string_to_date(userProfile.dateOfBirth) : undefined,
             });
         }
     }, [userProfile, profileForm, personalInfoForm]);
-
-    const securityForm = useForm<z.infer<typeof securitySchema>>({
-        resolver: zodResolver(securitySchema),
-        defaultValues: {
-            currentPassword: '',
-            newPassword: '',
-            confirmPassword: '',
-        },
-    })
 
     const privacyForm = useForm<z.infer<typeof privacySchema>>({
         resolver: zodResolver(privacySchema),
@@ -104,27 +79,54 @@ function RouteComponent() {
 
     // Form submission handlers
     const updateUserProfileMutation = useUpdateUserProfileMutation();
-    
-    function onProfileSubmit(values: z.infer<typeof profileFormData.schema>) {       
-        updateUserProfileMutation.mutate({ body: values });
-    }
+    const changeUserPasswordMutation = useChangeUserPasswordMutation();
+    const [profileUpdateError, setProfileUpdateError] = React.useState<string | null>(null);
+    const [personalInfoUpdateError, setPersonalInfoUpdateError] = React.useState<string | null>(null);
+    const [securityUpdateError, setSecurityUpdateError] = React.useState<string | null>(null);
+        
+    // Unified submit handler for profile and personal info forms
+    const onFormSubmit = (values: Record<string, any>, formType: 'profile' | 'personal') => {
+        setProfileUpdateError(null);
+        setPersonalInfoUpdateError(null);
+        updateUserProfileMutation.mutate(
+            { body: values },
+            {
+                onSuccess: (success: Record<string, any>) => {
+                    const successMessage = success?.message || t('user.profile.information.updateSuccess');
+                    showNotifSuccess({ message: successMessage });
+                },
+                onError: (error: Record<string, any>) => {
+                    if(formType === 'profile') {
+                        const msg_ = error?.response?.data?.message || t('user.profile.information.updateError');
+                        setProfileUpdateError(msg_);
+                    } else if (formType === 'personal') {
+                        const msg_ = error?.response?.data?.message || t('user.profile.personalInfo.updateError');
+                        setPersonalInfoUpdateError(msg_);
+                    }
+                }
+            }
+        );
+    };
 
-    // Get error message from mutation
-    const profileUpdateError = updateUserProfileMutation.error ? 
-        (updateUserProfileMutation.error as any)?.response?.data?.message || 
-        (updateUserProfileMutation.error as any)?.message || 
-        t('user.profile.information.updateError') : 
-        null;
-
-    function onPersonalInfoSubmit(values: z.infer<typeof personalInfoSchema>) {
-        console.log('Personal info values:', values)
-        // Handle personal info update
-    }
-
-    function onSecuritySubmit(values: z.infer<typeof securitySchema>) {
-        console.log('Security values:', values)
-        // Handle security update
-    }
+    // Security form submit handler
+    const onSecuritySubmit = (values: z.infer<typeof securityFormData.schema>) => {
+        setSecurityUpdateError(null);
+        changeUserPasswordMutation.mutate(
+            { body: { currentPassword: values.currentPassword, newPassword: values.newPassword } },
+            {
+                onSuccess: (success: Record<string, any>) => {
+                    const successMessage = success?.message || t('user.profile.security.updateSuccess');
+                    showNotifSuccess({ message: successMessage });
+                    // Reset the form after successful submission
+                    securityForm.reset(securityFormData.defaultValue);
+                },
+                onError: (error: Record<string, any>) => {
+                    const errorMessage = error?.response?.data?.message || t('user.profile.security.updateError');
+                    setSecurityUpdateError(errorMessage);
+                }
+            }
+        );
+    };
 
     function onPrivacySubmit(values: z.infer<typeof privacySchema>) {
         console.log('Privacy values:', values)
@@ -170,19 +172,25 @@ function RouteComponent() {
                         <TabsContent value="profile" className="mt-0 w-full">
                             <ProfileInfoForm 
                                 form={profileForm} 
-                                onSubmit={onProfileSubmit} 
+                                onSubmit={(body) => onFormSubmit(body, 'profile')} 
                                 error={profileUpdateError}
                             />
                         </TabsContent>
 
                         {/* Personal Info Tab */}
                         <TabsContent value="personal" className="mt-0 w-full">
-                            <PersonalInfoForm form={personalInfoForm} onSubmit={onPersonalInfoSubmit} />
+                            <PersonalInfoForm form={personalInfoForm} 
+                            onSubmit={(body) => onFormSubmit(body, 'personal')} 
+                            error={personalInfoUpdateError} />
                         </TabsContent>
 
                         {/* Security Tab */}
                         <TabsContent value="security" className="mt-0 w-full">
-                            <SecurityForm form={securityForm} onSubmit={onSecuritySubmit} />
+                            <SecurityForm 
+                                form={securityForm} 
+                                onSubmit={onSecuritySubmit} 
+                                error={securityUpdateError} 
+                            />
                         </TabsContent>
 
                         {/* Privacy Tab */}

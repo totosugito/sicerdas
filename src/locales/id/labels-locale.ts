@@ -23,4 +23,7 @@ export default {
     otpCode: "Kode OTP",
     resendOtp: "Kirim Ulang OTP",
     sending: "Mengirim",
+    logout: "Keluar",
+    logOutTitle: "Konfirmasi Logout",
+    logOutDesc: "Apakah Anda yakin ingin keluar dari akun Anda?",
 }

@@ -1,6 +1,6 @@
 export { ProfileHeader } from './components/ProfileHeader'
 export { TabNavigation } from './components/TabNavigation'
 export { ProfileInfoForm, createProfileInfoFormData } from './components/ProfileInfoForm'
-export { PersonalInfoForm } from './components/PersonalInfoForm'
-export { SecurityForm } from './components/SecurityForm'
+export { PersonalInfoForm, createPersonalInfoFormData } from './components/PersonalInfoForm'
+export { SecurityForm, createSecurityFormData } from './components/SecurityForm'
 export { PrivacyForm } from './components/PrivacyForm'

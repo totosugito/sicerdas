@@ -38,7 +38,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
         newPassword: Type.String({
           description: 'New password',
-          minLength: 1
+          minLength: 6
         }),
       }),
       response: {
@@ -102,7 +102,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       );
 
       if (!isPasswordValid) {
-        return reply.unauthorized(req.i18n.t('user.currentPasswordIncorrect'));
+        return reply.forbidden(req.i18n.t('user.currentPasswordIncorrect'));
       }
 
       // Hash new password

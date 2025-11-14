@@ -1,109 +1,134 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+import { Form } from '@/components/ui/form'
 import { useTranslation } from 'react-i18next'
+import { ControlForm } from '@/components/custom/forms'
+import { z } from 'zod'
+import { AlertCircle } from 'lucide-react'
+
+// Define the form values type
+export type SecurityFormValues = {
+  currentPassword: string
+  newPassword: string
+  confirmPassword: string
+}
+
+// Define a function to create form data with translations
+const createSecurityFormData = (t: (key: string) => string) => {
+  return {
+    form: {
+      currentPassword: {
+        type: "password",
+        name: "currentPassword",
+        label: t("user.profile.security.currentPassword"),
+        placeholder: t("user.profile.security.currentPasswordPlaceholder"),
+      },
+      newPassword: {
+        type: "password",
+        name: "newPassword",
+        label: t("user.profile.security.newPassword"),
+        placeholder: t("user.profile.security.newPasswordPlaceholder"),
+      },
+      confirmPassword: {
+        type: "password",
+        name: "confirmPassword",
+        label: t("user.profile.security.confirmPassword"),
+        placeholder: t("user.profile.security.confirmPasswordPlaceholder"),
+      }
+    },
+    schema: z.object({
+      currentPassword: z.string().min(1, t('user.profile.security.passwordMinLengthError')),
+      newPassword: z.string().min(6, t('user.profile.security.passwordMinLengthError')),
+      confirmPassword: z.string().min(6, t('user.profile.security.passwordMinLengthError')),
+    }).refine((data) => data.newPassword === data.confirmPassword, {
+      message: t('user.profile.security.passwordMismatchError'),
+      path: ["confirmPassword"],
+    }),
+    defaultValue: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    } satisfies SecurityFormValues
+  }
+}
 
 interface SecurityFormProps {
   form: any
   onSubmit: (values: any) => void
+  error?: string | null
 }
 
-export function SecurityForm({ form, onSubmit }: SecurityFormProps) {
+export function SecurityForm({ form, onSubmit, error }: SecurityFormProps) {
   const { t } = useTranslation()
-  
+
+  // Create form data with translated labels and placeholders
+  const formData = createSecurityFormData(t)
+
+  // Define form items
+  const formItems = formData.form
+
+  // Handle form submission
+  const handleSubmit = (values: Record<string, any>) => {
+    onSubmit({
+      currentPassword: values?.currentPassword ?? "",
+      newPassword: values?.newPassword ?? "",
+    })
+  }
+
   return (
-    <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full pt-4">
-      <CardHeader className="px-6 border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
+    <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full pb-0">
+      <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
         <CardTitle className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight">
           {t("user.profile.security.title")}
         </CardTitle>
       </CardHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="px-6 pb-6 space-y-4">
-            <FormField
-              control={form.control}
-              name="currentPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-slate-800 dark:text-slate-200 text-sm font-medium leading-normal">
-                    {t("user.profile.security.currentPassword")}
-                  </FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="password" 
-                      placeholder={t("user.profile.security.currentPasswordPlaceholder")} 
-                      {...field} 
-                      className="flex w-full items-stretch rounded-lg border border-slate-300 dark:border-slate-700 focus-within:ring-2 focus-within:ring-primary focus-within:border-primary"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <CardContent className="px-6 pb-6 space-y-6 w-full">
+            {error && (
+              <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 rounded-md text-red-700 dark:text-red-300">
+                <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            <ControlForm
+              form={form}
+              item={formItems.currentPassword}
             />
 
-            <FormField
-              control={form.control}
-              name="newPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-slate-800 dark:text-slate-200 text-sm font-medium leading-normal">
-                    {t("user.profile.security.newPassword")}
-                  </FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="password" 
-                      placeholder={t("user.profile.security.newPasswordPlaceholder")} 
-                      {...field} 
-                      className="flex w-full items-stretch rounded-lg border border-slate-300 dark:border-slate-700 focus-within:ring-2 focus-within:ring-primary focus-within:border-primary"
-                    />
-                  </FormControl>
-                  <FormDescription className="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">
-                    {t("user.profile.security.passwordRequirement")}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
+            <ControlForm
+              form={form}
+              item={formItems.newPassword}
             />
 
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-slate-800 dark:text-slate-200 text-sm font-medium leading-normal">
-                    {t("user.profile.security.confirmPassword")}
-                  </FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="password" 
-                      placeholder={t("user.profile.security.confirmPasswordPlaceholder")} 
-                      {...field} 
-                      className="flex w-full items-stretch rounded-lg border border-slate-300 dark:border-slate-700 focus-within:ring-2 focus-within:ring-primary focus-within:border-primary"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+            <ControlForm
+              form={form}
+              item={formItems.confirmPassword}
             />
           </CardContent>
-          <CardFooter className="px-6 flex justify-end items-center gap-4 bg-slate-50 dark:bg-slate-900 rounded-b-xl border-t border-slate-200 dark:border-slate-800">
-            <Button 
-              type="button" 
-              variant="outline"
-            >
-              {t("labels.cancel")}
-            </Button>
-            <Button 
-              type="submit"
-              variant="default"
-            >
-              {t("user.profile.security.updatePassword")}
-            </Button>
-          </CardFooter>
+          {form.formState.isDirty && (
+            <CardFooter className="p-6 flex justify-end items-center gap-4 bg-slate-50 dark:bg-slate-900 rounded-b-xl border-t border-slate-200 dark:border-slate-800">
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => form.reset()}
+                >
+                  {t("labels.cancel")}
+                </Button>
+                <Button
+                  type="submit"
+                  variant="default"
+                >
+                  {t("user.profile.security.updatePassword")}
+                </Button>
+              </>
+            </CardFooter>)}
         </form>
       </Form>
     </Card>
   )
 }
+
+export { createSecurityFormData }

@@ -44,10 +44,10 @@ export default function AppNavbar({title, ...props}: Props) {
   const logOffMutation = useLogoutMutation();
   const onLogoutClick = () => {
     setConfirmationModal({
-      title: t("dialog.logOutTitle"),
-      desc: t("dialog.logOutDesc"),
-      textConfirm: t("shared.logout"),
-      textCancel: t("shared.cancel"),
+      title: t("labels.logOutTitle"),
+      desc: t("labels.logOutDesc"),
+      textConfirm: t("labels.logout"),
+      textCancel: t("labels.cancel"),
       onConfirmClick: () => {
         logOffMutation.mutate(undefined, {
           onSuccess: () => {
