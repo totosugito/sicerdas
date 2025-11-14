@@ -3,7 +3,7 @@ import { Type } from '@fastify/type-provider-typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/index.ts";
 import { eq } from "drizzle-orm";
-import { users, userProfile } from "../../db/schema/index.ts";
+import { users, userProfile } from "../../db/schema/auth-schema.ts";
 import {getUserAvatarUrl} from "../../utils/app-utils.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -69,7 +69,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       // Get user profile information
-      const profile = await db.query.userProfile.findFirst({
+      let profile = await db.query.userProfile.findFirst({
         where: eq(userProfile.id, userId),
         columns: {
           school: true,
@@ -80,6 +80,35 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
           dateOfBirth: true
         }
       });
+
+      // If no profile exists, create one
+      if (!profile) {
+        const now = new Date();
+        await db.insert(userProfile).values({
+          id: userId,
+          school: "",
+          grade: "",
+          phone: "",
+          address: "",
+          bio: "",
+          dateOfBirth: null,
+          createdAt: now,
+          updatedAt: now,
+        }).onConflictDoNothing();
+        
+        // Fetch the newly created profile
+        profile = await db.query.userProfile.findFirst({
+          where: eq(userProfile.id, userId),
+          columns: {
+            school: true,
+            grade: true,
+            phone: true,
+            address: true,
+            bio: true,
+            dateOfBirth: true
+          }
+        });
+      }
 
       return reply.status(200).send({
         success: true as const,

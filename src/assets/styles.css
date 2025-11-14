@@ -9,7 +9,7 @@ html {
 
 :root {
   /* Light mode */
-  --background: oklch(0.972 0.034 249.2);
+  --background: oklch(0.9757 0.0017 247.84);
   --foreground: oklch(0.347 0.023 249.2);
 
   --card: oklch(1 0 0);

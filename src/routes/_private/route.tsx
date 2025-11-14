@@ -24,7 +24,7 @@ function RouteComponent() {
   return (
     <div className={"h-screen flex flex-row overflow-auto"}>
       <SidebarProvider defaultOpen={true}>
-        {/* <AppSidebar navItems={webNav}/> */}
+        <AppSidebar navItems={webNav}/>
 
         <SidebarInset className={"flex flex-1 overflow-x-hidden h-screen flex-col"}>
           <AppNavbar />

@@ -1,6 +1,6 @@
 import {betterAuth} from "better-auth";
 import {drizzleAdapter} from "better-auth/adapters/drizzle";
-import {users, accounts} from '../../db/schema/auth-schema.ts';
+import {users, accounts, userProfile} from '../../db/schema/auth-schema.ts';
 import {eq} from "drizzle-orm";
 import pg from "pg";
 import envConfig from "../../config/env.config.ts";
@@ -69,6 +69,19 @@ async function seed() {
       scope: null,
       accessTokenExpiresAt: null,
       refreshTokenExpiresAt: null,
+      createdAt: now,
+      updatedAt: now,
+    }).onConflictDoNothing();
+
+    // Insert user profile
+    await db.insert(userProfile).values({
+      id: user_.id,
+      school: "",
+      grade: "",
+      phone: "",
+      address: "",
+      bio: "",
+      dateOfBirth: null,
       createdAt: now,
       updatedAt: now,
     }).onConflictDoNothing();

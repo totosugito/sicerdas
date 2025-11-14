@@ -3,8 +3,8 @@ export default {
         title: "Profil Pengguna",
         description: "Kelola pengaturan dan preferensi akun Anda.",
         tabs: {
-            editProfile: "Edit Profil",
-            personalInfo: "Info Pribadi",
+            editProfile: "Informasi Profil",
+            personalInfo: "Data Pribadi",
             password: "Kata Sandi",
             notifications: "Notifikasi",
             billing: "Penagihan",
@@ -23,10 +23,11 @@ export default {
             bio: "Bio",
             bioPlaceholder: "Ceritakan tentang diri Anda",
             bioDescription: "Deskripsi singkat untuk profil Anda.",
-            changeAvatar: "Ubah Avatar"
+            changeAvatar: "Ubah Avatar",
+            updateError: "Gagal memperbarui profil. Silakan coba lagi."
         },
         personalInfo: {
-            title: "Informasi Pribadi",
+            title: "Data Pribadi",
             firstName: "Nama Depan",
             firstNamePlaceholder: "Nama depan",
             firstNameError: "Nama depan wajib diisi",

@@ -52,11 +52,11 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       consumes: ['application/json'],
       body: Type.Object({
         name: Type.Optional(Type.String({ minLength: 1 })),
-        school: Type.Optional(Type.String({ minLength: 1 })),
-        grade: Type.Optional(Type.String({ minLength: 1 })),
-        phone: Type.Optional(Type.String({ minLength: 1 })),
-        address: Type.Optional(Type.String({ minLength: 1 })),
-        bio: Type.Optional(Type.String({ minLength: 1 })),
+        school: Type.Optional(Type.String({ minLength: 0 })),
+        grade: Type.Optional(Type.String({ minLength: 0 })),
+        phone: Type.Optional(Type.String({ minLength: 0 })),
+        address: Type.Optional(Type.String({ minLength: 0 })),
+        bio: Type.Optional(Type.String({ minLength: 0 })),
         dateOfBirth: Type.Optional(Type.String({ pattern: '^\\d{4}-\\d{2}-\\d{2}$' })), // YYYY-MM-DD format
       }),
       response: {

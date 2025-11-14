@@ -25,6 +25,12 @@ export const AppApi = {
       ban: APP_URL_API + "/admin/user/:id/ban",
     }
   },
+  user: {
+    details: APP_URL_API + "/user/details",
+    update: APP_URL_API + "/user/update",
+    changePassword: APP_URL_API + "/user/change-password",
+    avatar: APP_URL_API + "/user/avatar",
+  },
   project: {
     list: APP_URL_V1 + "/project/list",
     ganttView: APP_URL_V1 + "/project/gantt-view",

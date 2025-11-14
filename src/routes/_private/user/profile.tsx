@@ -1,3 +1,4 @@
+import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { useTranslation } from 'react-i18next'
@@ -7,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ProfileHeader, TabNavigation, ProfileInfoForm, PersonalInfoForm, SecurityForm, PrivacyForm, 
     createProfileInfoFormData
 } from '@/components/pages/user/profile'
+import { useUserProfileQuery, useUpdateUserProfileMutation } from '@/service/user-api'
 
 export const Route = createFileRoute('/_private/user/profile')({
     component: RouteComponent,
@@ -15,9 +17,11 @@ export const Route = createFileRoute('/_private/user/profile')({
 function RouteComponent() {
     const { t } = useTranslation();
     
+    // Fetch user profile data
+    const { data: userProfile, isLoading, isError } = useUserProfileQuery();
+    
     // Define schemas for each tab inside the component to access the translation function
     const profileFormData = createProfileInfoFormData(t);
-    const profileSchema = profileFormData.schema;
     
     const personalInfoSchema = z.object({
         firstName: z.string().min(1, t('user.profile.personalInfo.firstNameError')),
@@ -41,21 +45,44 @@ function RouteComponent() {
         twoFactorAuth: z.boolean(),
     })
     
-    // Initialize forms for each tab
-    const profileForm = useForm<z.infer<typeof profileSchema>>({
-        resolver: zodResolver(profileSchema),
+// Initialize forms for each tab
+    const profileForm = useForm<z.infer<typeof profileFormData.schema>>({
+        resolver: zodResolver(profileFormData.schema),
         defaultValues: profileFormData.defaultValue,
     })
 
     const personalInfoForm = useForm<z.infer<typeof personalInfoSchema>>({
         resolver: zodResolver(personalInfoSchema),
         defaultValues: {
-            firstName: 'Aria',
-            lastName: 'Montgomery',
-            phone: '+1 (555) 123-4567',
-            address: '123 Design Street, Creative City, CA 90210',
+            firstName: '',
+            lastName: '',
+            phone: '',
+            address: '',
         },
     })
+
+    // Populate forms with user data when it loads
+    React.useEffect(() => {
+        if (userProfile) {
+            // Split full name into first and last name
+            const nameParts = userProfile.name?.split(' ') || [];
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+            
+            profileForm.reset({
+                name: userProfile.name || '',
+                email: userProfile.email || '',
+                bio: userProfile.bio || '',
+            });
+            
+            personalInfoForm.reset({
+                firstName,
+                lastName,
+                phone: userProfile.phone || '',
+                address: userProfile.address || '',
+            });
+        }
+    }, [userProfile, profileForm, personalInfoForm]);
 
     const securityForm = useForm<z.infer<typeof securitySchema>>({
         resolver: zodResolver(securitySchema),
@@ -76,15 +103,18 @@ function RouteComponent() {
     })
 
     // Form submission handlers
-    function onProfileSubmit(values: z.infer<typeof profileSchema>) {
-        console.log('Profile values:', values)
-        // Handle profile update
+    const updateUserProfileMutation = useUpdateUserProfileMutation();
+    
+    function onProfileSubmit(values: z.infer<typeof profileFormData.schema>) {       
+        updateUserProfileMutation.mutate({ body: values });
     }
 
-    function onProfileSubmitClicked(values: z.infer<typeof profileSchema>) {
-        console.log('Profile submit clicked:', values)
-        // Handle any pre-submit logic here
-    }
+    // Get error message from mutation
+    const profileUpdateError = updateUserProfileMutation.error ? 
+        (updateUserProfileMutation.error as any)?.response?.data?.message || 
+        (updateUserProfileMutation.error as any)?.message || 
+        t('user.profile.information.updateError') : 
+        null;
 
     function onPersonalInfoSubmit(values: z.infer<typeof personalInfoSchema>) {
         console.log('Personal info values:', values)
@@ -99,6 +129,28 @@ function RouteComponent() {
     function onPrivacySubmit(values: z.infer<typeof privacySchema>) {
         console.log('Privacy values:', values)
         // Handle privacy update
+    }
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col gap-6 w-full">
+                <ProfileHeader />
+                <div className="flex justify-center items-center h-64">
+                    <div className="text-lg">Loading profile...</div>
+                </div>
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div className="flex flex-col gap-6 w-full">
+                <ProfileHeader />
+                <div className="flex justify-center items-center h-64">
+                    <div className="text-lg text-red-500">Error loading profile. Please try again later.</div>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -119,7 +171,7 @@ function RouteComponent() {
                             <ProfileInfoForm 
                                 form={profileForm} 
                                 onSubmit={onProfileSubmit} 
-                                onSubmitClicked={onProfileSubmitClicked} 
+                                error={profileUpdateError}
                             />
                         </TabsContent>
 

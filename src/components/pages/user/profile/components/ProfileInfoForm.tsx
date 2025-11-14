@@ -4,10 +4,11 @@ import { Form } from '@/components/ui/form'
 import { useTranslation } from 'react-i18next'
 import { ControlForm } from '@/components/custom/forms'
 import { z } from 'zod'
+import { AlertCircle } from 'lucide-react'
 
 // Define the form values type
 export type ProfileInfoFormValues = {
-    fullName: string
+    name: string
     email: string
     bio: string
 }
@@ -16,9 +17,9 @@ export type ProfileInfoFormValues = {
 const createProfileInfoFormData = (t: (key: string) => string) => {
     return {
         form: {
-            fullName: {
+            name: {
                 type: "text",
-                name: "fullName",
+                name: "name",
                 label: t("user.profile.information.fullName"),
                 placeholder: t("user.profile.information.fullNamePlaceholder"),
             },
@@ -33,15 +34,16 @@ const createProfileInfoFormData = (t: (key: string) => string) => {
                 name: "bio",
                 label: t("user.profile.information.bio"),
                 placeholder: t("user.profile.information.bioPlaceholder"),
+                minRows: 5
             }
         },
         schema: z.object({
-            fullName: z.string().min(2, { message: t("user.profile.information.fullNameError") }),
+            name: z.string().min(2, { message: t("user.profile.information.fullNameError") }),
             email: z.string().email({ message: t("user.profile.information.emailError") }),
             bio: z.string().optional(),
         }),
         defaultValue: {
-            fullName: "",
+            name: "",
             email: "",
             bio: "",
         } satisfies ProfileInfoFormValues
@@ -51,9 +53,10 @@ const createProfileInfoFormData = (t: (key: string) => string) => {
 interface ProfileInfoFormProps {
     form: any
     onSubmit: (values: any) => void
+    error?: string | null
 }
 
-export function ProfileInfoForm({ form, onSubmit }: ProfileInfoFormProps) {
+export function ProfileInfoForm({ form, onSubmit, error }: ProfileInfoFormProps) {
     const { t } = useTranslation()
 
     // Create form data with translated labels and placeholders
@@ -64,11 +67,11 @@ export function ProfileInfoForm({ form, onSubmit }: ProfileInfoFormProps) {
 
     // Handle form submission
     const handleSubmit = (values: Record<string, any>) => {
-        const formData = new FormData();
-        formData.append('fullName', values?.fullName ?? "");
-        formData.append('email', values?.email ?? "");
-        formData.append('bio', values?.bio ?? "");
-        onSubmit(formData);
+        console.log(values, form.getValues())
+        onSubmit({
+            name: values?.name ?? "",
+            bio: values?.bio ?? "",
+        })
     }
 
     return (
@@ -81,6 +84,12 @@ export function ProfileInfoForm({ form, onSubmit }: ProfileInfoFormProps) {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)}>
                     <CardContent className="px-6 pb-6 space-y-6 w-full">
+                        {error && (
+                            <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 rounded-md text-red-700 dark:text-red-300">
+                                <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                                <span>{error}</span>
+                            </div>
+                        )}
                         <div className="flex flex-col items-center gap-6 md:flex-row">
                             <div className="flex flex-col items-center gap-3">
                                 <div className="relative group">
@@ -103,12 +112,13 @@ export function ProfileInfoForm({ form, onSubmit }: ProfileInfoFormProps) {
                             <div className="grid w-full gap-4">
                                 <ControlForm
                                     form={form}
-                                    item={formItems.fullName}
+                                    item={formItems.name}
                                 />
 
                                 <ControlForm
                                     form={form}
                                     item={formItems.email}
+                                    disabled={true}
                                 />
                             </div>
                         </div>
