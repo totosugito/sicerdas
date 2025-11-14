@@ -1,44 +1,73 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from '@sinclair/typebox';
+import { Type } from '@fastify/type-provider-typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/index.ts";
-import { users } from "../../db/schema/auth-schema.ts";
+import { users, userProfile } from "../../db/schema/auth-schema.ts";
 import { eq } from "drizzle-orm";
 
+// Response schemas
+const UserResponse = Type.Object({
+  id: Type.String({ format: 'uuid' }),
+  email: Type.String({ format: 'email' }),
+  name: Type.Union([Type.String(), Type.Null()]),
+  emailVerified: Type.Boolean(),
+  createdAt: Type.String({ format: 'date-time' }),
+  updatedAt: Type.String({ format: 'date-time' })
+});
+
+const UpdateUserResponse = Type.Object({
+  success: Type.Boolean({ default: true }),
+  message: Type.String(),
+  data: UserResponse
+});
+
+/**
+ * Update user profile
+ * 
+ * Expected JSON body input parameters:
+ * - name: string (optional) - User's display name
+ * - school: string (optional) - User's school
+ * - grade: string (optional) - User's grade
+ * - phone: string (optional) - User's phone number
+ * - address: string (optional) - User's address
+ * - bio: string (optional) - User's biography
+ * - dateOfBirth: string (optional) - User's date of birth (YYYY-MM-DD format)
+ * 
+ * @param {string} [name] - Optional. User's display name
+ * @param {string} [school] - Optional. User's school
+ * @param {string} [grade] - Optional. User's grade
+ * @param {string} [phone] - Optional. User's phone number
+ * @param {string} [address] - Optional. User's address
+ * @param {string} [bio] - Optional. User's biography
+ * @param {string} [dateOfBirth] - Optional. User's date of birth (YYYY-MM-DD format)
+ */
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
     url: '/update',
     method: 'PUT',
     schema: {
       tags: ['User'],
-      summary: '',
-      description: 'Update the current user\'s profile information',
+      summary: 'Update user profile',
+      description: 'Update the current user\'s profile information. Expected JSON body fields: name, school, grade, phone, address, bio, dateOfBirth (all optional)',
+      consumes: ['application/json'],
       body: Type.Object({
         name: Type.Optional(Type.String({ minLength: 1 })),
+        school: Type.Optional(Type.String({ minLength: 1 })),
+        grade: Type.Optional(Type.String({ minLength: 1 })),
+        phone: Type.Optional(Type.String({ minLength: 1 })),
+        address: Type.Optional(Type.String({ minLength: 1 })),
+        bio: Type.Optional(Type.String({ minLength: 1 })),
+        dateOfBirth: Type.Optional(Type.String({ pattern: '^\\d{4}-\\d{2}-\\d{2}$' })), // YYYY-MM-DD format
       }),
       response: {
-        200: Type.Object({
-          success: Type.Literal(true),
-          message: Type.String(),
-          data: Type.Object({
-            id: Type.String({ format: 'uuid' }),
-            email: Type.String({ format: 'email' }),
-            name: Type.Union([Type.String(), Type.Null()]),
-            emailVerified: Type.Boolean(),
-            createdAt: Type.String({ format: 'date-time' }),
-            updatedAt: Type.String({ format: 'date-time' })
-          })
-        }),
-        400: Type.Object({
-          success: Type.Literal(false),
+        200: UpdateUserResponse,
+        // Updated to use proper HTTP status codes with Fastify Sensible
+        '4xx': Type.Object({
+          success: Type.Boolean({ default: false }),
           message: Type.String()
         }),
-        404: Type.Object({
-          success: Type.Literal(false),
-          message: Type.String()
-        }),
-        500: Type.Object({
-          success: Type.Literal(false),
+        '5xx': Type.Object({
+          success: Type.Boolean({ default: false }),
           message: Type.String()
         })
       },
@@ -48,6 +77,12 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       const userId = req.session.user.id;
       const updateData = req.body as {
         name?: string;
+        school?: string;
+        grade?: string;
+        phone?: string;
+        address?: string;
+        bio?: string;
+        dateOfBirth?: string;
       };
 
       // Remove any restricted fields that might have been sent
@@ -55,25 +90,66 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       const safeUpdateData = Object.entries(updateData)
         .filter(([key]) => !restrictedFields.includes(key))
         .reduce((obj, [key, value]) => {
-          obj[key] = value;  // Direct assignment instead of spread
+          // Handle dateOfBirth conversion if provided
+          if (key === 'dateOfBirth' && typeof value === 'string' && value) {
+            // Convert YYYY-MM-DD string to Date object
+            obj[key] = new Date(value);
+          } else {
+            obj[key] = value;
+          }
           return obj;
         }, {} as Record<string, unknown>);
 
       // If no valid updates are provided, return early
       if (Object.keys(safeUpdateData).length === 0) {
-        return reply.status(400).send({
-          success: false as const,
-          message: 'No valid update data provided',
-        });
+        return reply.badRequest(req.i18n.t('user.noValidUpdateData'));
       }
 
-      // Update the user
-      await db.update(users)
-        .set({
-          ...safeUpdateData,
-          updatedAt: new Date()
-        })
-        .where(eq(users.id, userId));
+      // Separate user and profile data
+      const userFields = ['name'];
+      const profileFields = ['school', 'grade', 'phone', 'address', 'bio', 'dateOfBirth'];
+      
+      const userData: Record<string, unknown> = {};
+      const profileData: Record<string, unknown> = {};
+      
+      Object.entries(safeUpdateData).forEach(([key, value]) => {
+        if (userFields.includes(key)) {
+          userData[key] = value;
+        } else if (profileFields.includes(key)) {
+          profileData[key] = value;
+        }
+      });
+
+      // Update user table if there's user data to update
+      if (Object.keys(userData).length > 0) {
+        userData.updatedAt = new Date();
+        const [updatedUserResult] = await db.update(users)
+          .set(userData)
+          .where(eq(users.id, userId))
+          .returning();
+
+        // Check if user was actually updated
+        if (!updatedUserResult) {
+          return reply.notFound(req.i18n.t('user.userNotFound'));
+        }
+      }
+
+      // Update user profile table if there's profile data to update
+      if (Object.keys(profileData).length > 0) {
+        profileData.updatedAt = new Date();
+        const [updatedProfileResult] = await db.insert(userProfile)
+          .values({ id: userId, ...profileData })
+          .onConflictDoUpdate({
+            target: userProfile.id,
+            set: profileData
+          })
+          .returning();
+
+        // Check if profile was actually updated/inserted
+        if (!updatedProfileResult) {
+          return reply.notFound(req.i18n.t('user.userNotFound'));
+        }
+      }
 
       // Get the updated user
       const updatedUser = await db.query.users.findFirst({
@@ -89,15 +165,12 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!updatedUser) {
-        return reply.status(404).send({
-          success: false as const,
-          message: 'User not found',
-        });
+        return reply.notFound(req.i18n.t('user.userNotFound'));
       }
 
-      return {
-        success: true as const,
-        message: 'User updated successfully',
+      return reply.status(200).send({
+        success: true,
+        message: req.i18n.t('user.userUpdatedSuccessfully'),
         data: {
           ...updatedUser,
           // Ensure dates are properly serialized
@@ -105,7 +178,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: updatedUser.updatedAt.toISOString(),
           emailVerified: Boolean(updatedUser.emailVerified)
         }
-      };
+      });
     })
   });
 };

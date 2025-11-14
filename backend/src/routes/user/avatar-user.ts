@@ -16,7 +16,7 @@ import {getUserAvatarUrl} from "../../utils/app-utils.ts";
 
 const uploadDir = join(process.cwd(), env.server.uploadsUserDir);
 
-export const processChangeAvatar = async (reply: FastifyReply, userId: string, file: UploadedFile) => {
+export const processChangeAvatar = async (req: any, reply: FastifyReply, userId: string, file: UploadedFile) => {
   const {buffer, filename: originalName, mimetype} = file;
 
   // Validate file type
@@ -24,7 +24,7 @@ export const processChangeAvatar = async (reply: FastifyReply, userId: string, f
   if (!allowedMimeTypes.includes(mimetype)) {
     return reply.status(400).send({
       success: false,
-      message: 'Invalid file type. Only JPEG, JPG and PNG images are allowed.'
+      message: req.i18n.t('user.invalidFileType')
     });
   }
 
@@ -33,7 +33,7 @@ export const processChangeAvatar = async (reply: FastifyReply, userId: string, f
   if (buffer.length > maxSize) {
     return reply.status(400).send({
       success: false,
-      message: 'File size must be less than 5MB'
+      message: req.i18n.t('user.fileSizeTooLarge')
     });
   }
 
@@ -63,7 +63,7 @@ export const processChangeAvatar = async (reply: FastifyReply, userId: string, f
       if (existsSync(oldFilePath)) {
         await unlink(oldFilePath);
       }
-    } catch (_) {
+    } catch (_error: unknown) {
       // Continue with the upload even if deletion fails
     }
   }
@@ -88,6 +88,7 @@ export const processChangeAvatar = async (reply: FastifyReply, userId: string, f
 
   return {
     success: true,
+    message: req.i18n.t('user.avatarUpdatedSuccessfully'),
     data: {
       id: updatedUser.id,
       name: updatedUser.name,
@@ -105,25 +106,26 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: '',
       description: 'Upload and update the current user\'s avatar',
       consumes: ['multipart/form-data'],
+      querystring: Type.Object({
+        action: Type.Optional(Type.String())
+      }),
       response: {
         200: Type.Object({
-          success: Type.Boolean(),
+          success: Type.Boolean({ default: true }),
+          message: Type.String(),
           data: Type.Object({
             id: Type.String(),
             name: Type.String(),
             image: Type.Union([Type.String(), Type.Null()])
           })
         }),
-        400: Type.Object({
-          success: Type.Boolean(),
+        // Updated to use proper HTTP status codes with Fastify Sensible
+        '4xx': Type.Object({
+          success: Type.Boolean({ default: false }),
           message: Type.String()
         }),
-        401: Type.Object({
-          success: Type.Boolean(),
-          message: Type.String()
-        }),
-        500: Type.Object({
-          success: Type.Boolean(),
+        '5xx': Type.Object({
+          success: Type.Boolean({ default: false }),
           message: Type.String()
         })
       }
@@ -132,14 +134,38 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       // User ID is available from the session (handled by user.hook.ts)
       const userId = req.session.user.id;
 
+      // Type the query parameters
+      const query = req.query as { action?: string };
+
+      // Check if this is a remove avatar request
+      const action = query.action;
+      if (action === 'remove') {
+        // Remove the user's avatar
+        const [updatedUser] = await db
+          .update(users)
+          .set({
+            image: null,
+            updatedAt: new Date()
+          })
+          .where(eq(users.id, userId))
+          .returning();
+
+        return reply.status(200).send({
+          success: true,
+          message: req.i18n.t('user.avatarRemovedSuccessfully'),
+          data: {
+            id: updatedUser.id,
+            name: updatedUser.name,
+            image: null
+          }
+        });
+      }
+
       // Get the uploaded file from the request
       const data = await req.file();
 
       if (!data) {
-        return reply.status(400).send({
-          success: false,
-          message: 'No file uploaded'
-        });
+        return reply.badRequest(req.i18n.t('user.noFileUploaded'));
       }
 
       // Convert to our UploadedFile type
@@ -149,7 +175,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         mimetype: data.mimetype
       };
 
-      return processChangeAvatar(reply, userId, file);
+      return processChangeAvatar(req, reply, userId, file);
     })
   });
 };

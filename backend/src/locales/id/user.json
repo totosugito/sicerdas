@@ -9,5 +9,24 @@
     "update": "Perbarui Profil",
     "changePassword": "Ubah Kata Sandi",
     "deleteAccount": "Hapus Akun"
-  }
+  },
+  "errors": {
+    "loginRequired": "Anda harus masuk untuk mengakses sumber daya ini.",
+    "accessDenied": "Anda tidak memiliki izin untuk mengakses sumber daya ini."
+  },
+  "noValidUpdateData": "Tidak ada data pembaruan yang valid",
+  "userNotFound": "Pengguna tidak ditemukan",
+  "userUpdatedSuccessfully": "Profil pengguna berhasil diperbarui",
+  "currentPasswordRequired": "Kata sandi saat ini diperlukan",
+  "newPasswordRequired": "Kata sandi baru diperlukan",
+  "passwordsMustBeDifferent": "Kata sandi baru harus berbeda dari kata sandi saat ini",
+  "accountNotFound": "Akun pengguna tidak ditemukan",
+  "accountHasNoPassword": "Akun pengguna tidak memiliki kata sandi yang disetel",
+  "currentPasswordIncorrect": "Kata sandi saat ini salah",
+  "passwordUpdatedSuccessfully": "Kata sandi berhasil diperbarui",
+  "invalidFileType": "Jenis file tidak valid. Hanya file gambar JPEG, JPG, dan PNG yang diizinkan.",
+  "fileSizeTooLarge": "Ukuran file harus kurang dari 5MB",
+  "noFileUploaded": "Tidak ada file yang diunggah",
+  "avatarRemovedSuccessfully": "Avatar berhasil dihapus",
+  "avatarUpdatedSuccessfully": "Avatar berhasil diperbarui"
 }

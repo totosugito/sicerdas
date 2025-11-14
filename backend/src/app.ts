@@ -61,12 +61,18 @@ export async function buildApp(options?: FastifyServerOptions) {
   });
 
   // Set error handler
-  server.setErrorHandler((err, request, reply) => {
+  server.setErrorHandler((error, request, reply) => {
+    // Type guard to check if error has expected properties
+    const isErrorWithProps = (
+      err: unknown
+    ): err is { statusCode?: number; code?: number; message?: string } =>
+      err !== null && typeof err === 'object';
+
     // Skip logging 401 Unauthorized errors as they're expected behavior
-    if (err.statusCode !== 401) {
+    if (isErrorWithProps(error) && error.statusCode !== 401) {
       server.log.error(
         {
-          err,
+          err: error,
           request: {
             method: request.method,
             url: request.url,
@@ -78,11 +84,15 @@ export async function buildApp(options?: FastifyServerOptions) {
       );
     }
 
-    reply.code(err.statusCode ?? 500);
+    const statusCode = isErrorWithProps(error)
+      ? error.statusCode ?? error.code ?? 500
+      : 500;
+
+    reply.code(statusCode);
 
     let message = 'Internal Server Error';
-    if (err.statusCode && err.statusCode < 500) {
-      message = err.message;
+    if (isErrorWithProps(error) && error.statusCode && error.statusCode < 500) {
+      message = error.message ?? message;
     }
 
     return { message };

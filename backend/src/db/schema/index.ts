@@ -9,7 +9,7 @@ import {
   PgEnumReportReason,
   PgEnumContentSortingType
 } from './enum-app.ts';
-import { users, accounts, sessions, verifications } from './auth-schema.ts';
+import { users, accounts, sessions, verifications, userProfile } from './auth-schema.ts';
 import {
   bookCategory, bookGroup, books, bookGroupStats, bookEventStats, userBookInteractions,
 } from './book-schema.ts';
@@ -24,7 +24,7 @@ export {
   PgEnumUserRole,
   PgEnumContentStatus, PgEnumEventStatus, PgEnumContentType,
   PgEnumReportStatus, PgEnumReportReason, PgEnumContentSortingType,
-  users, accounts, sessions, verifications,
+  users, accounts, sessions, verifications, userProfile,
   bookCategory, bookGroup, books, bookGroupStats, bookEventStats, userBookInteractions,
   educationGrades, appVersion, userContentReport, userEventHistory,
   aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares

@@ -28,13 +28,13 @@ async function startServer() {
   // Start server
   try {
     await app.listen({ host: envConfig.server.host, port: envConfig.server.port });
-  } catch (err) {
-    app.log.error(err);
+  } catch (error: unknown) {
+    app.log.error(error);
     process.exit(1);
   }
 }
 
-startServer().catch((err) => {
-  console.error('Failed to start server:', err);
+startServer().catch((error: unknown) => {
+  console.error('Failed to start server:', error);
   process.exit(1);
 });
