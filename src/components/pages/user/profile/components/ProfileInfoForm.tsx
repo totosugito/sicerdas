@@ -9,13 +9,14 @@ import { ImageCropper } from '@/components/custom/components'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { FileWithPath, useDropzone } from 'react-dropzone'
 import { FileWithPreview } from '@/components/custom/components/image-cropper'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect, useImperativeHandle, forwardRef, Ref } from 'react'
 
 // Define the form values type
 export type ProfileInfoFormValues = {
     name: string
     email: string
-    bio: string
+    bio: string,
+    image: string | null
 }
 
 const accept = {
@@ -50,22 +51,29 @@ const createProfileInfoFormData = (t: (key: string) => string) => {
             name: z.string().min(2, { message: t("user.profile.information.fullNameError") }),
             email: z.email({ message: t("user.profile.information.emailError") }),
             bio: z.string().optional(),
+            image: z.string().nullable().optional(),
         }),
         defaultValue: {
             name: "",
             email: "",
             bio: "",
+            image: null,
         } satisfies ProfileInfoFormValues
     }
 }
 
 interface ProfileInfoFormProps {
     form: any
-    onSubmit: (values: any) => void
+    onSubmit: (values: any, avatarFile: File | null) => void
     error?: string | null
 }
 
-export function ProfileInfoForm({ form, onSubmit, error }: ProfileInfoFormProps) {
+// Add ref interface
+export interface ProfileInfoFormRef {
+    resetImageState: () => void
+}
+
+export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormProps>(({ form, onSubmit, error }, ref) => {
     const { t } = useTranslation()
 
     // Create form data with translated labels and placeholders
@@ -76,14 +84,35 @@ export function ProfileInfoForm({ form, onSubmit, error }: ProfileInfoFormProps)
 
     // Handle form submission
     const handleSubmit = (values: Record<string, any>) => {
-        onSubmit({
-            name: values?.name ?? "",
-            bio: values?.bio ?? "",
-        })
+        const {image, ...rest} = values;
+        onSubmit(rest, croppedImageFile);
     }
+
+    // Expose function to reset image state
+    const resetImageState = () => {
+        setSelectedFile(null);
+        setDialogOpen(false);
+        setHasImageChanged(false);
+        setCroppedImageFile(null);
+    }
+
+    // Reset image changed flag when form is reset
+    useEffect(() => {
+        if (!form.formState.isDirty) {
+            setHasImageChanged(false);
+            setCroppedImageFile(null);
+        }
+    }, [form.formState.isDirty]);
+
+    // Expose reset function through ref
+    useImperativeHandle(ref, () => ({
+        resetImageState
+    }));
 
     const [selectedFile, setSelectedFile] = useState<FileWithPreview | null>(null);
     const [isDialogOpen, setDialogOpen] = useState(false);
+    const [hasImageChanged, setHasImageChanged] = useState(false);
+    const [croppedImageFile, setCroppedImageFile] = useState<File | null>(null);
 
     const onDrop = useCallback(
         (acceptedFiles: FileWithPath[]) => {
@@ -109,6 +138,9 @@ export function ProfileInfoForm({ form, onSubmit, error }: ProfileInfoFormProps)
         accept,
     })
 
+    // Determine if form has changes (either form fields are dirty or an image has been changed)
+    const hasChanges = form.formState.isDirty || hasImageChanged;
+
     return (
         <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full pb-0">
             <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
@@ -131,10 +163,17 @@ export function ProfileInfoForm({ form, onSubmit, error }: ProfileInfoFormProps)
                                     {selectedFile ? (
                                         <ImageCropper
                                             dialogOpen={isDialogOpen}
-                                            setDialogOpen={setDialogOpen}
+                                            setDialogOpen={(open) => {
+                                                setDialogOpen(open);
+                                                // When dialog closes and we have a cropped image, mark as changed
+                                                if (!open && selectedFile) {
+                                                    setHasImageChanged(true);
+                                                }
+                                            }}
                                             selectedFile={selectedFile}
                                             setSelectedFile={setSelectedFile}
                                             title={t("user.profile.information.changeAvatar")}
+                                            onCropComplete={(file: File) => setCroppedImageFile(file)}
                                         />
                                     ) : (
                                         <Avatar
@@ -168,10 +207,16 @@ export function ProfileInfoForm({ form, onSubmit, error }: ProfileInfoFormProps)
                             item={formItems.bio}
                         />
                     </CardContent>
-                    {form.formState.isDirty && (<CardFooter className="p-6 flex justify-end items-center gap-4 bg-slate-50 dark:bg-slate-900 rounded-b-xl border-t border-slate-200 dark:border-slate-800">
+                    {hasChanges && (<CardFooter className="p-6 flex justify-end items-center gap-4 bg-slate-50 dark:bg-slate-900 rounded-b-xl border-t border-slate-200 dark:border-slate-800">
                         <Button
                             type="button"
                             variant="outline"
+                            onClick={() => {
+                                form.reset();
+                                setHasImageChanged(false);
+                                setSelectedFile(null);
+                                setCroppedImageFile(null);
+                            }}
                         >
                             {t("labels.cancel")}
                         </Button>
@@ -186,6 +231,6 @@ export function ProfileInfoForm({ form, onSubmit, error }: ProfileInfoFormProps)
             </Form>
         </Card>
     )
-}
+})
 
 export { createProfileInfoFormData }

@@ -44,7 +44,7 @@ const env = envSchema<Static<typeof schema>>({
   schema,
 });
 
-const uploadsUrl = process.env.NODE_ENV === 'development' ? `${env.PROTOCOL}://${env.HOST}:${env.PORT}/uploads` : `${env.PROTOCOL}://${env.FRONTEND_URL}/uploads`;
+const uploadsUrl = process.env.NODE_ENV === 'development' ? `${env.PROTOCOL}://${env.HOST}:${env.PORT}` : `${env.PROTOCOL}://${env.FRONTEND_URL}`;
 export default {
   version: env.VERSION ?? '0.0.0',
   log: {
@@ -57,7 +57,7 @@ export default {
     port: env.PORT,
     frontendUrl: env.FRONTEND_URL,
     uploadsUrl: uploadsUrl,
-    uploadsUserDir: `${uploadsUrl}/users`,
+    uploadsUserDir: "uploads/users",
     trustedOrigins: [
       env.HOST,
       `${env.PROTOCOL}://${env.HOST}:${env.PORT}`,

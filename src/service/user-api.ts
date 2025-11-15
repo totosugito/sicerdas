@@ -27,6 +27,7 @@ interface UpdateUserData {
   address?: string;
   bio?: string;
   dateOfBirth?: string;
+  image?: File;
 }
 
 interface ChangePasswordData {
@@ -50,7 +51,21 @@ export const useUpdateUserProfileMutation = () => {
   return useMutation({
     mutationKey: ['updateUserProfile'],
     mutationFn: async ({body}: { body: UpdateUserData }) => {
-      const response = await fetchApi({method: "PUT", url: AppApi.user.update, body: body});
+      // Create FormData object
+      const formData = new FormData();
+      
+      // Append all fields to FormData
+      Object.entries(body).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          if (key === 'image' && value instanceof File) {
+            formData.append(key, value);
+          } else {
+            formData.append(key, value as string);
+          }
+        }
+      });
+      
+      const response = await fetchApi({method: "PUT", url: AppApi.user.update, body: formData, headers: {'Content-Type': 'multipart/form-data'}});
       return response;
     },
   });
@@ -70,7 +85,7 @@ export const useUpdateUserAvatarMutation = () => {
   return useMutation({
     mutationKey: ['updateUserAvatar'],
     mutationFn: async ({formData}: { formData: FormData }) => {
-      const response = await fetchApi({method: "PATCH", url: AppApi.user.avatar, body: formData});
+      const response = await fetchApi({method: "PATCH", url: AppApi.user.avatar, body: formData, headers: {'Content-Type': 'multipart/form-data'}});
       return response;
     },
   });

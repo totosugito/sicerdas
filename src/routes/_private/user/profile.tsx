@@ -6,8 +6,9 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ProfileHeader, TabNavigation, ProfileInfoForm, PersonalInfoForm, SecurityForm, PrivacyForm, 
-    createProfileInfoFormData, createPersonalInfoFormData, createSecurityFormData
+    createProfileInfoFormData, createPersonalInfoFormData, createSecurityFormData, createPrivacyFormData
 } from '@/components/pages/user/profile'
+import { ProfileInfoFormRef } from '@/components/pages/user/profile/components/ProfileInfoForm'
 import { useUserProfileQuery, useUpdateUserProfileMutation, useChangeUserPasswordMutation } from '@/service/user-api'
 import { showNotifSuccess } from '@/lib/show-notif'
 import { string_to_date } from '@/lib/my-utils'
@@ -19,6 +20,9 @@ export const Route = createFileRoute('/_private/user/profile')({
 function RouteComponent() {
     const { t } = useTranslation();
     
+    // Create ref for ProfileInfoForm
+    const profileInfoFormRef = React.useRef<ProfileInfoFormRef>(null);
+    
     // Fetch user profile data
     const { data: userProfile, isLoading, isError } = useUserProfileQuery();
     
@@ -26,12 +30,7 @@ function RouteComponent() {
     const profileFormData = createProfileInfoFormData(t);
     const personalInfoFormData = createPersonalInfoFormData(t);
     const securityFormData = createSecurityFormData(t);
-    
-    const privacySchema = z.object({
-        profileVisibility: z.boolean(),
-        emailNotifications: z.boolean(),
-        twoFactorAuth: z.boolean(),
-    })
+    const privacyFormData = createPrivacyFormData(t);
     
 // Initialize forms for each tab
     const profileForm = useForm<z.infer<typeof profileFormData.schema>>({
@@ -49,32 +48,36 @@ function RouteComponent() {
         defaultValues: securityFormData.defaultValue,
     })
 
-    // Populate forms with user data when it loads
-    React.useEffect(() => {
-        if (userProfile) {
+    // Helper function to populate forms with user data
+    const populateForms = (userData: any) => {
+        if (userData) {
             profileForm.reset({
-                name: userProfile.name || '',
-                email: userProfile.email || '',
-                bio: userProfile.bio || '',
+                name: userData.name || '',
+                email: userData.email || '',
+                bio: userData.bio || '',
+                image: userData.image || null,
             });
             
             personalInfoForm.reset({
-                phone: userProfile.phone || '',
-                address: userProfile.address || '',
-                school: userProfile.school || '',
-                grade: userProfile.grade || '',
-                dateOfBirth: userProfile.dateOfBirth ? string_to_date(userProfile.dateOfBirth) : undefined,
+                phone: userData.phone || '',
+                address: userData.address || '',
+                school: userData.school || '',
+                grade: userData.grade || '',
+                dateOfBirth: userData.dateOfBirth ? string_to_date(userData.dateOfBirth) : undefined,
             });
+        }
+    };
+    
+    // Populate forms with user data when it loads
+    React.useEffect(() => {
+        if (userProfile) {
+            populateForms(userProfile);
         }
     }, [userProfile, profileForm, personalInfoForm]);
 
-    const privacyForm = useForm<z.infer<typeof privacySchema>>({
-        resolver: zodResolver(privacySchema),
-        defaultValues: {
-            profileVisibility: true,
-            emailNotifications: true,
-            twoFactorAuth: false,
-        },
+    const privacyForm = useForm<z.infer<typeof privacyFormData.schema>>({
+        resolver: zodResolver(privacyFormData.schema),
+        defaultValues: privacyFormData.defaultValue,
     })
 
     // Form submission handlers
@@ -84,23 +87,56 @@ function RouteComponent() {
     const [personalInfoUpdateError, setPersonalInfoUpdateError] = React.useState<string | null>(null);
     const [securityUpdateError, setSecurityUpdateError] = React.useState<string | null>(null);
         
-    // Unified submit handler for profile and personal info forms
-    const onFormSubmit = (values: Record<string, any>, formType: 'profile' | 'personal') => {
+    // Unified submit handler for profile and personal info forms (they use the same API)
+    const onProfileFormSubmit = (values: Record<string, any>, formType: 'profile' | 'personal', avatarFile?: File | null) => {
+        // Reset relevant error states
         setProfileUpdateError(null);
         setPersonalInfoUpdateError(null);
+        
+        // Prepare data for submission
+        const submissionData: Record<string, any> = {
+            ...values
+        };
+        
+        // Add avatar file if provided (only for profile form)
+        if (formType === 'profile' && avatarFile) {
+            submissionData.image = avatarFile;
+        }
+        
         updateUserProfileMutation.mutate(
-            { body: values },
+            { body: submissionData },
             {
                 onSuccess: (success: Record<string, any>) => {
-                    const successMessage = success?.message || t('user.profile.information.updateSuccess');
+                    // Handle form-specific success logic
+                    if (formType === 'profile') {
+                        // Reset image state when submission is successful
+                        if (profileInfoFormRef.current) {
+                            profileInfoFormRef.current.resetImageState();
+                        }
+                    }
+                    
+                    // Reset forms with updated data from success response
+                    if (success?.data) {
+                        populateForms(success.data);
+                    }
+                    
+                    // Show success message
+                    const successMessage = success?.message || 
+                        (formType === 'profile' 
+                            ? t('user.profile.information.updateSuccess')
+                            : t('user.profile.personalInfo.updateSuccess'));
                     showNotifSuccess({ message: successMessage });
                 },
                 onError: (error: Record<string, any>) => {
-                    if(formType === 'profile') {
-                        const msg_ = error?.response?.data?.message || t('user.profile.information.updateError');
+                    const msg_ = error?.response?.data?.message || 
+                        (formType === 'profile'
+                            ? t('user.profile.information.updateError')
+                            : t('user.profile.personalInfo.updateError'));
+                    
+                    // Set form-specific error state
+                    if (formType === 'profile') {
                         setProfileUpdateError(msg_);
-                    } else if (formType === 'personal') {
-                        const msg_ = error?.response?.data?.message || t('user.profile.personalInfo.updateError');
+                    } else {
                         setPersonalInfoUpdateError(msg_);
                     }
                 }
@@ -108,7 +144,7 @@ function RouteComponent() {
         );
     };
 
-    // Security form submit handler
+    // Security form submit handler (kept separate as it uses a different API)
     const onSecuritySubmit = (values: z.infer<typeof securityFormData.schema>) => {
         setSecurityUpdateError(null);
         changeUserPasswordMutation.mutate(
@@ -128,7 +164,7 @@ function RouteComponent() {
         );
     };
 
-    function onPrivacySubmit(values: z.infer<typeof privacySchema>) {
+    function onPrivacySubmit(values: z.infer<typeof privacyFormData.schema>) {
         console.log('Privacy values:', values)
         // Handle privacy update
     }
@@ -138,7 +174,7 @@ function RouteComponent() {
             <div className="flex flex-col gap-6 w-full">
                 <ProfileHeader />
                 <div className="flex justify-center items-center h-64">
-                    <div className="text-lg">Loading profile...</div>
+                    <div className="text-lg">{t("user.profile.loading")}</div>
                 </div>
             </div>
         );
@@ -149,7 +185,7 @@ function RouteComponent() {
             <div className="flex flex-col gap-6 w-full">
                 <ProfileHeader />
                 <div className="flex justify-center items-center h-64">
-                    <div className="text-lg text-red-500">Error loading profile. Please try again later.</div>
+                    <div className="text-lg text-red-500">{t("user.profile.error")}</div>
                 </div>
             </div>
         );
@@ -171,8 +207,9 @@ function RouteComponent() {
                         {/* Profile Tab */}
                         <TabsContent value="profile" className="mt-0 w-full">
                             <ProfileInfoForm 
+                                ref={profileInfoFormRef}
                                 form={profileForm} 
-                                onSubmit={(body) => onFormSubmit(body, 'profile')} 
+                                onSubmit={(values: Record<string, any>, avatarFile: File | null) => onProfileFormSubmit(values, 'profile', avatarFile)} 
                                 error={profileUpdateError}
                             />
                         </TabsContent>
@@ -180,7 +217,7 @@ function RouteComponent() {
                         {/* Personal Info Tab */}
                         <TabsContent value="personal" className="mt-0 w-full">
                             <PersonalInfoForm form={personalInfoForm} 
-                            onSubmit={(body) => onFormSubmit(body, 'personal')} 
+                            onSubmit={(body) => onProfileFormSubmit(body, 'personal')} 
                             error={personalInfoUpdateError} />
                         </TabsContent>
 

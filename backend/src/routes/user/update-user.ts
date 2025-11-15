@@ -4,7 +4,8 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/index.ts";
 import { users, userProfile } from "../../db/schema/auth-schema.ts";
 import { eq } from "drizzle-orm";
-import { getUserAvatarUrl } from "../../utils/app-utils.ts";
+import { processChangeAvatar } from "./avatar-user.ts";
+import type { UploadedFile } from "../../types/file.ts";
 
 // Response schemas
 const UpdateUserResponse = Type.Object({
@@ -30,7 +31,7 @@ const UpdateUserResponse = Type.Object({
 /**
  * Update user profile
  * 
- * Expected JSON body input parameters:
+ * Expected multipart/form-data input parameters:
  * - name: string (optional) - User's display name
  * - school: string (optional) - User's school
  * - grade: string (optional) - User's grade
@@ -38,6 +39,7 @@ const UpdateUserResponse = Type.Object({
  * - address: string (optional) - User's address
  * - bio: string (optional) - User's biography
  * - dateOfBirth: string (optional) - User's date of birth (YYYY-MM-DD format)
+ * - image: file (optional) - User's avatar image
  * 
  * @param {string} [name] - Optional. User's display name
  * @param {string} [school] - Optional. User's school
@@ -46,6 +48,7 @@ const UpdateUserResponse = Type.Object({
  * @param {string} [address] - Optional. User's address
  * @param {string} [bio] - Optional. User's biography
  * @param {string} [dateOfBirth] - Optional. User's date of birth (YYYY-MM-DD format)
+ * @param {file} [image] - Optional. User's avatar image
  */
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -54,17 +57,8 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ['User'],
       summary: 'Update user profile',
-      description: 'Update the current user\'s profile information. Expected JSON body fields: name, school, grade, phone, address, bio, dateOfBirth (all optional). Invalid dateOfBirth formats will be ignored.',
-      consumes: ['application/json'],
-      body: Type.Object({
-        name: Type.Optional(Type.String({ minLength: 2 })),
-        school: Type.Optional(Type.String({ minLength: 0 })),
-        grade: Type.Optional(Type.String({ minLength: 0 })),
-        phone: Type.Optional(Type.String({ minLength: 0 })),
-        address: Type.Optional(Type.String({ minLength: 0 })),
-        bio: Type.Optional(Type.String({ minLength: 0 })),
-        dateOfBirth: Type.Optional(Type.String()), // Removed strict pattern validation to allow flexible handling
-      }),
+      description: 'Update the current user\'s profile information. Expected multipart/form-data fields: name, school, grade, phone, address, bio, dateOfBirth, image (all optional). Invalid dateOfBirth formats will be ignored.',
+      consumes: ['multipart/form-data'],
       response: {
         200: UpdateUserResponse,
         // Updated to use proper HTTP status codes with Fastify Sensible
@@ -81,7 +75,9 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
     handler: withErrorHandler(async (req, reply) => {
       // Get user ID from session (verified by user.hook.ts)
       const userId = req.session.user.id;
-      const updateData = req.body as {
+      
+      // Initialize variables for form data
+      const updateData: {
         name?: string;
         school?: string;
         grade?: string;
@@ -89,7 +85,25 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         address?: string;
         bio?: string;
         dateOfBirth?: string;
-      };
+      } = {};
+      
+      let imageFile: UploadedFile | null = null;
+      
+      // Parse multipart form data
+      const parts = req.parts();
+      for await (const part of parts) {
+        if (part.type === 'field') {
+          // Handle text fields
+          updateData[part.fieldname as keyof typeof updateData] = part.value as string;
+        } else if (part.type === 'file' && part.fieldname === 'image') {
+          // Handle image file
+          imageFile = {
+            buffer: await part.toBuffer(),
+            filename: part.filename,
+            mimetype: part.mimetype
+          };
+        }
+      }
 
       // Remove any restricted fields that might have been sent
       const restrictedFields = ['id', 'email', 'password', 'role', 'banned', 'banReason', 'image'];
@@ -111,11 +125,21 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
           return obj;
         }, {} as Record<string, unknown>);
 
-      // If no valid updates are provided, return early
-      if (Object.keys(safeUpdateData).length === 0) {
+      // Process image upload if provided
+      let avatarResult: any = null;
+      if (imageFile) {
+        // Process the avatar using the shared function
+        avatarResult = await processChangeAvatar(req, reply, userId, imageFile);
+        if (!avatarResult.success) {
+          // If avatar processing failed, return the error
+          return reply.status(400).send(avatarResult);
+        }
+      }
+
+      // If no valid updates are provided and no image was uploaded, return early
+      if (Object.keys(safeUpdateData).length === 0 && !imageFile) {
         return reply.badRequest(req.i18n.t('user.noValidUpdateData'));
       }
-      console.log('Updating user with data:', safeUpdateData);
 
       // Separate user and profile data
       const userFields = ['name'];
@@ -164,7 +188,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       // Get the updated user
-      const updatedUser = await db.query.users.findFirst({
+      let updatedUser = await db.query.users.findFirst({
         where: eq(users.id, userId),
         columns: {
           id: true,
@@ -179,6 +203,14 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       if (!updatedUser) {
         return reply.notFound(req.i18n.t('user.userNotFound'));
+      }
+
+      // If we processed an avatar, use the data from the avatar result
+      if (avatarResult && avatarResult.data) {
+        updatedUser = {
+          ...updatedUser,
+          ...avatarResult.data
+        };
       }
 
       // Get user profile information
@@ -227,12 +259,12 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         success: true,
         message: req.i18n.t('user.userUpdatedSuccessfully'),
         data: {
-          ...updatedUser,
+          ...updatedUser!,
           ...(profile || {}),
-          image: getUserAvatarUrl(updatedUser.image),
-          createdAt: updatedUser.createdAt,
-          updatedAt: updatedUser.updatedAt,
-          emailVerified: Boolean(updatedUser.emailVerified),
+          image: updatedUser!.image,
+          createdAt: updatedUser!.createdAt,
+          updatedAt: updatedUser!.updatedAt,
+          emailVerified: Boolean(updatedUser!.emailVerified),
           dateOfBirth: profile?.dateOfBirth
         }
       });

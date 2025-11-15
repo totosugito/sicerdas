@@ -35,6 +35,7 @@ interface ImageCropperProps {
   selectedFile: FileWithPreview | null
   setSelectedFile: React.Dispatch<React.SetStateAction<FileWithPreview | null>>
   title?: string
+  onCropComplete?: (file: File) => void
 }
 
 export function ImageCropper({
@@ -43,6 +44,7 @@ export function ImageCropper({
   selectedFile,
   setSelectedFile,
   title="Image Cropper",
+  onCropComplete
 }: ImageCropperProps) {
   const aspect = 1
 
@@ -59,7 +61,7 @@ export function ImageCropper({
     }
   }
 
-  function onCropComplete(crop: PixelCrop) {
+  function onCropCompleteHandler(crop: PixelCrop) {
     if (imgRef.current && crop.width && crop.height) {
       const croppedImageUrl = getCroppedImg(imgRef.current, crop)
       setCroppedImageUrl(croppedImageUrl)
@@ -98,6 +100,15 @@ export function ImageCropper({
   async function onCrop() {
     try {
       setCroppedImage(croppedImageUrl)
+      
+      // Convert data URL to File object and call onCropComplete callback
+      if (onCropComplete && croppedImageUrl) {
+        const response = await fetch(croppedImageUrl)
+        const blob = await response.blob()
+        const file = new File([blob], "cropped-avatar.png", { type: "image/png" })
+        onCropComplete(file)
+      }
+      
       setDialogOpen(false)
     } catch (error) {
       alert("Something went wrong!")
@@ -123,7 +134,7 @@ export function ImageCropper({
           <ReactCrop
             crop={crop}
             onChange={(_, percentCrop) => setCrop(percentCrop)}
-            onComplete={(c) => onCropComplete(c)}
+            onComplete={(c) => onCropCompleteHandler(c)}
             aspect={aspect}
             className="w-full"
           >

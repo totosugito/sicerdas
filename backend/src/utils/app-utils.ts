@@ -5,5 +5,5 @@ export const getUserAvatarUrl = (avatar: string | null | undefined): string | nu
     return null;
   }
 
-  return `${env.server.uploadsUserDir}${avatar}`;
+  return `${env.server.uploadsUrl}/${env.server.uploadsUserDir}${avatar}`;
 };

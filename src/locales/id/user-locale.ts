@@ -2,11 +2,11 @@ export default {
     profile: {
         title: "Profil Pengguna",
         description: "Kelola pengaturan dan preferensi akun Anda.",
+        loading: "Memuat profil...",
+        error: "Gagal memuat profil. Silakan coba lagi.",
         tabs: {
             editProfile: "Profil",
             personalInfo: "Data Pribadi",
-            password: "Kata Sandi",
-            notifications: "Notifikasi",
             billing: "Penagihan",
             integrations: "Integrasi",
             security: "Keamanan",
