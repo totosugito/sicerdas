@@ -2,10 +2,11 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/index.ts";
-import { users, userProfile } from "../../db/schema/auth-schema.ts";
+import { users, userProfile, accounts } from "../../db/schema/auth-schema.ts";
 import { eq } from "drizzle-orm";
 import { processChangeAvatar } from "./avatar-user.ts";
 import type { UploadedFile } from "../../types/file.ts";
+import {getUserAvatarUrl} from "../../utils/app-utils.ts";
 
 // Response schemas
 const UpdateUserResponse = Type.Object({
@@ -23,6 +24,7 @@ const UpdateUserResponse = Type.Object({
     address: Type.Union([Type.String(), Type.Null()]),
     bio: Type.Union([Type.String(), Type.Null()]),
     dateOfBirth: Type.Union([Type.String(), Type.Null()]),
+    extra: Type.Object({}, { additionalProperties: true }),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' })
   })
@@ -49,6 +51,8 @@ const UpdateUserResponse = Type.Object({
  * @param {string} [bio] - Optional. User's biography
  * @param {string} [dateOfBirth] - Optional. User's date of birth (YYYY-MM-DD format)
  * @param {file} [image] - Optional. User's avatar image
+ * @param {object} [extra] - Optional. Additional user data
+ * 
  */
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -85,6 +89,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         address?: string;
         bio?: string;
         dateOfBirth?: string;
+        extra?: string; // Add extra field
       } = {};
       
       let imageFile: UploadedFile | null = null;
@@ -119,6 +124,14 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
             } else {
               obj[key] = null;
             }
+          } else if (key === 'extra') {
+            // Parse extra JSON string to object
+            try {
+              obj[key] = JSON.parse(value as string);
+            } catch (e) {
+              // If parsing fails, ignore the extra field
+              console.warn('Failed to parse extra field:', e);
+            }
           } else {
             obj[key] = value;
           }
@@ -143,7 +156,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Separate user and profile data
       const userFields = ['name'];
-      const profileFields = ['school', 'grade', 'phone', 'address', 'bio', 'dateOfBirth'];
+      const profileFields = ['school', 'grade', 'phone', 'address', 'bio', 'dateOfBirth', 'extra']; // Add 'extra' to profileFields
 
       const userData: Record<string, unknown> = {};
       const profileData: Record<string, unknown> = {};
@@ -187,85 +200,49 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         }
       }
 
-      // Get the updated user
-      let updatedUser = await db.query.users.findFirst({
-        where: eq(users.id, userId),
-        columns: {
-          id: true,
-          email: true,
-          name: true,
-          image: true,
-          emailVerified: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      });
+      // Find the current user by ID with account and profile information joined
+      const userWithAllData = await db.select({
+        id: users.id,
+        email: users.email,
+        name: users.name,
+        image: users.image,
+        emailVerified: users.emailVerified,
+        userCreatedAt: users.createdAt,
+        userUpdatedAt: users.updatedAt,
+        providerId: accounts.providerId,
+        school: userProfile.school,
+        grade: userProfile.grade,
+        phone: userProfile.phone,
+        address: userProfile.address,
+        bio: userProfile.bio,
+        dateOfBirth: userProfile.dateOfBirth,
+        extra: userProfile.extra
+      })
+      .from(users)
+      .leftJoin(accounts, eq(users.id, accounts.userId))
+      .leftJoin(userProfile, eq(users.id, userProfile.id))
+      .where(eq(users.id, userId))
+      .limit(1);
 
-      if (!updatedUser) {
+      // Extract user data (there should only be one result)
+      const userResult = userWithAllData[0];
+      
+      if (!userResult) {
         return reply.notFound(req.i18n.t('user.userNotFound'));
-      }
-
-      // If we processed an avatar, use the data from the avatar result
-      if (avatarResult && avatarResult.data) {
-        updatedUser = {
-          ...updatedUser,
-          ...avatarResult.data
-        };
-      }
-
-      // Get user profile information
-      let profile = await db.query.userProfile.findFirst({
-        where: eq(userProfile.id, userId),
-        columns: {
-          school: true,
-          grade: true,
-          phone: true,
-          address: true,
-          bio: true,
-          dateOfBirth: true
-        }
-      });
-
-      // If no profile exists, create one
-      if (!profile) {
-        const now = new Date();
-        await db.insert(userProfile).values({
-          id: userId,
-          school: "",
-          grade: "",
-          phone: "",
-          address: "",
-          bio: "",
-          dateOfBirth: null,
-          createdAt: now,
-          updatedAt: now,
-        }).onConflictDoNothing();
-
-        // Fetch the newly created profile
-        profile = await db.query.userProfile.findFirst({
-          where: eq(userProfile.id, userId),
-          columns: {
-            school: true,
-            grade: true,
-            phone: true,
-            address: true,
-            bio: true,
-            dateOfBirth: true
-          }
-        });
       }
 
       return reply.status(200).send({
         success: true,
         message: req.i18n.t('user.userUpdatedSuccessfully'),
         data: {
-          ...updatedUser!,
-          ...(profile || {}),
-          image: updatedUser!.image,
-          createdAt: updatedUser!.createdAt,
-          updatedAt: updatedUser!.updatedAt,
-          emailVerified: Boolean(updatedUser!.emailVerified),
-          dateOfBirth: profile?.dateOfBirth
+          ...userResult,
+          image: getUserAvatarUrl(userResult.image),
+          emailVerified: Boolean(userResult.emailVerified),
+          dateOfBirth: userResult.dateOfBirth ? userResult.dateOfBirth.toISOString().split('T')[0] : null,
+          createdAt: userResult.userCreatedAt.toISOString(),
+          updatedAt: userResult.userUpdatedAt.toISOString(),
+          providerId: userResult.providerId || '',
+          extra: userResult.extra || {}
         }
       });
     })

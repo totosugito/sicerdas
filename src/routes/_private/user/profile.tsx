@@ -48,6 +48,11 @@ function RouteComponent() {
         defaultValues: securityFormData.defaultValue,
     })
 
+    const privacyForm = useForm<z.infer<typeof privacyFormData.schema>>({
+        resolver: zodResolver(privacyFormData.schema),
+        defaultValues: privacyFormData.defaultValue,
+    })
+
     // Helper function to populate forms with user data
     const populateForms = (userData: any) => {
         if (userData) {
@@ -59,11 +64,18 @@ function RouteComponent() {
             });
             
             personalInfoForm.reset({
-                phone: userData.phone || '',
-                address: userData.address || '',
-                school: userData.school || '',
-                grade: userData.grade || '',
+                phone: userData.phone ?? '',
+                address: userData.address ?? '',
+                school: userData.school ?? '',
+                grade: userData.grade ?? '',
                 dateOfBirth: userData.dateOfBirth ? string_to_date(userData.dateOfBirth) : undefined,
+            });
+            
+            // Populate privacy form with data from extra field
+            privacyForm.reset({
+                profileVisibility: userData.extra.privacy.profileVisibility ?? privacyFormData.defaultValue.profileVisibility,
+                emailNotifications: userData.extra.privacy.emailNotifications ?? privacyFormData.defaultValue.emailNotifications,
+                twoFactorAuth: userData.extra.privacy.twoFactorAuth ?? privacyFormData.defaultValue.twoFactorAuth,
             });
         }
     };
@@ -73,12 +85,7 @@ function RouteComponent() {
         if (userProfile) {
             populateForms(userProfile);
         }
-    }, [userProfile, profileForm, personalInfoForm]);
-
-    const privacyForm = useForm<z.infer<typeof privacyFormData.schema>>({
-        resolver: zodResolver(privacyFormData.schema),
-        defaultValues: privacyFormData.defaultValue,
-    })
+    }, [userProfile, profileForm, personalInfoForm, privacyForm]);
 
     // Form submission handlers
     const updateUserProfileMutation = useUpdateUserProfileMutation();
@@ -86,12 +93,12 @@ function RouteComponent() {
     const [profileUpdateError, setProfileUpdateError] = React.useState<string | null>(null);
     const [personalInfoUpdateError, setPersonalInfoUpdateError] = React.useState<string | null>(null);
     const [securityUpdateError, setSecurityUpdateError] = React.useState<string | null>(null);
+    const [privacyUpdateError, setPrivacyUpdateError] = React.useState<string | null>(null);
         
     // Unified submit handler for profile and personal info forms (they use the same API)
-    const onProfileFormSubmit = (values: Record<string, any>, formType: 'profile' | 'personal', avatarFile?: File | null) => {
+    const onProfileFormSubmit = (values: Record<string, any>, avatarFile?: File | null) => {
         // Reset relevant error states
         setProfileUpdateError(null);
-        setPersonalInfoUpdateError(null);
         
         // Prepare data for submission
         const submissionData: Record<string, any> = {
@@ -99,7 +106,7 @@ function RouteComponent() {
         };
         
         // Add avatar file if provided (only for profile form)
-        if (formType === 'profile' && avatarFile) {
+        if (avatarFile) {
             submissionData.image = avatarFile;
         }
         
@@ -107,38 +114,39 @@ function RouteComponent() {
             { body: submissionData },
             {
                 onSuccess: (success: Record<string, any>) => {
-                    // Handle form-specific success logic
-                    if (formType === 'profile') {
-                        // Reset image state when submission is successful
-                        if (profileInfoFormRef.current) {
-                            profileInfoFormRef.current.resetImageState();
-                        }
+                    // Reset image state when submission is successful
+                    if (profileInfoFormRef.current) {
+                        profileInfoFormRef.current.resetImageState();
                     }
-                    
+
                     // Reset forms with updated data from success response
-                    if (success?.data) {
-                        populateForms(success.data);
-                    }
-                    
+                    populateForms(success.data);
+
                     // Show success message
-                    const successMessage = success?.message || 
-                        (formType === 'profile' 
-                            ? t('user.profile.information.updateSuccess')
-                            : t('user.profile.personalInfo.updateSuccess'));
+                    const successMessage = success?.message || t('user.profile.information.updateSuccess');
                     showNotifSuccess({ message: successMessage });
                 },
                 onError: (error: Record<string, any>) => {
-                    const msg_ = error?.response?.data?.message || 
-                        (formType === 'profile'
-                            ? t('user.profile.information.updateError')
-                            : t('user.profile.personalInfo.updateError'));
-                    
-                    // Set form-specific error state
-                    if (formType === 'profile') {
-                        setProfileUpdateError(msg_);
-                    } else {
-                        setPersonalInfoUpdateError(msg_);
-                    }
+                    const msg_ = error?.response?.data?.message || t('user.profile.information.updateError');
+                    setProfileUpdateError(msg_);
+                }
+            }
+        );
+    };
+
+    const onPersonalInfoSubmit = (values: Record<string, any>) => {
+        setPersonalInfoUpdateError(null);
+        updateUserProfileMutation.mutate(
+            { body: values },
+            {
+                onSuccess: (success: Record<string, any>) => {
+                    const successMessage = success?.message || t('user.profile.personalInfo.updateSuccess');
+                    showNotifSuccess({ message: successMessage });
+                    populateForms(success?.data);
+                },
+                onError: (error: Record<string, any>) => {
+                    const errorMessage = error?.response?.data?.message || t('user.profile.personalInfo.updateError');
+                    setPersonalInfoUpdateError(errorMessage);
                 }
             }
         );
@@ -165,8 +173,24 @@ function RouteComponent() {
     };
 
     function onPrivacySubmit(values: z.infer<typeof privacyFormData.schema>) {
-        console.log('Privacy values:', values)
-        // Handle privacy update
+        setPrivacyUpdateError(null);
+        const extra = {
+            extra: JSON.stringify(values)
+        }
+        updateUserProfileMutation.mutate(
+            { body: extra },
+            {
+                onSuccess: (success: Record<string, any>) => {
+                    const successMessage = success?.message || t('user.profile.privacy.updateSuccess');
+                    showNotifSuccess({ message: successMessage });
+                    populateForms(success?.data);
+                },
+                onError: (error: Record<string, any>) => {
+                    const errorMessage = error?.response?.data?.message || t('user.profile.privacy.updateError');
+                    setPrivacyUpdateError(errorMessage);
+                }
+            }
+        );
     }
 
     if (isLoading) {
@@ -209,7 +233,7 @@ function RouteComponent() {
                             <ProfileInfoForm 
                                 ref={profileInfoFormRef}
                                 form={profileForm} 
-                                onSubmit={(values: Record<string, any>, avatarFile: File | null) => onProfileFormSubmit(values, 'profile', avatarFile)} 
+                                onSubmit={onProfileFormSubmit} 
                                 error={profileUpdateError}
                             />
                         </TabsContent>
@@ -217,22 +241,30 @@ function RouteComponent() {
                         {/* Personal Info Tab */}
                         <TabsContent value="personal" className="mt-0 w-full">
                             <PersonalInfoForm form={personalInfoForm} 
-                            onSubmit={(body) => onProfileFormSubmit(body, 'personal')} 
+                            onSubmit={onPersonalInfoSubmit} 
                             error={personalInfoUpdateError} />
                         </TabsContent>
 
                         {/* Security Tab */}
                         <TabsContent value="security" className="mt-0 w-full">
-                            <SecurityForm 
-                                form={securityForm} 
-                                onSubmit={onSecuritySubmit} 
-                                error={securityUpdateError} 
-                            />
+                            {userProfile && (userProfile.providerId === "email" || userProfile.providerId === "credential") ? (
+                                <SecurityForm 
+                                    form={securityForm} 
+                                    onSubmit={onSecuritySubmit} 
+                                    error={securityUpdateError} 
+                                />
+                            ) : (
+                                <div className="p-4 text-center">
+                                    <p className="text-muted-foreground">
+                                        {t("user.profile.security.notAvailable")}
+                                    </p>
+                                </div>
+                            )}
                         </TabsContent>
 
                         {/* Privacy Tab */}
                         <TabsContent value="privacy" className="mt-0 w-full">
-                            <PrivacyForm form={privacyForm} onSubmit={onPrivacySubmit} />
+                            <PrivacyForm form={privacyForm} onSubmit={onPrivacySubmit} error={privacyUpdateError} />
                         </TabsContent>
                     </div>
                 </div>

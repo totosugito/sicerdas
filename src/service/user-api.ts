@@ -17,6 +17,7 @@ export interface UserProfile {
   dateOfBirth: string | null;
   createdAt: string;
   updatedAt: string;
+  providerId: string | null;
 }
 
 interface UpdateUserData {
@@ -28,6 +29,7 @@ interface UpdateUserData {
   bio?: string;
   dateOfBirth?: string;
   image?: File;
+  extra?: any;
 }
 
 interface ChangePasswordData {

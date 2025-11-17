@@ -77,7 +77,7 @@
     },
     "noValidUpdateData": "Tidak ada data pembaruan yang valid",
     "userNotFound": "Pengguna tidak ditemukan",
-    "userUpdatedSuccessfully": "Profil pengguna berhasil diperbarui",
+    "userUpdatedSuccessfully": "Data pengguna berhasil diperbarui",
     "currentPasswordRequired": "Kata sandi saat ini diperlukan",
     "newPasswordRequired": "Kata sandi baru diperlukan",
     "passwordsMustBeDifferent": "Kata sandi baru harus berbeda dari kata sandi saat ini",

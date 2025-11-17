@@ -3,7 +3,7 @@ import { Type } from '@fastify/type-provider-typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/index.ts";
 import { eq } from "drizzle-orm";
-import { users, userProfile } from "../../db/schema/auth-schema.ts";
+import { users, userProfile, accounts } from "../../db/schema/auth-schema.ts";
 import {getUserAvatarUrl} from "../../utils/app-utils.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -30,7 +30,9 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
             bio: Type.Union([Type.String(), Type.Null()]),
             dateOfBirth: Type.Union([Type.String(), Type.Null()]),
             createdAt: Type.String({ format: 'date-time' }),
-            updatedAt: Type.String({ format: 'date-time' })
+            updatedAt: Type.String({ format: 'date-time' }),
+            providerId: Type.String(),
+            extra: Type.Object({}, { additionalProperties: true })
           })
         }),
         // Updated to use proper HTTP status codes with Fastify Sensible
@@ -48,78 +50,48 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       // Get user ID from session (already verified by user.hook.ts)
       const userId = req.session.user.id;
 
-      // Find the current user by ID
-      const user = await db.query.users.findFirst({
-        where: eq(users.id, userId),
-        columns: {
-          id: true,
-          email: true,
-          name: true,
-          image: true,
-          emailVerified: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      });
+      // Find the current user by ID with account and profile information joined
+      const userWithAllData = await db.select({
+        id: users.id,
+        email: users.email,
+        name: users.name,
+        image: users.image,
+        emailVerified: users.emailVerified,
+        userCreatedAt: users.createdAt,
+        userUpdatedAt: users.updatedAt,
+        providerId: accounts.providerId,
+        school: userProfile.school,
+        grade: userProfile.grade,
+        phone: userProfile.phone,
+        address: userProfile.address,
+        bio: userProfile.bio,
+        dateOfBirth: userProfile.dateOfBirth,
+        extra: userProfile.extra // Add extra field
+      })
+      .from(users)
+      .leftJoin(accounts, eq(users.id, accounts.userId))
+      .leftJoin(userProfile, eq(users.id, userProfile.id))
+      .where(eq(users.id, userId))
+      .limit(1);
 
-      // This should theoretically never happen since the user was just authenticated
-      // but, we'll keep it as a safety check
-      if (!user) {
+      // Extract user data (there should only be one result)
+      const userResult = userWithAllData[0];
+      
+      if (!userResult) {
         return reply.notFound(req.i18n.t('userNotFound')); // Using i18n translation
-      }
-
-      // Get user profile information
-      let profile = await db.query.userProfile.findFirst({
-        where: eq(userProfile.id, userId),
-        columns: {
-          school: true,
-          grade: true,
-          phone: true,
-          address: true,
-          bio: true,
-          dateOfBirth: true
-        }
-      });
-
-      // If no profile exists, create one
-      if (!profile) {
-        const now = new Date();
-        await db.insert(userProfile).values({
-          id: userId,
-          school: "",
-          grade: "",
-          phone: "",
-          address: "",
-          bio: "",
-          dateOfBirth: null,
-          createdAt: now,
-          updatedAt: now,
-        }).onConflictDoNothing();
-        
-        // Fetch the newly created profile
-        profile = await db.query.userProfile.findFirst({
-          where: eq(userProfile.id, userId),
-          columns: {
-            school: true,
-            grade: true,
-            phone: true,
-            address: true,
-            bio: true,
-            dateOfBirth: true
-          }
-        });
       }
 
       return reply.status(200).send({
         success: true as const,
         data: {
-          ...user,
-          ...(profile || {}),
-          image: getUserAvatarUrl(user.image),
-          createdAt: user.createdAt.toISOString(),
-          updatedAt: user.updatedAt.toISOString(),
-          emailVerified: Boolean(user.emailVerified),
-          dateOfBirth: profile?.dateOfBirth ? profile.dateOfBirth.toISOString().split('T')[0] : null
+          ...userResult,
+          image: getUserAvatarUrl(userResult.image),
+          emailVerified: Boolean(userResult.emailVerified),
+          dateOfBirth: userResult.dateOfBirth ? userResult.dateOfBirth.toISOString().split('T')[0] : null,
+          createdAt: userResult.userCreatedAt.toISOString(),
+          updatedAt: userResult.userUpdatedAt.toISOString(),
+          providerId: userResult.providerId || '',
+          extra: userResult.extra || {}
         }
       });
     }, 422)

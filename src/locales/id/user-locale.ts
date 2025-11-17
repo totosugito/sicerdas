@@ -55,7 +55,8 @@ export default {
             passwordMismatchError: "Kata sandi tidak cocok",
             updatePassword: "Perbarui Kata Sandi",
             updateError: "Gagal memperbarui kata sandi. Silakan coba lagi.",
-            updateSuccess: "Kata sandi berhasil diperbarui."
+            updateSuccess: "Kata sandi berhasil diperbarui.",
+            notAvailable: "Fitur keamanan tidak tersedia untuk akun Anda."
         },
         privacy: {
             title: "Pengaturan Privasi",
@@ -65,7 +66,10 @@ export default {
             emailNotificationsDescription: "Terima notifikasi email tentang akun Anda.",
             twoFactorAuth: "Autentikasi Dua Faktor",
             twoFactorAuthDescription: "Tambahkan lapisan keamanan ekstra ke akun Anda.",
-            savePreferences: "Simpan Preferensi"
+            savePreferences: "Simpan Preferensi",
+            updateSuccess: "Pengaturan privasi berhasil diperbarui.",
+            updateError: "Gagal memperbarui pengaturan privasi. Silakan coba lagi.",
+            notAvailable: "Fitur keamanan tidak tersedia untuk akun Anda."
         }
     }
 }

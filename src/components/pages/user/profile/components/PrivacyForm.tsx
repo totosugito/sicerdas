@@ -4,6 +4,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } fr
 import { Switch } from '@/components/ui/switch'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
+import { AlertCircle } from 'lucide-react'
 
 // Define the form values type
 export type PrivacyFormValues = {
@@ -31,11 +32,23 @@ const createPrivacyFormData = (t: (key: string) => string) => {
 interface PrivacyFormProps {
   form: any
   onSubmit: (values: any) => void
+  error?: string | null
 }
 
-export function PrivacyForm({ form, onSubmit }: PrivacyFormProps) {
+export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
   const { t } = useTranslation()
   
+    // Handle form submission
+  const handleSubmit = (values: Record<string, any>) => {
+    onSubmit({
+      privacy: {
+        profileVisibility: values.profileVisibility,
+        emailNotifications: values.emailNotifications,
+        twoFactorAuth: values.twoFactorAuth
+      }
+    })
+  }
+
   return (
     <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full pb-0">
       <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
@@ -44,8 +57,14 @@ export function PrivacyForm({ form, onSubmit }: PrivacyFormProps) {
         </CardTitle>
       </CardHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
           <CardContent className="px-6 pb-6 space-y-6 w-full">
+            {error && (
+              <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 rounded-md text-red-700 dark:text-red-300">
+                <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
             {/* <FormField
               control={form.control}
               name="profileVisibility"
