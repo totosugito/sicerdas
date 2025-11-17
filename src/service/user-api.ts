@@ -20,6 +20,16 @@ export interface UserProfile {
   providerId: string | null;
 }
 
+export interface UserSession {
+  id: string;
+  expiresAt: string;
+  createdAt: string;
+  updatedAt: string;
+  ipAddress: string | null;
+  userAgent: string | null;
+  token: string; // Added token field to match backend response
+}
+
 interface UpdateUserData {
   name?: string;
   school?: string;
@@ -43,6 +53,16 @@ export const useUserProfileQuery = () => {
     queryKey: ['userProfile'],
     queryFn: async () => {
       const response = await fetchApi({method: "GET", url: AppApi.user.details});
+      return response.data;
+    },
+  });
+}
+
+export const useUserSessionsQuery = () => {
+  return useQuery<UserSession[]>({
+    queryKey: ['userSessions'],
+    queryFn: async () => {
+      const response = await fetchApi({method: "GET", url: AppApi.user.sessions});
       return response.data;
     },
   });

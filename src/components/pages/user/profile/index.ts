@@ -4,3 +4,4 @@ export { ProfileInfoForm, createProfileInfoFormData } from './components/Profile
 export { PersonalInfoForm, createPersonalInfoFormData } from './components/PersonalInfoForm'
 export { SecurityForm, createSecurityFormData } from './components/SecurityForm'
 export { PrivacyForm, createPrivacyFormData } from './components/PrivacyForm'
+export { SessionList } from './components/SessionList'

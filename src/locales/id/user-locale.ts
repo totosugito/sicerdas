@@ -70,6 +70,23 @@ export default {
             updateSuccess: "Pengaturan privasi berhasil diperbarui.",
             updateError: "Gagal memperbarui pengaturan privasi. Silakan coba lagi.",
             notAvailable: "Fitur keamanan tidak tersedia untuk akun Anda."
+        },
+        sessions: {
+            title: "Sesi Aktif",
+            currentSession: "Sesi Saat Ini",
+            otherSessions: "Sesi Lainnya",
+            thisDevice: "Perangkat Ini",
+            ipAddress: "IP",
+            unknownLocation: "Lokasi tidak diketahui",
+            logout: "Keluar",
+            error: "Gagal memuat sesi. Silakan coba lagi.",
+            errorTitle: "Gagal Memuat Sesi",
+            errorDescription: "Terjadi kesalahan saat memuat sesi Anda. Silakan coba lagi.",
+            retry: "Coba Lagi",
+            noSessions: "Tidak ada sesi aktif.",
+            noOtherSessions: "Tidak ada sesi lainnya.",
+            noOtherSessionsTitle: "Tidak Ada Sesi Lain",
+            noOtherSessionsDescription: "Anda hanya memiliki satu sesi aktif di perangkat ini."
         }
     }
 }

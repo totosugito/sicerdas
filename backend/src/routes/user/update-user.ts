@@ -3,7 +3,7 @@ import { Type } from '@fastify/type-provider-typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/index.ts";
 import { users, userProfile, accounts } from "../../db/schema/auth-schema.ts";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { processChangeAvatar } from "./avatar-user.ts";
 import type { UploadedFile } from "../../types/file.ts";
 import {getUserAvatarUrl} from "../../utils/app-utils.ts";
@@ -190,7 +190,12 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
           .values({ id: userId, ...profileData })
           .onConflictDoUpdate({
             target: userProfile.id,
-            set: profileData
+            set: profileData.extra
+              ? {
+                ...profileData,
+                extra: sql`${userProfile.extra} || ${JSON.stringify(profileData.extra)}::jsonb`
+              }
+              : profileData
           })
           .returning();
 

@@ -84,6 +84,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         headers: {
           'content-type': 'application/json',
           'accept-language': req.headers['accept-language'] || 'id', 
+          'user-agent': req.headers['user-agent'],
         }
       });
 

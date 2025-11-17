@@ -2,7 +2,7 @@ import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
 import {withErrorHandler} from "../../utils/withErrorHandler.ts";
 import {db} from "../../db/index.ts";
-import {users, verifications} from "../../db/schema/auth-schema.ts";
+import {users, verifications, accounts} from "../../db/schema/auth-schema.ts";
 import {eq, and, gte, count} from "drizzle-orm";
 import {PASSWORD_RESET_RATE_LIMIT, PASSWORD_RESET_RATE_LIMIT_WINDOW_MS} from "../../config/app-constant.ts";
 
@@ -59,6 +59,18 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       const userId = existingUser[0].id;
+
+      // Check if the user's account has providerId "credential" or "email"
+      const userAccounts = await db.select({ providerId: accounts.providerId }).from(accounts).where(eq(accounts.userId, userId));
+      
+      // If no accounts found or if any account has providerId "credential" or "email", return 404
+      const hasCredentialOrEmailProvider = userAccounts.some(account => 
+        account.providerId !== 'credential' && account.providerId !== 'email'
+      );
+      
+      if (userAccounts.length === 0 || hasCredentialOrEmailProvider) {
+        return reply.notFound(req.i18n.t('auth.userNotFound'));
+      }
 
       // Rate limiting: Check if user has made more than N requests in the last hour
       const ONE_HOUR_AGO = new Date(Date.now() - PASSWORD_RESET_RATE_LIMIT_WINDOW_MS);

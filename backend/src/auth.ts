@@ -1,6 +1,6 @@
 import {betterAuth} from 'better-auth';
 import {drizzleAdapter} from 'better-auth/adapters/drizzle';
-import {admin, openAPI, emailOTP} from 'better-auth/plugins';
+import {admin, openAPI, emailOTP, multiSession} from 'better-auth/plugins';
 import {db} from './db/index.ts';
 import envConfig from "./config/env.config.ts";
 import fs from 'fs';
@@ -31,6 +31,7 @@ const auth = betterAuth({
     openAPI({
       path: '/docs',
     }),
+    multiSession(),
     emailOTP({
       otpLength: 6,
       expiresIn: 60 * 60, // 1 hour

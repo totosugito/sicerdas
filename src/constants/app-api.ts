@@ -30,6 +30,7 @@ export const AppApi = {
     update: APP_URL_API + "/user/update",
     changePassword: APP_URL_API + "/user/change-password",
     avatar: APP_URL_API + "/user/avatar",
+    sessions: APP_URL_API + "/user/sessions",
   },
   project: {
     list: APP_URL_V1 + "/project/list",

@@ -5,13 +5,16 @@ import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ProfileHeader, TabNavigation, ProfileInfoForm, PersonalInfoForm, SecurityForm, PrivacyForm, 
+import {
+    ProfileHeader, TabNavigation, ProfileInfoForm, PersonalInfoForm, SecurityForm, PrivacyForm, SessionList,
     createProfileInfoFormData, createPersonalInfoFormData, createSecurityFormData, createPrivacyFormData
 } from '@/components/pages/user/profile'
 import { ProfileInfoFormRef } from '@/components/pages/user/profile/components/ProfileInfoForm'
-import { useUserProfileQuery, useUpdateUserProfileMutation, useChangeUserPasswordMutation } from '@/service/user-api'
+import { useUserProfileQuery, useUpdateUserProfileMutation, useChangeUserPasswordMutation, useUserSessionsQuery } from '@/service/user-api'
 import { showNotifSuccess } from '@/lib/show-notif'
 import { string_to_date } from '@/lib/my-utils'
+import { useAuth } from '@/hooks/use-auth'
+import type { UserSession } from '@/service/user-api'
 
 export const Route = createFileRoute('/_private/user/profile')({
     component: RouteComponent,
@@ -19,20 +22,24 @@ export const Route = createFileRoute('/_private/user/profile')({
 
 function RouteComponent() {
     const { t } = useTranslation();
-    
+    const { user: authUser } = useAuth();
+
     // Create ref for ProfileInfoForm
     const profileInfoFormRef = React.useRef<ProfileInfoFormRef>(null);
-    
+
     // Fetch user profile data
     const { data: userProfile, isLoading, isError } = useUserProfileQuery();
     
+    // Fetch user sessions data
+    const { data: sessions, isLoading: sessionsLoading, isError: sessionsError, refetch: refetchSessions } = useUserSessionsQuery();
+
     // Define schemas for each tab inside the component to access the translation function
     const profileFormData = createProfileInfoFormData(t);
     const personalInfoFormData = createPersonalInfoFormData(t);
     const securityFormData = createSecurityFormData(t);
     const privacyFormData = createPrivacyFormData(t);
-    
-// Initialize forms for each tab
+
+    // Initialize forms for each tab
     const profileForm = useForm<z.infer<typeof profileFormData.schema>>({
         resolver: zodResolver(profileFormData.schema),
         defaultValues: profileFormData.defaultValue,
@@ -62,7 +69,7 @@ function RouteComponent() {
                 bio: userData.bio || '',
                 image: userData.image || null,
             });
-            
+
             personalInfoForm.reset({
                 phone: userData.phone ?? '',
                 address: userData.address ?? '',
@@ -70,16 +77,16 @@ function RouteComponent() {
                 grade: userData.grade ?? '',
                 dateOfBirth: userData.dateOfBirth ? string_to_date(userData.dateOfBirth) : undefined,
             });
-            
+
             // Populate privacy form with data from extra field
             privacyForm.reset({
-                profileVisibility: userData.extra.privacy.profileVisibility ?? privacyFormData.defaultValue.profileVisibility,
-                emailNotifications: userData.extra.privacy.emailNotifications ?? privacyFormData.defaultValue.emailNotifications,
-                twoFactorAuth: userData.extra.privacy.twoFactorAuth ?? privacyFormData.defaultValue.twoFactorAuth,
+                profileVisibility: userData.extra?.privacy?.profileVisibility ?? privacyFormData.defaultValue.profileVisibility,
+                emailNotifications: userData.extra?.privacy?.emailNotifications ?? privacyFormData.defaultValue.emailNotifications,
+                twoFactorAuth: userData.extra?.privacy?.twoFactorAuth ?? privacyFormData.defaultValue.twoFactorAuth,
             });
         }
     };
-    
+
     // Populate forms with user data when it loads
     React.useEffect(() => {
         if (userProfile) {
@@ -94,22 +101,22 @@ function RouteComponent() {
     const [personalInfoUpdateError, setPersonalInfoUpdateError] = React.useState<string | null>(null);
     const [securityUpdateError, setSecurityUpdateError] = React.useState<string | null>(null);
     const [privacyUpdateError, setPrivacyUpdateError] = React.useState<string | null>(null);
-        
+
     // Unified submit handler for profile and personal info forms (they use the same API)
     const onProfileFormSubmit = (values: Record<string, any>, avatarFile?: File | null) => {
         // Reset relevant error states
         setProfileUpdateError(null);
-        
+
         // Prepare data for submission
         const submissionData: Record<string, any> = {
             ...values
         };
-        
+
         // Add avatar file if provided (only for profile form)
         if (avatarFile) {
             submissionData.image = avatarFile;
         }
-        
+
         updateUserProfileMutation.mutate(
             { body: submissionData },
             {
@@ -218,7 +225,7 @@ function RouteComponent() {
     return (
         <div className="flex flex-col gap-6 w-full">
             <ProfileHeader />
-            
+
             <Tabs defaultValue="profile">
                 <div className="grid md:grid-cols-[220px_minmax(0px,_1fr)] max-w-6xl gap-x-6 w-full ">
                     {/* Navigation Tabs */}
@@ -230,36 +237,47 @@ function RouteComponent() {
                     <div className="w-full">
                         {/* Profile Tab */}
                         <TabsContent value="profile" className="mt-0 w-full">
-                            <ProfileInfoForm 
+                            <ProfileInfoForm
                                 ref={profileInfoFormRef}
-                                form={profileForm} 
-                                onSubmit={onProfileFormSubmit} 
+                                form={profileForm}
+                                onSubmit={onProfileFormSubmit}
                                 error={profileUpdateError}
                             />
                         </TabsContent>
 
                         {/* Personal Info Tab */}
                         <TabsContent value="personal" className="mt-0 w-full">
-                            <PersonalInfoForm form={personalInfoForm} 
-                            onSubmit={onPersonalInfoSubmit} 
-                            error={personalInfoUpdateError} />
+                            <PersonalInfoForm form={personalInfoForm}
+                                onSubmit={onPersonalInfoSubmit}
+                                error={personalInfoUpdateError} />
                         </TabsContent>
 
                         {/* Security Tab */}
                         <TabsContent value="security" className="mt-0 w-full">
-                            {userProfile && (userProfile.providerId === "email" || userProfile.providerId === "credential") ? (
-                                <SecurityForm 
-                                    form={securityForm} 
-                                    onSubmit={onSecuritySubmit} 
-                                    error={securityUpdateError} 
+                            <div className='flex flex-col gap-6'>
+                                {userProfile && (userProfile.providerId === "email" || userProfile.providerId === "credential") ? (
+                                    <SecurityForm
+                                        form={securityForm}
+                                        onSubmit={onSecuritySubmit}
+                                        error={securityUpdateError}
+                                    />
+                                ) : (
+                                    <div className="p-4 text-center">
+                                        <p className="text-muted-foreground">
+                                            {t("user.profile.security.notAvailable")}
+                                        </p>
+                                    </div>
+                                )}
+                                
+                                {/* show session list */}
+                                <SessionList 
+                                    sessions={sessions as UserSession[]}
+                                    isLoading={sessionsLoading}
+                                    isError={sessionsError}
+                                    currentToken={authUser?.token || null}
+                                    refetch={refetchSessions}
                                 />
-                            ) : (
-                                <div className="p-4 text-center">
-                                    <p className="text-muted-foreground">
-                                        {t("user.profile.security.notAvailable")}
-                                    </p>
-                                </div>
-                            )}
+                            </div>
                         </TabsContent>
 
                         {/* Privacy Tab */}
