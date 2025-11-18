@@ -110,8 +110,8 @@ function RouteComponent() {
     },
     schema: {
       name: z.string().min(1, "Name is required"),
-      email: z.string().email("Invalid email").min(1, "Email is required"),
-      password: z.string({required_error: "Password is required"}).min(8, "Password must be at least 8 characters"),
+      email: z.email("Invalid email").min(1, "Email is required"),
+      password: z.string().min(1, { message: "Password is required" }).min(8, "Password must be at least 8 characters"),
       role: z.string().min(1, "Role is required"),
     },
     defaultValue: {
@@ -138,8 +138,8 @@ function RouteComponent() {
       },
     },
     schema: {
-      password: z.string({required_error: "Password is required"}).min(8, "Password must be at least 8 characters"),
-      confirmPassword: z.string({required_error: "Confirm Password is required"}).min(8, "Confirm Password must be at least 8 characters"),
+      password: z.string().min(1, { message: "Password is required" }).min(8, "Password must be at least 8 characters"),
+      confirmPassword: z.string().min(1, { message: "Confirm Password is required" }).min(8, "Confirm Password must be at least 8 characters"),
     },
     defaultValue: {
       password: "",

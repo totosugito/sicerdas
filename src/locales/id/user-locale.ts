@@ -4,6 +4,10 @@ export default {
         description: "Kelola pengaturan dan preferensi akun Anda.",
         loading: "Memuat profil...",
         error: "Gagal memuat profil. Silakan coba lagi.",
+        errorTitle: "Gagal Memuat Profil",
+        errorDescription: "Terjadi kesalahan saat memuat data profil Anda. Silakan coba lagi.",
+        unableToLoad: "Tidak Dapat Memuat Profil",
+        tryAgainLater: "Terjadi kesalahan saat memuat profil Anda. Silakan coba lagi nanti.",
         tabs: {
             editProfile: "Profil",
             personalInfo: "Data Pribadi",
@@ -40,7 +44,38 @@ export default {
             dateOfBirth: "Tanggal Lahir",
             dateOfBirthPlaceholder: "Tanggal lahir",
             updateError: "Gagal memperbarui data pribadi. Silakan coba lagi.",
-            updateSuccess: "Data pribadi berhasil diperbarui."
+            updateSuccess: "Data pribadi berhasil diperbarui.",
+            educationLevel: "Level Pendidikan",
+            educationLevelPlaceholder: "Level pendidikan Anda",
+            educationLevelOptions: {
+                paud: "PAUD",
+                tk: "TK",
+                sd: "SD",
+                mi: "MI",
+                smp: "SMP",
+                mts: "MTs",
+                sma: "SMA",
+                smk: "SMK",
+                stm: "STM",
+                university: "Universitas",
+                other: "Lainnya"
+            },
+            gradeOptions: {
+                grade0: "Playgroup",
+                grade1: "Kelas 1",
+                grade2: "Kelas 2",
+                grade3: "Kelas 3",
+                grade4: "Kelas 4",
+                grade5: "Kelas 5",
+                grade6: "Kelas 6",
+                grade7: "Kelas 7",
+                grade8: "Kelas 8",
+                grade9: "Kelas 9",
+                grade10: "Kelas 10",
+                grade11: "Kelas 11",
+                grade12: "Kelas 12",
+                other: "Lainnya"
+            }
         },
         security: {
             title: "Ubah Kata Sandi",
@@ -79,6 +114,7 @@ export default {
             ipAddress: "IP",
             unknownLocation: "Lokasi tidak diketahui",
             logout: "Keluar",
+            revokeAll: "Hapus Semua Sesi",
             error: "Gagal memuat sesi. Silakan coba lagi.",
             errorTitle: "Gagal Memuat Sesi",
             errorDescription: "Terjadi kesalahan saat memuat sesi Anda. Silakan coba lagi.",
@@ -86,7 +122,16 @@ export default {
             noSessions: "Tidak ada sesi aktif.",
             noOtherSessions: "Tidak ada sesi lainnya.",
             noOtherSessionsTitle: "Tidak Ada Sesi Lain",
-            noOtherSessionsDescription: "Anda hanya memiliki satu sesi aktif di perangkat ini."
+            noOtherSessionsDescription: "Anda hanya memiliki satu sesi aktif di perangkat ini.",
+            confirmLogoutTitle: "Konfirmasi Keluar Sesi",
+            confirmLogoutDescription: "Apakah Anda yakin ingin keluar dari sesi ini? Anda akan perlu masuk kembali di perangkat tersebut.",
+            confirmRevokeAllTitle: "Konfirmasi Hapus Semua Sesi",
+            confirmRevokeAllDescription: "Apakah Anda yakin ingin menghapus semua sesi lainnya? Anda akan keluar dari semua perangkat kecuali perangkat saat ini.",
+            cancel: "Batal",
+            confirm: "Konfirmasi",
+            sessionRevoked: "Sesi berhasil dihapus",
+            allSessionsRevoked: "Semua sesi berhasil dihapus",
+            revokeError: "Gagal menghapus sesi. Silakan coba lagi."
         }
     }
 }

@@ -31,6 +31,7 @@ export const AppApi = {
     changePassword: APP_URL_API + "/user/change-password",
     avatar: APP_URL_API + "/user/avatar",
     sessions: APP_URL_API + "/user/sessions",
+    revokeSession: APP_URL_API + "/user/multi-session/revoke",
   },
   project: {
     list: APP_URL_V1 + "/project/list",

@@ -88,7 +88,7 @@ function OtpVerificationComponent() {
               } 
             });
           } else {
-            setErrorMessage(t("otpVerification.invalidOtp"));
+            setErrorMessage(response?.data?.message || t("otpVerification.invalidOtp"));
           }
         },
         onError: (error: Record<string, any>) => {
@@ -151,7 +151,7 @@ function OtpVerificationComponent() {
       
       <div className="w-full max-w-md relative">
         {/* Card with glass morphism effect */}
-        <div className="bg-card/80 backdrop-blur-xl rounded-2xl shadow-xl border border-border/50 p-8 space-y-6 relative overflow-hidden">
+        <div className="bg-card/80 backdrop-blur-xl rounded-xl shadow-xl border border-border/50 p-8 space-y-6 relative overflow-hidden">
           {/* Subtle gradient overlay */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent" />
           

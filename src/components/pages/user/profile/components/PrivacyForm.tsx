@@ -52,7 +52,7 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
   return (
     <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full pb-0">
       <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
-        <CardTitle className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight">
+        <CardTitle className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight">
           {t("user.profile.privacy.title")}
         </CardTitle>
       </CardHeader>

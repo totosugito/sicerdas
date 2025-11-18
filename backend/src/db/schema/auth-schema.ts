@@ -1,6 +1,7 @@
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { boolean, pgTable, text, timestamp, uuid, varchar, jsonb } from 'drizzle-orm/pg-core';
 import {EnumUserRole, PgEnumUserRole} from "./enum-auth.ts";
+import { EnumEducationLevel, PgEnumEducationLevel } from './enum-app.ts';
 
 /**
  * Table: users
@@ -33,7 +34,7 @@ export const users = pgTable('users', {
   email: varchar({ length: 50 }).notNull().unique(),
   emailVerified: boolean('email_verified').notNull().default(false),
   name: varchar('name', { length: 50 }).notNull(),
-  role: PgEnumUserRole('role').notNull().default(EnumUserRole.user),
+  role: PgEnumUserRole('role').notNull().default(EnumUserRole.USER),
   image: text('image'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').notNull(),
@@ -188,6 +189,7 @@ export const userProfile = pgTable('user_profiles', {
   
   // Educational information
   school: varchar('school', { length: 255 }),
+  educationLevel: PgEnumEducationLevel('education_level').default(EnumEducationLevel.UNKNOWN),
   grade: varchar('grade', { length: 50 }),
   
   // Contact information

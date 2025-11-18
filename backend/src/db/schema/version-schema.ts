@@ -33,8 +33,8 @@ export const appVersion = pgTable('app_version', {
   id: serial('id').primaryKey().notNull(),
   appVersion: integer('app_version').notNull(),
   dbVersion: integer('db_version').notNull(),
-  dataType: PgEnumContentType('data_type').notNull().default(EnumContentType.book),
-  status: PgEnumContentStatus('status').notNull().default(EnumContentStatus.unpublished),
+  dataType: PgEnumContentType('data_type').notNull().default(EnumContentType.BOOK),
+  status: PgEnumContentStatus('status').notNull().default(EnumContentStatus.UNPUBLISHED),
   name: text('name').default(''),
   note: text('note')
     .default(''),

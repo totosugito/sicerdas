@@ -25,8 +25,8 @@ async function seed() {
         id: 1,
         appVersion: 1,
         dbVersion: 250101,
-        dataType: EnumContentType.book,
-        status: EnumContentStatus.published,
+        dataType: EnumContentType.BOOK,
+        status: EnumContentStatus.PUBLISHED,
         name: "",
         note: "Initial Data"},
     ]

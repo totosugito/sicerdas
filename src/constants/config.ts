@@ -18,5 +18,5 @@ export const APP_CONFIG = {
     defaultPrivate: "/",
   },
   cloud: 'https://s3.nevaobjects.id/sicerdas',
-  RESEND_OTP_DELAY: 10, // 2 minutes
+  RESEND_OTP_DELAY: 120, // 2 minutes
 }

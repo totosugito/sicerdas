@@ -6,6 +6,15 @@ import { AlertTriangle, Laptop, LucideIcon, Monitor, RefreshCw, Smartphone, Tabl
 import { formatDistanceToNow, parseISO } from 'date-fns'
 import { enUS, id } from 'date-fns/locale'
 import type { UserSession } from '@/service/user-api'
+import { useState } from 'react'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from '@/components/ui/dialog'
 
 interface SessionItem {
   id: string
@@ -19,7 +28,7 @@ interface SessionItem {
 
 const getDeviceIcon = (userAgent: string | null): LucideIcon => {
   if (!userAgent) return Monitor
-  
+
   const lowerUA = userAgent.toLowerCase()
   if (lowerUA.includes('mobile') || lowerUA.includes('iphone') || lowerUA.includes('android')) {
     return Smartphone
@@ -33,7 +42,7 @@ const getDeviceIcon = (userAgent: string | null): LucideIcon => {
 
 const getDeviceName = (userAgent: string | null): string => {
   if (!userAgent) return 'Unknown Device'
-  
+
   const lowerUA = userAgent.toLowerCase()
   if (lowerUA.includes('iphone')) return 'iPhone'
   if (lowerUA.includes('ipad')) return 'iPad'
@@ -42,13 +51,13 @@ const getDeviceName = (userAgent: string | null): string => {
   if (lowerUA.includes('windows')) return 'Windows PC'
   if (lowerUA.includes('mac')) return 'Mac'
   if (lowerUA.includes('linux')) return 'Linux PC'
-  
+
   return 'Unknown Device'
 }
 
 const getBrowserName = (userAgent: string | null): string => {
   if (!userAgent) return 'Unknown Browser'
-  
+
   const lowerUA = userAgent.toLowerCase()
   if (lowerUA.includes('chrome') && !lowerUA.includes('edge')) {
     return 'Chrome'
@@ -82,20 +91,54 @@ interface SessionListProps {
   isError: boolean
   currentToken: string | null
   refetch?: () => void
+  onRevokeSession?: (sessionToken: string) => void
+  onRevokeAllSessions?: () => void
 }
 
-export function SessionList({ sessions, isLoading, isError, currentToken, refetch }: SessionListProps) {
+export function SessionList({ sessions, isLoading, isError, currentToken, refetch, onRevokeSession, onRevokeAllSessions }: SessionListProps) {
   const { t, i18n } = useTranslation()
-    
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isRevokeAllDialogOpen, setIsRevokeAllDialogOpen] = useState(false)
+  const [sessionToRevoke, setSessionToRevoke] = useState<string | null>(null)
+
+  const handleRevokeClick = (sessionToken: string) => {
+    setSessionToRevoke(sessionToken)
+    setIsDialogOpen(true)
+  }
+
+  const confirmRevoke = () => {
+    if (onRevokeSession && sessionToRevoke) {
+      onRevokeSession(sessionToRevoke)
+      setIsDialogOpen(false)
+      setSessionToRevoke(null)
+    }
+  }
+
+  const cancelRevoke = () => {
+    setIsDialogOpen(false)
+    setSessionToRevoke(null)
+  }
+
+  const confirmRevokeAll = () => {
+    if (onRevokeAllSessions) {
+      onRevokeAllSessions()
+      setIsRevokeAllDialogOpen(false)
+    }
+  }
+
+  const cancelRevokeAll = () => {
+    setIsRevokeAllDialogOpen(false)
+  }
+
   // Separate sessions into current and others
-  const currentSession = sessions?.find(session => 
+  const currentSession = sessions?.find(session =>
     currentToken && session.token.startsWith(currentToken)
   ) || null
-  
-  const otherSessions = sessions?.filter(session => 
+
+  const otherSessions = sessions?.filter(session =>
     !currentToken || !session.token.startsWith(currentToken)
   ) || []
-  
+
   if (isLoading) {
     return (
       <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full">
@@ -121,7 +164,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
       </Card>
     )
   }
-  
+
   if (isError) {
     return (
       <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full">
@@ -141,7 +184,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
             <p className="text-muted-foreground mb-6 max-w-md">
               {t("user.profile.sessions.errorDescription") || "Terjadi kesalahan saat memuat sesi Anda. Silakan coba lagi."}
             </p>
-            <Button 
+            <Button
               variant="default"
               onClick={() => refetch ? refetch() : window.location.reload()}
               className="flex items-center gap-2"
@@ -154,65 +197,111 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
       </Card>
     )
   }
-  
+
   return (
-    <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full">
-      <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
-        <CardTitle className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight">
-          {t("user.profile.sessions.title")}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="px-6 py-4">
-        <div className="space-y-6">
-          {/* Current Session Section */}
-          {currentSession && (
-            <section>
-              <h3 className="text-[#212529] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-1 pb-3">
-                {t("user.profile.sessions.currentSession")}
-              </h3>
-              <div 
-                className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 min-h-[72px] justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-green-500/30"
-              >
-                <div className="flex items-center gap-4 w-full">
-                  <div className="flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 shrink-0 size-12">
-                    <Globe className="text-primary dark:text-primary-foreground h-6 w-6" />
+    <>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("user.profile.sessions.confirmLogoutTitle") || "Konfirmasi Keluar Sesi"}</DialogTitle>
+            <DialogDescription>
+              {t("user.profile.sessions.confirmLogoutDescription") || "Apakah Anda yakin ingin keluar dari sesi ini? Anda akan perlu masuk kembali di perangkat tersebut."}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={cancelRevoke}>
+              {t("user.profile.sessions.cancel") || "Batal"}
+            </Button>
+            <Button variant="default" onClick={confirmRevoke}>
+              {t("user.profile.sessions.confirm") || "Konfirmasi"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isRevokeAllDialogOpen} onOpenChange={setIsRevokeAllDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("user.profile.sessions.confirmRevokeAllTitle") || "Konfirmasi Hapus Semua Sesi"}</DialogTitle>
+            <DialogDescription>
+              {t("user.profile.sessions.confirmRevokeAllDescription") || "Apakah Anda yakin ingin menghapus semua sesi lainnya? Anda akan keluar dari semua perangkat kecuali perangkat saat ini."}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={cancelRevokeAll}>
+              {t("user.profile.sessions.cancel") || "Batal"}
+            </Button>
+            <Button variant="destructive" onClick={confirmRevokeAll}>
+              {t("user.profile.sessions.revokeAll") || "Hapus Semua"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full">
+        <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
+          <CardTitle className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight">
+            {t("user.profile.sessions.title")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-6 pb-0 space-y-6 w-full">
+          <div className="space-y-6">
+            {/* Current Session Section */}
+            {currentSession && (
+              <section>
+                <h3 className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight tracking-[-0.015em] px-1 pb-3">
+                  {t("user.profile.sessions.currentSession")}
+                </h3>
+                <div
+                  className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 min-h-[72px] justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-green-500/30"
+                >
+                  <div className="flex items-center gap-4 w-full">
+                    <div className="flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 shrink-0 size-12">
+                      <Globe className="text-primary dark:text-primary-foreground h-6 w-6" />
+                    </div>
+                    <div className="flex flex-col justify-center">
+                      <p className="text-[#212529] dark:text-white text-base font-medium leading-normal line-clamp-1">
+                        {getDeviceName(currentSession.userAgent)} • {getBrowserName(currentSession.userAgent)}
+                      </p>
+                      <p className="text-[#6C757D] dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">
+                        {currentSession.ipAddress ? `${t("user.profile.sessions.ipAddress")}: ${currentSession.ipAddress}` : t("user.profile.sessions.unknownLocation")}
+                        {formatDateDistance(currentSession.createdAt, i18n.language) && ` - ${formatDateDistance(currentSession.createdAt, i18n.language)}`}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex flex-col justify-center">
-                    <p className="text-[#212529] dark:text-white text-base font-medium leading-normal line-clamp-1">
-                      {getDeviceName(currentSession.userAgent)} • {getBrowserName(currentSession.userAgent)}
-                    </p>
-                    <p className="text-[#6C757D] dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">
-                      {currentSession.ipAddress ? `${t("user.profile.sessions.ipAddress")}: ${currentSession.ipAddress}` : t("user.profile.sessions.unknownLocation")}
-                      {formatDateDistance(currentSession.createdAt, i18n.language) && ` - ${formatDateDistance(currentSession.createdAt, i18n.language)}`}
-                    </p>
+                  <div className="shrink-0 ml-auto sm:ml-0">
+                    <div className="flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-700 dark:bg-green-500/20 dark:text-green-300 rounded-full text-xs font-medium">
+                      <div className="size-2 rounded-full bg-green-500"></div>
+                      <span>{t("user.profile.sessions.thisDevice")}</span>
+                    </div>
                   </div>
                 </div>
-                <div className="shrink-0 ml-auto sm:ml-0">
-                  <div className="flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-700 dark:bg-green-500/20 dark:text-green-300 rounded-full text-xs font-medium">
-                    <div className="size-2 rounded-full bg-green-500"></div>
-                    <span>{t("user.profile.sessions.thisDevice")}</span>
-                  </div>
-                </div>
+              </section>
+            )}
+
+            {/* Other Sessions Section */}
+            {(otherSessions && otherSessions.length > 0) && (<section>
+              <div className="flex flex-row justify-between items-center pb-3">
+                <h3 className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight tracking-[-0.015em] px-1">
+                  {t("user.profile.sessions.otherSessions")}
+                </h3>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setIsRevokeAllDialogOpen(true)}
+                >
+                  {t("user.profile.sessions.revokeAll")}
+                </Button>
               </div>
-            </section>
-          )}
-          
-          {/* Other Sessions Section */}
-          <section>
-            <h3 className="text-[#212529] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-1 pb-3">
-              {t("user.profile.sessions.otherSessions")}
-            </h3>
-            <div className="space-y-4">
-              {otherSessions && otherSessions.length > 0 ? (
-                otherSessions.map((session) => {
+              <div className="space-y-4">
+                {otherSessions.map((session) => {
                   const DeviceIcon = getDeviceIcon(session.userAgent)
                   const deviceName = getDeviceName(session.userAgent)
                   const browserName = getBrowserName(session.userAgent)
                   const timeAgo = formatDateDistance(session.createdAt, i18n.language)
-                  
+
                   return (
-                    <div 
-                      key={session.id} 
+                    <div
+                      key={session.id}
                       className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 min-h-[72px] justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg"
                     >
                       <div className="flex items-center gap-4 w-full">
@@ -233,7 +322,9 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
                         <Button
                           variant="outline"
                           size="sm"
-                          className="border border-gray-300 dark:border-gray-600 text-[#212529] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
+                          onClick={() => {
+                            handleRevokeClick(session.token)
+                          }}
                         >
                           {t("user.profile.sessions.logout")}
                         </Button>
@@ -241,16 +332,13 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
                     </div>
                   )
                 })
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  {t("user.profile.sessions.noOtherSessions")}
-                </div>
-              )}
-            </div>
-          </section>
-        </div>
-      </CardContent>
-    </Card>
+                }
+              </div>
+            </section>)}
+          </div>
+        </CardContent>
+      </Card>
+    </>
   )
 }
 

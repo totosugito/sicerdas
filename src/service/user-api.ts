@@ -47,6 +47,10 @@ interface ChangePasswordData {
   newPassword: string;
 }
 
+interface RevokeSessionData {
+  sessionToken: string;
+}
+
 // Queries
 export const useUserProfileQuery = () => {
   return useQuery<UserProfile>({
@@ -122,3 +126,14 @@ export const useRemoveUserAvatarMutation = () => {
     },
   });
 }
+
+export const useRevokeUserSessionMutation = () => {
+  return useMutation({
+    mutationKey: ['revokeUserSession'],
+    mutationFn: async ({body}: { body: RevokeSessionData }) => {
+      const response = await fetchApi({method: "POST", url: AppApi.user.revokeSession, body: body});
+      return response;
+    },
+  });
+}
+

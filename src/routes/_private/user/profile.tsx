@@ -10,11 +10,14 @@ import {
     createProfileInfoFormData, createPersonalInfoFormData, createSecurityFormData, createPrivacyFormData
 } from '@/components/pages/user/profile'
 import { ProfileInfoFormRef } from '@/components/pages/user/profile/components/ProfileInfoForm'
+import { ProfileLoadingView, ProfileErrorView } from '@/components/pages/user/profile/components/ProfileStatusView'
 import { useUserProfileQuery, useUpdateUserProfileMutation, useChangeUserPasswordMutation, useUserSessionsQuery } from '@/service/user-api'
-import { showNotifSuccess } from '@/lib/show-notif'
+import { showNotifError, showNotifSuccess } from '@/lib/show-notif'
 import { string_to_date } from '@/lib/my-utils'
 import { useAuth } from '@/hooks/use-auth'
 import type { UserSession } from '@/service/user-api'
+
+import { authClient } from '@/lib/auth-client'
 
 export const Route = createFileRoute('/_private/user/profile')({
     component: RouteComponent,
@@ -32,7 +35,7 @@ function RouteComponent() {
     
     // Fetch user sessions data
     const { data: sessions, isLoading: sessionsLoading, isError: sessionsError, refetch: refetchSessions } = useUserSessionsQuery();
-
+        
     // Define schemas for each tab inside the component to access the translation function
     const profileFormData = createProfileInfoFormData(t);
     const personalInfoFormData = createPersonalInfoFormData(t);
@@ -76,6 +79,7 @@ function RouteComponent() {
                 school: userData.school ?? '',
                 grade: userData.grade ?? '',
                 dateOfBirth: userData.dateOfBirth ? string_to_date(userData.dateOfBirth) : undefined,
+                educationLevel: userData.educationLevel ?? '',
             });
 
             // Populate privacy form with data from extra field
@@ -200,26 +204,50 @@ function RouteComponent() {
         );
     }
 
+    // Add this function to handle session revocation
+    const handleRevokeSession = async (sessionToken: string) => {
+        await authClient.revokeSession({
+            token: sessionToken
+        }).then(() => {
+            showNotifSuccess({ message: t('user.profile.sessions.sessionRevoked') });
+            refetchSessions();
+        }).catch((error: Record<string, any>) => {
+            const errorMessage = error?.response?.data?.message || t('user.profile.sessions.revokeError');
+            showNotifError({ message: error?.message || errorMessage });
+        });
+    };
+
+    const handleRevokeAllSessions = async () => {
+        await authClient.revokeOtherSessions().then(() => {
+            showNotifSuccess({ message: t('user.profile.sessions.allSessionsRevoked') });
+            refetchSessions();
+        }).catch((error: Record<string, any>) => {
+            const errorMessage = error?.response?.data?.message || t('user.profile.sessions.revokeError');
+            showNotifError({ message: error?.message || errorMessage });
+        });
+
+        // revokeAllUserSessionsMutation.mutate(
+        //     undefined,
+        //     {
+        //         onSuccess: (success: any) => {
+        //             showNotifSuccess({ message: success?.message || t('user.profile.sessions.allSessionsRevoked') });
+        //             // Refresh the sessions list
+        //             refetchSessions();
+        //         },
+        //         onError: (error: Record<string, any>) => {
+        //             const errorMessage = error?.response?.data?.message || t('user.profile.sessions.revokeError');
+        //             showNotifError({ message: error?.message || errorMessage });
+        //         }
+        //     }
+        // );
+    };
+
     if (isLoading) {
-        return (
-            <div className="flex flex-col gap-6 w-full">
-                <ProfileHeader />
-                <div className="flex justify-center items-center h-64">
-                    <div className="text-lg">{t("user.profile.loading")}</div>
-                </div>
-            </div>
-        );
+        return <ProfileLoadingView isLoading={true} />;
     }
 
     if (isError) {
-        return (
-            <div className="flex flex-col gap-6 w-full">
-                <ProfileHeader />
-                <div className="flex justify-center items-center h-64">
-                    <div className="text-lg text-red-500">{t("user.profile.error")}</div>
-                </div>
-            </div>
-        );
+        return <ProfileErrorView isError={true} />;
     }
 
     return (
@@ -276,6 +304,8 @@ function RouteComponent() {
                                     isError={sessionsError}
                                     currentToken={authUser?.token || null}
                                     refetch={refetchSessions}
+                                    onRevokeSession={handleRevokeSession}
+                                    onRevokeAllSessions={handleRevokeAllSessions}
                                 />
                             </div>
                         </TabsContent>

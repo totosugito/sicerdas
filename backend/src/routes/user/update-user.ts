@@ -23,6 +23,7 @@ const UpdateUserResponse = Type.Object({
     phone: Type.Union([Type.String(), Type.Null()]),
     address: Type.Union([Type.String(), Type.Null()]),
     bio: Type.Union([Type.String(), Type.Null()]),
+    educationLevel: Type.Union([Type.String(), Type.Null()]),
     dateOfBirth: Type.Union([Type.String(), Type.Null()]),
     extra: Type.Object({}, { additionalProperties: true }),
     createdAt: Type.String({ format: 'date-time' }),
@@ -156,7 +157,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Separate user and profile data
       const userFields = ['name'];
-      const profileFields = ['school', 'grade', 'phone', 'address', 'bio', 'dateOfBirth', 'extra']; // Add 'extra' to profileFields
+      const profileFields = ['school', 'grade', 'phone', 'address', 'bio', 'dateOfBirth', 'extra', 'educationLevel']; // Add 'extra' to profileFields
 
       const userData: Record<string, unknown> = {};
       const profileData: Record<string, unknown> = {};
@@ -220,6 +221,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         phone: userProfile.phone,
         address: userProfile.address,
         bio: userProfile.bio,
+        educationLevel: userProfile.educationLevel,
         dateOfBirth: userProfile.dateOfBirth,
         extra: userProfile.extra
       })

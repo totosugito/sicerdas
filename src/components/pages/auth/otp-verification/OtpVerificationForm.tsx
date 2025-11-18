@@ -15,7 +15,7 @@ import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/f
 
 // Create schema for OTP verification
 const createOtpVerificationSchema = (t: (key: string) => string) => z.object({
-  email: z.string().email({ message: t("message.invalidEmail") }).min(1, { message: t("message.emailRequired") }),
+  email: z.email({ message: t("message.invalidEmail") }).min(1, { message: t("message.emailRequired") }),
   otp: z.string().min(6, { message: t("message.otpRequired") }),
 });
 
@@ -25,24 +25,10 @@ export type OtpVerificationFormValues = {
 };
 
 const otpVerificationFormData = {
-    form: {
-        email: {
-            type: "email",
-            name: "email",
-            label: "labels.email",
-            placeholder: "forgotPassword.emailPlaceholder",
-        },
-        otp: {
-            type: "text",
-            name: "otp",
-            label: "labels.otpCode",
-            placeholder: "forgotPassword.otpPlaceholder",
-        }
-    },
-    defaultValue: {
-        email: "",
-        otp: "",
-    } satisfies OtpVerificationFormValues
+  defaultValue: {
+    email: "",
+    otp: "",
+  } satisfies OtpVerificationFormValues
 }
 
 type Props = {
@@ -54,10 +40,10 @@ type Props = {
 
 export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email }: Props) => {
   const { t } = useTranslation();
-  
+
   // Create schema with translated error messages
   const schema = createOtpVerificationSchema(t);
-  
+
   const form = useForm<OtpVerificationFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -65,23 +51,6 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
       email: email || ""
     },
   });
-
-  // Create a copy of the form data with translated labels and placeholders
-  const translatedFormData = {
-    ...otpVerificationFormData,
-    form: {
-      email: {
-        ...otpVerificationFormData.form.email,
-        label: t(otpVerificationFormData.form.email.label),
-        placeholder: t(otpVerificationFormData.form.email.placeholder),
-      },
-      otp: {
-        ...otpVerificationFormData.form.otp,
-        label: t(otpVerificationFormData.form.otp.label),
-        placeholder: t(otpVerificationFormData.form.otp.placeholder),
-      }
-    }
-  };
 
   return (
     <Form {...form}>
@@ -108,28 +77,28 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
                     disabled={loading}
                   >
                     <InputOTPGroup className="flex flex-row gap-2">
-                      <InputOTPSlot 
-                        index={0} 
+                      <InputOTPSlot
+                        index={0}
                         className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
                       />
-                      <InputOTPSlot 
-                        index={1} 
+                      <InputOTPSlot
+                        index={1}
                         className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
                       />
-                      <InputOTPSlot 
-                        index={2} 
+                      <InputOTPSlot
+                        index={2}
                         className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
                       />
-                      <InputOTPSlot 
-                        index={3} 
+                      <InputOTPSlot
+                        index={3}
                         className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
                       />
-                      <InputOTPSlot 
-                        index={4} 
+                      <InputOTPSlot
+                        index={4}
                         className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
                       />
-                      <InputOTPSlot 
-                        index={5} 
+                      <InputOTPSlot
+                        index={5}
                         className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
                       />
                     </InputOTPGroup>

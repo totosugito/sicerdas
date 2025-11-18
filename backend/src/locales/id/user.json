@@ -75,6 +75,13 @@
       "loginRequired": "Anda harus masuk untuk mengakses sumber daya ini.",
       "accessDenied": "Anda tidak memiliki izin untuk mengakses sumber daya ini."
     },
+    "sessions": {
+      "tokenRequired": "Token sesi diperlukan",
+      "sessionNotFound": "Sesi tidak ditemukan",
+      "accessDenied": "Anda tidak memiliki izin untuk mencabut sesi ini",
+      "sessionRevoked": "Sesi berhasil dihapus",
+      "allSessionsRevoked": "Semua sesi berhasil dihapus"
+    },
     "noValidUpdateData": "Tidak ada data pembaruan yang valid",
     "userNotFound": "Pengguna tidak ditemukan",
     "userUpdatedSuccessfully": "Data pengguna berhasil diperbarui",

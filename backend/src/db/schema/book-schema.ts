@@ -45,7 +45,7 @@ export const bookCategory = pgTable('book_category', {
   extra: jsonb("extra")
     .$type<Record<string, unknown>>()
     .default({}),
-  status: PgEnumContentStatus('status').notNull().default(EnumContentStatus.published),
+  status: PgEnumContentStatus('status').notNull().default(EnumContentStatus.PUBLISHED),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
@@ -83,7 +83,7 @@ export const bookGroup = pgTable('book_group', {
   extra: jsonb("extra")
     .$type<Record<string, unknown>>()
     .default({}),
-  status: PgEnumContentStatus('status').notNull().default(EnumContentStatus.published),
+  status: PgEnumContentStatus('status').notNull().default(EnumContentStatus.PUBLISHED),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
@@ -133,7 +133,7 @@ export const books = pgTable('books', {
   publishedYear: varchar('published_year', { length: 32 }).notNull(),
   totalPages: integer('total_pages').notNull(),
   size: integer('size').notNull(),
-  status: PgEnumContentStatus('status').notNull().default(EnumContentStatus.published),
+  status: PgEnumContentStatus('status').notNull().default(EnumContentStatus.PUBLISHED),
   extra: jsonb("extra")
     .$type<Record<string, unknown>>()
     .default({}),

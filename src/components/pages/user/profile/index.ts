@@ -5,3 +5,4 @@ export { PersonalInfoForm, createPersonalInfoFormData } from './components/Perso
 export { SecurityForm, createSecurityFormData } from './components/SecurityForm'
 export { PrivacyForm, createPrivacyFormData } from './components/PrivacyForm'
 export { SessionList } from './components/SessionList'
+export { ProfileLoadingView, ProfileErrorView } from './components/ProfileStatusView'
