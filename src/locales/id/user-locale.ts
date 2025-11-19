@@ -45,8 +45,8 @@ export default {
             dateOfBirthPlaceholder: "Tanggal lahir",
             updateError: "Gagal memperbarui data pribadi. Silakan coba lagi.",
             updateSuccess: "Data pribadi berhasil diperbarui.",
-            educationLevel: "Level Pendidikan",
-            educationLevelPlaceholder: "Level pendidikan Anda",
+            educationLevel: "Tingkat Pendidikan",
+            educationLevelPlaceholder: "Tingkat pendidikan Anda",
             educationLevelOptions: {
                 paud: "PAUD",
                 tk: "TK",
