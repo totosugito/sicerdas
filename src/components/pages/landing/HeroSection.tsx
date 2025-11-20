@@ -46,10 +46,10 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
                                 placeholder={t('landing.hero.searchPlaceholder')}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-10 h-12 bg-card border-border"
+                                className="pl-10 bg-card border-border"
                             />
                         </div>
-                        <Button type="submit" size="lg" className="h-12 px-8">
+                        <Button type="submit" className="px-8">
                             {t('landing.hero.searchButton')}
                         </Button>
                     </motion.form>
@@ -61,12 +61,12 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
                         className="flex flex-wrap justify-center gap-4"
                     >
                         <Link to="/books/latest">
-                            <Button size="lg">
+                            <Button>
                                 <BookOpen className="mr-2 h-5 w-5" />
                                 {t('landing.hero.exploreBooks')}
                             </Button>
                         </Link>
-                        <Button size="lg" variant="outline">
+                        <Button variant="outline">
                             <Trophy className="mr-2 h-5 w-5" />
                             {t('landing.hero.takeQuiz')}
                         </Button>
