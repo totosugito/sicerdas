@@ -8,6 +8,8 @@ import resetPassword from './reset-password-locale';
 import otpVerification from './otp-verification-locale';
 import message from './message-locale';
 import user from './user-locale';
+import landing from './landing-locale';
+import booksLatest from './books-latest-locale';
 
 const localeId = {
   translation: {
@@ -20,7 +22,9 @@ const localeId = {
     resetPassword: resetPassword,
     otpVerification: otpVerification,
     message: message,
-    user: user
+    user: user,
+    landing: landing,
+    booksLatest: booksLatest
   }
 }
 

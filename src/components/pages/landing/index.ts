@@ -1,0 +1,5 @@
+export { HeroSection } from './HeroSection'
+export { FeaturesSection } from './FeaturesSection'
+export { AndroidAppSection } from './AndroidAppSection'
+export { CTASection } from './CTASection'
+export { Footer } from './Footer'

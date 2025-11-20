@@ -26,8 +26,8 @@ const AuthLayout = ({ children, t }: { children: React.ReactNode; t: ReturnType<
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent" />
         {children}
       </div>
-      <div className="text-center mt-6 text-sm text-muted-foreground/70">
-        <p>© {new Date().getFullYear()} {t("app.footerCopyright")}</p>
+      <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
+        <p>© {new Date().getFullYear()} {t('app.copyright')}</p>
       </div>
     </div>
   </div>

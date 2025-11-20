@@ -1,7 +1,7 @@
-import {create} from 'zustand';
-import {persist} from 'zustand/middleware';
-import {APP_CONFIG} from '@/constants/config';
-import {AuthProps} from '@/types/auth';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { APP_CONFIG } from '@/constants/config';
+import { AuthProps } from '@/types/auth';
 
 type Store = {
   user: AuthProps | null;
@@ -10,6 +10,8 @@ type Store = {
 
   theme: string;
   setTheme: (theme: string) => void;
+  language: string;
+  setLanguage: (language: string) => void;
   openSideMenu: boolean;
   setOpenSideMenu: (openSideMenu: boolean) => void;
 };
@@ -20,14 +22,16 @@ export const useAuthStore = create<Store>()(
       {
         // Auth slice
         user: null,
-        login: (user) => set({user}),
-        logout: () => set({user: null, theme: 'light', openSideMenu: true}),
+        login: (user) => set({ user }),
+        logout: () => set({ user: null, theme: 'light', language: 'id', openSideMenu: true }),
 
         // Theme slice
         theme: 'light',
-        setTheme: (theme) => set({theme}),
+        setTheme: (theme) => set({ theme }),
+        language: 'id',
+        setLanguage: (language) => set({ language }),
         openSideMenu: true,
-        setOpenSideMenu: (openSideMenu) => set({openSideMenu}),
+        setOpenSideMenu: (openSideMenu) => set({ openSideMenu }),
       }
     ),
     {

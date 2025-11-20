@@ -32,7 +32,7 @@ export const Route = createFileRoute('/_auth/otp-reset-password')({
 const AuthLayout = ({ children, t }: { children: React.ReactNode; t: ReturnType<typeof useTranslation>["t"] }) => (
   <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-muted">
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--accent)/0.1),transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.1),transparent_50%)]" />
-    
+
     <div className="w-full max-w-md relative">
       {/* Card with glass morphism effect */}
       <div className="bg-card/80 backdrop-blur-xl rounded-xl shadow-xl border border-border/50 p-8 space-y-6 relative overflow-hidden">
@@ -40,8 +40,8 @@ const AuthLayout = ({ children, t }: { children: React.ReactNode; t: ReturnType<
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent" />
         {children}
       </div>
-      <div className="text-center mt-6 text-sm text-muted-foreground/70">
-        <p>© {new Date().getFullYear()} {t("app.footerCopyright")}</p>
+      <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
+        <p>© {new Date().getFullYear()} {t('app.copyright')}</p>
       </div>
     </div>
   </div>
@@ -91,9 +91,9 @@ function ResetPasswordComponent() {
         {
           onError: (error: Record<string, any>) => {
             // Navigate to OTP verification page if verification fails
-            navigate({ 
-              to: AppRoute.auth.otpVerification.url, 
-              search: { email: search.email } 
+            navigate({
+              to: AppRoute.auth.otpVerification.url,
+              search: { email: search.email }
             });
           },
         }
@@ -105,14 +105,14 @@ function ResetPasswordComponent() {
     setErrorMessage(undefined);
     setSuccessMessage(undefined);
     setIsSuccess(false);
-    
+
     // Prepare the data with email, otp, and password
     const resetData = {
       email: search.email,
       otp: search.otp.toString(),
       password: data.password
     };
-    
+
     emailOtpResetPasswordMutation.mutate(
       { body: resetData },
       {
@@ -124,10 +124,10 @@ function ResetPasswordComponent() {
         },
         onError: (error: Record<string, any>) => {
           // Handle different types of errors
-          const errorMsg = error?.response?.data?.message || 
-                          error?.response?.data?.error || 
-                          error?.message ||
-                          t("resetPassword.errorMessage");
+          const errorMsg = error?.response?.data?.message ||
+            error?.response?.data?.error ||
+            error?.message ||
+            t("resetPassword.errorMessage");
           setErrorMessage(errorMsg);
         },
       }
@@ -142,7 +142,7 @@ function ResetPasswordComponent() {
   if (isSuccess) {
     return (
       <AuthLayout t={t}>
-        <AuthHeader 
+        <AuthHeader
           icon={<CheckCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
           title={t("resetPassword.title")}
@@ -156,7 +156,7 @@ function ResetPasswordComponent() {
               {successMessage || t("resetPassword.successMessage")}
             </p>
           </div>
-          
+
           <Button onClick={handleBackToLogin} className="w-full">
             {t("resetPassword.backToSignIn")}
           </Button>
@@ -169,7 +169,7 @@ function ResetPasswordComponent() {
   if (errorMessage) {
     return (
       <AuthLayout t={t}>
-        <AuthHeader 
+        <AuthHeader
           icon={<AlertCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
           title={t("resetPassword.title")}
@@ -181,7 +181,7 @@ function ResetPasswordComponent() {
             <h2 className="text-xl font-semibold text-foreground mb-2">{t("resetPassword.errorTitle")}</h2>
             <p className="text-sm text-destructive font-medium">{errorMessage || t("resetPassword.errorMessage")}</p>
           </div>
-          
+
           <div className="flex flex-col gap-3">
             <Button onClick={() => setErrorMessage(undefined)} className="w-full">
               {t("resetPassword.tryAgain")}
@@ -198,7 +198,7 @@ function ResetPasswordComponent() {
   // Default Form View - only show if token is valid
   return (
     <AuthLayout t={t}>
-      <AuthHeader 
+      <AuthHeader
         icon={<Lock className="w-8 h-8 text-white" />}
         appName={t("app.appName")}
         title={t("resetPassword.title")}
@@ -207,7 +207,7 @@ function ResetPasswordComponent() {
 
       {/* Reset password form */}
       <ResetPasswordForm onFormSubmit={onFormSubmit} loading={emailOtpResetPasswordMutation.isPending} errorMessage={errorMessage} />
-      
+
       <div className="mt-6 text-center">
         <p className="text-sm text-muted-foreground">
           {t("resetPassword.backToSignIn")}{" "}

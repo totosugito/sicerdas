@@ -28,7 +28,7 @@ export const Route = createFileRoute('/_auth/sign-up')({
 const AuthLayout = ({ children, t }: { children: React.ReactNode; t: ReturnType<typeof useTranslation>["t"] }) => (
   <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-muted">
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--accent)/0.1),transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.1),transparent_50%)]" />
-    
+
     <div className="w-full max-w-md relative">
       {/* Card with glass morphism effect */}
       <div className="bg-card/80 backdrop-blur-xl rounded-xl shadow-xl border border-border/50 p-8 space-y-6 relative overflow-hidden">
@@ -36,8 +36,8 @@ const AuthLayout = ({ children, t }: { children: React.ReactNode; t: ReturnType<
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent" />
         {children}
       </div>
-      <div className="text-center mt-6 text-sm text-muted-foreground/70">
-        <p>© {new Date().getFullYear()} {t("app.footerCopyright")}</p>
+      <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
+        <p>© {new Date().getFullYear()} {t('app.copyright')}</p>
       </div>
     </div>
   </div>
@@ -90,10 +90,10 @@ function SignUpComponent() {
         },
         onError: (error: Record<string, any>) => {
           // Handle different types of errors
-          const errorMsg = error?.response?.data?.message || 
-                          error?.response?.data?.error || 
-                          error?.message ||
-                          t("signUp.signUpFailedMessage");
+          const errorMsg = error?.response?.data?.message ||
+            error?.response?.data?.error ||
+            error?.message ||
+            t("signUp.signUpFailedMessage");
           setErrorMessage(errorMsg);
         },
       }
@@ -113,7 +113,7 @@ function SignUpComponent() {
   if (isSuccess) {
     return (
       <AuthLayout t={t}>
-        <AuthHeader 
+        <AuthHeader
           icon={<CheckCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
           title={t("signUp.title")}
@@ -127,7 +127,7 @@ function SignUpComponent() {
               {successMessage || t("signUp.signUpSuccessMessage")}
             </p>
           </div>
-          
+
           <Button onClick={handleContinueToLogin} className="w-full">
             {t("labels.signIn")}
           </Button>
@@ -140,7 +140,7 @@ function SignUpComponent() {
   if (errorMessage) {
     return (
       <AuthLayout t={t}>
-        <AuthHeader 
+        <AuthHeader
           icon={<AlertCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
           title={t("signUp.title")}
@@ -152,7 +152,7 @@ function SignUpComponent() {
             <h2 className="text-xl font-semibold text-foreground mb-2">{t("signUp.signUpFailedTitle")}</h2>
             <p className="text-sm text-destructive font-medium">{errorMessage || t("signUp.signUpFailedMessage")}</p>
           </div>
-          
+
           <div className="flex flex-col gap-3">
             <Button onClick={() => setErrorMessage(undefined)} className="w-full">
               {t("signUp.tryAgain")}
@@ -169,7 +169,7 @@ function SignUpComponent() {
   // Default Form View
   return (
     <AuthLayout t={t}>
-      <AuthHeader 
+      <AuthHeader
         icon={<UserPlus className="w-8 h-8 text-white" />}
         appName={t("app.appName")}
         title={t("signUp.title")}
@@ -178,7 +178,7 @@ function SignUpComponent() {
 
       {/* Sign up form */}
       <SignUpForm onFormSubmit={onFormSubmit} loading={signUpMutation.isPending} errorMessage={errorMessage} />
-      
+
       <div className="mt-6 text-center">
         <p className="text-sm text-muted-foreground">
           {t("signUp.alreadyHaveAccount")}{" "}
