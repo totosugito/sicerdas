@@ -5,7 +5,7 @@ import { SubmitHandler } from 'react-hook-form'
 import { useEmailOtpForgetPasswordMutation } from "@/service/auth-api";
 import { useTranslation } from 'react-i18next';
 import { AlertCircle, CheckCircle, Mail } from 'lucide-react';
-import { ForgotPasswordForm, ForgetPasswordFormValues, createForgetPasswordBodyParam } from '@/components/pages/auth/otp-forget-password';
+import { ForgetPasswordForm } from '@/components/pages/auth/otp-forget-password';
 import { useState } from 'react';
 import { AppRoute } from '@/constants/app-route';
 import { Button } from '@/components/ui/button';
@@ -64,12 +64,14 @@ function ForgetPasswordComponent() {
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const onFormSubmit: SubmitHandler<ForgetPasswordFormValues> = (data) => {
+  const onFormSubmit: SubmitHandler<Record<string, any>> = (data) => {
     setErrorMessage(undefined);
     setSuccessMessage(undefined);
     setIsSuccess(false);
     emailOtpForgetPassowrdMutation.mutate(
-      { body: createForgetPasswordBodyParam(data) },
+      {
+        body: data
+      },
       {
         onSuccess: (responseData: any) => {
           // Store the success message from API response
@@ -163,7 +165,7 @@ function ForgetPasswordComponent() {
       />
 
       {/* Forgot password form */}
-      <ForgotPasswordForm onFormSubmit={onFormSubmit} loading={emailOtpForgetPassowrdMutation.isPending} errorMessage={errorMessage} />
+      <ForgetPasswordForm onFormSubmit={onFormSubmit} loading={emailOtpForgetPassowrdMutation.isPending} errorMessage={errorMessage} />
 
       <div className="mt-6 text-center">
         <p className="text-sm text-muted-foreground">

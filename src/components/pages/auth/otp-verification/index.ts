@@ -1,1 +1,1 @@
-export * from './OtpVerificationForm'
+export {OtpVerificationForm} from './OtpVerificationForm'

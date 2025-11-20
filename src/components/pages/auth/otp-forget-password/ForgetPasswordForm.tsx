@@ -4,41 +4,60 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormInput } from "@/components/custom/forms";
 import { Loader2, Mail, ArrowRight } from "lucide-react";
-import { forgetPasswordFormData, createForgetPasswordSchema } from "./templates/forget-password-template";
 import { useTranslation } from 'react-i18next';
+import { z } from "zod";
+import { APP_CONFIG } from "@/constants/config";
 
 type Props = {
-  onFormSubmit: SubmitHandler<any>
+  onFormSubmit: SubmitHandler<Record<string, any>>;
   loading?: boolean,
   errorMessage?: string,
 }
 
+// Define ForgetPasswordFormValues type directly in this file
+export type ForgetPasswordFormValues = {
+  email: string;
+};
+
 export const ForgetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
   const { t } = useTranslation();
-  
-  // Create schema with translated error messages
-  const schema = createForgetPasswordSchema(t);
+
+  // Define forgetPasswordFormData directly in this file
+  const forgetPasswordFormData = {
+    form: {
+      email: {
+        type: "text",
+        name: "email",
+        label: t("forgetPassword.emailAddress"),
+        placeholder: t("forgetPassword.emailPlaceholder"),
+      }
+    },
+    defaultValue: {
+      email: APP_CONFIG.demoUser.email,
+    } satisfies ForgetPasswordFormValues
+  };
+
+  // Create schema with translated error messages directly in this file
+  const schema = z.object({
+    email: z.email({ message: t("forgotPassword.invalidEmail") }),
+  });
   
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: forgetPasswordFormData.defaultValue,
   });
 
-  // Create a copy of the form data with translated labels and placeholders
-  const translatedFormData = {
-    ...forgetPasswordFormData,
-    form: {
-      email: {
-        ...forgetPasswordFormData.form.email,
-        label: t(forgetPasswordFormData.form.email.label),
-        placeholder: t(forgetPasswordFormData.form.email.placeholder),
-      }
+  const onFormSubmit_ = (data: ForgetPasswordFormValues) => {
+    const values = {
+      email: data?.email ?? "",
+      redirectTo: `${window.location.origin}/reset-password`
     }
+    onFormSubmit(values);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onFormSubmit)} className="space-y-5">
+      <form onSubmit={form.handleSubmit(onFormSubmit_)} className="space-y-5">
         {errorMessage && (
           <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 flex items-start space-x-2">
             <div className="text-sm text-destructive font-medium">{errorMessage}</div>
@@ -50,7 +69,7 @@ export const ForgetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Prop
             <Mail className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormInput
               form={form}
-              item={translatedFormData.form.email}
+              item={forgetPasswordFormData.form.email}
               className="pl-10"
               showMessage={false}
             />

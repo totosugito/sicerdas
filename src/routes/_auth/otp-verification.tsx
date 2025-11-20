@@ -6,7 +6,7 @@ import { SubmitHandler } from 'react-hook-form'
 import { useEmailOtpVerifyForgetPasswordMutation, useEmailOtpForgetPasswordMutation } from "@/service/auth-api";
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck, Timer, Loader2 } from 'lucide-react';
-import { OtpVerificationForm, OtpVerificationFormValues } from '@/components/pages/auth/otp-verification';
+import { OtpVerificationForm } from '@/components/pages/auth/otp-verification';
 import { useState, useEffect } from 'react';
 import { AppRoute } from '@/constants/app-route';
 import { z } from 'zod';
@@ -111,7 +111,7 @@ function OtpVerificationComponent() {
     };
   }, [showTimer, timer]);
 
-  const onFormSubmit: SubmitHandler<OtpVerificationFormValues> = (data) => {
+  const onFormSubmit: SubmitHandler<Record<string, any>> = (data) => {
     setErrorMessage(undefined);
     
     // First verify the OTP with the correct parameters

@@ -5,12 +5,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { LoginFormValues } from "@/types/auth";
 import { FormInput, FormPassword } from "@/components/custom/forms";
 import { Loader2, Mail, Lock, LogIn, AlertCircle } from "lucide-react";
-import { signInFormData, createSignInSchema } from "./templates/sign-in-template";
 import { useTranslation } from 'react-i18next';
 import { AppRoute } from "@/constants/app-route";
+import { z } from "zod";
+import { APP_CONFIG } from "@/constants/config";
 
 type Props = {
-  onFormSubmit: SubmitHandler<LoginFormValues>
+  onFormSubmit: SubmitHandler<FormData>
   loading?: boolean,
   errorMessage?: string,
   onGoogleSignIn?: () => void; // Add Google sign in handler
@@ -19,34 +20,49 @@ type Props = {
 export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn }: Props) => {
   const { t } = useTranslation();
   
-  // Create schema with translated error messages
-  const schema = createSignInSchema(t);
+  // Define signInFormData directly in this file
+  const signInFormData = {
+    form: {
+      email: {
+        type: "text",
+        name: "email",
+        label: t("labels.emailAddress"),
+        placeholder: t("signIn.emailPlaceholder"),
+      },
+      password: {
+        type: "password",
+        name: "password",
+        label: t("labels.password"),
+        placeholder: t("signIn.passwordPlaceholder"),
+      }
+    },
+    defaultValue: {
+      email: APP_CONFIG.demoUser.email,
+      password: APP_CONFIG.demoUser.password,
+    } satisfies LoginFormValues
+  };
+
+  // Create schema with translated error messages directly in this file
+  const schema = z.object({
+    email: z.email({ message: t("signIn.invalidEmail") }),
+    password: z.string().min(1, { message: t("signIn.passwordRequired") }),
+  });
   
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(schema),
     defaultValues: signInFormData.defaultValue,
   });
 
-  // Create a copy of the form data with translated labels and placeholders
-  const translatedFormData = {
-    ...signInFormData,
-    form: {
-      email: {
-        ...signInFormData.form.email,
-        label: t(signInFormData.form.email.label),
-        placeholder: t(signInFormData.form.email.placeholder),
-      },
-      password: {
-        ...signInFormData.form.password,
-        label: t(signInFormData.form.password.label),
-        placeholder: t(signInFormData.form.password.placeholder),
-      }
-    }
+  const onFormSubmit_ = (data: LoginFormValues) => {
+    const values = new FormData();
+    values.append('email', data?.email ?? "");
+    values.append('password', data?.password ?? "");
+    onFormSubmit(values);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onFormSubmit)} className="space-y-5">
+      <form onSubmit={form.handleSubmit(onFormSubmit_)} className="space-y-5">
         {errorMessage && (
           <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 flex items-start space-x-2">
             <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
@@ -58,7 +74,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
             <Mail className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormInput
               form={form}
-              item={translatedFormData.form.email}
+              item={signInFormData.form.email}
               className="pl-10"
               showMessage={false}
             />
@@ -67,7 +83,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
             <Lock className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormPassword
               form={form}
-              item={translatedFormData.form.password}
+              item={signInFormData.form.password}
               className="pl-10"
               showMessage={false}
             />

@@ -5,7 +5,7 @@ import {
 import { SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next';
 import { Lock, AlertCircle, CheckCircle } from 'lucide-react';
-import { ResetPasswordForm, ResetPasswordFormValues } from '@/components/pages/auth/otp-reset-password';
+import { ResetPasswordForm } from '@/components/pages/auth/otp-reset-password';
 import { useState, useEffect } from 'react';
 import { AppRoute } from '@/constants/app-route';
 import { Button } from '@/components/ui/button';
@@ -101,7 +101,7 @@ function ResetPasswordComponent() {
     }
   }, [search.email, search.otp]);
 
-  const onFormSubmit: SubmitHandler<ResetPasswordFormValues> = (data) => {
+  const onFormSubmit: SubmitHandler<Record<string, any>> = (data) => {
     setErrorMessage(undefined);
     setSuccessMessage(undefined);
     setIsSuccess(false);

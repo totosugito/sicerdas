@@ -5,10 +5,9 @@ import {
 import { z } from 'zod'
 
 import { SubmitHandler } from 'react-hook-form'
-import { LoginFormValues } from "@/types/auth";
 import { useLoginMutation } from "@/service/auth-api";
 import { useTranslation } from 'react-i18next';
-import { createSignInBodyParam, SignInForm } from '@/components/pages/auth/sign-in';
+import { SignInForm } from '@/components/pages/auth/sign-in'; // Updated import path
 import { useState } from 'react';
 import { authClient } from '@/lib/auth-client'; // Import authClient for social login
 
@@ -33,10 +32,10 @@ function LoginComponent() {
   const loginMutation = useLoginMutation();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
-  const onFormSubmit: SubmitHandler<LoginFormValues> = (data) => {
+  const onFormSubmit: SubmitHandler<FormData> = (data) => {
     setErrorMessage(undefined);
     loginMutation.mutate(
-      { body: createSignInBodyParam(data) },
+      { body: data },
       {
         onSuccess: (data: any) => {
           navigate({ to: search.redirect || fallback })

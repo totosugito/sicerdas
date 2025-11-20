@@ -32,7 +32,7 @@ const otpVerificationFormData = {
 }
 
 type Props = {
-  onFormSubmit: SubmitHandler<OtpVerificationFormValues>
+  onFormSubmit: SubmitHandler<Record<string, any>>
   loading?: boolean,
   errorMessage?: string,
   email?: string,
@@ -52,9 +52,15 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
     },
   });
 
+  const onFormSubmit_ = (data: OtpVerificationFormValues) => {
+    onFormSubmit({
+      otp: data.otp,
+    });
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onFormSubmit)} className="space-y-5">
+      <form onSubmit={form.handleSubmit(onFormSubmit_)} className="space-y-5">
         {errorMessage && (
           <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 flex items-start space-x-2">
             <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />

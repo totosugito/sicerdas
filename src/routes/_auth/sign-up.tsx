@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { SubmitHandler } from 'react-hook-form'
 import { useSignUpMutation } from "@/service/auth-api";
 import { useTranslation } from 'react-i18next';
-import { SignUpForm, SignUpFormValues, createSignUpBodyParam } from '@/components/pages/auth/sign-up';
+import { SignUpForm } from '@/components/pages/auth/sign-up';
 import { useState } from 'react';
 import { AppRoute } from '@/constants/app-route';
 import { Button } from "@/components/ui/button";
@@ -75,12 +75,12 @@ function SignUpComponent() {
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const onFormSubmit: SubmitHandler<SignUpFormValues> = (data) => {
+  const onFormSubmit: SubmitHandler<FormData> = (data) => {
     setErrorMessage(undefined);
     setSuccessMessage(undefined);
     setIsSuccess(false);
     signUpMutation.mutate(
-      { body: createSignUpBodyParam(data) },
+      { body: data },
       {
         onSuccess: (data: any) => {
           // Store the success message from API response
