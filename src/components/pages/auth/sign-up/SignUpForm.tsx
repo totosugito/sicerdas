@@ -58,29 +58,29 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
         )}
         <div className="space-y-4">
           <div className="relative">
-            <User className="absolute left-3 top-9.5 h-4 w-4 text-muted-foreground" />
+            <User className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormInput
               form={form}
               item={translatedFormData.form.name}
-              className="pl-10 h-12"
+              className="pl-10"
               showMessage={false}
             />
           </div>
           <div className="relative">
-            <Mail className="absolute left-3 top-9.5 h-4 w-4 text-muted-foreground" />
+            <Mail className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormInput
               form={form}
               item={translatedFormData.form.email}
-              className="pl-10 h-12"
+              className="pl-10"
               showMessage={false}
             />
           </div>
           <div className="relative">
-            <Lock className="absolute left-3 top-9.5 h-4 w-4 text-muted-foreground" />
+            <Lock className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormPassword
               form={form}
               item={translatedFormData.form.password}
-              className="pl-10 h-12"
+              className="pl-10"
               showMessage={false}
             />
           </div>
@@ -88,7 +88,7 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
 
         <Button
           type="submit"
-          className="w-full h-12"
+          className="w-full"
           disabled={loading}
         >
           {loading ? (

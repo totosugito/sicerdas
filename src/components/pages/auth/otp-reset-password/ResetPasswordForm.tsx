@@ -53,20 +53,20 @@ export const ResetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props
         )}
         <div className="space-y-4">
           <div className="relative">
-            <Lock className="absolute left-3 top-9.5 h-4 w-4 text-muted-foreground" />
+            <Lock className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormPassword
               form={form}
               item={translatedFormData.form.password}
-              className="pl-10 h-12"
+              className="pl-10"
               showMessage={true}
             />
           </div>
           <div className="relative">
-            <Check className="absolute left-3 top-9.5 h-4 w-4 text-muted-foreground" />
+            <Check className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormPassword
               form={form}
               item={translatedFormData.form.confirmPassword}
-              className="pl-10 h-12"
+              className="pl-10"
               showMessage={true}
             />
           </div>
@@ -74,7 +74,7 @@ export const ResetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props
 
         <Button
           type="submit"
-          className="w-full h-12"
+          className="w-full"
           disabled={loading}
         >
           {loading ? (

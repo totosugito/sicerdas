@@ -7,6 +7,7 @@ export default {
     backToSignIn: "Kembali ke halaman Masuk",
     tryAgain: "Coba Lagi",
     successTitle: "Sukses Pengiriman Instruksi",
+    failTitle: "Gagal Pengiriman Instruksi",
     invalidEmail: "Email tidak valid",
     emailPlaceholder: "Masukkan email Anda",
     emailAddress: "Alamat Email",

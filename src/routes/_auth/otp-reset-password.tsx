@@ -48,12 +48,12 @@ const AuthLayout = ({ children, t }: { children: React.ReactNode; t: ReturnType<
 );
 
 // Extract the common header to reduce duplication
-const AuthHeader = ({ icon, appName, title }: { icon: React.ReactNode; appName: string; title: string }) => (
-  <div className="text-center space-y-2">
+const AuthHeader = ({ icon, appName, title, description }: { icon: React.ReactNode; appName: string; title: string, description: string }) => (
+  <div className="text-center space-y-0">
     <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-0 shadow-lg">
       {icon}
     </div>
-    <div className="text-lg font-bold tracking-tight text-foreground">
+    <div className="text-lg font-bold tracking-tight text-foreground mb-2">
       <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
         {appName}
       </span>
@@ -63,6 +63,9 @@ const AuthHeader = ({ icon, appName, title }: { icon: React.ReactNode; appName: 
         {title}
       </span>
     </h1>
+    <p className="text-muted-foreground">
+      {description}
+    </p>
   </div>
 );
 
@@ -135,7 +138,6 @@ function ResetPasswordComponent() {
     navigate({ to: AppRoute.auth.signIn.url });
   }
 
-  
   // Success View
   if (isSuccess) {
     return (
@@ -144,8 +146,9 @@ function ResetPasswordComponent() {
           icon={<CheckCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
           title={t("resetPassword.title")}
+          description={""}
         />
-        {/* Success message */}
+        {/* Success card */}
         <div className="text-center space-y-6">
           <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
             <h2 className="text-xl font-semibold text-foreground mb-2">{t("resetPassword.successTitle")}</h2>
@@ -154,7 +157,7 @@ function ResetPasswordComponent() {
             </p>
           </div>
           
-          <Button onClick={handleBackToLogin} className="w-full h-12">
+          <Button onClick={handleBackToLogin} className="w-full">
             {t("resetPassword.backToSignIn")}
           </Button>
         </div>
@@ -170,17 +173,23 @@ function ResetPasswordComponent() {
           icon={<AlertCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
           title={t("resetPassword.title")}
+          description={""}
         />
-        {/* Error message */}
+        {/* Error card */}
         <div className="text-center space-y-6">
           <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
             <h2 className="text-xl font-semibold text-foreground mb-2">{t("resetPassword.errorTitle")}</h2>
             <p className="text-sm text-destructive font-medium">{errorMessage || t("resetPassword.errorMessage")}</p>
           </div>
           
-          <Button onClick={handleBackToLogin} className="w-full h-12">
-            {t("resetPassword.backToSignIn")}
-          </Button>
+          <div className="flex flex-col gap-3">
+            <Button onClick={() => setErrorMessage(undefined)} className="w-full">
+              {t("resetPassword.tryAgain")}
+            </Button>
+            <Button variant="outline" onClick={handleBackToLogin} className="w-full">
+              {t("resetPassword.backToSignIn")}
+            </Button>
+          </div>
         </div>
       </AuthLayout>
     );
@@ -193,12 +202,8 @@ function ResetPasswordComponent() {
         icon={<Lock className="w-8 h-8 text-white" />}
         appName={t("app.appName")}
         title={t("resetPassword.title")}
+        description={t("resetPassword.instructions")}
       />
-      <div className="text-center space-y-2">
-        <p className="text-muted-foreground">
-          {t("resetPassword.instructions")}
-        </p>
-      </div>
 
       {/* Reset password form */}
       <ResetPasswordForm onFormSubmit={onFormSubmit} loading={emailOtpResetPasswordMutation.isPending} errorMessage={errorMessage} />

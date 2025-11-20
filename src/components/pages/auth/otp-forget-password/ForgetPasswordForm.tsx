@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormInput } from "@/components/custom/forms";
 import { Loader2, Mail, ArrowRight } from "lucide-react";
-import { forgotPasswordFormData, createForgotPasswordSchema } from "./templates/forget-password-template";
+import { forgetPasswordFormData, createForgetPasswordSchema } from "./templates/forget-password-template";
 import { useTranslation } from 'react-i18next';
 
 type Props = {
@@ -17,21 +17,21 @@ export const ForgetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Prop
   const { t } = useTranslation();
   
   // Create schema with translated error messages
-  const schema = createForgotPasswordSchema(t);
+  const schema = createForgetPasswordSchema(t);
   
   const form = useForm({
     resolver: zodResolver(schema),
-    defaultValues: forgotPasswordFormData.defaultValue,
+    defaultValues: forgetPasswordFormData.defaultValue,
   });
 
   // Create a copy of the form data with translated labels and placeholders
   const translatedFormData = {
-    ...forgotPasswordFormData,
+    ...forgetPasswordFormData,
     form: {
       email: {
-        ...forgotPasswordFormData.form.email,
-        label: t(forgotPasswordFormData.form.email.label),
-        placeholder: t(forgotPasswordFormData.form.email.placeholder),
+        ...forgetPasswordFormData.form.email,
+        label: t(forgetPasswordFormData.form.email.label),
+        placeholder: t(forgetPasswordFormData.form.email.placeholder),
       }
     }
   };
@@ -47,11 +47,11 @@ export const ForgetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Prop
         
         <div className="space-y-4">
           <div className="relative">
-            <Mail className="absolute left-3 top-9.5 h-4 w-4 text-muted-foreground" />
+            <Mail className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormInput
               form={form}
               item={translatedFormData.form.email}
-              className="pl-10 h-12"
+              className="pl-10"
               showMessage={false}
             />
           </div>
@@ -59,18 +59,18 @@ export const ForgetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Prop
 
         <Button
           type="submit"
-          className="w-full h-12"
+          className="w-full"
           disabled={loading}
         >
           {loading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t("labels.forgotPassword")}...
+              {t("labels.forgetPassword")}...
             </>
           ) : (
             <>
               <ArrowRight className="mr-2 h-4 w-4" />
-              {t("labels.forgotPassword")}
+              {t("labels.forgetPassword")}
             </>
           )}
         </Button>

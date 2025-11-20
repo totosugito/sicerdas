@@ -3,7 +3,7 @@ export default {
     signUp: "Daftar",
     signOut: "Keluar",
     signingUp: "Mendaftarkan",
-    forgotPassword: "Lupa Kata Sandi",
+    forgetPassword: "Lupa Kata Sandi",
     resetPassword: "Atur Ulang Kata Sandi",
     resettingPassword: "Mengatur Ulang Kata Sandi",
     verifyOtp: "Verifikasi OTP",

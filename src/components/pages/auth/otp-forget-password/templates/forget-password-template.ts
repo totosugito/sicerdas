@@ -1,31 +1,31 @@
 import { z } from "zod"
 import { APP_CONFIG } from "@/constants/config"
 
-export type ForgotPasswordFormValues = {
+export type ForgetPasswordFormValues = {
   email: string;
 };
 
 // We'll create the schema dynamically in the component where we have access to translations
-const createForgotPasswordSchema = (t: (key: string) => string) => z.object({
+const createForgetPasswordSchema = (t: (key: string) => string) => z.object({
   email: z.email({ message: t("forgotPassword.invalidEmail") }),
 });
 
-const forgotPasswordFormData = {
+const forgetPasswordFormData = {
     form: {
         email: {
             type: "text",
             name: "email",
-            label: "forgotPassword.emailAddress",
-            placeholder: "forgotPassword.emailPlaceholder",
+            label: "forgetPassword.emailAddress",
+            placeholder: "forgetPassword.emailPlaceholder",
         }
     },
     defaultValue: {
         email: APP_CONFIG.demoUser.email,
-    } satisfies ForgotPasswordFormValues
+    } satisfies ForgetPasswordFormValues
 }
 
 // Updated to return JSON object instead of FormData to match backend expectations
-const createForgotPasswordBodyParam = (data: Record<string, any>) => {
+const createForgetPasswordBodyParam = (data: Record<string, any>) => {
     return {
         email: data?.email ?? "",
         // Add redirect URL
@@ -33,4 +33,4 @@ const createForgotPasswordBodyParam = (data: Record<string, any>) => {
     };
 }
 
-export { forgotPasswordFormData, createForgotPasswordBodyParam, createForgotPasswordSchema }
+export { forgetPasswordFormData, createForgetPasswordBodyParam, createForgetPasswordSchema }

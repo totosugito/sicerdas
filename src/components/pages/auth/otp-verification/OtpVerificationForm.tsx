@@ -112,7 +112,7 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
 
         <Button
           type="submit"
-          className="w-full h-12 mt-2"
+          className="w-full"
           disabled={loading}
         >
           {loading ? (

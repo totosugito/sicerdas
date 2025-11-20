@@ -1,3 +1,3 @@
 export { ForgetPasswordForm as ForgotPasswordForm } from './ForgetPasswordForm';
-export { forgotPasswordFormData, createForgotPasswordBodyParam, type ForgotPasswordFormValues } from './templates/forget-password-template';
-export { createForgotPasswordSchema } from './templates/forget-password-template';
+export { forgetPasswordFormData, createForgetPasswordBodyParam, type ForgetPasswordFormValues } from './templates/forget-password-template';
+export { createForgetPasswordSchema } from './templates/forget-password-template';

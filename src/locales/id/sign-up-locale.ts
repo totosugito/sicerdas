@@ -1,7 +1,7 @@
 export default {
     title: "Daftar",
     description: "Buat akun baru",
-    signUpDescription: "Masukkan detail Anda untuk membuat akun baru",
+    signUpDescription: "Masukkan data Anda untuk membuat akun baru",
     successMessage: "Akun Anda berhasil dibuat.",
     failedMessage: "Gagal membuat akun. Silakan coba lagi.",
     alreadyHaveAccount: "Sudah memiliki akun?",

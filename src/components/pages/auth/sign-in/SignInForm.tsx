@@ -55,20 +55,20 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
         )}
         <div className="space-y-4">
           <div className="relative">
-            <Mail className="absolute left-3 top-9.5 h-4 w-4 text-muted-foreground" />
+            <Mail className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormInput
               form={form}
               item={translatedFormData.form.email}
-              className="pl-10 h-12"
+              className="pl-10"
               showMessage={false}
             />
           </div>
           <div className="relative">
-            <Lock className="absolute left-3 top-9.5 h-4 w-4 text-muted-foreground" />
+            <Lock className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormPassword
               form={form}
               item={translatedFormData.form.password}
-              className="pl-10 h-12"
+              className="pl-10"
               showMessage={false}
             />
           </div>
@@ -80,13 +80,13 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
             <span>{t("labels.rememberMe")}</span>
           </label>
           <a href={AppRoute.auth.otpForgetPassword.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
-            {t("labels.forgotPassword")}
+            {t("labels.forgetPassword")}
           </a>
         </div>
 
         <Button
           type="submit"
-          className="w-full h-12"
+          className="w-full"
           disabled={loading}
         >
           {loading ? (
@@ -119,7 +119,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
             <Button
               type="button"
               variant="outline"
-              className="w-full h-12"
+              className="w-full"
               onClick={onGoogleSignIn}
             >
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">

@@ -44,12 +44,12 @@ const AuthLayout = ({ children, t }: { children: React.ReactNode; t: ReturnType<
 );
 
 // Extract the common header to reduce duplication
-const AuthHeader = ({ icon, appName, title }: { icon: React.ReactNode; appName: string; title: string }) => (
-  <div className="text-center space-y-2">
+const AuthHeader = ({ icon, appName, title, description }: { icon: React.ReactNode; appName: string; title: string, description: string }) => (
+  <div className="text-center space-y-0">
     <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-0 shadow-lg">
       {icon}
     </div>
-    <div className="text-lg font-bold tracking-tight text-foreground">
+    <div className="text-lg font-bold tracking-tight text-foreground mb-2">
       <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
         {appName}
       </span>
@@ -59,6 +59,9 @@ const AuthHeader = ({ icon, appName, title }: { icon: React.ReactNode; appName: 
         {title}
       </span>
     </h1>
+    <p className="text-muted-foreground">
+      {description}
+    </p>
   </div>
 );
 
@@ -114,6 +117,7 @@ function SignUpComponent() {
           icon={<CheckCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
           title={t("signUp.title")}
+          description={""}
         />
         {/* Success card */}
         <div className="text-center space-y-6">
@@ -124,7 +128,7 @@ function SignUpComponent() {
             </p>
           </div>
           
-          <Button onClick={handleContinueToLogin} className="w-full h-12">
+          <Button onClick={handleContinueToLogin} className="w-full">
             {t("labels.signIn")}
           </Button>
         </div>
@@ -140,6 +144,7 @@ function SignUpComponent() {
           icon={<AlertCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
           title={t("signUp.title")}
+          description={""}
         />
         {/* Error card */}
         <div className="text-center space-y-6">
@@ -149,10 +154,10 @@ function SignUpComponent() {
           </div>
           
           <div className="flex flex-col gap-3">
-            <Button onClick={() => setErrorMessage(undefined)} className="w-full h-12">
+            <Button onClick={() => setErrorMessage(undefined)} className="w-full">
               {t("signUp.tryAgain")}
             </Button>
-            <Button variant="outline" onClick={handleBackToLogin} className="w-full h-12">
+            <Button variant="outline" onClick={handleBackToLogin} className="w-full">
               {t("labels.signIn")}
             </Button>
           </div>
@@ -168,12 +173,8 @@ function SignUpComponent() {
         icon={<UserPlus className="w-8 h-8 text-white" />}
         appName={t("app.appName")}
         title={t("signUp.title")}
+        description={t("signUp.signUpDescription")}
       />
-      <div className="text-center space-y-2">
-        <p className="text-muted-foreground">
-          {t("signUp.signUpDescription")}
-        </p>
-      </div>
 
       {/* Sign up form */}
       <SignUpForm onFormSubmit={onFormSubmit} loading={signUpMutation.isPending} errorMessage={errorMessage} />
