@@ -80,7 +80,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       const userResult = userWithAllData[0];
       
       if (!userResult) {
-        return reply.notFound(req.i18n.t('userNotFound')); // Using i18n translation
+        return reply.notFound(req.i18n.t('userNotFound'));
       }
 
       return reply.status(200).send({

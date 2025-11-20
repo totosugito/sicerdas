@@ -15,7 +15,9 @@ export const authClient = createAuthClient({
       enabled: true,
     },
   },
-  plugins: [emailOTPClient()],
+  plugins: [
+    emailOTPClient(),
+  ],
   // session: {
   //   cookieCache: {
   //     enabled: true,

@@ -81,10 +81,11 @@ const auth = betterAuth({
           }
         }
       },
-    }),
+    }), 
   ],
   socialProviders: {
     google: {
+      prompt: "select_account",
       clientId: envConfig.oauth?.google?.clientId || "",
       clientSecret: envConfig.oauth?.google?.clientSecret || "",
     },

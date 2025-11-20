@@ -53,6 +53,7 @@ export default {
   server: {
     cookiePrefix: env.COOKIE_PREFIX,
     secretKey: env.BETTER_AUTH_SECRET,
+    protocol: env.PROTOCOL,
     host: env.HOST,
     port: env.PORT,
     frontendUrl: env.FRONTEND_URL,

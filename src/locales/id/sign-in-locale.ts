@@ -8,4 +8,7 @@ export default {
     newUser: "Pengguna Baru?",
     invalidEmail: "Email tidak valid",
     passwordRequired: "Kata sandi diperlukan",
+    orContinueWith: "Atau lanjutkan dengan",
+    continueWithGoogle: "Lanjutkan dengan Google",
+    googleSignInError: "Gagal masuk dengan Google. Silakan coba lagi.",
 }

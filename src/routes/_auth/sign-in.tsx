@@ -10,6 +10,7 @@ import { useLoginMutation } from "@/service/auth-api";
 import { useTranslation } from 'react-i18next';
 import { createSignInBodyParam, SignInForm } from '@/components/pages/auth/sign-in';
 import { useState } from 'react';
+import { authClient } from '@/lib/auth-client'; // Import authClient for social login
 
 const fallback = '/' as const
 export const Route = createFileRoute('/_auth/sign-in')({
@@ -47,6 +48,14 @@ function LoginComponent() {
     );
   }
 
+  // Handle Google Sign In
+  const handleGoogleSignIn = async () => {
+    const data = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: `${window.location.origin}/user/profile`,
+    });
+  }
+
   return (
    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-muted">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--accent)/0.1),transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.1),transparent_50%)]" />
@@ -78,7 +87,12 @@ function LoginComponent() {
           </div>
 
           {/* Sign in form */}
-          <SignInForm onFormSubmit={onFormSubmit} loading={loginMutation.isPending} errorMessage={errorMessage} />
+          <SignInForm 
+            onFormSubmit={onFormSubmit} 
+            loading={loginMutation.isPending} 
+            errorMessage={errorMessage}
+            onGoogleSignIn={handleGoogleSignIn} // Pass Google sign in handler
+          />
         </div>
 
         {/* Footer */}
