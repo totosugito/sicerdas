@@ -7,10 +7,9 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
     ProfileHeader, TabNavigation, ProfileInfoForm, PersonalInfoForm, SecurityForm, PrivacyForm, SessionList,
-    createProfileInfoFormData, createPersonalInfoFormData, createSecurityFormData, createPrivacyFormData
+    createProfileInfoFormData, createPersonalInfoFormData, createSecurityFormData, createPrivacyFormData,
+    ProfileInfoFormRef, ProfileLoadingView, ProfileErrorView
 } from '@/components/pages/user/profile'
-import { ProfileInfoFormRef } from '@/components/pages/user/profile/components/ProfileInfoForm'
-import { ProfileLoadingView, ProfileErrorView } from '@/components/pages/user/profile/components/ProfileStatusView'
 import { useUserProfileQuery, useUpdateUserProfileMutation, useChangeUserPasswordMutation, useUserSessionsQuery } from '@/service/user-api'
 import { showNotifError, showNotifSuccess } from '@/lib/show-notif'
 import { string_to_date } from '@/lib/my-utils'
@@ -225,21 +224,6 @@ function RouteComponent() {
             const errorMessage = error?.response?.data?.message || t('user.profile.sessions.revokeError');
             showNotifError({ message: error?.message || errorMessage });
         });
-
-        // revokeAllUserSessionsMutation.mutate(
-        //     undefined,
-        //     {
-        //         onSuccess: (success: any) => {
-        //             showNotifSuccess({ message: success?.message || t('user.profile.sessions.allSessionsRevoked') });
-        //             // Refresh the sessions list
-        //             refetchSessions();
-        //         },
-        //         onError: (error: Record<string, any>) => {
-        //             const errorMessage = error?.response?.data?.message || t('user.profile.sessions.revokeError');
-        //             showNotifError({ message: error?.message || errorMessage });
-        //         }
-        //     }
-        // );
     };
 
     if (isLoading) {

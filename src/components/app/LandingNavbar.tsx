@@ -39,13 +39,16 @@ import {
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/lib/theme-provider'
 import { useAuthStore } from '@/stores/useAuthStore'
+import { useAuth } from '@/hooks/use-auth'
+import { AppRoute } from '@/constants/app-route'
 
 export function LandingNavbar() {
     const { t, i18n } = useTranslation()
     const { theme, setTheme } = useTheme()
     const { language, setLanguage: setStoreLanguage } = useAuthStore()
     const [isOpen, setIsOpen] = useState(false)
-    const isLoggedIn = false // Change this based on your auth state
+    const { isAuthenticated, user, logout } = useAuth();
+    
 
     // Sync language from store to i18n on mount and when store changes
     useEffect(() => {
@@ -337,6 +340,56 @@ export function LandingNavbar() {
                             </DropdownMenuContent>
                         </DropdownMenu>
 
+                        {/* User dropdown or login button */}
+                        {isAuthenticated ? (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
+                                        {user?.user?.image ? (
+                                            <img 
+                                                src={user.user.image} 
+                                                alt={user.user.name || "User"} 
+                                                className="h-8 w-8 rounded-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold">
+                                                {user?.user?.name?.substring(0, 2)?.toUpperCase() || "U"}
+                                            </div>
+                                        )}
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-56">
+                                    <DropdownMenuLabel className="font-normal">
+                                        <div className="flex flex-col space-y-1">
+                                            <p className="text-sm font-medium leading-none">{user?.user?.name || "User"}</p>
+                                            <p className="text-xs leading-none text-muted-foreground">{user?.user?.email || "user@example.com"}</p>
+                                        </div>
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem asChild>
+                                        <Link to="/user/profile">
+                                            {t('landing.navbar.profile')}
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link to="/user/settings">
+                                            {t('landing.navbar.settings')}
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={logout}>
+                                        {t('landing.navbar.logout')}
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        ) : (
+                            <Button asChild variant="default" size="sm" className="h-9 px-3">
+                                <Link to={AppRoute.auth.signIn.url}>
+                                    {t('landing.navbar.login')}
+                                </Link>
+                            </Button>
+                        )}
+
                         <Sheet open={isOpen} onOpenChange={setIsOpen}>
                             <SheetTrigger asChild className="md:hidden">
                                 <Button variant="ghost" size="icon">
@@ -450,7 +503,8 @@ export function LandingNavbar() {
                                 </div>
 
                                 {/* Footer with Login Button */}
-                                {!isLoggedIn && (
+                                {!isAuthenticated && 
+                                (
                                     <div className="px-6 py-4 border-t bg-gradient-to-br from-background to-primary/5">
                                         <Link to="/sign-in" onClick={() => setIsOpen(false)}>
                                             <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-primary-foreground rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 h-12 font-semibold">

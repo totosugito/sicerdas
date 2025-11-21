@@ -42,11 +42,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(userData)
         } else {
           authStore.logout()
-          // appStore.resetAll();
           setUser(null)
         }
       } catch (error) {
-        console.log(error)
         authStore.logout()
         setUser(null)
       }

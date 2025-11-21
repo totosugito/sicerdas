@@ -6,6 +6,15 @@ import {AppApi} from "@/constants/app-api";
 import {authClient} from "@/lib/auth-client";
 import {AuthProps} from "@/types/auth";
 
+export const getSession = async () => {
+  try {
+  const response = await fetchApi({ method: "GET", url: AppApi.auth.getSession });
+  return response;
+  } catch (error) {
+    return({token: null, user: null})
+  }
+};
+
 export const useLoginMutation = () => {
   const auth = useAuth();
 
@@ -31,8 +40,6 @@ export const useLoginMutation = () => {
 }
 
 export const useSignUpMutation = () => {
-  const auth = useAuth();
-
   return useMutation({
     mutationKey: ['signUp'],
     mutationFn: async ({body}: { body: Record<string, any> }) => {

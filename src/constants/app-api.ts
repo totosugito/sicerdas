@@ -12,6 +12,7 @@ export const AppApi = {
     emailOtpForgetPassword: APP_URL_API + "/auth/email-otp-forget-password",
     emailOtpVerifyForgetPassword: APP_URL_API + "/auth/email-otp-verify-forget-password",
     emailOtpResetPassword: APP_URL_API + "/auth/email-otp-reset-password",
+    getSession: APP_URL_API + "/auth/get-session",
   },
   admin: {
     user: {
