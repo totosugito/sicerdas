@@ -1,18 +1,40 @@
 import { motion } from 'framer-motion'
-import { Smartphone, Download, Star, Play } from 'lucide-react'
+import { Smartphone, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
+import { IoLogoGooglePlaystore, IoLogoYoutube } from 'react-icons/io5'
 
 export function AndroidAppSection() {
     const { t } = useTranslation()
+    
+    // Sample images for the carousel (in a real app, these would be actual image URLs)
+    const mockupImages = [
+        "https://placehold.co/400x800/2563eb/white?text=Screen+1",
+        "https://placehold.co/400x800/7c3aed/white?text=Screen+2",
+        "https://placehold.co/400x800/dc2626/white?text=Screen+3",
+        "https://placehold.co/400x800/ea580c/white?text=Screen+4",
+        "https://placehold.co/400x800/16a34a/white?text=Screen+5"
+    ]
+    
+    const [currentIndex, setCurrentIndex] = useState(0)
 
     const appFeatures = [
         t('landing.androidApp.benefits.offline'),
         t('landing.androidApp.benefits.notifications'),
         t('landing.androidApp.benefits.performance'),
-        "Sinkronisasi mulus di semua perangkat",
+        t('landing.androidApp.benefits.sync'),
         t('landing.androidApp.benefits.exclusive')
     ]
+    
+    // Change image every 3 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentIndex(prevIndex => (prevIndex + 1) % mockupImages.length)
+        }, 3000)
+        
+        return () => clearInterval(interval)
+    }, [mockupImages.length])
 
     return (
         <section className="py-20 bg-gradient-to-br from-accent/5 via-background to-primary/5">
@@ -29,7 +51,7 @@ export function AndroidAppSection() {
                         <div>
                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
                                 <Smartphone className="h-4 w-4" />
-                                Rilis Terbaru
+                                {t('landing.androidApp.badge')}
                             </div>
                             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
                                 {t('landing.androidApp.title')}
@@ -57,18 +79,18 @@ export function AndroidAppSection() {
                             </ul>
 
                             <div className="flex flex-col sm:flex-row gap-4">
-                                <Button size="lg" className="gap-2">
-                                    <Download className="h-5 w-5" />
+                                <Button className="gap-2">
+                                    <IoLogoGooglePlaystore className="h-5 w-5" />
                                     {t('landing.androidApp.downloadButton')}
                                 </Button>
-                                <Button size="lg" variant="outline" className="gap-2">
-                                    <Play className="h-5 w-5" />
-                                    Tonton Demo
+                                <Button variant="outline" className="gap-2">
+                                    <IoLogoYoutube className="h-5 w-5" />
+                                    {t('landing.androidApp.watchDemo')}
                                 </Button>
                             </div>
                         </div>
 
-                        {/* Right - App Mockup */}
+                        {/* Right - App Mockup with Image Carousel */}
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             whileInView={{ opacity: 1, scale: 1 }}
@@ -76,23 +98,38 @@ export function AndroidAppSection() {
                             transition={{ duration: 0.6 }}
                             className="relative"
                         >
-                            <div className="relative w-full max-w-sm mx-auto">
-                                {/* Phone mockup */}
-                                <div className="aspect-[9/19] bg-gradient-to-br from-primary to-accent rounded-[3rem] shadow-2xl p-3">
-                                    <div className="w-full h-full bg-background rounded-[2.5rem] overflow-hidden">
-                                        <div className="p-6 space-y-4">
-                                            <div className="h-16 bg-muted rounded-lg" />
-                                            <div className="h-32 bg-primary/10 rounded-lg" />
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="h-24 bg-muted rounded-lg" />
-                                                <div className="h-24 bg-muted rounded-lg" />
-                                            </div>
-                                            <div className="h-20 bg-accent/10 rounded-lg" />
+                            <div className="relative w-full max-w-xs mx-auto">
+                                {/* Phone mockup with image carousel */}
+                                <div className="aspect-[9/19] bg-gradient-to-br from-primary to-accent rounded-[2.5rem] shadow-2xl p-2">
+                                    <div className="w-full h-full bg-background rounded-[2rem] overflow-hidden">
+                                        {/* Image display */}
+                                        <div className="w-full h-full flex items-center justify-center p-4">
+                                            <img 
+                                                src={mockupImages[currentIndex]} 
+                                                alt={`App screen ${currentIndex + 1}`} 
+                                                className="w-full h-full object-cover rounded-lg"
+                                            />
                                         </div>
                                     </div>
                                 </div>
                                 {/* Glow effect */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-[3rem] blur-3xl -z-10" />
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-[2.5rem] blur-2xl -z-10" />
+                            </div>
+                            
+                            {/* Carousel navigation buttons */}
+                            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2">
+                                {mockupImages.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setCurrentIndex(index)}
+                                        className={`w-2 h-2 rounded-full transition-all ${
+                                            index === currentIndex 
+                                                ? 'bg-primary w-6' 
+                                                : 'bg-muted'
+                                        }`}
+                                        aria-label={`Go to slide ${index + 1}`}
+                                    />
+                                ))}
                             </div>
                         </motion.div>
                     </motion.div>

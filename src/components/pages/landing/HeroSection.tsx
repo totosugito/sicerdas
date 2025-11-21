@@ -15,7 +15,7 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
     const { t } = useTranslation()
 
     return (
-        <section className="relative overflow-hidden py-20 md:py-32 bg-gradient-to-br from-primary/10 via-background to-accent/10">
+        <section className="relative overflow-hidden py-20 md:py-25 bg-gradient-to-br from-primary/10 via-background to-accent/10">
             <div className="container mx-auto px-4">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -23,9 +23,9 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
                     transition={{ duration: 0.6 }}
                     className="max-w-4xl mx-auto text-center"
                 >
-                    <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
-                        Gerbang Anda Menuju
-                        <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"> Pendidikan Berkualitas</span>
+                    <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
+                        {t('landing.hero.title')}
+                        <div className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"> {t('landing.hero.highlight')}</div>
                     </h1>
                     <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
                         {t('landing.hero.subtitle')}
@@ -61,13 +61,13 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
                         className="flex flex-wrap justify-center gap-4"
                     >
                         <Link to="/books/latest">
-                            <Button>
-                                <BookOpen className="mr-2 h-5 w-5" />
+                            <Button className='gap-2'>
+                                <BookOpen className="h-5 w-5" />
                                 {t('landing.hero.exploreBooks')}
                             </Button>
                         </Link>
-                        <Button variant="outline">
-                            <Trophy className="mr-2 h-5 w-5" />
+                        <Button variant="outline" className='gap-2'>
+                            <Trophy className="h-5 w-5" />
                             {t('landing.hero.takeQuiz')}
                         </Button>
                     </motion.div>

@@ -2,40 +2,51 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from 'react-i18next'
 import { Link } from '@tanstack/react-router'
+import { ArrowRight, Heart, LogIn } from 'lucide-react'
 
 export function CTASection() {
     const { t } = useTranslation()
 
     return (
-        <section className="py-20 bg-gradient-to-r from-primary to-accent text-primary-foreground dark:from-primary/40 dark:to-accent/40 dark:text-foreground bg-opacity-80">
-            <div className="container mx-auto px-4">
+        <section className="py-20 px-4">
+            <div className="container mx-auto max-w-5xl">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="max-w-3xl mx-auto text-center"
+                    className="relative overflow-hidden rounded-3xl bg-gradient-primary p-12 md:p-16"
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                        {t('landing.cta.title')}
-                    </h2>
-                    <p className="text-lg mb-8 text-primary-foreground/90 dark:text-foreground">
-                        {t('landing.cta.subtitle')}
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link to="/books/latest">
-                            <Button size="lg" variant="secondary" className="dark:bg-secondary/70 dark:text-secondary-foreground dark:hover:bg-secondary/60">
-                                {t('landing.cta.exploreResources')}
+                    {/* Content */}
+                    <div className="relative z-10 max-w-3xl">
+                        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                            {t('landing.cta.title')}
+                        </h2>
+                        <p className="mb-10 text-muted-foreground">
+                            {t('landing.cta.subtitle')}
+                        </p>
+
+                        {/* Buttons */}
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <Link to="/books/latest">
+                                <Button className="gap-2">
+                                    {t('landing.hero.exploreBooks')}
+                                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                                </Button>
+                            </Link>
+                            <Button
+                                variant="outline"
+                                className="gap-2"
+                            >
+                                <LogIn className="h-5 w-5" />
+                                {t('landing.cta.createAccount')}
                             </Button>
-                        </Link>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary dark:border-foreground/70 dark:text-foreground dark:hover:bg-foreground/30 dark:hover:text-foreground dark:hover:border-foreground/90"
-                        >
-                            {t('landing.cta.createAccount')}
-                        </Button>
+                        </div>
                     </div>
+
+                    {/* Decorative gradient orbs */}
+                    <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
+                    <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/20 rounded-full blur-3xl" />
                 </motion.div>
             </div>
         </section>

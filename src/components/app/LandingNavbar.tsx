@@ -5,13 +5,12 @@ import {
     BookOpen,
     GraduationCap,
     Menu,
-    User,
-    LogOut,
-    Settings,
     FlaskConical,
     Moon,
     Sun,
-    Monitor
+    Monitor,
+    Trophy,
+    Shield
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -29,7 +28,6 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -222,6 +220,7 @@ export function LandingNavbar() {
                                 {/* Pancasila Menu */}
                                 <NavigationMenuItem>
                                     <NavigationMenuTrigger className="text-base bg-transparent">
+                                        <Shield className="w-4 h-4 mr-2" />
                                         {t('landing.navbar.pancasila.title')}
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent>
@@ -241,19 +240,20 @@ export function LandingNavbar() {
 
                                 {/* Periodic Table */}
                                 <NavigationMenuItem>
-                                    <Link to="/periodic-table">
-                                        <NavigationMenuLink className={cn(
-                                            "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-base font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
-                                        )}>
+                                    <NavigationMenuLink asChild className={cn(
+                                        "group inline-flex w-max items-center justify-center px-4 h-9 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+                                    )}>
+                                        <Link to="/periodic-table">
                                             <FlaskConical className="w-4 h-4 mr-2" />
                                             {t('landing.navbar.periodicTable')}
-                                        </NavigationMenuLink>
-                                    </Link>
+                                        </Link>
+                                    </NavigationMenuLink>
                                 </NavigationMenuItem>
 
                                 {/* Quiz Menu */}
                                 <NavigationMenuItem>
                                     <NavigationMenuTrigger className="text-base bg-transparent">
+                                        <Trophy className="h-4 w-4 mr-2" />
                                         {t('landing.navbar.quiz.title')}
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent>
@@ -338,7 +338,7 @@ export function LandingNavbar() {
                         </DropdownMenu>
 
                         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                            <SheetTrigger asChild>
+                            <SheetTrigger asChild className="md:hidden">
                                 <Button variant="ghost" size="icon">
                                     <Menu className="h-6 w-6" />
                                 </Button>
@@ -427,7 +427,7 @@ export function LandingNavbar() {
                                         <div className="space-y-3">
                                             <div className="flex items-center gap-2 px-3 py-2 bg-secondary/5 rounded-lg">
                                                 <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
-                                                    <GraduationCap className="w-4 h-4 text-secondary" />
+                                                    <Trophy className="w-4 h-4 text-secondary" />
                                                 </div>
                                                 <h3 className="font-semibold text-sm uppercase tracking-wide">
                                                     {t('landing.navbar.quiz.title')}

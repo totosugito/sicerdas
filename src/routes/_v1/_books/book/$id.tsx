@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { ArrowLeft, AlertTriangle } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/__v1/_books/book/$id')({
+export const Route = createFileRoute('/_v1/_books/book/$id')({
   component: RouteComponent,
 })
 

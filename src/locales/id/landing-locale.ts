@@ -2,7 +2,8 @@ export default {
     // Hero Section
     hero: {
         badge: "🎓 Platform Pendidikan Terbaik Indonesia",
-        title: "Buka Potensi Belajarmu Hari Ini",
+        title: "Gerbang Anda Menuju",
+        highlight: "Pendidikan Berkualitas",
         subtitle: "Akses sumber daya pendidikan yang komprehensif, mulai dari buku sesuai kurikulum hingga kuis interaktif. Perjalananmu menuju keunggulan akademik dimulai di sini.",
         searchPlaceholder: "Cari buku, topik, atau mata pelajaran...",
         searchButton: "Cari",
@@ -44,15 +45,17 @@ export default {
 
     // Android App Section
     androidApp: {
-        badge: "📱 Aplikasi Seluler Tersedia",
+        badge: "Aplikasi Seluler Tersedia",
         title: "Unduh Aplikasi Android Kami",
         description: "Bawa pembelajaranmu ke mana saja! Akses semua materi pendidikan, koleksi buku, kuis, dan alat pembelajaran melalui aplikasi Android resmi kami. Belajar kapan saja, di mana saja.",
         downloadButton: "Unduh di Google Play",
+        watchDemo: "Tonton Demo",
         benefits: {
             offline: "Akses Baca Offline",
             notifications: "Notifikasi untuk Konten Baru",
             performance: "Kinerja Lebih Cepat",
-            exclusive: "Fitur Eksklusif Seluler"
+            exclusive: "Fitur Eksklusif Seluler",
+            sync: "Sinkronisasi mulus di semua perangkat"
         }
     },
 
@@ -81,15 +84,15 @@ export default {
         quickLinks: {
             title: "Tautan Cepat",
             latestBooks: "Buku Terbaru",
-            periodicTable: "Tabel Periodik",
-            pancasila: "Pancasila",
-            quizCenter: "Pusat Kuis"
+            quizLibrary: "Pustaka Kuis",
+            studyGuide: "Panduan Belajar",
+            mobileApp: "Aplikasi Mobile"
         },
         contact: {
             title: "Hubungi Kami",
             youtube: "YouTube",
             instagram: "Instagram",
-            email: "Email"
+            email: "contact@sicerdas.id"
         },
     },
 

@@ -41,9 +41,9 @@ export function Footer() {
                                     {t('landing.footer.quickLinks.latestBooks')}
                                 </Link>
                             </li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Pustaka Kuis</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Panduan Belajar</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Aplikasi Mobile</a></li>
+                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.quickLinks.quizLibrary')}</a></li>
+                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.quickLinks.studyGuide')}</a></li>
+                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.quickLinks.mobileApp')}</a></li>
                         </ul>
                     </div>
 
@@ -61,7 +61,7 @@ export function Footer() {
                             </a>
                             <a href="mailto:contact@sicerdas.id" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
                                 <Mail className="h-5 w-5" />
-                                <span className="text-sm">contact@sicerdas.id</span>
+                                <span className="text-sm">{t('landing.footer.contact.email')}</span>
                             </a>
                         </div>
                     </div>
