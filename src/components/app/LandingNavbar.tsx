@@ -200,7 +200,7 @@ export function LandingNavbar() {
                             <NavigationMenuList>
                                 {/* Books Menu */}
                                 <NavigationMenuItem>
-                                    <NavigationMenuTrigger className="text-base">
+                                    <NavigationMenuTrigger className="text-base bg-transparent">
                                         <BookOpen className="w-4 h-4 mr-2" />
                                         {t('landing.navbar.books.title')}
                                     </NavigationMenuTrigger>
@@ -221,7 +221,7 @@ export function LandingNavbar() {
 
                                 {/* Pancasila Menu */}
                                 <NavigationMenuItem>
-                                    <NavigationMenuTrigger className="text-base">
+                                    <NavigationMenuTrigger className="text-base bg-transparent">
                                         {t('landing.navbar.pancasila.title')}
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent>
@@ -253,7 +253,7 @@ export function LandingNavbar() {
 
                                 {/* Quiz Menu */}
                                 <NavigationMenuItem>
-                                    <NavigationMenuTrigger className="text-base">
+                                    <NavigationMenuTrigger className="text-base bg-transparent">
                                         {t('landing.navbar.quiz.title')}
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent>
@@ -315,21 +315,21 @@ export function LandingNavbar() {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
                                     onClick={() => changeTheme('light')}
-                                    className={theme === 'light' ? 'bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90' : 'hover:bg-accent focus:bg-accent'}
+                                    className={theme === 'light' ? 'bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90 my-1' : 'hover:bg-accent focus:bg-accent my-1'}
                                 >
                                     <Sun className="mr-2 h-4 w-4" />
                                     Light
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                     onClick={() => changeTheme('dark')}
-                                    className={theme === 'dark' ? 'bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90' : 'hover:bg-accent focus:bg-accent'}
+                                    className={theme === 'dark' ? 'bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90 my-1' : 'hover:bg-accent focus:bg-accent my-1'}
                                 >
                                     <Moon className="mr-2 h-4 w-4" />
                                     Dark
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                     onClick={() => changeTheme('system')}
-                                    className={theme === 'system' ? 'bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90' : 'hover:bg-accent focus:bg-accent'}
+                                    className={theme === 'system' ? 'bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90 my-1' : 'hover:bg-accent focus:bg-accent my-1'}
                                 >
                                     <Monitor className="mr-2 h-4 w-4" />
                                     System
