@@ -1,10 +1,10 @@
-import {createFileRoute, redirect} from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useState } from 'react';
-import { LandingNavbar } from '@/components/app';
+import { AppNavbar } from '@/components/app';
 import { AndroidAppSection, CTASection, FeaturesSection, Footer, HeroSection } from '@/components/pages/landing';
 
 export const Route = createFileRoute('/')({
-  component: RouteComponent,
+    component: RouteComponent,
 })
 
 function RouteComponent() {
@@ -18,8 +18,8 @@ function RouteComponent() {
     }
 
     return (
-        <div className="min-h-screen bg-background">
-            <LandingNavbar />
+        <div className="min-h-screen w-full bg-background">
+            <AppNavbar />
 
             <HeroSection
                 searchQuery={searchQuery}

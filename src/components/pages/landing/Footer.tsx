@@ -1,6 +1,8 @@
-import { BookOpen, Youtube, Instagram, Mail } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
+import { APP_CONFIG } from '@/constants/config'
+import { RiDiscordLine, RiMailLine, RiYoutubeLine } from 'react-icons/ri'
+import { AppRoute } from '@/constants/app-route'
 
 export function Footer() {
     const { t } = useTranslation()
@@ -12,8 +14,8 @@ export function Footer() {
                     {/* Brand */}
                     <div>
                         <div className="flex items-center gap-2 mb-4">
-                            <BookOpen className="h-6 w-6 text-primary" />
-                            <span className="text-xl font-bold text-foreground">{t('app.appName')}</span>
+                            <img src={APP_CONFIG.app.logo} alt={APP_CONFIG.app.name} className="h-12 w-12" />
+                            <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{t('app.appName')}</span>
                         </div>
                         <p className="text-muted-foreground text-sm">
                             {t('landing.footer.brand.description')}
@@ -24,11 +26,11 @@ export function Footer() {
                     <div>
                         <h3 className="font-semibold text-foreground mb-4">{t('landing.footer.information.title')}</h3>
                         <ul className="space-y-2 text-sm">
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.about')}</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.privacy')}</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.terms')}</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.support')}</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.faq')}</a></li>
+                            <li><a href={AppRoute.public.about.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.about')}</a></li>
+                            <li><a href={AppRoute.public.privacy.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.privacy')}</a></li>
+                            <li><a href={AppRoute.public.terms.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.terms')}</a></li>
+                            <li><a href={AppRoute.public.support.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.support')}</a></li>
+                            <li><a href={AppRoute.public.faq.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.faq')}</a></li>
                         </ul>
                     </div>
 
@@ -37,13 +39,13 @@ export function Footer() {
                         <h3 className="font-semibold text-foreground mb-4">{t('landing.footer.quickLinks.title')}</h3>
                         <ul className="space-y-2 text-sm">
                             <li>
-                                <Link to="/books/latest" className="text-muted-foreground hover:text-primary transition-colors">
+                                <Link to={AppRoute.books.latest.url} className="text-muted-foreground hover:text-primary transition-colors">
                                     {t('landing.footer.quickLinks.latestBooks')}
                                 </Link>
                             </li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.quickLinks.quizLibrary')}</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.quickLinks.studyGuide')}</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.quickLinks.mobileApp')}</a></li>
+                            <li><a href={AppRoute.pancasila.pancasila.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.navbar.pancasila.pancasila')}</a></li>
+                            <li><a href={AppRoute.periodicTable.periodicTable.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.navbar.periodicTable')}</a></li>
+                            <li><a href={APP_CONFIG.app.playStore} target='_blank' className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.quickLinks.androidApp')}</a></li>
                         </ul>
                     </div>
 
@@ -51,17 +53,17 @@ export function Footer() {
                     <div>
                         <h3 className="font-semibold text-foreground mb-4">{t('landing.footer.contact.title')}</h3>
                         <div className="space-y-3">
-                            <a href="#" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                                <Youtube className="h-5 w-5" />
+                            <a href={APP_CONFIG.app.youtubeChannel} target='_blank' className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
+                                <RiYoutubeLine className="h-5 w-5" />
                                 <span className="text-sm">{t('landing.footer.contact.youtube')}</span>
                             </a>
                             <a href="#" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                                <Instagram className="h-5 w-5" />
-                                <span className="text-sm">{t('landing.footer.contact.instagram')}</span>
+                                <RiDiscordLine className="h-5 w-5" />
+                                <span className="text-sm">{t('landing.footer.contact.discord')}</span>
                             </a>
-                            <a href="mailto:contact@sicerdas.id" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                                <Mail className="h-5 w-5" />
-                                <span className="text-sm">{t('landing.footer.contact.email')}</span>
+                            <a href={`mailto:${APP_CONFIG.app.mailTo}`} className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
+                                <RiMailLine className="h-5 w-5" />
+                                <span className="text-sm">{APP_CONFIG.app.mailTo}</span>
                             </a>
                         </div>
                     </div>

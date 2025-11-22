@@ -7,14 +7,7 @@ import { formatDistanceToNow, parseISO } from 'date-fns'
 import { enUS, id } from 'date-fns/locale'
 import type { UserSession } from '@/service/user-api'
 import { useState } from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter
-} from '@/components/ui/dialog'
+import { ModalProps, DialogModal } from '@/components/custom/components'
 
 interface SessionItem {
   id: string
@@ -97,37 +90,46 @@ interface SessionListProps {
 
 export function SessionList({ sessions, isLoading, isError, currentToken, refetch, onRevokeSession, onRevokeAllSessions }: SessionListProps) {
   const { t, i18n } = useTranslation()
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [isRevokeAllDialogOpen, setIsRevokeAllDialogOpen] = useState(false)
-  const [sessionToRevoke, setSessionToRevoke] = useState<string | null>(null)
+  const [confirmationModal, setConfirmationModal] = useState<ModalProps | null>(null);
 
   const handleRevokeClick = (sessionToken: string) => {
-    setSessionToRevoke(sessionToken)
-    setIsDialogOpen(true)
+    if(!sessionToken) return
+    setConfirmationModal({
+      title: t("user.profile.sessions.confirmLogoutTitle"),
+      desc: t("user.profile.sessions.confirmLogoutDescription"),
+      textConfirm: t("user.profile.sessions.confirm"),
+      textCancel: t("user.profile.sessions.cancel"),
+      iconType: "question",
+      onConfirmClick: () => {
+        if (onRevokeSession && sessionToken) {
+          onRevokeSession(sessionToken)
+        }
+        setConfirmationModal(null)
+      },
+      onCancelClick: () => {
+        setConfirmationModal(null)
+      }
+    })
   }
 
-  const confirmRevoke = () => {
-    if (onRevokeSession && sessionToRevoke) {
-      onRevokeSession(sessionToRevoke)
-      setIsDialogOpen(false)
-      setSessionToRevoke(null)
-    }
-  }
-
-  const cancelRevoke = () => {
-    setIsDialogOpen(false)
-    setSessionToRevoke(null)
-  }
-
-  const confirmRevokeAll = () => {
-    if (onRevokeAllSessions) {
-      onRevokeAllSessions()
-      setIsRevokeAllDialogOpen(false)
-    }
-  }
-
-  const cancelRevokeAll = () => {
-    setIsRevokeAllDialogOpen(false)
+  const handleRevokeAllClick = () => {
+    setConfirmationModal({
+      title: t("user.profile.sessions.confirmRevokeAllTitle"),
+      desc: t("user.profile.sessions.confirmRevokeAllDescription"),
+      textConfirm: t("user.profile.sessions.revokeAll"),
+      textCancel: t("user.profile.sessions.cancel"),
+      iconType: "question",
+      variant: "destructive",
+      onConfirmClick: () => {
+        if (onRevokeAllSessions) {
+          onRevokeAllSessions()
+        }
+        setConfirmationModal(null)
+      },
+      onCancelClick: () => {
+        setConfirmationModal(null)
+      }
+    })
   }
 
   // Separate sessions into current and others
@@ -200,42 +202,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
 
   return (
     <>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t("user.profile.sessions.confirmLogoutTitle") || "Konfirmasi Keluar Sesi"}</DialogTitle>
-            <DialogDescription>
-              {t("user.profile.sessions.confirmLogoutDescription") || "Apakah Anda yakin ingin keluar dari sesi ini? Anda akan perlu masuk kembali di perangkat tersebut."}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={cancelRevoke}>
-              {t("user.profile.sessions.cancel") || "Batal"}
-            </Button>
-            <Button variant="default" onClick={confirmRevoke}>
-              {t("user.profile.sessions.confirm") || "Konfirmasi"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={isRevokeAllDialogOpen} onOpenChange={setIsRevokeAllDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t("user.profile.sessions.confirmRevokeAllTitle") || "Konfirmasi Hapus Semua Sesi"}</DialogTitle>
-            <DialogDescription>
-              {t("user.profile.sessions.confirmRevokeAllDescription") || "Apakah Anda yakin ingin menghapus semua sesi lainnya? Anda akan keluar dari semua perangkat kecuali perangkat saat ini."}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={cancelRevokeAll}>
-              {t("user.profile.sessions.cancel") || "Batal"}
-            </Button>
-            <Button variant="destructive" onClick={confirmRevokeAll}>
-              {t("user.profile.sessions.revokeAll") || "Hapus Semua"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {confirmationModal && <DialogModal modal={confirmationModal}/>}
       
       <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full">
         <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
@@ -287,7 +254,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => setIsRevokeAllDialogOpen(true)}
+                  onClick={handleRevokeAllClick}
                 >
                   {t("user.profile.sessions.revokeAll")}
                 </Button>

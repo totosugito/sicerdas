@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { AppRoute } from '@/constants/app-route';
 import { Button } from "@/components/ui/button";
 import { CheckCircle, AlertCircle, UserPlus } from 'lucide-react';
+import { SignUpFormValues } from '@/components/pages/auth/sign-up/SignUpForm';
 
 export const Route = createFileRoute('/_auth/sign-up')({
   validateSearch: z.object({
@@ -75,7 +76,7 @@ function SignUpComponent() {
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const onFormSubmit: SubmitHandler<FormData> = (data) => {
+  const onFormSubmit: SubmitHandler<SignUpFormValues> = (data) => {
     setErrorMessage(undefined);
     setSuccessMessage(undefined);
     setIsSuccess(false);

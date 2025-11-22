@@ -29,12 +29,36 @@ export const AppRoute = {
       breadcrumb: []
     },
   },
+  user: {
+    profile: { url: "/user/profile" },
+  },
   dashboard: {
     dashboard: "/",
   },
-  project: {
-    list: "/project/list",
-    detail: "/project/$id",
+  books: {
+    list: { url: "/books" },
+    detail: { url: "/books/$id" },
+    latest: { url: "/books/latest" },
+  },
+  periodicTable: {
+    periodicTable: { url: "/periodic-table" },
+    element: { url: "/periodic-table/element" },
+  },
+  pancasila: {
+    pancasila: { url: "/pancasila" },
+    uud1945: { url: "/pancasila/uud1945" },
+    amandemen: { url: "/pancasila/amandemen" },
+  },
+  quiz: {
+    quiz: { url: "/quiz" },
+    detail: { url: "/quiz/$id" },
+  },
+  public: {
+    about: { url: "/about" },
+    faq: { url: "/faq" },
+    privacy: { url: "/privacy" },
+    support: { url: "/support" },
+    terms: { url: "/terms" },
   },
   admin: {
     user: {

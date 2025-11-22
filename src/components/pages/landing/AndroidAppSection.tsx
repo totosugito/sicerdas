@@ -4,18 +4,13 @@ import { Button } from '@/components/ui/button'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import { IoLogoGooglePlaystore, IoLogoYoutube } from 'react-icons/io5'
+import { APP_CONFIG } from '@/constants/config'
 
 export function AndroidAppSection() {
     const { t } = useTranslation()
     
     // Sample images for the carousel (in a real app, these would be actual image URLs)
-    const mockupImages = [
-        "https://placehold.co/400x800/2563eb/white?text=Screen+1",
-        "https://placehold.co/400x800/7c3aed/white?text=Screen+2",
-        "https://placehold.co/400x800/dc2626/white?text=Screen+3",
-        "https://placehold.co/400x800/ea580c/white?text=Screen+4",
-        "https://placehold.co/400x800/16a34a/white?text=Screen+5"
-    ]
+    const mockupImages = APP_CONFIG.app.androidImages || []
     
     const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -37,8 +32,8 @@ export function AndroidAppSection() {
     }, [mockupImages.length])
 
     return (
-        <section className="py-20 bg-gradient-to-br from-accent/5 via-background to-primary/5">
-            <div className="container mx-auto px-4">
+        <section className="py-20 bg-gradient-to-br from-accent/5 via-background to-primary/5 px-8">
+            <div className="container mx-auto">
                 <div className="max-w-5xl mx-auto">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -79,11 +74,15 @@ export function AndroidAppSection() {
                             </ul>
 
                             <div className="flex flex-col sm:flex-row gap-4">
-                                <Button className="gap-2">
+                                <Button className="gap-2" onClick={() => {
+                                    window.open(APP_CONFIG.app.playStore, '_blank')
+                                }}>
                                     <IoLogoGooglePlaystore className="h-5 w-5" />
                                     {t('landing.androidApp.downloadButton')}
                                 </Button>
-                                <Button variant="outline" className="gap-2">
+                                <Button variant="outline" className="gap-2" onClick={() => {
+                                    window.open(APP_CONFIG.app.youtubeDemo, '_blank')
+                                }}>
                                     <IoLogoYoutube className="h-5 w-5" />
                                     {t('landing.androidApp.watchDemo')}
                                 </Button>
@@ -103,11 +102,11 @@ export function AndroidAppSection() {
                                 <div className="aspect-[9/19] bg-gradient-to-br from-primary to-accent rounded-[2.5rem] shadow-2xl p-2">
                                     <div className="w-full h-full bg-background rounded-[2rem] overflow-hidden">
                                         {/* Image display */}
-                                        <div className="w-full h-full flex items-center justify-center p-4">
+                                        <div className="w-full h-full flex items-center justify-center">
                                             <img 
                                                 src={mockupImages[currentIndex]} 
                                                 alt={`App screen ${currentIndex + 1}`} 
-                                                className="w-full h-full object-cover rounded-lg"
+                                                className="w-full h-full rounded-lg"
                                             />
                                         </div>
                                     </div>

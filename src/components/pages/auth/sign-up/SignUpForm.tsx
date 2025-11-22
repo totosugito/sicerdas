@@ -15,7 +15,7 @@ export type SignUpFormValues = {
 }
 
 type Props = {
-  onFormSubmit: SubmitHandler<FormData>
+  onFormSubmit: SubmitHandler<SignUpFormValues>
   loading?: boolean,
   errorMessage?: string,
 }
@@ -65,11 +65,11 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
   });
 
   const onFormSubmit_ = (data: SignUpFormValues) => {
-    const values = new FormData();
-    values.append('name', data?.name ?? "");
-    values.append('email', data?.email ?? "");
-    values.append('password', data?.password ?? "");
-    onFormSubmit(values);
+    // const values = new FormData();
+    // values.append('name', data?.name ?? "");
+    // values.append('email', data?.email ?? "");
+    // values.append('password', data?.password ?? "");
+    onFormSubmit(data);
   };
 
   return (

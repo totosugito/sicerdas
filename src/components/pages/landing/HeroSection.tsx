@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
+import { AppRoute } from '@/constants/app-route'
 
 interface HeroSectionProps {
     searchQuery: string
@@ -15,8 +16,8 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
     const { t } = useTranslation()
 
     return (
-        <section className="relative overflow-hidden py-20 md:py-25 bg-gradient-to-br from-primary/10 via-background to-accent/10">
-            <div className="container mx-auto px-4">
+        <section className="relative overflow-hidden py-20 md:py-25 bg-gradient-to-br from-primary/10 via-background to-accent/10 px-8">
+            <div className="container mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -60,16 +61,18 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
                         transition={{ duration: 0.6, delay: 0.4 }}
                         className="flex flex-wrap justify-center gap-4"
                     >
-                        <Link to="/books/latest">
+                        <Link to={AppRoute.books.latest.url}>
                             <Button className='gap-2'>
                                 <BookOpen className="h-5 w-5" />
                                 {t('landing.hero.exploreBooks')}
                             </Button>
                         </Link>
-                        <Button variant="outline" className='gap-2'>
-                            <Trophy className="h-5 w-5" />
-                            {t('landing.hero.takeQuiz')}
-                        </Button>
+                        <Link to={AppRoute.quiz.quiz.url}>
+                            <Button variant="outline" className='gap-2'>
+                                <Trophy className="h-5 w-5" />
+                                {t('landing.hero.takeQuiz')}
+                            </Button>
+                        </Link>
                     </motion.div>
                 </motion.div>
             </div>

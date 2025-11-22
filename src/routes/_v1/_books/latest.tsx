@@ -20,7 +20,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-import { LandingNavbar } from '@/components/app'
+import { AppNavbar } from '@/components/app'
 
 export const Route = createFileRoute('/_v1/_books/latest')({
     component: BooksLatestPage,
@@ -191,7 +191,7 @@ function BooksLatestPage() {
 
     return (
         <div className="min-h-screen bg-background">
-            <LandingNavbar />
+            <AppNavbar />
 
             <div className="container mx-auto px-4 pt-24 pb-16">
                 {/* Header */}

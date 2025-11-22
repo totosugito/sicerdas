@@ -3,12 +3,13 @@ import { Button } from '@/components/ui/button'
 import { useTranslation } from 'react-i18next'
 import { Link } from '@tanstack/react-router'
 import { ArrowRight, Heart, LogIn } from 'lucide-react'
+import { AppRoute } from '@/constants/app-route'
 
 export function CTASection() {
     const { t } = useTranslation()
 
     return (
-        <section className="py-20 px-4">
+        <section className="py-20 px-8">
             <div className="container mx-auto max-w-5xl">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -22,25 +23,20 @@ export function CTASection() {
                         <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
                             {t('landing.cta.title')}
                         </h2>
-                        <p className="mb-10 text-muted-foreground">
+                        <p className="mb-6 text-muted-foreground">
                             {t('landing.cta.subtitle')}
                         </p>
 
                         {/* Buttons */}
                         <div className="flex flex-col sm:flex-row gap-4">
-                            <Link to="/books/latest">
-                                <Button className="gap-2">
-                                    {t('landing.hero.exploreBooks')}
+                            <Link to={AppRoute.books.latest.url}>
+                                <Button>
+                                    <div className='flex flex-row gap-4 items-center'>
+                                    <span>{t('landing.hero.exploreBooks')}</span>
                                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                                    </div>
                                 </Button>
                             </Link>
-                            <Button
-                                variant="outline"
-                                className="gap-2"
-                            >
-                                <LogIn className="h-5 w-5" />
-                                {t('landing.cta.createAccount')}
-                            </Button>
                         </div>
                     </div>
 

@@ -86,13 +86,13 @@ export default {
             latestBooks: "Buku Terbaru",
             quizLibrary: "Pustaka Kuis",
             studyGuide: "Panduan Belajar",
-            mobileApp: "Aplikasi Mobile"
+            androidApp: "Aplikasi Android"
         },
         contact: {
             title: "Hubungi Kami",
             youtube: "YouTube",
             instagram: "Instagram",
-            email: "contact@sicerdas.id"
+            discord: "Discord"
         },
     },
 
@@ -102,35 +102,39 @@ export default {
             title: "Buku",
             curriculum2013: "Kurikulum 2013",
             curriculum2006: "Kurikulum 2006",
-            independentCurriculum: "Kurikulum Merdeka",
-            storyBooks: "Buku Cerita",
+            curriculumMerdeka: "Kurikulum Merdeka",
+            educationBooks: "Buku Pendidikan",
+            translationBooks: "Buku Terjemahan",
             latestBooks: "Buku Terbaru",
-            referenceBooks: "Buku Referensi",
+            computerBooks: "Buku Komputer",
+            literatureBooks: "Buku Sastra",
             descriptions: {
-                curriculum2013: "Buku sesuai standar Kurikulum 2013",
-                curriculum2006: "Buku dari Kurikulum 2006 (KTSP)",
-                independentCurriculum: "Sumber daya Kurikulum Merdeka terbaru",
-                storyBooks: "Buku cerita edukatif dan menghibur",
-                latestBooks: "Buku dan materi yang baru ditambahkan",
-                referenceBooks: "Materi referensi yang komprehensif"
+                curriculum2006: "Buku Kurikulum 2006 (KTSP)",
+                curriculum2013: "Buku Kurikulum 2013",
+                curriculumMerdeka: "Buku Kurikulum Merdeka",
+                educationBooks: "Buku-buku pendidikan",
+                translationBooks: "Buku cerita terjemahan",
+                latestBooks: "Buku yang baru ditambahkan",
+                computerBooks: "Buku-buku pengetahuan komputer",
+                literatureBooks: "Buku-buku sastra (puisi dan cerita)"
             }
         },
         pancasila: {
             title: "Pancasila",
             pancasila: "Pancasila",
-            constitution: "UUD 1945",
-            articles: "Artikel",
+            uud1945: "UUD 1945",
+            amandemen: "Amandemen UUD 1945",
             descriptions: {
                 pancasila: "Pelajari tentang lima sila Pancasila Indonesia",
-                constitution: "Undang-Undang Dasar dan amandemen Indonesia",
-                articles: "Artikel edukatif tentang kewarganegaraan"
+                uud1945: "Pembukaan UUD 1045",
+                amandemen: "Undang-Undang Dasar 1945 dan amandemen Indonesia",
             }
         },
         periodicTable: "Tabel Periodik",
         quiz: {
             title: "Kuis",
-            umptn: "UMPTN",
             semester: "Ujian Semester",
+            umptn: "UMPTN",
             utbk: "UTBK",
             cpns: "CPNS",
             national: "Ujian Nasional",
@@ -147,6 +151,11 @@ export default {
         login: "Masuk",
         profile: "Profil",
         settings: "Pengaturan",
-        logout: "Keluar"
+        logout: "Keluar",
+        theme: {
+            light: "Terang",
+            dark: "Gelap",
+            system: "Sistem"
+        }
     }
 }

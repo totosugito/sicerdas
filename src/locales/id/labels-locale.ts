@@ -26,4 +26,6 @@ export default {
     logout: "Keluar",
     logOutTitle: "Konfirmasi Logout",
     logOutDesc: "Apakah Anda yakin ingin keluar dari akun Anda?",
+    language: "Bahasa",
+    theme: "Tema",
 }

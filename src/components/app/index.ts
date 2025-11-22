@@ -1,5 +1,3 @@
 export { default as AppLogo } from "./AppLogo";
 export { default as PageTitle } from "./PageTitle";
-export { default as AppNavbar } from "./AppNavbar";
-export { default as CardCustom } from "./CardCustom";
-export { LandingNavbar } from "./LandingNavbar";
+export { AppNavbar } from "./AppNavbar";
