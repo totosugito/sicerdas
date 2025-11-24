@@ -1,5 +1,5 @@
 import React from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
@@ -18,13 +18,32 @@ import type { UserSession } from '@/service/user-api'
 
 import { authClient } from '@/lib/auth-client'
 
+// Add validation for query parameters
+const profileSearchSchema = z.object({
+  page: z.string().optional().catch('profile'),
+})
+
 export const Route = createFileRoute('/_private/user/profile')({
     component: RouteComponent,
+    validateSearch: profileSearchSchema,
 })
 
 function RouteComponent() {
     const { t } = useTranslation();
     const { user: authUser } = useAuth();
+    const navigate = Route.useNavigate()
+    const search = Route.useSearch()
+
+    // Get the current tab from query parameters or default to 'profile'
+    const currentTab = search.page || 'profile'
+
+    // Handle tab change by updating the URL
+    const handleTabChange = (value: string) => {
+        navigate({
+            search: (prev: any) => ({ ...prev, page: value }),
+            replace: true,
+        })
+    }
 
     // Create ref for ProfileInfoForm
     const profileInfoFormRef = React.useRef<ProfileInfoFormRef>(null);
@@ -201,7 +220,7 @@ function RouteComponent() {
                 }
             }
         );
-    }
+    };
 
     // Add this function to handle session revocation
     const handleRevokeSession = async (sessionToken: string) => {
@@ -239,7 +258,7 @@ function RouteComponent() {
         <div className="flex flex-col gap-6 w-full">
             <ProfileHeader />
 
-            <Tabs defaultValue="profile">
+            <Tabs value={currentTab} onValueChange={handleTabChange}>
                 <div className="grid md:grid-cols-[220px_minmax(0px,_1fr)] max-w-6xl gap-x-6 w-full ">
                     {/* Navigation Tabs */}
                     <div className="md:col-span-1 w-full">

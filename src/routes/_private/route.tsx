@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AdminNav } from "@/constants/user-nav";
+// import { AdminNav } from "@/constants/user-nav";
 import { APP_CONFIG } from "@/constants/config";
 import { useAuth } from "@/hooks/use-auth";
 import { AppNavbar } from "@/components/app";
@@ -15,10 +15,10 @@ export const Route = createFileRoute('/_private')({
 
 function RouteComponent() {
   const auth = useAuth();
-  const userRole = auth?.user?.user?.role;
+  // const userRole = auth?.user?.user?.role;
 
   // const webNav: any = userRole === USER_ROLE.admin.value ? AdminNav : (userRole === USER_ROLE.user.value ? UserNav : ContractorNav)
-  const webNav: any = AdminNav
+  // const webNav: any = AdminNav
   return (
     <div className={"h-screen flex flex-row overflow-auto mt-12"}>
       <SidebarProvider defaultOpen={true}>
