@@ -167,6 +167,11 @@ export function AppNavbar() {
       description: t('landing.navbar.constitution.descriptions.uud1945')
     },
     {
+      title: t('landing.navbar.constitution.uud1945Asli'),
+      href: AppRoute.constitution.uud1945Asli.url,
+      description: t('landing.navbar.constitution.descriptions.uud1945Asli')
+    },
+    {
       title: t('landing.navbar.constitution.amandemen'),
       href: AppRoute.constitution.amandemen.url,
       description: t('landing.navbar.constitution.descriptions.amandemen')
@@ -274,7 +279,7 @@ export function AppNavbar() {
                     {t('landing.navbar.constitution.title')}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-3 p-4">
+                    <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
                       {constitutionMenu.map((item) => (
                         <ListItem
                           key={item.title}

@@ -1,7 +1,7 @@
 import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_v1/constitution/pembukaan-uud1945')({
+export const Route = createFileRoute('/_v1/constitution/pembukaan-uud-1945')({
   component: RouteComponent,
 })
 

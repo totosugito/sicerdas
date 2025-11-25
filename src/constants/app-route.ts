@@ -46,9 +46,10 @@ export const AppRoute = {
   },
   constitution: {
     pancasila: { url: "/constitution/pancasila" },
-    pembukaanUud1945: { url: "/constitution/pembukaan-uud1945" },
+    pembukaanUud1945: { url: "/constitution/pembukaan-uud-1945" },
     butirPancasila: { url: "/constitution/butir-pancasila" },
-    uud1945: { url: "/constitution/uud1945" },
+    uud1945: { url: "/constitution/uud-1945" },
+    uud1945Asli: { url: "/constitution/uud-1945-asli" },
     amandemen: { url: "/constitution/amandemen" },
   },
   quiz: {
