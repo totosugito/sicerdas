@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { APP_CONFIG } from '@/constants/config'
 
-export const Route = createFileRoute('/_v1/_public/terms')({
+export const Route = createFileRoute('/_v1/_web/privacy')({
   component: RouteComponent,
 })
 
@@ -14,13 +14,13 @@ function RouteComponent() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex flex-col gap-2">
         <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black leading-tight tracking-[-0.033em]">
-          {t("public.terms.title")}
+          {t("web.privacy.title")}
         </h1>
         <p className="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">
-          {t("public.terms.description")}
+          {t("web.privacy.description")}
         </p>
         <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">
-          {t("public.terms.updated", { date: "25 November 2025" })}
+          {t("web.privacy.updated", { date: "25 November 2025" })}
         </p>
       </div>
 
@@ -28,82 +28,82 @@ function RouteComponent() {
         <div className="flex flex-col gap-6">
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("public.terms.acceptance.title")}
+              {t("web.privacy.introduction.title")}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("public.terms.acceptance.content")}
+              {t("web.privacy.introduction.content")}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("public.terms.useOfService.title")}
+              {t("web.privacy.informationWeCollect.title")}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("public.terms.useOfService.content")}
+              {t("web.privacy.informationWeCollect.content")}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("public.terms.intellectualProperty.title")}
+              {t("web.privacy.howWeUseInformation.title")}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("public.terms.intellectualProperty.content")}
+              {t("web.privacy.howWeUseInformation.content")}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("public.terms.userAccounts.title")}
+              {t("web.privacy.dataSharing.title")}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("public.terms.userAccounts.content")}
+              {t("web.privacy.dataSharing.content")}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("public.terms.termination.title")}
+              {t("web.privacy.dataSecurity.title")}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("public.terms.termination.content")}
+              {t("web.privacy.dataSecurity.content")}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("public.terms.disclaimer.title")}
+              {t("web.privacy.yourRights.title")}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("public.terms.disclaimer.content")}
+              {t("web.privacy.yourRights.content")}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("public.terms.limitationOfLiability.title")}
+              {t("web.privacy.cookies.title")}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("public.terms.limitationOfLiability.content")}
+              {t("web.privacy.cookies.content")}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("public.terms.changesToTerms.title")}
+              {t("web.privacy.changesToPolicy.title")}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("public.terms.changesToTerms.content")}
+              {t("web.privacy.changesToPolicy.content")}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("public.terms.contact.title")}
+              {t("web.privacy.contactUs.title")}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("public.terms.contact.content")}
+              {t("web.privacy.contactUs.content")}
             </p>
             <div className="mt-3 p-4 bg-slate-50 dark:bg-slate-700 rounded-md">
               <p className="text-slate-700 dark:text-slate-300">

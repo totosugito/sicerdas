@@ -16,7 +16,7 @@ export default {
     hours: "Jam Kerja: Senin-Jumat, 09:00-17:00 WIB"
   },
   feedback: {
-    title: "Umpan Balik",
-    content: "Kami senantiasa berusaha meningkatkan layanan kami. Kirimkan umpan balik Anda untuk membantu kami menjadi lebih baik."
+    title: "Kritik dan Saran",
+    content: "Kami senantiasa berusaha meningkatkan layanan kami. Kirimkan kritik dan saran Anda untuk membantu kami menjadi lebih baik."
   }
 }

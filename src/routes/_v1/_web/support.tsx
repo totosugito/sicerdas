@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { APP_CONFIG } from '@/constants/config'
 
-export const Route = createFileRoute('/_v1/_public/support')({
+export const Route = createFileRoute('/_v1/_web/support')({
   component: RouteComponent,
 })
 
@@ -14,10 +14,10 @@ function RouteComponent() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex flex-col gap-2">
         <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black leading-tight tracking-[-0.033em]">
-          {t("public.support.title")}
+          {t("web.support.title")}
         </h1>
         <p className="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">
-          {t("public.support.description")}
+          {t("web.support.description")}
         </p>
       </div>
 
@@ -25,25 +25,25 @@ function RouteComponent() {
         <div className="flex flex-col gap-8">
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("public.support.gettingStarted.title")}
+              {t("web.support.gettingStarted.title")}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("public.support.gettingStarted.content")}
+              {t("web.support.gettingStarted.content")}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("public.support.troubleshooting.title")}
+              {t("web.support.troubleshooting.title")}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("public.support.troubleshooting.content")}
+              {t("web.support.troubleshooting.content")}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("public.support.contact.title")}
+              {t("web.support.contact.title")}
             </h2>
             <div className="mt-3 p-4 bg-slate-50 dark:bg-slate-700 rounded-md">
               <p className="text-slate-700 dark:text-slate-300">
@@ -52,23 +52,23 @@ function RouteComponent() {
             </div>
             {/* <div className="mt-3 p-4 bg-slate-50 dark:bg-slate-700 rounded-md">
               <p className="text-slate-700 dark:text-slate-300">
-                {t("public.support.contact.email")}
+                {t("web.support.contact.email")}
               </p>
               <p className="text-slate-700 dark:text-slate-300">
-                {t("public.support.contact.phone")}
+                {t("web.support.contact.phone")}
               </p>
               <p className="text-slate-700 dark:text-slate-300">
-                {t("public.support.contact.hours")}
+                {t("web.support.contact.hours")}
               </p>
             </div> */}
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("public.support.feedback.title")}
+              {t("web.support.feedback.title")}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("public.support.feedback.content")}
+              {t("web.support.feedback.content")}
             </p>
           </section>
         </div>

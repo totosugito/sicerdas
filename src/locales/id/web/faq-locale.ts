@@ -19,8 +19,8 @@ export default {
       answer: "Ya, dengan aplikasi Android kami, Anda dapat mengunduh buku dan materi untuk diakses secara offline kapan saja."
     },
     supportContact: {
-      question: "Bagaimana cara menghubungi dukungan?",
-      answer: "Anda dapat menghubungi tim dukungan kami melalui email di support@sicerdas.example.com atau melalui formulir kontak di halaman Dukungan."
+      question: "Bagaimana cara menghubungi kami ?",
+      answer: "Anda dapat menghubungi tim dukungan kami melalui email di totosugito@gmail.com atau melalui formulir kontak di halaman Dukungan."
     }
   }
 }

@@ -26,11 +26,11 @@ export function Footer() {
                     <div>
                         <h3 className="font-semibold text-foreground mb-4">{t('landing.footer.information.title')}</h3>
                         <ul className="space-y-2 text-sm">
-                            <li><a href={AppRoute.public.about.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.about')}</a></li>
-                            <li><a href={AppRoute.public.privacy.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.privacy')}</a></li>
-                            <li><a href={AppRoute.public.terms.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.terms')}</a></li>
-                            <li><a href={AppRoute.public.support.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.support')}</a></li>
-                            <li><a href={AppRoute.public.faq.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.faq')}</a></li>
+                            <li><a href={AppRoute.web.about.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.about')}</a></li>
+                            <li><a href={AppRoute.web.privacy.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.privacy')}</a></li>
+                            <li><a href={AppRoute.web.terms.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.terms')}</a></li>
+                            <li><a href={AppRoute.web.support.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.support')}</a></li>
+                            <li><a href={AppRoute.web.faq.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.information.faq')}</a></li>
                         </ul>
                     </div>
 

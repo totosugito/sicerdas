@@ -19,11 +19,11 @@ export default {
     content: "Anda bertanggung jawab atas aktivitas yang terjadi pada akun Anda. Harap jaga kerahasiaan kata sandi Anda dan informasi akun Anda. Jika Anda menemukan penggunaan akun Anda tanpa izin, harap hubungi kami segera."
   },
   termination: {
-    title: "Pengakhiran",
+    title: "Penutupan Account",
     content: "Kami dapat mengakhiri atau menangguhkan akses Anda ke layanan kami secara langsung, tanpa pemberitahuan sebelumnya atau pertanggungjawaban, jika Anda melanggar salah satu syarat dan ketentuan."
   },
   disclaimer: {
-    title: "Penafian",
+    title: "Disclaimer",
     content: "Layanan kami disediakan \"sebagaimana adanya\" dan \"sebagaimana tersedia\" tanpa jaminan apa pun, baik tersurat maupun tersirat."
   },
   limitationOfLiability: {

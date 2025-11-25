@@ -53,7 +53,7 @@ export const AppRoute = {
     quiz: { url: "/quiz" },
     detail: { url: "/quiz/$id" },
   },
-  public: {
+  web: {
     about: { url: "/about" },
     faq: { url: "/faq" },
     privacy: { url: "/privacy" },

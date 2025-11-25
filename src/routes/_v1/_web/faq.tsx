@@ -2,7 +2,7 @@ import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 
-export const Route = createFileRoute('/_v1/_public/faq')({
+export const Route = createFileRoute('/_v1/_web/faq')({
   component: RouteComponent,
 })
 
@@ -11,24 +11,24 @@ function RouteComponent() {
 
   const faqItems = [
     {
-      question: t("public.faq.questions.whatIsSicerdas.question"),
-      answer: t("public.faq.questions.whatIsSicerdas.answer")
+      question: t("web.faq.questions.whatIsSicerdas.question"),
+      answer: t("web.faq.questions.whatIsSicerdas.answer")
     },
     {
-      question: t("public.faq.questions.howToRegister.question"),
-      answer: t("public.faq.questions.howToRegister.answer")
+      question: t("web.faq.questions.howToRegister.question"),
+      answer: t("web.faq.questions.howToRegister.answer")
     },
     {
-      question: t("public.faq.questions.isThereCost.question"),
-      answer: t("public.faq.questions.isThereCost.answer")
+      question: t("web.faq.questions.isThereCost.question"),
+      answer: t("web.faq.questions.isThereCost.answer")
     },
     {
-      question: t("public.faq.questions.offlineAccess.question"),
-      answer: t("public.faq.questions.offlineAccess.answer")
+      question: t("web.faq.questions.offlineAccess.question"),
+      answer: t("web.faq.questions.offlineAccess.answer")
     },
     {
-      question: t("public.faq.questions.supportContact.question"),
-      answer: t("public.faq.questions.supportContact.answer")
+      question: t("web.faq.questions.supportContact.question"),
+      answer: t("web.faq.questions.supportContact.answer")
     }
   ]
 
@@ -36,10 +36,10 @@ function RouteComponent() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex flex-col gap-2">
         <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black leading-tight tracking-[-0.033em]">
-          {t("public.faq.title")}
+          {t("web.faq.title")}
         </h1>
         <p className="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">
-          {t("public.faq.description")}
+          {t("web.faq.description")}
         </p>
       </div>
 

@@ -10,11 +10,11 @@ import message from './message-locale';
 import user from './user-locale';
 import landing from './landing-locale';
 import booksLatest from './books-latest-locale';
-import about from './public/about-locale';
-import privacy from './public/privacy-locale';
-import terms from './public/terms-locale';
-import support from './public/support-locale';
-import faq from './public/faq-locale';
+import about from './web/about-locale';
+import privacy from './web/privacy-locale';
+import terms from './web/terms-locale';
+import support from './web/support-locale';
+import faq from './web/faq-locale';
 
 const localeId = {
   translation: {
@@ -30,7 +30,7 @@ const localeId = {
     user: user,
     landing: landing,
     booksLatest: booksLatest,
-    public: {
+    web: {
       about: about,
       privacy: privacy,
       terms: terms,

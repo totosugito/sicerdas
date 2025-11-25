@@ -26,6 +26,6 @@ export default {
   },
   history: {
     title: "Sejarah Kami",
-    content: "Berdiri sejak 2020, kami telah membantu lebih dari 100.000 pelajar dan guru dalam mengakses sumber belajar berkualitas dengan menyediakan platform digital yang intuitif dan mudah digunakan."
+    content: "Berdiri sejak 2017, kami telah membantu lebih dari 100.000 pelajar dan guru dalam mengakses sumber belajar berkualitas dengan menyediakan platform digital yang intuitif dan mudah digunakan."
   }
 }
