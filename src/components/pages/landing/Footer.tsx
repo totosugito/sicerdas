@@ -43,7 +43,7 @@ export function Footer() {
                                     {t('landing.footer.quickLinks.latestBooks')}
                                 </Link>
                             </li>
-                            <li><a href={AppRoute.pancasila.pancasila.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.navbar.pancasila.pancasila')}</a></li>
+                            <li><a href={AppRoute.constitution.pancasila.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.navbar.constitution.pancasila')}</a></li>
                             <li><a href={AppRoute.periodicTable.periodicTable.url} className="text-muted-foreground hover:text-primary transition-colors">{t('landing.navbar.periodicTable')}</a></li>
                             <li><a href={APP_CONFIG.app.playStore} target='_blank' className="text-muted-foreground hover:text-primary transition-colors">{t('landing.footer.quickLinks.androidApp')}</a></li>
                         </ul>

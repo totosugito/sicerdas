@@ -44,10 +44,12 @@ export const AppRoute = {
     periodicTable: { url: "/periodic-table" },
     element: { url: "/periodic-table/element" },
   },
-  pancasila: {
-    pancasila: { url: "/pancasila" },
-    uud1945: { url: "/pancasila/uud1945" },
-    amandemen: { url: "/pancasila/amandemen" },
+  constitution: {
+    pancasila: { url: "/constitution/pancasila" },
+    pembukaanUud1945: { url: "/constitution/pembukaan-uud1945" },
+    butirPancasila: { url: "/constitution/butir-pancasila" },
+    uud1945: { url: "/constitution/uud1945" },
+    amandemen: { url: "/constitution/amandemen" },
   },
   quiz: {
     quiz: { url: "/quiz" },

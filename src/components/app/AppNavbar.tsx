@@ -145,21 +145,31 @@ export function AppNavbar() {
     },
   ]
 
-  const pancasilaMenu = [
+  const constitutionMenu = [
     {
-      title: t('landing.navbar.pancasila.pancasila'),
-      href: AppRoute.pancasila.pancasila.url,
-      description: t('landing.navbar.pancasila.descriptions.pancasila')
+      title: t('landing.navbar.constitution.pancasila'),
+      href: AppRoute.constitution.pancasila.url,
+      description: t('landing.navbar.constitution.descriptions.pancasila')
     },
     {
-      title: t('landing.navbar.pancasila.uud1945'),
-      href: AppRoute.pancasila.uud1945.url,
-      description: t('landing.navbar.pancasila.descriptions.uud1945')
+      title: t('landing.navbar.constitution.pembukaanUud1945'),
+      href: AppRoute.constitution.pembukaanUud1945.url,
+      description: t('landing.navbar.constitution.descriptions.pembukaanUud1945')
     },
     {
-      title: t('landing.navbar.pancasila.amandemen'),
-      href: AppRoute.pancasila.amandemen.url,
-      description: t('landing.navbar.pancasila.descriptions.amandemen')
+      title: t('landing.navbar.constitution.butirPancasila'),
+      href: AppRoute.constitution.butirPancasila.url,
+      description: t('landing.navbar.constitution.descriptions.butirPancasila')
+    },
+    {
+      title: t('landing.navbar.constitution.uud1945'),
+      href: AppRoute.constitution.uud1945.url,
+      description: t('landing.navbar.constitution.descriptions.uud1945')
+    },
+    {
+      title: t('landing.navbar.constitution.amandemen'),
+      href: AppRoute.constitution.amandemen.url,
+      description: t('landing.navbar.constitution.descriptions.amandemen')
     },
   ]
 
@@ -257,15 +267,15 @@ export function AppNavbar() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
 
-                {/* Pancasila Menu */}
+                {/* Constitution Menu */}
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="text-base bg-transparent">
                     <Shield className="w-4 h-4 mr-2" />
-                    {t('landing.navbar.pancasila.title')}
+                    {t('landing.navbar.constitution.title')}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[400px] gap-3 p-4">
-                      {pancasilaMenu.map((item) => (
+                      {constitutionMenu.map((item) => (
                         <ListItem
                           key={item.title}
                           title={item.title}
@@ -481,7 +491,7 @@ export function AppNavbar() {
                       </div>
                     </div>
 
-                    {/* Pancasila Section */}
+                    {/* Constitution Section */}
                     <div className="space-y-3">
                       <div className="flex items-center gap-2 px-3 py-2 bg-secondary/5 rounded-lg">
                         <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
@@ -492,7 +502,7 @@ export function AppNavbar() {
                         </h3>
                       </div>
                       <div className="space-y-1">
-                        {pancasilaMenu.map((item) => (
+                        {constitutionMenu.map((item) => (
                           <Link
                             key={item.title}
                             to={item.href}

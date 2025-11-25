@@ -119,13 +119,17 @@ export default {
                 literatureBooks: "Buku-buku sastra (puisi dan cerita)"
             }
         },
-        pancasila: {
+        constitution: {
             title: "Pancasila",
             pancasila: "Pancasila",
+            pembukaanUud1945: "Pembukaan UUD 1945",
+            butirPancasila: "Butir-Butir Pancasila",
             uud1945: "UUD 1945",
             amandemen: "Amandemen UUD 1945",
             descriptions: {
                 pancasila: "Pelajari tentang lima sila Pancasila Indonesia",
+                pembukaanUud1945: "Teks Pembukaan UUD 1945",
+                butirPancasila: "Penjabaran nilai dari setiap sila Pancasila",
                 uud1945: "Pembukaan UUD 1045",
                 amandemen: "Undang-Undang Dasar 1945 dan amandemen Indonesia",
             }

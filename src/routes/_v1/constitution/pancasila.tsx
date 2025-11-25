@@ -1,7 +1,7 @@
 import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_v1/pancasila/')({
+export const Route = createFileRoute('/_v1/constitution/pancasila')({
     component: RouteComponent,
 })
 
@@ -11,27 +11,27 @@ function RouteComponent() {
         {
             id: 1,
             title: "Ketuhanan Yang Maha Esa",
-            image: "/pancasila/images/sila_1.png"
+            image: "/constitution/images/sila_1.png"
         },
         {
             id: 2,
             title: "Kemanusiaan yang adil dan beradab",
-            image: "/pancasila/images/sila_2.png"
+            image: "/constitution/images/sila_2.png"
         },
         {
             id: 3,
             title: "Persatuan Indonesia",
-            image: "/pancasila/images/sila_3.png"
+            image: "/constitution/images/sila_3.png"
         },
         {
             id: 4,
             title: "Kerakyatan yang dipimpin oleh hikmat kebijaksanaan dalam permusyawaratan/perwakilan",
-            image: "/pancasila/images/sila_4.png"
+            image: "/constitution/images/sila_4.png"
         },
         {
             id: 5,
             title: "Keadilan sosial bagi seluruh rakyat Indonesia",
-            image: "/pancasila/images/sila_5.png"
+            image: "/constitution/images/sila_5.png"
         }
     ]
 
@@ -40,7 +40,7 @@ function RouteComponent() {
             <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
                 <div className="flex flex-col items-center mb-12 gap-4">
                     <img
-                        src="/pancasila/images/ic_pancasila.png"
+                        src="/constitution/images/ic_pancasila.png"
                         alt="Pancasila Symbol"
                         className="w-32 h-32 object-contain mb-4"
                     />
