@@ -32,7 +32,7 @@ export function AndroidAppSection() {
     }, [mockupImages.length])
 
     return (
-        <section className="py-20 bg-gradient-to-br from-accent/5 via-background to-primary/5 px-8">
+        <section className="py-20 bg-gradient-to-br from-accent/5 via-background to-primary/5">
             <div className="container mx-auto">
                 <div className="max-w-5xl mx-auto">
                     <motion.div

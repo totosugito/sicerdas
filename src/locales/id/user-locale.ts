@@ -1,5 +1,5 @@
 export default {
-    profile: {
+	profile: {
         title: "Profil Pengguna",
         description: "Kelola pengaturan dan preferensi akun Anda.",
         loading: "Memuat profil...",
@@ -133,5 +133,5 @@ export default {
             allSessionsRevoked: "Semua sesi berhasil dihapus",
             revokeError: "Gagal menghapus sesi. Silakan coba lagi."
         }
-    }
+    },
 }

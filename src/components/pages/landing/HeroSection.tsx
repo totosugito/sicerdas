@@ -16,7 +16,7 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
     const { t } = useTranslation()
 
     return (
-        <section className="relative overflow-hidden py-20 md:py-25 bg-gradient-to-br from-primary/10 via-background to-accent/10 px-8">
+        <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10 py-10">
             <div className="container mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

@@ -8,7 +8,7 @@ export function Footer() {
     const { t } = useTranslation()
 
     return (
-        <footer className="bg-card border-t border-border py-12">
+        <footer className="bg-card border-t border-border py-6">
             <div className="container mx-auto px-4">
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
                     {/* Brand */}
@@ -57,7 +57,7 @@ export function Footer() {
                                 <RiYoutubeLine className="h-5 w-5" />
                                 <span className="text-sm">{t('landing.footer.contact.youtube')}</span>
                             </a>
-                            <a href="#" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
+                            <a href={APP_CONFIG.app.discord} target='_blank' className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
                                 <RiDiscordLine className="h-5 w-5" />
                                 <span className="text-sm">{t('landing.footer.contact.discord')}</span>
                             </a>
@@ -69,7 +69,7 @@ export function Footer() {
                     </div>
                 </div>
 
-                <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
+                <div className="border-t border-border pt-4 text-center text-sm text-muted-foreground">
                     <p>© {new Date().getFullYear()} {t('app.copyright')}</p>
                 </div>
             </div>

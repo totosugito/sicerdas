@@ -67,14 +67,16 @@ function LoginComponent() {
 
           {/* Header */}
           <div className="text-center space-y-0">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-0 shadow-lg">
-              <img src='/images/sicerdas-transparent-v1.png' className='p-1 w-15 h-15' />
-            </div>
-            <div className="text-lg font-bold tracking-tight text-foreground mb-2">
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                {t("app.appName")}
-              </span>
-            </div>
+            <a href="/">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl">
+                <img src='/images/sicerdas-transparent-v1.png' className='' />
+              </div>
+              <div className="text-lg font-bold tracking-tight text-foreground mb-2">
+                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  {t("app.appName")}
+                </span>
+              </div>
+            </a>
             <h1 className="text-3xl font-bold tracking-tight text-foreground">
               <span className="">
                 {t("signIn.title")}

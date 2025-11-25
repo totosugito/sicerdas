@@ -21,7 +21,7 @@ import {useTranslation} from "react-i18next";
 import {ObjToOptionList} from "@/lib/my-utils";
 import {EnumUserRole} from "backend/src/db/schema/enum-auth";
 
-export const Route = createFileRoute('/_private/admin/__users/users')({
+export const Route = createFileRoute('/_v1/_private/admin/__users/users')({
   validateSearch: (search: Record<string, unknown>): { 
     sort?: string; 
     order?: 'asc' | 'desc';

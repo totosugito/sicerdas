@@ -79,7 +79,7 @@ export default {
             privacy: "Kebijakan Privasi",
             terms: "Syarat & Ketentuan",
             support: "Dukungan",
-            faq: "Tanya Jawab"
+            faq: "Pertanyaan Umum"
         },
         quickLinks: {
             title: "Tautan Cepat",

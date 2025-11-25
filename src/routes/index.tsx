@@ -1,7 +1,7 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react';
-import { AppNavbar } from '@/components/app';
 import { AndroidAppSection, CTASection, FeaturesSection, Footer, HeroSection } from '@/components/pages/landing';
+import { AppNavbar } from '@/components/app';
 
 export const Route = createFileRoute('/')({
     component: RouteComponent,
@@ -18,21 +18,21 @@ function RouteComponent() {
     }
 
     return (
-        <div className="min-h-screen w-full bg-background">
+        <div className="flex flex-col min-h-screen w-full bg-background">
             <AppNavbar />
+            <div className='flex flex-col flex-1 mt-12'>
+                <HeroSection
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    handleSearch={handleSearch}
+                />
 
-            <HeroSection
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                handleSearch={handleSearch}
-            />
+                <FeaturesSection />
 
-            <FeaturesSection />
+                <AndroidAppSection />
 
-            <AndroidAppSection />
-
-            <CTASection />
-
+                <CTASection />
+            </div>
             <Footer />
         </div>
     )
