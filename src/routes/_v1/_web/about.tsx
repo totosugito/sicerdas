@@ -82,7 +82,7 @@ function RouteComponent() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
               {t("web.about.history.title")}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">

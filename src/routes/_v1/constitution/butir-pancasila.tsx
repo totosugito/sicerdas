@@ -10,7 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger
 } from '@/components/ui/accordion';
-import { Book, Heart, Shield, Users, Scale, Search, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 
 export const Route = createFileRoute('/_v1/constitution/butir-pancasila')({
   component: RouteComponent,
@@ -100,27 +100,19 @@ function RouteComponent() {
   ];
 
   const iconMap = {
-    1: <Book className="w-8 h-8" />,
-    2: <Heart className="w-8 h-8" />,
-    3: <Shield className="w-8 h-8" />,
-    4: <Users className="w-8 h-8" />,
-    5: <Scale className="w-8 h-8" />
+    1: <img src="/constitution/images/sila_1.png" alt="Sila 1" className="w-8 h-8" />,
+    2: <img src="/constitution/images/sila_2.png" alt="Sila 2" className="w-8 h-8" />,
+    3: <img src="/constitution/images/sila_3.png" alt="Sila 3" className="w-8 h-8" />,
+    4: <img src="/constitution/images/sila_4.png" alt="Sila 4" className="w-8 h-8" />,
+    5: <img src="/constitution/images/sila_5.png" alt="Sila 5" className="w-8 h-8" />
   };
 
   const colorMap = {
-    1: 'from-red-50 to-white border-red-200 dark:from-red-950/30 dark:to-red-900/20 dark:border-red-900',
-    2: 'from-white to-red-50 border-red-200 dark:from-red-900/20 dark:to-red-950/30 dark:border-red-900',
-    3: 'from-red-50 to-white border-red-200 dark:from-red-950/30 dark:to-red-900/20 dark:border-red-900',
-    4: 'from-white to-red-50 border-red-200 dark:from-red-900/20 dark:to-red-950/30 dark:border-red-900',
-    5: 'from-red-50 to-white border-red-200 dark:from-red-950/30 dark:to-red-900/20 dark:border-red-900'
-  };
-
-  const badgeColorMap = {
-    1: 'bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800',
-    2: 'bg-red-700 text-white hover:bg-red-800 dark:bg-red-800 dark:hover:bg-red-900',
-    3: 'bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800',
-    4: 'bg-red-700 text-white hover:bg-red-800 dark:bg-red-800 dark:hover:bg-red-900',
-    5: 'bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800'
+    1: 'from-red-50 to-white border-red-200 dark:from-gray-800 dark:to-gray-900 dark:border-gray-700',
+    2: 'from-white to-red-50 border-red-200 dark:from-gray-900 dark:to-gray-800 dark:border-gray-700',
+    3: 'from-red-50 to-white border-red-200 dark:from-gray-800 dark:to-gray-900 dark:border-gray-700',
+    4: 'from-white to-red-50 border-red-200 dark:from-gray-900 dark:to-gray-800 dark:border-gray-700',
+    5: 'from-red-50 to-white border-red-200 dark:from-gray-800 dark:to-gray-900 dark:border-gray-700'
   };
 
   // Clear search
@@ -174,7 +166,7 @@ function RouteComponent() {
         <div className="mx-auto text-center">
           <div className="mb-6 flex justify-center">
             <div className="p-4 rounded-full shadow-sm transform hover:scale-110 transition-transform duration-300">
-              <img src="/constitution/images/ic_pancasila.png" alt="Pancasila" className="w-20 h-20" />
+              <img src="/constitution/images/ic_pancasila.png" alt="Pancasila" className="w-24 h-24" />
             </div>
           </div>
           <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 mb-6 tracking-tight dark:text-white">
@@ -207,7 +199,7 @@ function RouteComponent() {
                 placeholder="Cari butir Pancasila..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 pr-12 py-6 text-lg border-2 border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 dark:border-red-900 dark:focus:border-red-500 dark:focus:ring-red-900/30 dark:bg-gray-800 dark:text-white"
+                className="pl-12 pr-12 py-6 text-lg border-2 border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 dark:border-gray-700 dark:focus:border-red-500 dark:focus:ring-red-900/30 dark:bg-gray-800 dark:text-white"
               />
               {searchTerm && (
                 <button
@@ -258,14 +250,14 @@ function RouteComponent() {
                   >
                     <CardHeader>
                       <div className="flex items-start gap-4">
-                        <div className="p-3 bg-white rounded-lg shadow-md border-2 border-red-200 dark:bg-gray-800 dark:border-red-900">
+                        <div className="p-2 bg-white rounded-lg shadow-md border-2 border-red-200 dark:bg-gray-800 dark:border-gray-700">
                           <div className="text-red-600 dark:text-red-400">
                             {iconMap[sila.id as keyof typeof iconMap]}
                           </div>
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <Badge className={badgeColorMap[sila.id as keyof typeof badgeColorMap]}>
+                            <Badge className={'bg-red-600 text-white hover:bg-red-700 dark:bg-red-400 dark:hover:bg-red-600 dark:text-gray-900'}>
                               Sila {sila.id}
                             </Badge>
                           </div>
@@ -291,10 +283,10 @@ function RouteComponent() {
                               {sila.butir.map((item, idx) => (
                                 <div
                                   key={idx}
-                                  className="flex gap-4 p-4 bg-white rounded-lg shadow-sm border border-red-100 hover:border-red-300 transition-colors duration-200 dark:bg-gray-800 dark:border-red-900/50 dark:hover:border-red-700"
+                                  className="flex gap-4 p-4 bg-white rounded-lg shadow-sm border border-red-100 hover:border-red-300 transition-colors duration-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-gray-600"
                                 >
                                   <div className="flex-shrink-0">
-                                    <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold text-sm dark:bg-red-700">
+                                    <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold text-sm dark:bg-red-400 dark:text-gray-900">
                                       {idx + 1}
                                     </div>
                                   </div>

@@ -128,7 +128,7 @@ export default {
             uud1945Asli: "UUD 1945 Asli",
             amandemen: "Amandemen UUD 1945",
             descriptions: {
-                pancasila: "Pelajari tentang lima sila Pancasila Indonesia",
+                pancasila: "Lima Sila Pancasila",
                 pembukaanUud1945: "Teks Pembukaan UUD 1945",
                 butirPancasila: "Penjabaran nilai dari setiap sila Pancasila",
                 uud1945: "Pembukaan UUD 1045",
