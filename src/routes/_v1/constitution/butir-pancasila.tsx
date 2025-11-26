@@ -1,6 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@/components/ui/accordion';
+import { Book, Heart, Shield, Users, Scale, Search, X } from 'lucide-react';
 
 export const Route = createFileRoute('/_v1/constitution/butir-pancasila')({
   component: RouteComponent,
@@ -13,10 +23,9 @@ function RouteComponent() {
   // Butir-butir Pancasila data
   const butirPancasila = [
     {
-      title: "Sila 1",
-      subTitle: "Ketuhanan Yang Maha Esa",
-      image: "/constitution/images/sila_1.png",
-      data: [
+      id: 1,
+      sila: "Ketuhanan Yang Maha Esa",
+      butir: [
         "Bangsa Indonesia menyatakan kepercayaannya dan ketakwaannya terhadap Tuhan Yang Maha Esa.",
         "Manusia Indonesia percaya dan takwa terhadap Tuhan Yang Maha Esa, sesuai dengan agama dan kepercayaannya masing-masing menurut dasar kemanusiaan yang adil dan beradab.",
         "Mengembangkan sikap hormat menghormati dan bekerjasama antara pemeluk agama dengan penganut kepercayaan yang berbeda-beda terhadap Tuhan Yang Maha Esa.",
@@ -27,10 +36,9 @@ function RouteComponent() {
       ]
     },
     {
-      title: "Sila 2",
-      subTitle: "Kemanusiaan yang Adil dan Beradab",
-      image: "/constitution/images/sila_2.png",
-      data: [
+      id: 2,
+      sila: "Kemanusiaan yang Adil dan Beradab",
+      butir: [
         "Mengakui dan memperlakukan manusia sesuai dengan harkat dan martabatnya sebagai makhluk Tuhan Yang Maha Esa.",
         "Mengakui persamaan derajat, persamaan hak, dan kewajiban asasi setiap manusia, tanpa membeda-bedakan suku, keturunan, agama, kepercayaan, jenis kelamin, kedudukan sosial, warna kulit, dan sebagainya.",
         "Mengembangkan sikap saling mencintai sesama manusia.",
@@ -44,10 +52,9 @@ function RouteComponent() {
       ]
     },
     {
-      title: "Sila 3",
-      subTitle: "Persatuan Indonesia",
-      image: "/constitution/images/sila_3.png",
-      data: [
+      id: 3,
+      sila: "Persatuan Indonesia",
+      butir: [
         "Mampu menempatkan persatuan, kesatuan, serta kepentingan dan keselamatan bangsa dan negara sebagai kepentingan bersama di atas kepentingan pribadi dan golongan.",
         "Sanggup dan rela berkorban untuk kepentingan negara dan bangsa apabila diperlukan.",
         "Mengembangkan rasa cinta kepada tanah air dan bangsa.",
@@ -58,10 +65,9 @@ function RouteComponent() {
       ]
     },
     {
-      title: "Sila 4",
-      subTitle: "Kerakyatan yang Dipimpin oleh Hikmat Kebijaksanaan dalam Permusyawaratan/Perwakilan",
-      image: "/constitution/images/sila_4.png",
-      data: [
+      id: 4,
+      sila: "Kerakyatan yang Dipimpin oleh Hikmat Kebijaksanaan dalam Permusyawaratan/Perwakilan",
+      butir: [
         "Sebagai warga negara dan warga masyarakat, setiap manusia Indonesia mempunyai kedudukan, hak, dan kewajiban yang sama.",
         "Tidak boleh memaksakan kehendak kepada orang lain.",
         "Mengutamakan musyawarah dalam mengambil keputusan untuk kepentingan bersama.",
@@ -75,10 +81,9 @@ function RouteComponent() {
       ]
     },
     {
-      title: "Sila 5",
-      subTitle: "Keadilan Sosial bagi Seluruh Rakyat Indonesia",
-      image: "/constitution/images/sila_5.png",
-      data: [
+      id: 5,
+      sila: "Keadilan Sosial bagi Seluruh Rakyat Indonesia",
+      butir: [
         "Mengembangkan perbuatan yang luhur, yang mencerminkan sikap dan suasana kekeluargaan dan kegotongroyongan.",
         "Mengembangkan sikap adil terhadap sesama.",
         "Menjaga keseimbangan antara hak dan kewajiban.",
@@ -94,103 +99,221 @@ function RouteComponent() {
     }
   ];
 
+  const iconMap = {
+    1: <Book className="w-8 h-8" />,
+    2: <Heart className="w-8 h-8" />,
+    3: <Shield className="w-8 h-8" />,
+    4: <Users className="w-8 h-8" />,
+    5: <Scale className="w-8 h-8" />
+  };
+
+  const colorMap = {
+    1: 'from-red-50 to-white border-red-200 dark:from-red-950/30 dark:to-red-900/20 dark:border-red-900',
+    2: 'from-white to-red-50 border-red-200 dark:from-red-900/20 dark:to-red-950/30 dark:border-red-900',
+    3: 'from-red-50 to-white border-red-200 dark:from-red-950/30 dark:to-red-900/20 dark:border-red-900',
+    4: 'from-white to-red-50 border-red-200 dark:from-red-900/20 dark:to-red-950/30 dark:border-red-900',
+    5: 'from-red-50 to-white border-red-200 dark:from-red-950/30 dark:to-red-900/20 dark:border-red-900'
+  };
+
+  const badgeColorMap = {
+    1: 'bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800',
+    2: 'bg-red-700 text-white hover:bg-red-800 dark:bg-red-800 dark:hover:bg-red-900',
+    3: 'bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800',
+    4: 'bg-red-700 text-white hover:bg-red-800 dark:bg-red-800 dark:hover:bg-red-900',
+    5: 'bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800'
+  };
+
+  // Clear search
+  const clearSearch = () => {
+    setSearchTerm('');
+  };
+
+  // Highlight text for search results
+  const highlightText = (text: string, query: string) => {
+    if (!query.trim()) return text;
+
+    const parts = text.split(new RegExp(`(${query})`, 'gi'));
+    return parts.map((part, index) =>
+      part.toLowerCase() === query.toLowerCase() ? (
+        <mark key={index} className="bg-yellow-200 text-gray-900 px-1 rounded dark:bg-yellow-300 dark:text-gray-900">
+          {part}
+        </mark>
+      ) : (
+        part
+      )
+    );
+  };
+
   // Filter data based on search term
   const filteredData = useMemo(() => {
-    if (!searchTerm) return butirPancasila;
-    
-    return butirPancasila.map(sila => {
-      // Check if sila title or subtitle matches
-      const titleMatch = sila.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                        sila.subTitle.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      // Filter data points
-      const filteredItems = sila.data.filter(item => 
-        item.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      
-      // Return sila with filtered items if there's a match
-      // If title matches, show all items in that sila
-      // If title doesn't match but items do, show only matching items
-      if (titleMatch || filteredItems.length > 0) {
-        return {
-          ...sila,
-          data: titleMatch ? sila.data : filteredItems
-        };
-      }
-      
-      // Return null if no match
-      return null;
-    }).filter((sila): sila is NonNullable<typeof sila> => sila !== null); // Remove null values and type guard
+    if (!searchTerm.trim()) return butirPancasila;
+
+    const query = searchTerm.toLowerCase();
+    return butirPancasila
+      .map(sila => {
+        const silaMatch = sila.sila.toLowerCase().includes(query);
+        const matchingButir = sila.butir.filter(butir =>
+          butir.toLowerCase().includes(query)
+        );
+
+        if (silaMatch || matchingButir.length > 0) {
+          return {
+            ...sila,
+            butir: matchingButir.length > 0 ? matchingButir : sila.butir,
+          };
+        }
+        return null;
+      })
+      .filter((sila): sila is NonNullable<typeof sila> => sila !== null);
   }, [searchTerm]);
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
-        <div className="flex flex-col items-center mb-8 gap-4">
-          <img
-            src="/constitution/images/ic_pancasila.png"
-            alt="Pancasila Symbol"
-            className="w-32 h-32 object-contain mb-4"
-          />
-          <h1 className="text-slate-900 dark:text-slate-100 text-3xl md:text-4xl font-black">
+      {/* Hero Section */}
+      <section className="relative py-10">
+        <div className="mx-auto text-center">
+          <div className="mb-6 flex justify-center">
+            <div className="p-4 rounded-full shadow-sm transform hover:scale-110 transition-transform duration-300">
+              <img src="/constitution/images/ic_pancasila.png" alt="Pancasila" className="w-20 h-20" />
+            </div>
+          </div>
+          <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 mb-6 tracking-tight dark:text-white">
             Butir-Butir Pancasila
           </h1>
+          <p className="text-xl text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
+            Pedoman hidup berbangsa dan bernegara yang mengandung nilai-nilai luhur bangsa Indonesia
+          </p>
+          <div className="flex items-center justify-center gap-4">
+            <Badge className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 text-sm font-semibold dark:bg-red-700 dark:hover:bg-red-800">
+              5 Sila
+            </Badge>
+            <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
+              45 Butir Pengamalan
+            </Badge>
+          </div>
         </div>
-        
-        {/* Search Input */}
-        <div className="mb-8 w-full max-w-2xl mx-auto">
-          <Input
-            type="text"
-            placeholder="Cari butir Pancasila..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full py-6 text-lg border-2 border-slate-300 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400"
-          />
-        </div>
+      </section>
 
-        <div className="flex flex-col gap-12">
-          {filteredData.length > 0 ? (
-            filteredData.map((sila, index) => (
-              <section key={index} className="flex flex-col gap-6">
-                <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
-                  <div className="flex-shrink-0 flex flex-col items-center">
-                    <img
-                      src={sila.image}
-                      alt={sila.subTitle}
-                      className="w-16 h-16 object-contain mb-2"
-                    />
-                    <span className="text-lg font-bold text-slate-900 dark:text-slate-100">
-                      {sila.title}
-                    </span>
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="text-xl text-slate-900 dark:text-slate-100 font-bold mb-4">
-                      {sila.subTitle}
-                    </h2>
-                    <div className="flex flex-col gap-4">
-                      {sila.data.map((item, idx) => (
-                        <div key={idx} className="flex gap-3">
-                          <span className="text-slate-900 dark:text-slate-100 font-medium min-w-[24px]">
-                            {idx + 1}.
-                          </span>
-                          <p className="text-slate-800 dark:text-slate-200 text-base md:text-lg">
-                            {item}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
+      <div className='flex flex-col gap-6 w-full'>
+        <Separator className="dark:bg-gray-700" />
+
+        {/* Search Section */}
+        <section className="py-0">
+          <div className="mx-auto">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Input
+                type="text"
+                placeholder="Cari butir Pancasila..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-12 pr-12 py-6 text-lg border-2 border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 dark:border-red-900 dark:focus:border-red-500 dark:focus:ring-red-900/30 dark:bg-gray-800 dark:text-white"
+              />
+              {searchTerm && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors dark:hover:text-red-400"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+            {searchTerm && (
+              <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+                Ditemukan <span className="font-semibold text-red-600 dark:text-red-400">{filteredData.length}</span> hasil
+              </p>
+            )}
+          </div>
+        </section>
+
+        {/* Content Section */}
+        <section className="">
+          <div className="mx-auto">
+            {filteredData.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="mb-4 flex justify-center">
+                  <div className="p-4 bg-gray-100 rounded-full dark:bg-gray-800">
+                    <Search className="w-12 h-12 text-gray-400 dark:text-gray-500" />
                   </div>
                 </div>
-              </section>
-            ))
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-slate-700 dark:text-slate-300 text-lg">
-                Tidak ada hasil yang ditemukan untuk "{searchTerm}".
-              </p>
-            </div>
-          )}
-        </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white">
+                  Tidak Ada Hasil
+                </h3>
+                <p className="text-gray-600 mb-4 dark:text-gray-400">
+                  Tidak ditemukan butir Pancasila yang sesuai dengan pencarian "{searchTerm}"
+                </p>
+                <button
+                  onClick={clearSearch}
+                  className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 dark:bg-red-700 dark:hover:bg-red-800"
+                >
+                  Hapus Pencarian
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-8">
+                {filteredData.map((sila) => (
+                  <Card
+                    key={sila.id}
+                    className={`bg-gradient-to-br ${colorMap[sila.id as keyof typeof colorMap]} border-2 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 dark:shadow-gray-900`}
+                  >
+                    <CardHeader>
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-white rounded-lg shadow-md border-2 border-red-200 dark:bg-gray-800 dark:border-red-900">
+                          <div className="text-red-600 dark:text-red-400">
+                            {iconMap[sila.id as keyof typeof iconMap]}
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <Badge className={badgeColorMap[sila.id as keyof typeof badgeColorMap]}>
+                              Sila {sila.id}
+                            </Badge>
+                          </div>
+                          <CardTitle className="text-2xl font-bold text-gray-900 leading-tight dark:text-white">
+                            {highlightText(sila.sila, searchTerm)}
+                          </CardTitle>
+                          <CardDescription className="text-gray-600 mt-2 dark:text-gray-300">
+                            {sila.butir.length} Butir Pengamalan{searchTerm && ' yang sesuai'}
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value={`butir-${sila.id}`} className="border-none">
+                          <AccordionTrigger className="text-red-700 hover:text-red-800 font-semibold hover:no-underline py-3 dark:text-red-400 dark:hover:text-red-300">
+                            <span className="flex items-center gap-2">
+                              Lihat Butir Pengamalan
+                            </span>
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <div className="mt-4 space-y-4">
+                              {sila.butir.map((item, idx) => (
+                                <div
+                                  key={idx}
+                                  className="flex gap-4 p-4 bg-white rounded-lg shadow-sm border border-red-100 hover:border-red-300 transition-colors duration-200 dark:bg-gray-800 dark:border-red-900/50 dark:hover:border-red-700"
+                                >
+                                  <div className="flex-shrink-0">
+                                    <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold text-sm dark:bg-red-700">
+                                      {idx + 1}
+                                    </div>
+                                  </div>
+                                  <p className="text-gray-700 leading-relaxed flex-1 dark:text-gray-300">
+                                    {highlightText(item, searchTerm)}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
       </div>
     </div>
   );
