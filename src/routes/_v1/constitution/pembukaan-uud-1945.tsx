@@ -16,32 +16,41 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
-        <div className="flex flex-col items-center mb-8 gap-4">
-          <img
-            src="/constitution/images/ic_pancasila.png"
-            alt="Pancasila Symbol"
-            className="w-32 h-32 object-contain mb-4"
-          />
-          <div className="text-center">
-            <h1 className="text-slate-900 dark:text-slate-100 text-2xl md:text-3xl font-bold mb-2">
-              UNDANG-UNDANG DASAR
-            </h1>
-            <h2 className="text-slate-900 dark:text-slate-100 text-xl md:text-2xl font-semibold mb-2">
-              NEGARA REPUBLIK INDONESIA TAHUN 1945
-            </h2>
-            <h3 className="text-slate-900 dark:text-slate-100 text-2xl md:text-3xl font-bold">
-              PEMBUKAAN
-            </h3>
+      {/* Hero Section */}
+      <section className="relative py-10">
+        <div className="mx-auto text-center">
+          <div className="mb-6 flex justify-center">
+            <div className="p-4 rounded-full shadow-sm transform hover:scale-110 transition-transform duration-300">
+              <img 
+                src="/constitution/images/ic_pancasila.png" 
+                alt="Pancasila Symbol" 
+                className="w-24 h-24 object-contain" 
+              />
+            </div>
           </div>
+          <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 mb-2 tracking-tight dark:text-white">
+            UNDANG-UNDANG DASAR
+          </h1>
+          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-2 dark:text-gray-200">
+            NEGARA REPUBLIK INDONESIA TAHUN 1945
+          </h2>
+          <h3 className="text-3xl sm:text-4xl font-bold mt-5">
+            PEMBUKAAN
+          </h3>
         </div>
-        
-        <div className="flex flex-col gap-6">
-          {preambleData.map((paragraph, index) => (
-            <p key={index} className="text-slate-800 dark:text-slate-200 text-base md:text-lg leading-relaxed">
-              {paragraph}
-            </p>
-          ))}
+      </section>
+
+      <div className='flex flex-col gap-6 w-full'>
+        <div className="mx-auto w-full">
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+            <div className="flex flex-col gap-6">
+              {preambleData.map((paragraph, index) => (
+                <p key={index} className="text-slate-800 dark:text-slate-200 text-base md:text-lg leading-relaxed">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
