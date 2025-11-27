@@ -296,7 +296,7 @@ function RouteComponent() {
                                pasal.title.includes("(Aturan Tambahan)") ? "Aturan Tambahan" : "Pasal"}
                             </Badge>
                           </div>
-                          <CardTitle className="text-2xl font-bold text-gray-900 leading-tight dark:text-white">
+                          <CardTitle className="sm:text-lg text-gray-900 leading-tight dark:text-white">
                             {highlightText(pasal.title, searchTerm)}
                           </CardTitle>
                           <CardDescription className="text-gray-600 mt-2 dark:text-gray-300">

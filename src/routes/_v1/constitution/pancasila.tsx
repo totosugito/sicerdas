@@ -65,7 +65,7 @@ function RouteComponent() {
                                         />
                                     </div>
                                     <div className="flex-1">
-                                        <h2 className="sm:text-xl text-lg text-slate-900 dark:text-slate-100 mb-2">
+                                        <h2 className="text-lg text-slate-900 dark:text-slate-100 mb-2">
                                             {sila.id}. {sila.title}
                                         </h2>
                                     </div>
