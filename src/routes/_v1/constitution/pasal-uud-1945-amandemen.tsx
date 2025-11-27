@@ -22,9 +22,11 @@ interface Ayat {
 interface Pasal {
   title: string;
   data: Ayat[];
+  bab: string;
+  amandemen: string;
 }
 
-export const Route = createFileRoute('/_v1/constitution/pasal-uud-1945')({
+export const Route = createFileRoute('/_v1/constitution/pasal-uud-1945-amandemen')({
   component: RouteComponent,
 });
 
@@ -45,7 +47,7 @@ function RouteComponent() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/constitution/pasal_uud_1945.json');
+        const response = await fetch('/constitution/pasal_uud_1945_amandemen.json');
         if (!response.ok) {
           throw new Error('Failed to load UUD 1945 data');
         }
@@ -103,7 +105,9 @@ function RouteComponent() {
         const ayatMatch = pasal.data.some(ayat => 
           ayat.isi.toLowerCase().includes(searchTerm.toLowerCase())
         );
-        return pasalMatch || ayatMatch;
+        const babMatch = pasal.bab.toLowerCase().includes(searchTerm.toLowerCase());
+        const amandemenMatch = pasal.amandemen.toLowerCase().includes(searchTerm.toLowerCase());
+        return pasalMatch || ayatMatch || babMatch || amandemenMatch;
       })
     : uud1945Data;
 
@@ -150,7 +154,7 @@ function RouteComponent() {
               </div>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight dark:text-white">
-              Error menampilkan pasal-pasal UUD 1945
+              Error menampilkan pasal-pasal UUD 1945 Amandemen
             </h1>
             <p className="text-lg text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
               {error}
@@ -178,7 +182,7 @@ function RouteComponent() {
             </div>
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight dark:text-white">
-            Pasal-Pasal UUD1945
+            Pasal-Pasal UUD1945 (Amandemen)
           </h1>
           <p className="text-xl text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
             Landasan hukum dan konstitusi tertinggi Negara Republik Indonesia
@@ -208,7 +212,7 @@ function RouteComponent() {
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <Input
                   type="text"
-                  placeholder="Cari pasal atau ayat UUD 1945..."
+                  placeholder="Cari pasal, ayat, bab, atau amandemen UUD 1945..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="px-12 h-10 text-lg border-2 border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 dark:border-gray-700 dark:focus:border-red-500 dark:focus:ring-red-900/30 dark:bg-gray-800 dark:text-white"
@@ -266,7 +270,7 @@ function RouteComponent() {
                   Tidak Ada Hasil
                 </h3>
                 <p className="text-gray-600 mb-4 dark:text-gray-400">
-                  Tidak ditemukan pasal atau ayat UUD 1945 yang sesuai dengan pencarian "{searchTerm}"
+                  Tidak ditemukan pasal atau ayat UUD 1945 Amandemen yang sesuai dengan pencarian "{searchTerm}"
                 </p>
                 <Button
                   onClick={clearSearch}
@@ -290,23 +294,33 @@ function RouteComponent() {
                           </div>
                         </div>
                         <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
+                          <div className="flex items-center gap-3 mb-2 flex-wrap">
                             <Badge className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-400 dark:hover:bg-red-600 dark:text-gray-900">
-                              {pasal.title.includes("(Aturan Peralihan)") ? "Aturan Peralihan" : 
-                               pasal.title.includes("(Aturan Tambahan)") ? "Aturan Tambahan" : "Pasal"}
+                              {pasal.title.includes("Aturan Peralihan") ? "Aturan Peralihan" : 
+                               pasal.title.includes("Aturan Tambahan") ? "Aturan Tambahan" : "Pasal"}
                             </Badge>
+                            {pasal.amandemen !== "0" && (
+                              <Badge className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-400 dark:hover:bg-blue-600 dark:text-gray-900">
+                                Amandemen {pasal.amandemen}
+                              </Badge>
+                            )}
                           </div>
                           <CardTitle className="text-2xl font-bold text-gray-900 leading-tight dark:text-white">
                             {highlightText(pasal.title, searchTerm)}
                           </CardTitle>
                           <CardDescription className="text-gray-600 mt-2 dark:text-gray-300">
-                            {pasal.data.length} Ayat{searchTerm && ' yang sesuai'}
+                            {pasal.bab} • {pasal.data.length} Ayat{searchTerm && ' yang sesuai'}
                           </CardDescription>
                         </div>
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <Accordion key={`${pasal.title}-${expandedAll}`} type="multiple" className="w-full" defaultValue={expandedAll ? [`ayat-${pasal.title}`] : []}>
+                      <Accordion 
+                        key={`${pasal.title}-${expandedAll}`} 
+                        type="multiple" 
+                        className="w-full" 
+                        defaultValue={expandedAll ? [`ayat-${pasal.title}`] : []}
+                      >
                         <AccordionItem value={`ayat-${pasal.title}`} className="border-none">
                           <AccordionTrigger className="text-red-700 hover:text-red-800 font-semibold hover:no-underline py-0 dark:text-red-400 dark:hover:text-red-300">
                             <span className="flex items-center gap-2">

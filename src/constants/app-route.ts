@@ -50,7 +50,7 @@ export const AppRoute = {
     butirPancasila: { url: "/constitution/butir-pancasila" },
     uud1945: { url: "/constitution/pasal-uud-1945" },
     uud1945Asli: { url: "/constitution/pasal-uud-1945-asli" },
-    amandemen: { url: "/constitution/pasal-amandemen" },
+    amandemen: { url: "/constitution/pasal-uud-1945-amandemen" },
   },
   quiz: {
     quiz: { url: "/quiz" },
