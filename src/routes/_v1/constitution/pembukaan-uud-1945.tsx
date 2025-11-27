@@ -28,7 +28,7 @@ function RouteComponent() {
               />
             </div>
           </div>
-          <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 mb-2 tracking-tight dark:text-white">
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight dark:text-white">
             UNDANG-UNDANG DASAR
           </h1>
           <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-2 dark:text-gray-200">
@@ -42,7 +42,7 @@ function RouteComponent() {
 
       <div className='flex flex-col gap-6 w-full'>
         <div className="mx-auto w-full">
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg">
             <div className="flex flex-col gap-6">
               {preambleData.map((paragraph, index) => (
                 <p key={index} className="text-slate-800 dark:text-slate-200 text-base md:text-lg leading-relaxed">

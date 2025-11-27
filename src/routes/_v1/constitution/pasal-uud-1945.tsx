@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -10,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger
 } from '@/components/ui/accordion';
-import { Search, X } from 'lucide-react';
+import { Search, X, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
 
 // Define TypeScript interfaces for our data
 interface Ayat {
@@ -30,6 +31,8 @@ export const Route = createFileRoute('/_v1/constitution/pasal-uud-1945')({
 function RouteComponent() {
   // Search state
   const [searchTerm, setSearchTerm] = useState('');
+  // Expand/collapse all state
+  const [expandedAll, setExpandedAll] = useState(false);
   // UUD 1945 data state
   const [uud1945Data, setUud1945Data] = useState<Pasal[]>([]);
   // Loading state
@@ -58,6 +61,19 @@ function RouteComponent() {
 
     loadData();
   }, []);
+
+  // State to track which accordions are open
+  const [openAccordions, setOpenAccordions] = useState<Record<string, boolean>>({});
+
+  // Toggle expand/collapse all
+  const toggleExpandAll = () => {
+    const newOpenState: Record<string, boolean> = {};
+    uud1945Data.forEach(pasal => {
+      newOpenState[`ayat-${pasal.title}`] = !expandedAll;
+    });
+    setOpenAccordions(newOpenState);
+    setExpandedAll(!expandedAll);
+  };
 
   // Clear search
   const clearSearch = () => {
@@ -129,24 +145,22 @@ function RouteComponent() {
             <div className="mb-6 flex justify-center">
               <div className="p-4 rounded-full shadow-sm">
                 <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center dark:bg-red-900/30">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
+                  <AlertCircle className="h-12 w-12 text-red-500" />
                 </div>
               </div>
             </div>
-            <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 mb-6 tracking-tight dark:text-white">
-              Error Loading Data
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight dark:text-white">
+              Error menampilkan pasal-pasal UUD 1945
             </h1>
-            <p className="text-xl text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
+            <p className="text-lg text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
               {error}
             </p>
-            <button
+            <Button
               onClick={() => window.location.reload()}
               className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium dark:bg-red-700 dark:hover:bg-red-800"
             >
               Reload Page
-            </button>
+            </Button>
           </div>
         </section>
       </div>
@@ -163,14 +177,14 @@ function RouteComponent() {
               <img src="/constitution/images/ic_pancasila.png" alt="UUD 1945" className="w-24 h-24" />
             </div>
           </div>
-          <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 mb-6 tracking-tight dark:text-white">
-            Undang-Undang Dasar 1945
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight dark:text-white">
+            Pasal-Pasal UUD1945
           </h1>
           <p className="text-xl text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
             Landasan hukum dan konstitusi tertinggi Negara Republik Indonesia
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <Badge className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 text-sm font-semibold dark:bg-red-700 dark:hover:bg-red-800">
+            <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
               {pasalCount} Pasal
             </Badge>
             <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
@@ -189,23 +203,46 @@ function RouteComponent() {
         {/* Search Section */}
         <section className="py-0">
           <div className="mx-auto">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <Input
-                type="text"
-                placeholder="Cari pasal atau ayat UUD 1945..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 pr-12 py-6 text-lg border-2 border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 dark:border-gray-700 dark:focus:border-red-500 dark:focus:ring-red-900/30 dark:bg-gray-800 dark:text-white"
-              />
-              {searchTerm && (
-                <button
-                  onClick={clearSearch}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors dark:hover:text-red-400"
+            <div className="flex flex-col gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  type="text"
+                  placeholder="Cari pasal atau ayat UUD 1945..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="px-12 h-10 text-lg border-2 border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 dark:border-gray-700 dark:focus:border-red-500 dark:focus:ring-red-900/30 dark:bg-gray-800 dark:text-white"
+                />
+                {searchTerm && (
+                  <Button
+                    onClick={clearSearch}
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors dark:hover:text-red-400"
+                  >
+                    <X className="w-5 h-5" />
+                  </Button>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  onClick={toggleExpandAll}
+                  size="lg"
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center gap-2 dark:bg-red-700 dark:hover:bg-red-800"
                 >
-                  <X className="w-5 h-5" />
-                </button>
-              )}
+                  {expandedAll ? (
+                    <>
+                      <ChevronUp className="w-4 h-4" />
+                      Tutup Semua
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="w-4 h-4" />
+                      Buka Semua
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
             {searchTerm && (
               <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
@@ -219,7 +256,7 @@ function RouteComponent() {
         <section className="">
           <div className="mx-auto">
             {filteredData.length === 0 ? (
-              <div className="text-center py-16">
+              <div className="text-center py-10">
                 <div className="mb-4 flex justify-center">
                   <div className="p-4 bg-gray-100 rounded-full dark:bg-gray-800">
                     <Search className="w-12 h-12 text-gray-400 dark:text-gray-500" />
@@ -231,12 +268,12 @@ function RouteComponent() {
                 <p className="text-gray-600 mb-4 dark:text-gray-400">
                   Tidak ditemukan pasal atau ayat UUD 1945 yang sesuai dengan pencarian "{searchTerm}"
                 </p>
-                <button
+                <Button
                   onClick={clearSearch}
                   className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 dark:bg-red-700 dark:hover:bg-red-800"
                 >
                   Hapus Pencarian
-                </button>
+                </Button>
               </div>
             ) : (
               <div className="space-y-8">
@@ -269,9 +306,9 @@ function RouteComponent() {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <Accordion type="single" collapsible className="w-full">
+                      <Accordion key={`${pasal.title}-${expandedAll}`} type="multiple" className="w-full" defaultValue={expandedAll ? [`ayat-${pasal.title}`] : []}>
                         <AccordionItem value={`ayat-${pasal.title}`} className="border-none">
-                          <AccordionTrigger className="text-red-700 hover:text-red-800 font-semibold hover:no-underline py-3 dark:text-red-400 dark:hover:text-red-300">
+                          <AccordionTrigger className="text-red-700 hover:text-red-800 font-semibold hover:no-underline py-0 dark:text-red-400 dark:hover:text-red-300">
                             <span className="flex items-center gap-2">
                               Lihat Ayat
                             </span>

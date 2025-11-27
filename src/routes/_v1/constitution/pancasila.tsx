@@ -45,26 +45,15 @@ function RouteComponent() {
                             <img src="/constitution/images/ic_pancasila.png" alt="Pancasila" className="w-24 h-24" />
                         </div>
                     </div>
-                    <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 tracking-tight dark:text-white">
+                    <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight dark:text-white">
                         Pancasila
                     </h1>
-                    {/* <p className="text-xl text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
-                        Dasar falsafah dan ideologi negara Republik Indonesia
-                    </p>
-                    <div className="flex items-center justify-center gap-4">
-                        <span className="bg-red-600 text-white px-6 py-2 text-sm font-semibold rounded-full dark:bg-red-700">
-                            5 Sila
-                        </span>
-                        <span className="bg-white text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold rounded-full dark:bg-gray-800 dark:text-red-400 dark:border-red-700">
-                            Dasar Negara
-                        </span>
-                    </div> */}
                 </div>
             </section>
 
             <div className='flex flex-col gap-6 w-full'>
                 <div className="mx-auto w-full">
-                    <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-lg">
                         <div className="flex flex-col gap-8">
                             {pancasilaData.map((sila) => (
                                 <section key={sila.id} className="flex flex-col md:flex-row gap-6 items-center">
@@ -72,11 +61,11 @@ function RouteComponent() {
                                         <img
                                             src={sila.image}
                                             alt={sila.title}
-                                            className="w-16 h-16 object-contain"
+                                            className="sm:w-16 sm:h-16 w-12 h-12 object-contain"
                                         />
                                     </div>
                                     <div className="flex-1">
-                                        <h2 className="text-xl text-slate-900 dark:text-slate-100 mb-2">
+                                        <h2 className="sm:text-xl text-lg text-slate-900 dark:text-slate-100 mb-2">
                                             {sila.id}. {sila.title}
                                         </h2>
                                     </div>

@@ -500,10 +500,10 @@ export function AppNavbar() {
                     <div className="space-y-3">
                       <div className="flex items-center gap-2 px-3 py-2 bg-secondary/5 rounded-lg">
                         <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
-                          <GraduationCap className="w-4 h-4 text-secondary" />
+                          <Shield className="w-4 h-4 text-secondary" />
                         </div>
                         <h3 className="font-semibold text-sm uppercase tracking-wide">
-                          {t('landing.navbar.pancasila.title')}
+                          {t('landing.navbar.constitution.title')}
                         </h3>
                       </div>
                       <div className="space-y-1">
