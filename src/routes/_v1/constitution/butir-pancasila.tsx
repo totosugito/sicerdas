@@ -12,6 +12,7 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion';
 import { Search, X, ChevronDown, ChevronUp } from 'lucide-react';
+import butirPancasilaData from '@/data/constitution/butir_pancasila.json';
 
 export const Route = createFileRoute('/_v1/constitution/butir-pancasila')({
   component: RouteComponent,
@@ -28,92 +29,31 @@ function RouteComponent() {
     setExpandedAll(!expandedAll);
   };
 
-  // Butir-butir Pancasila data
-  const butirPancasila = [
-    {
-      id: 1,
-      sila: "Ketuhanan Yang Maha Esa",
-      butir: [
-        "Bangsa Indonesia menyatakan kepercayaannya dan ketakwaannya terhadap Tuhan Yang Maha Esa.",
-        "Manusia Indonesia percaya dan takwa terhadap Tuhan Yang Maha Esa, sesuai dengan agama dan kepercayaannya masing-masing menurut dasar kemanusiaan yang adil dan beradab.",
-        "Mengembangkan sikap hormat menghormati dan bekerjasama antara pemeluk agama dengan penganut kepercayaan yang berbeda-beda terhadap Tuhan Yang Maha Esa.",
-        "Membina kerukunan hidup di antara sesama umat beragama dan kepercayaan terhadap Tuhan Yang Maha Esa.",
-        "Agama dan kepercayaan terhadap Tuhan Yang Maha Esa adalah masalah yang menyangkut hubungan pribadi manusia dengan Tuhan Yang Maha Esa.",
-        "Mengembangkan sikap saling menghormati kebebasan menjalankan ibadah sesuai dengan agama dan kepercayaannya masing-masing.",
-        "Tidak memaksakan suatu agama dan kepercayaan terhadap Tuhan Yang Maha Esa kepada orang lain."
-      ]
-    },
-    {
-      id: 2,
-      sila: "Kemanusiaan yang Adil dan Beradab",
-      butir: [
-        "Mengakui dan memperlakukan manusia sesuai dengan harkat dan martabatnya sebagai makhluk Tuhan Yang Maha Esa.",
-        "Mengakui persamaan derajat, persamaan hak, dan kewajiban asasi setiap manusia, tanpa membeda-bedakan suku, keturunan, agama, kepercayaan, jenis kelamin, kedudukan sosial, warna kulit, dan sebagainya.",
-        "Mengembangkan sikap saling mencintai sesama manusia.",
-        "Mengembangkan sikap saling tenggang rasa dan tepa selira.",
-        "Mengembangkan sikap tidak semena-mena terhadap orang lain.",
-        "Menjunjung tinggi nilai-nilai kemanusiaan.",
-        "Gemar melakukan kegiatan kemanusiaan.",
-        "Berani membela kebenaran dan keadilan.",
-        "Bangsa Indonesia merasa dirinya sebagai bagian dari seluruh umat manusia.",
-        "Mengembangkan sikap hormat menghormati dan bekerjasama dengan bangsa lain."
-      ]
-    },
-    {
-      id: 3,
-      sila: "Persatuan Indonesia",
-      butir: [
-        "Mampu menempatkan persatuan, kesatuan, serta kepentingan dan keselamatan bangsa dan negara sebagai kepentingan bersama di atas kepentingan pribadi dan golongan.",
-        "Sanggup dan rela berkorban untuk kepentingan negara dan bangsa apabila diperlukan.",
-        "Mengembangkan rasa cinta kepada tanah air dan bangsa.",
-        "Mengembangkan rasa kebanggaan berkebangsaan dan bertanah air Indonesia.",
-        "Memelihara ketertiban dunia yang berdasarkan kemerdekaan, perdamaian abadi, dan keadilan sosial.",
-        "Mengembangkan persatuan Indonesia atas dasar Bhinneka Tunggal Ika.",
-        "Memajukan pergaulan demi persatuan dan kesatuan bangsa."
-      ]
-    },
-    {
-      id: 4,
-      sila: "Kerakyatan yang Dipimpin oleh Hikmat Kebijaksanaan dalam Permusyawaratan/Perwakilan",
-      butir: [
-        "Sebagai warga negara dan warga masyarakat, setiap manusia Indonesia mempunyai kedudukan, hak, dan kewajiban yang sama.",
-        "Tidak boleh memaksakan kehendak kepada orang lain.",
-        "Mengutamakan musyawarah dalam mengambil keputusan untuk kepentingan bersama.",
-        "Musyawarah untuk mencapai mufakat diliputi oleh semangat kekeluargaan.",
-        "Menghormati dan menjunjung tinggi setiap keputusan yang dicapai sebagai hasil musyawarah.",
-        "Dengan itikad baik dan rasa tanggung jawab menerima dan melaksanakan hasil keputusan musyawarah.",
-        "Di dalam musyawarah diutamakan kepentingan bersama di atas kepentingan pribadi dan golongan.",
-        "Musyawarah dilakukan dengan akal sehat dan sesuai dengan hati nurani yang luhur.",
-        "Keputusan yang diambil harus dapat dipertanggungjawabkan secara moral kepada Tuhan Yang Maha Esa, menjunjung tinggi harkat dan martabat manusia, nilai-nilai kebenaran dan keadilan mengutamakan persatuan dan kesatuan demi kepentingan bersama.",
-        "Memberikan kepercayaan kepada wakil-wakil yang dipercayai untuk melaksanakan pemusyawaratan."
-      ]
-    },
-    {
-      id: 5,
-      sila: "Keadilan Sosial bagi Seluruh Rakyat Indonesia",
-      butir: [
-        "Mengembangkan perbuatan yang luhur, yang mencerminkan sikap dan suasana kekeluargaan dan kegotongroyongan.",
-        "Mengembangkan sikap adil terhadap sesama.",
-        "Menjaga keseimbangan antara hak dan kewajiban.",
-        "Menghormati hak orang lain.",
-        "Suka memberi pertolongan kepada orang lain agar dapat berdiri sendiri.",
-        "Tidak menggunakan hak milik untuk usaha-usaha yang bersifat pemerasan terhadap orang lain.",
-        "Tidak menggunakan hak milik untuk hal-hal yang bersifat pemborosan dan gaya hidup mewah.",
-        "Tidak menggunakan hak milik untuk bertentangan dengan atau merugikan kepentingan umum.",
-        "Suka bekerja keras.",
-        "Suka menghargai hasil karya orang lain yang bermanfaat bagi kemajuan dan kesejahteraan bersama.",
-        "Suka melakukan kegiatan dalam rangka mewujudkan kemajuan yang merata dan berkeadilan sosial."
-      ]
-    }
-  ];
+  // Transform JSON data to match component's expected structure
+  const transformedData = useMemo(() => {
+    return butirPancasilaData.map((item: any) => ({
+      id: parseInt(item.title.split(' ')[1]), // Extract ID from "Sila 1", "Sila 2", etc.
+      sila: item.sila,
+      butir: item.data.map((butir: any) => butir.isi) // Extract 'isi' from each butir
+    }));
+  }, []);
 
-  const iconMap = {
-    1: <img src="/constitution/images/sila_1.png" alt="Sila 1" className="w-8 h-8" />,
-    2: <img src="/constitution/images/sila_2.png" alt="Sila 2" className="w-8 h-8" />,
-    3: <img src="/constitution/images/sila_3.png" alt="Sila 3" className="w-8 h-8" />,
-    4: <img src="/constitution/images/sila_4.png" alt="Sila 4" className="w-8 h-8" />,
-    5: <img src="/constitution/images/sila_5.png" alt="Sila 5" className="w-8 h-8" />
+  // Define type for our transformed data
+  type PancasilaItem = {
+    id: number;
+    sila: string;
+    butir: string[];
   };
+
+  // Create iconMap using image paths from JSON data
+  const iconMap = useMemo(() => {
+    const map: Record<number, React.ReactNode> = {};
+    butirPancasilaData.forEach((item: any) => {
+      const id = parseInt(item.title.split(' ')[1]);
+      map[id] = <img src={item.image} alt={`Sila ${id}`} className="w-8 h-8" />;
+    });
+    return map;
+  }, []);
 
   const colorMap = {
     1: 'from-red-50 to-white border-red-200 dark:from-gray-800 dark:to-gray-900 dark:border-gray-700',
@@ -146,13 +86,13 @@ function RouteComponent() {
 
   // Filter data based on search term
   const filteredData = useMemo(() => {
-    if (!searchTerm.trim()) return butirPancasila;
+    if (!searchTerm.trim()) return transformedData;
 
     const query = searchTerm.toLowerCase();
-    return butirPancasila
-      .map(sila => {
+    return transformedData
+      .map((sila: PancasilaItem) => {
         const silaMatch = sila.sila.toLowerCase().includes(query);
-        const matchingButir = sila.butir.filter(butir =>
+        const matchingButir = sila.butir.filter((butir: string) =>
           butir.toLowerCase().includes(query)
         );
 
@@ -164,8 +104,8 @@ function RouteComponent() {
         }
         return null;
       })
-      .filter((sila): sila is NonNullable<typeof sila> => sila !== null);
-  }, [searchTerm]);
+      .filter((sila): sila is NonNullable<PancasilaItem> => sila !== null);
+  }, [searchTerm, transformedData]);
 
   return (
     <div className="flex flex-col gap-6 w-full">
@@ -311,7 +251,7 @@ function RouteComponent() {
                           </AccordionTrigger>
                           <AccordionContent>
                             <div className="mt-4 space-y-4">
-                              {sila.butir.map((item, idx) => (
+                              {sila.butir.map((item: string, idx: number) => (
                                 <div
                                   key={idx}
                                   className="flex gap-4 p-4 bg-white rounded-lg shadow-sm border border-red-100 hover:border-red-300 transition-colors duration-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-gray-600"
@@ -327,6 +267,7 @@ function RouteComponent() {
                                 </div>
                               ))}
                             </div>
+
                           </AccordionContent>
                         </AccordionItem>
                       </Accordion>

@@ -1,1 +1,217 @@
-[{"title":"Sila 1","data":[{"id":1,"isi":"Bangsa Indonesia menyatakan kepercayaannya dan ketakwaannya terhadap Tuhan Yang Maha Esa."},{"id":2,"isi":"Manusia Indonesia percaya dan takwa terhadap Tuhan Yang Maha Esa, sesuai dengan agama dan kepercayaannya masing-masing menurut dasar kemanusiaan yang adil dan beradab."},{"id":3,"isi":"Mengembangkan sikap hormat menghormati dan bekerjasama antara pemeluk agama dengan penganut kepercayaan yang berbeda-beda terhadap Tuhan Yang Maha Esa."},{"id":4,"isi":"Membina kerukunan hidup di antara sesama umat beragama dan kepercayaan terhadap Tuhan Yang Maha Esa."},{"id":5,"isi":"Agama dan kepercayaan terhadap Tuhan Yang Maha Esa adalah masalah yang menyangkut hubungan pribadi manusia dengan Tuhan Yang Maha Esa."},{"id":6,"isi":"Mengembangkan sikap saling menghormati kebebasan menjalankan ibadah sesuai dengan agama dan kepercayaannya masing-masing."},{"id":7,"isi":"Tidak memaksakan suatu agama dan kepercayaan terhadap Tuhan Yang Maha Esa kepada orang lain."}]},{"title":"Sila 2","data":[{"id":1,"isi":"Mengakui dan memperlakukan manusia sesuai dengan harkat dan martabatnya sebagai makhluk Tuhan Yang Maha Esa."},{"id":2,"isi":"Mengakui persamaan derajat, persamaan hak, dan kewajiban asasi setiap manusia, tanpa membeda-bedakan suku, keturunan, agama, kepercayaan, jenis kelamin, kedudukan sosial, warna kulit, dan sebagainya."},{"id":3,"isi":"Mengembangkan sikap saling mencintai sesama manusia."},{"id":4,"isi":"Mengembangkan sikap saling tenggang rasa dan tepa selira."},{"id":5,"isi":"Mengembangkan sikap tidak semena-mena terhadap orang lain."},{"id":6,"isi":"Menjunjung tinggi nilai-nilai kemanusiaan."},{"id":7,"isi":"Gemar melakukan kegiatan kemanusiaan."},{"id":8,"isi":"Berani membela kebenaran dan keadilan."},{"id":9,"isi":"Bangsa Indonesia merasa dirinya sebagai bagian dari seluruh umat manusia."},{"id":10,"isi":"Mengembangkan sikap hormat menghormati dan bekerjasama dengan bangsa lain."}]},{"title":"Sila 3","data":[{"id":1,"isi":"Mampu menempatkan persatuan, kesatuan, serta kepentingan dan keselamatan bangsa dan negara sebagai kepentingan bersama di atas kepentingan pribadi dan golongan."},{"id":2,"isi":"Sanggup dan rela berkorban untuk kepentingan negara dan bangsa apabila diperlukan."},{"id":3,"isi":"Mengembangkan rasa cinta kepada tanah air dan bangsa."},{"id":4,"isi":"Mengembangkan rasa kebanggaan berkebangsaan dan bertanah air Indonesia."},{"id":5,"isi":"Memelihara ketertiban dunia yang berdasarkan kemerdekaan, perdamaian abadi, dan keadilan sosial."},{"id":6,"isi":"Mengembangkan persatuan Indonesia atas dasar Bhinneka Tunggal Ika."},{"id":7,"isi":"Memajukan pergaulan demi persatuan dan kesatuan bangsa."}]},{"title":"Sila 4","data":[{"id":1,"isi":"Sebagai warga negara dan warga masyarakat, setiap manusia Indonesia mempunyai kedudukan, hak, dan kewajiban yang sama."},{"id":2,"isi":"Tidak boleh memaksakan kehendak kepada orang lain."},{"id":3,"isi":"Mengutamakan musyawarah dalam mengambil keputusan untuk kepentingan bersama."},{"id":4,"isi":"Musyawarah untuk mencapai mufakat diliputi oleh semangat kekeluargaan."},{"id":5,"isi":"Menghormati dan menjunjung tinggi setiap keputusan yang dicapai sebagai hasil musyawarah."},{"id":6,"isi":"Dengan itikad baik dan rasa tanggung jawab menerima dan melaksanakan hasil keputusan musyawarah."},{"id":7,"isi":"Di dalam musyawarah diutamakan kepentingan bersama di atas kepentingan pribadi dan golongan."},{"id":8,"isi":"Musyawarah dilakukan dengan akal sehat dan sesuai dengan hati nurani yang luhur."},{"id":9,"isi":"Keputusan yang diambil harus dapat dipertanggungjawabkan secara  moral kepada Tuhan Yang Maha Esa, menjunjung tinggi harkat dan martabat manusia, nilai-nilai kebenaran dan keadilan mengutamakan persatuan dan kesatuan demi kepentingan bersama."},{"id":10,"isi":"Memberikan kepercayaan kepada wakil-wakil yang dipercayai untuk melaksanakan pemusyawaratan."}]},{"title":"Sila 5","data":[{"id":1,"isi":"Mengembangkan perbuatan yang luhur, yang mencerminkan sikap dan suasana kekeluargaan dan kegotongroyongan."},{"id":2,"isi":"Mengembangkan sikap adil terhadap sesama."},{"id":3,"isi":"Menjaga keseimbangan antara hak dan kewajiban."},{"id":4,"isi":"Menghormati hak orang lain."},{"id":5,"isi":"Suka memberi pertolongan kepada orang lain agar dapat berdiri sendiri."},{"id":6,"isi":"Tidak menggunakan hak milik untuk usaha-usaha yang bersifat pemerasan terhadap orang lain."},{"id":7,"isi":"Tidak menggunakan hak milik untuk hal-hal yang bersifat pemborosan dan gaya hidup mewah."},{"id":8,"isi":"Tidak menggunakan hak milik untuk bertentangan dengan atau merugikan kepentingan umum."},{"id":9,"isi":"Suka bekerja keras."},{"id":10,"isi":"Suka menghargai hasil karya orang lain yang bermanfaat bagi kemajuan dan kesejahteraan bersama."},{"id":11,"isi":"Suka melakukan kegiatan dalam rangka mewujudkan kemajuan yang merata dan berkeadilan sosial."}]}]
+[
+  {
+    "title": "Sila 1",
+    "sila": "Ketuhanan Yang Maha Esa",
+    "image": "/constitution/images/sila_1.png",
+    "data": [
+      {
+        "id": 1,
+        "isi": "Bangsa Indonesia menyatakan kepercayaannya dan ketakwaannya terhadap Tuhan Yang Maha Esa."
+      },
+      {
+        "id": 2,
+        "isi": "Manusia Indonesia percaya dan takwa terhadap Tuhan Yang Maha Esa, sesuai dengan agama dan kepercayaannya masing-masing menurut dasar kemanusiaan yang adil dan beradab."
+      },
+      {
+        "id": 3,
+        "isi": "Mengembangkan sikap hormat menghormati dan bekerjasama antara pemeluk agama dengan penganut kepercayaan yang berbeda-beda terhadap Tuhan Yang Maha Esa."
+      },
+      {
+        "id": 4,
+        "isi": "Membina kerukunan hidup di antara sesama umat beragama dan kepercayaan terhadap Tuhan Yang Maha Esa."
+      },
+      {
+        "id": 5,
+        "isi": "Agama dan kepercayaan terhadap Tuhan Yang Maha Esa adalah masalah yang menyangkut hubungan pribadi manusia dengan Tuhan Yang Maha Esa."
+      },
+      {
+        "id": 6,
+        "isi": "Mengembangkan sikap saling menghormati kebebasan menjalankan ibadah sesuai dengan agama dan kepercayaannya masing-masing."
+      },
+      {
+        "id": 7,
+        "isi": "Tidak memaksakan suatu agama dan kepercayaan terhadap Tuhan Yang Maha Esa kepada orang lain."
+      }
+    ]
+  },
+  {
+    "title": "Sila 2",
+    "sila": "Kemanusiaan yang Adil dan Beradab",
+    "image": "/constitution/images/sila_2.png",
+    "data": [
+      {
+        "id": 1,
+        "isi": "Mengakui dan memperlakukan manusia sesuai dengan harkat dan martabatnya sebagai makhluk Tuhan Yang Maha Esa."
+      },
+      {
+        "id": 2,
+        "isi": "Mengakui persamaan derajat, persamaan hak, dan kewajiban asasi setiap manusia, tanpa membeda-bedakan suku, keturunan, agama, kepercayaan, jenis kelamin, kedudukan sosial, warna kulit, dan sebagainya."
+      },
+      {
+        "id": 3,
+        "isi": "Mengembangkan sikap saling mencintai sesama manusia."
+      },
+      {
+        "id": 4,
+        "isi": "Mengembangkan sikap saling tenggang rasa dan tepa selira."
+      },
+      {
+        "id": 5,
+        "isi": "Mengembangkan sikap tidak semena-mena terhadap orang lain."
+      },
+      {
+        "id": 6,
+        "isi": "Menjunjung tinggi nilai-nilai kemanusiaan."
+      },
+      {
+        "id": 7,
+        "isi": "Gemar melakukan kegiatan kemanusiaan."
+      },
+      {
+        "id": 8,
+        "isi": "Berani membela kebenaran dan keadilan."
+      },
+      {
+        "id": 9,
+        "isi": "Bangsa Indonesia merasa dirinya sebagai bagian dari seluruh umat manusia."
+      },
+      {
+        "id": 10,
+        "isi": "Mengembangkan sikap hormat menghormati dan bekerjasama dengan bangsa lain."
+      }
+    ]
+  },
+  {
+    "title": "Sila 3",
+    "sila": "Persatuan Indonesia",
+    "image": "/constitution/images/sila_3.png",
+    "data": [
+      {
+        "id": 1,
+        "isi": "Mampu menempatkan persatuan, kesatuan, serta kepentingan dan keselamatan bangsa dan negara sebagai kepentingan bersama di atas kepentingan pribadi dan golongan."
+      },
+      {
+        "id": 2,
+        "isi": "Sanggup dan rela berkorban untuk kepentingan negara dan bangsa apabila diperlukan."
+      },
+      {
+        "id": 3,
+        "isi": "Mengembangkan rasa cinta kepada tanah air dan bangsa."
+      },
+      {
+        "id": 4,
+        "isi": "Mengembangkan rasa kebanggaan berkebangsaan dan bertanah air Indonesia."
+      },
+      {
+        "id": 5,
+        "isi": "Memelihara ketertiban dunia yang berdasarkan kemerdekaan, perdamaian abadi, dan keadilan sosial."
+      },
+      {
+        "id": 6,
+        "isi": "Mengembangkan persatuan Indonesia atas dasar Bhinneka Tunggal Ika."
+      },
+      {
+        "id": 7,
+        "isi": "Memajukan pergaulan demi persatuan dan kesatuan bangsa."
+      }
+    ]
+  },
+  {
+    "title": "Sila 4",
+    "sila": "Kerakyatan yang Dipimpin oleh Hikmat Kebijaksanaan dalam Permusyawaratan/Perwakilan",
+    "image": "/constitution/images/sila_4.png",
+    "data": [
+      {
+        "id": 1,
+        "isi": "Sebagai warga negara dan warga masyarakat, setiap manusia Indonesia mempunyai kedudukan, hak, dan kewajiban yang sama."
+      },
+      {
+        "id": 2,
+        "isi": "Tidak boleh memaksakan kehendak kepada orang lain."
+      },
+      {
+        "id": 3,
+        "isi": "Mengutamakan musyawarah dalam mengambil keputusan untuk kepentingan bersama."
+      },
+      {
+        "id": 4,
+        "isi": "Musyawarah untuk mencapai mufakat diliputi oleh semangat kekeluargaan."
+      },
+      {
+        "id": 5,
+        "isi": "Menghormati dan menjunjung tinggi setiap keputusan yang dicapai sebagai hasil musyawarah."
+      },
+      {
+        "id": 6,
+        "isi": "Dengan itikad baik dan rasa tanggung jawab menerima dan melaksanakan hasil keputusan musyawarah."
+      },
+      {
+        "id": 7,
+        "isi": "Di dalam musyawarah diutamakan kepentingan bersama di atas kepentingan pribadi dan golongan."
+      },
+      {
+        "id": 8,
+        "isi": "Musyawarah dilakukan dengan akal sehat dan sesuai dengan hati nurani yang luhur."
+      },
+      {
+        "id": 9,
+        "isi": "Keputusan yang diambil harus dapat dipertanggungjawabkan secara  moral kepada Tuhan Yang Maha Esa, menjunjung tinggi harkat dan martabat manusia, nilai-nilai kebenaran dan keadilan mengutamakan persatuan dan kesatuan demi kepentingan bersama."
+      },
+      {
+        "id": 10,
+        "isi": "Memberikan kepercayaan kepada wakil-wakil yang dipercayai untuk melaksanakan pemusyawaratan."
+      }
+    ]
+  },
+  {
+    "title": "Sila 5",
+    "sila": "Keadilan Sosial bagi Seluruh Rakyat Indonesia",
+    "image": "/constitution/images/sila_5.png",
+    "data": [
+      {
+        "id": 1,
+        "isi": "Mengembangkan perbuatan yang luhur, yang mencerminkan sikap dan suasana kekeluargaan dan kegotongroyongan."
+      },
+      {
+        "id": 2,
+        "isi": "Mengembangkan sikap adil terhadap sesama."
+      },
+      {
+        "id": 3,
+        "isi": "Menjaga keseimbangan antara hak dan kewajiban."
+      },
+      {
+        "id": 4,
+        "isi": "Menghormati hak orang lain."
+      },
+      {
+        "id": 5,
+        "isi": "Suka memberi pertolongan kepada orang lain agar dapat berdiri sendiri."
+      },
+      {
+        "id": 6,
+        "isi": "Tidak menggunakan hak milik untuk usaha-usaha yang bersifat pemerasan terhadap orang lain."
+      },
+      {
+        "id": 7,
+        "isi": "Tidak menggunakan hak milik untuk hal-hal yang bersifat pemborosan dan gaya hidup mewah."
+      },
+      {
+        "id": 8,
+        "isi": "Tidak menggunakan hak milik untuk bertentangan dengan atau merugikan kepentingan umum."
+      },
+      {
+        "id": 9,
+        "isi": "Suka bekerja keras."
+      },
+      {
+        "id": 10,
+        "isi": "Suka menghargai hasil karya orang lain yang bermanfaat bagi kemajuan dan kesejahteraan bersama."
+      },
+      {
+        "id": 11,
+        "isi": "Suka melakukan kegiatan dalam rangka mewujudkan kemajuan yang merata dan berkeadilan sosial."
+      }
+    ]
+  }
+]
