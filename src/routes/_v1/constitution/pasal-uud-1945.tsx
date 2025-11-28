@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -36,17 +36,17 @@ function RouteComponent() {
   const [expandedAll, setExpandedAll] = useState(false);
 
   // Toggle expand/collapse all
-  const toggleExpandAll = () => {
-    setExpandedAll(!expandedAll);
-  };
+  const toggleExpandAll = useCallback(() => {
+    setExpandedAll(prev => !prev);
+  }, []);
 
   // Clear search
-  const clearSearch = () => {
+  const clearSearch = useCallback(() => {
     setSearchTerm('');
-  };
+  }, []);
 
   // Highlight text for search results
-  const highlightText = (text: string, query: string) => {
+  const highlightText = useCallback((text: string, query: string) => {
     if (!query.trim()) return text;
 
     const parts = text.split(new RegExp(`(${query})`, 'gi'));
@@ -59,7 +59,7 @@ function RouteComponent() {
         part
       )
     );
-  };
+  }, []);
 
   // Filter data based on search term
   const filteredData = useMemo(() => {
@@ -101,27 +101,27 @@ function RouteComponent() {
   }, [filteredData, searchTerm]);
 
   // Filter ayat based on search term for display
-  const filterAyat = (ayatList: Ayat[], searchTerm: string): Ayat[] => {
+  const filterAyat = useCallback((ayatList: Ayat[], searchTerm: string): Ayat[] => {
     if (!searchTerm.trim()) return ayatList;
     return ayatList.filter(ayat => 
       ayat.isi.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  };
+  }, []);
 
   return (
     <div className="flex flex-col gap-6 w-full">
       {/* Hero Section */}
       <section className="relative py-10">
-        <div className="mx-auto text-center">
+        <div className="flex flex-col gap-2 mx-auto text-center">
           <div className="mb-6 flex justify-center">
             <div className="p-4 rounded-full shadow-sm transform hover:scale-110 transition-transform duration-300">
               <img src="/constitution/images/ic_pancasila.png" alt="UUD 1945" className="w-24 h-24" />
             </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight dark:text-white">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight dark:text-white">
             Pasal-Pasal UUD1945
           </h1>
-          <p className="text-xl text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
+          <p className="text-lg text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
             Landasan hukum dan konstitusi tertinggi Negara Republik Indonesia
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
