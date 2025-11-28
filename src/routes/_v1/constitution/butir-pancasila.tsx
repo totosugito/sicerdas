@@ -107,6 +107,34 @@ function RouteComponent() {
       .filter((sila): sila is NonNullable<PancasilaItem> => sila !== null);
   }, [searchTerm, transformedData]);
 
+  // Calculate total matching butir for search summary
+  const searchSummary = useMemo(() => {
+    if (!searchTerm.trim()) return { butirCount: 0, silaCount: 0 };
+
+    let butirCount = 0;
+    filteredData.forEach((sila: PancasilaItem) => {
+      const query = searchTerm.toLowerCase();
+      sila.butir.forEach(butir => {
+        if (butir.toLowerCase().includes(query)) {
+          butirCount++;
+        }
+      });
+    });
+
+    return {
+      butirCount,
+      silaCount: filteredData.length
+    };
+  }, [filteredData, searchTerm]);
+
+  // Filter butir based on search term for display
+  const filterButir = (butirList: string[], searchTerm: string): string[] => {
+    if (!searchTerm.trim()) return butirList;
+    return butirList.filter(butir => 
+      butir.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
   return (
     <div className="flex flex-col gap-6 w-full">
       {/* Hero Section */}
@@ -183,10 +211,12 @@ function RouteComponent() {
             </div>
             {searchTerm && (
               <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
-                Ditemukan <span className="font-semibold text-red-600 dark:text-red-400">{filteredData.length}</span> hasil
+                Ditemukan <span className="font-semibold text-red-600 dark:text-red-400">
+                  {searchSummary.butirCount}
+                </span> butir dari <span className="font-semibold text-red-600 dark:text-red-400">{searchSummary.silaCount}</span> sila
               </p>
-            )
-          }</div>
+            )}
+          </div>
         </section>
 
         {/* Content Section */}
@@ -214,66 +244,76 @@ function RouteComponent() {
               </div>
             ) : (
               <div className="space-y-8">
-                {filteredData.map((sila) => (
-                  <Card
-                    key={sila.id}
-                    className={`bg-gradient-to-br ${colorMap[sila.id as keyof typeof colorMap]} border-2 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 dark:shadow-gray-900`}
-                  >
-                    <CardHeader>
-                      <div className="flex items-start gap-4">
-                        <div className="p-2 bg-white rounded-lg shadow-md border-2 border-red-200 dark:bg-gray-800 dark:border-gray-700">
-                          <div className="text-red-600 dark:text-red-400">
-                            {iconMap[sila.id as keyof typeof iconMap]}
-                          </div>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <Badge className={'bg-red-600 text-white hover:bg-red-700 dark:bg-red-400 dark:hover:bg-red-600 dark:text-gray-900'}>
-                              Sila {sila.id}
-                            </Badge>
-                          </div>
-                          <CardTitle className="sm:text-lg text-gray-900 leading-tight dark:text-white">
-                            {highlightText(sila.sila, searchTerm)}
-                          </CardTitle>
-                          <CardDescription className="text-gray-600 mt-2 dark:text-gray-300">
-                            {sila.butir.length} Butir Pengamalan{searchTerm && ' yang sesuai'}
-                          </CardDescription>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <Accordion key={`${sila.id}-${expandedAll}`} type="single" collapsible className="w-full" defaultValue={expandedAll ? `butir-${sila.id}` : undefined}>
-                        <AccordionItem value={`butir-${sila.id}`} className="border-none">
-                          <AccordionTrigger className="text-red-700 hover:text-red-800 font-semibold hover:no-underline py-0 dark:text-red-400 dark:hover:text-red-300">
-                            <span className="flex items-center gap-2">
-                              Lihat Butir Pengamalan
-                            </span>
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <div className="mt-4 space-y-4">
-                              {sila.butir.map((item: string, idx: number) => (
-                                <div
-                                  key={idx}
-                                  className="flex gap-4 p-4 bg-white rounded-lg shadow-sm border border-red-100 hover:border-red-300 transition-colors duration-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-gray-600"
-                                >
-                                  <div className="flex-shrink-0">
-                                    <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold text-sm dark:bg-red-400 dark:text-gray-900">
-                                      {idx + 1}
-                                    </div>
-                                  </div>
-                                  <p className="text-gray-700 leading-relaxed flex-1 dark:text-gray-300">
-                                    {highlightText(item, searchTerm)}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
+                {filteredData.map((sila) => {
+                  const filteredButir = filterButir(sila.butir, searchTerm);
+                  const matchingButirCount = searchTerm 
+                    ? filteredButir.length 
+                    : sila.butir.length;
 
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    </CardContent>
-                  </Card>
-                ))}
+                  return (
+                    <Card
+                      key={sila.id}
+                      className={`bg-gradient-to-br ${colorMap[sila.id as keyof typeof colorMap]} border-2 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 dark:shadow-gray-900`}
+                    >
+                      <CardHeader>
+                        <div className="flex items-start gap-4">
+                          <div className="p-2 bg-white rounded-lg shadow-md border-2 border-red-200 dark:bg-gray-800 dark:border-gray-700">
+                            <div className="text-red-600 dark:text-red-400">
+                              {iconMap[sila.id as keyof typeof iconMap]}
+                            </div>
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <Badge className={'bg-red-600 text-white hover:bg-red-700 dark:bg-red-400 dark:hover:bg-red-600 dark:text-gray-900'}>
+                                Sila {sila.id}
+                              </Badge>
+                            </div>
+                            <CardTitle className="sm:text-lg text-gray-900 leading-tight dark:text-white">
+                              {highlightText(sila.sila, searchTerm)}
+                            </CardTitle>
+                            <CardDescription className="text-gray-600 mt-2 dark:text-gray-300">
+                              {
+                                searchTerm 
+                                  ? `${matchingButirCount} dari ${sila.butir.length} Butir Pengamalan${searchTerm && ' yang sesuai'}` 
+                                  : `${sila.butir.length} Butir Pengamalan${searchTerm && ' yang sesuai'}`
+                              }
+                            </CardDescription>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <Accordion key={`${sila.id}-${expandedAll}`} type="single" collapsible className="w-full" defaultValue={expandedAll ? `butir-${sila.id}` : undefined}>
+                          <AccordionItem value={`butir-${sila.id}`} className="border-none">
+                            <AccordionTrigger className="text-red-700 hover:text-red-800 font-semibold hover:no-underline py-0 dark:text-red-400 dark:hover:text-red-300">
+                              <span className="flex items-center gap-2">
+                                Lihat Butir Pengamalan
+                              </span>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <div className="mt-4 space-y-4">
+                                {filteredButir.map((item: string, idx: number) => (
+                                  <div
+                                    key={idx}
+                                    className="flex gap-4 p-4 bg-white rounded-lg shadow-sm border border-red-100 hover:border-red-300 transition-colors duration-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-gray-600"
+                                  >
+                                    <div className="flex-shrink-0">
+                                      <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold text-sm dark:bg-red-400 dark:text-gray-900">
+                                        {sila.butir.indexOf(item) + 1}
+                                      </div>
+                                    </div>
+                                    <p className="text-gray-700 leading-relaxed flex-1 dark:text-gray-300">
+                                      {highlightText(item, searchTerm)}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        </Accordion>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             )}
           </div>
