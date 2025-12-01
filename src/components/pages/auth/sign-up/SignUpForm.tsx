@@ -22,7 +22,7 @@ type Props = {
 
 export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
   const { t } = useTranslation();
-  
+
   // Define signUpFormData directly in this file
   const signUpFormData = {
     form: {
@@ -58,7 +58,7 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
     email: z.email({ message: t("message.invalidEmail") }),
     password: z.string().min(1, { message: t("message.passwordRequired") }),
   });
-  
+
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(schema),
     defaultValues: signUpFormData.defaultValue,
@@ -101,13 +101,13 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
             />
           </div>
           <div className="relative">
-            <Lock className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormPassword
               form={form}
               item={signUpFormData.form.password}
               className="pl-10"
               showMessage={false}
             />
+            <Lock className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
           </div>
         </div>
 

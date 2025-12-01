@@ -74,22 +74,22 @@ export const ResetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props
         )}
         <div className="space-y-4">
           <div className="relative">
-            <Lock className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormPassword
               form={form}
               item={resetPasswordFormData.form.password}
               className="pl-10"
               showMessage={true}
             />
+            <Lock className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
           </div>
           <div className="relative">
-            <Check className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormPassword
               form={form}
               item={resetPasswordFormData.form.confirmPassword}
               className="pl-10"
               showMessage={true}
             />
+            <Check className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
           </div>
         </div>
 

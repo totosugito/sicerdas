@@ -85,27 +85,27 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
                     <InputOTPGroup className="flex flex-row gap-2">
                       <InputOTPSlot
                         index={0}
-                        className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
+                        className="h-12 w-12 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
                       />
                       <InputOTPSlot
                         index={1}
-                        className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
+                        className="h-12 w-12 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
                       />
                       <InputOTPSlot
                         index={2}
-                        className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
+                        className="h-12 w-12 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
                       />
                       <InputOTPSlot
                         index={3}
-                        className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
+                        className="h-12 w-12 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
                       />
                       <InputOTPSlot
                         index={4}
-                        className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
+                        className="h-12 w-12 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
                       />
                       <InputOTPSlot
                         index={5}
-                        className="h-12 w-10 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
+                        className="h-12 w-12 text-xl rounded-md border-2 border-input data-[state=active]:border-ring"
                       />
                     </InputOTPGroup>
                   </InputOTP>

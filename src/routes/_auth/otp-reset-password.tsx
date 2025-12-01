@@ -13,6 +13,7 @@ import { z } from 'zod';
 
 // Add the import for the OTP verification mutation and OTP reset password mutation
 import { useEmailOtpVerifyForgetPasswordMutation, useEmailOtpResetPasswordMutation } from "@/service/auth-api";
+import { AuthHeader, AuthLayout } from '@/components/pages/auth';
 
 export const Route = createFileRoute('/_auth/otp-reset-password')({
   validateSearch: z.object({
@@ -21,53 +22,12 @@ export const Route = createFileRoute('/_auth/otp-reset-password')({
   }),
   beforeLoad: ({ search }) => {
     // Redirect to sign in if no token or email is provided
-    if (!search.email && !search.otp) {
+    if (!search.email || !search.otp) {
       throw redirect({ to: AppRoute.auth.signIn.url });
     }
   },
   component: ResetPasswordComponent,
 })
-
-// Extract the common layout to reduce duplication
-const AuthLayout = ({ children, t }: { children: React.ReactNode; t: ReturnType<typeof useTranslation>["t"] }) => (
-  <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-muted">
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--accent)/0.1),transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.1),transparent_50%)]" />
-
-    <div className="w-full max-w-md relative">
-      {/* Card with glass morphism effect */}
-      <div className="bg-card/80 backdrop-blur-xl rounded-xl shadow-xl border border-border/50 p-8 space-y-6 relative overflow-hidden">
-        {/* Subtle gradient overlay */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent" />
-        {children}
-      </div>
-      <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} {t('app.copyright')}</p>
-      </div>
-    </div>
-  </div>
-);
-
-// Extract the common header to reduce duplication
-const AuthHeader = ({ icon, appName, title, description }: { icon: React.ReactNode; appName: string; title: string, description: string }) => (
-  <div className="text-center space-y-0">
-    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-0 shadow-lg">
-      {icon}
-    </div>
-    <div className="text-lg font-bold tracking-tight text-foreground mb-2">
-      <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-        {appName}
-      </span>
-    </div>
-    <h1 className="text-3xl font-bold tracking-tight text-foreground">
-      <span className="">
-        {title}
-      </span>
-    </h1>
-    <p className="text-muted-foreground">
-      {description}
-    </p>
-  </div>
-);
 
 function ResetPasswordComponent() {
   const { t } = useTranslation();
@@ -141,7 +101,7 @@ function ResetPasswordComponent() {
   // Success View
   if (isSuccess) {
     return (
-      <AuthLayout t={t}>
+      <AuthLayout>
         <AuthHeader
           icon={<CheckCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
@@ -168,7 +128,7 @@ function ResetPasswordComponent() {
   // Error View (when there's an error but not success)
   if (errorMessage) {
     return (
-      <AuthLayout t={t}>
+      <AuthLayout>
         <AuthHeader
           icon={<AlertCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
@@ -197,7 +157,7 @@ function ResetPasswordComponent() {
 
   // Default Form View - only show if token is valid
   return (
-    <AuthLayout t={t}>
+    <AuthLayout>
       <AuthHeader
         icon={<Lock className="w-8 h-8 text-white" />}
         appName={t("app.appName")}

@@ -19,7 +19,7 @@ type Props = {
 
 export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn }: Props) => {
   const { t } = useTranslation();
-  
+
   // Define signInFormData directly in this file
   const signInFormData = {
     form: {
@@ -47,7 +47,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
     email: z.email({ message: t("signIn.invalidEmail") }),
     password: z.string().min(1, { message: t("signIn.passwordRequired") }),
   });
-  
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(schema),
     defaultValues: signInFormData.defaultValue,
@@ -80,13 +80,13 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
             />
           </div>
           <div className="relative">
-            <Lock className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
             <FormPassword
               form={form}
               item={signInFormData.form.password}
               className="pl-10"
               showMessage={false}
             />
+            <Lock className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
           </div>
         </div>
 
@@ -131,7 +131,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
                 </span>
               </div>
             </div>
-            
+
             <Button
               type="button"
               variant="outline"
