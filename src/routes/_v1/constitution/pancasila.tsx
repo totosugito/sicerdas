@@ -36,24 +36,25 @@ function RouteComponent() {
     ]
 
     return (
-        <div className="flex flex-col gap-6 w-full">
-            {/* Hero Section */}
-            <section className="relative py-10">
-                <div className="mx-auto text-center">
-                    <div className="mb-6 flex justify-center">
-                        <div className="p-4 rounded-full shadow-sm transform hover:scale-110 transition-transform duration-300">
-                            <img src="/constitution/images/ic_pancasila.png" alt="Pancasila" className="w-24 h-24" />
-                        </div>
-                    </div>
-                    <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight dark:text-white">
-                        Pancasila
-                    </h1>
-                </div>
-            </section>
-
+        <div className="flex flex-col gap-6 w-full pt-8">
             <div className='flex flex-col gap-6 w-full'>
                 <div className="mx-auto w-full">
                     <div className="bg-white dark:bg-slate-800 p-6 rounded-lg">
+
+                        {/* Hero Section */}
+                        <section className="relative pb-10">
+                            <div className="mx-auto text-center">
+                                <div className="mb-6 flex justify-center">
+                                    <div className="p-4 rounded-full shadow-sm transform hover:scale-110 transition-transform duration-300">
+                                        <img src="/constitution/images/ic_pancasila.png" alt="Pancasila" className="w-24 h-24" />
+                                    </div>
+                                </div>
+                                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight dark:text-white">
+                                    Pancasila
+                                </h1>
+                            </div>
+                        </section>
+
                         <div className="flex flex-col gap-8">
                             {pancasilaData.map((sila) => (
                                 <section key={sila.id} className="flex flex-col md:flex-row gap-6 items-center">
