@@ -43,6 +43,8 @@ export const AppRoute = {
   periodicTable: {
     periodicTable: { url: "/periodic-table" },
     element: { url: "/periodic-table/element" },
+    elementComparison: { url: "/periodic-table/element-comparison" },
+    chemistryDictionary: { url: "/periodic-table/chemistry-dictionary" },
   },
   constitution: {
     pancasila: { url: "/constitution/pancasila" },

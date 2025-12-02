@@ -1,6 +1,6 @@
 import {betterAuth} from 'better-auth';
 import {drizzleAdapter} from 'better-auth/adapters/drizzle';
-import {admin, openAPI, emailOTP, multiSession} from 'better-auth/plugins';
+import {admin, openAPI, emailOTP, multiSession, customSession} from 'better-auth/plugins';
 import {db} from './db/index.ts';
 import envConfig from "./config/env.config.ts";
 import fs from 'fs';
@@ -9,6 +9,7 @@ import {fileURLToPath} from 'url';
 
 // Brevo email client
 import Brevo from '@getbrevo/brevo';
+import { getUserAvatarUrl } from './utils/app-utils.ts';
 
 // Initialize Brevo API client if API key is provided
 let apiInstance: Brevo.TransactionalEmailsApi | null = null;
@@ -30,6 +31,15 @@ const auth = betterAuth({
     admin(),
     openAPI({
       path: '/docs',
+    }),
+	 customSession(async ({ user, session }) => {
+      return {
+        user: {
+          ...user,
+          image: getUserAvatarUrl(user.image),
+        },
+        session
+      };
     }),
     multiSession(),
     emailOTP({

@@ -1,0 +1,1883 @@
+[
+  {
+    "atomicId": 1,
+    "idx": 0,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "headerEmpty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 2,
+    "idx": 1,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "1"
+  },
+  {
+    "atomicId": 3,
+    "idx": 2,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "2"
+  },
+  {
+    "atomicId": 4,
+    "idx": 3,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "3"
+  },
+  {
+    "atomicId": 5,
+    "idx": 4,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "4"
+  },
+  {
+    "atomicId": 6,
+    "idx": 5,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "5"
+  },
+  {
+    "atomicId": 7,
+    "idx": 6,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "6"
+  },
+  {
+    "atomicId": 8,
+    "idx": 7,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "7"
+  },
+  {
+    "atomicId": 9,
+    "idx": 8,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "8"
+  },
+  {
+    "atomicId": 10,
+    "idx": 9,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "9"
+  },
+  {
+    "atomicId": 11,
+    "idx": 10,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "10"
+  },
+  {
+    "atomicId": 12,
+    "idx": 11,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "11"
+  },
+  {
+    "atomicId": 13,
+    "idx": 12,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "12"
+  },
+  {
+    "atomicId": 14,
+    "idx": 13,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "13"
+  },
+  {
+    "atomicId": 15,
+    "idx": 14,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "14"
+  },
+  {
+    "atomicId": 16,
+    "idx": 15,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "15"
+  },
+  {
+    "atomicId": 17,
+    "idx": 16,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "16"
+  },
+  {
+    "atomicId": 18,
+    "idx": 17,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "17"
+  },
+  {
+    "atomicId": 19,
+    "idx": 18,
+    "idy": 0,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "18"
+  },
+  {
+    "atomicId": 20,
+    "idx": 0,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "1"
+  },
+  {
+    "atomicId": 21,
+    "idx": 1,
+    "idy": 1,
+    "atomicNumber": 1,
+    "atomicGroup": "otherNonMetals",
+    "atomicName": "Hydrogen",
+    "atomicSymbol": "H"
+  },
+  {
+    "atomicId": 22,
+    "idx": 2,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 23,
+    "idx": 3,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 24,
+    "idx": 4,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 25,
+    "idx": 5,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 26,
+    "idx": 6,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 27,
+    "idx": 7,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 28,
+    "idx": 8,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 29,
+    "idx": 9,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 30,
+    "idx": 10,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 31,
+    "idx": 11,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 32,
+    "idx": 12,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 33,
+    "idx": 13,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 34,
+    "idx": 14,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 35,
+    "idx": 15,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 36,
+    "idx": 16,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 37,
+    "idx": 17,
+    "idy": 1,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 38,
+    "idx": 18,
+    "idy": 1,
+    "atomicNumber": 2,
+    "atomicGroup": "nobleGases",
+    "atomicName": "Helium",
+    "atomicSymbol": "He"
+  },
+  {
+    "atomicId": 39,
+    "idx": 0,
+    "idy": 2,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "2"
+  },
+  {
+    "atomicId": 40,
+    "idx": 1,
+    "idy": 2,
+    "atomicNumber": 3,
+    "atomicGroup": "alkaliMetals",
+    "atomicName": "Lithium",
+    "atomicSymbol": "Li"
+  },
+  {
+    "atomicId": 41,
+    "idx": 2,
+    "idy": 2,
+    "atomicNumber": 4,
+    "atomicGroup": "alkalineEarthMetals",
+    "atomicName": "Beryllium",
+    "atomicSymbol": "Be"
+  },
+  {
+    "atomicId": 42,
+    "idx": 3,
+    "idy": 2,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 43,
+    "idx": 4,
+    "idy": 2,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 44,
+    "idx": 5,
+    "idy": 2,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 45,
+    "idx": 6,
+    "idy": 2,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 46,
+    "idx": 7,
+    "idy": 2,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 47,
+    "idx": 8,
+    "idy": 2,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 48,
+    "idx": 9,
+    "idy": 2,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 49,
+    "idx": 10,
+    "idy": 2,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 50,
+    "idx": 11,
+    "idy": 2,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 51,
+    "idx": 12,
+    "idy": 2,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 52,
+    "idx": 13,
+    "idy": 2,
+    "atomicNumber": 5,
+    "atomicGroup": "metalloids",
+    "atomicName": "Boron",
+    "atomicSymbol": "B"
+  },
+  {
+    "atomicId": 53,
+    "idx": 14,
+    "idy": 2,
+    "atomicNumber": 6,
+    "atomicGroup": "otherNonMetals",
+    "atomicName": "Carbon",
+    "atomicSymbol": "C"
+  },
+  {
+    "atomicId": 54,
+    "idx": 15,
+    "idy": 2,
+    "atomicNumber": 7,
+    "atomicGroup": "otherNonMetals",
+    "atomicName": "Nitrogen",
+    "atomicSymbol": "N"
+  },
+  {
+    "atomicId": 55,
+    "idx": 16,
+    "idy": 2,
+    "atomicNumber": 8,
+    "atomicGroup": "otherNonMetals",
+    "atomicName": "Oxygen",
+    "atomicSymbol": "O"
+  },
+  {
+    "atomicId": 56,
+    "idx": 17,
+    "idy": 2,
+    "atomicNumber": 9,
+    "atomicGroup": "halogens",
+    "atomicName": "Fluorine",
+    "atomicSymbol": "F"
+  },
+  {
+    "atomicId": 57,
+    "idx": 18,
+    "idy": 2,
+    "atomicNumber": 10,
+    "atomicGroup": "nobleGases",
+    "atomicName": "Neon",
+    "atomicSymbol": "Ne"
+  },
+  {
+    "atomicId": 58,
+    "idx": 0,
+    "idy": 3,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "3"
+  },
+  {
+    "atomicId": 59,
+    "idx": 1,
+    "idy": 3,
+    "atomicNumber": 11,
+    "atomicGroup": "alkaliMetals",
+    "atomicName": "Sodium",
+    "atomicSymbol": "Na"
+  },
+  {
+    "atomicId": 60,
+    "idx": 2,
+    "idy": 3,
+    "atomicNumber": 12,
+    "atomicGroup": "alkalineEarthMetals",
+    "atomicName": "Magnesium",
+    "atomicSymbol": "Mg"
+  },
+  {
+    "atomicId": 61,
+    "idx": 3,
+    "idy": 3,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 62,
+    "idx": 4,
+    "idy": 3,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 63,
+    "idx": 5,
+    "idy": 3,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 64,
+    "idx": 6,
+    "idy": 3,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 65,
+    "idx": 7,
+    "idy": 3,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 66,
+    "idx": 8,
+    "idy": 3,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 67,
+    "idx": 9,
+    "idy": 3,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 68,
+    "idx": 10,
+    "idy": 3,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 69,
+    "idx": 11,
+    "idy": 3,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 70,
+    "idx": 12,
+    "idy": 3,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 71,
+    "idx": 13,
+    "idy": 3,
+    "atomicNumber": 13,
+    "atomicGroup": "postTransitionMetals",
+    "atomicName": "Aluminum",
+    "atomicSymbol": "Al"
+  },
+  {
+    "atomicId": 72,
+    "idx": 14,
+    "idy": 3,
+    "atomicNumber": 14,
+    "atomicGroup": "metalloids",
+    "atomicName": "Silicon",
+    "atomicSymbol": "Si"
+  },
+  {
+    "atomicId": 73,
+    "idx": 15,
+    "idy": 3,
+    "atomicNumber": 15,
+    "atomicGroup": "otherNonMetals",
+    "atomicName": "Phosphorus",
+    "atomicSymbol": "P"
+  },
+  {
+    "atomicId": 74,
+    "idx": 16,
+    "idy": 3,
+    "atomicNumber": 16,
+    "atomicGroup": "otherNonMetals",
+    "atomicName": "Sulfur",
+    "atomicSymbol": "S"
+  },
+  {
+    "atomicId": 75,
+    "idx": 17,
+    "idy": 3,
+    "atomicNumber": 17,
+    "atomicGroup": "halogens",
+    "atomicName": "Chlorine",
+    "atomicSymbol": "Cl"
+  },
+  {
+    "atomicId": 76,
+    "idx": 18,
+    "idy": 3,
+    "atomicNumber": 18,
+    "atomicGroup": "nobleGases",
+    "atomicName": "Argon",
+    "atomicSymbol": "Ar"
+  },
+  {
+    "atomicId": 77,
+    "idx": 0,
+    "idy": 4,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "4"
+  },
+  {
+    "atomicId": 78,
+    "idx": 1,
+    "idy": 4,
+    "atomicNumber": 19,
+    "atomicGroup": "alkaliMetals",
+    "atomicName": "Potassium",
+    "atomicSymbol": "K"
+  },
+  {
+    "atomicId": 79,
+    "idx": 2,
+    "idy": 4,
+    "atomicNumber": 20,
+    "atomicGroup": "alkalineEarthMetals",
+    "atomicName": "Calcium",
+    "atomicSymbol": "Ca"
+  },
+  {
+    "atomicId": 80,
+    "idx": 3,
+    "idy": 4,
+    "atomicNumber": 21,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Scandium",
+    "atomicSymbol": "Sc"
+  },
+  {
+    "atomicId": 81,
+    "idx": 4,
+    "idy": 4,
+    "atomicNumber": 22,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Titanium",
+    "atomicSymbol": "Ti"
+  },
+  {
+    "atomicId": 82,
+    "idx": 5,
+    "idy": 4,
+    "atomicNumber": 23,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Vanadium",
+    "atomicSymbol": "V"
+  },
+  {
+    "atomicId": 83,
+    "idx": 6,
+    "idy": 4,
+    "atomicNumber": 24,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Chromium",
+    "atomicSymbol": "Cr"
+  },
+  {
+    "atomicId": 84,
+    "idx": 7,
+    "idy": 4,
+    "atomicNumber": 25,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Manganese",
+    "atomicSymbol": "Mn"
+  },
+  {
+    "atomicId": 85,
+    "idx": 8,
+    "idy": 4,
+    "atomicNumber": 26,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Iron",
+    "atomicSymbol": "Fe"
+  },
+  {
+    "atomicId": 86,
+    "idx": 9,
+    "idy": 4,
+    "atomicNumber": 27,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Cobalt",
+    "atomicSymbol": "Co"
+  },
+  {
+    "atomicId": 87,
+    "idx": 10,
+    "idy": 4,
+    "atomicNumber": 28,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Nickel",
+    "atomicSymbol": "Ni"
+  },
+  {
+    "atomicId": 88,
+    "idx": 11,
+    "idy": 4,
+    "atomicNumber": 29,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Copper",
+    "atomicSymbol": "Cu"
+  },
+  {
+    "atomicId": 89,
+    "idx": 12,
+    "idy": 4,
+    "atomicNumber": 30,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Zinc",
+    "atomicSymbol": "Zn"
+  },
+  {
+    "atomicId": 90,
+    "idx": 13,
+    "idy": 4,
+    "atomicNumber": 31,
+    "atomicGroup": "postTransitionMetals",
+    "atomicName": "Gallium",
+    "atomicSymbol": "Ga"
+  },
+  {
+    "atomicId": 91,
+    "idx": 14,
+    "idy": 4,
+    "atomicNumber": 32,
+    "atomicGroup": "metalloids",
+    "atomicName": "Germanium",
+    "atomicSymbol": "Ge"
+  },
+  {
+    "atomicId": 92,
+    "idx": 15,
+    "idy": 4,
+    "atomicNumber": 33,
+    "atomicGroup": "metalloids",
+    "atomicName": "Arsenic",
+    "atomicSymbol": "As"
+  },
+  {
+    "atomicId": 93,
+    "idx": 16,
+    "idy": 4,
+    "atomicNumber": 34,
+    "atomicGroup": "otherNonMetals",
+    "atomicName": "Selenium",
+    "atomicSymbol": "Se"
+  },
+  {
+    "atomicId": 94,
+    "idx": 17,
+    "idy": 4,
+    "atomicNumber": 35,
+    "atomicGroup": "halogens",
+    "atomicName": "Bromine",
+    "atomicSymbol": "Br"
+  },
+  {
+    "atomicId": 95,
+    "idx": 18,
+    "idy": 4,
+    "atomicNumber": 36,
+    "atomicGroup": "nobleGases",
+    "atomicName": "Krypton",
+    "atomicSymbol": "Kr"
+  },
+  {
+    "atomicId": 96,
+    "idx": 0,
+    "idy": 5,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "5"
+  },
+  {
+    "atomicId": 97,
+    "idx": 1,
+    "idy": 5,
+    "atomicNumber": 37,
+    "atomicGroup": "alkaliMetals",
+    "atomicName": "Rubidium",
+    "atomicSymbol": "Rb"
+  },
+  {
+    "atomicId": 98,
+    "idx": 2,
+    "idy": 5,
+    "atomicNumber": 38,
+    "atomicGroup": "alkalineEarthMetals",
+    "atomicName": "Strontium",
+    "atomicSymbol": "Sr"
+  },
+  {
+    "atomicId": 99,
+    "idx": 3,
+    "idy": 5,
+    "atomicNumber": 39,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Yttrium",
+    "atomicSymbol": "Y"
+  },
+  {
+    "atomicId": 100,
+    "idx": 4,
+    "idy": 5,
+    "atomicNumber": 40,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Zirconium",
+    "atomicSymbol": "Zr"
+  },
+  {
+    "atomicId": 101,
+    "idx": 5,
+    "idy": 5,
+    "atomicNumber": 41,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Niobium",
+    "atomicSymbol": "Nb"
+  },
+  {
+    "atomicId": 102,
+    "idx": 6,
+    "idy": 5,
+    "atomicNumber": 42,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Molybdenum",
+    "atomicSymbol": "Mo"
+  },
+  {
+    "atomicId": 103,
+    "idx": 7,
+    "idy": 5,
+    "atomicNumber": 43,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Technetium",
+    "atomicSymbol": "Tc"
+  },
+  {
+    "atomicId": 104,
+    "idx": 8,
+    "idy": 5,
+    "atomicNumber": 44,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Ruthenium",
+    "atomicSymbol": "Ru"
+  },
+  {
+    "atomicId": 105,
+    "idx": 9,
+    "idy": 5,
+    "atomicNumber": 45,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Rhodium",
+    "atomicSymbol": "Rh"
+  },
+  {
+    "atomicId": 106,
+    "idx": 10,
+    "idy": 5,
+    "atomicNumber": 46,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Palladium",
+    "atomicSymbol": "Pd"
+  },
+  {
+    "atomicId": 107,
+    "idx": 11,
+    "idy": 5,
+    "atomicNumber": 47,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Silver",
+    "atomicSymbol": "Ag"
+  },
+  {
+    "atomicId": 108,
+    "idx": 12,
+    "idy": 5,
+    "atomicNumber": 48,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Cadmium",
+    "atomicSymbol": "Cd"
+  },
+  {
+    "atomicId": 109,
+    "idx": 13,
+    "idy": 5,
+    "atomicNumber": 49,
+    "atomicGroup": "postTransitionMetals",
+    "atomicName": "Indium",
+    "atomicSymbol": "In"
+  },
+  {
+    "atomicId": 110,
+    "idx": 14,
+    "idy": 5,
+    "atomicNumber": 50,
+    "atomicGroup": "postTransitionMetals",
+    "atomicName": "Tin",
+    "atomicSymbol": "Sn"
+  },
+  {
+    "atomicId": 111,
+    "idx": 15,
+    "idy": 5,
+    "atomicNumber": 51,
+    "atomicGroup": "metalloids",
+    "atomicName": "Antimony",
+    "atomicSymbol": "Sb"
+  },
+  {
+    "atomicId": 112,
+    "idx": 16,
+    "idy": 5,
+    "atomicNumber": 52,
+    "atomicGroup": "metalloids",
+    "atomicName": "Tellurium",
+    "atomicSymbol": "Te"
+  },
+  {
+    "atomicId": 113,
+    "idx": 17,
+    "idy": 5,
+    "atomicNumber": 53,
+    "atomicGroup": "halogens",
+    "atomicName": "Iodine",
+    "atomicSymbol": "I"
+  },
+  {
+    "atomicId": 114,
+    "idx": 18,
+    "idy": 5,
+    "atomicNumber": 54,
+    "atomicGroup": "nobleGases",
+    "atomicName": "Xenon",
+    "atomicSymbol": "Xe"
+  },
+  {
+    "atomicId": 115,
+    "idx": 0,
+    "idy": 6,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "6"
+  },
+  {
+    "atomicId": 116,
+    "idx": 1,
+    "idy": 6,
+    "atomicNumber": 55,
+    "atomicGroup": "alkaliMetals",
+    "atomicName": "Cesium",
+    "atomicSymbol": "Cs"
+  },
+  {
+    "atomicId": 117,
+    "idx": 2,
+    "idy": 6,
+    "atomicNumber": 56,
+    "atomicGroup": "alkalineEarthMetals",
+    "atomicName": "Barium",
+    "atomicSymbol": "Ba"
+  },
+  {
+    "atomicId": 118,
+    "idx": 3,
+    "idy": 6,
+    "atomicNumber": 5771,
+    "atomicGroup": "lanthanides",
+    "atomicName": "57-71",
+    "atomicSymbol": "La-Lu"
+  },
+  {
+    "atomicId": 119,
+    "idx": 4,
+    "idy": 6,
+    "atomicNumber": 72,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Hafnium",
+    "atomicSymbol": "Hf"
+  },
+  {
+    "atomicId": 120,
+    "idx": 5,
+    "idy": 6,
+    "atomicNumber": 73,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Tantalum",
+    "atomicSymbol": "Ta"
+  },
+  {
+    "atomicId": 121,
+    "idx": 6,
+    "idy": 6,
+    "atomicNumber": 74,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Tungsten",
+    "atomicSymbol": "W"
+  },
+  {
+    "atomicId": 122,
+    "idx": 7,
+    "idy": 6,
+    "atomicNumber": 75,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Rhenium",
+    "atomicSymbol": "Re"
+  },
+  {
+    "atomicId": 123,
+    "idx": 8,
+    "idy": 6,
+    "atomicNumber": 76,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Osmium",
+    "atomicSymbol": "Os"
+  },
+  {
+    "atomicId": 124,
+    "idx": 9,
+    "idy": 6,
+    "atomicNumber": 77,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Iridium",
+    "atomicSymbol": "Ir"
+  },
+  {
+    "atomicId": 125,
+    "idx": 10,
+    "idy": 6,
+    "atomicNumber": 78,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Platinum",
+    "atomicSymbol": "Pt"
+  },
+  {
+    "atomicId": 126,
+    "idx": 11,
+    "idy": 6,
+    "atomicNumber": 79,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Gold",
+    "atomicSymbol": "Au"
+  },
+  {
+    "atomicId": 127,
+    "idx": 12,
+    "idy": 6,
+    "atomicNumber": 80,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Mercury",
+    "atomicSymbol": "Hg"
+  },
+  {
+    "atomicId": 128,
+    "idx": 13,
+    "idy": 6,
+    "atomicNumber": 81,
+    "atomicGroup": "postTransitionMetals",
+    "atomicName": "Thallium",
+    "atomicSymbol": "Tl"
+  },
+  {
+    "atomicId": 129,
+    "idx": 14,
+    "idy": 6,
+    "atomicNumber": 82,
+    "atomicGroup": "postTransitionMetals",
+    "atomicName": "Lead",
+    "atomicSymbol": "Pb"
+  },
+  {
+    "atomicId": 130,
+    "idx": 15,
+    "idy": 6,
+    "atomicNumber": 83,
+    "atomicGroup": "postTransitionMetals",
+    "atomicName": "Bismuth",
+    "atomicSymbol": "Bi"
+  },
+  {
+    "atomicId": 131,
+    "idx": 16,
+    "idy": 6,
+    "atomicNumber": 84,
+    "atomicGroup": "metalloids",
+    "atomicName": "Polonium",
+    "atomicSymbol": "Po"
+  },
+  {
+    "atomicId": 132,
+    "idx": 17,
+    "idy": 6,
+    "atomicNumber": 85,
+    "atomicGroup": "halogens",
+    "atomicName": "Astatine",
+    "atomicSymbol": "At"
+  },
+  {
+    "atomicId": 133,
+    "idx": 18,
+    "idy": 6,
+    "atomicNumber": 86,
+    "atomicGroup": "nobleGases",
+    "atomicName": "Radon",
+    "atomicSymbol": "Rn"
+  },
+  {
+    "atomicId": 134,
+    "idx": 0,
+    "idy": 7,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": "7"
+  },
+  {
+    "atomicId": 135,
+    "idx": 1,
+    "idy": 7,
+    "atomicNumber": 87,
+    "atomicGroup": "alkaliMetals",
+    "atomicName": "Francium",
+    "atomicSymbol": "Fr"
+  },
+  {
+    "atomicId": 136,
+    "idx": 2,
+    "idy": 7,
+    "atomicNumber": 88,
+    "atomicGroup": "alkalineEarthMetals",
+    "atomicName": "Radium",
+    "atomicSymbol": "Ra"
+  },
+  {
+    "atomicId": 137,
+    "idx": 3,
+    "idy": 7,
+    "atomicNumber": 32767,
+    "atomicGroup": "actinides",
+    "atomicName": "89-103",
+    "atomicSymbol": "Ac-Lr"
+  },
+  {
+    "atomicId": 138,
+    "idx": 4,
+    "idy": 7,
+    "atomicNumber": 104,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Rutherfordium",
+    "atomicSymbol": "Rf"
+  },
+  {
+    "atomicId": 139,
+    "idx": 5,
+    "idy": 7,
+    "atomicNumber": 105,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Dubnium",
+    "atomicSymbol": "Db"
+  },
+  {
+    "atomicId": 140,
+    "idx": 6,
+    "idy": 7,
+    "atomicNumber": 106,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Seaborgium",
+    "atomicSymbol": "Sg"
+  },
+  {
+    "atomicId": 141,
+    "idx": 7,
+    "idy": 7,
+    "atomicNumber": 107,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Bohrium",
+    "atomicSymbol": "Bh"
+  },
+  {
+    "atomicId": 142,
+    "idx": 8,
+    "idy": 7,
+    "atomicNumber": 108,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Hassium",
+    "atomicSymbol": "Hs"
+  },
+  {
+    "atomicId": 143,
+    "idx": 9,
+    "idy": 7,
+    "atomicNumber": 109,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Meitnerium",
+    "atomicSymbol": "Mt"
+  },
+  {
+    "atomicId": 144,
+    "idx": 10,
+    "idy": 7,
+    "atomicNumber": 110,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Darmstadtium",
+    "atomicSymbol": "Ds"
+  },
+  {
+    "atomicId": 145,
+    "idx": 11,
+    "idy": 7,
+    "atomicNumber": 111,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Roentgenium",
+    "atomicSymbol": "Rg"
+  },
+  {
+    "atomicId": 146,
+    "idx": 12,
+    "idy": 7,
+    "atomicNumber": 112,
+    "atomicGroup": "transitionMetals",
+    "atomicName": "Copernicium",
+    "atomicSymbol": "Cn"
+  },
+  {
+    "atomicId": 147,
+    "idx": 13,
+    "idy": 7,
+    "atomicNumber": 113,
+    "atomicGroup": "postTransitionMetals",
+    "atomicName": "Nihonium",
+    "atomicSymbol": "Nh"
+  },
+  {
+    "atomicId": 148,
+    "idx": 14,
+    "idy": 7,
+    "atomicNumber": 114,
+    "atomicGroup": "postTransitionMetals",
+    "atomicName": "Flerovium",
+    "atomicSymbol": "Fl"
+  },
+  {
+    "atomicId": 149,
+    "idx": 15,
+    "idy": 7,
+    "atomicNumber": 115,
+    "atomicGroup": "postTransitionMetals",
+    "atomicName": "Moscovium",
+    "atomicSymbol": "Mc"
+  },
+  {
+    "atomicId": 150,
+    "idx": 16,
+    "idy": 7,
+    "atomicNumber": 116,
+    "atomicGroup": "postTransitionMetals",
+    "atomicName": "Livermorium",
+    "atomicSymbol": "Lv"
+  },
+  {
+    "atomicId": 151,
+    "idx": 17,
+    "idy": 7,
+    "atomicNumber": 117,
+    "atomicGroup": "halogens",
+    "atomicName": "Tennessine",
+    "atomicSymbol": "Ts"
+  },
+  {
+    "atomicId": 152,
+    "idx": 18,
+    "idy": 7,
+    "atomicNumber": 118,
+    "atomicGroup": "nobleGases",
+    "atomicName": "Oganesson",
+    "atomicSymbol": "Og"
+  },
+  {
+    "atomicId": 153,
+    "idx": 0,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 154,
+    "idx": 1,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 155,
+    "idx": 2,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 156,
+    "idx": 3,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 157,
+    "idx": 4,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 158,
+    "idx": 5,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 159,
+    "idx": 6,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 160,
+    "idx": 7,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 161,
+    "idx": 8,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 162,
+    "idx": 9,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 163,
+    "idx": 10,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 164,
+    "idx": 11,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 165,
+    "idx": 12,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 166,
+    "idx": 13,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 167,
+    "idx": 14,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 168,
+    "idx": 15,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 169,
+    "idx": 16,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 170,
+    "idx": 17,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 171,
+    "idx": 18,
+    "idy": 8,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 172,
+    "idx": 0,
+    "idy": 9,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 173,
+    "idx": 1,
+    "idy": 9,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 174,
+    "idx": 2,
+    "idy": 9,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 175,
+    "idx": 3,
+    "idy": 9,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 176,
+    "idx": 4,
+    "idy": 9,
+    "atomicNumber": 57,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Lanthanum",
+    "atomicSymbol": "La"
+  },
+  {
+    "atomicId": 177,
+    "idx": 5,
+    "idy": 9,
+    "atomicNumber": 58,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Cerium",
+    "atomicSymbol": "Ce"
+  },
+  {
+    "atomicId": 178,
+    "idx": 6,
+    "idy": 9,
+    "atomicNumber": 59,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Praseodymium",
+    "atomicSymbol": "Pr"
+  },
+  {
+    "atomicId": 179,
+    "idx": 7,
+    "idy": 9,
+    "atomicNumber": 60,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Neodymium",
+    "atomicSymbol": "Nd"
+  },
+  {
+    "atomicId": 180,
+    "idx": 8,
+    "idy": 9,
+    "atomicNumber": 61,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Promethium",
+    "atomicSymbol": "Pm"
+  },
+  {
+    "atomicId": 181,
+    "idx": 9,
+    "idy": 9,
+    "atomicNumber": 62,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Samarium",
+    "atomicSymbol": "Sm"
+  },
+  {
+    "atomicId": 182,
+    "idx": 10,
+    "idy": 9,
+    "atomicNumber": 63,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Europium",
+    "atomicSymbol": "Eu"
+  },
+  {
+    "atomicId": 183,
+    "idx": 11,
+    "idy": 9,
+    "atomicNumber": 64,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Gadolinium",
+    "atomicSymbol": "Gd"
+  },
+  {
+    "atomicId": 184,
+    "idx": 12,
+    "idy": 9,
+    "atomicNumber": 65,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Terbium",
+    "atomicSymbol": "Tb"
+  },
+  {
+    "atomicId": 185,
+    "idx": 13,
+    "idy": 9,
+    "atomicNumber": 66,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Dysprosium",
+    "atomicSymbol": "Dy"
+  },
+  {
+    "atomicId": 186,
+    "idx": 14,
+    "idy": 9,
+    "atomicNumber": 67,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Holmium",
+    "atomicSymbol": "Ho"
+  },
+  {
+    "atomicId": 187,
+    "idx": 15,
+    "idy": 9,
+    "atomicNumber": 68,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Erbium",
+    "atomicSymbol": "Er"
+  },
+  {
+    "atomicId": 188,
+    "idx": 16,
+    "idy": 9,
+    "atomicNumber": 69,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Thulium",
+    "atomicSymbol": "Tm"
+  },
+  {
+    "atomicId": 189,
+    "idx": 17,
+    "idy": 9,
+    "atomicNumber": 70,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Ytterbium",
+    "atomicSymbol": "Yb"
+  },
+  {
+    "atomicId": 190,
+    "idx": 18,
+    "idy": 9,
+    "atomicNumber": 71,
+    "atomicGroup": "lanthanides",
+    "atomicName": "Lutetium",
+    "atomicSymbol": "Lu"
+  },
+  {
+    "atomicId": 191,
+    "idx": 0,
+    "idy": 10,
+    "atomicNumber": -1,
+    "atomicGroup": "header",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 192,
+    "idx": 1,
+    "idy": 10,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 193,
+    "idx": 2,
+    "idy": 10,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 194,
+    "idx": 3,
+    "idy": 10,
+    "atomicNumber": -1,
+    "atomicGroup": "empty",
+    "atomicName": "",
+    "atomicSymbol": ""
+  },
+  {
+    "atomicId": 195,
+    "idx": 4,
+    "idy": 10,
+    "atomicNumber": 89,
+    "atomicGroup": "actinides",
+    "atomicName": "Actinium",
+    "atomicSymbol": "Ac"
+  },
+  {
+    "atomicId": 196,
+    "idx": 5,
+    "idy": 10,
+    "atomicNumber": 90,
+    "atomicGroup": "actinides",
+    "atomicName": "Thorium",
+    "atomicSymbol": "Th"
+  },
+  {
+    "atomicId": 197,
+    "idx": 6,
+    "idy": 10,
+    "atomicNumber": 91,
+    "atomicGroup": "actinides",
+    "atomicName": "Protactinium",
+    "atomicSymbol": "Pa"
+  },
+  {
+    "atomicId": 198,
+    "idx": 7,
+    "idy": 10,
+    "atomicNumber": 92,
+    "atomicGroup": "actinides",
+    "atomicName": "Uranium",
+    "atomicSymbol": "U"
+  },
+  {
+    "atomicId": 199,
+    "idx": 8,
+    "idy": 10,
+    "atomicNumber": 93,
+    "atomicGroup": "actinides",
+    "atomicName": "Neptunium",
+    "atomicSymbol": "Np"
+  },
+  {
+    "atomicId": 200,
+    "idx": 9,
+    "idy": 10,
+    "atomicNumber": 94,
+    "atomicGroup": "actinides",
+    "atomicName": "Plutonium",
+    "atomicSymbol": "Pu"
+  },
+  {
+    "atomicId": 201,
+    "idx": 10,
+    "idy": 10,
+    "atomicNumber": 95,
+    "atomicGroup": "actinides",
+    "atomicName": "Americium",
+    "atomicSymbol": "Am"
+  },
+  {
+    "atomicId": 202,
+    "idx": 11,
+    "idy": 10,
+    "atomicNumber": 96,
+    "atomicGroup": "actinides",
+    "atomicName": "Curium",
+    "atomicSymbol": "Cm"
+  },
+  {
+    "atomicId": 203,
+    "idx": 12,
+    "idy": 10,
+    "atomicNumber": 97,
+    "atomicGroup": "actinides",
+    "atomicName": "Berkelium",
+    "atomicSymbol": "Bk"
+  },
+  {
+    "atomicId": 204,
+    "idx": 13,
+    "idy": 10,
+    "atomicNumber": 98,
+    "atomicGroup": "actinides",
+    "atomicName": "Californium",
+    "atomicSymbol": "Cf"
+  },
+  {
+    "atomicId": 205,
+    "idx": 14,
+    "idy": 10,
+    "atomicNumber": 99,
+    "atomicGroup": "actinides",
+    "atomicName": "Einsteinium",
+    "atomicSymbol": "Es"
+  },
+  {
+    "atomicId": 206,
+    "idx": 15,
+    "idy": 10,
+    "atomicNumber": 100,
+    "atomicGroup": "actinides",
+    "atomicName": "Fermium",
+    "atomicSymbol": "Fm"
+  },
+  {
+    "atomicId": 207,
+    "idx": 16,
+    "idy": 10,
+    "atomicNumber": 101,
+    "atomicGroup": "actinides",
+    "atomicName": "Mendelevium",
+    "atomicSymbol": "Md"
+  },
+  {
+    "atomicId": 208,
+    "idx": 17,
+    "idy": 10,
+    "atomicNumber": 102,
+    "atomicGroup": "actinides",
+    "atomicName": "Nobelium",
+    "atomicSymbol": "No"
+  },
+  {
+    "atomicId": 209,
+    "idx": 18,
+    "idy": 10,
+    "atomicNumber": 103,
+    "atomicGroup": "actinides",
+    "atomicName": "Lawrencium",
+    "atomicSymbol": "Lr"
+  }
+]

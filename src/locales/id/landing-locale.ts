@@ -136,7 +136,19 @@ export default {
                 amandemen: "Undang-Undang Dasar 1945 dan amandemen Indonesia",
             }
         },
-        periodicTable: "Tabel Periodik",
+        periodicTable: {
+            title: "Tabel Periodik",
+            periodicTable: "Tabel Periodik",
+            element: "Elemen Periodik",
+            elementComparison: "Perbandingan Elemen",
+            chemistryDictionary: "Kamus Kimia",
+            descriptions: {
+                periodicTable: "Tabel unsur kimia",
+                element: "Penjelasan elemen periodik",
+                elementComparison: "Perbandingan elemen atom",
+                chemistryDictionary: "Kamus istilah kimia ringkas"
+            }
+        },
         quiz: {
             title: "Kuis",
             semester: "Ujian Semester",

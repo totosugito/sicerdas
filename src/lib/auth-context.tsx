@@ -29,6 +29,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     (async () => {
 
+      if(!authStore?.user) {
+        setLoading(false)
+        return
+      }
+      
       try {
         const { data: session } = await authClient.getSession()
         let userData: AuthProps = { token: null, user: null };
@@ -52,13 +57,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false)
     })()
   }, [])
-
-  // const value = React.useMemo(() => ({
-  //   isAuthenticated,
-  //   user,
-  //   login,
-  //   logout,
-  // }), [isAuthenticated, user, login, logout])
 
   if (loading) return null
 

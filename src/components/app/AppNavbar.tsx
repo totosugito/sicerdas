@@ -178,6 +178,30 @@ export function AppNavbar() {
     },
   ]
 
+  const tablePeriodicMenu = [
+    {
+      title: t('landing.navbar.periodicTable.periodicTable'),
+      href: AppRoute.periodicTable.periodicTable.url,
+      description: t('landing.navbar.periodicTable.descriptions.periodicTable')
+    },
+    {
+      title: t('landing.navbar.periodicTable.element'),
+      href: AppRoute.periodicTable.element.url,
+      description: t('landing.navbar.periodicTable.descriptions.element')
+    },
+    {
+      title: t('landing.navbar.periodicTable.elementComparison'),
+      href: AppRoute.periodicTable.elementComparison.url,
+      description: t('landing.navbar.periodicTable.descriptions.elementComparison')
+    },
+    {
+      title: t('landing.navbar.periodicTable.chemistryDictionary'),
+      href: AppRoute.periodicTable.chemistryDictionary.url,
+      description: t('landing.navbar.periodicTable.descriptions.chemistryDictionary')
+    },
+    
+  ]
+  
   const quizMenu = [
     {
       title: t('landing.navbar.quiz.semester'),
@@ -295,14 +319,23 @@ export function AppNavbar() {
 
                 {/* Periodic Table */}
                 <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={cn(
-                    "group inline-flex w-max items-center justify-center px-4 h-9 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
-                  )}>
-                    <Link to="/periodic-table">
-                      <FlaskConical className="w-4 h-4 mr-2" />
-                      {t('landing.navbar.periodicTable')}
-                    </Link>
-                  </NavigationMenuLink>
+                  <NavigationMenuTrigger className="text-base bg-transparent">
+                    <FlaskConical className="w-4 h-4 mr-2" />
+                    {t('landing.navbar.periodicTable.title')}
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
+                      {tablePeriodicMenu.map((item) => (
+                        <ListItem
+                          key={item.title}
+                          title={item.title}
+                          href={item.href}
+                        >
+                          {item.description}
+                        </ListItem>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
                 </NavigationMenuItem>
 
                 {/* Quiz Menu */}
