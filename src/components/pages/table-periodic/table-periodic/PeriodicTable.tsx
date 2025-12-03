@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { Keyboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PeriodicCell } from "./PeriodicCell";
 import { PeriodicElement } from "./types";
@@ -159,8 +158,8 @@ export const PeriodicTable = ({ elements }: PeriodicTableProps) => {
 
   const cellSize = 70; // Fixed cell size in pixels
   const gap = 4; // Gap between cells
-  const tableWidth = (gridColumns * cellSize) + ((gridColumns - 1) * gap) - (cellSize/2);
-  const tableHeight = gridRows * cellSize + (gridRows - 1) * gap;
+  const tableWidth = (cellSize/2) + ((gridColumns - 1) * cellSize) + ((gridColumns - 1) * gap);
+  const tableHeight = (cellSize/2) + (7 * cellSize) + (cellSize/2) + ((gridRows - 9) * cellSize) + (gridRows - 1) * gap;
 
   return (
     <div className="space-y-6">
@@ -173,8 +172,8 @@ export const PeriodicTable = ({ elements }: PeriodicTableProps) => {
       <div className="w-full overflow-auto p-0 bg-card/50">
         <div className="grid mx-auto px-2 pt-2 mb-5"
           style={{
-            gridTemplateColumns: `repeat(${gridColumns}, ${cellSize}px)`,
-            gridTemplateRows: `repeat(${gridRows}, ${cellSize}px)`,
+            gridTemplateColumns: `minmax(0, ${cellSize/2}px) repeat(${gridColumns - 1}, minmax(0, ${cellSize}px))`,
+            gridTemplateRows: `minmax(0, ${cellSize/2}px) repeat(7, minmax(0, ${cellSize}px)) minmax(0, ${cellSize/2}px) repeat(${gridRows - 9}, minmax(0, ${cellSize}px))`,
             gap: `${gap}px`,
             width: `${tableWidth}px`,
             height: `${tableHeight}px`,
@@ -183,6 +182,10 @@ export const PeriodicTable = ({ elements }: PeriodicTableProps) => {
           {elements.map((element) => {
             const isRowHeader = element.idx === 0 && (element.atomicGroup === "header" || element.atomicGroup === "headerEmpty");
             const isColumnHeader = element.idy === 0 && (element.atomicGroup === "header" || element.atomicGroup === "headerEmpty");
+            
+            // Calculate cell dimensions based on whether it's a header cell
+            const cellWidth = isRowHeader ? cellSize/2 : cellSize;
+            const cellHeight = isColumnHeader || element.idy === 8 ? cellSize/2 : cellSize;
             
             return (
               <div
@@ -195,8 +198,8 @@ export const PeriodicTable = ({ elements }: PeriodicTableProps) => {
                 style={{
                   gridColumn: element.idx + 1,
                   gridRow: element.idy + 1,
-                  width: `${cellSize}px`,
-                  height: `${cellSize}px`,
+                  width: `${cellWidth}px`,
+                  height: `${cellHeight}px`,
                 }}
               >
                 <PeriodicCell 
