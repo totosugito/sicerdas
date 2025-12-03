@@ -3,6 +3,7 @@ import { PeriodicTable } from '@/components/pages/table-periodic/table-periodic'
 import { AppNavbar } from '@/components/app'
 import { Footer } from '@/components/pages/landing'
 import periodicLayouts from '@/data/table-periodic/periodic_layout.json'
+import { useState } from 'react'
 export const Route = createFileRoute('/periodic-table')({
   component: RouteComponent,
 })
@@ -17,8 +18,7 @@ function RouteComponent() {
       <AppNavbar />
       <div className='flex flex-col flex-1 mt-18'>
         <PeriodicTable
-          layouts={periodicLayouts}
-          onCellClicked={handleCellClick}
+          elements={periodicLayouts}
         />
       </div>
       <Footer />

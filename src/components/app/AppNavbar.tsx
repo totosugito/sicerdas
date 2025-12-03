@@ -262,7 +262,7 @@ export function AppNavbar() {
       className="px-4 fixed top-0 left-0 right-0 z-50 bg-card/70 backdrop-blur-xl border-b border-border/50 shadow-xs"
     >
       <div className="container mx-auto">
-        <div className="flex items-center justify-between h-12">
+        <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <img src={APP_CONFIG.app.logo} alt={APP_CONFIG.app.name} className="h-8 w-8" />
