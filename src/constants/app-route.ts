@@ -70,4 +70,7 @@ export const AppRoute = {
       list: "/admin/users",
     }
   },
+  project: {
+    list: { url: "/project" },
+  },
 }

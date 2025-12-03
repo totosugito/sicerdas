@@ -98,7 +98,7 @@ async function importBooks() {
         }
         
         // Map status
-        const status = jsonBook.ItemHide === 1 ? EnumContentStatus.archived : EnumContentStatus.published;
+        const status = jsonBook.ItemHide === 1 ? EnumContentStatus.ARCHIVED : EnumContentStatus.PUBLISHED;
         
         // Check if book already exists by bookId
         const existingBook = await db

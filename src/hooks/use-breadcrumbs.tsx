@@ -35,7 +35,7 @@ export function useBreadcrumbs(routes: Record<string, any>) {
   const pathname = location.pathname;
 
   return useMemo(() => {
-    // Get the centralized route mapping from api.ts
+    // Get the centralized route mapping from app-api.ts
     const routeMapping = getRouteBreadcrumbMapping(routes);
 
     // Check if we have a custom mapping for this exact path

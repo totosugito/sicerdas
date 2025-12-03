@@ -45,6 +45,7 @@ export type FileUploadActions = {
   removeFile: (id: string) => void
   clearFiles: () => void
   clearErrors: () => void
+  setFilesFromFormValue: (formFiles: File[]) => void
   handleDragEnter: (e: DragEvent<HTMLElement>) => void
   handleDragLeave: (e: DragEvent<HTMLElement>) => void
   handleDragOver: (e: DragEvent<HTMLElement>) => void
@@ -299,6 +300,25 @@ export const useFileUpload = (
     [onFilesChange]
   )
 
+  const setFilesFromFormValue = useCallback(
+    (formFiles: File[]) => {
+      if (!formFiles || !Array.isArray(formFiles)) return
+      
+      const filesWithPreview: FileWithPreview[] = formFiles.map((file) => ({
+        file,
+        id: generateUniqueId(file),
+        preview: createPreview(file),
+      }))
+      
+      setState((prev) => ({
+        ...prev,
+        files: filesWithPreview,
+        errors: [],
+      }))
+    },
+    [generateUniqueId, createPreview]
+  )
+
   const clearErrors = useCallback(() => {
     setState((prev) => ({
       ...prev,
@@ -388,6 +408,7 @@ export const useFileUpload = (
       removeFile,
       clearFiles,
       clearErrors,
+      setFilesFromFormValue,
       handleDragEnter,
       handleDragLeave,
       handleDragOver,

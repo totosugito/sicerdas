@@ -10,6 +10,7 @@ import {fileURLToPath} from 'url';
 // Brevo email client
 import Brevo from '@getbrevo/brevo';
 import { getUserAvatarUrl } from './utils/app-utils.ts';
+import { eq } from 'drizzle-orm';
 
 // Initialize Brevo API client if API key is provided
 let apiInstance: Brevo.TransactionalEmailsApi | null = null;
@@ -33,9 +34,15 @@ const auth = betterAuth({
       path: '/docs',
     }),
 	 customSession(async ({ user, session }) => {
+     // get user role from database
+     const role = await db.query.users.findFirst({
+       where: (fields) => eq(fields.id, user.id),
+     });
+
       return {
         user: {
           ...user,
+          role: role || 'user',
           image: getUserAvatarUrl(user.image),
         },
         session

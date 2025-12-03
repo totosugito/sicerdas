@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
-import { Search, X, Keyboard } from "lucide-react";
+import { Keyboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PeriodicCell } from "./PeriodicCell";
 import { PeriodicElement } from "./types";
+import { SearchBar } from "./SearchBar";
 
 interface PeriodicTableProps {
   elements: PeriodicElement[];
@@ -156,38 +157,21 @@ export const PeriodicTable = ({ elements }: PeriodicTableProps) => {
     };
   }, [navigateElement, clearAll]);
 
-  const cellSize = 80; // Fixed cell size in pixels
+  const cellSize = 70; // Fixed cell size in pixels
   const gap = 4; // Gap between cells
-  const tableWidth = gridColumns * cellSize + (gridColumns - 1) * gap;
+  const tableWidth = (gridColumns * cellSize) + ((gridColumns - 1) * gap) - (cellSize/2);
   const tableHeight = gridRows * cellSize + (gridRows - 1) * gap;
 
   return (
     <div className="space-y-6">
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <input
-          type="text"
-          placeholder="Search by name, symbol, or atomic number..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-10 pr-10 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-        />
-        {searchQuery && (
-          <button
-            onClick={() => setSearchQuery("")}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
-        {searchQuery && !hasSearchResults && (
-          <p className="text-sm text-muted-foreground mt-2">No elements found matching "{searchQuery}"</p>
-        )}
-      </div>
+      <SearchBar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        hasSearchResults={!!(searchQuery.trim() && hasSearchResults)}
+      />
 
-      <div className="w-full overflow-auto p-4 bg-card/50">
-        <div className="grid mx-auto"
+      <div className="w-full overflow-auto p-0 bg-card/50">
+        <div className="grid mx-auto px-2 pt-2 mb-5"
           style={{
             gridTemplateColumns: `repeat(${gridColumns}, ${cellSize}px)`,
             gridTemplateRows: `repeat(${gridRows}, ${cellSize}px)`,

@@ -15,7 +15,7 @@ async function adminHook(fastify: FastifyInstance) {
       return res.unauthorized('You must be logged in to access this resource.');
     }
 
-    if(session?.user?.role !== EnumUserRole.admin) {
+    if(session?.user?.role !== EnumUserRole.ADMIN) {
       return res.forbidden('You do not have permission to access this resource.');
     }
 

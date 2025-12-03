@@ -35,10 +35,10 @@ export const PeriodicCell = ({
         className={cn(
           "flex items-center justify-center transition-all duration-300 border",
           isHeaderHighlighted 
-            ? "bg-card/95 border-primary shadow-lg" 
-            : "bg-card/95 backdrop-blur-sm border-border/50 dark:border-border"
+            ? "bg-muted/95 shadow-sm" 
+            : "bg-card/95 backdrop-blur-sm"
         )}
-        style={{ width: `${cellSize}px`, height: `${cellSize}px` }}
+        style={{ width: element.idx === 0 ? `${cellSize/2}px`: `${cellSize}px`, height: element.idy === 0 ? `${cellSize/2}px`: `${cellSize}px` }}
       >
         <span className={cn(
           "text-sm font-bold transition-colors",

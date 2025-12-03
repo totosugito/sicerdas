@@ -141,7 +141,7 @@ export function ImageCropper({
             <Avatar className="size-full rounded-none">
               <AvatarImage
                 ref={imgRef}
-                className="size-full rounded-none "
+                className="size-full rounded-none h-full w-full object-cover aspect-auto"
                 alt="Image Cropper Shell"
                 src={selectedFile?.preview}
                 onLoad={onImageLoad}
