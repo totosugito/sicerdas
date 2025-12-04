@@ -4,11 +4,15 @@ import { AppNavbar } from '@/components/app'
 import { Footer } from '@/components/pages/landing'
 import periodicLayouts from '@/data/table-periodic/periodic_layout.json'
 import { useState } from 'react'
+import { useAppStore } from '@/stores/useAppStore'
 export const Route = createFileRoute('/periodic-table')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const store = useAppStore();
+  const pageProps = store.periodicTable;
+  
   const handleCellClick = (atom: any) => {
     console.log('Clicked element:', atom)
   }
@@ -19,6 +23,7 @@ function RouteComponent() {
       <div className='flex flex-col flex-1 mt-18'>
         <PeriodicTable
           elements={periodicLayouts}
+          theme={pageProps.viewMode} // Pass theme from store
         />
       </div>
       <Footer />

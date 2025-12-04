@@ -29,4 +29,11 @@ export default {
     language: "Bahasa",
     theme: "Tema",
     email: "Email",
+    pagination: {
+        previous: "Sebelumnya",
+        next: "Berikutnya",
+        morePages: "Halaman lainnya",
+        previousPage: "Ke halaman sebelumnya",
+        nextPage: "Ke halaman berikutnya"
+    }
 }

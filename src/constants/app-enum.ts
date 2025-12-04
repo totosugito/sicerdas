@@ -38,3 +38,22 @@ export const EnumViewMode = {
     label: 'Details'
   }
 } as const
+
+export const EnumPeriodicViewMode = {
+  theme1: {
+    value: 'theme1',
+    label: 'Theme 1'
+  },
+  theme2: {
+    value: 'theme2',
+    label: 'Theme 2'
+  },
+  theme3: {
+    value: 'theme3',
+    label: 'Theme 3'
+  },
+  theme4: {
+    value: 'theme4',
+    label: 'Theme 4'
+  },
+}

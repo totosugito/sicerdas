@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
-import { PeriodicElement, getElementStyle } from "./types";
-import { Button } from "@/components/ui/button";
+import { PeriodicElement } from "./types";
+import { getElementStyle } from "./element-styles";
 
 interface PeriodicCellProps {
   element: PeriodicElement;
@@ -10,6 +10,7 @@ interface PeriodicCellProps {
   isHeaderHighlighted?: boolean;
   isSearchMatch?: boolean;
   isSearchActive?: boolean;
+  theme?: string; // Add theme prop
 }
 
 export const PeriodicCell = ({ 
@@ -20,6 +21,7 @@ export const PeriodicCell = ({
   isHeaderHighlighted = false,
   isSearchMatch = false,
   isSearchActive = false,
+  theme = 'theme1', // Default theme
 }: PeriodicCellProps) => {
   const { atomicNumber, atomicSymbol, atomicName, atomicGroup } = element;
 
@@ -56,11 +58,11 @@ export const PeriodicCell = ({
   const displaySymbol = isSpecialMarker ? "" : atomicSymbol;
   const displayName = isSpecialMarker ? atomicSymbol : atomicName;
 
-  const elementStyle = getElementStyle(atomicGroup);
+  const elementStyle = getElementStyle(atomicGroup, theme); // Pass theme to getElementStyle
   const colorClass = isSelected ? elementStyle.selected : elementStyle.element;
 
   return (
-    <Button
+    <button
       onClick={() => onCellClick?.(element)}
       className={cn(
         "relative p-1 rounded-sm transition-all duration-300",
@@ -75,8 +77,6 @@ export const PeriodicCell = ({
         width: `${cellSize}px`,
         height: `${cellSize}px`,
       }}
-      variant="ghost"
-      asChild
     >
       <div>
         {/* Atomic Number */}
@@ -99,6 +99,6 @@ export const PeriodicCell = ({
         {/* Hover Glow Effect */}
         <div className="absolute inset-0 rounded-sm opacity-0 group-hover:opacity-20 transition-opacity" />
       </div>
-    </Button>
+    </button>
   );
 };

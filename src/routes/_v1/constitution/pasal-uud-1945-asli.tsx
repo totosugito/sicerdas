@@ -120,7 +120,7 @@ function RouteComponent() {
               <img src="/constitution/images/ic_pancasila.png" alt="UUD 1945" className="w-24 h-24" />
             </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight dark:text-white">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
             Pasal-Pasal UUD1945 (Asli)
           </h1>
           <p className="text-lg text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">

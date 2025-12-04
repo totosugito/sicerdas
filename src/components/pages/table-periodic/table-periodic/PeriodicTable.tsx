@@ -1,16 +1,25 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { PeriodicCell } from "./PeriodicCell";
 import { PeriodicElement } from "./types";
 import { SearchBar } from "./SearchBar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { EnumPeriodicViewMode } from "@/constants/app-enum";
+import { useAppStore } from "@/stores/useAppStore";
 
 interface PeriodicTableProps {
   elements: PeriodicElement[];
+  theme?: string; // Add theme prop
 }
 
-export const PeriodicTable = ({ elements }: PeriodicTableProps) => {
+export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps) => { // Accept theme prop
+  const store = useAppStore();
+  const pageProps = store.periodicTable;
+  
   const [selectedElement, setSelectedElement] = useState<PeriodicElement | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
   // Create a 2D grid based on idx and idy
   const gridColumns = 19; // 0-18 (groups)
@@ -73,6 +82,34 @@ export const PeriodicTable = ({ elements }: PeriodicTableProps) => {
     el.atomicGroup !== "headerEmpty" && 
     el.atomicGroup !== "empty"
   );
+
+  // Handle window resize
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Calculate dynamic cell size based on screen width
+  const { cellSize, gap } = useMemo(() => {
+    // Define breakpoints and corresponding cell sizes
+    if (windowWidth < 1024) {
+      // Medium screens (tablet)
+      return { cellSize: 65, gap: 3 };
+    } else {
+      // Large screens (desktop)
+      return { cellSize: 70, gap: 4 };
+    }
+  }, [windowWidth]);
+
+  // Calculate table dimensions
+  const tableWidth = (cellSize/2) + ((gridColumns - 1) * cellSize) + ((gridColumns - 1) * gap);
+  const tableHeight = (cellSize/2) + (7 * cellSize) + (cellSize/2) + ((gridRows - 9) * cellSize) + (gridRows - 1) * gap;
 
   // Navigate to element by arrow keys
   const navigateElement = useCallback((direction: 'up' | 'down' | 'left' | 'right') => {
@@ -156,13 +193,34 @@ export const PeriodicTable = ({ elements }: PeriodicTableProps) => {
     };
   }, [navigateElement, clearAll]);
 
-  const cellSize = 70; // Fixed cell size in pixels
-  const gap = 4; // Gap between cells
-  const tableWidth = (cellSize/2) + ((gridColumns - 1) * cellSize) + ((gridColumns - 1) * gap);
-  const tableHeight = (cellSize/2) + (7 * cellSize) + (cellSize/2) + ((gridRows - 9) * cellSize) + (gridRows - 1) * gap;
+  // Handle theme change
+  const handleThemeChange = (newTheme: string) => {
+    store.setPeriodicTable({ ...pageProps, viewMode: newTheme });
+  };
+
+  // Dynamic cellSize and gap are calculated above with useMemo
 
   return (
     <div className="space-y-6">
+      {/* Theme Selector */}
+      <div className="flex items-center gap-4">
+        <Label htmlFor="theme-select" className="text-sm font-medium">
+          Theme:
+        </Label>
+        <Select value={pageProps.viewMode} onValueChange={handleThemeChange}>
+          <SelectTrigger className="w-[180px]" id="theme-select">
+            <SelectValue placeholder="Select a theme" />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.values(EnumPeriodicViewMode).map((themeOption) => (
+              <SelectItem key={themeOption.value} value={themeOption.value}>
+                {themeOption.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       <SearchBar
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -210,6 +268,7 @@ export const PeriodicTable = ({ elements }: PeriodicTableProps) => {
                   isHeaderHighlighted={isHeaderHighlighted(element)}
                   isSearchMatch={matchesSearch(element)}
                   isSearchActive={!!searchQuery.trim()}
+                  theme={pageProps.viewMode} // Pass theme to PeriodicCell
                 />
               </div>
             );

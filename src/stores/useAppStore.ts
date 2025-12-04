@@ -1,9 +1,10 @@
 import {create} from "zustand/index";
 import {APP_CONFIG} from "@/constants/config";
 import {persist} from "zustand/middleware";
-import { EnumViewMode } from "@/constants/app-enum";
+import { EnumPeriodicViewMode, EnumViewMode } from "@/constants/app-enum";
 
 type ViewMode = (typeof EnumViewMode)[keyof typeof EnumViewMode]["value"];
+type PeriodicViewMode = (typeof EnumPeriodicViewMode)[keyof typeof EnumPeriodicViewMode]["value"];
 
 type Store = {
   books: {
@@ -11,6 +12,11 @@ type Store = {
     limit: number;
   },
   setBooks: (books: any) => void;
+
+  periodicTable: {
+    viewMode: PeriodicViewMode;
+  },
+  setPeriodicTable: (periodicTable: any) => void;
 
   resetAll: () => void;
 }
@@ -20,6 +26,10 @@ export const defaultStore = {
     viewMode: EnumViewMode.grid.value,
     limit: 12,
   },
+  periodicTable: {
+    viewMode: EnumPeriodicViewMode.theme1.value,
+  },
+  
 }
 
 export const useAppStore = create<Store>()(
@@ -30,8 +40,14 @@ export const useAppStore = create<Store>()(
         books
       }),
 
+      periodicTable: defaultStore.periodicTable,
+      setPeriodicTable: (periodicTable: any) => set({
+        periodicTable
+      }),
+
       resetAll: () => set({
-        books: defaultStore.books
+        books: defaultStore.books,
+        periodicTable: defaultStore.periodicTable,
       }),
     }),
     {

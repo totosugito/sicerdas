@@ -3,7 +3,6 @@ import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import {
   BookOpen,
-  GraduationCap,
   Menu,
   FlaskConical,
   Moon,
@@ -491,7 +490,7 @@ export function AppNavbar() {
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[320px] sm:w-[400px] p-0">
+              <SheetContent side="right" className="w-[320px] sm:w-[400px] p-0" aria-describedby={undefined}>
                 {/* Header with gradient background */}
                 <SheetHeader className="px-6 py-6 bg-gradient-to-br from-primary/10 via-secondary/10 to-background border-b">
                   <SheetTitle className="flex items-center gap-3">
@@ -555,18 +554,26 @@ export function AppNavbar() {
 
                     {/* Periodic Table */}
                     <div className="space-y-3">
-                      <Link
-                        to="/periodic-table"
-                        onClick={() => setIsOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 bg-primary/5 rounded-lg hover:bg-primary/10 transition-all duration-200 group"
-                      >
-                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <div className="flex items-center gap-2 px-3 py-2 bg-primary/5 rounded-lg">
+                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                           <FlaskConical className="w-4 h-4 text-primary" />
                         </div>
                         <h3 className="font-semibold text-sm uppercase tracking-wide">
-                          {t('landing.navbar.periodicTable')}
+                          {t('landing.navbar.periodicTable.title')}
                         </h3>
-                      </Link>
+                      </div>
+                      <div className="space-y-1">
+                        {tablePeriodicMenu.map((item) => (
+                          <Link
+                            key={item.title}
+                            to={item.href}
+                            onClick={() => setIsOpen(false)}
+                            className="block px-4 py-2.5 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 hover:translate-x-1"
+                          >
+                            {item.title}
+                          </Link>
+                        ))}
+                      </div>
                     </div>
 
                     {/* Quiz Section */}

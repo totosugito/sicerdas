@@ -15,6 +15,8 @@ import privacy from './web/privacy-locale';
 import terms from './web/terms-locale';
 import support from './web/support-locale';
 import faq from './web/faq-locale';
+import periodicTable from './periodic-table/periodic-table-locale';
+import chemistryDictionary from './periodic-table/chemistry-dictionary-locale';
 
 const localeId = {
   translation: {
@@ -36,6 +38,10 @@ const localeId = {
       terms: terms,
       support: support,
       faq: faq
+    },
+    periodicTable: {
+      periodicTable: periodicTable,
+      chemistryDictionary: chemistryDictionary
     }
   }
 }

@@ -6,3 +6,4 @@ export {MultiSelect} from "./MultiSelect";
 export {ThemeToggle} from "./ThemeToggle";
 export {Breadcrumbs} from "./Breadcrumbs";
 export {ImageCropper} from "./image-cropper";
+export {LocalePagination} from "./LocalePagination";

@@ -32,7 +32,7 @@ function RouteComponent() {
                     />
                   </div>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight dark:text-white">
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
                   UNDANG-UNDANG DASAR
                 </h1>
                 <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2 dark:text-gray-200">
