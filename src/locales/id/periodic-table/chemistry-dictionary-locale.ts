@@ -5,7 +5,7 @@ export default {
   header: {
     title: "Kamus Kimia",
     description: "Jelajahi {{totalTerms}} istilah dan definisi kimia",
-    showingResults: "Menampilkan {{filteredCount}} hasil"
+    showingResults: "Menampilkan {{start}}-{{end}} dari {{total}} entri"
   },
   alphabetFilter: {
     all: "Semua",
@@ -13,5 +13,10 @@ export default {
     gl: "G-L",
     mr: "M-R",
     sz: "S-Z"
+  },
+  resultsInfo: "Menampilkan {{start}}-{{end}} dari {{total}} entri",
+  noEntriesFound: {
+    title: "Tidak ada entri yang ditemukan",
+    description: "Coba sesuaikan pencarian atau kriteria filter Anda"
   }
 }

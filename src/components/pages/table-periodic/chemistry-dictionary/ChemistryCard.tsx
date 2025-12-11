@@ -2,10 +2,9 @@ import { cn } from '@/lib/utils'
 
 // Define the dictionary entry type
 interface ChemistryTerm {
-  dictId: number
-  dictLocale: string
-  dictWord: string
-  dictTr: string
+  id: number
+  w: string
+  tr: string
 }
 
 interface ChemistryCardProps {
@@ -31,10 +30,10 @@ export function ChemistryCard({ term, index }: ChemistryCardProps) {
       <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-primary to-primary/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       
       <h3 className="mb-3 text-lg font-semibold text-foreground tracking-tight">
-        {term.dictWord}
+        {term.w}
       </h3>
       <p className="text-sm leading-relaxed text-muted-foreground">
-        {term.dictTr}
+        {term.tr}
       </p>
       
       {/* ID badge */}

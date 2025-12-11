@@ -1,21 +1,22 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useMemo } from 'react'
-import dictionaryDataEn from '@/data/table-periodic/periodic_dictionary-en.json'
-import { ChemistryCard } from '@/components/pages/table-periodic/chemistry-dictionary/ChemistryCard'
-import { SearchBar } from '@/components/pages/table-periodic/chemistry-dictionary/SearchBar'
-import { AlphabetFilter, ALPHABET_GROUPS } from '@/components/pages/table-periodic/chemistry-dictionary/AlphabetFilter'
+import { useTranslation } from 'react-i18next'
+import { useAuthStore } from '@/stores/useAuthStore'
+import dictionaryDataEn from '@/data/table-periodic/periodic_dictionary_en.json'
+import dictionaryDataId from '@/data/table-periodic/periodic_dictionary_id.json'
+import { ChemistryCard, AlphabetFilter, ALPHABET_GROUPS, ChemistryHeader, SearchBar } from '@/components/pages/table-periodic/chemistry-dictionary'
 import { LocalePagination } from '@/components/custom/components'
-import { ChemistryHeader } from '@/components/pages/table-periodic/chemistry-dictionary'
 
 // Define the dictionary entry type
 interface ChemistryTerm {
-  dictId: number
-  dictLocale: string
-  dictWord: string
-  dictTr: string
+  id: number
+  w: string
+  tr: string
 }
 
 function ChemistryDictionary() {
+  const { t, i18n } = useTranslation()
+  const authLanguage = useAuthStore((state) => state.language)
   const [activeGroup, setActiveGroup] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
   const [searchTerm, setSearchTerm] = useState('')
@@ -23,14 +24,16 @@ function ChemistryDictionary() {
 
   // Filter entries based on active group and search term
   const filteredTerms = useMemo(() => {
-    let filtered = dictionaryDataEn as ChemistryTerm[]
+    // Select dictionary data based on current language from auth store
+    const dictionaryData = authLanguage === 'id' ? dictionaryDataId : dictionaryDataEn
+    let filtered = dictionaryData as ChemistryTerm[]
     
     // Apply alphabet group filter
     if (activeGroup !== 'all') {
       const group = ALPHABET_GROUPS.find(g => g.id === activeGroup)
       if (group) {
         filtered = filtered.filter(entry => 
-          group.range.test(entry.dictWord.charAt(0).toUpperCase())
+          group.range.test(entry.w.charAt(0).toUpperCase())
         )
       }
     }
@@ -39,13 +42,13 @@ function ChemistryDictionary() {
     if (searchTerm) {
       const term = searchTerm.toLowerCase()
       filtered = filtered.filter(entry => 
-        entry.dictWord.toLowerCase().includes(term) || 
-        entry.dictTr.toLowerCase().includes(term)
+        entry.w.toLowerCase().includes(term) || 
+        entry.tr.toLowerCase().includes(term)
       )
     }
     
     return filtered
-  }, [activeGroup, searchTerm])
+  }, [activeGroup, searchTerm, authLanguage])
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredTerms.length / itemsPerPage)
@@ -66,7 +69,7 @@ function ChemistryDictionary() {
   return (
     <div className="container mx-auto py-8">
       <ChemistryHeader 
-        totalTerms={dictionaryDataEn.length} 
+        totalTerms={authLanguage === 'id' ? dictionaryDataId.length : dictionaryDataEn.length} 
       />
       
       {/* Search Bar */}
@@ -83,7 +86,11 @@ function ChemistryDictionary() {
       
       {/* Results Info */}
       <div className="mb-4 text-sm text-muted-foreground text-center">
-        Menampilkan {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredTerms.length)} dari {filteredTerms.length} entri
+        {t('periodicTable.chemistryDictionary.resultsInfo', { 
+          start: startIndex + 1, 
+          end: Math.min(startIndex + itemsPerPage, filteredTerms.length), 
+          total: filteredTerms.length 
+        })}
       </div>
       
       {/* Dictionary Entries Grid */}
@@ -91,7 +98,7 @@ function ChemistryDictionary() {
         <>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {paginatedTerms.map((term, index) => (
-              <ChemistryCard key={term.dictId} term={term} index={index} />
+              <ChemistryCard key={term.id} term={term} index={index} />
             ))}
           </div>
           
@@ -106,9 +113,11 @@ function ChemistryDictionary() {
         </>
       ) : (
         <div className="text-center py-12">
-          <div className="text-lg font-medium text-foreground mb-2">Tidak ada entri yang ditemukan</div>
+          <div className="text-lg font-medium text-foreground mb-2">
+            {t('periodicTable.chemistryDictionary.noEntriesFound.title')}
+          </div>
           <p className="text-muted-foreground">
-            Coba sesuaikan pencarian atau kriteria filter Anda
+            {t('periodicTable.chemistryDictionary.noEntriesFound.description')}
           </p>
         </div>
       )}
