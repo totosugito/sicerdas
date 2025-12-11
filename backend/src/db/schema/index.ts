@@ -9,6 +9,7 @@ import {
   PgEnumReportReason,
   PgEnumContentSortingType,
   PgEnumEducationLevel,
+  PgEnumPeriodicGroup,
 } from './enum-app.ts';
 import { users, accounts, sessions, verifications, userProfile } from './auth-schema.ts';
 import {
@@ -20,13 +21,14 @@ import {
   userContentReport, userEventHistory,
 } from './web-schema.ts';
 import { aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares } from './chat-ai-schema.ts';
-
+import { periodicElements, periodicElementNotes } from './periodic-table-schema.ts';
 export {
   PgEnumUserRole,
   PgEnumContentStatus, PgEnumEventStatus, PgEnumContentType,
-  PgEnumReportStatus, PgEnumReportReason, PgEnumContentSortingType, PgEnumEducationLevel as PgEnumEducationGrade,
+  PgEnumReportStatus, PgEnumReportReason, PgEnumContentSortingType, PgEnumEducationLevel, PgEnumPeriodicGroup,
   users, accounts, sessions, verifications, userProfile,
   bookCategory, bookGroup, books, bookGroupStats, bookEventStats, userBookInteractions,
   educationGrades, appVersion, userContentReport, userEventHistory,
-  aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares
+  aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares,
+  periodicElements, periodicElementNotes
 }

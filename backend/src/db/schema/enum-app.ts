@@ -110,3 +110,20 @@ export const EnumEducationLevel = {
   UNKNOWN: '',
 }
 export const PgEnumEducationLevel = pgEnum('education_level', Object.values(EnumEducationLevel) as [string, ...string[]]);
+
+export const EnumPeriodicGroup = {
+  headerEmpty: 'headerEmpty',
+  header: 'header',
+  empty: 'empty',
+  otherNonMetals: 'otherNonMetals',
+  nobleGases: 'nobleGases',
+  halogens: 'halogens',
+  metalloids: 'metalloids',
+  postTransitionMetals: 'postTransitionMetals',
+  transitionMetals: 'transitionMetals',
+  lanthanides: 'lanthanides',
+  actinides: 'actinides',
+  alkalineEarthMetals: 'alkalineEarthMetals',
+  alkaliMetals: 'alkaliMetals',
+}
+export const PgEnumPeriodicGroup = pgEnum('periodic_group', Object.values(EnumPeriodicGroup) as [string, ...string[]]);
