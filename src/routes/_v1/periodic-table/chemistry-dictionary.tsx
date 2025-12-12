@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/useAuthStore'
 import dictionaryDataEn from '@/data/table-periodic/periodic_dictionary_en.json'
 import dictionaryDataId from '@/data/table-periodic/periodic_dictionary_id.json'
-import { ChemistryCard, AlphabetFilter, ALPHABET_GROUPS, ChemistryHeader, SearchBar } from '@/components/pages/table-periodic/chemistry-dictionary'
+import { ChemistryCard, AlphabetFilter, ALPHABET_GROUPS, ChemistryHeader, SearchBar } from '@/components/pages/periodic-table/chemistry-dictionary'
 import { LocalePagination } from '@/components/custom/components'
 
 // Define the dictionary entry type

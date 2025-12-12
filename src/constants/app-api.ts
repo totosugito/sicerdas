@@ -44,5 +44,8 @@ export const AppApi = {
     list: APP_URL_V1 + "/book/list",
     create: APP_URL_V1 + "/book/create",
     crud: APP_URL_V1 + "/book",
+  },
+  periodicTable: {
+    element: APP_URL_V1 + "/periodic-table/element",
   }
 }
