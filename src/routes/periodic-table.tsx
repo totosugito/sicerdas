@@ -20,7 +20,7 @@ function RouteComponent() {
   return (
     <div className="flex flex-col min-h-screen w-full bg-background">
       <AppNavbar />
-      <div className='flex flex-col flex-1 mt-18'>
+      <div className='flex flex-col flex-1 mt-14'>
         <PeriodicTable
           elements={periodicLayouts}
           theme={pageProps.viewMode} // Pass theme from store

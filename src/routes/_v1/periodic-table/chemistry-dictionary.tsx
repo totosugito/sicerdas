@@ -67,7 +67,7 @@ function ChemistryDictionary() {
   }
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto py-10">
       <ChemistryHeader 
         totalTerms={authLanguage === 'id' ? dictionaryDataId.length : dictionaryDataEn.length} 
       />

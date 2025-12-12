@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { PeriodicElement } from "./types";
 import { getElementStyle } from "./element-styles";
+import { EnumPeriodicGroup } from "backend/src/db/schema/enum-app";
 
 interface PeriodicCellProps {
   element: PeriodicElement;
@@ -26,12 +27,12 @@ export const PeriodicCell = ({
   const { atomicNumber, atomicSymbol, atomicName, atomicGroup } = element;
 
   // Handle empty cells
-  if (atomicGroup === "empty") {
+  if (atomicGroup === EnumPeriodicGroup.empty) {
     return <div style={{ width: `${cellSize}px`, height: `${cellSize}px` }} />;
   }
 
   // Handle header cells
-  if (atomicGroup === "header" || atomicGroup === "headerEmpty") {
+  if (atomicGroup === EnumPeriodicGroup.header || atomicGroup === EnumPeriodicGroup.headerEmpty) {
     return (
       <div 
         className={cn(

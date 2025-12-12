@@ -3,8 +3,13 @@ export default {
     placeholder: "Search by name, symbol, or atomic number...",
     noResults: "No elements match \"{query}\""
   },
+  moduleName: "Periodic Table",
+  elementsCount: "Explore {{count}} chemical elements and their properties",
+  themeSelector: {
+    previewTitle: "Theme Preview",
+    currentSelection: "Current selection"
+  },
   var: {
-    moduleName: "Periodic Table",
     otherNonMetals: "Other Nonmetal",
     nobleGases: "Noble Gases",
     alkaliMetals: "Alkali Metals",

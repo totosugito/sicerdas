@@ -3,8 +3,13 @@ export default {
     placeholder: "Cari berdasarkan nama, simbol, atau nomor atom...",
     noResults: "Tidak ada elemen yang cocok dengan \"{query}\""
   },
+  moduleName: "Tabel Periodik",
+  elementsCount: "Jelajahi {{count}} unsur kimia dan sifat-sifatnya",
+  themeSelector: {
+    previewTitle: "Pratinjau Tema",
+    currentSelection: "Pilihan saat ini"
+  },
   var: {
-    moduleName: "Tabel Periodik",
     otherNonMetals: "Non Logam",
     nobleGases: "Gas Mulia",
     alkaliMetals: "Logam Alkali",

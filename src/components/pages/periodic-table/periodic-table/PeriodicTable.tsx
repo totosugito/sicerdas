@@ -3,10 +3,10 @@ import { cn } from "@/lib/utils";
 import { PeriodicCell } from "./PeriodicCell";
 import { PeriodicElement } from "./types";
 import { SearchBar } from "./SearchBar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { EnumPeriodicViewMode } from "@/constants/app-enum";
+import { PeriodicTableHeader } from "./PeriodicTableHeader";
+import { ThemeSelector } from "./ThemeSelector";
 import { useAppStore } from "@/stores/useAppStore";
+import { EnumPeriodicGroup } from "backend/src/db/schema/enum-app";
 
 interface PeriodicTableProps {
   elements: PeriodicElement[];
@@ -16,7 +16,7 @@ interface PeriodicTableProps {
 export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps) => { // Accept theme prop
   const store = useAppStore();
   const pageProps = store.periodicTable;
-  
+
   const [selectedElement, setSelectedElement] = useState<PeriodicElement | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
@@ -29,9 +29,9 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
     // Only show dialog for actual elements (not headers or empty cells)
     if (
       element.atomicNumber > 0 &&
-      element.atomicGroup !== "header" &&
-      element.atomicGroup !== "headerEmpty" &&
-      element.atomicGroup !== "empty"
+      element.atomicGroup !== EnumPeriodicGroup.header &&
+      element.atomicGroup !== EnumPeriodicGroup.headerEmpty &&
+      element.atomicGroup !== EnumPeriodicGroup.empty
     ) {
       setSelectedElement(element);
     }
@@ -43,50 +43,50 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
 
   const isHeaderHighlighted = (element: PeriodicElement) => {
     if (!selectedElement) return false;
-    
+
     // Highlight column header if same idx
-    if (element.atomicGroup === "header" && element.idx === selectedElement.idx) {
+    if (element.atomicGroup === EnumPeriodicGroup.header && element.idx === selectedElement.idx) {
       return true;
     }
-    
+
     // Highlight row header if same idy
-    if (element.atomicGroup === "header" && element.idy === selectedElement.idy && element.idx === 0) {
+    if (element.atomicGroup === EnumPeriodicGroup.header && element.idy === selectedElement.idy && element.idx === 0) {
       return true;
     }
-    
+
     return false;
   };
 
   const matchesSearch = (element: PeriodicElement) => {
     if (!searchQuery.trim()) return false;
-    
+
     const query = searchQuery.toLowerCase().trim();
     const name = element.atomicName.toLowerCase();
     const symbol = element.atomicSymbol.toLowerCase();
     const number = element.atomicNumber.toString();
-    
+
     return name.includes(query) || symbol.includes(query) || number.includes(query);
   };
 
-  const hasSearchResults = searchQuery.trim() && elements.some(el => 
-    el.atomicGroup !== "empty" && 
-    el.atomicGroup !== "header" && 
-    el.atomicGroup !== "headerEmpty" && 
+  const hasSearchResults = searchQuery.trim() && elements.some(el =>
+    el.atomicGroup !== EnumPeriodicGroup.empty &&
+    el.atomicGroup !== EnumPeriodicGroup.header &&
+    el.atomicGroup !== EnumPeriodicGroup.headerEmpty &&
     matchesSearch(el)
   );
 
   // Get actual element cells (not headers or empty)
   const actualElements = elements.filter(
-    el => el.atomicNumber > 0 && 
-    el.atomicGroup !== "header" && 
-    el.atomicGroup !== "headerEmpty" && 
-    el.atomicGroup !== "empty"
+    el => el.atomicNumber > 0 &&
+      el.atomicGroup !== EnumPeriodicGroup.header &&
+      el.atomicGroup !== EnumPeriodicGroup.headerEmpty &&
+      el.atomicGroup !== EnumPeriodicGroup.empty
   );
 
   // Handle window resize
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
+
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
@@ -108,8 +108,8 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
   }, [windowWidth]);
 
   // Calculate table dimensions
-  const tableWidth = (cellSize/2) + ((gridColumns - 1) * cellSize) + ((gridColumns - 1) * gap);
-  const tableHeight = (cellSize/2) + (7 * cellSize) + (cellSize/2) + ((gridRows - 9) * cellSize) + (gridRows - 1) * gap;
+  const tableWidth = (cellSize / 2) + ((gridColumns - 1) * cellSize) + ((gridColumns - 1) * gap);
+  const tableHeight = (cellSize / 2) + (7 * cellSize) + (cellSize / 2) + ((gridRows - 9) * cellSize) + (gridRows - 1) * gap;
 
   // Navigate to element by arrow keys
   const navigateElement = useCallback((direction: 'up' | 'down' | 'left' | 'right') => {
@@ -201,50 +201,47 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
   // Dynamic cellSize and gap are calculated above with useMemo
 
   return (
-    <div className="space-y-6">
-      {/* Theme Selector */}
-      <div className="flex items-center gap-4">
-        <Label htmlFor="theme-select" className="text-sm font-medium">
-          Theme:
-        </Label>
-        <Select value={pageProps.viewMode} onValueChange={handleThemeChange}>
-          <SelectTrigger className="w-[180px]" id="theme-select">
-            <SelectValue placeholder="Select a theme" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.values(EnumPeriodicViewMode).map((themeOption) => (
-              <SelectItem key={themeOption.value} value={themeOption.value}>
-                {themeOption.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <div className="space-y-4">
+      <PeriodicTableHeader totalElements={elements.length} />
+      <div className="space-y-4 px-4">
+      <div className="flex w-full justify-center items-center">
+        <div className="px-0 flex w-full gap-4" style={{ width: `${tableWidth}px` }}>
+          <div className="w-full">
+            <SearchBar
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              hasSearchResults={!!(searchQuery.trim() && hasSearchResults)}
+            />
+          </div>
+
+          {/* Theme Selector with Popover Preview */}
+          <div className="flex flex-1 justify-end items-center">
+            <ThemeSelector 
+              currentTheme={pageProps.viewMode} 
+              onThemeChange={handleThemeChange} 
+            />
+          </div>
+        </div>
       </div>
 
-      <SearchBar
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        hasSearchResults={!!(searchQuery.trim() && hasSearchResults)}
-      />
-
-      <div className="w-full overflow-auto p-0 bg-card/50">
-        <div className="grid mx-auto px-2 pt-2 mb-5"
+      <div className="w-full overflow-auto pt-2 mb-0">
+        <div className="grid mx-auto bg-card/50 mb-5"
           style={{
-            gridTemplateColumns: `minmax(0, ${cellSize/2}px) repeat(${gridColumns - 1}, minmax(0, ${cellSize}px))`,
-            gridTemplateRows: `minmax(0, ${cellSize/2}px) repeat(7, minmax(0, ${cellSize}px)) minmax(0, ${cellSize/2}px) repeat(${gridRows - 9}, minmax(0, ${cellSize}px))`,
+            gridTemplateColumns: `minmax(0, ${cellSize / 2}px) repeat(${gridColumns - 1}, minmax(0, ${cellSize}px))`,
+            gridTemplateRows: `minmax(0, ${cellSize / 2}px) repeat(7, minmax(0, ${cellSize}px)) minmax(0, ${cellSize / 2}px) repeat(${gridRows - 9}, minmax(0, ${cellSize}px))`,
             gap: `${gap}px`,
             width: `${tableWidth}px`,
             height: `${tableHeight}px`,
           }}
         >
           {elements.map((element) => {
-            const isRowHeader = element.idx === 0 && (element.atomicGroup === "header" || element.atomicGroup === "headerEmpty");
-            const isColumnHeader = element.idy === 0 && (element.atomicGroup === "header" || element.atomicGroup === "headerEmpty");
-            
+            const isRowHeader = element.idx === 0 && (element.atomicGroup === EnumPeriodicGroup.header || element.atomicGroup === EnumPeriodicGroup.headerEmpty);
+            const isColumnHeader = element.idy === 0 && (element.atomicGroup === EnumPeriodicGroup.header || element.atomicGroup === EnumPeriodicGroup.headerEmpty);
+
             // Calculate cell dimensions based on whether it's a header cell
-            const cellWidth = isRowHeader ? cellSize/2 : cellSize;
-            const cellHeight = isColumnHeader || element.idy === 8 ? cellSize/2 : cellSize;
-            
+            const cellWidth = isRowHeader ? cellSize / 2 : cellSize;
+            const cellHeight = isColumnHeader || element.idy === 8 ? cellSize / 2 : cellSize;
+
             return (
               <div
                 key={element.atomicId}
@@ -260,9 +257,9 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
                   height: `${cellHeight}px`,
                 }}
               >
-                <PeriodicCell 
-                  element={element} 
-                  onCellClick={handleCellClick} 
+                <PeriodicCell
+                  element={element}
+                  onCellClick={handleCellClick}
                   cellSize={cellSize}
                   isSelected={isSelected(element)}
                   isHeaderHighlighted={isHeaderHighlighted(element)}
@@ -275,6 +272,7 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
           })}
         </div>
       </div>
+    </div>
     </div>
   );
 };
