@@ -185,7 +185,7 @@ export function AppNavbar() {
     },
     {
       title: t('landing.navbar.periodicTable.element'),
-      href: AppRoute.periodicTable.element.url,
+      href: AppRoute.periodicTable.element.url + "/1",
       description: t('landing.navbar.periodicTable.descriptions.element')
     },
     {

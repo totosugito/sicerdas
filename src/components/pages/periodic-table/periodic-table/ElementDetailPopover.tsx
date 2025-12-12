@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { PeriodicCell } from "./PeriodicCell";
-import { usePeriodicElementQuery } from "@/service/periodic-table-api";
+// Removed unused import
+// import { usePeriodicElementQuery } from "@/service/periodic-table-api";
 import { PeriodicElement as PeriodicElementType } from "./types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -22,13 +23,8 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   
-  // Only fetch data when popover is open
-  const { data, isLoading, isError, error } = usePeriodicElementQuery({ 
-    atomicNumber: element.atomicNumber, 
-    locale: i18n.language 
-  }, {
-    enabled: isOpen // Only run the query when the popover is open
-  });
+  // Use the element data passed as prop instead of fetching from API
+  const data = element;
 
   const handleViewDetails = () => {
     navigate({ 
@@ -68,33 +64,8 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
         align="center"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        {isLoading ? (
-          <div className="p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-8 w-16" />
-              <Skeleton className="h-6 w-6 rounded-full" />
-            </div>
-            <Skeleton className="h-4 w-32" />
-            <div className="grid grid-cols-2 gap-2 pt-2">
-              <Skeleton className="h-20" />
-              <Skeleton className="h-20" />
-              <Skeleton className="h-20" />
-              <Skeleton className="h-20" />
-            </div>
-            <div className="space-y-2 pt-2">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-3/4" />
-            </div>
-          </div>
-        ) : isError ? (
-          <Alert variant="destructive" className="m-4">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              {error?.message || t('periodicTable.elementDetail.errorLoading')}
-            </AlertDescription>
-          </Alert>
-        ) : data ? (
+        {/* Removed isLoading and isError checks since we're not making API calls */}
+        {data ? (
           <div className="p-4">
             {/* Header with element cell and basic info */}
             <div className="flex items-start justify-between mb-4">
@@ -136,14 +107,14 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
                 {t('periodicTable.periodicTable.elementDetail.overview')}
               </h4>
               <div className="space-y-1 text-sm">
-                {renderProperty(t('periodicTable.periodicTable.var.atomicWeight'), data.atomicProperties?.atomicWeight as string | undefined)}
-                {renderProperty(t('periodicTable.periodicTable.var.phase'), data.atomicProperties?.phase as string | undefined)}
-                {renderProperty(t('periodicTable.periodicTable.var.group'), data.atomicProperties?.group as string | undefined)}
-                {renderProperty(t('periodicTable.periodicTable.var.period'), data.atomicProperties?.period as string | undefined)}
-                {renderProperty(t('periodicTable.periodicTable.var.block'), data.atomicProperties?.block as string | undefined)}
-                {renderProperty(t('periodicTable.periodicTable.var.series'), data.atomicProperties?.series as string | undefined)}
-                {renderProperty(t('periodicTable.periodicTable.var.color'), data.atomicProperties?.color as string | undefined)}
-                {renderProperty(t('periodicTable.periodicTable.var.electronConfiguration'), data.atomicProperties?.electronConfiguration as string | undefined)}
+                {renderProperty(t('periodicTable.periodicTable.var.atomicWeight'), data.prop?.atomicWeight as string | undefined)}
+                {renderProperty(t('periodicTable.periodicTable.var.phase'), data.prop?.phase as string | undefined)}
+                {renderProperty(t('periodicTable.periodicTable.var.group'), data.prop?.group as string | undefined)}
+                {renderProperty(t('periodicTable.periodicTable.var.period'), data.prop?.period as string | undefined)}
+                {renderProperty(t('periodicTable.periodicTable.var.block'), data.prop?.block as string | undefined)}
+                {renderProperty(t('periodicTable.periodicTable.var.series'), t('periodicTable.periodicTable.var.' + data.prop?.series) as string | undefined)}
+                {renderProperty(t('periodicTable.periodicTable.var.color'), data.prop?.color as string | undefined)}
+                {/* Note: electronConfiguration was in the API version but not in the local prop type */}
               </div>
             </div>
 

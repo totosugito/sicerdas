@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_v1/periodic-table/element')({
+export const Route = createFileRoute('/_v1/periodic-table/element/$id')({
   component: RouteComponent,
 })
 
