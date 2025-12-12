@@ -5,6 +5,7 @@ import { PeriodicElement } from "./types";
 import { SearchBar } from "./SearchBar";
 import { PeriodicTableHeader } from "./PeriodicTableHeader";
 import { ThemeSelector } from "./ThemeSelector";
+import { ElementDetailPopover } from "./ElementDetailPopover";
 import { useAppStore } from "@/stores/useAppStore";
 import { EnumPeriodicGroup } from "backend/src/db/schema/enum-app";
 
@@ -17,7 +18,6 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
   const store = useAppStore();
   const pageProps = store.periodicTable;
 
-  const [selectedElement, setSelectedElement] = useState<PeriodicElement | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
@@ -33,27 +33,19 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
       element.atomicGroup !== EnumPeriodicGroup.headerEmpty &&
       element.atomicGroup !== EnumPeriodicGroup.empty
     ) {
-      setSelectedElement(element);
+      // With the popover implementation, we don't need to set state here
+      // The popover will handle its own open/close state
+      return;
     }
   };
 
   const isSelected = (element: PeriodicElement) => {
-    return selectedElement?.atomicId === element.atomicId;
+    // With popover implementation, we no longer track selected element state
+    return false;
   };
 
   const isHeaderHighlighted = (element: PeriodicElement) => {
-    if (!selectedElement) return false;
-
-    // Highlight column header if same idx
-    if (element.atomicGroup === EnumPeriodicGroup.header && element.idx === selectedElement.idx) {
-      return true;
-    }
-
-    // Highlight row header if same idy
-    if (element.atomicGroup === EnumPeriodicGroup.header && element.idy === selectedElement.idy && element.idx === 0) {
-      return true;
-    }
-
+    // With popover implementation, we no longer highlight headers based on selection
     return false;
   };
 
@@ -113,45 +105,12 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
 
   // Navigate to element by arrow keys
   const navigateElement = useCallback((direction: 'up' | 'down' | 'left' | 'right') => {
-    if (!selectedElement) {
-      // If no element selected, select the first actual element
-      const firstElement = actualElements[0];
-      if (firstElement) setSelectedElement(firstElement);
-      return;
-    }
-
-    const { idx, idy } = selectedElement;
-    let newIdx = idx;
-    let newIdy = idy;
-
-    switch (direction) {
-      case 'left':
-        newIdx = idx - 1;
-        break;
-      case 'right':
-        newIdx = idx + 1;
-        break;
-      case 'up':
-        newIdy = idy - 1;
-        break;
-      case 'down':
-        newIdy = idy + 1;
-        break;
-    }
-
-    // Find element at new position
-    const newElement = actualElements.find(
-      el => el.idx === newIdx && el.idy === newIdy
-    );
-
-    if (newElement) {
-      setSelectedElement(newElement);
-    }
-  }, [selectedElement, actualElements]);
+    // With popover implementation, we no longer need keyboard navigation for element selection
+    return;
+  }, []);
 
   // Clear all filters and selections
   const clearAll = useCallback(() => {
-    setSelectedElement(null);
     setSearchQuery("");
   }, []);
 
@@ -189,7 +148,6 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      clearTimeout((window as any).atomicNumberTimeout);
     };
   }, [navigateElement, clearAll]);
 
@@ -257,16 +215,32 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
                   height: `${cellHeight}px`,
                 }}
               >
-                <PeriodicCell
-                  element={element}
-                  onCellClick={handleCellClick}
-                  cellSize={cellSize}
-                  isSelected={isSelected(element)}
-                  isHeaderHighlighted={isHeaderHighlighted(element)}
-                  isSearchMatch={matchesSearch(element)}
-                  isSearchActive={!!searchQuery.trim()}
-                  theme={pageProps.viewMode} // Pass theme to PeriodicCell
-                />
+                {element.atomicNumber >= 1 && element.atomicNumber <= 200 ? (
+                  <ElementDetailPopover 
+                    element={element}
+                    theme={pageProps.viewMode}
+                  >
+                    <PeriodicCell
+                      element={element}
+                      cellSize={cellSize}
+                      isSelected={isSelected(element)}
+                      isHeaderHighlighted={isHeaderHighlighted(element)}
+                      isSearchMatch={matchesSearch(element)}
+                      isSearchActive={!!searchQuery.trim()}
+                      theme={pageProps.viewMode} // Pass theme to PeriodicCell
+                    />
+                  </ElementDetailPopover>
+                ) : (
+                  <PeriodicCell
+                    element={element}
+                    cellSize={cellSize}
+                    isSelected={isSelected(element)}
+                    isHeaderHighlighted={isHeaderHighlighted(element)}
+                    isSearchMatch={matchesSearch(element)}
+                    isSearchActive={!!searchQuery.trim()}
+                    theme={pageProps.viewMode} // Pass theme to PeriodicCell
+                  />
+                )}
               </div>
             );
           })}
