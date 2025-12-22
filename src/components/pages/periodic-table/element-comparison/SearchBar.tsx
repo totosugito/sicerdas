@@ -1,5 +1,6 @@
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface SearchBarProps {
   searchTerm: string;
@@ -9,15 +10,26 @@ interface SearchBarProps {
 
 export function SearchBar({ searchTerm, onSearchTermChange, placeholder }: SearchBarProps) {
   return (
-    <div className="flex gap-2 p-2 bg-card/80 backdrop-blur-xl rounded-xl shadow-sm border border-border/50 mb-6">
-      <div className="flex-1 flex items-center gap-2 px-4">
-        <Search className="text-muted-foreground w-4 h-4" />
+    <div className="flex justify-center mb-6">
+      <div className="flex-1 w-full relative">
+        <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
         <Input
           placeholder={placeholder}
           value={searchTerm}
           onChange={(e) => onSearchTermChange(e.target.value)}
-          className="border-0 p-0 h-auto shadow-none focus-visible:ring-0"
+          className="pl-10 pr-10 bg-card"
         />
+        {searchTerm && (
+          <Button
+            onClick={() => onSearchTermChange('')}
+            className="absolute right-3 top-1 h-7 w-7 text-muted-foreground"
+            variant="ghost"
+            size="icon"
+            aria-label="Clear search"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </div>
     </div>
   );

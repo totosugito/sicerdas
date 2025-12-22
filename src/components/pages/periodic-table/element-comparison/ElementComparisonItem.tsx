@@ -34,8 +34,8 @@ export function ElementComparisonItem({
 
   return (
     <div
-      className={`border rounded-lg p-4 cursor-pointer transition-all ${
-        isSelected ? 'ring-2 ring-primary' : 'hover:bg-muted'
+      className={`border rounded-lg p-4 cursor-pointer transition-all bg-card ${
+        isSelected ? 'ring-2 ring-primary' : 'hover:bg-muted/30'
       }`}
       onClick={() => onSelect(isSelected ? null : element.atomicId)}
     >
