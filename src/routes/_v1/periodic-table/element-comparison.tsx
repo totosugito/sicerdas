@@ -147,7 +147,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto py-6">
       {/* Header Section - Centered with Icon */}
       <header className="text-center mb-8">
         <div className="inline-flex items-center justify-center gap-3 mb-4">

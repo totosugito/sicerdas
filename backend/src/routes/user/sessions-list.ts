@@ -26,7 +26,7 @@ const SessionListResponse = Type.Object({
  */
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
-    url: '/sessions',
+    url: '/sessions-list',
     method: 'GET',
     schema: {
       tags: ['User'],

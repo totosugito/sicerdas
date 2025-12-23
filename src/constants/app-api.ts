@@ -31,8 +31,9 @@ export const AppApi = {
     update: APP_URL_API + "/user/update",
     changePassword: APP_URL_API + "/user/change-password",
     avatar: APP_URL_API + "/user/avatar",
-    sessions: APP_URL_API + "/user/sessions",
-    revokeSession: APP_URL_API + "/user/multi-session/revoke",
+    sessions: APP_URL_API + "/user/sessions-list",
+    revokeSession: APP_URL_API + "/user/multi-session-revoke",
+    revokeOtherSessions: APP_URL_API + "/user/revoke-other-sessions-v1",
   },
   project: {
     list: APP_URL_V1 + "/project/list",

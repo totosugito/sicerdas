@@ -9,7 +9,7 @@ export function PeriodicTableHeader({ totalElements }: PeriodicTableHeaderProps)
   const { t } = useTranslation();
 
   return (
-    <header className="text-center py-10">
+    <header className="text-center py-6">
       <div className="inline-flex items-center justify-center gap-3">
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
           <Atom className="h-7 w-7" />

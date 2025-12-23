@@ -36,7 +36,7 @@ function RouteComponent() {
     ]
 
     return (
-        <div className="flex flex-col gap-6 w-full pt-8">
+        <div className="flex flex-col gap-6 w-full py-6">
             <div className='flex flex-col gap-6 w-full'>
                 <div className="mx-auto w-full">
                     <div className="bg-white dark:bg-slate-800 p-6 rounded-lg">

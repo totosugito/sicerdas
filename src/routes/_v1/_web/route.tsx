@@ -6,7 +6,7 @@ export const Route = createFileRoute('/_v1/_web')({
 
 function RouteComponent() {
     return (
-    <div className='w-full pt-8'>
+    <div className='w-full py-6'>
         <Outlet />
     </div>)
 }

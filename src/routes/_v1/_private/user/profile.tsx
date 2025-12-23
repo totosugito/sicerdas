@@ -255,7 +255,7 @@ function RouteComponent() {
     }
 
     return (
-        <div className="flex flex-col gap-6 w-full">
+        <div className="flex flex-col gap-6 w-full py-6">
             <ProfileHeader />
 
             <Tabs value={currentTab} onValueChange={handleTabChange}>

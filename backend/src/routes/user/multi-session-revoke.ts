@@ -23,7 +23,7 @@ const RevokeSessionResponse = Type.Object({
  */
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
-    url: '/multi-session/revoke',
+    url: '/multi-session-revoke',
     method: 'POST',
     schema: {
       tags: ['User'],

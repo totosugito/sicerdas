@@ -37,7 +37,7 @@ function RouteComponent() {
     return (
         <div className="flex flex-col min-h-screen w-full bg-background">
             <AppNavbar />
-            <div className='flex flex-col flex-1 w-full items-center px-8 pt-12 pb-8 max-w-5xl mx-auto'>
+            <div className='flex flex-col flex-1 w-full items-center px-8 pt-14 max-w-5xl mx-auto'>
                 <Outlet />
             </div>
             <Footer />
