@@ -98,11 +98,18 @@ function RouteComponent() {
 
       let sortBy_ = sortBy
       if (sortDirection === sortType.none.value) {
-        sortBy_ = 'atomicId'
+        sortBy_ = 'atomicNumber'
       }
 
-      const propA = a.prop?.[sortBy_ as keyof typeof a.prop] || ''
-      const propB = b.prop?.[sortBy_ as keyof typeof b.prop] || ''
+      let propA, propB;
+      if(sortBy_ === 'atomicNumber') {
+        propA = b.atomicNumber
+        propB = a.atomicNumber
+      }
+      else {
+        propA = a.prop?.[sortBy_ as keyof typeof a.prop] || ''
+        propB = b.prop?.[sortBy_ as keyof typeof b.prop] || ''
+      }
 
       // Handle numeric sorting
       const numA = parseFloat(propA as string)
