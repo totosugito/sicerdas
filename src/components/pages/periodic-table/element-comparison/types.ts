@@ -32,8 +32,8 @@ export interface PeriodicElement {
 
 export interface PropertyDefinition {
   key: string;
-  label: string;
-  unit: string;
+  label?: string;
+  unit?: string;
 }
 
 export type SortDirection = 'asc' | 'desc' | 'none';

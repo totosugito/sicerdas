@@ -50,7 +50,7 @@ export function SortingControls({
                 onClick={() => onSortByChange(property.key)}
                 className={sortBy === property.key ? "bg-accent" : "my-0.5"}
               >
-                {property.label}
+                {t('periodicTable.periodicTable.var.' + property.key)}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>

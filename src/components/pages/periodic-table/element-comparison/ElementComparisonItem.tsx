@@ -3,6 +3,9 @@ import { PeriodicCell } from '@/components/pages/periodic-table/periodic-table';
 import { ProgressElement } from "./ProgressElement";
 import { PeriodicElement, PropertyDefinition } from "./types";
 import { useTranslation } from 'react-i18next';
+import { toPhysics } from "@/lib/my-utils";
+import { getPeriodictUnits } from "../element-details/element-units";
+import { cn } from "@/lib/utils";
 
 interface ElementComparisonItemProps {
   element: PeriodicElement;
@@ -52,10 +55,10 @@ export function ElementComparisonItem({
               {element.atomicName}
             </span>
             <span className="font-mono">
-              {propertyValue.toFixed(2)} {unit}
+              <span dangerouslySetInnerHTML={{ __html: toPhysics({ value: propertyValue }) }} /> {unit}
             </span>
           </div>
-          <ProgressElement value={propertyValue} max={maxValue} />
+          <ProgressElement value={isNaN(propertyValue) ? 0 : propertyValue} max={maxValue} />
         </div>
       </div>
 
@@ -77,25 +80,25 @@ export function ElementComparisonItem({
           {expanded && (
             <div className="grid grid-cols-2 gap-3">
               <div className="text-sm">
-                <span className="font-medium text-muted-foreground">{t('periodicTable.periodicTable.var.atomicNumber')}:</span>{' '}
+                <span className="font-medium text-foreground">{t('periodicTable.periodicTable.var.atomicNumber')}:</span>{' '}
                 <span className="font-mono">{element.atomicNumber}</span>
               </div>
               <div className="text-sm">
-                <span className="font-medium text-muted-foreground">{t('periodicTable.periodicTable.var.symbol')}:</span>{' '}
+                <span className="font-medium text-foreground">{t('periodicTable.periodicTable.var.symbol')}:</span>{' '}
                 <span className="font-mono">{element.atomicSymbol}</span>
               </div>
               <div className="text-sm">
-                <span className="font-medium text-muted-foreground">{t('periodicTable.periodicTable.var.atomicName')}:</span>{' '}
+                <span className="font-medium text-foreground">{t('periodicTable.periodicTable.var.atomicName')}:</span>{' '}
                 <span className="font-mono">{element.atomicName}</span>
               </div>
               {propertyDefinitions.map(property => {
-                const value = element.prop?.[property.key as keyof typeof element.prop];
-                if (value === undefined) return null;
-                
+                const key_ = property.key as keyof typeof element.prop;
+                const value = toPhysics({ value: parseFloat(element.prop?.[key_] || '0') }); 
+                const hasValue = value !== "N/A";             
                 return (
                   <div key={property.key} className="text-sm">
-                    <span className="font-medium text-muted-foreground">{property.label}:</span>{' '}
-                    <span className="font-mono">{value} {property.unit}</span>
+                    <span className={cn("font-medium ", hasValue ? "text-foreground" : "text-muted-foreground/80")}>{t('periodicTable.periodicTable.var.' + property.key)}:</span>{' '}
+                    <span className={cn("font-mono", hasValue ? "text-foreground" : "text-muted-foreground/80")} dangerouslySetInnerHTML={{ __html: value + " " + (getPeriodictUnits(key_)) }}></span>
                   </div>
                 );
               })}

@@ -281,3 +281,30 @@ export const formatFileSize = (bytes: number) => {
   const i = Math.floor(Math.log(bytes) / Math.log(k))
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
+
+export function toPhysics({ value, precision = -1 }: { value: number; precision?: number }): string {
+  if (!value) {
+    return "N/A";
+  }
+
+  if (isNaN(value)) {
+    return "N/A";
+  }
+
+  const absValue = Math.abs(value);
+  if ((absValue < 1e-5) || (absValue > 1e+5)) {
+    const formattedString = value.toExponential();
+    const parts = formattedString.split('e');
+    if (parts.length === 2) {
+      const mantissa = parseFloat(parts[0]);
+      const exponent = parseInt(parts[1], 10);
+      return (precision < 0
+        ? `${mantissa} × 10<sup>${exponent}</sup>`
+        : `${mantissa.toFixed(precision)} × 10<sup>${exponent}</sup>`);
+    } else {
+      return (precision < 0 ? `${value}` : value.toFixed(precision));
+    }
+  } else {
+    return (precision < 0 ? `${value}` : value.toFixed(precision));
+  }
+}

@@ -46,6 +46,7 @@ export default {
     symbol: "Simbol",
     atomicNumber: "Nomor atom",
     atomicWeight: "Berat atom",
+    atomicName: "Nama atom",
     latinName: "Nama latin",
     discoveryYear: "Tahun penemuan",
     discovery: "Penemu",

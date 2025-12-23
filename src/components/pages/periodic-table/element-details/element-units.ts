@@ -25,3 +25,7 @@ export const elementUnits = {
     youngModulus: 'GPa',
     speedOfSound: 'm/s',
 }
+
+export const getPeriodictUnits = (element: string) => {
+    return elementUnits[element as keyof typeof elementUnits] || ''
+}
