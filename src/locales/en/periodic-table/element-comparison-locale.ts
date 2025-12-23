@@ -15,18 +15,8 @@ export default {
     desc: "↓ Descending",
     none: "None"
   },
-  units: {
-    u: "u",
-    none: "",
-    celsius: "°C",
-    gPerCm3: "g/cm³",
-    cm3PerMol: "cm³/mol",
-    gpa: "GPa",
-    sPerM: "S/m",
-    ohmM: "Ω·m",
-    pm: "pm"
-  },
   details: "Details",
   showLess: "Show Less",
-  showMore: "Show More"
+  showMore: "Show More",
+  viewDetails: "View Details"
 };

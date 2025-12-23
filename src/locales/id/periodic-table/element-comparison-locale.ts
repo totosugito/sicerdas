@@ -15,18 +15,8 @@ export default {
     desc: "↓ Turun",
     none: "Tidak ada"
   },
-  units: {
-    u: "u",
-    none: "",
-    celsius: "°C",
-    gPerCm3: "g/cm³",
-    cm3PerMol: "cm³/mol",
-    gpa: "GPa",
-    sPerM: "S/m",
-    ohmM: "Ω·m",
-    pm: "pm"
-  },
   details: "Detail",
   showLess: "Tampilkan Lebih Sedikit",
-  showMore: "Tampilkan Lebih Banyak"
+  showMore: "Tampilkan Lebih Banyak",
+  viewDetails: "Lihat Detail"
 };

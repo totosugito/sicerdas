@@ -10,7 +10,6 @@ import {
   SearchBar,
   SortingControls,
   ElementComparisonItem,
-  ProgressElement,
   ElementComparisonHeader
 } from '@/components/pages/periodic-table/element-comparison'
 
@@ -75,7 +74,7 @@ function RouteComponent() {
     { key: 'vanDerWaalsRadius' },
   ]
   const [sortBy, setSortBy] = useState<string>(propertyDefinitions[0].key)
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
+  const [sortDirection, setSortDirection] = useState<SortDirection>('none')
 
   // State for search term
   const [searchTerm, setSearchTerm] = useState<string>('')

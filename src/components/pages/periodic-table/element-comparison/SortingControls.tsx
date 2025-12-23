@@ -40,7 +40,7 @@ export function SortingControls({
             <Button variant="outline" size="sm" className="font-normal">
               {sortBy === 'atomicId' 
                 ? t('periodicTable.periodicTable.var.atomicNumber') 
-                : propertyDefinitions.find(p => p.key === sortBy)?.label}
+                : t('periodicTable.periodicTable.var.' + sortBy)}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="max-h-150 overflow-y-auto">

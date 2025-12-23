@@ -283,13 +283,11 @@ export const formatFileSize = (bytes: number) => {
 }
 
 export function toPhysics({ value, precision = -1 }: { value: number; precision?: number }): string {
-  if (!value) {
+  if (isNaN(value) || (value === undefined)) {
     return "N/A";
   }
 
-  if (isNaN(value)) {
-    return "N/A";
-  }
+  if(value === 0) return "0";
 
   const absValue = Math.abs(value);
   if ((absValue < 1e-5) || (absValue > 1e+5)) {
