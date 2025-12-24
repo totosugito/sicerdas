@@ -40,6 +40,7 @@ export const fetchApi = async ({
   withCredentials?: boolean
 }) => {
   try {
+    const authStore = useAuthStore.getState();
     const response = await axiosInstance({
       method,
       url,
@@ -47,6 +48,7 @@ export const fetchApi = async ({
       // headers: headers ?? {},
       headers: {
         'Content-Type': 'application/json',
+        'accept-language': authStore.language || 'id',
         ...(headers ?? {}),
       },
       params: params ?? {},

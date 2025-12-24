@@ -5,15 +5,12 @@ import { db } from "../../../db/index.ts";
 import { and, eq } from "drizzle-orm";
 import { periodicElements, periodicElementNotes } from "../../../db/schema/index.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
-// Request parameter schema
+
 const GetElementParams = Type.Object({
   atomicNumber: Type.Integer({ description: 'Atomic number of the element to retrieve' })
 });
 
-// Query string schema for locale
-const GetElementQuery = Type.Object({
-  locale: Type.Optional(Type.String({ description: 'Locale code for element notes (e.g., en, id)', default: 'en' }))
-});
+
 // Response schema
 const ElementNoteSchema = Type.Object({
   localeCode: Type.String(),
@@ -27,8 +24,6 @@ const ElementResponse = Type.Object({
   success: Type.Boolean(),
   data: Type.Object({
     atomicId: Type.Integer(),
-    idx: Type.Integer(),
-    idy: Type.Integer(),
     atomicNumber: Type.Integer(),
     atomicGroup: Type.String(),
     atomicName: Type.String(),
@@ -60,7 +55,6 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: 'Get element by atomic number',
       description: 'Retrieve detailed information about a chemical element by its atomic number with optional localized notes',
       params: GetElementParams,
-      querystring: GetElementQuery,
       response: {
         200: ElementResponse,
         '4xx': ElementNotFoundResponse,
@@ -71,18 +65,16 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: withErrorHandler(async function handler(
-      req: FastifyRequest<{ Params: typeof GetElementParams.static, Querystring: typeof GetElementQuery.static }>,
+      req: FastifyRequest<{ Params: typeof GetElementParams.static }>,
       reply: FastifyReply
     ) {
       const { atomicNumber } = req.params;
-      const { locale = 'en' } = req.query;
+      const locale = req.headers['accept-language'] || 'id';
 
       // Query the periodic element with joined notes
       const result = await db
         .select({
           atomicId: periodicElements.atomicId,
-          idx: periodicElements.idx,
-          idy: periodicElements.idy,
           atomicNumber: periodicElements.atomicNumber,
           atomicGroup: periodicElements.atomicGroup,
           atomicName: periodicElements.atomicName,
@@ -90,7 +82,6 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           atomicProperties: periodicElements.atomicProperties,
           atomicIsotope: periodicElements.atomicIsotope,
           atomicExtra: periodicElements.atomicExtra,
-          // Notes fields (will be null if no matching note for locale)
           localeCode: periodicElementNotes.localeCode,
           atomicOverview: periodicElementNotes.atomicOverview,
           atomicHistory: periodicElementNotes.atomicHistory,
@@ -115,8 +106,6 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         success: true,
         data: {
           atomicId: elementData.atomicId,
-          idx: elementData.idx,
-          idy: elementData.idy,
           atomicNumber: elementData.atomicNumber,
           atomicGroup: elementData.atomicGroup,
           atomicName: elementData.atomicName,
@@ -124,7 +113,6 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           atomicProperties: elementData.atomicProperties || {},
           atomicIsotope: elementData.atomicIsotope || {},
           atomicExtra: elementData.atomicExtra || {},
-          // Only include notes object if notes data exists
           ...(elementData.localeCode && {
             notes: {
               localeCode: elementData.localeCode,

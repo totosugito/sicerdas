@@ -92,7 +92,7 @@ export function ElementComparisonItem({
                 e.stopPropagation();
                 navigate({ 
                   to: AppRoute.periodicTable.elementDetail.url, 
-                  params: { atomicNumber: element.atomicNumber.toString() } 
+                  params: { id: element.atomicNumber.toString() } 
                 });
               }}
               className="text-sm px-3 py-1.5 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"

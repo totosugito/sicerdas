@@ -29,7 +29,7 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
   const handleViewDetails = () => {
     navigate({ 
       to: AppRoute.periodicTable.elementDetail.url, 
-      params: { atomicNumber: element.atomicNumber.toString() } 
+      params: { id: element.atomicNumber.toString() } 
     });
   };
 

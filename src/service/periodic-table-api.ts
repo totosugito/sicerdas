@@ -27,23 +27,18 @@ export interface PeriodicElement {
 
 interface GetElementParams {
   atomicNumber: number;
-  locale?: string;
 }
-
-type PeriodicElementQueryOptions = Omit<UseQueryOptions<PeriodicElement>, 'queryKey' | 'queryFn'>;
 
 // Queries
 export const usePeriodicElementQuery = (
-  { atomicNumber, locale = 'en' }: GetElementParams,
-  options?: PeriodicElementQueryOptions
+  { atomicNumber }: GetElementParams
 ) => {
   return useQuery<PeriodicElement>({
-    queryKey: ['periodicElement', atomicNumber, locale],
+    queryKey: ['periodicElement', atomicNumber],
     queryFn: async () => {
-      const url = `${AppApi.periodicTable.element}/${atomicNumber}?locale=${locale}`;
+      const url = `${AppApi.periodicTable.element}/${atomicNumber}`;
       const response = await fetchApi({ method: "GET", url });
       return response.data;
-    },
-    ...options // Merge in any additional options
+    }
   });
 }
