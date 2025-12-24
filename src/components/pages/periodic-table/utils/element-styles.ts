@@ -1,4 +1,4 @@
-import { ElementStyles } from "./types";
+import { ElementStyles } from "../types/types";
 
 export const getElementStyle = (atomicGroup: string, theme: string = 'theme1'): ElementStyles => {
   switch (theme) {

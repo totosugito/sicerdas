@@ -30,6 +30,11 @@ export interface PeriodicElement {
   };
 }
 
+export interface ElementStyles {
+  element: string;
+  selected: string;
+}
+
 export interface PropertyDefinition {
   key: string;
   label?: string;

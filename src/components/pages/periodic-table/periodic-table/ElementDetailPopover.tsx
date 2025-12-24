@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PeriodicCell } from "./PeriodicCell";
 // Removed unused import
 // import { usePeriodicElementQuery } from "@/service/periodic-table-api";
-import { PeriodicElement as PeriodicElementType } from "./types";
+import { PeriodicElement as PeriodicElementType } from "../types/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Info } from "lucide-react";

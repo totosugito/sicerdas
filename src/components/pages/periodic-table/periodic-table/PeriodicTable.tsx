@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { PeriodicCell } from "./PeriodicCell";
-import { PeriodicElement } from "./types";
+import { PeriodicElement } from "../types/types";
 import { SearchBar } from "./SearchBar";
 import { PeriodicTableHeader } from "./PeriodicTableHeader";
 import { ThemeSelector } from "./ThemeSelector";

@@ -18,7 +18,7 @@ import type { PeriodicElement, PropertyDefinition, SortDirection } from '@/compo
 
 // Import the periodic layout data
 import periodicLayoutData from '@/data/table-periodic/periodic_layout.json'
-import { getPeriodictUnits } from '@/components/pages/periodic-table/element-details/element-units'
+import { getPeriodictUnits } from '@/components/pages/periodic-table/utils/element-units'
 
 export const Route = createFileRoute('/_v1/periodic-table/element-comparison')({
   component: RouteComponent,

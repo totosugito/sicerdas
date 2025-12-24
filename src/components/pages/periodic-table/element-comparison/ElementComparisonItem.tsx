@@ -3,7 +3,7 @@ import { ProgressElement } from "./ProgressElement";
 import { PeriodicElement, PropertyDefinition } from "./types";
 import { useTranslation } from 'react-i18next';
 import { toPhysics } from "@/lib/my-utils";
-import { getPeriodictUnits } from "../element-details/element-units";
+import { getPeriodictUnits } from "../utils/element-units";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
