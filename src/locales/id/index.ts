@@ -18,6 +18,7 @@ import faq from './web/faq-locale';
 import periodicTable from './periodic-table/periodic-table-locale';
 import chemistryDictionary from './periodic-table/chemistry-dictionary-locale';
 import elementComparison from './periodic-table/element-comparison-locale';
+import elementDetail from './periodic-table/element-detail-locale';
 
 const localeId = {
   translation: {
@@ -43,7 +44,8 @@ const localeId = {
     periodicTable: {
       periodicTable: periodicTable,
       chemistryDictionary: chemistryDictionary,
-      elementComparison: elementComparison
+      elementComparison: elementComparison,
+      elementDetail: elementDetail
     }
   }
 }

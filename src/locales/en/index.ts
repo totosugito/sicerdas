@@ -1,13 +1,15 @@
 import chemistryDictionary from './periodic-table/chemistry-dictionary-locale';
 import periodicTable from './periodic-table/periodic-table-locale';
 import elementComparison from './periodic-table/element-comparison-locale';
+import elementDetail from './periodic-table/element-detail-locale';
 
 const localeEn = {
   translation: {
     periodicTable: {
-      chemistryDictionary: chemistryDictionary,
       periodicTable: periodicTable,
-      elementComparison: elementComparison
+      chemistryDictionary: chemistryDictionary,
+      elementComparison: elementComparison,
+      elementDetail: elementDetail
     }
   }
 }

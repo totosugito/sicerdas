@@ -9,15 +9,7 @@ export default {
     previewTitle: "Pratinjau Tema",
     currentSelection: "Pilihan saat ini"
   },
-  elementDetail: {
-    errorLoading: "Kesalahan memuat detail elemen",
-    overview: "Ringkasan",
-    history: "Sejarah",
-    applications: "Aplikasi",
-    facts: "Fakta Menarik",
-    notes: "Catatan",
-    viewDetails: "Lihat Detail"
-  },
+
   var: {
     othernonmetals: "Non Logam",
     noble_gases: "Gas Mulia",

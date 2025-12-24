@@ -9,15 +9,7 @@ export default {
     previewTitle: "Theme Preview",
     currentSelection: "Current selection"
   },
-  elementDetail: {
-    errorLoading: "Error loading element details",
-    overview: "Overview",
-    history: "History",
-    applications: "Applications",
-    facts: "Interesting Facts",
-    notes: "Notes",
-    viewDetails: "View Details"
-  },
+
   var: {
     othernonmetals: "Other Nonmetal",
     noble_gases: "Noble Gases",

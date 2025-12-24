@@ -104,7 +104,7 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
             <div className="bg-muted/50 rounded-lg p-3 mb-4">
               <h4 className="font-semibold mb-2 flex items-center">
                 <Info className="h-4 w-4 mr-2" />
-                {t('periodicTable.periodicTable.elementDetail.overview')}
+                {t('periodicTable.elementDetail.overview')}
               </h4>
               <div className="space-y-1 text-sm">
                 {renderProperty(t('periodicTable.periodicTable.var.atomicWeight'), data.prop?.atomicWeight as string | undefined)}
@@ -121,7 +121,7 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
             {/* Details Button */}
             <div className="flex justify-end">
               <Button onClick={handleViewDetails}>
-                {t('periodicTable.periodicTable.elementDetail.viewDetails')}
+                {t('periodicTable.elementDetail.viewDetails')}
               </Button>
             </div>
           </div>

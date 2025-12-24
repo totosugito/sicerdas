@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { usePeriodicElementQuery } from '@/service/periodic-table-api'
-import { Skeleton } from '@/components/ui/skeleton'
+import { ElementErrorDisplay, ElementSkeleton } from '@/components/pages/periodic-table/element-details'
 
 export const Route = createFileRoute('/_v1/periodic-table/element/$id')({
   component: RouteComponent,
@@ -12,61 +12,22 @@ export const Route = createFileRoute('/_v1/periodic-table/element/$id')({
 function RouteComponent() {
   const { id } = Route.useParams()
   const { data: element, isLoading, isError, error } = usePeriodicElementQuery({ atomicNumber: parseInt(id) })
-  console.log(element)
 
   if (isLoading) {
-    return (
-      <div className="container mx-auto p-6 max-w-4xl">
-        <div className="mb-4">
-          <Link to="/periodic-table">
-            <Button variant="outline" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Periodic Table
-            </Button>
-          </Link>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <Skeleton className="h-8 w-1/3 mb-4" />
-          <Skeleton className="h-4 w-full mb-2" />
-          <Skeleton className="h-4 w-2/3 mb-4" />
-          <Skeleton className="h-20 w-full mb-4" />
-          <Skeleton className="h-20 w-full mb-4" />
-          <Skeleton className="h-20 w-full" />
-        </div>
-      </div>
-    )
+    return <ElementSkeleton />
   }
 
-  console.log(error)
   if (isError) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
-        <div className="mb-4">
-          <Link to="/periodic-table">
-            <Button variant="outline" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Periodic Table
-            </Button>
-          </Link>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h1 className="text-2xl font-bold mb-4">Error Loading Element</h1>
-          <p className="text-red-500">Failed to load element data: {error?.response?.data?.message || error?.message}</p>
-        </div>
-      </div>
-    )
+      <ElementErrorDisplay 
+        error={error} 
+        atomicNumber={parseInt(id)} 
+      />
+    );
   }
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
-      <div className="mb-4">
-        <Link to="/periodic-table">
-          <Button variant="outline" size="sm">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Periodic Table
-          </Button>
-        </Link>
-      </div>
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         {element ? (
           <>
