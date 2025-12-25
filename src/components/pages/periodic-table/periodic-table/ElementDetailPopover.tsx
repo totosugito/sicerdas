@@ -3,14 +3,11 @@ import { useTranslation } from "react-i18next";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { PeriodicCell } from "./PeriodicCell";
-// Removed unused import
-// import { usePeriodicElementQuery } from "@/service/periodic-table-api";
 import { PeriodicElement as PeriodicElementType } from "../types/types";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
+import { getPeriodictUnits } from "../utils/element-units";
 
 interface ElementDetailPopoverProps {
   element: PeriodicElementType;
@@ -33,21 +30,12 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
     });
   };
 
-  const renderProperty = (label: string, value: string | number | undefined) => {
+  const renderProperty = (label: string, value: string | number) => {
     if (!value) return null;
     return (
       <div className="flex justify-between py-1 border-b border-border last:border-0">
         <span className="font-medium text-muted-foreground">{label}:</span>
         <span className="text-right max-w-[60%] break-words">{String(value)}</span>
-      </div>
-    );
-  };
-
-  const renderOverview = (overview: string | undefined) => {
-    if (!overview) return null;
-    return (
-      <div className="prose prose-sm max-w-none">
-        <div dangerouslySetInnerHTML={{ __html: overview }} />
       </div>
     );
   };
@@ -64,10 +52,8 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
         align="center"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        {/* Removed isLoading and isError checks since we're not making API calls */}
         {data ? (
           <div className="p-4">
-            {/* Header with element cell and basic info */}
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-18 h-18 flex items-center justify-center">
@@ -107,14 +93,13 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
                 {t('periodicTable.elementDetail.overview')}
               </h4>
               <div className="space-y-1 text-sm">
-                {renderProperty(t('periodicTable.periodicTable.var.atomicWeight'), data.prop?.atomicWeight as string | undefined)}
-                {renderProperty(t('periodicTable.periodicTable.var.phase'), data.prop?.phase as string | undefined)}
-                {renderProperty(t('periodicTable.periodicTable.var.group'), data.prop?.group as string | undefined)}
-                {renderProperty(t('periodicTable.periodicTable.var.period'), data.prop?.period as string | undefined)}
-                {renderProperty(t('periodicTable.periodicTable.var.block'), data.prop?.block as string | undefined)}
-                {renderProperty(t('periodicTable.periodicTable.var.series'), t('periodicTable.periodicTable.var.' + data.prop?.series) as string | undefined)}
-                {renderProperty(t('periodicTable.periodicTable.var.color'), data.prop?.color as string | undefined)}
-                {/* Note: electronConfiguration was in the API version but not in the local prop type */}
+                {renderProperty(t('periodicTable.periodicTable.var.atomicWeight'), (data.prop?.atomicWeight as string) + " " + getPeriodictUnits("atomicWeight"))}
+                {renderProperty(t('periodicTable.periodicTable.var.phase'), data.prop?.phase as string)}
+                {renderProperty(t('periodicTable.periodicTable.var.group'), data.prop?.group as string)}
+                {renderProperty(t('periodicTable.periodicTable.var.period'), data.prop?.period as string)}
+                {renderProperty(t('periodicTable.periodicTable.var.block'), data.prop?.block as string)}
+                {renderProperty(t('periodicTable.periodicTable.var.series'), t('periodicTable.periodicTable.var.' + data.prop?.series) as string)}
+                {renderProperty(t('periodicTable.periodicTable.var.color'), data.prop?.color as string)}
               </div>
             </div>
 

@@ -1,4 +1,4 @@
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
 
@@ -122,7 +122,7 @@ export interface AtomicProperties {
   absolute?: string;
 }
 
-export interface PeriodicElement {
+export interface ElementDetail {
   atomicId: number;
   idx: number;
   idy: number;
@@ -144,7 +144,7 @@ interface GetElementParams {
 export const usePeriodicElementQuery = (
   { atomicNumber }: GetElementParams
 ) => {
-  return useQuery<PeriodicElement>({
+  return useQuery<ElementDetail>({
     queryKey: ['periodicElement', atomicNumber],
     queryFn: async () => {
       const url = `${AppApi.periodicTable.element}/${atomicNumber}`;
