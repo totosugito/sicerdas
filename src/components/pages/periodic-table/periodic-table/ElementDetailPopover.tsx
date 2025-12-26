@@ -59,7 +59,7 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
                 <div className="w-18 h-18 flex items-center justify-center">
                   <PeriodicCell
                     element={{
-                      atomicId: data.atomicId,
+                      id: data.id,
                       idx: data.idx,
                       idy: data.idy,
                       atomicNumber: data.atomicNumber,

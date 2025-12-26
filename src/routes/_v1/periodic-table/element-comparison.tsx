@@ -1,8 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
-import { Search, Atom, FileSearch } from 'lucide-react'
-import { PeriodicCell } from '@/components/pages/periodic-table/periodic-table'
+import { Search, FileSearch } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 // Import components from the element-comparison directory
@@ -14,7 +13,7 @@ import {
 } from '@/components/pages/periodic-table/element-comparison'
 
 // Import types
-import type { PeriodicElement, PropertyDefinition, SortDirection } from '@/components/pages/periodic-table/element-comparison/types'
+import type { PeriodicElement, PropertyDefinition, SortDirection } from '@/components/pages/periodic-table/types/types'
 
 // Import the periodic layout data
 import periodicLayoutData from '@/data/table-periodic/periodic_layout.json'
@@ -191,9 +190,9 @@ function RouteComponent() {
 
           return (
             <ElementComparisonItem
-              key={element.atomicId}
+              key={element.id}
               element={element}
-              isSelected={selectedElementId === element.atomicId}
+              isSelected={selectedElementId === element.id}
               onSelect={setSelectedElementId}
               propertyValue={propertyValue}
               maxValue={maxValue}

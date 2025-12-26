@@ -37,7 +37,8 @@ interface JsonPeriodicNoteData {
   [key: string]: any; // Allow for additional fields
 }
 
-const elementPathFile = 'E:/Download/periodic-elements.json';
+// Input from default value from MySQL table
+const elementPathFile = 'E:/Download/periodic_element.json';
 const notePathFile = 'E:/Download/periodic_note.json';
 
 async function importPeriodicElements() {
@@ -114,13 +115,13 @@ async function importPeriodicElements() {
         
         // Check if element already exists by atomicId
         const existingElement = await db
-          .select({ atomicId: periodicElements.atomicId })
+          .select({ id: periodicElements.id })
           .from(periodicElements)
-          .where(eq(periodicElements.atomicId, jsonElement.atomicId))
+          .where(eq(periodicElements.id, jsonElement.atomicId))
           .limit(1);
         
         const elementInsertData = {
-          atomicId: jsonElement.atomicId,
+          id: jsonElement.atomicId,
           idx: jsonElement.idx,
           idy: jsonElement.idy,
           atomicNumber: jsonElement.atomicNumber,
@@ -131,6 +132,36 @@ async function importPeriodicElements() {
           atomicIsotope: parsedIsotope,
           atomicExtra: parsedExtra,
         };
+
+        let props = parsedProperties;
+        const numberOfNeutron = props["numberOfElectron"]
+        const numberOfElectron = jsonElement.atomicNumber;
+        props["numberOfNeutron"] = numberOfNeutron;
+        props["numberOfElectron"] = numberOfElectron;
+        elementInsertData.atomicProperties = props;
+
+        let group = jsonElement.atomicGroup;
+        if(group === 'otherNonMetals') {
+          elementInsertData.atomicGroup = 'othernonmetals';
+        } else if(group === 'nobleGases') {
+          elementInsertData.atomicGroup = 'noble_gases';
+        } else if(group === 'halogens') {
+          elementInsertData.atomicGroup = 'halogens';
+        } else if(group === 'metalloids') {
+          elementInsertData.atomicGroup = 'metalloids';
+        } else if(group === 'postTransitionMetals') {
+          elementInsertData.atomicGroup = 'post_transition_metals';
+        } else if(group === 'transitionMetals') {
+          elementInsertData.atomicGroup = 'transition_metals';
+        } else if(group === 'lanthanides') {
+          elementInsertData.atomicGroup = 'lanthanoids';
+        } else if(group === 'actinides') {
+          elementInsertData.atomicGroup = 'actinoids';
+        } else if(group === 'alkalineEarthMetals') {
+          elementInsertData.atomicGroup = 'alkaline_earth_metals';
+        } else if(group === 'alkaliMetals') {
+          elementInsertData.atomicGroup = 'alkali_metals';
+        }
         
         if (existingElement.length > 0) {
           // Update existing element
@@ -139,7 +170,7 @@ async function importPeriodicElements() {
             .set({
               ...elementInsertData,
             })
-            .where(eq(periodicElements.atomicId, jsonElement.atomicId));
+            .where(eq(periodicElements.id, jsonElement.atomicId));
           
         //   console.log(`Updated element: "${jsonElement.atomicName}" (atomicId: ${jsonElement.atomicId})`);
         } else {
@@ -218,13 +249,13 @@ async function importPeriodicNotes() {
         
         // Check if note already exists by rowId
         const existingNote = await db
-          .select({ rowId: periodicElementNotes.rowId })
+          .select({ id: periodicElementNotes.id })
           .from(periodicElementNotes)
-          .where(eq(periodicElementNotes.rowId, jsonNote.rowId))
+          .where(eq(periodicElementNotes.id, jsonNote.rowId))
           .limit(1);
         
         const noteInsertData = {
-          rowId: jsonNote.rowId,
+          id: jsonNote.rowId,
           atomicNumber: jsonNote.atomicNumber,
           localeCode: jsonNote.localeCode,
           atomicOverview: jsonNote.atomicOverview,
@@ -238,7 +269,7 @@ async function importPeriodicNotes() {
           await db
             .update(periodicElementNotes)
             .set(noteInsertData)
-            .where(eq(periodicElementNotes.rowId, jsonNote.rowId));
+            .where(eq(periodicElementNotes.id, jsonNote.rowId));
           
         //   console.log(`Updated note for element with atomic number: ${jsonNote.atomicNumber} (rowId: ${jsonNote.rowId})`);
         } else {

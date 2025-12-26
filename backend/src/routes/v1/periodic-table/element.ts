@@ -23,7 +23,7 @@ const ElementNoteSchema = Type.Object({
 const ElementResponse = Type.Object({
   success: Type.Boolean(),
   data: Type.Object({
-    atomicId: Type.Integer(),
+    id: Type.Integer(),
     atomicNumber: Type.Integer(),
     atomicGroup: Type.String(),
     atomicName: Type.String(),
@@ -74,7 +74,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       // Query the periodic element with joined notes
       const result = await db
         .select({
-          atomicId: periodicElements.atomicId,
+          id: periodicElements.id,
           atomicNumber: periodicElements.atomicNumber,
           atomicGroup: periodicElements.atomicGroup,
           atomicName: periodicElements.atomicName,
@@ -105,7 +105,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       return reply.status(200).send({
         success: true,
         data: {
-          atomicId: elementData.atomicId,
+          id: elementData.id,
           atomicNumber: elementData.atomicNumber,
           atomicGroup: elementData.atomicGroup,
           atomicName: elementData.atomicName,

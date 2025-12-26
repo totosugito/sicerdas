@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PropertyDefinition, SortDirection } from './types';
+import { PropertyDefinition, SortDirection } from '../types/types';
 import { useTranslation } from 'react-i18next';
 
 interface SortingControlsProps {

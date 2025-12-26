@@ -17,13 +17,13 @@ export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProp
 
   // Sample element for theme preview
   const themeElement = {
-    "atomicId": 21,
-    "idx": 1,
-    "idy": 1,
-    "atomicNumber": 1,
-    "atomicGroup": "otherNonMetals",
-    "atomicName": "",
-    "atomicSymbol": "H"
+    id: 21,
+    idx: 1,
+    idy: 1,
+    atomicNumber: 1,
+    atomicGroup: "othernonmetals",
+    atomicName: "",
+    atomicSymbol: "H"
   };
 
   // Handle theme change

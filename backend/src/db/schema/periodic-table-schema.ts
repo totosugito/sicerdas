@@ -24,7 +24,7 @@ export type SchemaPeriodicElementSelect = InferSelectModel<typeof periodicElemen
  * - atomicExtra: JSONB field for additional metadata.
  */
 export const periodicElements = pgTable('periodic_elements', {
-  atomicId: integer('atomic_id').notNull().unique(),
+  id: integer('id').primaryKey().notNull(),
   idx: integer('idx').notNull(),
   idy: integer('idy').notNull(),
   atomicNumber: integer('atomic_number').notNull(),
@@ -62,7 +62,7 @@ export const periodicElements = pgTable('periodic_elements', {
  * - atomicFacts: Interesting facts about the element.
  */
 export const periodicElementNotes = pgTable('periodic_element_notes', {
-  rowId: integer('row_id').notNull().unique(),
+  id: integer('id').primaryKey().notNull(),
   atomicNumber: integer('atomic_number').notNull(),
   localeCode: varchar('locale_code', { length: 3 }).notNull(),
   atomicOverview: text('atomic_overview').notNull(),

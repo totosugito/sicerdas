@@ -1,6 +1,7 @@
 import json
 
 # --- CONFIG ---
+# input from exported from postgre elements
 INPUT_FILE = "E:\\Download\\periodic_elements.json"
 OUTPUT_FILE = "E:\\Download\\periodic_layout.json"
 
@@ -33,7 +34,7 @@ def process_json():
         atomic_number = item.get("atomic_number", 0)
 
         new_item = {
-            "atomicId": item.get("atomic_id"),
+            "id": item.get("id"),
             "idx": item.get("idx"),
             "idy": item.get("idy"),
             "atomicNumber": atomic_number,
@@ -47,12 +48,11 @@ def process_json():
             new_item["prop"] = clean_atomic_properties(
                 item.get("atomic_properties", "{}")
             )
-            new_item["prop"]["numberOfElectron"] = atomic_number
 
         output.append(new_item)
 
     # --- SORT by atomic_id ---
-    output.sort(key=lambda x: x.get("atomicId", 0))
+    output.sort(key=lambda x: x.get("id", 0))
 
     # Save result
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:

@@ -1,5 +1,5 @@
 export interface PeriodicElement {
-  atomicId: number;
+  id: number;
   idx: number;
   idy: number;
   atomicNumber: number;
@@ -14,7 +14,7 @@ export interface PeriodicElement {
     block: string;
     series: string;
     color: string;
-    numberOfElectron: string;
+    numberOfElectron: number;
     meltingPoint: string;
     boilingPoint: string;
     density: string;

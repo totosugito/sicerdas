@@ -202,7 +202,7 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
 
             return (
               <div
-                key={element.atomicId}
+                key={element.id}
                 className={cn(
                   isRowHeader && "sticky left-0 z-10",
                   isColumnHeader && "sticky top-0 z-10",

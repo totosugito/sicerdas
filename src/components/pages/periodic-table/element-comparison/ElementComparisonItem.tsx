@@ -1,6 +1,6 @@
 import { PeriodicCell } from '@/components/pages/periodic-table/periodic-table';
 import { ProgressElement } from "./ProgressElement";
-import { PeriodicElement, PropertyDefinition } from "./types";
+import { PeriodicElement, PropertyDefinition } from "../types/types";
 import { useTranslation } from 'react-i18next';
 import { toPhysics } from "@/lib/my-utils";
 import { getPeriodictUnits } from "../utils/element-units";
@@ -37,7 +37,7 @@ export function ElementComparisonItem({
       className={`border rounded-lg p-4 cursor-pointer transition-all bg-card ${
         isSelected ? 'ring-2 ring-primary' : 'hover:bg-muted/30'
       }`}
-      onClick={() => onSelect(isSelected ? null : element.atomicId)}
+      onClick={() => onSelect(isSelected ? null : element.id)}
     >
       <div className="flex items-center space-x-4">
         <div className="w-16 h-16">
