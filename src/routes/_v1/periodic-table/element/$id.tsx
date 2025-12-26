@@ -1,19 +1,23 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { usePeriodicElementQuery } from '@/service/periodic-table-api'
-import { ElementErrorDisplay, ElementSkeleton, ElementHero } from '@/components/pages/periodic-table/element-details'
-import { getPeriodictUnits, elementUnits } from '@/components/pages/periodic-table/utils/element-units'
-import { cn } from '@/lib/utils'
-import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Info, Thermometer, Ruler, Zap, Activity, Scale, Eye, FlaskConical, Radiation, Waves, HeartPulse, Atom } from 'lucide-react'
+import { ElementErrorDisplay, ElementSkeleton, ElementHero, ElementNavigation } from '@/components/pages/periodic-table/element-details'
+import { getPeriodictUnits } from '@/components/pages/periodic-table/utils/element-units'
+import { ChevronDown, ChevronUp, Info, Thermometer, Ruler, Zap, Activity, Scale, FlaskConical, Radiation, Waves, HeartPulse } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useAppStore } from '@/stores/useAppStore'
+import { getElementStyle } from '@/components/pages/periodic-table/utils/element-styles'
 
 export const Route = createFileRoute('/_v1/periodic-table/element/$id')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { id } = Route.useParams()
+  const store = useAppStore();
+  const { viewMode } = store.periodicTable;
+
   const { data: element, isLoading, isError, error } = usePeriodicElementQuery({ atomicNumber: parseInt(id) })
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     overview: true,
@@ -37,6 +41,7 @@ function RouteComponent() {
     }))
   }
 
+
   if (isLoading) {
     return <ElementSkeleton />
   }
@@ -50,22 +55,20 @@ function RouteComponent() {
     );
   }
 
+  const elementStyle = getElementStyle(element?.atomicGroup as string, viewMode).element ?? "";
   return (
     <div className="">
       {element ? (
         <>
           {/* Element Hero */}
-          <ElementHero element={element} />
+          <ElementHero element={element} theme={viewMode} />
 
           {/* Navigation */}
-          <div className="flex items-center justify-between mb-6">
-            <button className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
+          <ElementNavigation theme={viewMode}
+            previous={element.navigation?.prev ?? undefined}
+            next={element.navigation?.next ?? undefined}
+            elementStyle={elementStyle}
+          />
 
           {/* Element Properties */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">

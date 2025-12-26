@@ -2,12 +2,15 @@ import { getPeriodictUnits } from '@/components/pages/periodic-table/utils/eleme
 import { getElementImage } from '@/components/pages/periodic-table/utils/element'
 import { useTranslation } from 'react-i18next'
 import { ElementDetail } from '@/service/periodic-table-api';
+import { cn } from '@/lib/utils';
+import { getElementStyle } from '../utils/element-styles';
 
 interface ElementHeroProps {
   element: ElementDetail; // You might want to define a proper type for element
+  theme: string;
 }
 
-export function ElementHero({ element }: ElementHeroProps) {
+export function ElementHero({ element, theme }: ElementHeroProps) {
   const { t } = useTranslation();
 
   return (
@@ -22,11 +25,13 @@ export function ElementHero({ element }: ElementHeroProps) {
       </div>
 
       {/* Element info overlay */}
-      <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 ">
-        <div className="rounded-xl px-2 py-2">
-          <span className="text-sm font-medium text-muted-foreground md:text-base">{element.atomicNumber}</span>
-          <span className="mx-2 text-muted-foreground">|</span>
-          <span className="text-sm font-medium text-primary md:text-base">{t('periodicTable.periodicTable.var.' + element.atomicProperties.series)}</span>
+      <div className="absolute bottom-0 left-0 p-8 md:p-12 ">
+        <div className={cn("rounded-xl", getElementStyle(element.atomicGroup, theme).element)}>
+          <div className='py-1 px-4 items-center'>
+            <span className="text-sm font-medium">{element.atomicNumber}</span>
+            <span className="mx-2">|</span>
+            <span className="text-sm font-medium">{t('periodicTable.periodicTable.var.' + element.atomicProperties.series)}</span>
+          </div>
         </div>
 
         <div className="flex items-baseline gap-4">

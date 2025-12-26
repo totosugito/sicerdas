@@ -122,6 +122,18 @@ export interface AtomicProperties {
   absolute?: string;
 }
 
+export interface ElementNavigation {
+  atomicNumber: number;
+  atomicName: string;
+  atomicGroup: string;
+  atomicSymbol: string;
+}
+
+export interface ElementNavigationData {
+  prev?: ElementNavigation;
+  next?: ElementNavigation;
+}
+
 export interface ElementDetail {
   atomicId: number;
   idx: number;
@@ -134,6 +146,7 @@ export interface ElementDetail {
   atomicIsotope: Record<string, unknown>;
   atomicExtra: Record<string, unknown>;
   notes?: PeriodicElementNote;
+  navigation: ElementNavigationData;
 }
 
 interface GetElementParams {

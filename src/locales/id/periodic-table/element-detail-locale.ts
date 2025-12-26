@@ -8,6 +8,8 @@ export default {
   viewDetails: "Lihat Detail",
   backToPeriodicTable: "Kembali ke Tabel Periodik",
   goToPeriodicTable: "Ke Tabel Periodik",
+  previousElement: "Sebelumnya: {{symbol}} ({{name}})",
+  nextElement: "Berikutnya: {{symbol}} ({{name}})",
   failedToLoadMessage: "Gagal memuat data elemen untuk nomor atom {{atomicNumber}}",
   unknownError: "Terjadi kesalahan yang tidak diketahui"
 }

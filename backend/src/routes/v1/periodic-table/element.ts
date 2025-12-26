@@ -31,7 +31,21 @@ const ElementResponse = Type.Object({
     atomicProperties: Type.Record(Type.String(), Type.Unknown()),
     atomicIsotope: Type.Record(Type.String(), Type.Unknown()),
     atomicExtra: Type.Record(Type.String(), Type.Unknown()),
-    notes: Type.Optional(ElementNoteSchema)
+    notes: Type.Optional(ElementNoteSchema),
+    navigation: Type.Object({
+      prev: Type.Optional(Type.Object({
+        atomicNumber: Type.Integer(),
+        atomicName: Type.String(),
+        atomicGroup: Type.String(),
+        atomicSymbol: Type.String(),
+      })),
+      next: Type.Optional(Type.Object({
+        atomicNumber: Type.Integer(),
+        atomicName: Type.String(),
+        atomicGroup: Type.String(),
+        atomicSymbol: Type.String(),
+      })),
+    })
   }),
 });
 
@@ -102,6 +116,69 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       // Take the first result (there should only be one element)
       const elementData = result[0];
       
+      // Initialize navigation data
+      let navigation = {
+        prev: undefined as {
+          atomicNumber: number;
+          atomicName: string;
+          atomicGroup: string;
+          atomicSymbol: string;
+        } | undefined,
+        next: undefined as {
+          atomicNumber: number;
+          atomicName: string;
+          atomicGroup: string;
+          atomicSymbol: string;
+        } | undefined,
+      };
+      
+      // Only calculate navigation if atomic number is in range 1-118
+      if (elementData.atomicNumber >= 1 && elementData.atomicNumber <= 118) {
+        // Get previous element
+        if (elementData.atomicNumber > 1) {
+          const prevResult = await db
+            .select({
+              atomicNumber: periodicElements.atomicNumber,
+              atomicName: periodicElements.atomicName,
+              atomicGroup: periodicElements.atomicGroup,
+              atomicSymbol: periodicElements.atomicSymbol,
+            })
+            .from(periodicElements)
+            .where(eq(periodicElements.atomicNumber, elementData.atomicNumber - 1));
+          
+          if (prevResult.length > 0) {
+            navigation.prev = {
+              atomicNumber: prevResult[0].atomicNumber,
+              atomicName: prevResult[0].atomicName,
+              atomicGroup: prevResult[0].atomicGroup,
+              atomicSymbol: prevResult[0].atomicSymbol,
+            };
+          }
+        }
+        
+        // Get next element
+        if (elementData.atomicNumber < 118) {
+          const nextResult = await db
+            .select({
+              atomicNumber: periodicElements.atomicNumber,
+              atomicName: periodicElements.atomicName,
+              atomicGroup: periodicElements.atomicGroup,
+              atomicSymbol: periodicElements.atomicSymbol,
+            })
+            .from(periodicElements)
+            .where(eq(periodicElements.atomicNumber, elementData.atomicNumber + 1));
+          
+          if (nextResult.length > 0) {
+            navigation.next = {
+              atomicNumber: nextResult[0].atomicNumber,
+              atomicName: nextResult[0].atomicName,
+              atomicGroup: nextResult[0].atomicGroup,
+              atomicSymbol: nextResult[0].atomicSymbol,
+            };
+          }
+        }
+      }
+      
       return reply.status(200).send({
         success: true,
         data: {
@@ -121,7 +198,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
               atomicApps: elementData.atomicApps,
               atomicFacts: elementData.atomicFacts,
             }
-          })
+          }),
+          navigation
         }
       });
     }),

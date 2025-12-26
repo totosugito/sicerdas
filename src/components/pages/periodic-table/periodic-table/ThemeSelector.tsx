@@ -5,6 +5,7 @@ import { EnumPeriodicViewMode } from "@/constants/app-enum";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
+import { ChevronDown } from "lucide-react";
 
 interface ThemeSelectorProps {
   currentTheme: string;
@@ -37,10 +38,10 @@ export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProp
         <PopoverTrigger asChild>
           <Button variant="outline" className="w-[180px] justify-between">
             <span>
-              {Object.values(EnumPeriodicViewMode).find(t => t.value === currentTheme)?.label || 
-               t('periodicTable.searchBar.placeholder')}
+              {Object.values(EnumPeriodicViewMode).find(t => t.value === currentTheme)?.label ||
+                t('periodicTable.searchBar.placeholder')}
             </span>
-            <span className="ml-2">▼</span>
+            <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[300px] p-4" align="end">
@@ -53,7 +54,7 @@ export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProp
                 }
               </p>
             </div>
-            
+
             {/* Large Preview Cell */}
             <div className="flex justify-center">
               <div className="w-24 h-24 flex items-center justify-center">
@@ -64,7 +65,7 @@ export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProp
                 />
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-2">
               {Object.values(EnumPeriodicViewMode).map((themeOption) => (
                 <div
@@ -72,8 +73,8 @@ export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProp
                   onClick={() => handleThemeChange(themeOption.value)}
                   className={cn(
                     "p-2 rounded-md border transition-all flex flex-col items-center gap-2 cursor-pointer",
-                    currentTheme === themeOption.value 
-                      ? "border-primary bg-primary/10" 
+                    currentTheme === themeOption.value
+                      ? "border-primary bg-primary/10"
                       : "border-muted hover:bg-muted/50"
                   )}
                   role="button"
