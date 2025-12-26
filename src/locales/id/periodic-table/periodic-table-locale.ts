@@ -9,7 +9,6 @@ export default {
     previewTitle: "Pratinjau Tema",
     currentSelection: "Pilihan saat ini"
   },
-
   var: {
     othernonmetals: "Non Logam",
     noble_gases: "Gas Mulia",

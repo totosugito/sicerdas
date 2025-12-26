@@ -42,8 +42,8 @@ const ElementNavigation = ({ previous, next, theme, elementStyle }: ElementNavig
     };
 
     return (
-        <div className={cn("flex items-center pt-1 pb-0.5 px-0.5 rounded-xl", elementStyle)}>
-            <div className="flex items-center w-full bg-card p-1 rounded-xl">
+        <div className={cn("flex items-center pt-1 pb-0.5 px-0.5 rounded-none", elementStyle)}>
+            <div className="flex items-center w-full bg-card p-1 rounded-none">
             <div className="flex flex-1">
                 {previous && (<div
                     className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"

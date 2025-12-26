@@ -4,9 +4,9 @@ import { PeriodicElement, PropertyDefinition } from "../types/types";
 import { useTranslation } from 'react-i18next';
 import { toPhysics } from "@/lib/my-utils";
 import { getPeriodictUnits } from "../utils/element-units";
-import { cn } from "@/lib/utils";
 import { useNavigate } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
+import { PropertyItem } from '../element-details';
 
 interface ElementComparisonItemProps {
   element: PeriodicElement;
@@ -61,28 +61,16 @@ export function ElementComparisonItem({
 
       {isSelected && (
         <div className="mt-4 pt-4 border-t">
-          <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="text-sm">
-              <span className="font-medium text-foreground">{t('periodicTable.periodicTable.var.atomicNumber')}:</span>{' '}
-              <span className="font-mono text-primary">{element.atomicNumber}</span>
-            </div>
-            <div className="text-sm">
-              <span className="font-medium text-foreground">{t('periodicTable.periodicTable.var.symbol')}:</span>{' '}
-              <span className="font-mono text-primary">{element.atomicSymbol}</span>
-            </div>
-            <div className="text-sm">
-              <span className="font-medium text-foreground">{t('periodicTable.periodicTable.var.atomicName')}:</span>{' '}
-              <span className="font-mono text-primary">{element.atomicName}</span>
-            </div>
+          <div className="grid sm:grid-cols-2 grid-cols-1 gap-2 mb-4">
+            <PropertyItem label={t('periodicTable.periodicTable.var.atomicNumber')} value={element.atomicNumber} />
+            <PropertyItem label={t('periodicTable.periodicTable.var.symbol')} value={element.atomicSymbol} />
+            <PropertyItem label={t('periodicTable.periodicTable.var.atomicName')} value={element.atomicName} />
+
             {propertyDefinitions.map(property => {
               const key_ = property.key as keyof typeof element.prop;
-              const value = toPhysics({ value: parseFloat(element.prop?.[key_] || '') }); 
-              const hasValue = value !== "N/A";             
+              const value = toPhysics({ value: parseFloat(element.prop?.[key_] || '') });       
               return (
-                <div key={property.key} className="text-sm">
-                  <span className={cn("font-medium ", hasValue ? "text-foreground" : "text-muted-foreground/80")}>{t('periodicTable.periodicTable.var.' + property.key)}:</span>{' '}
-                  <span className={cn("font-mono", hasValue ? "text-primary" : "text-muted-foreground/80")} dangerouslySetInnerHTML={{ __html: value + " " + (getPeriodictUnits(key_)) }}></span>
-                </div>
+                <PropertyItem key={property.key} label={t('periodicTable.periodicTable.var.' + property.key)} value={value} unit={getPeriodictUnits(key_)} />
               );
             })}
           </div>

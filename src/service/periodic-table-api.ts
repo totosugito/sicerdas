@@ -88,7 +88,8 @@ export interface AtomicProperties {
   electronAffinity?: string;
   emissionSpectrum?: string;
   latticeConstants?: string;
-  numberOfElectron?: string;
+  numberOfElectron?: number;
+  numberOfNeutron?: string;
   percInMeteorites?: string;
   spaceGroupNumber?: string;
   thermalExpansion?: string;

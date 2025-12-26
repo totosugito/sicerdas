@@ -5,11 +5,16 @@ export default {
   applications: "Aplikasi",
   facts: "Fakta Menarik",
   notes: "Catatan",
+  atomicStructure: "Struktur Atom",
+  electrons: "Elektron",
+  protons: "Proton",
+  neutrons: "Neutron",
   viewDetails: "Lihat Detail",
   backToPeriodicTable: "Kembali ke Tabel Periodik",
   goToPeriodicTable: "Ke Tabel Periodik",
   previousElement: "Sebelumnya: {{symbol}} ({{name}})",
   nextElement: "Berikutnya: {{symbol}} ({{name}})",
   failedToLoadMessage: "Gagal memuat data elemen untuk nomor atom {{atomicNumber}}",
-  unknownError: "Terjadi kesalahan yang tidak diketahui"
+  unknownError: "Terjadi kesalahan yang tidak diketahui",
+  bcYear: "SM",
 }

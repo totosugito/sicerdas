@@ -18,7 +18,7 @@ export function ElementHero({ element, theme }: ElementHeroProps) {
       {/* Element visualization */}
       <div className="relative flex flex-col items-end justify-center p-8 md:p-12">
         <img
-          src={getElementImage({ element: `${element.atomicNumber}.${element.atomicName}`, type: 'atomic' })}
+          src={getElementImage({ element: `${element.atomicNumber}.${element.atomicName}`, type: 'atomic'})}
           alt={`${element.atomicName} visualization`}
           className="object-cover h-64 w-64 md:h-72 md:w-72"
         />
@@ -26,10 +26,10 @@ export function ElementHero({ element, theme }: ElementHeroProps) {
 
       {/* Element info overlay */}
       <div className="absolute bottom-0 left-0 p-8 md:p-12 ">
-        <div className={cn("rounded-xl", getElementStyle(element.atomicGroup, theme).element)}>
-          <div className='py-1 px-4 items-center'>
+        <div className={cn("rounded-xl flex items-center", getElementStyle(element.atomicGroup, theme).element)}>
+          <div className='flex py-1 px-4 items-center'>
             <span className="text-sm font-medium">{element.atomicNumber}</span>
-            <span className="mx-2">|</span>
+            <span className="mx-2 w-[1px] bg-muted h-4"></span>
             <span className="text-sm font-medium">{t('periodicTable.periodicTable.var.' + element.atomicProperties.series)}</span>
           </div>
         </div>
