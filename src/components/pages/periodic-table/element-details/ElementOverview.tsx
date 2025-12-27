@@ -7,14 +7,14 @@ import { toPhysics } from '@/lib/my-utils'
 import { ElementDetail } from '@/service/periodic-table-api'
 import { ElectronShell } from './ElectronShell'
 
-interface ViewAtomicOverviewProps {
+interface ViewElementOverviewProps {
   element: ElementDetail
   atomColor: string
   expandedSections: Record<string, boolean>
   toggleSection: (section: string) => void
 }
 
-export function AtomicOverview({ element, atomColor, expandedSections, toggleSection }: ViewAtomicOverviewProps) {
+export function ElementOverview({ element, atomColor, expandedSections, toggleSection }: ViewElementOverviewProps) {
   const { t } = useTranslation()
 
   return (
@@ -39,26 +39,26 @@ export function AtomicOverview({ element, atomColor, expandedSections, toggleSec
             label={t('periodicTable.periodicTable.var.atomicWeight')}
             value={toPhysics({ value: parseFloat(element.atomicProperties.atomicWeight || '') })}
             unit={getPeriodictUnits('atomicWeight')}
+            isHtml={true}
           />
         </div>
         {element.atomicProperties?.atomicSpectra && element.atomicProperties?.atomicSpectra.length > 0 && (
-          <div className="">
-            <PropertyItem label={t('periodicTable.periodicTable.var.emissionSpectrum')} value={element.atomicProperties?.emissionSpectrum} />
-            {element.atomicProperties?.emissionSpectrum !== "" && 
-            <div className="sm:h-16 h-12">
-              <img
-                src={getElementImage({ element: `${element.atomicNumber}.${element.atomicName.toLowerCase()}`, type: 'spectrum', extension: 'png' })}
-                alt=""
-                className="h-full object-contain"
-              />
-            </div>}
+          <div className="flex flex-col gap-2">
+            <PropertyItem label={t('periodicTable.periodicTable.var.emissionSpectrum')} value={undefined} />
+              <div className="sm:h-16 h-12">
+                <img
+                  src={getElementImage({ element: `${element.atomicNumber}.${element.atomicName.toLowerCase()}`, type: 'spectrum', extension: 'png' })}
+                  alt=""
+                  className="h-full object-contain"
+                />
+              </div>
           </div>
         )}
         <PropertyItem label={t('periodicTable.periodicTable.var.electronShell')} value={getElectronShell(element.atomicProperties?.electronShell)} />
-        <ElectronShell 
-        atomSymbol={element.atomicProperties?.symbol || ''}
-        atomColor={atomColor}
-        electrons={getElectronShellValue(element.atomicProperties?.electronShell)} />
+        <ElectronShell
+          atomSymbol={element.atomicProperties?.symbol || ''}
+          atomColor={atomColor}
+          electrons={getElectronShellValue(element.atomicProperties?.electronShell)} />
       </div>
     </CardSection>
   )

@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { usePeriodicElementQuery } from '@/service/periodic-table-api'
 import {
   ElementErrorDisplay, ElementSkeleton, ElementHero, ElementNavigation,
-  ElectronView, AtomicOverview, ElementNotes
+  ElectronView, ElementOverview, ElementClassification, ElementDimension, ElementNotes, ElementThermal, ElementBulkPhysical, ElementElectrical
 } from '@/components/pages/periodic-table/element-details'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -25,7 +25,7 @@ function RouteComponent() {
     notes: true,
     classifications: true,
     atomicDimensions: true,
-    thermal: true,
+    thermalProperties: true,
     bulkPhysical: true,
     electrical: true,
     magnetic: true,
@@ -76,7 +76,7 @@ function RouteComponent() {
           <ElectronView element={element} />
 
           {/* Overview Section */}
-          <AtomicOverview
+          <ElementOverview
             element={element}
             atomColor={atomColor}
             expandedSections={expandedSections}
@@ -85,6 +85,41 @@ function RouteComponent() {
 
           {/* Notes Section */}
           <ElementNotes
+            element={element}
+            expandedSections={expandedSections}
+            toggleSection={toggleSection}
+          />
+
+          {/* Classifications Section */}
+          <ElementClassification
+            element={element}
+            expandedSections={expandedSections}
+            toggleSection={toggleSection}
+          />
+
+          {/* Atomic Dimensions Section */}
+          <ElementDimension
+            element={element}
+            expandedSections={expandedSections}
+            toggleSection={toggleSection}
+          />
+
+          {/* Thermal Properties Section */}
+          <ElementThermal
+            element={element}
+            expandedSections={expandedSections}
+            toggleSection={toggleSection}
+          />
+
+          {/* Bulk Physical Properties Section */}
+          <ElementBulkPhysical
+            element={element}
+            expandedSections={expandedSections}
+            toggleSection={toggleSection}
+          />
+
+          {/* Electrical Properties Section */}
+          <ElementElectrical
             element={element}
             expandedSections={expandedSections}
             toggleSection={toggleSection}

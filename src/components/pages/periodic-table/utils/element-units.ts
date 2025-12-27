@@ -21,6 +21,7 @@ export const elementUnits = {
     thermalExpansion: 'K⁻¹',
     brinellHardness: 'MPa',
     vickersHardness: 'MPa',
+    mohsHardness: 'Mohs',
     bulkModulus: 'GPa',
     youngModulus: 'GPa',
     speedOfSound: 'm/s',
