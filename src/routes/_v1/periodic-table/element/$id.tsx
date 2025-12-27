@@ -1,7 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { usePeriodicElementQuery } from '@/service/periodic-table-api'
-import { ElementErrorDisplay, ElementSkeleton, ElementHero, ElementNavigation, 
-  ElectronView, AtomicOverview } from '@/components/pages/periodic-table/element-details'
+import {
+  ElementErrorDisplay, ElementSkeleton, ElementHero, ElementNavigation,
+  ElectronView, AtomicOverview, ElementNotes
+} from '@/components/pages/periodic-table/element-details'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/stores/useAppStore'
@@ -74,9 +76,16 @@ function RouteComponent() {
           <ElectronView element={element} />
 
           {/* Overview Section */}
-          <AtomicOverview 
+          <AtomicOverview
             element={element}
             atomColor={atomColor}
+            expandedSections={expandedSections}
+            toggleSection={toggleSection}
+          />
+
+          {/* Notes Section */}
+          <ElementNotes
+            element={element}
             expandedSections={expandedSections}
             toggleSection={toggleSection}
           />

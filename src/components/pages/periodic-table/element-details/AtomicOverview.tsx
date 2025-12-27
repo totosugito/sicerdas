@@ -43,14 +43,15 @@ export function AtomicOverview({ element, atomColor, expandedSections, toggleSec
         </div>
         {element.atomicProperties?.atomicSpectra && element.atomicProperties?.atomicSpectra.length > 0 && (
           <div className="">
-            <PropertyItem label={t('periodicTable.periodicTable.var.emissionSpectrum')} value={undefined} />
+            <PropertyItem label={t('periodicTable.periodicTable.var.emissionSpectrum')} value={element.atomicProperties?.emissionSpectrum} />
+            {element.atomicProperties?.emissionSpectrum !== "" && 
             <div className="sm:h-16 h-12">
               <img
                 src={getElementImage({ element: `${element.atomicNumber}.${element.atomicName.toLowerCase()}`, type: 'spectrum', extension: 'png' })}
-                alt="Emission Spectrum"
+                alt=""
                 className="h-full object-contain"
               />
-            </div>
+            </div>}
           </div>
         )}
         <PropertyItem label={t('periodicTable.periodicTable.var.electronShell')} value={getElectronShell(element.atomicProperties?.electronShell)} />

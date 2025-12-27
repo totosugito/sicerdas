@@ -6,10 +6,10 @@ interface ElectronShellProps {
   atomColor?: string;
   orbitStroke?: number;
   orbitColor?: string;
+  orbitColors?: string[];
   speedDivider?: number;
   electronColor?: string;
   electrons: number[];
-  size?: number;
   className?: string;
 }
 
@@ -17,17 +17,33 @@ export const ElectronShell = ({
   labelColor = '#ffffff',
   atomSymbol = '',
   atomColor = '#8b5cf6',
-  orbitStroke = 2,
+  orbitStroke = 1.5,
   orbitColor = 'rgba(139, 92, 246, 0.4)',
+  orbitColors, // Will use default colors if not provided
   speedDivider = 1,
   electronColor = '#fbbf24',
   electrons,
-  size = 300,
   className = '',
 }: ElectronShellProps) => {
+  // Calculate canvas size based on number of electron shells
+  const calculatedCanvasSize = electrons.length > 0 
+    ? Math.min(300, (18.0 + 15.0 * electrons.length) * 2.2) // centerRadius + orbitSpacing * numOrbits, plus padding
+    : 300;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
+
+  // Default colors for up to 8 orbits
+  const defaultOrbitColors = [
+    'rgba(139, 92, 246, 0.4)', // purple
+    'rgba(147, 51, 234, 0.4)', // purple-600
+    'rgba(219, 39, 119, 0.4)', // pink
+    'rgba(249, 115, 22, 0.4)',  // orange
+    'rgba(59, 130, 246, 0.4)',  // blue
+    'rgba(14, 165, 233, 0.4)',  // cyan
+    'rgba(16, 185, 129, 0.4)',  // emerald
+    'rgba(245, 158, 11, 0.4)',  // amber
+  ];
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -38,10 +54,10 @@ export const ElectronShell = ({
 
     // Set up high DPI canvas
     const dpr = window.devicePixelRatio || 1;
-    canvas.width = size * dpr;
-    canvas.height = size * dpr;
-    canvas.style.width = `${size}px`;
-    canvas.style.height = `${size}px`;
+    canvas.width = calculatedCanvasSize * dpr;
+    canvas.height = calculatedCanvasSize * dpr;
+    canvas.style.width = `${calculatedCanvasSize}px`;
+    canvas.style.height = `${calculatedCanvasSize}px`;
     ctx.scale(dpr, dpr);
 
     // Parse color to get rgba for gradient
@@ -62,26 +78,15 @@ export const ElectronShell = ({
       const t = (timestamp - startTimeRef.current) / 1000; // time in seconds
 
       // Clear canvas
-      ctx.clearRect(0, 0, size, size);
+      ctx.clearRect(0, 0, calculatedCanvasSize, calculatedCanvasSize);
 
-      const sz = size;
-      const orbitSpacing = Math.floor(sz / 10); // Adjusted for better spacing
+      const sz = calculatedCanvasSize;
+      const orbitSpacing = 15.0;
       const centerRadius = 18.0;
       const electronRadius = 4.0;
 
       ctx.save();
       ctx.translate(sz / 2, sz / 2);
-
-      // Draw center circle (nucleus) with glow
-      const nucleusGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, centerRadius * 1.5);
-      nucleusGradient.addColorStop(0, atomColor);
-      nucleusGradient.addColorStop(0.7, atomColor);
-      nucleusGradient.addColorStop(1, 'transparent');
-      
-      ctx.beginPath();
-      ctx.arc(0, 0, centerRadius * 1.3, 0, Math.PI * 2);
-      ctx.fillStyle = nucleusGradient;
-      ctx.fill();
 
       ctx.beginPath();
       ctx.arc(0, 0, centerRadius, 0, Math.PI * 2);
@@ -90,7 +95,7 @@ export const ElectronShell = ({
 
       // Draw atom symbol
       ctx.fillStyle = labelColor;
-      ctx.font = `bold ${centerRadius * 0.9}px "IBM Plex Sans", sans-serif`;
+      ctx.font = `bold ${centerRadius * 0.8}px "IBM Plex Sans", sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(atomSymbol, 0, 2);
@@ -103,7 +108,8 @@ export const ElectronShell = ({
         // Draw orbit ring
         ctx.beginPath();
         ctx.arc(0, 0, radius, 0, Math.PI * 2);
-        ctx.strokeStyle = orbitColor;
+        // Use specific orbit color if provided, otherwise use default orbit color from the default list
+        ctx.strokeStyle = orbitColors?.[i] || defaultOrbitColors[i] || orbitColor;
         ctx.lineWidth = orbitStroke;
         ctx.stroke();
 
@@ -148,13 +154,13 @@ export const ElectronShell = ({
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [atomSymbol, atomColor, labelColor, orbitColor, orbitStroke, electronColor, electrons, speedDivider, size]);
+  }, [atomSymbol, atomColor, labelColor, orbitColor, orbitStroke, electronColor, electrons, speedDivider, calculatedCanvasSize]);
 
   return (
     <canvas
       ref={canvasRef}
       className={className}
-      style={{ width: size, height: size }}
+      style={{ width: calculatedCanvasSize, height: calculatedCanvasSize }}
     />
   );
 };
