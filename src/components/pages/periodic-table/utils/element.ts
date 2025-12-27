@@ -31,3 +31,15 @@ export const getElectronShell = (electronShell: string | undefined): string | un
     }
     return (year);
   }
+
+export const getElectronShellValue = (electronShell: string | undefined) => {
+  if(!electronShell) {
+    return [];
+  }
+  
+  const numbers = electronShell
+    .trim()
+    .split(/\s+/)
+    .map(Number);
+  return numbers;
+}

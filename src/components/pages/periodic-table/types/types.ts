@@ -33,6 +33,7 @@ export interface PeriodicElement {
 export interface ElementStyles {
   element: string;
   selected: string;
+  atomColor: string;
 }
 
 export interface PropertyDefinition {

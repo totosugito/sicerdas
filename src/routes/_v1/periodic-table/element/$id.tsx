@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { usePeriodicElementQuery } from '@/service/periodic-table-api'
 import { ElementErrorDisplay, ElementSkeleton, ElementHero, ElementNavigation, 
-  ElectronView, ViewElementOverview } from '@/components/pages/periodic-table/element-details'
+  ElectronView, AtomicOverview } from '@/components/pages/periodic-table/element-details'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/stores/useAppStore'
@@ -55,6 +55,7 @@ function RouteComponent() {
   }
 
   const elementStyle = getElementStyle(element?.atomicGroup as string, viewMode).element ?? "";
+  const atomColor = getElementStyle(element?.atomicGroup as string, viewMode).atomColor ?? "";
   return (
     <div className="container mx-auto ">
       {element && (
@@ -73,8 +74,9 @@ function RouteComponent() {
           <ElectronView element={element} />
 
           {/* Overview Section */}
-          <ViewElementOverview 
+          <AtomicOverview 
             element={element}
+            atomColor={atomColor}
             expandedSections={expandedSections}
             toggleSection={toggleSection}
           />

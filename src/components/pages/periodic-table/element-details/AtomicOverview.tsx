@@ -2,17 +2,19 @@ import { useTranslation } from 'react-i18next'
 import { Atom } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
-import { getDiscoveryYear, getElectronShell, getElementImage } from '../utils/element'
+import { getDiscoveryYear, getElectronShell, getElectronShellValue, getElementImage } from '../utils/element'
 import { toPhysics } from '@/lib/my-utils'
 import { ElementDetail } from '@/service/periodic-table-api'
+import { ElectronShell } from './ElectronShell'
 
-interface ViewElementOverviewProps {
+interface ViewAtomicOverviewProps {
   element: ElementDetail
+  atomColor: string
   expandedSections: Record<string, boolean>
   toggleSection: (section: string) => void
 }
 
-export function ViewElementOverview({ element, expandedSections, toggleSection }: ViewElementOverviewProps) {
+export function AtomicOverview({ element, atomColor, expandedSections, toggleSection }: ViewAtomicOverviewProps) {
   const { t } = useTranslation()
 
   return (
@@ -52,6 +54,10 @@ export function ViewElementOverview({ element, expandedSections, toggleSection }
           </div>
         )}
         <PropertyItem label={t('periodicTable.periodicTable.var.electronShell')} value={getElectronShell(element.atomicProperties?.electronShell)} />
+        <ElectronShell 
+        atomSymbol={element.atomicProperties?.symbol || ''}
+        atomColor={atomColor}
+        electrons={getElectronShellValue(element.atomicProperties?.electronShell)} />
       </div>
     </CardSection>
   )

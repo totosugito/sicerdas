@@ -5,4 +5,4 @@ export { default as ElementNavigation } from './ElementNavigation';
 export { ElectronView } from './ElectronView';
 export {CardSection} from './CardSection';
 export { PropertyItem } from './PropertyItem';
-export { ViewElementOverview } from './ViewElementOverview';
+export { AtomicOverview } from './AtomicOverview';
