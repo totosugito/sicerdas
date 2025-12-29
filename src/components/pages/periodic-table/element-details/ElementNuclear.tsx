@@ -1,10 +1,13 @@
 import { useTranslation } from 'react-i18next'
-import { Atom } from 'lucide-react'
+import { Atom, ChevronRight } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
 import { ElementDetail } from '@/service/periodic-table-api'
 import { toPhysics } from '@/lib/my-utils'
 import { getIsotopeAbundance, createAtomIsotopeTag } from '../utils/element'
+import { useNavigate } from '@tanstack/react-router'
+import { AppRoute } from '@/constants/app-route'
+import { Button } from '@/components/ui/button'
 
 interface ElementNuclearProps {
   element: ElementDetail
@@ -14,6 +17,14 @@ interface ElementNuclearProps {
 
 export function ElementNuclear({ element, expandedSections, toggleSection }: ElementNuclearProps) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+
+  const handleNavigateToIsotope = () => {
+    navigate({ 
+      to: AppRoute.periodicTable.elementIsotope.url, 
+      params: { id: element.atomicNumber.toString() } 
+    });
+  }
 
   return (
     <CardSection
@@ -69,6 +80,19 @@ export function ElementNuclear({ element, expandedSections, toggleSection }: Ele
           value={getIsotopeAbundance(element.atomicProperties?.symbol || '', element.atomicProperties?.isotopicAbundances)}
           isHtml={true}
         />
+
+        {/* Navigation button to isotope page */}
+        <div className="pt-4 flex justify-end">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={handleNavigateToIsotope}
+            className="flex items-center gap-2"
+          >
+            {t('periodicTable.periodicTable.var.viewIsotopeDetails')}
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </CardSection>
   )

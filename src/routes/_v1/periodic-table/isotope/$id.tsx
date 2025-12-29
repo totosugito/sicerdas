@@ -37,7 +37,6 @@ function RouteComponent() {
     );
   }
 
-  const elementStyle = getElementStyle(element?.atomicGroup as string, viewMode).element ?? "";
   const atomColor = getElementStyle(element?.atomicGroup as string, viewMode).atomColor ?? "";
   return (
     <div className="container mx-auto gap-4 flex flex-col pb-6">

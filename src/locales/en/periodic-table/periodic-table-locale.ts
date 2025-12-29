@@ -142,6 +142,7 @@ export default {
     spinParity: "Spin/Parity",
     quadrupoleMomentIsotope: "Quadrupole Moment",
     noIsotopeData: "No isotope data available",
+    viewIsotopeDetails: "View Isotope Details",
     total: "Total",
     stable: "Stable",
     unstable: "Unstable",

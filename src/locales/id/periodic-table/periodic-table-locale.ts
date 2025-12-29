@@ -141,6 +141,7 @@ export default {
     spinParity: "Spin/Paritas",
     quadrupoleMomentIsotope: "Momen Quadrupole",
     noIsotopeData: "Tidak ada data isotop tersedia",
+    viewIsotopeDetails: "Lihat Detail Isotop",
     total: "Total",
     stable: "Stabil",
     unstable: "Tidak Stabil",

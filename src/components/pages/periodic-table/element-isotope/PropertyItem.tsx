@@ -15,7 +15,7 @@ export const PropertyItem = ({
 
   return (
     <div className="bg-muted/30 rounded-md px-2 py-1.5">
-      <div className="text-muted-foreground text-[10px] uppercase tracking-wide">{label}</div>
+      <div className="text-muted-foreground text-sm uppercase tracking-wide">{label}</div>
       {isHtml ? (
         <div
           className="text-foreground font-mono truncate"
