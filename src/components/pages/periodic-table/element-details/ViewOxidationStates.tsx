@@ -48,7 +48,7 @@ const ViewOxidationStates: React.FC<ViewOxidationStatesProps> = ({
             justifyContent: 'center'
           }}
         >
-          <span style={{ color: textColor, fontSize: radius * 0.6 }}>
+          <span style={{ color: textColor, fontSize: radius * 0.55 }}>
             {label}
           </span>
         </div>

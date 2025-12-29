@@ -155,15 +155,19 @@ interface GetElementParams {
 }
 
 // Queries
+interface GetElementParamsWithLanguage extends GetElementParams {
+  language?: string;
+}
+
 export const usePeriodicElementQuery = (
-  { atomicNumber }: GetElementParams
+  { atomicNumber, language }: GetElementParamsWithLanguage
 ) => {
   return useQuery<ElementDetail>({
-    queryKey: ['periodicElement', atomicNumber],
+    queryKey: ['periodicElement', atomicNumber, language],
     queryFn: async () => {
       const url = `${AppApi.periodicTable.element}/${atomicNumber}`;
       const response = await fetchApi({ method: "GET", url });
       return response.data;
     }
   });
-}
+};

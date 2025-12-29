@@ -1,4 +1,5 @@
 import { APP_CONFIG } from "@/constants/config";
+import { toPhysics } from "@/lib/my-utils";
 
 /**
  * Get the URL for an element's image.
@@ -160,4 +161,49 @@ export const kelvinToOther = (kelvin: number): string => {
  * @returns Parsed number
  */
 export const stringToDouble = (s: string): number => parseFloat(s);
+
+/**
+ * Format isotope abundance list as HTML string
+ * @param symbols_ Element symbol
+ * @param idxList List of isotope abundance objects with s (mass number) and v (value) properties
+ * @returns HTML string with formatted isotope abundances
+ */
+export const getIsotopeAbundance = (symbols_: string, idxList: Array<{s: number, v: number}> | undefined): string => {
+  if (!idxList || idxList.length === 0) {
+    return "";
+  }
+
+  const idxLength = idxList.length;
+  let s = "";
+  for (let i = 0; i < idxLength; i++) {
+    const m = idxList[i];
+    s = `${s}<sup><small>${m.s}</small></sup>${symbols_} (${toPhysics({ value: m.v })} %)`;
+    if (i < idxLength - 1) {
+      s = `${s}, `;
+    }
+  }
+  return s;
+};
+
+/**
+ * Create atom isotope tag as HTML string
+ * @param symbols_ Element symbol
+ * @param idxList List of isotope mass numbers
+ * @returns HTML string with formatted isotope tags
+ */
+export const createAtomIsotopeTag = (symbols_: string, idxList: number[] | undefined): string => {
+  const idxLength = idxList?.length || 0;
+  if (!idxList || idxLength === 0) {
+    return "";
+  }
+
+  let s = "";
+  for (let i = 0; i < idxLength; i++) {
+    s = `${s}<sup><small>${idxList[i]}</small></sup>${symbols_}`;
+    if (i < idxLength - 1) {
+      s = `${s}, `;
+    }
+  }
+  return s;
+};
 

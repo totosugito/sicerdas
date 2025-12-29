@@ -13,3 +13,8 @@ export { ElementNotes } from './ElementNotes';
 export { ElementThermal } from './ElementThermal';
 export { ElementBulkPhysical } from './ElementBulkPhysical';
 export { ElementElectrical } from './ElementElectrical';
+export { ElementMagnetic } from './ElementMagnetic';
+export { ElementAbundances } from './ElementAbundances';
+export { ElementReactivity } from './ElementReactivity';
+export { ElementHealthSafety } from './ElementHealthSafety';
+export { ElementNuclear } from './ElementNuclear';

@@ -25,6 +25,11 @@ export const elementUnits = {
     bulkModulus: 'GPa',
     youngModulus: 'GPa',
     speedOfSound: 'm/s',
+    curiePoint: 'K',
+    massMagneticSusceptibility: 'm³/Kg',
+    molarMagneticSusceptibility: 'm³/mol',
+    electronAffinity: 'kJ/mol',
+    ionizationEnergies: 'kJ/mol',
 }
 
 export const getPeriodictUnits = (element: string) => {

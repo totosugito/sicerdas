@@ -2,11 +2,12 @@ import { createFileRoute } from '@tanstack/react-router'
 import { usePeriodicElementQuery } from '@/service/periodic-table-api'
 import {
   ElementErrorDisplay, ElementSkeleton, ElementHero, ElementNavigation,
-  ElectronView, ElementOverview, ElementClassification, ElementDimension, ElementNotes, ElementThermal, ElementBulkPhysical, ElementElectrical
+  ElectronView, ElementOverview, ElementClassification, ElementDimension, ElementNotes, ElementThermal, ElementBulkPhysical, ElementElectrical, ElementMagnetic, ElementAbundances, ElementReactivity, ElementHealthSafety, ElementNuclear
 } from '@/components/pages/periodic-table/element-details'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/stores/useAppStore'
+import { useAuthStore } from '@/stores/useAuthStore'
 import { getElementStyle } from '@/components/pages/periodic-table/utils/element-styles'
 
 export const Route = createFileRoute('/_v1/periodic-table/element/$id')({
@@ -18,8 +19,9 @@ function RouteComponent() {
   const { id } = Route.useParams()
   const store = useAppStore();
   const { viewMode } = store.periodicTable;
+  const language = useAuthStore(state => state.language);
 
-  const { data: element, isLoading, isError, error } = usePeriodicElementQuery({ atomicNumber: parseInt(id) })
+  const { data: element, isLoading, isError, error } = usePeriodicElementQuery({ atomicNumber: parseInt(id), language });
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     overview: true,
     notes: true,
@@ -120,6 +122,41 @@ function RouteComponent() {
 
           {/* Electrical Properties Section */}
           <ElementElectrical
+            element={element}
+            expandedSections={expandedSections}
+            toggleSection={toggleSection}
+          />
+
+          {/* Magnetic Properties Section */}
+          <ElementMagnetic
+            element={element}
+            expandedSections={expandedSections}
+            toggleSection={toggleSection}
+          />
+
+          {/* Abundances Section */}
+          <ElementAbundances
+            element={element}
+            expandedSections={expandedSections}
+            toggleSection={toggleSection}
+          />
+
+          {/* Reactivity Section */}
+          <ElementReactivity
+            element={element}
+            expandedSections={expandedSections}
+            toggleSection={toggleSection}
+          />
+
+          {/* Health and Safety Section */}
+          <ElementHealthSafety
+            element={element}
+            expandedSections={expandedSections}
+            toggleSection={toggleSection}
+          />
+
+          {/* Nuclear Properties Section */}
+          <ElementNuclear
             element={element}
             expandedSections={expandedSections}
             toggleSection={toggleSection}
