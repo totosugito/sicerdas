@@ -4,7 +4,6 @@ import {
   ElementErrorDisplay, ElementSkeleton, ElementHero, ElementNavigation,
   ElectronView, ElementOverview, ElementClassification, ElementDimension, ElementNotes, ElementThermal, ElementBulkPhysical, ElementElectrical, ElementMagnetic, ElementAbundances, ElementReactivity, ElementHealthSafety, ElementNuclear
 } from '@/components/pages/periodic-table/element-details'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/stores/useAppStore'
 import { useAuthStore } from '@/stores/useAuthStore'
@@ -22,26 +21,11 @@ function RouteComponent() {
   const language = useAuthStore(state => state.language);
 
   const { data: element, isLoading, isError, error } = usePeriodicElementQuery({ atomicNumber: parseInt(id), language });
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-    overview: true,
-    notes: true,
-    classifications: true,
-    atomicDimensions: true,
-    thermalProperties: true,
-    bulkPhysical: true,
-    electrical: true,
-    magnetic: true,
-    abundances: true,
-    reactivity: true,
-    healthSafety: true,
-    nuclear: true
-  })
+  const { elementExpandedSections, setElementExpandedSection } = useAppStore();
+  const expandedSections = elementExpandedSections;
 
   const toggleSection = (section: string) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }))
+    setElementExpandedSection(section, !elementExpandedSections[section]);
   }
 
 
@@ -61,7 +45,7 @@ function RouteComponent() {
   const elementStyle = getElementStyle(element?.atomicGroup as string, viewMode).element ?? "";
   const atomColor = getElementStyle(element?.atomicGroup as string, viewMode).atomColor ?? "";
   return (
-    <div className="container mx-auto ">
+    <div className="container mx-auto gap-4 flex flex-col pb-6">
       {element && (
         <>
           {/* Element Hero */}

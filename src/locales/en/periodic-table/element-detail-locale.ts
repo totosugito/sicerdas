@@ -17,4 +17,8 @@ export default {
   failedToLoadMessage: "Failed to load element data for atomic number {{atomicNumber}}",
   unknownError: "An unknown error occurred",
   bcYear: "BC",
+  elementVisualization: "Element visualization for {{elementName}}",
+  selectElement: "Select element...",
+  searchElements: "Search elements...",
+  noElementFound: "No element found."
 }

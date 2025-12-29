@@ -4,6 +4,7 @@ import json
 # input from exported from postgre elements
 INPUT_FILE = "E:\\Download\\periodic_elements.json"
 OUTPUT_FILE = "E:\\Download\\periodic_layout.json"
+OUTPUT_LIST_FILE = "E:\\Download\\periodic_list.json"
 
 # Keep only these fields inside atomic_properties
 KEEP_FIELDS = [
@@ -29,6 +30,7 @@ def process_json():
         data = json.load(f)
 
     output = []
+    periodic_list = []
 
     for item in data:
         atomic_number = item.get("atomic_number", 0)
@@ -42,6 +44,12 @@ def process_json():
             "atomicName": item.get("atomic_name"),
             "atomicSymbol": item.get("atomic_symbol"),
         }
+        item_ = {
+            "atomicNumber": atomic_number,
+            "atomicGroup": item.get("atomic_group"),
+            "atomicName": item.get("atomic_name"),
+            "atomicSymbol": item.get("atomic_symbol"),
+        }
 
         # Only include atomic_properties if number is between 0 and 200
         if 0 <= atomic_number <= 200:
@@ -50,13 +58,18 @@ def process_json():
             )
 
         output.append(new_item)
+        if (item_["atomicNumber"] > 0) & (item_["atomicNumber"] < 200):
+            periodic_list.append(item_)
 
     # --- SORT by atomic_id ---
     output.sort(key=lambda x: x.get("id", 0))
+    periodic_list.sort(key=lambda x: x.get("atomicNumber", 0))
 
     # Save result
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, ensure_ascii=False)
+    with open(OUTPUT_LIST_FILE, "w", encoding="utf-8") as f:
+        json.dump(periodic_list, f, indent=2, ensure_ascii=False)
 
     print("Conversion complete! Saved to", OUTPUT_FILE)
 

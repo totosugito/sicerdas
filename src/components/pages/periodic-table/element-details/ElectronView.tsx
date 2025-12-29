@@ -12,7 +12,7 @@ export const ElectronView = ({ element }: ElectronViewProps) => {
   const numberOfNeutrons = element.atomicProperties.numberOfNeutron;
   
   return (
-    <div className="py-6">
+    <div className="py-2">
       <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6">
         {/* Electrons Card */}
         <div className="flex flex-col items-center">

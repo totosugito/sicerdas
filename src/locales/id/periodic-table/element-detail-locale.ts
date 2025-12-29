@@ -17,4 +17,8 @@ export default {
   failedToLoadMessage: "Gagal memuat data elemen untuk nomor atom {{atomicNumber}}",
   unknownError: "Terjadi kesalahan yang tidak diketahui",
   bcYear: "SM",
+  elementVisualization: "Visualisasi elemen untuk {{elementName}}",
+  selectElement: "Pilih elemen...",
+  searchElements: "Cari elemen...",
+  noElementFound: "Tidak ada elemen ditemukan."
 }

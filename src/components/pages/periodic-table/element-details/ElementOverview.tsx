@@ -45,7 +45,7 @@ export function ElementOverview({ element, atomColor, expandedSections, toggleSe
         {element.atomicProperties?.atomicSpectra && element.atomicProperties?.atomicSpectra.length > 0 && (
           <div className="flex flex-col gap-2">
             <PropertyItem label={t('periodicTable.periodicTable.var.emissionSpectrum')} value={undefined} />
-              <div className="sm:h-16 h-12">
+              <div className="sm:h-14 h-10">
                 <img
                   src={getElementImage({ element: `${element.atomicNumber}.${element.atomicName.toLowerCase()}`, type: 'spectrum', extension: 'png' })}
                   alt=""

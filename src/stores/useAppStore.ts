@@ -18,6 +18,10 @@ type Store = {
   },
   setPeriodicTable: (periodicTable: any) => void;
 
+  elementExpandedSections: Record<string, boolean>;
+  setElementExpandedSection: (section: string, expanded: boolean) => void;
+  resetElementExpandedSections: () => void;
+
   resetAll: () => void;
 }
 
@@ -29,7 +33,20 @@ export const defaultStore = {
   periodicTable: {
     viewMode: EnumPeriodicViewMode.theme1.value,
   },
-  
+  elementExpandedSections: {
+    overview: true,
+    notes: true,
+    classifications: true,
+    atomicDimensions: true,
+    thermalProperties: true,
+    bulkPhysical: true,
+    electrical: true,
+    magnetic: true,
+    abundances: true,
+    reactivity: true,
+    healthSafety: true,
+    nuclear: true
+  },
 }
 
 export const useAppStore = create<Store>()(
@@ -45,9 +62,21 @@ export const useAppStore = create<Store>()(
         periodicTable
       }),
 
+      elementExpandedSections: defaultStore.elementExpandedSections,
+      setElementExpandedSection: (section: string, expanded: boolean) => set((state) => ({
+        elementExpandedSections: {
+          ...state.elementExpandedSections,
+          [section]: expanded
+        }
+      })),
+      resetElementExpandedSections: () => set({
+        elementExpandedSections: defaultStore.elementExpandedSections
+      }),
+
       resetAll: () => set({
         books: defaultStore.books,
         periodicTable: defaultStore.periodicTable,
+        elementExpandedSections: defaultStore.elementExpandedSections
       }),
     }),
     {

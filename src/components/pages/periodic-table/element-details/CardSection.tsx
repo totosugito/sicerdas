@@ -16,7 +16,7 @@ export function CardSection({
   onToggle: () => void;
 }) {
   return (
-    <div className="mb-4 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+    <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
       <button
         className="w-full flex items-center justify-between p-3 bg-muted dark:bg-gray-900 hover:bg-muted/80 dark:hover:bg-gray-800 transition-colors text-left"
         onClick={onToggle}

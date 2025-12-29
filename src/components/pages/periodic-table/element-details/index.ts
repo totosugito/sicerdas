@@ -18,3 +18,4 @@ export { ElementAbundances } from './ElementAbundances';
 export { ElementReactivity } from './ElementReactivity';
 export { ElementHealthSafety } from './ElementHealthSafety';
 export { ElementNuclear } from './ElementNuclear';
+export { ElementSearchCombobox } from './ElementSearchCombobox';

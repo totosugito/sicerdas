@@ -1,0 +1,710 @@
+[
+  {
+    "atomicNumber": 1,
+    "atomicGroup": "othernonmetals",
+    "atomicName": "Hydrogen",
+    "atomicSymbol": "H"
+  },
+  {
+    "atomicNumber": 2,
+    "atomicGroup": "noble_gases",
+    "atomicName": "Helium",
+    "atomicSymbol": "He"
+  },
+  {
+    "atomicNumber": 3,
+    "atomicGroup": "alkali_metals",
+    "atomicName": "Lithium",
+    "atomicSymbol": "Li"
+  },
+  {
+    "atomicNumber": 4,
+    "atomicGroup": "alkaline_earth_metals",
+    "atomicName": "Beryllium",
+    "atomicSymbol": "Be"
+  },
+  {
+    "atomicNumber": 5,
+    "atomicGroup": "metalloids",
+    "atomicName": "Boron",
+    "atomicSymbol": "B"
+  },
+  {
+    "atomicNumber": 6,
+    "atomicGroup": "othernonmetals",
+    "atomicName": "Carbon",
+    "atomicSymbol": "C"
+  },
+  {
+    "atomicNumber": 7,
+    "atomicGroup": "othernonmetals",
+    "atomicName": "Nitrogen",
+    "atomicSymbol": "N"
+  },
+  {
+    "atomicNumber": 8,
+    "atomicGroup": "othernonmetals",
+    "atomicName": "Oxygen",
+    "atomicSymbol": "O"
+  },
+  {
+    "atomicNumber": 9,
+    "atomicGroup": "halogens",
+    "atomicName": "Fluorine",
+    "atomicSymbol": "F"
+  },
+  {
+    "atomicNumber": 10,
+    "atomicGroup": "noble_gases",
+    "atomicName": "Neon",
+    "atomicSymbol": "Ne"
+  },
+  {
+    "atomicNumber": 11,
+    "atomicGroup": "alkali_metals",
+    "atomicName": "Sodium",
+    "atomicSymbol": "Na"
+  },
+  {
+    "atomicNumber": 12,
+    "atomicGroup": "alkaline_earth_metals",
+    "atomicName": "Magnesium",
+    "atomicSymbol": "Mg"
+  },
+  {
+    "atomicNumber": 13,
+    "atomicGroup": "post_transition_metals",
+    "atomicName": "Aluminum",
+    "atomicSymbol": "Al"
+  },
+  {
+    "atomicNumber": 14,
+    "atomicGroup": "metalloids",
+    "atomicName": "Silicon",
+    "atomicSymbol": "Si"
+  },
+  {
+    "atomicNumber": 15,
+    "atomicGroup": "othernonmetals",
+    "atomicName": "Phosphorus",
+    "atomicSymbol": "P"
+  },
+  {
+    "atomicNumber": 16,
+    "atomicGroup": "othernonmetals",
+    "atomicName": "Sulfur",
+    "atomicSymbol": "S"
+  },
+  {
+    "atomicNumber": 17,
+    "atomicGroup": "halogens",
+    "atomicName": "Chlorine",
+    "atomicSymbol": "Cl"
+  },
+  {
+    "atomicNumber": 18,
+    "atomicGroup": "noble_gases",
+    "atomicName": "Argon",
+    "atomicSymbol": "Ar"
+  },
+  {
+    "atomicNumber": 19,
+    "atomicGroup": "alkali_metals",
+    "atomicName": "Potassium",
+    "atomicSymbol": "K"
+  },
+  {
+    "atomicNumber": 20,
+    "atomicGroup": "alkaline_earth_metals",
+    "atomicName": "Calcium",
+    "atomicSymbol": "Ca"
+  },
+  {
+    "atomicNumber": 21,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Scandium",
+    "atomicSymbol": "Sc"
+  },
+  {
+    "atomicNumber": 22,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Titanium",
+    "atomicSymbol": "Ti"
+  },
+  {
+    "atomicNumber": 23,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Vanadium",
+    "atomicSymbol": "V"
+  },
+  {
+    "atomicNumber": 24,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Chromium",
+    "atomicSymbol": "Cr"
+  },
+  {
+    "atomicNumber": 25,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Manganese",
+    "atomicSymbol": "Mn"
+  },
+  {
+    "atomicNumber": 26,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Iron",
+    "atomicSymbol": "Fe"
+  },
+  {
+    "atomicNumber": 27,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Cobalt",
+    "atomicSymbol": "Co"
+  },
+  {
+    "atomicNumber": 28,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Nickel",
+    "atomicSymbol": "Ni"
+  },
+  {
+    "atomicNumber": 29,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Copper",
+    "atomicSymbol": "Cu"
+  },
+  {
+    "atomicNumber": 30,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Zinc",
+    "atomicSymbol": "Zn"
+  },
+  {
+    "atomicNumber": 31,
+    "atomicGroup": "post_transition_metals",
+    "atomicName": "Gallium",
+    "atomicSymbol": "Ga"
+  },
+  {
+    "atomicNumber": 32,
+    "atomicGroup": "metalloids",
+    "atomicName": "Germanium",
+    "atomicSymbol": "Ge"
+  },
+  {
+    "atomicNumber": 33,
+    "atomicGroup": "metalloids",
+    "atomicName": "Arsenic",
+    "atomicSymbol": "As"
+  },
+  {
+    "atomicNumber": 34,
+    "atomicGroup": "othernonmetals",
+    "atomicName": "Selenium",
+    "atomicSymbol": "Se"
+  },
+  {
+    "atomicNumber": 35,
+    "atomicGroup": "halogens",
+    "atomicName": "Bromine",
+    "atomicSymbol": "Br"
+  },
+  {
+    "atomicNumber": 36,
+    "atomicGroup": "noble_gases",
+    "atomicName": "Krypton",
+    "atomicSymbol": "Kr"
+  },
+  {
+    "atomicNumber": 37,
+    "atomicGroup": "alkali_metals",
+    "atomicName": "Rubidium",
+    "atomicSymbol": "Rb"
+  },
+  {
+    "atomicNumber": 38,
+    "atomicGroup": "alkaline_earth_metals",
+    "atomicName": "Strontium",
+    "atomicSymbol": "Sr"
+  },
+  {
+    "atomicNumber": 39,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Yttrium",
+    "atomicSymbol": "Y"
+  },
+  {
+    "atomicNumber": 40,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Zirconium",
+    "atomicSymbol": "Zr"
+  },
+  {
+    "atomicNumber": 41,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Niobium",
+    "atomicSymbol": "Nb"
+  },
+  {
+    "atomicNumber": 42,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Molybdenum",
+    "atomicSymbol": "Mo"
+  },
+  {
+    "atomicNumber": 43,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Technetium",
+    "atomicSymbol": "Tc"
+  },
+  {
+    "atomicNumber": 44,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Ruthenium",
+    "atomicSymbol": "Ru"
+  },
+  {
+    "atomicNumber": 45,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Rhodium",
+    "atomicSymbol": "Rh"
+  },
+  {
+    "atomicNumber": 46,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Palladium",
+    "atomicSymbol": "Pd"
+  },
+  {
+    "atomicNumber": 47,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Silver",
+    "atomicSymbol": "Ag"
+  },
+  {
+    "atomicNumber": 48,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Cadmium",
+    "atomicSymbol": "Cd"
+  },
+  {
+    "atomicNumber": 49,
+    "atomicGroup": "post_transition_metals",
+    "atomicName": "Indium",
+    "atomicSymbol": "In"
+  },
+  {
+    "atomicNumber": 50,
+    "atomicGroup": "post_transition_metals",
+    "atomicName": "Tin",
+    "atomicSymbol": "Sn"
+  },
+  {
+    "atomicNumber": 51,
+    "atomicGroup": "metalloids",
+    "atomicName": "Antimony",
+    "atomicSymbol": "Sb"
+  },
+  {
+    "atomicNumber": 52,
+    "atomicGroup": "metalloids",
+    "atomicName": "Tellurium",
+    "atomicSymbol": "Te"
+  },
+  {
+    "atomicNumber": 53,
+    "atomicGroup": "halogens",
+    "atomicName": "Iodine",
+    "atomicSymbol": "I"
+  },
+  {
+    "atomicNumber": 54,
+    "atomicGroup": "noble_gases",
+    "atomicName": "Xenon",
+    "atomicSymbol": "Xe"
+  },
+  {
+    "atomicNumber": 55,
+    "atomicGroup": "alkali_metals",
+    "atomicName": "Cesium",
+    "atomicSymbol": "Cs"
+  },
+  {
+    "atomicNumber": 56,
+    "atomicGroup": "alkaline_earth_metals",
+    "atomicName": "Barium",
+    "atomicSymbol": "Ba"
+  },
+  {
+    "atomicNumber": 57,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Lanthanum",
+    "atomicSymbol": "La"
+  },
+  {
+    "atomicNumber": 58,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Cerium",
+    "atomicSymbol": "Ce"
+  },
+  {
+    "atomicNumber": 59,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Praseodymium",
+    "atomicSymbol": "Pr"
+  },
+  {
+    "atomicNumber": 60,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Neodymium",
+    "atomicSymbol": "Nd"
+  },
+  {
+    "atomicNumber": 61,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Promethium",
+    "atomicSymbol": "Pm"
+  },
+  {
+    "atomicNumber": 62,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Samarium",
+    "atomicSymbol": "Sm"
+  },
+  {
+    "atomicNumber": 63,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Europium",
+    "atomicSymbol": "Eu"
+  },
+  {
+    "atomicNumber": 64,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Gadolinium",
+    "atomicSymbol": "Gd"
+  },
+  {
+    "atomicNumber": 65,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Terbium",
+    "atomicSymbol": "Tb"
+  },
+  {
+    "atomicNumber": 66,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Dysprosium",
+    "atomicSymbol": "Dy"
+  },
+  {
+    "atomicNumber": 67,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Holmium",
+    "atomicSymbol": "Ho"
+  },
+  {
+    "atomicNumber": 68,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Erbium",
+    "atomicSymbol": "Er"
+  },
+  {
+    "atomicNumber": 69,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Thulium",
+    "atomicSymbol": "Tm"
+  },
+  {
+    "atomicNumber": 70,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Ytterbium",
+    "atomicSymbol": "Yb"
+  },
+  {
+    "atomicNumber": 71,
+    "atomicGroup": "lanthanoids",
+    "atomicName": "Lutetium",
+    "atomicSymbol": "Lu"
+  },
+  {
+    "atomicNumber": 72,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Hafnium",
+    "atomicSymbol": "Hf"
+  },
+  {
+    "atomicNumber": 73,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Tantalum",
+    "atomicSymbol": "Ta"
+  },
+  {
+    "atomicNumber": 74,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Tungsten",
+    "atomicSymbol": "W"
+  },
+  {
+    "atomicNumber": 75,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Rhenium",
+    "atomicSymbol": "Re"
+  },
+  {
+    "atomicNumber": 76,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Osmium",
+    "atomicSymbol": "Os"
+  },
+  {
+    "atomicNumber": 77,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Iridium",
+    "atomicSymbol": "Ir"
+  },
+  {
+    "atomicNumber": 78,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Platinum",
+    "atomicSymbol": "Pt"
+  },
+  {
+    "atomicNumber": 79,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Gold",
+    "atomicSymbol": "Au"
+  },
+  {
+    "atomicNumber": 80,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Mercury",
+    "atomicSymbol": "Hg"
+  },
+  {
+    "atomicNumber": 81,
+    "atomicGroup": "post_transition_metals",
+    "atomicName": "Thallium",
+    "atomicSymbol": "Tl"
+  },
+  {
+    "atomicNumber": 82,
+    "atomicGroup": "post_transition_metals",
+    "atomicName": "Lead",
+    "atomicSymbol": "Pb"
+  },
+  {
+    "atomicNumber": 83,
+    "atomicGroup": "post_transition_metals",
+    "atomicName": "Bismuth",
+    "atomicSymbol": "Bi"
+  },
+  {
+    "atomicNumber": 84,
+    "atomicGroup": "metalloids",
+    "atomicName": "Polonium",
+    "atomicSymbol": "Po"
+  },
+  {
+    "atomicNumber": 85,
+    "atomicGroup": "halogens",
+    "atomicName": "Astatine",
+    "atomicSymbol": "At"
+  },
+  {
+    "atomicNumber": 86,
+    "atomicGroup": "noble_gases",
+    "atomicName": "Radon",
+    "atomicSymbol": "Rn"
+  },
+  {
+    "atomicNumber": 87,
+    "atomicGroup": "alkali_metals",
+    "atomicName": "Francium",
+    "atomicSymbol": "Fr"
+  },
+  {
+    "atomicNumber": 88,
+    "atomicGroup": "alkaline_earth_metals",
+    "atomicName": "Radium",
+    "atomicSymbol": "Ra"
+  },
+  {
+    "atomicNumber": 89,
+    "atomicGroup": "actinoids",
+    "atomicName": "Actinium",
+    "atomicSymbol": "Ac"
+  },
+  {
+    "atomicNumber": 90,
+    "atomicGroup": "actinoids",
+    "atomicName": "Thorium",
+    "atomicSymbol": "Th"
+  },
+  {
+    "atomicNumber": 91,
+    "atomicGroup": "actinoids",
+    "atomicName": "Protactinium",
+    "atomicSymbol": "Pa"
+  },
+  {
+    "atomicNumber": 92,
+    "atomicGroup": "actinoids",
+    "atomicName": "Uranium",
+    "atomicSymbol": "U"
+  },
+  {
+    "atomicNumber": 93,
+    "atomicGroup": "actinoids",
+    "atomicName": "Neptunium",
+    "atomicSymbol": "Np"
+  },
+  {
+    "atomicNumber": 94,
+    "atomicGroup": "actinoids",
+    "atomicName": "Plutonium",
+    "atomicSymbol": "Pu"
+  },
+  {
+    "atomicNumber": 95,
+    "atomicGroup": "actinoids",
+    "atomicName": "Americium",
+    "atomicSymbol": "Am"
+  },
+  {
+    "atomicNumber": 96,
+    "atomicGroup": "actinoids",
+    "atomicName": "Curium",
+    "atomicSymbol": "Cm"
+  },
+  {
+    "atomicNumber": 97,
+    "atomicGroup": "actinoids",
+    "atomicName": "Berkelium",
+    "atomicSymbol": "Bk"
+  },
+  {
+    "atomicNumber": 98,
+    "atomicGroup": "actinoids",
+    "atomicName": "Californium",
+    "atomicSymbol": "Cf"
+  },
+  {
+    "atomicNumber": 99,
+    "atomicGroup": "actinoids",
+    "atomicName": "Einsteinium",
+    "atomicSymbol": "Es"
+  },
+  {
+    "atomicNumber": 100,
+    "atomicGroup": "actinoids",
+    "atomicName": "Fermium",
+    "atomicSymbol": "Fm"
+  },
+  {
+    "atomicNumber": 101,
+    "atomicGroup": "actinoids",
+    "atomicName": "Mendelevium",
+    "atomicSymbol": "Md"
+  },
+  {
+    "atomicNumber": 102,
+    "atomicGroup": "actinoids",
+    "atomicName": "Nobelium",
+    "atomicSymbol": "No"
+  },
+  {
+    "atomicNumber": 103,
+    "atomicGroup": "actinoids",
+    "atomicName": "Lawrencium",
+    "atomicSymbol": "Lr"
+  },
+  {
+    "atomicNumber": 104,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Rutherfordium",
+    "atomicSymbol": "Rf"
+  },
+  {
+    "atomicNumber": 105,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Dubnium",
+    "atomicSymbol": "Db"
+  },
+  {
+    "atomicNumber": 106,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Seaborgium",
+    "atomicSymbol": "Sg"
+  },
+  {
+    "atomicNumber": 107,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Bohrium",
+    "atomicSymbol": "Bh"
+  },
+  {
+    "atomicNumber": 108,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Hassium",
+    "atomicSymbol": "Hs"
+  },
+  {
+    "atomicNumber": 109,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Meitnerium",
+    "atomicSymbol": "Mt"
+  },
+  {
+    "atomicNumber": 110,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Darmstadtium",
+    "atomicSymbol": "Ds"
+  },
+  {
+    "atomicNumber": 111,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Roentgenium",
+    "atomicSymbol": "Rg"
+  },
+  {
+    "atomicNumber": 112,
+    "atomicGroup": "transition_metals",
+    "atomicName": "Copernicium",
+    "atomicSymbol": "Cn"
+  },
+  {
+    "atomicNumber": 113,
+    "atomicGroup": "post_transition_metals",
+    "atomicName": "Nihonium",
+    "atomicSymbol": "Nh"
+  },
+  {
+    "atomicNumber": 114,
+    "atomicGroup": "post_transition_metals",
+    "atomicName": "Flerovium",
+    "atomicSymbol": "Fl"
+  },
+  {
+    "atomicNumber": 115,
+    "atomicGroup": "post_transition_metals",
+    "atomicName": "Moscovium",
+    "atomicSymbol": "Mc"
+  },
+  {
+    "atomicNumber": 116,
+    "atomicGroup": "post_transition_metals",
+    "atomicName": "Livermorium",
+    "atomicSymbol": "Lv"
+  },
+  {
+    "atomicNumber": 117,
+    "atomicGroup": "halogens",
+    "atomicName": "Tennessine",
+    "atomicSymbol": "Ts"
+  },
+  {
+    "atomicNumber": 118,
+    "atomicGroup": "noble_gases",
+    "atomicName": "Oganesson",
+    "atomicSymbol": "Og"
+  }
+]
