@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { usePeriodicElementQuery } from '@/service/periodic-table-api'
 import {
-  ElementErrorDisplay, ElementSkeleton, ElementHero,
+  ElementErrorDisplay, ElementSkeleton,
 } from '@/components/pages/periodic-table/element-details'
 import {
-  ElementIsotope,
+  ElementIsotope, ElementHeroIsotope,
 } from '@/components/pages/periodic-table/element-isotope'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/stores/useAppStore'
@@ -43,9 +43,12 @@ function RouteComponent() {
     <div className="container mx-auto gap-4 flex flex-col pb-6">
       {element && (
         <>
-          <ElementHero element={element} theme={viewMode} />
+          <ElementHeroIsotope element={element} theme={viewMode} />
           <ElementIsotope 
-            isotopes={element.atomicIsotope ?? []} 
+            atomColor={atomColor}
+            atomicSymbol={element.atomicSymbol} 
+            knownIsotopes={element.atomicProperties.knownIsotopes || []}
+            isotopes={element.atomicIsotope} 
           />
         </>
       )}

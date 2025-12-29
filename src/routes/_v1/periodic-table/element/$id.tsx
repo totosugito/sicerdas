@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { usePeriodicElementQuery } from '@/service/periodic-table-api'
 import {
   ElementErrorDisplay, ElementSkeleton, ElementHero, ElementNavigation,
-  ElectronView, ElementOverview, ElementClassification, ElementDimension, ElementNotes, ElementThermal, ElementBulkPhysical, ElementElectrical, ElementMagnetic, ElementAbundances, ElementReactivity, ElementHealthSafety, ElementNuclear, ElementIsotopes
+  ElectronView, ElementOverview, ElementClassification, ElementDimension, ElementNotes, ElementThermal, ElementBulkPhysical, ElementElectrical, ElementMagnetic, ElementAbundances, ElementReactivity, ElementHealthSafety, ElementNuclear
 } from '@/components/pages/periodic-table/element-details'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/stores/useAppStore'
@@ -141,13 +141,6 @@ function RouteComponent() {
 
           {/* Nuclear Properties Section */}
           <ElementNuclear
-            element={element}
-            expandedSections={expandedSections}
-            toggleSection={toggleSection}
-          />
-
-          {/* Isotopes Section */}
-          <ElementIsotopes
             element={element}
             expandedSections={expandedSections}
             toggleSection={toggleSection}

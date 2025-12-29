@@ -16,7 +16,6 @@ import {
 } from '@/components/ui/popover';
 import { ChevronsUpDown, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { AppRoute } from '@/constants/app-route';
 import { getElementStyle } from '../utils/element-styles';
 import { useTranslation } from 'react-i18next';
 
@@ -30,6 +29,8 @@ interface PeriodicElement {
 
 interface ElementSearchComboboxProps {
   theme?: string;
+  elementPathSegment: string;
+  navigationPath: string;
 }
 
 // Load the periodic elements data
@@ -37,7 +38,7 @@ import periodicListData from '@/data/table-periodic/periodic_list.json';
 
 const periodicElements: PeriodicElement[] = periodicListData;
 
-export function ElementSearchCombobox({ theme = 'theme1' }: ElementSearchComboboxProps) {
+export function ElementSearchCombobox({ theme = 'theme1', elementPathSegment, navigationPath }: ElementSearchComboboxProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState<string>('');
   const navigate = useNavigate();
@@ -46,11 +47,11 @@ export function ElementSearchCombobox({ theme = 'theme1' }: ElementSearchCombobo
   // Set initial value based on current URL
   useEffect(() => {
     const pathParts = window.location.pathname.split('/');
-    const atomicNumber = pathParts[pathParts.indexOf('element') + 1];
+    const atomicNumber = pathParts[pathParts.indexOf(elementPathSegment) + 1];
     if (atomicNumber) {
       setValue(atomicNumber);
     }
-  }, []);
+  }, [elementPathSegment]);
 
   const selectedElement = periodicElements.find(
     (element) => element.atomicNumber.toString() === value
@@ -62,7 +63,7 @@ export function ElementSearchCombobox({ theme = 'theme1' }: ElementSearchCombobo
     
     // Navigate to the selected element's page
     navigate({
-      to: AppRoute.periodicTable.elementDetail.url,
+      to: navigationPath,
       params: { id: atomicNumber },
     });
   };

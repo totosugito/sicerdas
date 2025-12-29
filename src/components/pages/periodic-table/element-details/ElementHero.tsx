@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { getElementStyle } from '../utils/element-styles';
 import { ElementSearchCombobox } from './ElementSearchCombobox';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader } from '@/components/ui/dialog';
+import { AppRoute } from '@/constants/app-route';
 
 interface ElementHeroProps {
   element: ElementDetail; // You might want to define a proper type for element
@@ -21,7 +22,7 @@ export function ElementHero({ element, theme }: ElementHeroProps) {
     <div className="relative w-full overflow-hidden bg-gradient-to-b from-primary/20 to-background h-88 md:h-106 gap-4 flex flex-col">
       {/* Header with search combobox */}
       <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-sm">
-        <ElementSearchCombobox theme={theme} />
+        <ElementSearchCombobox theme={theme} elementPathSegment="element" navigationPath={AppRoute.periodicTable.elementDetail.url} />
       </div>
 
       {/* Element visualization */}

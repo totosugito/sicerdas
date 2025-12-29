@@ -144,7 +144,7 @@ export interface ElementDetail {
   atomicName: string;
   atomicSymbol: string;
   atomicProperties: AtomicProperties;
-  atomicIsotope: Record<string, unknown>;
+  atomicIsotope: Record<string, { s: string; v: string[] }>;
   atomicExtra: Record<string, unknown>;
   notes?: PeriodicElementNote;
   navigation: ElementNavigationData;
