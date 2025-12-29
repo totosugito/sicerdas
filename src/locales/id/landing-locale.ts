@@ -140,11 +140,13 @@ export default {
             title: "Tabel Periodik",
             periodicTable: "Tabel Periodik",
             element: "Elemen Periodik",
+            elementIsotope: "Isotop Elemen",
             elementComparison: "Perbandingan Elemen",
             chemistryDictionary: "Kamus Kimia",
             descriptions: {
                 periodicTable: "Tabel unsur kimia",
                 element: "Penjelasan elemen periodik",
+                elementIsotope: "Informasi isotop elemen",
                 elementComparison: "Perbandingan elemen atom",
                 chemistryDictionary: "Kamus istilah kimia ringkas"
             }

@@ -42,8 +42,8 @@ export const AppRoute = {
   },
   periodicTable: {
     periodicTable: { url: "/periodic-table" },
-    element: { url: "/periodic-table/element" },
     elementDetail: { url: "/periodic-table/element/$id" },
+    elementIsotope: { url: "/periodic-table/isotope/$id" },
     elementComparison: { url: "/periodic-table/element-comparison" },
     chemistryDictionary: { url: "/periodic-table/chemistry-dictionary" },
   },

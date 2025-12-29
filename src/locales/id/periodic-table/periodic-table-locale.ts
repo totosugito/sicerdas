@@ -138,6 +138,7 @@ export default {
     bindingEnergy: "Energi pengikat",
     magneticMoment: "Momen magnetik",
     quadrupoleMoment: "Momen quadrupole",
+    noIsotopeData: "Tidak ada data isotop tersedia",
     atomicOverview: "Deskripsi",
     atomicHistory: "Sejarah",
     atomicApps: "Penggunaan",

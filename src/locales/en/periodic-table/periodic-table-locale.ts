@@ -139,6 +139,7 @@ export default {
     bindingEnergy: "Binding energy",
     magneticMoment: "Magnetic moment",
     quadrupoleMoment: "Quadrupole moment",
+    noIsotopeData: "No isotope data available",
     atomicOverview: "Descriptions",
     atomicHistory: "History",
     atomicApps: "Applications",

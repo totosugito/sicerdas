@@ -185,8 +185,13 @@ export function AppNavbar() {
     },
     {
       title: t('landing.navbar.periodicTable.element'),
-      href: AppRoute.periodicTable.element.url + "/1",
+      href: (AppRoute.periodicTable.elementDetail.url).replace('$id', '') + "/1",
       description: t('landing.navbar.periodicTable.descriptions.element')
+    },
+    {
+      title: t('landing.navbar.periodicTable.elementIsotope'),
+      href: (AppRoute.periodicTable.elementIsotope.url).replace('$id', '') + "/1",
+      description: t('landing.navbar.periodicTable.descriptions.elementIsotope')
     },
     {
       title: t('landing.navbar.periodicTable.elementComparison'),

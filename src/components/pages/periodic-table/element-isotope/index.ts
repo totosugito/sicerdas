@@ -1,0 +1,1 @@
+export { ElementIsotope } from './ElementIsotope';
