@@ -13,17 +13,15 @@ dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.
 
 // Type definition for the JSON book data
 interface JsonBookData {
-  BookId: number;
-  grade: number; // Will be used directly as education_grade_id
-  book_group: number; // Will be used directly as bookGroupId
-  Judul: string;
-  Pengarang: string;
-  ExtraData: string | {
-    dt: string;  // published year
-    pg: number;  // total pages
-    sz: number;  // size
-  }; // Can be string (needs parsing) or object
-  ItemHide: number; // 0 = published, 1 = archived
+  id: number;
+  sGrade: number; // Will be used directly as education_grade_id
+  sGroup: number; // Will be used directly as bookGroupId
+  title: string;
+  author: string;
+  visible: number; // 0 = published, 1 = archived
+  dt: string;
+  pg: number;
+  sz: number;
   [key: string]: any; // Allow for additional fields
 }
 
@@ -37,7 +35,7 @@ async function importBooks() {
     const db = drizzle({ client: pool, schema });
     
     // Read and parse the JSON file
-    const jsonFilePath = 'E:/Download/books.json';
+    const jsonFilePath = 'E:/temp/books.json';
     
     if (!fs.existsSync(jsonFilePath)) {
       throw new Error(`JSON file not found at: ${jsonFilePath}`);
@@ -58,47 +56,34 @@ async function importBooks() {
     // Process each book
     for (const [index, bookData] of jsonData.entries()) {
       try {
-        const jsonBook = bookData as JsonBookData;
-        if (!jsonBook.Pengarang) {
-            jsonBook.Pengarang = '-'
+        const jsonBook: JsonBookData = bookData;
+        if (!jsonBook.author) {
+            jsonBook.author = '-'
         }
                 
         // Validate required fields
-        if (!jsonBook.BookId || !jsonBook.Judul || !jsonBook.Pengarang) {
-          console.warn(`Skipping book at index ${index} - ${jsonBook.BookId}: Missing required fields (BookId, Judul, or Pengarang)`);
+        if (!jsonBook.id || !jsonBook.title || !jsonBook.author) {
+          console.warn(`Skipping book at index ${index} - ${jsonBook.id}: Missing required fields (id, title, or author)`);
           errorCount++;
           continue;
         }
         
         // Validate grade field
-        if (!jsonBook.grade) {
-          console.warn(`Skipping book "${jsonBook.Judul}": Missing grade field`);
+        if (!jsonBook.sGrade) {
+          console.warn(`Skipping book "${jsonBook.title}": Missing sGrade field`);
           errorCount++;
           continue;
         }
         
         // Validate book_group field
-        if (!jsonBook.book_group) {
-          console.warn(`Skipping book "${jsonBook.Judul}": Missing book_group field`);
+        if (!jsonBook.sGroup) {
+          console.warn(`Skipping book "${jsonBook.title}": Missing sGroup field`);
           errorCount++;
           continue;
         }
-        
-        // Parse ExtraData if it's a string
-        let extraData: { dt?: string; pg?: number; sz?: number } = {};
-        try {
-          if (typeof jsonBook.ExtraData === 'string') {
-            extraData = JSON.parse(jsonBook.ExtraData);
-          } else if (typeof jsonBook.ExtraData === 'object' && jsonBook.ExtraData !== null) {
-            extraData = jsonBook.ExtraData;
-          }
-        } catch (parseError) {
-          console.warn(`Warning: Failed to parse ExtraData for book "${jsonBook.Judul}" (BookId: ${jsonBook.BookId}):`, parseError);
-          // Continue with empty extraData
-        }
-        
+               
         // Map status
-        const status = jsonBook.ItemHide === 1 ? EnumContentStatus.ARCHIVED : EnumContentStatus.PUBLISHED;
+        const status = jsonBook.visible === 0 ? EnumContentStatus.ARCHIVED : EnumContentStatus.PUBLISHED;
         
         // Check if book already exists by bookId
         const existingBook = await db
@@ -108,16 +93,16 @@ async function importBooks() {
           .limit(1);
         
         const bookInsertData = {
-          bookId: jsonBook.BookId, // Store original BookId in dedicated column
+          bookId: jsonBook.id, // Store original BookId in dedicated column
           versionId: 1, // Using version 1 as specified
-          bookGroupId: jsonBook.book_group, // Use book_group directly from JSON as bookGroupId
-          educationGradeId: jsonBook.grade, // Use grade directly from JSON as education_grade_id
-          title: jsonBook.Judul,
+          bookGroupId: jsonBook.sGroup, // Use book_group directly from JSON as bookGroupId
+          educationGradeId: jsonBook.sGrade, // Use grade directly from JSON as education_grade_id
+          title: jsonBook.title,
           description: '', // Empty as specified in mapping
-          author: jsonBook.Pengarang,
-          publishedYear: extraData?.dt || '',
-          totalPages: extraData?.pg || 0,
-          size: extraData?.sz || 0,
+          author: jsonBook.author,
+          publishedYear: jsonBook.dt || '',
+          totalPages: jsonBook.pg || 0,
+          size: jsonBook.sz || 0,
           status
         };
         
@@ -150,7 +135,7 @@ async function importBooks() {
         
       } catch (bookError) {
         const jsonBook = bookData as JsonBookData;
-        const bookInfo = jsonBook?.BookId ? `BookId: ${jsonBook.BookId}` : 'BookId: unknown';
+        const bookInfo = jsonBook?.id ? `BookId: ${jsonBook.id}` : 'BookId: unknown';
         console.error(`Error processing book at index ${index} (${bookInfo}):`, bookError);
         errorCount++;
       }

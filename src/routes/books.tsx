@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { useBookList } from '@/service/book'
 import { Button } from '@/components/ui/button'
-import { PageTitle } from '@/components/app'
+import { AppNavbar, PageTitle } from '@/components/app'
 import { Grid, List, BookOpen } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { showNotifError } from '@/lib/show-notif'
@@ -13,7 +13,7 @@ import {EnumViewMode} from "@/constants/app-enum";
 import { DataTablePagination } from '@/components/custom/table';
 import { useAppStore } from '@/stores/useAppStore'
 
-export const Route = createFileRoute('/_v1/_books/books')({
+export const Route = createFileRoute('/books')({
   validateSearch: z.object({
     page: z.number().min(1).optional().catch(1),
     limit: z.number().min(1).max(20).optional().catch(12),
@@ -92,6 +92,7 @@ function RouteComponent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-blue-950 dark:to-indigo-950">
+      <AppNavbar />
       {/* Hero Section */}
       <BooksHeroSection
         searchTerm={searchTerm}
@@ -101,7 +102,7 @@ function RouteComponent() {
       />
 
       {/* Main Content */}
-      <div className="px-6 py-6 mx-auto max-w-7xl">
+      <div className="">
         {/* Controls Bar */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-4">

@@ -6,6 +6,7 @@ import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } 
 import { educationGrades } from "../../../db/schema/education-schema.ts";
 import {and, eq, inArray, sql, or, ilike, desc} from "drizzle-orm";
 import type {FastifyReply, FastifyRequest} from "fastify";
+import { EnumContentStatus } from "../../../db/schema/enum-app.ts";
 
 const BookListQuery = Type.Object({
   category: Type.Optional(Type.Array(Type.Number())),
@@ -157,6 +158,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       if (grade?.length) {
         conditions.push(inArray(educationGrades.id, grade));
+        conditions.push(eq(books.status, EnumContentStatus.PUBLISHED));
       }
 
       // Build base query with joins
