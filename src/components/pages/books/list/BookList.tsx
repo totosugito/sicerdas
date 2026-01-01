@@ -6,14 +6,15 @@ import { Book, getBookCover } from "../types/books"
 import { BookStats } from "./BookStats"
 import { formatFileSize } from "@/lib/my-utils"
 import { useTranslation } from "react-i18next"
+import { AppRoute } from "@/constants/app-route"
 
 export const BookList = ({ book }: { book: Book }) => {
     const {t} = useTranslation();
     return (
         <Link
             key={book.id}
-            to="/book/$bookId"
-            params={{ bookId: book.id.toString() }}
+            to={AppRoute.books.detail.url}
+            params={{ id: book.id.toString() }}
             className="group block"
         >
             <Card className="group-hover:shadow-xl group-hover:-translate-y-1 transition-all duration-300 overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm py-0">
@@ -21,9 +22,9 @@ export const BookList = ({ book }: { book: Book }) => {
                     {/* Book Cover - Left Side */}
                     <div className="relative overflow-hidden w-32 flex-shrink-0">
                         <img
-                            src={getBookCover(book.id, "md")}
+                            src={getBookCover(book.bookId, "md")}
                             alt={`Cover of ${book.title}`}
-                            className="w-full h-42 object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="w-full h-full min-h-42 object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                     </div>
 
@@ -52,7 +53,7 @@ export const BookList = ({ book }: { book: Book }) => {
                             <div className="flex flex-wrap gap-4 mb-3 text-xs text-muted-foreground">
                                 <div className="flex items-center">
                                     <BookOpen className="w-3 h-3 mr-1" />
-                                    <span>{book.totalPages} {t('labels.pages')}</span>
+                                    <span>{book.totalPages} {t('books.info.pages')}</span>
                                 </div>
                                 <div className="flex items-center">
                                     <FileText className="w-3 h-3 mr-1" />
@@ -60,7 +61,7 @@ export const BookList = ({ book }: { book: Book }) => {
                                 </div>
                                 <div className="flex items-center">
                                     <Calendar className="w-3 h-3 mr-1" />
-                                    <span>{t('labels.published')} {book.publishedYear}</span>
+                                    <span>{t('books.info.published')} {book.publishedYear}</span>
                                 </div>
                             </div>
 

@@ -35,7 +35,7 @@ function ForgetPasswordComponent() {
       {
         onSuccess: (responseData: any) => {
           // Store the success message from API response
-          const message = responseData?.message || t("forgetPassword.successMessage");
+          const message = responseData?.message || t("auth.forgetPassword.successMessage");
           setSuccessMessage(message);
           setIsSuccess(true);
           // Redirect to OTP verification page with email parameter from form data
@@ -46,7 +46,7 @@ function ForgetPasswordComponent() {
           const errorMsg = error?.response?.data?.message ||
             error?.response?.data?.error ||
             error?.message ||
-            t("forgetPassword.errorMessage");
+            t("auth.forgetPassword.errorMessage");
           setErrorMessage(errorMsg);
         },
       }
@@ -64,20 +64,20 @@ function ForgetPasswordComponent() {
         <AuthHeader
           icon={<CheckCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
-          title={t("forgetPassword.title")}
+          title={t("auth.forgetPassword.title")}
           description={""}
         />
         {/* Success card */}
         <div className="text-center space-y-6">
           <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
-            <h2 className="text-xl font-semibold text-foreground mb-2">{t("forgetPassword.successTitle")}</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-2">{t("auth.forgetPassword.successTitle")}</h2>
             <p className="text-muted-foreground">
-              {successMessage || t("forgetPassword.successMessage")}
+              {successMessage || t("auth.forgetPassword.successMessage")}
             </p>
           </div>
 
           <Button onClick={handleBackToLogin} className="w-full h-12">
-            {t("forgetPassword.backToSignIn")}
+            {t("auth.forgetPassword.backToSignIn")}
           </Button>
         </div>
       </AuthLayout>
@@ -91,22 +91,22 @@ function ForgetPasswordComponent() {
         <AuthHeader
           icon={<AlertCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
-          title={t("forgetPassword.title")}
+          title={t("auth.forgetPassword.title")}
           description={""}
         />
         {/* Error card */}
         <div className="text-center space-y-6">
           <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-            <h2 className="text-xl font-semibold text-foreground mb-2">{t("forgetPassword.failTitle")}</h2>
-            <p className="text-sm text-destructive font-medium">{errorMessage || t("forgetPassword.errorMessage")}</p>
+            <h2 className="text-xl font-semibold text-foreground mb-2">{t("auth.forgetPassword.failTitle")}</h2>
+            <p className="text-sm text-destructive font-medium">{errorMessage || t("auth.forgetPassword.errorMessage")}</p>
           </div>
 
           <div className="flex flex-col gap-3">
             <Button onClick={() => setErrorMessage(undefined)} className="w-full">
-              {t("forgetPassword.tryAgain")}
+              {t("auth.forgetPassword.tryAgain")}
             </Button>
             <Button variant="outline" onClick={handleBackToLogin} className="w-full">
-              {t("forgetPassword.backToSignIn")}
+              {t("auth.forgetPassword.backToSignIn")}
             </Button>
           </div>
         </div>
@@ -120,8 +120,8 @@ function ForgetPasswordComponent() {
       <AuthHeader
         icon={<Mail className="w-8 h-8 text-white" />}
         appName={t("app.appName")}
-        title={t("forgetPassword.title")}
-        description={t("forgetPassword.instructions")}
+        title={t("auth.forgetPassword.title")}
+        description={t("auth.forgetPassword.instructions")}
       />
 
       {/* Forgot password form */}
@@ -129,7 +129,7 @@ function ForgetPasswordComponent() {
 
       <div className="mt-6 text-center">
         <p className="text-sm text-muted-foreground">
-          {t("forgetPassword.backToSignIn")}{" "}
+          {t("auth.forgetPassword.backToSignIn")}{" "}
           <a href={AppRoute.auth.signIn.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
             {t("labels.signIn")}
           </a>

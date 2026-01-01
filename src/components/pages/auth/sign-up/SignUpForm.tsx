@@ -30,19 +30,19 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
         type: "text",
         name: "name",
         label: t("labels.fullName"),
-        placeholder: t("signUp.namePlaceholder"),
+        placeholder: t("auth.signUp.namePlaceholder"),
       },
       email: {
         type: "text",
         name: "email",
         label: t("labels.emailAddress"),
-        placeholder: t("signUp.emailPlaceholder"),
+        placeholder: t("auth.signUp.emailPlaceholder"),
       },
       password: {
         type: "password",
         name: "password",
         label: t("labels.password"),
-        placeholder: t("signUp.passwordPlaceholder"),
+        placeholder: t("auth.signUp.passwordPlaceholder"),
       }
     },
     defaultValue: {
@@ -131,9 +131,9 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
 
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
-            {t("signUp.alreadyHaveAccount")}{" "}
+            {t("auth.signUp.alreadyHaveAccount")}{" "}
             <a href={AppRoute.auth.signIn.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
-              {t("signUp.backToSignIn")}
+              {t("auth.signUp.backToSignIn")}
             </a>
           </p>
         </div>

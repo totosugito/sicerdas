@@ -12,6 +12,7 @@ export const AppApi = {
     emailOtpForgetPassword: APP_URL_API + "/auth/email-otp-forget-password",
     emailOtpVerifyForgetPassword: APP_URL_API + "/auth/email-otp-verify-forget-password",
     emailOtpResetPassword: APP_URL_API + "/auth/email-otp-reset-password",
+    emailHasOtp: APP_URL_API + "/auth/email-has-otp",
     getSession: APP_URL_API + "/auth/get-session",
   },
   admin: {
@@ -43,6 +44,7 @@ export const AppApi = {
   },
   book: {
     list: APP_URL_V1 + "/book/list",
+    detail: APP_URL_V1 + "/book/detail",
     create: APP_URL_V1 + "/book/create",
     crud: APP_URL_V1 + "/book",
   },

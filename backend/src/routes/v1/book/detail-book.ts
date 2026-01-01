@@ -1,0 +1,243 @@
+import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
+import {Type} from '@sinclair/typebox';
+import {withErrorHandler} from "../../../utils/withErrorHandler.ts";
+import {db} from "../../../db/index.ts";
+import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } from "../../../db/schema/book-schema.ts";
+import { educationGrades } from "../../../db/schema/education-schema.ts";
+import {and, eq, sql} from "drizzle-orm";
+import type {FastifyReply, FastifyRequest} from "fastify";
+
+const BookDetailResponse = Type.Object({
+  id: Type.String({ format: 'uuid' }),
+  bookId: Type.Number(),
+  title: Type.String(),
+  description: Type.Optional(Type.String()),
+  author: Type.Optional(Type.String()),
+  publishedYear: Type.String(),
+  totalPages: Type.Number(),
+  size: Type.Number(),
+  status: Type.String(),
+  rating: Type.Optional(Type.Number()),
+  viewCount: Type.Optional(Type.Number()),
+  category: Type.Object({
+    id: Type.Number(),
+    name: Type.String(),
+  }),
+  group: Type.Object({
+    id: Type.Number(),
+    name: Type.String(),
+  }),
+  grade: Type.Object({
+    id: Type.Number(),
+    name: Type.String(),
+    grade: Type.String(),
+  }),
+  // User interaction data (only present when user is logged in)
+  userInteraction: Type.Optional(Type.Object({
+    liked: Type.Boolean(),
+    disliked: Type.Boolean(),
+    rating: Type.Number(),
+    bookmarked: Type.Boolean(),
+  })),
+  createdAt: Type.String({format: 'date-time'}),
+  updatedAt: Type.String({format: 'date-time'}),
+});
+
+const BookDetailResponseWrapper = Type.Object({
+  success: Type.Boolean(),
+  data: BookDetailResponse,
+});
+
+const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
+  app.route({
+    url: '/detail/:bookId',
+    method: 'GET',
+    schema: {
+      tags: ['V1/Book'],
+      summary: 'Get book detail',
+      description: 'Get detailed information about a specific book by its ID',
+      params: Type.Object({
+        bookId: Type.String({ description: 'Book ID (UUID format)' }),
+      }),
+      response: {
+        200: BookDetailResponseWrapper,
+      },
+    },
+    handler: withErrorHandler(async function handler(
+      req: FastifyRequest<{ Params: { bookId: string } }>,
+      reply: FastifyReply
+    ): Promise<typeof BookDetailResponseWrapper.static> {
+      const { bookId } = req.params;
+      
+      // Check if user is logged in
+      const isLoggedIn = !!(req.session?.user);
+      const userId = isLoggedIn ? req.session.user.id : null;
+
+      // Build the base query with joins
+      let baseQuery;
+      
+      if (isLoggedIn && userId) {
+        // Query with user interactions
+        baseQuery = db
+          .select({
+            id: books.id,
+            bookId: books.bookId,
+            title: books.title,
+            description: books.description,
+            author: books.author,
+            publishedYear: books.publishedYear,
+            totalPages: books.totalPages,
+            size: books.size,
+            status: books.status,
+            rating: bookEventStats.rating,
+            viewCount: bookEventStats.viewCount,
+            createdAt: books.createdAt,
+            updatedAt: books.updatedAt,
+            category: {
+              id: bookCategory.id,
+              name: bookCategory.name,
+            },
+            group: {
+              id: bookGroup.id,
+              name: bookGroup.name,
+            },
+            grade: {
+              id: educationGrades.id,
+              name: educationGrades.name,
+              grade: educationGrades.grade,
+            },
+            // User interaction data
+            liked: userBookInteractions.liked,
+            disliked: userBookInteractions.disliked,
+            userRating: userBookInteractions.rating,
+            bookmarked: userBookInteractions.bookmarked,
+          })
+          .from(books)
+          .leftJoin(bookGroup, eq(books.bookGroupId, bookGroup.id))
+          .leftJoin(bookCategory, eq(bookGroup.categoryId, bookCategory.id))
+          .leftJoin(educationGrades, eq(books.educationGradeId, educationGrades.id))
+          .leftJoin(bookEventStats, eq(books.id, bookEventStats.bookId))
+          .leftJoin(userBookInteractions, and(
+            eq(books.id, userBookInteractions.bookId),
+            eq(userBookInteractions.userId, userId)
+          ))
+          .where(eq(books.id, bookId)); // Filter by the specific book ID
+      } else {
+        // Query without user interactions
+        baseQuery = db
+          .select({
+            id: books.id,
+            bookId: books.bookId,
+            title: books.title,
+            description: books.description,
+            author: books.author,
+            publishedYear: books.publishedYear,
+            totalPages: books.totalPages,
+            size: books.size,
+            status: books.status,
+            rating: bookEventStats.rating,
+            viewCount: bookEventStats.viewCount,
+            createdAt: books.createdAt,
+            updatedAt: books.updatedAt,
+            category: {
+              id: bookCategory.id,
+              name: bookCategory.name,
+            },
+            group: {
+              id: bookGroup.id,
+              name: bookGroup.name,
+            },
+            grade: {
+              id: educationGrades.id,
+              name: educationGrades.name,
+              grade: educationGrades.grade,
+            },
+            // Placeholder values for user interactions when not logged in
+            liked: sql<boolean | null>`NULL`.as('liked'),
+            disliked: sql<boolean | null>`NULL`.as('disliked'),
+            userRating: sql<string | null>`NULL`.as('userRating'),
+            bookmarked: sql<boolean | null>`NULL`.as('bookmarked'),
+          })
+          .from(books)
+          .leftJoin(bookGroup, eq(books.bookGroupId, bookGroup.id))
+          .leftJoin(bookCategory, eq(bookGroup.categoryId, bookCategory.id))
+          .leftJoin(educationGrades, eq(books.educationGradeId, educationGrades.id))
+          .leftJoin(bookEventStats, eq(books.id, bookEventStats.bookId))
+          .where(eq(books.id, bookId)); // Filter by the specific book ID
+      }
+
+      const result = await baseQuery;
+
+      if (!result || result.length === 0) {
+        return reply.status(404).send({
+          success: false,
+          message: 'Book not found'
+        });
+      }
+
+      const book = result[0];
+
+      const processedBook = {
+        id: book.id,
+        bookId: book.bookId,
+        title: book.title,
+        description: book.description,
+        author: book.author,
+        publishedYear: book.publishedYear,
+        totalPages: book.totalPages,
+        size: book.size,
+        status: book.status,
+        rating: book.rating !== null ? parseFloat(book.rating.toString()) : undefined,
+        viewCount: book.viewCount !== null ? book.viewCount : undefined,
+        category: book.category ? {
+          id: book.category.id,
+          name: book.category.name,
+        } : {
+          id: 0,
+          name: '',
+        },
+        group: book.group ? {
+          id: book.group.id,
+          name: book.group.name,
+        } : {
+          id: 0,
+          name: '',
+        },
+        grade: book.grade ? {
+          id: book.grade.id,
+          name: book.grade.name,
+          grade: book.grade.grade,
+        } : {
+          id: 0,
+          name: '',
+          grade: '',
+        },
+        createdAt: book.createdAt ? book.createdAt.toISOString() : new Date().toISOString(),
+        updatedAt: book.updatedAt ? book.updatedAt.toISOString() : new Date().toISOString(),
+      };
+
+      // Add user interaction data if user is logged in
+      if (isLoggedIn && book.liked !== undefined) {
+        return reply.status(200).send({
+          success: true,
+          data: {
+            ...processedBook,
+            userInteraction: {
+              liked: book.liked !== undefined && book.liked !== null ? book.liked : false,
+              disliked: book.disliked !== undefined && book.disliked !== null ? book.disliked : false,
+              rating: book.userRating !== undefined && book.userRating !== null ? parseFloat(book.userRating.toString()) : 0,
+              bookmarked: book.bookmarked !== undefined && book.bookmarked !== null ? book.bookmarked : false,
+            }
+          }
+        });
+      }
+
+      return reply.status(200).send({
+        success: true,
+        data: processedBook
+      });
+    }),
+  });
+};
+
+export default publicRoute;

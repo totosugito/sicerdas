@@ -2,9 +2,8 @@ import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
 import {withErrorHandler} from "../../utils/withErrorHandler.ts";
 import {db} from "../../db/index.ts";
-import {users, verifications} from "../../db/schema/auth-schema.ts";
-import {eq, and, gte, count} from "drizzle-orm";
-import {PASSWORD_RESET_RATE_LIMIT, PASSWORD_RESET_RATE_LIMIT_WINDOW_MS} from "../../config/app-constant.ts";
+import {users} from "../../db/schema/auth-schema.ts";
+import {eq} from "drizzle-orm";
 
 /**
  * Reset password using email OTP
@@ -70,28 +69,6 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       
       if (existingUser.length === 0) {
         return reply.notFound(req.i18n.t('auth.userNotFound'));
-      }
-
-      const userId = existingUser[0].id;
-
-      // Rate limiting: Check if user has made more than N requests in the last hour
-      const ONE_HOUR_AGO = new Date(Date.now() - PASSWORD_RESET_RATE_LIMIT_WINDOW_MS);
-
-      // Count password reset requests for this user ID in the last hour
-      const requestCountResult = await db
-        .select({ count: count() })
-        .from(verifications)
-        .where(
-          and(
-            eq(verifications.value, userId),
-            gte(verifications.createdAt, ONE_HOUR_AGO)
-          )
-        );
-      
-      const requestCount = requestCountResult[0]?.count || 0;
-
-      if (requestCount >= PASSWORD_RESET_RATE_LIMIT) {
-        return reply.tooManyRequests(req.i18n.t('auth.passwordResetRateLimitExceeded'));
       }
 
       // Use Fastify's built-in inject method to call the better-auth API

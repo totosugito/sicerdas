@@ -16,7 +16,7 @@ export const BookCard = ({ book }: { book: Book }) => {
             <Card className="h-full group-hover:shadow-xl group-hover:-translate-y-2 transition-all duration-300 overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm pt-0 pb-3 gap-3">
                 <div className="relative overflow-hidden">
                     <img
-                        src={getBookCover(book.id, "md")} alt={`Cover of ${book.title}`}
+                        src={getBookCover(book.bookId, "md")} alt={`Cover of ${book.title}`}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-2 right-2">

@@ -45,7 +45,7 @@ function SignUpComponent() {
       {
         onSuccess: (data: any) => {
           // Store the success message from API response
-          const message = data?.message || t("signUp.signUpSuccessMessage");
+          const message = data?.message || t("auth.signUp.signUpSuccessMessage");
           setSuccessMessage(message);
           setIsSuccess(true);
         },
@@ -54,7 +54,7 @@ function SignUpComponent() {
           const errorMsg = error?.response?.data?.message ||
             error?.response?.data?.error ||
             error?.message ||
-            t("signUp.signUpFailedMessage");
+            t("auth.signUp.signUpFailedMessage");
           setErrorMessage(errorMsg);
         },
       }
@@ -77,15 +77,15 @@ function SignUpComponent() {
         <AuthHeader
           icon={<CheckCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
-          title={t("signUp.title")}
+          title={t("auth.signUp.title")}
           description={""}
         />
         {/* Success card */}
         <div className="text-center space-y-6">
           <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
-            <h2 className="text-xl font-semibold text-foreground mb-2">{t("signUp.signUpSuccessTitle")}</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-2">{t("auth.signUp.signUpSuccessTitle")}</h2>
             <p className="text-muted-foreground">
-              {successMessage || t("signUp.signUpSuccessMessage")}
+              {successMessage || t("auth.signUp.signUpSuccessMessage")}
             </p>
           </div>
 
@@ -104,19 +104,19 @@ function SignUpComponent() {
         <AuthHeader
           icon={<AlertCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
-          title={t("signUp.title")}
+          title={t("auth.signUp.title")}
           description={""}
         />
         {/* Error card */}
         <div className="text-center space-y-6">
           <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-            <h2 className="text-xl font-semibold text-foreground mb-2">{t("signUp.signUpFailedTitle")}</h2>
-            <p className="text-sm text-destructive font-medium">{errorMessage || t("signUp.signUpFailedMessage")}</p>
+            <h2 className="text-xl font-semibold text-foreground mb-2">{t("auth.signUp.signUpFailedTitle")}</h2>
+            <p className="text-sm text-destructive font-medium">{errorMessage || t("auth.signUp.signUpFailedMessage")}</p>
           </div>
 
           <div className="flex flex-col gap-3">
             <Button onClick={() => setErrorMessage(undefined)} className="w-full">
-              {t("signUp.tryAgain")}
+              {t("auth.signUp.tryAgain")}
             </Button>
             <Button variant="outline" onClick={handleBackToLogin} className="w-full">
               {t("labels.signIn")}
@@ -133,8 +133,8 @@ function SignUpComponent() {
       <AuthHeader
         icon={<UserPlus className="w-8 h-8 text-white" />}
         appName={t("app.appName")}
-        title={t("signUp.title")}
-        description={t("signUp.signUpDescription")}
+        title={t("auth.signUp.title")}
+        description={t("auth.signUp.signUpDescription")}
       />
 
       {/* Sign up form */}
@@ -142,7 +142,7 @@ function SignUpComponent() {
 
       <div className="mt-6 text-center">
         <p className="text-sm text-muted-foreground">
-          {t("signUp.alreadyHaveAccount")}{" "}
+          {t("auth.signUp.alreadyHaveAccount")}{" "}
           <a href={AppRoute.auth.signIn.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
             {t("labels.signIn")}
           </a>

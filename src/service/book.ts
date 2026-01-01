@@ -18,7 +18,7 @@ export const useBookDetail = (bookId: string) => {
     queryFn: async () => {
       const response = await fetchApi({
         method: "GET", 
-        url: `${AppApi.book.crud}/${bookId}`, 
+        url: `${AppApi.book.detail}/${bookId}`, 
         withCredentials: true
       });
       return response;

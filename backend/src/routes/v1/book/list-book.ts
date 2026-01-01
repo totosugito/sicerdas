@@ -21,6 +21,7 @@ const BookListQuery = Type.Object({
 
 const BookResponse = Type.Object({
   id: Type.String({ format: 'uuid' }),
+  bookId: Type.Number(),
   title: Type.String(),
   description: Type.Optional(Type.String()),
   author: Type.Optional(Type.String()),
@@ -93,6 +94,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const buildBaseSelect = (includeStats: boolean = false, includeUserInteraction: boolean = false, userId: string | null = null) => {
         const baseSelect: any = {
           id: books.id,
+          bookId: books.bookId,
           title: books.title,
           description: books.description,
           author: books.author,

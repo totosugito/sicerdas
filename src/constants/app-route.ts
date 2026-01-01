@@ -37,7 +37,7 @@ export const AppRoute = {
   },
   books: {
     list: { url: "/books" },
-    detail: { url: "/books/$id" },
+    detail: { url: "/book/$id" },
     latest: { url: "/books/latest" },
   },
   periodicTable: {

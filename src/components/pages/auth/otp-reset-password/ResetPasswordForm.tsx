@@ -28,13 +28,13 @@ export const ResetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props
         type: "password",
         name: "password",
         label: t("labels.newPassword"),
-        placeholder: t("resetPassword.newPasswordPlaceholder"),
+        placeholder: t("auth.resetPassword.newPasswordPlaceholder"),
       },
       confirmPassword: {
         type: "password",
         name: "confirmPassword",
         label: t("labels.confirmPassword"),
-        placeholder: t("resetPassword.confirmPasswordPlaceholder"),
+        placeholder: t("auth.resetPassword.confirmPasswordPlaceholder"),
       }
     },
     defaultValue: {
@@ -78,7 +78,7 @@ export const ResetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props
               form={form}
               item={resetPasswordFormData.form.password}
               className="pl-10"
-              showMessage={true}
+              showMessage={false}
             />
             <Lock className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
           </div>
@@ -87,7 +87,7 @@ export const ResetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props
               form={form}
               item={resetPasswordFormData.form.confirmPassword}
               className="pl-10"
-              showMessage={true}
+              showMessage={false}
             />
             <Check className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
           </div>

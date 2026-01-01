@@ -28,8 +28,8 @@ export const ForgetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Prop
       email: {
         type: "text",
         name: "email",
-        label: t("forgetPassword.emailAddress"),
-        placeholder: t("forgetPassword.emailPlaceholder"),
+        label: t("auth.forgetPassword.emailAddress"),
+        placeholder: t("auth.forgetPassword.emailPlaceholder"),
       }
     },
     defaultValue: {
@@ -39,7 +39,7 @@ export const ForgetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Prop
 
   // Create schema with translated error messages directly in this file
   const schema = z.object({
-    email: z.email({ message: t("forgotPassword.invalidEmail") }),
+    email: z.email({ message: t("auth.forgetPassword.invalidEmail") }),
   });
   
   const form = useForm({

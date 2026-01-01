@@ -27,7 +27,7 @@ export function BooksHeroSection({
   return (
     <div className="relative overflow-hidden bg-gradient-to-r from-primary/10 via-blue-500/10 to-purple-600/10 border-b">
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-      <div className="relative px-6 py-5 mx-auto max-w-7xl">
+      <div className="relative px-6 py-8 mx-auto max-w-7xl">
         <div className="flex flex-col text-center gap-y-4 items-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/15 rounded-full">
             <BookOpen className="w-8 h-8 text-primary" />

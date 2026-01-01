@@ -1,15 +1,15 @@
-import app from './app-locale';
-import home from './home-locale';
-import labels from './labels-locale';
-import signIn from './sign-in-locale';
-import signUp from './sign-up-locale';
-import forgetPassword from './forget-password-locale';
-import resetPassword from './reset-password-locale';
-import otpVerification from './otp-verification-locale';
-import message from './message-locale';
-import user from './user-locale';
-import landing from './landing-locale';
-import booksLatest from './books-latest-locale';
+import app from './app/app-locale';
+import home from './app/home-locale';
+import labels from './global/labels-locale';
+import signIn from './auth/sign-in-locale';
+import signUp from './auth/sign-up-locale';
+import forgetPassword from './auth/forget-password-locale';
+import resetPassword from './auth/reset-password-locale';
+import otpVerification from './auth/otp-verification-locale';
+import message from './global/message-locale';
+import user from './global/user-locale';
+import landing from './app/landing-locale';
+import booksLatest from './books/books-latest-locale';
 import about from './web/about-locale';
 import privacy from './web/privacy-locale';
 import terms from './web/terms-locale';
@@ -19,21 +19,23 @@ import periodicTable from './periodic-table/periodic-table-locale';
 import chemistryDictionary from './periodic-table/chemistry-dictionary-locale';
 import elementComparison from './periodic-table/element-comparison-locale';
 import elementDetail from './periodic-table/element-detail-locale';
+import bookInfo from './books/book-info-locale';
 
 const localeId = {
   translation: {
     app: app,
     home: home,
     labels: labels,
-    signIn: signIn,
-    signUp: signUp,
-    forgetPassword: forgetPassword,
-    resetPassword: resetPassword,
-    otpVerification: otpVerification,
     message: message,
-    user: user,
     landing: landing,
-    booksLatest: booksLatest,
+    auth: {
+      signIn: signIn,
+      signUp: signUp,
+      forgetPassword: forgetPassword,
+      resetPassword: resetPassword,
+      otpVerification: otpVerification,
+      user: user,
+    },
     web: {
       about: about,
       privacy: privacy,
@@ -46,6 +48,10 @@ const localeId = {
       chemistryDictionary: chemistryDictionary,
       elementComparison: elementComparison,
       elementDetail: elementDetail
+    },
+    books: {
+      info: bookInfo,
+      booksLatest: booksLatest,
     }
   }
 }

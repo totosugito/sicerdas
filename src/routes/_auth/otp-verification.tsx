@@ -3,7 +3,7 @@ import {
   redirect,
 } from '@tanstack/react-router'
 import { SubmitHandler } from 'react-hook-form'
-import { useEmailOtpVerifyForgetPasswordMutation, useEmailOtpForgetPasswordMutation } from "@/service/auth-api";
+import { useEmailOtpVerifyForgetPasswordMutation, useEmailOtpForgetPasswordMutation, useEmailHasOtpQuery } from "@/service/auth-api";
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck, Timer, Loader2 } from 'lucide-react';
 import { OtpVerificationForm } from '@/components/pages/auth/otp-verification';
@@ -12,6 +12,7 @@ import { AppRoute } from '@/constants/app-route';
 import { z } from 'zod';
 import { APP_CONFIG } from '@/constants/config';
 import { AuthHeader, AuthLayout } from '@/components/pages/auth';
+import NotFoundError from '@/components/custom/errors/NotFoundError';
 
 // Timer duration in seconds (default 120 seconds = 2 minutes)
 const TIMER_DURATION = APP_CONFIG.RESEND_OTP_DELAY || 120;
@@ -40,6 +41,7 @@ function OtpVerificationComponent() {
   const navigate = Route.useNavigate()
   const search = Route.useSearch()
 
+  const emailHasOtpQuery = useEmailHasOtpQuery(search.email);
   const emailOtpVerifyForgetPasswordMutation = useEmailOtpVerifyForgetPasswordMutation();
   const emailOtpForgetPasswordMutation = useEmailOtpForgetPasswordMutation(); // For resending OTP
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
@@ -71,6 +73,30 @@ function OtpVerificationComponent() {
     };
   }, [showTimer, timer]);
 
+  // Show NotFoundError if the API returns a 404 (user not found) or if the user doesn't have OTP
+  if (
+    (emailHasOtpQuery.isSuccess && emailHasOtpQuery.data && !emailHasOtpQuery.data.hasOtp) ||
+    (emailHasOtpQuery.isError && emailHasOtpQuery.error && 
+      ((emailHasOtpQuery.error as any).status === 404 || 
+       ((emailHasOtpQuery.error as any).response?.status === 404)))
+  ) {
+    return <NotFoundError />;
+  }
+
+  // Show loading state while the query is in progress
+  if (emailHasOtpQuery.isLoading) {
+    return (
+      <AuthLayout>
+        <div className="h-svh flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+            <p className="mt-2">Checking for pending verification...</p>
+          </div>
+        </div>
+      </AuthLayout>
+    );
+  }
+
   const onFormSubmit: SubmitHandler<Record<string, any>> = (data) => {
     setErrorMessage(undefined);
 
@@ -89,7 +115,7 @@ function OtpVerificationComponent() {
               }
             });
           } else {
-            setErrorMessage(response?.data?.message || t("otpVerification.invalidOtp"));
+            setErrorMessage(response?.data?.message || t("auth.otpVerification.invalidOtp"));
           }
         },
         onError: (error: Record<string, any>) => {
@@ -97,7 +123,7 @@ function OtpVerificationComponent() {
           const errorMsg = error?.response?.data?.message ||
             error?.response?.data?.error ||
             error?.message ||
-            t("otpVerification.verificationError");
+            t("auth.otpVerification.verificationError");
           setErrorMessage(errorMsg);
         },
       }
@@ -128,7 +154,7 @@ function OtpVerificationComponent() {
           const errorMsg = error?.response?.data?.message ||
             error?.response?.data?.error ||
             error?.message ||
-            t("otpVerification.resendOtpError");
+            t("auth.otpVerification.resendOtpError");
           setErrorMessage(errorMsg);
         },
         onSettled: () => {
@@ -151,8 +177,8 @@ function OtpVerificationComponent() {
       <AuthHeader
         icon={<ShieldCheck className="w-8 h-8 text-white" />}
         appName={t("app.appName")}
-        title={t("otpVerification.title")}
-        description={t("otpVerification.instructions")}
+        title={t("auth.otpVerification.title")}
+        description={t("auth.otpVerification.instructions")}
       />
 
       {/* OTP verification form */}
@@ -172,7 +198,7 @@ function OtpVerificationComponent() {
               <div className="flex items-center space-x-2">
                 <Timer className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">
-                  {t("otpVerification.timerText")}
+                  {t("auth.otpVerification.timerText")}
                 </span>
               </div>
               <div className="font-mono text-sm">
@@ -196,7 +222,7 @@ function OtpVerificationComponent() {
 
           {resendSuccess && (
             <div className="mt-3 p-2 bg-green-500/10 border border-green-500/20 rounded text-green-700 dark:text-green-300 text-sm">
-              {t("otpVerification.resendOtpSuccess")}
+              {t("auth.otpVerification.resendOtpSuccess")}
             </div>
           )}
 
@@ -211,7 +237,7 @@ function OtpVerificationComponent() {
 
       <div className="mt-6 text-center">
         <p className="text-sm text-muted-foreground">
-          {t("otpVerification.backToSignIn")}{" "}
+          {t("auth.otpVerification.backToSignIn")}{" "}
           <a href={AppRoute.auth.signIn.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
             {t("labels.signIn")}
           </a>

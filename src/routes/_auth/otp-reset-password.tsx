@@ -78,7 +78,7 @@ function ResetPasswordComponent() {
       {
         onSuccess: (data: any) => {
           // Store the success message from API response
-          const message = data?.message || t("resetPassword.successMessage");
+          const message = data?.message || t("auth.resetPassword.successMessage");
           setSuccessMessage(message);
           setIsSuccess(true);
         },
@@ -87,7 +87,7 @@ function ResetPasswordComponent() {
           const errorMsg = error?.response?.data?.message ||
             error?.response?.data?.error ||
             error?.message ||
-            t("resetPassword.errorMessage");
+            t("auth.resetPassword.errorMessage");
           setErrorMessage(errorMsg);
         },
       }
@@ -105,20 +105,20 @@ function ResetPasswordComponent() {
         <AuthHeader
           icon={<CheckCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
-          title={t("resetPassword.title")}
+          title={t("auth.resetPassword.title")}
           description={""}
         />
         {/* Success card */}
         <div className="text-center space-y-6">
           <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
-            <h2 className="text-xl font-semibold text-foreground mb-2">{t("resetPassword.successTitle")}</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-2">{t("auth.resetPassword.successTitle")}</h2>
             <p className="text-muted-foreground">
-              {successMessage || t("resetPassword.successMessage")}
+              {successMessage || t("auth.resetPassword.successMessage")}
             </p>
           </div>
 
           <Button onClick={handleBackToLogin} className="w-full">
-            {t("resetPassword.backToSignIn")}
+            {t("auth.resetPassword.backToSignIn")}
           </Button>
         </div>
       </AuthLayout>
@@ -132,22 +132,22 @@ function ResetPasswordComponent() {
         <AuthHeader
           icon={<AlertCircle className="w-8 h-8 text-white" />}
           appName={t("app.appName")}
-          title={t("resetPassword.title")}
+          title={t("auth.resetPassword.title")}
           description={""}
         />
         {/* Error card */}
         <div className="text-center space-y-6">
           <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-            <h2 className="text-xl font-semibold text-foreground mb-2">{t("resetPassword.errorTitle")}</h2>
-            <p className="text-sm text-destructive font-medium">{errorMessage || t("resetPassword.errorMessage")}</p>
+            <h2 className="text-xl font-semibold text-foreground mb-2">{t("auth.resetPassword.errorTitle")}</h2>
+            <p className="text-sm text-destructive font-medium">{errorMessage || t("auth.resetPassword.errorMessage")}</p>
           </div>
 
           <div className="flex flex-col gap-3">
             <Button onClick={() => setErrorMessage(undefined)} className="w-full">
-              {t("resetPassword.tryAgain")}
+              {t("auth.resetPassword.tryAgain")}
             </Button>
             <Button variant="outline" onClick={handleBackToLogin} className="w-full">
-              {t("resetPassword.backToSignIn")}
+              {t("auth.resetPassword.backToSignIn")}
             </Button>
           </div>
         </div>
@@ -161,8 +161,8 @@ function ResetPasswordComponent() {
       <AuthHeader
         icon={<Lock className="w-8 h-8 text-white" />}
         appName={t("app.appName")}
-        title={t("resetPassword.title")}
-        description={t("resetPassword.instructions")}
+        title={t("auth.resetPassword.title")}
+        description={t("auth.resetPassword.instructions")}
       />
 
       {/* Reset password form */}
@@ -170,7 +170,7 @@ function ResetPasswordComponent() {
 
       <div className="mt-6 text-center">
         <p className="text-sm text-muted-foreground">
-          {t("resetPassword.backToSignIn")}{" "}
+          {t("auth.resetPassword.backToSignIn")}{" "}
           <a href={AppRoute.auth.signIn.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
             {t("labels.signIn")}
           </a>

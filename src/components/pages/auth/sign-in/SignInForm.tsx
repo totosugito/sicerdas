@@ -27,13 +27,13 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
         type: "text",
         name: "email",
         label: t("labels.emailAddress"),
-        placeholder: t("signIn.emailPlaceholder"),
+        placeholder: t("auth.signIn.emailPlaceholder"),
       },
       password: {
         type: "password",
         name: "password",
         label: t("labels.password"),
-        placeholder: t("signIn.passwordPlaceholder"),
+        placeholder: t("auth.signIn.passwordPlaceholder"),
       }
     },
     defaultValue: {
@@ -44,8 +44,8 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
 
   // Create schema with translated error messages directly in this file
   const schema = z.object({
-    email: z.email({ message: t("signIn.invalidEmail") }),
-    password: z.string().min(1, { message: t("signIn.passwordRequired") }),
+    email: z.email({ message: t("auth.signIn.invalidEmail") }),
+    password: z.string().min(1, { message: t("auth.signIn.passwordRequired") }),
   });
 
   const form = useForm<LoginFormValues>({
@@ -127,7 +127,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-background px-2 text-muted-foreground">
-                  {t("signIn.orContinueWith")}
+                  {t("auth.signIn.orContinueWith")}
                 </span>
               </div>
             </div>
@@ -156,14 +156,14 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
                   fill="#EA4335"
                 />
               </svg>
-              {t("signIn.continueWithGoogle")}
+              {t("auth.signIn.continueWithGoogle")}
             </Button>
           </div>
         )}
 
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
-            {t("signIn.newUser")}{" "}
+            {t("auth.signIn.newUser")}{" "}
             <a href={AppRoute.auth.signUp.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
               {t("labels.signUp")}
             </a>
