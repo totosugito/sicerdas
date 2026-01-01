@@ -8,6 +8,7 @@ import { Info } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { getPeriodictUnits } from "../utils/element-units";
+import { getColumnGroup } from "../utils/element";
 
 interface ElementDetailPopoverProps {
   element: PeriodicElementType;
@@ -95,7 +96,7 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
               <div className="space-y-1 text-sm">
                 {renderProperty(t('periodicTable.periodicTable.var.atomicWeight'), (data.prop?.atomicWeight as string) + " " + getPeriodictUnits("atomicWeight"))}
                 {renderProperty(t('periodicTable.periodicTable.var.phase'), data.prop?.phase as string)}
-                {renderProperty(t('periodicTable.periodicTable.var.group'), data.prop?.group as string)}
+                {renderProperty(t('periodicTable.periodicTable.var.group'), (data.prop?.group as string + getColumnGroup(data.prop?.group as string)))}
                 {renderProperty(t('periodicTable.periodicTable.var.period'), data.prop?.period as string)}
                 {renderProperty(t('periodicTable.periodicTable.var.block'), data.prop?.block as string)}
                 {renderProperty(t('periodicTable.periodicTable.var.series'), t('periodicTable.periodicTable.var.' + data.prop?.series) as string)}

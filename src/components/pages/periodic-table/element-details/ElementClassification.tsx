@@ -5,6 +5,7 @@ import { getPeriodictUnits } from '../utils/element-units'
 import { toPhysics } from '@/lib/my-utils'
 import { ElementDetail } from '@/service/periodic-table-api'
 import ViewOxidationStates from './ViewOxidationStates'
+import { getColumnGroup } from '../utils/element'
 
 interface ElementClassificationProps {
   element: ElementDetail
@@ -34,7 +35,7 @@ export function ElementClassification({ element, expandedSections, toggleSection
           />
           <PropertyItem
             label={t('periodicTable.periodicTable.var.group')}
-            value={element.atomicProperties?.group}
+            value={element.atomicProperties?.group + getColumnGroup(element.atomicProperties?.group as string)}
           />
           <PropertyItem
             label={t('periodicTable.periodicTable.var.period')}

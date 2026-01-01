@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { PeriodicElement } from "../types/types";
 import { getElementStyle } from "../utils/element-styles";
 import { EnumPeriodicGroup } from "backend/src/db/schema/enum-app";
+import { getColumnGroup } from "../utils/element";
 
 interface PeriodicCellProps {
   element: PeriodicElement;
@@ -47,7 +48,7 @@ export const PeriodicCell = ({
           "text-sm font-bold transition-colors",
           isHeaderHighlighted ? "text-primary dark:text-primary-foreground" : "text-foreground dark:text-white/90"
         )}>
-          {atomicSymbol}
+          {atomicSymbol}{((element.idy === 0) && (element.idx > 0)) ? (getColumnGroup(atomicSymbol)) : ""}
         </span>
       </div>
     );

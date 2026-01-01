@@ -7,7 +7,7 @@ import { toPhysics } from "@/lib/my-utils";
  * @param {string} type - The type of image (e.g., 'atomic', 'safety', 'spectrum').
  * @returns {string} The URL for the element's image.
  */
-export const getElementImage = ({ element, type, extension='jpg' }: { element: string; type: 'atomic' | 'safety' | 'spectrum', extension?: string }) => {
+export const getElementImage = ({ element, type, extension = 'jpg' }: { element: string; type: 'atomic' | 'safety' | 'spectrum', extension?: string }) => {
   return `${APP_CONFIG.cloud}/bse/table-periodic/${type}/${element.toLowerCase()}.${extension}`;
 };
 
@@ -20,35 +20,35 @@ export const getElectronShell = (electronShell: string | undefined): string | un
   if (!electronShell) {
     return undefined;
   }
-  
+
   const key_ = ["K", "L", "M", "N", "O", "P", "Q", "R"];
   const default_ = ["0", "0", "0", "0", "0", "0", "0", "0"];
   const value_ = electronShell.split(" ");
-  
+
   for (let i = 0; i < value_.length; i++) {
     default_[i] = value_[i].trim();
   }
-  
+
   let result = "";
   for (let i = 0; i < key_.length; i++) {
     result = `${result}${key_[i]}${default_[i]} `;
   }
-  
+
   return result.trim();
 };
 
-  export const getDiscoveryYear = (year: string, unit: string) => {
-    if (year.startsWith("-")) {
-      return (`${year.substring(1)} ${unit}`);
-    }
-    return (year);
+export const getDiscoveryYear = (year: string, unit: string) => {
+  if (year.startsWith("-")) {
+    return (`${year.substring(1)} ${unit}`);
   }
+  return (year);
+}
 
 export const getElectronShellValue = (electronShell: string | undefined) => {
-  if(!electronShell) {
+  if (!electronShell) {
     return [];
   }
-  
+
   const numbers = electronShell
     .trim()
     .split(/\s+/)
@@ -168,7 +168,7 @@ export const stringToDouble = (s: string): number => parseFloat(s);
  * @param idxList List of isotope abundance objects with s (mass number) and v (value) properties
  * @returns HTML string with formatted isotope abundances
  */
-export const getIsotopeAbundance = (symbols_: string, idxList: Array<{s: number, v: number}> | undefined): string => {
+export const getIsotopeAbundance = (symbols_: string, idxList: Array<{ s: number, v: number }> | undefined): string => {
   if (!idxList || idxList.length === 0) {
     return "";
   }
@@ -207,3 +207,28 @@ export const createAtomIsotopeTag = (symbols_: string, idxList: number[] | undef
   return s;
 };
 
+export const getColumnGroup = (group: string, separator = ' / ') => {
+  const group_ = {
+    "1": "1A",
+    "2": "2A",
+    "3": "3B",
+    "4": "4B",
+    "5": "5B",
+    "6": "6B",
+    "7": "7B",
+    "8": "8B",
+    "9": "8B",
+    "10": "8B",
+    "11": "1B",
+    "12": "2B",
+    "13": "3A",
+    "14": "4A",
+    "15": "5A",
+    "16": "6A",
+    "17": "7A",
+    "18": "8A",
+  };
+  const gr = group_[group as keyof typeof group_];
+  if (!gr) return "";
+  return (separator + gr)
+}

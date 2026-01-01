@@ -8,6 +8,7 @@ import { ThemeSelector } from "./ThemeSelector";
 import { ElementDetailPopover } from "./ElementDetailPopover";
 import { useAppStore } from "@/stores/useAppStore";
 import { EnumPeriodicGroup } from "backend/src/db/schema/enum-app";
+import { PeriodicTableLegend } from "./PeriodicTableLegend";
 
 interface PeriodicTableProps {
   elements: PeriodicElement[];
@@ -24,20 +25,6 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
   // Create a 2D grid based on idx and idy
   const gridColumns = 19; // 0-18 (groups)
   const gridRows = 11; // 0-10 (periods)
-
-  const handleCellClick = (element: PeriodicElement) => {
-    // Only show dialog for actual elements (not headers or empty cells)
-    if (
-      element.atomicNumber > 0 &&
-      element.atomicGroup !== EnumPeriodicGroup.header &&
-      element.atomicGroup !== EnumPeriodicGroup.headerEmpty &&
-      element.atomicGroup !== EnumPeriodicGroup.empty
-    ) {
-      // With the popover implementation, we don't need to set state here
-      // The popover will handle its own open/close state
-      return;
-    }
-  };
 
   const isSelected = (element: PeriodicElement) => {
     // With popover implementation, we no longer track selected element state
@@ -65,14 +52,6 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
     el.atomicGroup !== EnumPeriodicGroup.header &&
     el.atomicGroup !== EnumPeriodicGroup.headerEmpty &&
     matchesSearch(el)
-  );
-
-  // Get actual element cells (not headers or empty)
-  const actualElements = elements.filter(
-    el => el.atomicNumber > 0 &&
-      el.atomicGroup !== EnumPeriodicGroup.header &&
-      el.atomicGroup !== EnumPeriodicGroup.headerEmpty &&
-      el.atomicGroup !== EnumPeriodicGroup.empty
   );
 
   // Handle window resize
@@ -162,64 +141,75 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
     <div className="space-y-4">
       <PeriodicTableHeader totalElements={elements.length} />
       <div className="space-y-4 px-4">
-      <div className="flex w-full justify-center items-center">
-        <div className="px-0 flex w-full gap-4" style={{ width: `${tableWidth}px` }}>
-          <div className="w-full">
-            <SearchBar
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              hasSearchResults={!!(searchQuery.trim() && hasSearchResults)}
-            />
-          </div>
+        <div className="flex w-full justify-center items-center">
+          <div className="px-0 flex w-full gap-4" style={{ width: `${tableWidth}px` }}>
+            <div className="w-full">
+              <SearchBar
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                hasSearchResults={!!(searchQuery.trim() && hasSearchResults)}
+              />
+            </div>
 
-          {/* Theme Selector with Popover Preview */}
-          <div className="flex flex-1 justify-end items-center">
-            <ThemeSelector 
-              currentTheme={pageProps.viewMode} 
-              onThemeChange={handleThemeChange} 
-            />
+            {/* Theme Selector with Popover Preview */}
+            <div className="flex flex-1 justify-end items-center">
+              <ThemeSelector
+                currentTheme={pageProps.viewMode}
+                onThemeChange={handleThemeChange}
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="w-full overflow-auto pt-2 mb-0">
-        <div className="grid mx-auto bg-card/50 mb-5"
-          style={{
-            gridTemplateColumns: `minmax(0, ${cellSize / 2}px) repeat(${gridColumns - 1}, minmax(0, ${cellSize}px))`,
-            gridTemplateRows: `minmax(0, ${cellSize / 2}px) repeat(7, minmax(0, ${cellSize}px)) minmax(0, ${cellSize / 2}px) repeat(${gridRows - 9}, minmax(0, ${cellSize}px))`,
-            gap: `${gap}px`,
-            width: `${tableWidth}px`,
-            height: `${tableHeight}px`,
-          }}
-        >
-          {elements.map((element) => {
-            const isRowHeader = element.idx === 0 && (element.atomicGroup === EnumPeriodicGroup.header || element.atomicGroup === EnumPeriodicGroup.headerEmpty);
-            const isColumnHeader = element.idy === 0 && (element.atomicGroup === EnumPeriodicGroup.header || element.atomicGroup === EnumPeriodicGroup.headerEmpty);
+        <div className="w-full overflow-auto pt-2 mb-0">
+          <div className="grid mx-auto bg-card/50 mb-5 relative"
+            style={{
+              gridTemplateColumns: `minmax(0, ${cellSize / 2}px) repeat(${gridColumns - 1}, minmax(0, ${cellSize}px))`,
+              gridTemplateRows: `minmax(0, ${cellSize / 2}px) repeat(7, minmax(0, ${cellSize}px)) minmax(0, ${cellSize / 2}px) repeat(${gridRows - 9}, minmax(0, ${cellSize}px))`,
+              gap: `${gap}px`,
+              width: `${tableWidth}px`,
+              height: `${tableHeight}px`,
+            }}
+          >
+            {elements.map((element) => {
+              const isRowHeader = element.idx === 0 && (element.atomicGroup === EnumPeriodicGroup.header || element.atomicGroup === EnumPeriodicGroup.headerEmpty);
+              const isColumnHeader = element.idy === 0 && (element.atomicGroup === EnumPeriodicGroup.header || element.atomicGroup === EnumPeriodicGroup.headerEmpty);
 
-            // Calculate cell dimensions based on whether it's a header cell
-            const cellWidth = isRowHeader ? cellSize / 2 : cellSize;
-            const cellHeight = isColumnHeader || element.idy === 8 ? cellSize / 2 : cellSize;
+              // Calculate cell dimensions based on whether it's a header cell
+              const cellWidth = isRowHeader ? cellSize / 2 : cellSize;
+              const cellHeight = isColumnHeader || element.idy === 8 ? cellSize / 2 : cellSize;
 
-            return (
-              <div
-                key={element.id}
-                className={cn(
-                  isRowHeader && "sticky left-0 z-10",
-                  isColumnHeader && "sticky top-0 z-10",
-                  isRowHeader && isColumnHeader && "z-20"
-                )}
-                style={{
-                  gridColumn: element.idx + 1,
-                  gridRow: element.idy + 1,
-                  width: `${cellWidth}px`,
-                  height: `${cellHeight}px`,
-                }}
-              >
-                {element.atomicNumber >= 1 && element.atomicNumber <= 200 ? (
-                  <ElementDetailPopover 
-                    element={element}
-                    theme={pageProps.viewMode}
-                  >
+              return (
+                <div
+                  key={element.id}
+                  className={cn(
+                    isRowHeader && "sticky left-0 z-10",
+                    isColumnHeader && "sticky top-0 z-10",
+                    isRowHeader && isColumnHeader && "z-20"
+                  )}
+                  style={{
+                    gridColumn: element.idx + 1,
+                    gridRow: element.idy + 1,
+                    width: `${cellWidth}px`,
+                    height: `${cellHeight}px`,
+                  }}
+                >
+                  {element.atomicNumber >= 1 && element.atomicNumber <= 200 ? (
+                    <ElementDetailPopover
+                      element={element}
+                      theme={pageProps.viewMode}
+                    >
+                      <PeriodicCell
+                        element={element}
+                        cellSize={cellSize}
+                        isSelected={isSelected(element)}
+                        isHeaderHighlighted={isHeaderHighlighted(element)}
+                        isSearchMatch={matchesSearch(element)}
+                        isSearchActive={!!searchQuery.trim()}
+                        theme={pageProps.viewMode} // Pass theme to PeriodicCell
+                      />
+                    </ElementDetailPopover>
+                  ) : (
                     <PeriodicCell
                       element={element}
                       cellSize={cellSize}
@@ -229,24 +219,29 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
                       isSearchActive={!!searchQuery.trim()}
                       theme={pageProps.viewMode} // Pass theme to PeriodicCell
                     />
-                  </ElementDetailPopover>
-                ) : (
-                  <PeriodicCell
-                    element={element}
-                    cellSize={cellSize}
-                    isSelected={isSelected(element)}
-                    isHeaderHighlighted={isHeaderHighlighted(element)}
-                    isSearchMatch={matchesSearch(element)}
-                    isSearchActive={!!searchQuery.trim()}
-                    theme={pageProps.viewMode} // Pass theme to PeriodicCell
-                  />
-                )}
+                  )}
+                </div>
+              );
+            })}
+
+            {/* Periodic Table Legend positioned in grid area (idx 5-11, idy 0-3) */}
+            <div
+              className="absolute z-30 p-3"
+              style={{
+                top: `${(cellSize / 2) + gap*2}px`, // Position at top of grid (idy 0)
+                left: `${(cellSize / 2) + (4 * cellSize) + (5 * gap)}px`, // Position at idx 5
+                width: `${8 * cellSize}px`, // Span 7 columns (idx 5-11)
+                height: `${3 * cellSize}px`, // Span 4 rows (idy 0-3)
+                pointerEvents: 'none',
+              }}
+            >
+              <div className="flex h-full items-end justify-end">
+              <PeriodicTableLegend theme={pageProps.viewMode} />
               </div>
-            );
-          })}
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    </div>
-  );
-};
+  )
+}
