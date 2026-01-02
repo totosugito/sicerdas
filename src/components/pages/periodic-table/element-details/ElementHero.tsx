@@ -19,7 +19,7 @@ export function ElementHero({ element, theme }: ElementHeroProps) {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   return (
-    <div className="relative w-full overflow-hidden bg-gradient-to-b from-primary/20 to-background h-88 md:h-106 gap-4 flex flex-col">
+    <div className="relative w-full overflow-hidden bg-gradient-to-b from-primary/20 to-background gap-4 flex flex-col">
       {/* Header with search combobox */}
       <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-sm">
         <ElementSearchCombobox theme={theme} elementPathSegment="element" navigationPath={AppRoute.periodicTable.elementDetail.url} />

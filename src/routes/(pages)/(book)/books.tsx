@@ -13,7 +13,7 @@ import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from '@/components/custom/table';
 import { useAppStore } from '@/stores/useAppStore'
 
-export const Route = createFileRoute('/books')({
+export const Route = createFileRoute('/(pages)/(book)/books')({
   validateSearch: z.object({
     page: z.number().min(1).optional().catch(1),
     limit: z.number().min(1).max(20).optional().catch(12),

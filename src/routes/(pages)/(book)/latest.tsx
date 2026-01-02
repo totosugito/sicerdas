@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select'
 import { AppNavbar } from '@/components/app'
 
-export const Route = createFileRoute('/(pages)/_books/latest')({
+export const Route = createFileRoute('/(pages)/(book)/latest')({
     component: BooksLatestPage,
     validateSearch: (search: Record<string, unknown>) => {
         return {

@@ -23,7 +23,7 @@ export function ElementHeroIsotope({ element, theme }: ElementHeroIsotopeProps) 
 
   return (
     <div className="w-full overflow-hidden bg-gradient-to-b from-primary/10 to-background">
-      <div className="container mx-auto p-8 md:p-12 ">
+      <div className="container mx-auto p-8 md:p-8">
         {/* Header with search combobox */}
         <div className="w-full max-w-sm mx-auto mb-6">
           <ElementSearchCombobox theme={theme} elementPathSegment="isotope" navigationPath={AppRoute.periodicTable.elementIsotope.url} />
