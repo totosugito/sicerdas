@@ -2,29 +2,33 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
-import { useBookList } from '@/service/book'
+import { useBookList, useBookFilterParams } from '@/service/book'
 import { Button } from '@/components/ui/button'
 import { AppNavbar, PageTitle } from '@/components/app'
-import { Grid, List, BookOpen } from 'lucide-react'
+import { Grid, List, BookOpen, Filter } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { showNotifError } from '@/lib/show-notif'
-import { Book, BookCard, BookList, BookListResponse, BooksHeroSection, BooksSkeleton } from '@/components/pages/books/list'
+import { Book, BookCard, BookList, BookListResponse, BooksHeroSection, BooksSkeleton, BookFilter } from '@/components/pages/books/list'
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from '@/components/custom/table';
 import { useAppStore } from '@/stores/useAppStore'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Separator } from '@/components/ui/separator';
 
 export const Route = createFileRoute('/(pages)/(book)/books')({
   validateSearch: z.object({
     page: z.number().min(1).optional().catch(1),
     limit: z.number().min(1).max(20).optional().catch(12),
     search: z.string().optional().catch(''),
+    category: z.array(z.number()).optional().catch([]),
+    group: z.array(z.number()).optional().catch([]),
   }),
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const { t } = useTranslation()
-  const { page: urlPage, limit: urlLimit, search: urlSearch } = Route.useSearch()
+  const { page: urlPage, limit: urlLimit, search: urlSearch, category: urlCategory, group: urlGroup } = Route.useSearch()
   const navigate = Route.useNavigate()
 
   const [searchTerm, setSearchTerm] = useState(urlSearch || '')
@@ -32,6 +36,10 @@ function RouteComponent() {
   const [currentPage, setCurrentPage] = useState(urlPage || 1)
   const [totalPages, setTotalPages] = useState(0)
   const [totalBooks, setTotalBooks] = useState(0)
+  const [selectedFilters, setSelectedFilters] = useState({
+    categories: urlCategory || [],
+    groups: urlGroup || []
+  })
 
   type ViewMode = (typeof EnumViewMode)[keyof typeof EnumViewMode]["value"];
 
@@ -39,28 +47,34 @@ function RouteComponent() {
   const pageStore = store.books;
   const [viewMode, setViewMode] = useState<ViewMode>(pageStore.viewMode ?? EnumViewMode.grid.value)
   const [isLoading, setIsLoading] = useState(true)
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   console.log(pageStore.viewMode, viewMode);
 
   const bookListMutation = useBookList()
+  const filterParamsQuery = useBookFilterParams()
 
-  const updateUrlParams = (newPage?: number, newSearch?: string) => {
+  const updateUrlParams = (newPage?: number, newSearch?: string, newFilters?: { categories: number[], groups: number[] }) => {
     navigate({
       search: {
         page: newPage || currentPage,
         limit: urlLimit || 12,
         search: newSearch !== undefined ? newSearch : searchTerm,
+        category: newFilters?.categories || selectedFilters.categories,
+        group: newFilters?.groups || selectedFilters.groups,
       },
       replace: true,
     })
   }
 
-  const loadBooks = async (page: number = 1, search: string = '') => {
+  const loadBooks = async (page: number = 1, search: string = '', filters = selectedFilters) => {
     setIsLoading(true)
     try {
       const response = await bookListMutation.mutateAsync({
         page,
         limit: urlLimit || 12,
         search: search.trim() || undefined,
+        category: filters.categories.length > 0 ? filters.categories : undefined,
+        group: filters.groups.length > 0 ? filters.groups : undefined,
       }) as BookListResponse
 
       if (response.success) {
@@ -79,8 +93,11 @@ function RouteComponent() {
   }
 
   useEffect(() => {
-    loadBooks(urlPage || 1, urlSearch || '')
-  }, [urlPage, urlSearch])
+    loadBooks(urlPage || 1, urlSearch || '', { 
+      categories: urlCategory || [], 
+      groups: urlGroup || [] 
+    })
+  }, [urlPage, urlSearch, urlCategory, urlGroup])
 
   const handleSearch = () => {
     updateUrlParams(1, searchTerm)
@@ -88,6 +105,12 @@ function RouteComponent() {
 
   const handlePageChange = (page: number) => {
     updateUrlParams(page, searchTerm)
+  }
+
+  const handleFilterChange = (filters: { categories: number[], groups: number[] }) => {
+    setSelectedFilters(filters)
+    updateUrlParams(1, searchTerm, filters)
+    setIsMobileFilterOpen(false) // Close mobile filter after selection
   }
 
   return (
@@ -115,6 +138,32 @@ function RouteComponent() {
             </div>
 
             <div className="flex items-center space-x-2">
+              {/* Mobile Filter Button */}
+              <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="sm" className="md:hidden">
+                    <Filter className="w-4 h-4 mr-2" />
+                    {t('home.filters')}
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-80 sm:w-96 overflow-y-auto">
+                  <h2 className="text-lg font-semibold mb-4">{t('home.filters')}</h2>
+                  <Separator className="mb-4" />
+                  <BookFilter 
+                    selectedFilters={selectedFilters} 
+                    onFilterChange={handleFilterChange} 
+                  />
+                </SheetContent>
+              </Sheet>
+
+              {/* Desktop Filter Panel */}
+              <div className="hidden md:block w-64 mr-4">
+                <BookFilter 
+                  selectedFilters={selectedFilters} 
+                  onFilterChange={handleFilterChange} 
+                />
+              </div>
+
               <Button
                 variant={viewMode === EnumViewMode.grid.value ? 'default' : 'outline'}
                 size="sm"

@@ -47,6 +47,7 @@ export const AppApi = {
     detail: APP_URL_V1 + "/book/detail",
     create: APP_URL_V1 + "/book/create",
     crud: APP_URL_V1 + "/book",
+    filterParams: APP_URL_V1 + "/book/filter-params",
   },
   periodicTable: {
     element: APP_URL_V1 + "/periodic-table/element",

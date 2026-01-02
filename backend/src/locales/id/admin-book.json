@@ -1,0 +1,15 @@
+{
+  "admin": {
+    "book": {
+      "groupStats": {
+        "updateSuccess": "Statistik grup buku berhasil diperbarui",
+        "updateAllSuccess": "Statistik semua grup buku berhasil diperbarui",
+        "notFound": "Grup buku tidak ditemukan",
+        "totalBooks": "Jumlah Buku",
+        "updated": "Diperbarui",
+        "bookGroupStats": "Statistik Grup Buku",
+        "updating": "Memperbarui statistik grup buku..."
+      }
+    }
+  }
+}

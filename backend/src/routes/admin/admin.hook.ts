@@ -12,11 +12,11 @@ async function adminHook(fastify: FastifyInstance) {
     });
 
     if (!session?.user) {
-      return res.unauthorized('You must be logged in to access this resource.');
+      return res.unauthorized(req.i18n.t('admin.hook.unauthorized'));
     }
 
     if(session?.user?.role !== EnumUserRole.ADMIN) {
-      return res.forbidden('You do not have permission to access this resource.');
+      return res.forbidden(req.i18n.t('admin.hook.forbidden'));
     }
 
     req.setDecorator('session', session);

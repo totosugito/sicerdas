@@ -1,9 +1,9 @@
 import fs from 'fs';
 import pg from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { eq } from 'drizzle-orm';
+import { eq, count, and } from 'drizzle-orm';
 import * as schema from '../../db/schema/index.ts';
-import { books } from '../../db/schema/book-schema.ts';
+import { books, bookGroupStats } from '../../db/schema/book-schema.ts';
 import { EnumContentStatus } from '../../db/schema/enum-app.ts';
 import envConfig from '../../config/env.config.ts';
 import dotenv from 'dotenv';
@@ -89,7 +89,7 @@ async function importBooks() {
         const existingBook = await db
           .select({ id: books.id })
           .from(books)
-          .where(eq(books.bookId, jsonBook.BookId))
+          .where(eq(books.bookId, jsonBook.id))
           .limit(1);
         
         const bookInsertData = {
@@ -146,12 +146,77 @@ async function importBooks() {
     console.log(`Successfully imported/updated: ${successCount}`);
     console.log(`Errors: ${errorCount}`);
     
+    // Update book group statistics after import is complete
+    console.log('\n--- Updating Book Group Statistics ---');
+    await updateBookGroupStats(db);
+    console.log('Book group statistics updated successfully!');
+    
   } catch (error) {
     console.error('Import failed:', error);
     process.exit(1);
   } finally {
     await pool.end();
   }
+}
+
+// Function to update book group statistics
+async function updateBookGroupStats(db: any) {
+  // Get all book groups that have books
+  const bookGroups = await db
+    .select({ bookGroupId: books.bookGroupId })
+    .from(books)
+    .where(eq(books.status, EnumContentStatus.PUBLISHED))
+    .groupBy(books.bookGroupId);
+  
+  let updatedGroups = 0;
+  
+  for (const group of bookGroups) {
+    // Count books for this group (only published books)
+    const bookCountResult = await db
+      .select({ count: count() })
+      .from(books)
+      .where(and(
+        eq(books.bookGroupId, group.bookGroupId),
+        eq(books.status, EnumContentStatus.PUBLISHED)
+      ));
+    
+    const bookTotal = Number(bookCountResult[0].count);
+    
+    // Check if stats record already exists for this group
+    const existingStats = await db
+      .select()
+      .from(bookGroupStats)
+      .where(eq(bookGroupStats.bookGroupId, group.bookGroupId))
+      .limit(1);
+
+    if (existingStats.length > 0) {
+      // Update existing stats record
+      await db
+        .update(bookGroupStats)
+        .set({ 
+          bookTotal,
+          updatedAt: new Date()
+        })
+        .where(eq(bookGroupStats.bookGroupId, group.bookGroupId));
+    } else {
+      // Create new stats record
+      await db
+        .insert(bookGroupStats)
+        .values({
+          bookGroupId: group.bookGroupId,
+          bookTotal
+        });
+    }
+    
+    updatedGroups++;
+    
+    // Progress indicator
+    if (updatedGroups % 100 === 0) {
+      console.log(`Updated statistics for ${updatedGroups} book groups...`);
+    }
+  }
+  
+  console.log(`Updated statistics for ${updatedGroups} book groups`);
 }
 
 // Run the import function

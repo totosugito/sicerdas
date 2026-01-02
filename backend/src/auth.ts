@@ -35,14 +35,14 @@ const auth = betterAuth({
     }),
 	 customSession(async ({ user, session }) => {
      // get user role from database
-     const role = await db.query.users.findFirst({
+     const userRecord = await db.query.users.findFirst({
        where: (fields) => eq(fields.id, user.id),
      });
 
       return {
         user: {
           ...user,
-          role: role || 'user',
+          role: userRecord?.role || 'user',
           image: getUserAvatarUrl(user.image),
         },
         session
