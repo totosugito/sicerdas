@@ -1,17 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { 
-  Accordion, 
-  AccordionContent, 
-  AccordionItem, 
-  AccordionTrigger 
-} from '@/components/ui/accordion';
-import { Badge } from '@/components/ui/badge';
-import { Filter, X } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { FilterParamCategory, useBookFilterParams } from '@/service/book';
-import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
+import { Filter } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 
 interface BookFilterProps {
   selectedFilters: {
@@ -27,250 +21,151 @@ interface BookFilterProps {
 export const BookFilter = ({ selectedFilters, onFilterChange }: BookFilterProps) => {
   const { t } = useTranslation();
   const { data: filterParamsData, isLoading, isError } = useBookFilterParams();
-  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Local state for deferred submission
+  const [localFilters, setLocalFilters] = useState(selectedFilters);
+
+  // Sync with props when they change (e.g. navigation / external reset)
+  useEffect(() => {
+    setLocalFilters(selectedFilters);
+  }, [selectedFilters]);
 
   const categories = filterParamsData?.data || [];
 
-  // Initialize expanded categories when data is loaded
-  useEffect(() => {
-    if (categories.length > 0 && expandedCategories.length === 0) {
-      // Expand all categories by default
-      setExpandedCategories(categories.map(cat => `category-${cat.id}`));
-    }
-  }, [categories, expandedCategories.length]);
+  const handleCategoryChange = (value: string) => {
+    const categoryId = parseInt(value);
 
-  const toggleCategory = (categoryId: number) => {
-    // If the category is already selected, deselect it
-    if (selectedFilters.categories.includes(categoryId)) {
-      onFilterChange({
-        categories: [],
-        groups: []
-      });
-    } else {
-      // Select only this category and all its groups
-      const category = categories.find(cat => cat.id === categoryId);
-      if (category) {
-        const categoryGroups = category.groups.map(group => group.id);
-        onFilterChange({
-          categories: [categoryId],
-          groups: categoryGroups
-        });
-      }
-    }
-  };
+    const category = categories.find(cat => cat.id === categoryId);
+    // When changing category, we default to selecting all its groups as per previous logic,
+    // or we can start with none. The previous valid logic was: select category -> groups = category.groups.
+    const categoryGroups = category ? category.groups.map(g => g.id) : [];
 
-  const toggleGroup = (groupId: number) => {
-    // Only allow group selection if a category is already selected
-    if (selectedFilters.categories.length === 0) return;
-    
-    const isSelected = selectedFilters.groups.includes(groupId);
-    let newGroups: number[];
-    
-    if (isSelected) {
-      // Remove the group
-      newGroups = selectedFilters.groups.filter(id => id !== groupId);
-      
-      // If no groups are selected for this category, deselect the category too
-      const category = categories.find(cat => 
-        cat.groups.some(group => group.id === groupId)
-      );
-      
-      if (category && newGroups.filter(g => 
-        category.groups.some(grp => grp.id === g)
-      ).length === 0) {
-        // If no groups from this category are selected, deselect the category
-        onFilterChange({
-          categories: [],
-          groups: newGroups
-        });
-      } else {
-        onFilterChange({
-          categories: selectedFilters.categories,
-          groups: newGroups
-        });
-      }
-    } else {
-      // Add the group
-      newGroups = [...selectedFilters.groups, groupId];
-      onFilterChange({
-        categories: selectedFilters.categories,
-        groups: newGroups
-      });
-    }
-  };
-
-  // Helper function to find group and its category
-  const findGroupById = (groupId: number) => {
-    for (const category of categories) {
-      const group = category.groups.find(g => g.id === groupId);
-      if (group) {
-        return { ...group, categoryId: category.id };
-      }
-    }
-    return null;
-  };
-
-  const clearFilters = () => {
-    onFilterChange({
-      categories: [],
-      groups: []
+    setLocalFilters({
+      categories: [categoryId],
+      groups: categoryGroups
     });
   };
 
-  const toggleAccordion = (value: string[]) => {
-    setExpandedCategories(value);
+  const toggleGroup = (groupId: number, checked: boolean) => {
+    let newCategories = [...localFilters.categories];
+    let newGroups = [...localFilters.groups];
+
+    if (checked) {
+      newGroups.push(groupId);
+      // If we check a group, ensure its parent category is checked
+      const parentCat = categories.find(c => c.groups.some(g => g.id === groupId));
+      if (parentCat && !newCategories.includes(parentCat.id)) {
+        newCategories = [parentCat.id];
+        // When auto-switching category, we might want to respect the manual group selection
+        // effectively replacing the "all groups selected" default of category switch.
+      }
+    } else {
+      newGroups = newGroups.filter(g => g !== groupId);
+    }
+
+    setLocalFilters({
+      categories: newCategories,
+      groups: newGroups
+    });
   };
 
-  if (isLoading) {
-    return (
-      <div className="p-4 border rounded-lg">
-        <div className="animate-pulse space-y-4">
-          <div className="h-4 bg-muted rounded w-1/4"></div>
-          <div className="space-y-2">
-            <div className="h-3 bg-muted rounded w-full"></div>
-            <div className="h-3 bg-muted rounded w-3/4"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const clearFilters = () => {
+    setLocalFilters({ categories: [], groups: [] });
+  };
 
-  if (isError) {
-    return (
-      <div className="p-4 border rounded-lg text-center text-red-500">
-        {t('home.failedToLoadFilters')}
-      </div>
-    );
-  }
+  const applyFilters = () => {
+    onFilterChange(localFilters);
+  };
+
+  if (isLoading) return <div className="animate-pulse h-64 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>;
+  if (isError) return <div className="text-red-500">Error loading filters</div>;
+
+  const activeCategoryId = localFilters.categories[0];
+  const activeCategory = categories.find(c => c.id === activeCategoryId);
+  const displayedGroups = activeCategory ? activeCategory.groups : [];
 
   return (
-    <div className="space-y-4">
-      {/* Filter Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
-          <Filter className="w-5 h-5" />
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-slate-900 dark:text-white font-bold text-lg flex items-center gap-2">
+          <Filter className="w-5 h-5 text-primary" />
           {t('home.filters')}
         </h3>
-        {(selectedFilters.categories.length > 0 || selectedFilters.groups.length > 0) && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearFilters}
-            className="text-sm text-muted-foreground hover:text-foreground"
-          >
-            <X className="w-4 h-4 mr-1" />
-            {t('home.clearFilters')}
+        {(localFilters.categories.length > 0) && (
+          <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs h-7 px-2 text-slate-500 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+            Reset
           </Button>
         )}
       </div>
 
-      {/* Active Filters */}
-      {(selectedFilters.categories.length > 0 || selectedFilters.groups.length > 0) && (
-        <div className="flex flex-wrap gap-2">
-          {selectedFilters.categories.map(categoryId => {
-            const category = categories.find(cat => cat.id === categoryId);
-            return category ? (
-              <Badge 
-                key={`cat-${categoryId}`} 
-                variant="secondary"
-                className="cursor-pointer"
-                onClick={() => toggleCategory(categoryId)}
-              >
-                {category.name}
-                <X className="w-3 h-3 ml-1" />
-              </Badge>
-            ) : null;
-          })}
-          {selectedFilters.groups.map(groupId => {
-            const group = findGroupById(groupId);
-            return group ? (
-              <Badge 
-                key={`grp-${groupId}`} 
-                variant="secondary"
-                className="cursor-pointer"
-                onClick={() => toggleGroup(groupId)}
-              >
-                {group.name}
-                <X className="w-3 h-3 ml-1" />
-              </Badge>
-            ) : null;
-          })}
+      <div className="flex-1 space-y-6">
+        {/* Categories */}
+        <div>
+          <h3 className="text-slate-900 dark:text-white text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2">
+            Categories
+          </h3>
+          <RadioGroup
+            value={activeCategoryId?.toString() || ""}
+            onValueChange={handleCategoryChange}
+            className="space-y-3"
+          >
+            {categories.map((category) => (
+              <div key={category.id} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                <RadioGroupItem value={category.id.toString()} id={`cat-${category.id}`} />
+                <Label htmlFor={`cat-${category.id}`} className="flex-1 cursor-pointer font-medium text-slate-600 dark:text-slate-400 peer-data-[state=checked]:text-slate-900 dark:peer-data-[state=checked]:text-white">
+                  {category.name}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
         </div>
-      )}
 
-      {/* Filter Categories */}
-      <Accordion 
-        type="multiple" 
-        value={expandedCategories} 
-        onValueChange={toggleAccordion}
-        className="w-full"
-      >
-        {categories.map((category) => {
-          // Check if this category is currently selected
-          const isCategorySelected = selectedFilters.categories.includes(category.id);
-          
-          return (
-            <AccordionItem 
-              value={`category-${category.id}`} 
-              key={category.id}
-              className="border rounded-lg mb-2"
-            >
-              <AccordionTrigger className="p-3 hover:no-underline">
-                <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center gap-2">
+        <div className="h-px bg-slate-100 dark:bg-slate-800 w-full"></div>
+
+        {/* Groups */}
+        {displayedGroups.length > 0 && (
+          <div>
+            <h3 className="text-slate-900 dark:text-white text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2">
+              Groups
+            </h3>
+            <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
+              {displayedGroups.map((group) => {
+                const isChecked = localFilters.groups.includes(group.id);
+                return (
+                  <div key={group.id} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                     <Checkbox
-                      checked={isCategorySelected}
-                      onCheckedChange={() => toggleCategory(category.id)}
-                      id={`category-${category.id}`}
-                      className="mr-2"
+                      id={`group-${group.id}`}
+                      checked={isChecked}
+                      onCheckedChange={(checked) => toggleGroup(group.id, checked as boolean)}
                     />
-                    <span className="font-medium">{category.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      ({category.groups.length})
-                    </span>
+                    <Label
+                      htmlFor={`group-${group.id}`}
+                      className="flex-1 cursor-pointer text-sm font-medium text-slate-600 dark:text-slate-400 peer-data-[state=checked]:text-slate-900 dark:peer-data-[state=checked]:text-white"
+                    >
+                      {group.name}
+                    </Label>
                   </div>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="p-3 pt-0">
-                <div className="space-y-2">
-                  {category.groups.map((group) => {
-                    // Only show groups if the category is selected
-                    if (!isCategorySelected) {
-                      // If the category is not selected, only show groups that are individually selected
-                      if (!selectedFilters.groups.includes(group.id)) {
-                        return null;
-                      }
-                    }
-                    
-                    return (
-                      <div 
-                        key={group.id} 
-                        className="flex items-center gap-2 p-2 hover:bg-accent rounded-md"
-                      >
-                        <Checkbox
-                          checked={selectedFilters.groups.includes(group.id)}
-                          onCheckedChange={() => toggleGroup(group.id)}
-                          id={`group-${group.id}`}
-                        />
-                        <label 
-                          htmlFor={`group-${group.id}`} 
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex-1"
-                        >
-                          {group.name}
-                          <span className="text-xs text-muted-foreground ml-2">
-                            ({group.stats.bookTotal} {t('home.books')})
-                          </span>
-                        </label>
-                      </div>
-                    );
-                  })}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          );
-        })}
-      </Accordion>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {displayedGroups.length === 0 && (
+          <div className="text-sm text-slate-400 italic px-2 py-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg text-center border border-dashed border-slate-200 dark:border-slate-700">
+            Select a category to view groups
+          </div>
+        )}
+      </div>
+
+      {/* Footer Action */}
+      <div className="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800">
+        <Button onClick={applyFilters} className="w-full">
+          Apply Filters
+        </Button>
+      </div>
+
     </div>
   );
 };

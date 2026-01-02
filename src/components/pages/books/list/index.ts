@@ -4,3 +4,4 @@ export {BookList} from "./BookList";
 export {BookFilter} from "./BookFilter";
 export {BooksHeroSection} from "./BooksHeroSection";
 export {BooksSkeleton} from "./BooksSkeleton";
+export {BookListNew} from "./BookListNew";

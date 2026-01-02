@@ -3,17 +3,15 @@ import { useState, useEffect } from 'react'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { useBookList, useBookFilterParams } from '@/service/book'
-import { Button } from '@/components/ui/button'
-import { AppNavbar, PageTitle } from '@/components/app'
-import { Grid, List, BookOpen, Filter } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { AppNavbar } from '@/components/app'
+import { BookOpen, Filter } from 'lucide-react'
 import { showNotifError } from '@/lib/show-notif'
-import { Book, BookCard, BookList, BookListResponse, BooksHeroSection, BooksSkeleton, BookFilter } from '@/components/pages/books/list'
+import { Book, BookListResponse, BooksSkeleton, BookFilter, BookListNew } from '@/components/pages/books/list'
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from '@/components/custom/table';
 import { useAppStore } from '@/stores/useAppStore'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/(pages)/(book)/books')({
   validateSearch: z.object({
@@ -48,7 +46,6 @@ function RouteComponent() {
   const [viewMode, setViewMode] = useState<ViewMode>(pageStore.viewMode ?? EnumViewMode.grid.value)
   const [isLoading, setIsLoading] = useState(true)
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
-  console.log(pageStore.viewMode, viewMode);
 
   const bookListMutation = useBookList()
   const filterParamsQuery = useBookFilterParams()
@@ -93,9 +90,9 @@ function RouteComponent() {
   }
 
   useEffect(() => {
-    loadBooks(urlPage || 1, urlSearch || '', { 
-      categories: urlCategory || [], 
-      groups: urlGroup || [] 
+    loadBooks(urlPage || 1, urlSearch || '', {
+      categories: urlCategory || [],
+      groups: urlGroup || []
     })
   }, [urlPage, urlSearch, urlCategory, urlGroup])
 
@@ -110,154 +107,116 @@ function RouteComponent() {
   const handleFilterChange = (filters: { categories: number[], groups: number[] }) => {
     setSelectedFilters(filters)
     updateUrlParams(1, searchTerm, filters)
-    setIsMobileFilterOpen(false) // Close mobile filter after selection
+    // Optional: Only close mobile filter if desired, but typically better to let user manually close
+  }
+
+  const handleViewModeChange = (mode: ViewMode) => {
+    store.setBooks({ ...pageStore, viewMode: mode })
+    setViewMode(mode)
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-blue-950 dark:to-indigo-950">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <AppNavbar />
 
       <div className='flex flex-col flex-1 mt-14'>
-        {/* Hero Section */}
-        <BooksHeroSection
-          searchTerm={searchTerm}
-          onSearchTermChange={setSearchTerm}
-          onSearch={handleSearch}
-          isSearchDisabled={bookListMutation.isPending}
-        />
-
         {/* Main Content */}
-        <div className="p-8">
-          {/* Controls Bar */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-4">
-              <PageTitle
-                title={`${totalBooks} ${t(`home.booksAvailable`)}`}
-                description={<span>{t('home.exploreCollection')}</span>}
-              />
-            </div>
+        <div className="p-4 md:p-8 max-w-7xl mx-auto w-full">
 
-            <div className="flex items-center space-x-2">
-              {/* Mobile Filter Button */}
-              <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="outline" size="sm" className="md:hidden">
-                    <Filter className="w-4 h-4 mr-2" />
-                    {t('home.filters')}
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="w-80 sm:w-96 overflow-y-auto">
-                  <h2 className="text-lg font-semibold mb-4">{t('home.filters')}</h2>
-                  <Separator className="mb-4" />
-                  <BookFilter 
-                    selectedFilters={selectedFilters} 
-                    onFilterChange={handleFilterChange} 
-                  />
-                </SheetContent>
-              </Sheet>
-
-              {/* Desktop Filter Panel */}
-              <div className="hidden md:block w-64 mr-4">
-                <BookFilter 
-                  selectedFilters={selectedFilters} 
-                  onFilterChange={handleFilterChange} 
+          <div className="flex flex-col lg:flex-row gap-8 mt-8">
+            {/* Sidebar Filters (Desktop) */}
+            <aside className="hidden lg:block w-64 flex-shrink-0">
+              <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 sticky top-24">
+                <BookFilter
+                  selectedFilters={selectedFilters}
+                  onFilterChange={handleFilterChange}
                 />
               </div>
+            </aside>
 
-              <Button
-                variant={viewMode === EnumViewMode.grid.value ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => {
-                  store.setBooks({ ...pageStore, viewMode: EnumViewMode.grid.value })
-                  setViewMode(EnumViewMode.grid.value)
-                }}
-              >
-                <Grid className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={viewMode === EnumViewMode.list.value ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => {
-                  store.setBooks({ ...pageStore, viewMode: EnumViewMode.list.value })
-                  setViewMode(EnumViewMode.list.value)
-                }}
-              >
-                <List className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
+            {/* Mobile Filter Sheet */}
+            <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
+              <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto">
+                <div className="flex items-center gap-2 mb-6">
+                  <span className="material-symbols-outlined text-primary">filter_alt</span>
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t('home.filters')}</h2>
+                </div>
+                <BookFilter
+                  selectedFilters={selectedFilters}
+                  onFilterChange={handleFilterChange}
+                />
+              </SheetContent>
+            </Sheet>
 
-          {/* Loading State */}
-          {isLoading && <BooksSkeleton viewMode={viewMode} length={8} />}
+            {/* Book List Content */}
+            <div className="flex-1 min-w-0">
+              {/* Loading State */}
+              {isLoading && <BooksSkeleton viewMode={viewMode} length={8} />}
 
-          {/* Books Display */}
-          {!isLoading && books.length > 0 && (
-            <div className={cn(
-              viewMode === EnumViewMode.grid.value
-                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-                : "grid grid-cols-1 xl:grid-cols-2 gap-6"
-            )}>
-              {books.map((book) => (
-                viewMode === EnumViewMode.grid.value ? (
-                  <BookCard
-                    key={book.id}
-                    book={book}
+              {/* Books Display */}
+              {!isLoading && books.length > 0 && (
+                <BookListNew 
+                  books={books} 
+                  viewMode={viewMode === 'grid' ? 'grid' : 'list'} 
+                  searchTerm={searchTerm}
+                  onSearchTermChange={setSearchTerm}
+                  onSearch={handleSearch}
+                  isSearchDisabled={bookListMutation.isPending}
+                  onViewModeChange={handleViewModeChange}
+                  onOpenFilter={() => setIsMobileFilterOpen(true)}
+                  totalBooks={totalBooks}
+                />
+              )}
+
+              {/* Empty State */}
+              {!isLoading && books.length === 0 && (
+                <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
+                    <BookOpen className="w-8 h-8 text-slate-400" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{t("home.noBooksFound")}</h3>
+                  <p className="text-slate-500 dark:text-slate-400 mb-4 max-w-sm mx-auto">
+                    {searchTerm
+                      ? `${t(`home.noSearchResults`)} "${searchTerm}"`
+                      : t('home.noBooksAvailable')
+                    }
+                  </p>
+                  {searchTerm && (
+                    <Button variant="outline" onClick={() => {
+                      setSearchTerm('')
+                      updateUrlParams(1, '')
+                    }}>
+                      {t('home.clearSearch')}
+                    </Button>
+                  )}
+                </div>
+              )}
+
+              {/* Pagination */}
+              {!isLoading && totalPages > 1 && (
+                <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
+                  <DataTablePagination
+                    pageIndex={currentPage - 1}
+                    setPageIndex={(newPageIndex) => handlePageChange(newPageIndex + 1)}
+                    pageSize={12}
+                    setPageSize={() => { }}
+                    rowsCount={totalBooks}
+                    paginationData={{
+                      page: currentPage,
+                      limit: urlLimit || 12,
+                      total: totalBooks,
+                      totalPages: totalPages
+                    }}
+                    showPageSize={false}
+                    disabled={bookListMutation.isPending}
+                    onPaginationChange={(paginationData) => {
+                      handlePageChange(paginationData.page)
+                    }}
                   />
-                ) : (
-                  <BookList
-                    key={book.id}
-                    book={book}
-                  />
-                )
-              ))}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!isLoading && books.length === 0 && (
-            <div className="text-center py-16">
-              <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">{t("home.noBooksFound")}</h3>
-              <p className="text-muted-foreground mb-4">
-                {searchTerm
-                  ? `${t(`home.noSearchResults`)} ${searchTerm}`
-                  : t('home.noBooksAvailable')
-                }
-              </p>
-              {searchTerm && (
-                <Button variant="outline" onClick={() => {
-                  setSearchTerm('')
-                  updateUrlParams(1, '')
-                }}>
-                  {t('home.clearSearch')}
-                </Button>
+                </div>
               )}
             </div>
-          )}
-
-          {/* Pagination */}
-          {!isLoading && totalPages > 1 && (
-            <div className="mt-4">
-              <DataTablePagination
-                pageIndex={currentPage - 1} // Convert 1-based to 0-based
-                setPageIndex={(newPageIndex) => handlePageChange(newPageIndex + 1)} // Convert 0-based to 1-based
-                pageSize={12}
-                setPageSize={() => { }} // Not used since we're using paginationData
-                rowsCount={totalBooks}
-                paginationData={{
-                  page: currentPage,
-                  limit: urlLimit || 12,
-                  total: totalBooks,
-                  totalPages: totalPages
-                }}
-                showPageSize={false}
-                disabled={bookListMutation.isPending}
-                onPaginationChange={(paginationData) => {
-                  handlePageChange(paginationData.page)
-                }}
-              />
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
