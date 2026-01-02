@@ -42,10 +42,10 @@ export const AppRoute = {
   },
   periodicTable: {
     periodicTable: { url: "/periodic-table" },
-    elementDetail: { url: "/periodic-table/element/$id" },
-    elementIsotope: { url: "/periodic-table/isotope/$id" },
-    elementComparison: { url: "/periodic-table/element-comparison" },
-    chemistryDictionary: { url: "/periodic-table/chemistry-dictionary" },
+    elementDetail: { url: "/periodic/element/$id" },
+    elementIsotope: { url: "/periodic/isotope/$id" },
+    elementComparison: { url: "/periodic/element-comparison" },
+    chemistryDictionary: { url: "/periodic/chemistry-dictionary" },
   },
   constitution: {
     pancasila: { url: "/constitution/pancasila" },

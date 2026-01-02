@@ -309,3 +309,7 @@ body {
     background-position: 0 0;
   }
 }
+
+.page-container {
+  @apply flex flex-col flex-1 w-full items-center px-8 pt-14 max-w-5xl mx-auto
+}

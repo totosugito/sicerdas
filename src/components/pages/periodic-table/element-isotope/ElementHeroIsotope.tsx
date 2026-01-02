@@ -37,7 +37,7 @@ export function ElementHeroIsotope({ element, theme }: ElementHeroIsotopeProps) 
               getElementStyle(element.atomicGroup, theme).element
             )}>
               <span className="absolute top-1 left-2 text-lg md:text-xl">{element.atomicNumber}</span>
-              <span className="absolute inset-0 flex items-center justify-center text-6xl md:text-8xl">{element.atomicSymbol}</span>
+              <span className="absolute inset-0 flex items-center justify-center text-6xl md:text-7xl">{element.atomicSymbol}</span>
             </div>
             
             <div>

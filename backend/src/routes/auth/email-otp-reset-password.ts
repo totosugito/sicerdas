@@ -2,8 +2,8 @@ import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
 import {withErrorHandler} from "../../utils/withErrorHandler.ts";
 import {db} from "../../db/index.ts";
-import {users} from "../../db/schema/auth-schema.ts";
-import {eq} from "drizzle-orm";
+import {users, verifications} from "../../db/schema/auth-schema.ts";
+import {eq, and} from "drizzle-orm";
 
 /**
  * Reset password using email OTP
@@ -86,13 +86,22 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         }
       });
 
+      // Check if the response was successful
+      const isSuccessful = response.statusCode >= 200 && response.statusCode < 300;
+      
+      // If successful, delete the verification records for this email
+      if (isSuccessful) {
+        const identifier = `forget-password-otp-${email}`;
+        await db.delete(verifications).where(eq(verifications.identifier, identifier));
+      }
+      
       // Forward the response
       return reply
         .status(response.statusCode)
         .headers(response.headers)
         .send({
-          success: response.statusCode >= 200 && response.statusCode < 300,
-          message: response.statusCode >= 200 && response.statusCode < 300 
+          success: isSuccessful,
+          message: isSuccessful
             ? req.i18n.t('auth.passwordResetSuccess')
             : req.i18n.t('auth.passwordResetFailed')
         });
