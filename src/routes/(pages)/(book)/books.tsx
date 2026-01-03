@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { useBookList, useBookFilterParams } from '@/service/book'
-import { AppNavbar } from '@/components/app'
 import { BookOpen, Filter } from 'lucide-react'
 import { showNotifError } from '@/lib/show-notif'
 import { Book, BookListResponse, BooksSkeleton, BookFilter, BookListNew } from '@/components/pages/books/list'
@@ -46,6 +45,7 @@ function RouteComponent() {
   const [viewMode, setViewMode] = useState<ViewMode>(pageStore.viewMode ?? EnumViewMode.grid.value)
   const [isLoading, setIsLoading] = useState(true)
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
+  const [autoSubmitFilters, setAutoSubmitFilters] = useState(true)
 
   const bookListMutation = useBookList()
   const filterParamsQuery = useBookFilterParams()
@@ -115,108 +115,107 @@ function RouteComponent() {
     setViewMode(mode)
   }
 
+  const handleAutoSubmitChange = (enabled: boolean) => {
+    setAutoSubmitFilters(enabled)
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      <AppNavbar />
+    <div className="container mx-auto py-6">
+      <div className="flex flex-col lg:flex-row gap-8">
+        <aside className="hidden lg:block w-64 flex-shrink-0">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <BookFilter
+              selectedFilters={selectedFilters}
+              onFilterChange={handleFilterChange}
+              autoSubmit={autoSubmitFilters}
+              onAutoSubmitChange={handleAutoSubmitChange}
+            />
+          </div>
+        </aside>
 
-      <div className='flex flex-col flex-1 mt-14'>
-        {/* Main Content */}
-        <div className="p-4 md:p-8 max-w-7xl mx-auto w-full">
+        {/* Mobile Filter Sheet */}
+        <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
+          <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto">
+            <div className="flex items-center gap-2 mb-6">
+              <span className="material-symbols-outlined text-primary">filter_alt</span>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t('home.filters')}</h2>
+            </div>
+            <BookFilter
+              selectedFilters={selectedFilters}
+              onFilterChange={handleFilterChange}
+              autoSubmit={autoSubmitFilters}
+              onAutoSubmitChange={handleAutoSubmitChange}
+            />
+          </SheetContent>
+        </Sheet>
 
-          <div className="flex flex-col lg:flex-row gap-8 mt-8">
-            {/* Sidebar Filters (Desktop) */}
-            <aside className="hidden lg:block w-64 flex-shrink-0">
-              <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 sticky top-24">
-                <BookFilter
-                  selectedFilters={selectedFilters}
-                  onFilterChange={handleFilterChange}
-                />
+        {/* Book List Content */}
+        <div className="flex-1 min-w-0">
+          {/* Loading State */}
+          {isLoading && <BooksSkeleton viewMode={viewMode} length={8} />}
+
+          {/* Books Display */}
+          {!isLoading && books.length > 0 && (
+            <BookListNew
+              books={books}
+              viewMode={viewMode === 'grid' ? 'grid' : 'list'}
+              searchTerm={searchTerm}
+              onSearchTermChange={setSearchTerm}
+              onSearch={handleSearch}
+              isSearchDisabled={bookListMutation.isPending}
+              onViewModeChange={handleViewModeChange}
+              onOpenFilter={() => setIsMobileFilterOpen(true)}
+              totalBooks={totalBooks}
+            />
+          )}
+
+          {/* Empty State */}
+          {!isLoading && books.length === 0 && (
+            <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
+                <BookOpen className="w-8 h-8 text-slate-400" />
               </div>
-            </aside>
-
-            {/* Mobile Filter Sheet */}
-            <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
-              <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto">
-                <div className="flex items-center gap-2 mb-6">
-                  <span className="material-symbols-outlined text-primary">filter_alt</span>
-                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t('home.filters')}</h2>
-                </div>
-                <BookFilter
-                  selectedFilters={selectedFilters}
-                  onFilterChange={handleFilterChange}
-                />
-              </SheetContent>
-            </Sheet>
-
-            {/* Book List Content */}
-            <div className="flex-1 min-w-0">
-              {/* Loading State */}
-              {isLoading && <BooksSkeleton viewMode={viewMode} length={8} />}
-
-              {/* Books Display */}
-              {!isLoading && books.length > 0 && (
-                <BookListNew 
-                  books={books} 
-                  viewMode={viewMode === 'grid' ? 'grid' : 'list'} 
-                  searchTerm={searchTerm}
-                  onSearchTermChange={setSearchTerm}
-                  onSearch={handleSearch}
-                  isSearchDisabled={bookListMutation.isPending}
-                  onViewModeChange={handleViewModeChange}
-                  onOpenFilter={() => setIsMobileFilterOpen(true)}
-                  totalBooks={totalBooks}
-                />
-              )}
-
-              {/* Empty State */}
-              {!isLoading && books.length === 0 && (
-                <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
-                    <BookOpen className="w-8 h-8 text-slate-400" />
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{t("home.noBooksFound")}</h3>
-                  <p className="text-slate-500 dark:text-slate-400 mb-4 max-w-sm mx-auto">
-                    {searchTerm
-                      ? `${t(`home.noSearchResults`)} "${searchTerm}"`
-                      : t('home.noBooksAvailable')
-                    }
-                  </p>
-                  {searchTerm && (
-                    <Button variant="outline" onClick={() => {
-                      setSearchTerm('')
-                      updateUrlParams(1, '')
-                    }}>
-                      {t('home.clearSearch')}
-                    </Button>
-                  )}
-                </div>
-              )}
-
-              {/* Pagination */}
-              {!isLoading && totalPages > 1 && (
-                <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
-                  <DataTablePagination
-                    pageIndex={currentPage - 1}
-                    setPageIndex={(newPageIndex) => handlePageChange(newPageIndex + 1)}
-                    pageSize={12}
-                    setPageSize={() => { }}
-                    rowsCount={totalBooks}
-                    paginationData={{
-                      page: currentPage,
-                      limit: urlLimit || 12,
-                      total: totalBooks,
-                      totalPages: totalPages
-                    }}
-                    showPageSize={false}
-                    disabled={bookListMutation.isPending}
-                    onPaginationChange={(paginationData) => {
-                      handlePageChange(paginationData.page)
-                    }}
-                  />
-                </div>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{t("home.noBooksFound")}</h3>
+              <p className="text-slate-500 dark:text-slate-400 mb-4 max-w-sm mx-auto">
+                {searchTerm
+                  ? `${t(`home.noSearchResults`)} "${searchTerm}"`
+                  : t('home.noBooksAvailable')
+                }
+              </p>
+              {searchTerm && (
+                <Button variant="outline" onClick={() => {
+                  setSearchTerm('')
+                  updateUrlParams(1, '')
+                }}>
+                  {t('home.clearSearch')}
+                </Button>
               )}
             </div>
-          </div>
+          )}
+
+          {/* Pagination */}
+          {!isLoading && totalPages > 1 && (
+            <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
+              <DataTablePagination
+                pageIndex={currentPage - 1}
+                setPageIndex={(newPageIndex) => handlePageChange(newPageIndex + 1)}
+                pageSize={12}
+                setPageSize={() => { }}
+                rowsCount={totalBooks}
+                paginationData={{
+                  page: currentPage,
+                  limit: urlLimit || 12,
+                  total: totalBooks,
+                  totalPages: totalPages
+                }}
+                showPageSize={false}
+                disabled={bookListMutation.isPending}
+                onPaginationChange={(paginationData) => {
+                  handlePageChange(paginationData.page)
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
