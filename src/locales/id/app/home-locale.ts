@@ -10,5 +10,6 @@ export default {
     noSearchResults: "Tidak ada buku yang cocok dengan pencarian Anda untuk",
     clearSearch: "Hapus Pencarian",
     failedToLoadBooks: "Gagal memuat buku",
-    errorLoadingBooks: "Kesalahan memuat buku"
+    errorLoadingBooks: "Kesalahan memuat buku",
+    filters: "Filter",
 }

@@ -3,13 +3,12 @@ import { useState, useEffect } from 'react'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { useBookList, useBookFilterParams } from '@/service/book'
-import { BookOpen, Filter } from 'lucide-react'
+import { BookOpen, LayoutGrid, ListIcon } from 'lucide-react'
 import { showNotifError } from '@/lib/show-notif'
-import { Book, BookListResponse, BooksSkeleton, BookFilter, BookListNew } from '@/components/pages/books/list'
+import { Book, BookListResponse, BooksSkeleton, BookFilter, BookListNew, BookSearchBar } from '@/components/pages/books/list'
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from '@/components/custom/table';
 import { useAppStore } from '@/stores/useAppStore'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/(pages)/(book)/books')({
@@ -44,8 +43,6 @@ function RouteComponent() {
   const pageStore = store.books;
   const [viewMode, setViewMode] = useState<ViewMode>(pageStore.viewMode ?? EnumViewMode.grid.value)
   const [isLoading, setIsLoading] = useState(true)
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
-  const [autoSubmitFilters, setAutoSubmitFilters] = useState(true)
 
   const bookListMutation = useBookList()
   const filterParamsQuery = useBookFilterParams()
@@ -107,16 +104,11 @@ function RouteComponent() {
   const handleFilterChange = (filters: { categories: number[], groups: number[] }) => {
     setSelectedFilters(filters)
     updateUrlParams(1, searchTerm, filters)
-    // Optional: Only close mobile filter if desired, but typically better to let user manually close
   }
 
   const handleViewModeChange = (mode: ViewMode) => {
     store.setBooks({ ...pageStore, viewMode: mode })
     setViewMode(mode)
-  }
-
-  const handleAutoSubmitChange = (enabled: boolean) => {
-    setAutoSubmitFilters(enabled)
   }
 
   return (
@@ -127,47 +119,67 @@ function RouteComponent() {
             <BookFilter
               selectedFilters={selectedFilters}
               onFilterChange={handleFilterChange}
-              autoSubmit={autoSubmitFilters}
-              onAutoSubmitChange={handleAutoSubmitChange}
+              autoSubmit={true}
+              filterData={filterParamsQuery.data}
             />
           </div>
         </aside>
 
-        {/* Mobile Filter Sheet */}
-        <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
-          <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto">
-            <div className="flex items-center gap-2 mb-6">
-              <span className="material-symbols-outlined text-primary">filter_alt</span>
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t('home.filters')}</h2>
-            </div>
-            <BookFilter
-              selectedFilters={selectedFilters}
-              onFilterChange={handleFilterChange}
-              autoSubmit={autoSubmitFilters}
-              onAutoSubmitChange={handleAutoSubmitChange}
-            />
-          </SheetContent>
-        </Sheet>
+
 
         {/* Book List Content */}
-        <div className="flex-1 min-w-0">
+        <div className="flex flex-col flex-1 gap-4">
           {/* Loading State */}
           {isLoading && <BooksSkeleton viewMode={viewMode} length={8} />}
 
-          {/* Books Display */}
-          {!isLoading && books.length > 0 && (
-            <BookListNew
-              books={books}
-              viewMode={viewMode === 'grid' ? 'grid' : 'list'}
+          <div>
+            {/* Search Bar */}
+            <BookSearchBar
               searchTerm={searchTerm}
               onSearchTermChange={setSearchTerm}
               onSearch={handleSearch}
               isSearchDisabled={bookListMutation.isPending}
-              onViewModeChange={handleViewModeChange}
-              onOpenFilter={() => setIsMobileFilterOpen(true)}
-              totalBooks={totalBooks}
+              filterData={filterParamsQuery.data}
+              selectedFilters={selectedFilters}
+              onFilterChange={handleFilterChange}
             />
-          )}
+
+            {/* View Toggles and Results Count */}
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              {totalBooks !== undefined && (
+                <p className="text-slate-500 dark:text-slate-400">
+                  Showing <span className="font-bold text-slate-900 dark:text-white">{books.length}</span> of <span className="font-bold text-slate-900 dark:text-white">{totalBooks}</span> books
+                </p>
+              )}
+
+              <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
+                <Button
+                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="h-8 px-2"
+                  onClick={() => handleViewModeChange?.('grid')}
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="h-8 px-2"
+                  onClick={() => handleViewModeChange?.('list')}
+                >
+                  <ListIcon className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Books Display */}
+            {!isLoading && books.length > 0 && (
+              <BookListNew
+                books={books}
+                viewMode={viewMode === 'grid' ? 'grid' : 'list'}
+              />
+            )}
+          </div>
 
           {/* Empty State */}
           {!isLoading && books.length === 0 && (
@@ -195,7 +207,7 @@ function RouteComponent() {
 
           {/* Pagination */}
           {!isLoading && totalPages > 1 && (
-            <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
               <DataTablePagination
                 pageIndex={currentPage - 1}
                 setPageIndex={(newPageIndex) => handlePageChange(newPageIndex + 1)}
@@ -209,6 +221,7 @@ function RouteComponent() {
                   totalPages: totalPages
                 }}
                 showPageSize={false}
+                showPageLabel={false}
                 disabled={bookListMutation.isPending}
                 onPaginationChange={(paginationData) => {
                   handlePageChange(paginationData.page)

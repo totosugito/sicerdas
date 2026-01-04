@@ -24,6 +24,7 @@ interface DataTablePaginationProps extends React.ComponentProps<"div"> {
     totalPages: number;
   };
   showPageSize?: boolean;
+  showPageLabel?: boolean;
   disabled?: boolean;
   onPaginationChange?: (paginationData: { page: number; limit: number; total: number; totalPages: number }) => void;
 }
@@ -36,6 +37,7 @@ export function DataTablePagination({
                                       showPageSize = true,
                                       disabled = false,
                                       onPaginationChange,
+                                      showPageLabel = true,
                                       className,
                                     }: DataTablePaginationProps) {
 
@@ -141,15 +143,11 @@ export function DataTablePagination({
       className,
     )}>
       <div>
-        <div className="flex items-center justify-center text-sm text-foreground">
+        {showPageLabel && <div className="flex items-center justify-center text-sm text-foreground">
           {t("labels.row")} {totalRowsCount > 0 ? startIndex : 0}<span className={"text-foreground px-[2px]"}>-</span>
           {endIndex}<span className={"text-foreground px-[2px]"}>{t("labels.of")}</span>
           {totalRowsCount}
-        </div>
-        {/*<div className="flex-1 whitespace-nowrap text-muted-foreground text-sm">*/}
-        {/*  {table.getFilteredSelectedRowModel().rows.length} of{" "}*/}
-        {/*  {table.getFilteredRowModel().rows.length} row(s) selected.*/}
-        {/*</div>*/}
+        </div>}
       </div>
 
       {(totalRowsCount >= (pageSizeOptions?.[0] ?? 5)) &&

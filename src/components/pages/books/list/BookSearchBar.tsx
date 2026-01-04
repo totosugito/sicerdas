@@ -1,0 +1,104 @@
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Search, Filter } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
+import { BookFilter } from './BookFilter';
+
+interface BookSearchBarProps {
+  searchTerm?: string;
+  onSearchTermChange?: (value: string) => void;
+  onSearch?: () => void;
+  isSearchDisabled?: boolean;
+  filterData?: any;
+  selectedFilters?: {
+    categories: number[];
+    groups: number[];
+  };
+  onFilterChange?: (filters: { categories: number[]; groups: number[] }) => void;
+}
+
+export const BookSearchBar = ({
+  searchTerm,
+  onSearchTermChange,
+  onSearch,
+  isSearchDisabled = false,
+  filterData,
+  selectedFilters = { categories: [], groups: [] },
+  onFilterChange
+}: BookSearchBarProps) => {
+  const { t } = useTranslation();
+
+  // Local state for input value to avoid updating parent on every keystroke
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm || '');
+
+  // Sync local state with prop when it changes (e.g., from URL or clear search)
+  useEffect(() => {
+    setLocalSearchTerm(searchTerm || '');
+  }, [searchTerm]);
+
+  // State for mobile filter popover
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      // Update parent state only when searching
+      onSearchTermChange?.(localSearchTerm);
+      onSearch?.();
+    }
+  };
+
+  const handleSearchClick = () => {
+    // Update parent state only when searching
+    onSearchTermChange?.(localSearchTerm);
+    onSearch?.();
+  };
+
+  return (
+    <div className="bg-white dark:bg-slate-950 p-2 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row gap-2">
+      <div className="relative flex-1">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+        <Input
+          placeholder={t('home.searchPlaceholder')}
+          value={localSearchTerm}
+          onChange={(e) => setLocalSearchTerm(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className="h-8 pl-10 border-0 bg-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-slate-400"
+        />
+      </div>
+
+      <div className="flex items-center gap-2 border-t sm:border-t-0 sm:border-l border-slate-100 dark:border-slate-800 pt-2 sm:pt-0 pl-2">
+        {(onFilterChange) && (
+          <Popover open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 visible lg:hidden "
+              >
+                <Filter className="w-4 h-4 mr-2" />
+                {t('home.filters')}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[300px] px-4">
+              <BookFilter
+                selectedFilters={selectedFilters}
+                onFilterChange={(filters: { categories: number[]; groups: number[] }) => {
+                  onFilterChange?.(filters);
+                  setIsMobileFilterOpen(false);
+                }}
+                autoSubmit={false}
+                filterData={filterData}
+              />
+            </PopoverContent>
+          </Popover>
+        )}
+
+        <Button variant={'outline'} size={'sm'} onClick={handleSearchClick} disabled={isSearchDisabled} className="flex-1">
+          {t('home.search')}
+        </Button>
+      </div>
+    </div>
+  );
+};
