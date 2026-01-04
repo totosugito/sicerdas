@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Search, Filter } from 'lucide-react';
+import { Search, X, Filter } from 'lucide-react';  // Added X icon for clear button and Filter icon
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { BookFilter } from './BookFilter';
@@ -9,7 +9,7 @@ import { BookFilter } from './BookFilter';
 interface BookSearchBarProps {
   searchTerm?: string;
   onSearchTermChange?: (value: string) => void;
-  onSearch?: () => void;
+  onSearch?: (term: string) => void;
   isSearchDisabled?: boolean;
   filterData?: any;
   selectedFilters?: {
@@ -45,14 +45,21 @@ export const BookSearchBar = ({
     if (e.key === 'Enter') {
       // Update parent state only when searching
       onSearchTermChange?.(localSearchTerm);
-      onSearch?.();
+      onSearch?.(localSearchTerm);
     }
   };
 
   const handleSearchClick = () => {
     // Update parent state only when searching
     onSearchTermChange?.(localSearchTerm);
-    onSearch?.();
+    onSearch?.(localSearchTerm);
+  };
+
+  // Function to clear the search input
+  const handleClearSearch = () => {
+    onSearchTermChange?.('');
+    setLocalSearchTerm('');
+    onSearch?.('');
   };
 
   return (
@@ -64,8 +71,20 @@ export const BookSearchBar = ({
           value={localSearchTerm}
           onChange={(e) => setLocalSearchTerm(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="h-8 pl-10 border-0 bg-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-slate-400"
+          className="h-8 pl-10 pr-8 border-0 bg-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-slate-400"
         />
+        {/* Clear button - only show when there's text in the input */}
+        {localSearchTerm && localSearchTerm.length > 0 && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 h-6 w-6 text-slate-400 hover:text-slate-600 hover:bg-transparent"
+            onClick={handleClearSearch}
+            type="button"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       <div className="flex items-center gap-2 border-t sm:border-t-0 sm:border-l border-slate-100 dark:border-slate-800 pt-2 sm:pt-0 pl-2">

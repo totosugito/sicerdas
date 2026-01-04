@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { z } from 'zod'
-import { useTranslation } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next'
 import { useBookList, useBookFilterParams } from '@/service/book'
 import { BookOpen, LayoutGrid, ListIcon } from 'lucide-react'
 import { showNotifError } from '@/lib/show-notif'
-import { Book, BookListResponse, BooksSkeleton, BookFilter, BookListNew, BookSearchBar } from '@/components/pages/books/list'
+import { Book, BookListResponse, BooksSkeleton, BookFilter, BookListNew, BookSearchBar, BookSortSelector } from '@/components/pages/books/list'
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from '@/components/custom/table';
 import { useAppStore } from '@/stores/useAppStore'
@@ -18,13 +18,16 @@ export const Route = createFileRoute('/(pages)/(book)/books')({
     search: z.string().optional().catch(''),
     category: z.array(z.number()).optional().catch([]),
     group: z.array(z.number()).optional().catch([]),
+    grade: z.array(z.number()).optional().catch([]),
+    sortBy: z.string().optional().catch('createdAt'),
+    sortOrder: z.enum(['asc', 'desc']).optional().catch('desc'),
   }),
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const { t } = useTranslation()
-  const { page: urlPage, limit: urlLimit, search: urlSearch, category: urlCategory, group: urlGroup } = Route.useSearch()
+  const { page: urlPage, limit: urlLimit, search: urlSearch, category: urlCategory, group: urlGroup, grade: urlGrade, sortBy: urlSortBy, sortOrder: urlSortOrder } = Route.useSearch()
   const navigate = Route.useNavigate()
 
   const [searchTerm, setSearchTerm] = useState(urlSearch || '')
@@ -32,10 +35,17 @@ function RouteComponent() {
   const [currentPage, setCurrentPage] = useState(urlPage || 1)
   const [totalPages, setTotalPages] = useState(0)
   const [totalBooks, setTotalBooks] = useState(0)
-  const [selectedFilters, setSelectedFilters] = useState({
-    categories: urlCategory || [],
-    groups: urlGroup || []
+  const [selectedFilters, setSelectedFilters] = useState<{
+    categories: number[];
+    groups: number[];
+    grades: number[];
+  }>({
+    categories: urlCategory || [3],
+    groups: urlGroup || [],
+    grades: urlGrade || []
   })
+  const [sortBy, setSortBy] = useState(urlSortBy || 'createdAt')
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(urlSortOrder || 'desc')
 
   type ViewMode = (typeof EnumViewMode)[keyof typeof EnumViewMode]["value"];
 
@@ -47,7 +57,7 @@ function RouteComponent() {
   const bookListMutation = useBookList()
   const filterParamsQuery = useBookFilterParams()
 
-  const updateUrlParams = (newPage?: number, newSearch?: string, newFilters?: { categories: number[], groups: number[] }) => {
+  const updateUrlParams = (newPage?: number, newSearch?: string, newFilters?: { categories: number[], groups: number[], grades?: number[] }, newSortBy?: string, newSortOrder?: 'asc' | 'desc') => {
     navigate({
       search: {
         page: newPage || currentPage,
@@ -55,12 +65,15 @@ function RouteComponent() {
         search: newSearch !== undefined ? newSearch : searchTerm,
         category: newFilters?.categories || selectedFilters.categories,
         group: newFilters?.groups || selectedFilters.groups,
+        grade: newFilters?.grades || selectedFilters.grades,
+        sortBy: newSortBy !== undefined ? newSortBy : sortBy,
+        sortOrder: newSortOrder !== undefined ? newSortOrder : sortOrder,
       },
       replace: true,
     })
   }
 
-  const loadBooks = async (page: number = 1, search: string = '', filters = selectedFilters) => {
+  const loadBooks = async (page: number = 1, search: string = '', filters = selectedFilters, sort: { sortBy: string, sortOrder: 'asc' | 'desc' } = { sortBy, sortOrder }) => {
     setIsLoading(true)
     try {
       const response = await bookListMutation.mutateAsync({
@@ -69,6 +82,9 @@ function RouteComponent() {
         search: search.trim() || undefined,
         category: filters.categories.length > 0 ? filters.categories : undefined,
         group: filters.groups.length > 0 ? filters.groups : undefined,
+        grade: filters.grades && filters.grades.length > 0 ? filters.grades : undefined,
+        sortBy: sort.sortBy,
+        sortOrder: sort.sortOrder,
       }) as BookListResponse
 
       if (response.success) {
@@ -88,27 +104,41 @@ function RouteComponent() {
 
   useEffect(() => {
     loadBooks(urlPage || 1, urlSearch || '', {
-      categories: urlCategory || [],
-      groups: urlGroup || []
+      categories: urlCategory || [3],
+      groups: urlGroup || [],
+      grades: urlGrade || []
+    }, {
+      sortBy: urlSortBy || 'createdAt',
+      sortOrder: urlSortOrder || 'desc'
     })
-  }, [urlPage, urlSearch, urlCategory, urlGroup])
+  }, [urlPage, urlSearch, urlCategory, urlGroup, urlGrade, urlSortBy, urlSortOrder])
 
-  const handleSearch = () => {
-    updateUrlParams(1, searchTerm)
+  const handleSearch = (term: string = searchTerm) => {
+    updateUrlParams(1, term)
   }
 
   const handlePageChange = (page: number) => {
     updateUrlParams(page, searchTerm)
   }
 
-  const handleFilterChange = (filters: { categories: number[], groups: number[] }) => {
-    setSelectedFilters(filters)
+  const handleFilterChange = (filters: { categories: number[], groups: number[], grades?: number[] }) => {
+    setSelectedFilters({
+      categories: filters.categories,
+      groups: filters.groups,
+      grades: filters.grades || []
+    })
     updateUrlParams(1, searchTerm, filters)
   }
 
   const handleViewModeChange = (mode: ViewMode) => {
     store.setBooks({ ...pageStore, viewMode: mode })
     setViewMode(mode)
+  }
+
+  const handleSortChange = (newSortBy: string, newSortOrder: 'asc' | 'desc') => {
+    setSortBy(newSortBy)
+    setSortOrder(newSortOrder)
+    updateUrlParams(1, searchTerm, selectedFilters, newSortBy, newSortOrder)
   }
 
   return (
@@ -145,30 +175,43 @@ function RouteComponent() {
             />
 
             {/* View Toggles and Results Count */}
-            <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4 mb-2">
               {totalBooks !== undefined && (
                 <p className="text-slate-500 dark:text-slate-400">
-                  Showing <span className="font-bold text-slate-900 dark:text-white">{books.length}</span> of <span className="font-bold text-slate-900 dark:text-white">{totalBooks}</span> books
+                  <Trans
+                    i18nKey="books.info.showingText"
+                    values={{ count: books.length, total: totalBooks }}
+                    components={{
+                      bold: <span className="font-bold text-slate-900 dark:text-white" />
+                    }}
+                  />
                 </p>
               )}
 
-              <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
-                <Button
-                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                  size="sm"
-                  className="h-8 px-2"
-                  onClick={() => handleViewModeChange?.('grid')}
-                >
-                  <LayoutGrid className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant={viewMode === 'list' ? 'default' : 'ghost'}
-                  size="sm"
-                  className="h-8 px-2"
-                  onClick={() => handleViewModeChange?.('list')}
-                >
-                  <ListIcon className="w-4 h-4" />
-                </Button>
+              <div className="flex items-center gap-4">
+                <BookSortSelector
+                  sortBy={sortBy}
+                  sortOrder={sortOrder}
+                  onSortChange={handleSortChange}
+                />
+                <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <Button
+                    variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                    size="sm"
+                    className="h-6 w-6"
+                    onClick={() => handleViewModeChange?.('grid')}
+                  >
+                    <LayoutGrid className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === 'list' ? 'default' : 'ghost'}
+                    size="sm"
+                    className="h-6 w-6"
+                    onClick={() => handleViewModeChange?.('list')}
+                  >
+                    <ListIcon className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
             </div>
 

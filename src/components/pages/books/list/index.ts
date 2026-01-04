@@ -6,3 +6,4 @@ export {BooksHeroSection} from "./BooksHeroSection";
 export {BooksSkeleton} from "./BooksSkeleton";
 export {BookListNew} from "./BookListNew";
 export {BookSearchBar} from "./BookSearchBar";
+export {BookSortSelector} from "./BookSortSelector";

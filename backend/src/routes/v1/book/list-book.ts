@@ -6,7 +6,8 @@ import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } 
 import { educationGrades } from "../../../db/schema/education-schema.ts";
 import {and, eq, inArray, sql, or, ilike, desc} from "drizzle-orm";
 import type {FastifyReply, FastifyRequest} from "fastify";
-import { EnumContentStatus } from "../../../db/schema/enum-app.ts";
+import { EnumContentStatus, EnumContentType } from "../../../db/schema/enum-app.ts";
+import { appVersion } from "../../../db/schema/version-schema.ts";
 
 const BookListQuery = Type.Object({
   category: Type.Optional(Type.Array(Type.Number())),
@@ -151,16 +152,37 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Add filter conditions if they exist
       if (category?.length) {
-        conditions.push(inArray(bookCategory.id, category));
-      }
+        // Only use the first category if multiple categories are provided
+        const categoryFilter = category.length > 1 ? [category[0]] : category;
 
-      if (group?.length) {
-        conditions.push(inArray(bookGroup.id, group));
-      }
+        if(categoryFilter[0] === 0) {
+          // When category is 0, we want to get books with the latest versionId
+          const latestVersion = await db
+            .select({ id: appVersion.id })
+            .from(appVersion)
+            .where(and(
+              eq(appVersion.dataType, EnumContentType.BOOK),
+              eq(appVersion.status, EnumContentStatus.PUBLISHED)
+            ))
+            .orderBy(desc(appVersion.id))
+            .limit(1);
 
-      if (grade?.length) {
-        conditions.push(inArray(educationGrades.id, grade));
-        conditions.push(eq(books.status, EnumContentStatus.PUBLISHED));
+          if (latestVersion.length > 0) {
+            conditions.push(eq(books.versionId, latestVersion[0].id));
+          }
+        }
+        else {
+          conditions.push(inArray(bookCategory.id, categoryFilter));
+
+          if (group?.length) {
+            conditions.push(inArray(bookGroup.id, group));
+          }
+
+          if (grade?.length) {
+            conditions.push(inArray(educationGrades.id, grade));
+            conditions.push(eq(books.status, EnumContentStatus.PUBLISHED));
+          }   
+        }
       }
 
       // Build base query with joins
@@ -202,6 +224,11 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           query = order === 'asc' 
             ? queryWithWhere.orderBy(bookEventStats.viewCount)
             : queryWithWhere.orderBy(desc(bookEventStats.viewCount));
+          break;
+        case 'downloadCount':
+          query = order === 'asc' 
+            ? queryWithWhere.orderBy(bookEventStats.downloadCount)
+            : queryWithWhere.orderBy(desc(bookEventStats.downloadCount));
           break;
         case 'createdAt':
         default:
