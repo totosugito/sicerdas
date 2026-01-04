@@ -40,7 +40,7 @@ function RouteComponent() {
     groups: number[];
     grades: number[];
   }>({
-    categories: urlCategory || [3],
+    categories: urlCategory || [0],
     groups: urlGroup || [],
     grades: urlGrade || []
   })
@@ -104,7 +104,7 @@ function RouteComponent() {
 
   useEffect(() => {
     loadBooks(urlPage || 1, urlSearch || '', {
-      categories: urlCategory || [3],
+      categories: urlCategory || [0],
       groups: urlGroup || [],
       grades: urlGrade || []
     }, {
