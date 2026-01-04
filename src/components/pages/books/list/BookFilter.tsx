@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { Button } from '@/components/ui/button';
+import { useCallback } from 'react';
 import { FilterParamCategory } from '@/service/book';
 import { useTranslation } from 'react-i18next';
 import { Filter } from 'lucide-react';
@@ -16,35 +15,13 @@ interface BookFilterProps {
     categories: number[];
     groups: number[];
   }) => void;
-  autoSubmit?: boolean;
   filterData?: {
     data: FilterParamCategory[];
   };
 }
 
-export const BookFilter = ({ selectedFilters, onFilterChange, autoSubmit = false, filterData }: BookFilterProps) => {
+export const BookFilter = ({ selectedFilters, onFilterChange, filterData }: BookFilterProps) => {
   const { t } = useTranslation();
-  
-  // Use ref to always have the current autoSubmit value
-  const autoSubmitRef = useRef(autoSubmit);
-  useEffect(() => {
-    autoSubmitRef.current = autoSubmit;
-  }, [autoSubmit]);
-
-  // Use local state only when autoSubmit is false, otherwise use props as source of truth
-  const [localFilters, setLocalFilters] = useState(() => {
-    // Initialize local state based on autoSubmit prop
-    return selectedFilters;
-  });
-  
-  // Sync local state with props when autoSubmit is false
-  useEffect(() => {
-    console.log('Selected Filters:', selectedFilters, autoSubmit)
-    if (!autoSubmit) {
-      setLocalFilters(selectedFilters);
-    }
-  }, [selectedFilters, autoSubmit]);
-
   const categories = filterData?.data || [];
 
   const handleCategoryChange = useCallback((value: string) => {
@@ -58,22 +35,12 @@ export const BookFilter = ({ selectedFilters, onFilterChange, autoSubmit = false
       groups: categoryGroups
     };
     
-    const currentAutoSubmit = autoSubmitRef.current;
-    console.log('New Filters:', newFilters, currentAutoSubmit)
-    if (currentAutoSubmit) {
-      onFilterChange(newFilters);
-    } else {
-      setLocalFilters(newFilters);
-    }
-  }, [categories, onFilterChange, autoSubmit, setLocalFilters]);
+    onFilterChange(newFilters);
+  }, [categories, onFilterChange]);
 
-  const toggleGroup = useCallback((groupId: number, checked: boolean) => {
-    // Use the appropriate filters based on autoSubmit
-    const currentAutoSubmit = autoSubmitRef.current;
-    const currentFilters = currentAutoSubmit ? selectedFilters : localFilters;
-    
-    let newCategories = [...currentFilters.categories];
-    let newGroups = [...currentFilters.groups];
+  const toggleGroup = useCallback((groupId: number, checked: boolean) => {   
+    let newCategories = [...selectedFilters.categories];
+    let newGroups = [...selectedFilters.groups];
 
     if (checked) {
       newGroups.push(groupId);
@@ -90,21 +57,10 @@ export const BookFilter = ({ selectedFilters, onFilterChange, autoSubmit = false
       groups: newGroups
     };
     
-    if (currentAutoSubmit) {
-      onFilterChange(newFilters);
-    } else {
-      setLocalFilters(newFilters);
-    }
-  }, [categories, selectedFilters, localFilters, onFilterChange, autoSubmit, setLocalFilters]);
+    onFilterChange(newFilters);
+  }, [categories, selectedFilters, onFilterChange]);
 
-  const applyFilters = useCallback(() => {
-    const currentAutoSubmit = autoSubmitRef.current;
-    const filtersToApply = currentAutoSubmit ? selectedFilters : localFilters;
-    onFilterChange(filtersToApply);
-  }, [autoSubmitRef, selectedFilters, localFilters, onFilterChange]);
-
-  const currentFilters = autoSubmit ? selectedFilters : localFilters;
-  const activeCategoryId = currentFilters.categories[0];
+  const activeCategoryId = selectedFilters.categories[0];
   const activeCategory = categories.find(c => c.id === activeCategoryId);
   const displayedGroups = activeCategory ? activeCategory.groups : [];
 
@@ -150,8 +106,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, autoSubmit = false
             </h3>
             <div className="space-y-1 max-h-[400px] overflow-y-auto pr-2">
               {displayedGroups.map((group) => {
-                const currentFilters = autoSubmit ? selectedFilters : localFilters;
-                const isChecked = currentFilters.groups.includes(group.id);
+                const isChecked = selectedFilters.groups.includes(group.id);
                 return (
                   <div key={group.id} className="flex items-center space-x-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                     <Checkbox
@@ -178,16 +133,6 @@ export const BookFilter = ({ selectedFilters, onFilterChange, autoSubmit = false
           </div>
         )}
       </div>
-
-      {/* Footer Action */}
-      {!autoSubmit && (
-        <div className="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800">
-          <Button onClick={applyFilters} className="w-full">
-            {t('books.info.apply_filters')}
-          </Button>
-        </div>
-      )}
-
     </div>
   );
 };
