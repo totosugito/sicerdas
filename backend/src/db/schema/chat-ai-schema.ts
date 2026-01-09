@@ -1,6 +1,7 @@
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { boolean, pgTable, text, timestamp, uuid, varchar, integer, jsonb } from 'drizzle-orm/pg-core';
 import { users } from './auth-schema.ts';
+import { EnumUserTier, PgEnumUserTier } from './enum-app.ts';
 
 /**
  * Table: ai_chat_sessions
@@ -12,6 +13,7 @@ import { users } from './auth-schema.ts';
  * - id: Unique identifier for the chat session
  * - userId: ID of the user who created the session
  * - title: Descriptive name for the chat session
+ * - modelId: Reference to the AI model used for this session (optional)
  * - extra: Flexible data storage for additional session details (optional)
  * - createdAt: When the session was created
  * - updatedAt: When the session was last updated (e.g., title change, activation status)
@@ -28,6 +30,10 @@ export const aiChatSessions = pgTable('ai_chat_sessions', {
   
   // Session details
   title: varchar('title', { length: 255 }).notNull(),
+  
+  // Reference to the model used for this session (optional)
+  modelId: uuid('model_id')
+    .references(() => aiChatModels.id, { onDelete: 'set null', onUpdate: 'cascade' }),
   
   // Flexible data storage
   extra: jsonb("extra")
@@ -54,6 +60,7 @@ export type SchemaAiChatSessionInsert = InferInsertModel<typeof aiChatSessions>;
  * Fields:
  * - id: Unique identifier for the message
  * - sessionId: ID of the chat session this message belongs to
+ * - modelId: Reference to the AI model used for this message (optional)
  * - role: Whether the message is from 'user' or 'assistant' (AI)
  * - content: The text content of the message
  * - createdAt: When the message was created
@@ -76,6 +83,10 @@ export const aiChatMessages = pgTable('ai_chat_messages', {
   sessionId: uuid('session_id')
     .notNull()
     .references(() => aiChatSessions.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+  
+  // AI model used for this message (optional, can be null for older messages)
+  modelId: uuid('model_id')
+    .references(() => aiChatModels.id, { onDelete: 'set null', onUpdate: 'cascade' }),
   
   // Message details
   role: varchar('role', { length: 20 }).notNull(), // 'user' or 'assistant'
@@ -194,3 +205,52 @@ export const aiChatShares = pgTable('ai_chat_shares', {
 
 export type SchemaAiChatShareSelect = InferSelectModel<typeof aiChatShares>;
 export type SchemaAiChatShareInsert = InferInsertModel<typeof aiChatShares>;
+
+/**
+ * Table: ai_chat_models
+ * 
+ * This table stores available AI chat models that users can select from.
+ * Each model has configuration details and can be enabled/disabled.
+ * 
+ * Fields:
+ * - id: Unique identifier for the AI model
+ * - name: Display name of the model (e.g., 'GPT-4', 'Claude-3')
+ * - provider: Name of the AI provider (e.g., 'OpenAI', 'Anthropic', 'Google')
+ * - modelIdentifier: The actual model identifier used in API calls
+ * - description: Brief description of the model's capabilities
+ * - maxTokens: Maximum tokens the model can handle
+ * - extra: Flexible data storage for additional model-specific configuration
+ * - isDefault: Whether this is the default model for new sessions
+ * - isEnabled: Whether the model is currently available for use
+ * - createdAt: When the model was added to the system
+ * - updatedAt: When the model was last updated
+ */
+export const aiChatModels = pgTable('ai_chat_models', {
+  id: uuid().primaryKey().notNull().defaultRandom(),
+  
+  // Model details
+  name: varchar('name', { length: 100 }).notNull(),
+  provider: varchar('provider', { length: 50 }).notNull(),
+  modelIdentifier: varchar('model_identifier', { length: 100 }).notNull().unique(),
+  description: text('description'),
+  maxTokens: integer('max_tokens'),
+  
+  // Flexible data storage
+  extra: jsonb("extra")
+    .$type<Record<string, unknown>>()
+    .default({}),
+  
+  // Model status
+  isDefault: boolean('is_default').notNull().default(false),
+  isEnabled: boolean('is_enabled').notNull().default(true),
+  
+  // Pricing tier
+  status: PgEnumUserTier('status').notNull().default(EnumUserTier.FREE),
+  
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export type SchemaAiChatModelSelect = InferSelectModel<typeof aiChatModels>;
+export type SchemaAiChatModelInsert = InferInsertModel<typeof aiChatModels>;
