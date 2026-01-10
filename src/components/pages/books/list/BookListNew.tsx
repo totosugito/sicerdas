@@ -10,11 +10,11 @@ interface BookListNewProps {
   viewMode: 'grid' | 'list';
 }
 
-export const BookListNew = ({ books, viewMode}: BookListNewProps) => {
+export const BookListNew = ({ books, viewMode }: BookListNewProps) => {
   const { t } = useTranslation()
 
   const gridClass = viewMode === 'grid'
-    ? "grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6"
+    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6"
     : "grid grid-cols-1 gap-4";
 
   return (

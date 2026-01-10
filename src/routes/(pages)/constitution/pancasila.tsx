@@ -37,7 +37,7 @@ function RouteComponent() {
 
     return (
         <div className="flex gap-6 w-full py-6">
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg">
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg w-full">
 
                 {/* Hero Section */}
                 <section className="relative pb-10">

@@ -9,7 +9,7 @@ export function CTASection() {
     const { t } = useTranslation()
 
     return (
-        <section className="py-20">
+        <section className="py-10 px-6">
             <div className="container mx-auto max-w-5xl">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -32,8 +32,8 @@ export function CTASection() {
                             <Link to={AppRoute.books.latest.url}>
                                 <Button>
                                     <div className='flex flex-row gap-4 items-center'>
-                                    <span>{t('landing.hero.exploreBooks')}</span>
-                                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                                        <span>{t('landing.hero.exploreBooks')}</span>
+                                        <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                                     </div>
                                 </Button>
                             </Link>
