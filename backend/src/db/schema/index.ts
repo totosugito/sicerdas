@@ -10,6 +10,7 @@ import {
   PgEnumContentSortingType,
   PgEnumEducationLevel,
   PgEnumPeriodicGroup,
+  PgEnumUserTier,
 } from './enum-app.ts';
 import { users, accounts, sessions, verifications, userProfile } from './auth-schema.ts';
 import {
@@ -26,6 +27,7 @@ export {
   PgEnumUserRole,
   PgEnumContentStatus, PgEnumEventStatus, PgEnumContentType,
   PgEnumReportStatus, PgEnumReportReason, PgEnumContentSortingType, PgEnumEducationLevel, PgEnumPeriodicGroup,
+  PgEnumUserTier,
   users, accounts, sessions, verifications, userProfile,
   bookCategory, bookGroup, books, bookGroupStats, bookEventStats, userBookInteractions,
   educationGrades, appVersion, userContentReport, userEventHistory,

@@ -111,6 +111,12 @@ export const EnumEducationLevel = {
 }
 export const PgEnumEducationLevel = pgEnum('education_level', Object.values(EnumEducationLevel) as [string, ...string[]]);
 
+export const EnumUserTier = {
+  FREE: 'free',
+  PRO: 'pro',
+} as const
+export const PgEnumUserTier = pgEnum('user_tier', Object.values(EnumUserTier) as [string, ...string[]]);
+
 export const EnumPeriodicGroup = {
   headerEmpty: 'headerEmpty',
   header: 'header',
