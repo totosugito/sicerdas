@@ -39,7 +39,7 @@ export function Footer() {
                         <h3 className="font-semibold text-foreground mb-4">{t('landing.footer.quickLinks.title')}</h3>
                         <ul className="space-y-2 text-sm">
                             <li>
-                                <Link to={AppRoute.books.latest.url} className="text-muted-foreground hover:text-primary transition-colors">
+                                <Link to={AppRoute.book.books.url} className="text-muted-foreground hover:text-primary transition-colors">
                                     {t('landing.footer.quickLinks.latestBooks')}
                                 </Link>
                             </li>

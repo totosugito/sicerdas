@@ -1,59 +1,110 @@
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Link } from "@tanstack/react-router"
-import { Calendar } from "lucide-react"
-import { Book, getBookCover } from "../types/books"
-import { BookStats } from "./BookStats"
+import { Book, getBookCover } from '@/components/pages/books/types/books';
+import { Badge } from '@/components/ui/badge';
+import { Star } from 'lucide-react';
+import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
 
-export const BookCard = ({ book }: { book: Book }) => {
-    return (
-        <Link
-            key={book.id}
-            to="/book/$bookId"
-            params={{ bookId: book.id.toString() }}
-            className="group block"
-        >
-            <Card className="h-full group-hover:shadow-xl group-hover:-translate-y-2 transition-all duration-300 overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm pt-0 pb-3 gap-3">
-                <div className="relative overflow-hidden">
-                    <img
-                        src={getBookCover(book.bookId, "md")} alt={`Cover of ${book.title}`}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute top-2 right-2">
-                        <Badge variant={"default"}>
-                            {book.grade.name} - {book.grade.grade}
-                        </Badge>
-                    </div>
-                </div>
-
-                <CardHeader className="px-4 gap-1">
-                    <CardTitle className="text-lg font-bold text-foreground line-clamp-2 group-hover:text-primary transition-colors">
-                        {book.title}
-                    </CardTitle>
-                    <CardDescription className="line-clamp-2">
-                        {book.author}
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="px-4 py-0 my-0">
-                    {/* <p className="text-muted-foreground text-sm line-clamp-3 mb-4">
-                        {book.description}
-                    </p> */}
-                    <div className="flex justify-between items-center">
-                        <Badge variant="outline" className="text-xs">
-                            {book.group.name}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">
-                            <div className="flex items-center">
-                                <Calendar className="w-3 h-3 mr-1" />
-                                {book.publishedYear}
-                            </div>
-                        </span>
-                    </div>
-                </CardContent>
-                <CardFooter className="px-4 border-t border-border bg-muted/20 [.border-t]:pt-2">
-                    <BookStats book={book} />
-                </CardFooter>
-            </Card>
-        </Link>
-    )
+interface BookCardProps {
+  books: Book[];
+  viewMode: 'grid' | 'list';
 }
+
+export const BookCard = ({ books, viewMode }: BookCardProps) => {
+  const { t } = useTranslation()
+
+  const gridClass = viewMode === 'grid'
+    ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
+    : "grid grid-cols-1 gap-4";
+
+  return (
+    <div>
+      {/* Book List */}
+      <div className={gridClass}>
+        {books.map((book) => (
+          <BookCardView key={book.id} book={book} viewMode={viewMode} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+interface BookCardViewProps {
+  book: Book;
+  viewMode: 'grid' | 'list';
+}
+
+const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
+  const isListView = viewMode === 'list';
+
+  const getGradeColor = (gradeName: string) => {
+    if (gradeName.includes('SD')) return 'bg-red-500';
+    if (gradeName.includes('SMP')) return 'bg-blue-500';
+    if (gradeName.includes('SMA') || gradeName.includes('MA')) return 'bg-[#0089BD]';
+    if (gradeName.includes('SMK')) return 'bg-[#0089BD]';
+    if (gradeName.includes('Umum')) return 'bg-purple-500';
+    return 'bg-emerald-500';
+  };
+
+  const getGrade = (grade: string, prefix = '') => {
+    const grades = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+    if (grades.includes(grade)) return `${prefix}${grade}`;
+    return '';
+  }
+
+  return (
+    <div className={cn(
+      "group bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden",
+      isListView ? "flex flex-row h-auto min-h-[160px]" : "flex flex-col h-full"
+    )}>
+      {/* Image Container */}
+      <div className={cn(
+        "relative overflow-hidden bg-slate-100 dark:bg-slate-700",
+        isListView ? "w-32 sm:w-48 shrink-0" : "aspect-[2/3] w-full max-h-[280px]"
+      )}>
+        <div
+          className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+          style={{
+            backgroundImage: `url("${getBookCover(book.bookId, "md")}")`,
+          }}
+        />
+        <div className="absolute top-3 left-3">
+          <Badge className={cn(getGradeColor(book.grade.name), "text-white rounded shadow-sm backdrop-blur-sm text-xs px-2 py-1 border-muted", isListView ? "" : "")}>
+            {book.grade.name}{getGrade(book.grade.grade, ' - ')}
+          </Badge>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-4 flex flex-col flex-1">
+        <h3 className={cn(
+          "font-bold text-slate-900 dark:text-white leading-tight mb-1 group-hover:text-primary transition-colors",
+          isListView ? "text-lg line-clamp-2" : "text-base line-clamp-2"
+        )}>
+          {book.title}
+        </h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-3 line-clamp-1">
+          {book.author || 'Unknown Author'}
+        </p>
+
+        {/* Extra Description for List View */}
+        {isListView && (
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-3 hidden sm:block">
+            {book.description || 'No description available for this book.'}
+          </p>
+        )}
+
+        <div className="mt-auto pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+          <div className="flex items-center gap-1 text-yellow-500 text-xs">
+            <Star className="w-4 h-4 fill-current" />
+            <span className="font-medium text-slate-700 dark:text-slate-300">
+              {book.rating || '4.5'}
+            </span>
+          </div>
+          <span className="text-xs font-medium text-slate-400">
+            {book.publishedYear}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};

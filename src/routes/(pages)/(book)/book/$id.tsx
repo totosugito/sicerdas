@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useBookDetail } from '@/service/book'
+import { useBookDetail } from '@/service/book/book'
 import { BookDetail } from '@/components/pages/books/book/BookDetail'
 import { Book } from '@/components/pages/books/types/books'
 import { useTranslation } from 'react-i18next'

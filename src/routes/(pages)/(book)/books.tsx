@@ -2,10 +2,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { z } from 'zod'
 import { useTranslation, Trans } from 'react-i18next'
-import { useBookList, useBookFilterParams } from '@/service/book'
+import { useBookList, useBookFilterParams } from '@/service/book/book'
 import { BookOpen, LayoutGrid, ListIcon } from 'lucide-react'
 import { showNotifError } from '@/lib/show-notif'
-import { Book, BookListResponse, BooksSkeleton, BookFilter, BookListNew, BookSearchBar, BookSortSelector } from '@/components/pages/books/list'
+import { Book, BookListResponse, BooksSkeleton, BookFilter, BookCard, BookSearchBar, BookSortSelector } from '@/components/pages/books/list'
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from '@/components/custom/table';
 import { useAppStore } from '@/stores/useAppStore'
@@ -35,15 +35,11 @@ function RouteComponent() {
   const [currentPage, setCurrentPage] = useState(urlPage || 1)
   const [totalPages, setTotalPages] = useState(0)
   const [totalBooks, setTotalBooks] = useState(0)
-  const [selectedFilters, setSelectedFilters] = useState<{
-    categories: number[];
-    groups: number[];
-    grades: number[];
-  }>({
+  const selectedFilters = {
     categories: urlCategory || [0],
     groups: urlGroup || [],
     grades: urlGrade || []
-  })
+  }
   const [sortBy, setSortBy] = useState(urlSortBy || 'createdAt')
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">(urlSortOrder || 'desc')
 
@@ -122,11 +118,6 @@ function RouteComponent() {
   }
 
   const handleFilterChange = (filters: { categories: number[], groups: number[], grades?: number[] }) => {
-    setSelectedFilters({
-      categories: filters.categories,
-      groups: filters.groups,
-      grades: filters.grades || []
-    })
     updateUrlParams(1, searchTerm, filters)
   }
 
@@ -142,8 +133,8 @@ function RouteComponent() {
   }
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="flex flex-col lg:flex-row gap-8">
+    <div className="flex flex-col flex-1 w-full px-8 pt-14 py-6">
+      <div className="flex flex-col lg:flex-row gap-8 pt-6">
         <aside className="hidden lg:block w-64 flex-shrink-0">
           <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
             <BookFilter
@@ -162,7 +153,7 @@ function RouteComponent() {
           {/* Loading State */}
           {isLoading && <BooksSkeleton viewMode={viewMode} length={8} />}
 
-          <div>
+          <div className="flex flex-col gap-4">
             {/* Search Bar */}
             <BookSearchBar
               searchTerm={searchTerm}
@@ -175,7 +166,7 @@ function RouteComponent() {
             />
 
             {/* View Toggles and Results Count */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4 mb-2">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               {totalBooks !== undefined && (
                 <p className="text-slate-500 dark:text-slate-400">
                   <Trans
@@ -217,7 +208,7 @@ function RouteComponent() {
 
             {/* Books Display */}
             {!isLoading && books.length > 0 && (
-              <BookListNew
+              <BookCard
                 books={books}
                 viewMode={viewMode === 'grid' ? 'grid' : 'list'}
               />

@@ -104,42 +104,42 @@ export function AppNavbar() {
   const booksMenu = [
     {
       title: t('landing.navbar.books.latestBooks'),
-      href: `${AppRoute.books}/latest`,
+      href: `${AppRoute.book.books.url}`,
       description: t('landing.navbar.books.descriptions.latestBooks')
     },
     {
       title: t('landing.navbar.books.curriculum2006'),
-      href: `${AppRoute.books}/curriculum-2006`,
+      href: `${AppRoute.book.books.url}?category=[1]`,
       description: t('landing.navbar.books.descriptions.curriculum2006')
     },
     {
       title: t('landing.navbar.books.curriculum2013'),
-      href: `${AppRoute.books}/curriculum-2013`,
+      href: `${AppRoute.book.books.url}?category=[2]`,
       description: t('landing.navbar.books.descriptions.curriculum2013')
     },
     {
       title: t('landing.navbar.books.curriculumMerdeka'),
-      href: `${AppRoute.books}/curriculum-merdeka`,
+      href: `${AppRoute.book.books.url}?category=[3]`,
       description: t('landing.navbar.books.descriptions.curriculumMerdeka')
     },
     {
       title: t('landing.navbar.books.educationBooks'),
-      href: `${AppRoute.books}/education-books`,
+      href: `${AppRoute.book.books.url}?category=[4]`,
       description: t('landing.navbar.books.descriptions.educationBooks')
     },
     {
       title: t('landing.navbar.books.translationBooks'),
-      href: `${AppRoute.books}/translation-books`,
+      href: `${AppRoute.book.books.url}?category=[5]`,
       description: t('landing.navbar.books.descriptions.translationBooks')
     },
     {
       title: t('landing.navbar.books.computerBooks'),
-      href: `${AppRoute.books}/computer-books`,
+      href: `${AppRoute.book.books.url}?category=[6]`,
       description: t('landing.navbar.books.descriptions.computerBooks')
     },
     {
       title: t('landing.navbar.books.literatureBooks'),
-      href: `${AppRoute.books}/literature-books`,
+      href: `${AppRoute.book.books.url}?category=[7]`,
       description: t('landing.navbar.books.descriptions.literatureBooks')
     },
   ]
@@ -203,9 +203,9 @@ export function AppNavbar() {
       href: AppRoute.periodicTable.chemistryDictionary.url,
       description: t('landing.navbar.periodicTable.descriptions.chemistryDictionary')
     },
-    
+
   ]
-  
+
   const quizMenu = [
     {
       title: t('landing.navbar.quiz.semester'),

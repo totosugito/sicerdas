@@ -21,7 +21,7 @@ import { appVersion } from './version-schema.ts';
 import {
   userContentReport, userEventHistory,
 } from './web-schema.ts';
-import { aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares } from './chat-ai-schema.ts';
+import { aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares, aiChatModels } from './chat-ai-schema.ts';
 import { periodicElements, periodicElementNotes } from './periodic-table-schema.ts';
 export {
   PgEnumUserRole,
@@ -31,6 +31,6 @@ export {
   users, accounts, sessions, verifications, userProfile,
   bookCategory, bookGroup, books, bookGroupStats, bookEventStats, userBookInteractions,
   educationGrades, appVersion, userContentReport, userEventHistory,
-  aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares,
+  aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares, aiChatModels,
   periodicElements, periodicElementNotes
 }

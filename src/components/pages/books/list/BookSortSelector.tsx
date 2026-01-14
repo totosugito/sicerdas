@@ -1,6 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { ArrowUp, ArrowDown, ArrowUpAZ, ArrowDownAZ } from "lucide-react";
+import { ArrowUpAZ, ArrowDownAZ } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface BookSortSelectorProps {

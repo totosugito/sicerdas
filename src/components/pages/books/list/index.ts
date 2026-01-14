@@ -1,9 +1,6 @@
-export {type Book, type BookListResponse} from "../types/books";
-export {BookCard} from "./BookCard";
-export {BookList} from "./BookList";
-export {BookFilter} from "./BookFilter";
-export {BooksHeroSection} from "./BooksHeroSection";
-export {BooksSkeleton} from "./BooksSkeleton";
-export {BookListNew} from "./BookListNew";
-export {BookSearchBar} from "./BookSearchBar";
-export {BookSortSelector} from "./BookSortSelector";
+export { type Book, type BookListResponse } from "../types/books";
+export { BookFilter } from "./BookFilter";
+export { BooksSkeleton } from "./BooksSkeleton";
+export { BookCard } from "./BookCard";
+export { BookSearchBar } from "./BookSearchBar";
+export { BookSortSelector } from "./BookSortSelector";

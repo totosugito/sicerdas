@@ -1,45 +1,3 @@
-export type Book = {
-  id: number,
-  bookId: number,
-  title: string
-  description?: string
-  author?: string
-  publishedYear: string
-  totalPages: number
-  size: number
-  status: string,
-  rating?: number,
-  view?: number,
-  favorite?: boolean,
-  favoriteTotal?: number
-  category: {
-    id: number
-    name: string
-  }
-  group: {
-    id: number
-    name: string
-  }
-  grade: {
-    id: number
-    name: string
-    grade: string
-  }
-  createdAt: string
-  updatedAt: string
-}
-
-export type BookListResponse = {
-  success: boolean
-  data: {
-    items: Book[]
-    total: number
-    page: number
-    limit: number
-    totalPages: number
-  }
-}
-
 import { APP_CONFIG } from "@/constants/config";
 import { Md5 } from "@/lib/md5";
 
@@ -58,22 +16,22 @@ export const getBookPdf = (bookId: number, maxChar = 4, extension = '.pdf') => {
   return (`${APP_CONFIG.cloud}/bse/perpustakaan/${createAutoBookName(bookId, maxChar)}${extension}`);
 }
 
-export const getBookCover = (bookId: number, fileType='cover', maxChar = 4, extension = '.jpg') => {
+export const getBookCover = (bookId: number, fileType = 'cover', maxChar = 4, extension = '.jpg') => {
   return (`${APP_CONFIG.cloud}/bse/perpustakaan/cover/${createAutoBookName(bookId, maxChar)}_${fileType}${extension}`);
 }
 
-export const getBookPageList = (bookId: number, maxChar = 4, totalPages=5) => {
+export const getBookPageList = (bookId: number, maxChar = 4, totalPages = 5) => {
   const dirName = Math.floor(bookId / 1000);
   const fileId = bookId.toString().padStart(maxChar, '0');
 
   let baseUrl = `${APP_CONFIG.cloud}/bse/perpustakaan/images/${dirName}`;
   let pages = [];
-  for(let i=0; i<totalPages; i++) {
-    const id_ = (i+1).toString().padStart(maxChar, '0');
+  for (let i = 0; i < totalPages; i++) {
+    const id_ = (i + 1).toString().padStart(maxChar, '0');
     pages.push({
       thumb: `${baseUrl}/${fileId}_${id_}_xs.jpg`,
       image: `${baseUrl}/${fileId}_${id_}_lg.jpg`
     });
   }
-  return(pages);
+  return (pages);
 }
