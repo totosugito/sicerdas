@@ -62,6 +62,7 @@ export const bookCategory = pgTable('book_category', {
  * - versionId: References the application version this group belongs to.
  * - categoryId: References the category that this group belongs under.
  * - name: The name of the book group (max 128 characters).
+ * - shortName: The short name of the book group (max 64 characters).
  * - desc: An optional textual description of the group.
  * - extra: A JSONB field for additional unstructured data.
  * - status: Publication status of the group (e.g., published, draft).
@@ -77,7 +78,8 @@ export const bookGroup = pgTable('book_group', {
   categoryId: integer('category_id')
     .references(() => bookCategory.id, { onDelete: 'set null' })
     .notNull(),
-  name: varchar('name', { length: 128 }).notNull(),
+  name: varchar('name', { length: 256 }).notNull(),
+  shortName: varchar('short_name', { length: 128 }).notNull(),
   desc: text('desc')
     .default(''),
   extra: jsonb("extra")

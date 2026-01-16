@@ -29,7 +29,7 @@ export function CTASection() {
 
                         {/* Buttons */}
                         <div className="flex flex-col sm:flex-row gap-4">
-                            <Link to={AppRoute.books.latest.url}>
+                            <Link to={AppRoute.book.books.url}>
                                 <Button>
                                     <div className='flex flex-row gap-4 items-center'>
                                         <span>{t('landing.hero.exploreBooks')}</span>

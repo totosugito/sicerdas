@@ -1,11 +1,11 @@
-import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
-import {Type} from '@sinclair/typebox';
-import {withErrorHandler} from "../../../utils/withErrorHandler.ts";
-import {db} from "../../../db/index.ts";
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import { Type } from '@sinclair/typebox';
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { db } from "../../../db/index.ts";
 import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } from "../../../db/schema/book-schema.ts";
 import { educationGrades } from "../../../db/schema/education-schema.ts";
-import {and, eq, sql} from "drizzle-orm";
-import type {FastifyReply, FastifyRequest} from "fastify";
+import { and, eq, sql } from "drizzle-orm";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 const BookDetailResponse = Type.Object({
   id: Type.String({ format: 'uuid' }),
@@ -26,6 +26,7 @@ const BookDetailResponse = Type.Object({
   group: Type.Object({
     id: Type.Number(),
     name: Type.String(),
+    shortName: Type.String(),
   }),
   grade: Type.Object({
     id: Type.Number(),
@@ -39,8 +40,8 @@ const BookDetailResponse = Type.Object({
     rating: Type.Number(),
     bookmarked: Type.Boolean(),
   })),
-  createdAt: Type.String({format: 'date-time'}),
-  updatedAt: Type.String({format: 'date-time'}),
+  createdAt: Type.String({ format: 'date-time' }),
+  updatedAt: Type.String({ format: 'date-time' }),
 });
 
 const BookDetailResponseWrapper = Type.Object({
@@ -68,14 +69,14 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       reply: FastifyReply
     ): Promise<typeof BookDetailResponseWrapper.static> {
       const { bookId } = req.params;
-      
+
       // Check if user is logged in
       const isLoggedIn = !!(req.session?.user);
       const userId = isLoggedIn ? req.session.user.id : null;
 
       // Build the base query with joins
       let baseQuery;
-      
+
       if (isLoggedIn && userId) {
         // Query with user interactions
         baseQuery = db
@@ -100,6 +101,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             group: {
               id: bookGroup.id,
               name: bookGroup.name,
+              shortName: bookGroup.shortName,
             },
             grade: {
               id: educationGrades.id,
@@ -146,6 +148,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             group: {
               id: bookGroup.id,
               name: bookGroup.name,
+              shortName: bookGroup.shortName,
             },
             grade: {
               id: educationGrades.id,
@@ -199,6 +202,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         group: book.group ? {
           id: book.group.id,
           name: book.group.name,
+          shortName: book.group.shortName
         } : {
           id: 0,
           name: '',

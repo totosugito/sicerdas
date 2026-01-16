@@ -34,75 +34,75 @@ async function seed() {
 
     // default data for education grade
     const educationGrades_ = [
-      { versionId: versionId, grade: "1", name: "SD" },
-      { versionId: versionId, grade: "2", name: "SD" },
-      { versionId: versionId, grade: "3", name: "SD" },
-      { versionId: versionId, grade: "4", name: "SD" },
-      { versionId: versionId, grade: "5", name: "SD" },
-      { versionId: versionId, grade: "6", name: "SD" },
-      { versionId: versionId, grade: "7", name: "SMP" },
-      { versionId: versionId, grade: "8", name: "SMP" },
-      { versionId: versionId, grade: "9", name: "SMP" },
-      { versionId: versionId, grade: "10", name: "SMA" },
-      { versionId: versionId, grade: "11", name: "SMA" },
-      { versionId: versionId, grade: "12", name: "SMA" },
-      { versionId: versionId, grade: "preschool", name: "Pra Sekolah" },
-      { versionId: versionId, grade: "paud", name: "PAUD" },
-      { versionId: versionId, grade: "empty", name: "Umum" },
-      { versionId: versionId, grade: "level_1", name: "Level 1" },
-      { versionId: versionId, grade: "level_2", name: "Level 2" },
-      { versionId: versionId, grade: "level_3", name: "Level 3" },
-      { versionId: versionId, grade: "level_4", name: "Level 4" },
-      { versionId: versionId, grade: "sd", name: "SD" },
-      { versionId: versionId, grade: "smp", name: "SMP" },
-      { versionId: versionId, grade: "sma", name: "SMA" },
-      { versionId: versionId, grade: "smk", name: "SMK" },
-      { versionId: versionId, grade: "sd_smp", name: "SD/SMP" },
+      { id: 1, versionId: versionId, grade: "1", name: "SD" },
+      { id: 2, versionId: versionId, grade: "2", name: "SD" },
+      { id: 3, versionId: versionId, grade: "3", name: "SD" },
+      { id: 4, versionId: versionId, grade: "4", name: "SD" },
+      { id: 5, versionId: versionId, grade: "5", name: "SD" },
+      { id: 6, versionId: versionId, grade: "6", name: "SD" },
+      { id: 7, versionId: versionId, grade: "7", name: "SMP" },
+      { id: 8, versionId: versionId, grade: "8", name: "SMP" },
+      { id: 9, versionId: versionId, grade: "9", name: "SMP" },
+      { id: 10, versionId: versionId, grade: "10", name: "SMA" },
+      { id: 11, versionId: versionId, grade: "11", name: "SMA" },
+      { id: 12, versionId: versionId, grade: "12", name: "SMA" },
+      { id: 13, versionId: versionId, grade: "preschool", name: "Pra Sekolah" },
+      { id: 14, versionId: versionId, grade: "paud", name: "PAUD" },
+      { id: 15, versionId: versionId, grade: "empty", name: "Umum" },
+      { id: 16, versionId: versionId, grade: "level_1", name: "Level 1" },
+      { id: 17, versionId: versionId, grade: "level_2", name: "Level 2" },
+      { id: 18, versionId: versionId, grade: "level_3", name: "Level 3" },
+      { id: 19, versionId: versionId, grade: "level_4", name: "Level 4" },
+      { id: 20, versionId: versionId, grade: "sd", name: "SD" },
+      { id: 21, versionId: versionId, grade: "smp", name: "SMP" },
+      { id: 22, versionId: versionId, grade: "sma", name: "SMA" },
+      { id: 23, versionId: versionId, grade: "smk", name: "SMK" },
+      { id: 24, versionId: versionId, grade: "sd_smp", name: "SD/SMP" },
     ]
 
     // default data for books category
     const bookCategories_ = [
-      { versionId: versionId, code: "k06", name: "Kurikulum 2006" },
-      { versionId: versionId, code: "k13", name: "Kurikulum 2013" },
-      { versionId: versionId, code: "merdeka", name: "Kurikulum Merdeka" },
-      { versionId: versionId, code: "pendidikan", name: "Buku Pendidikan" },
-      { versionId: versionId, code: "cerita_terjemahan", name: "Cerita Terjemahan" },
-      { versionId: versionId, code: "buku_komputer", name: "Buku Komputer" },
-      { versionId: versionId, code: "sastra", name: "Sastra" },
+      { id: 1, versionId: versionId, code: "k06", name: "Kurikulum 2006" },
+      { id: 2, versionId: versionId, code: "k13", name: "Kurikulum 2013" },
+      { id: 3, versionId: versionId, code: "merdeka", name: "Kurikulum Merdeka" },
+      { id: 4, versionId: versionId, code: "pendidikan", name: "Buku Pendidikan" },
+      { id: 5, versionId: versionId, code: "cerita_terjemahan", name: "Cerita Terjemahan" },
+      { id: 6, versionId: versionId, code: "buku_komputer", name: "Buku Komputer" },
+      { id: 7, versionId: versionId, code: "sastra", name: "Sastra" },
     ]
 
     // default data for books group
     const bookGroups_ = [
-      { versionId: versionId, categoryCode: "k06", name: "Kurikulum 2006" },
-      { versionId: versionId, categoryCode: "k06", name: "SMK" },
-      { versionId: versionId, categoryCode: "k13", name: "Kurikulum 2013 Siswa" },
-      { versionId: versionId, categoryCode: "k13", name: "Kurikulum 2013 Guru" },
-      { versionId: versionId, categoryCode: "k13", name: "SMK Kita BISA!" },
-      { versionId: versionId, categoryCode: "k13", name: "SMK K13" },
-      { versionId: versionId, categoryCode: "merdeka", name: "Kurikulum Merdeka Siswa" },
-      { versionId: versionId, categoryCode: "merdeka", name: "Kurikulum Merdeka Guru" },
-      { versionId: versionId, categoryCode: "pendidikan", name: "KPK" },
-      { versionId: versionId, categoryCode: "pendidikan", name: "KAMUS" },
-      { versionId: versionId, categoryCode: "pendidikan", name: "Agama Islam" },
-      { versionId: versionId, categoryCode: "pendidikan", name: "Pengetahuan Umum" },
-      { versionId: versionId, categoryCode: "pendidikan", name: "IslamHouse.com" },
-      { versionId: versionId, categoryCode: "pendidikan", name: "RumahFiqih.com" },
-      { versionId: versionId, categoryCode: "cerita_terjemahan", name: "English" },
-      { versionId: versionId, categoryCode: "cerita_terjemahan", name: "Bahasa Indonesia" },
-      { versionId: versionId, categoryCode: "cerita_terjemahan", name: "Basa Jawa" },
-      { versionId: versionId, categoryCode: "cerita_terjemahan", name: "Basa Sunda" },
-      { versionId: versionId, categoryCode: "buku_komputer", name: "Pengetahuan Komputer" },
-      { versionId: versionId, categoryCode: "buku_komputer", name: "Pemprograman" },
-      { versionId: versionId, categoryCode: "buku_komputer", name: "Syncfusion.com" },
-      { versionId: versionId, categoryCode: "sastra", name: "Komik Pendidikan" },
-      { versionId: versionId, categoryCode: "sastra", name: "Pra Sekolah" },
-      { versionId: versionId, categoryCode: "sastra", name: "Antologi Puisi" },
-      { versionId: versionId, categoryCode: "sastra", name: "Bacaan PAUD" },
-      { versionId: versionId, categoryCode: "sastra", name: "Bacaan SD" },
-      { versionId: versionId, categoryCode: "sastra", name: "Bacaan SMP" },
-      { versionId: versionId, categoryCode: "sastra", name: "Bacaan SMA" },
-      { versionId: versionId, categoryCode: "sastra", name: "Bacaan SD Kelas 1, 2, 3" },
-      { versionId: versionId, categoryCode: "sastra", name: "Bacaan SD Kelas 4, 5, 6" },
+      { id: 1, versionId: versionId, categoryCode: "k06", name: "Kurikulum 2006", shortName: "KTSP" },
+      { id: 2, versionId: versionId, categoryCode: "k06", name: "SMK", shortName: "SMK" },
+      { id: 3, versionId: versionId, categoryCode: "k13", name: "Kurikulum 2013 Siswa", shortName: "K13 Siswa" },
+      { id: 4, versionId: versionId, categoryCode: "k13", name: "Kurikulum 2013 Guru", shortName: "K13 Guru" },
+      { id: 5, versionId: versionId, categoryCode: "k13", name: "SMK Kita BISA!", shortName: "SMK Kita BISA!" },
+      { id: 6, versionId: versionId, categoryCode: "k13", name: "SMK K13", shortName: "SMK K13" },
+      { id: 7, versionId: versionId, categoryCode: "merdeka", name: "Kurikulum Merdeka Siswa", shortName: "Merdeka Siswa" },
+      { id: 8, versionId: versionId, categoryCode: "merdeka", name: "Kurikulum Merdeka Guru", shortName: "Merdeka Guru" },
+      { id: 9, versionId: versionId, categoryCode: "pendidikan", name: "KPK", shortName: "KPK" },
+      { id: 10, versionId: versionId, categoryCode: "pendidikan", name: "KAMUS", shortName: "KAMUS" },
+      { id: 11, versionId: versionId, categoryCode: "pendidikan", name: "Agama Islam", shortName: "Agama Islam" },
+      { id: 12, versionId: versionId, categoryCode: "pendidikan", name: "Pengetahuan Umum", shortName: "Pengetahuan Umum" },
+      { id: 13, versionId: versionId, categoryCode: "pendidikan", name: "IslamHouse.com", shortName: "IslamHouse.com" },
+      { id: 14, versionId: versionId, categoryCode: "pendidikan", name: "RumahFiqih.com", shortName: "RumahFiqih.com" },
+      { id: 15, versionId: versionId, categoryCode: "cerita_terjemahan", name: "English", shortName: "English" },
+      { id: 16, versionId: versionId, categoryCode: "cerita_terjemahan", name: "Bahasa Indonesia", shortName: "Bahasa Indonesia" },
+      { id: 17, versionId: versionId, categoryCode: "cerita_terjemahan", name: "Basa Jawa", shortName: "Basa Jawa" },
+      { id: 18, versionId: versionId, categoryCode: "cerita_terjemahan", name: "Basa Sunda", shortName: "Basa Sunda" },
+      { id: 19, versionId: versionId, categoryCode: "buku_komputer", name: "Pengetahuan Komputer", shortName: "Ilmu Komputer" },
+      { id: 20, versionId: versionId, categoryCode: "buku_komputer", name: "Pemprograman", shortName: "Pemprograman" },
+      { id: 21, versionId: versionId, categoryCode: "buku_komputer", name: "Syncfusion.com", shortName: "Syncfusion.com" },
+      { id: 22, versionId: versionId, categoryCode: "sastra", name: "Komik Pendidikan", shortName: "Komik Pendidikan" },
+      { id: 23, versionId: versionId, categoryCode: "sastra", name: "Pra Sekolah", shortName: "Pra Sekolah" },
+      { id: 24, versionId: versionId, categoryCode: "sastra", name: "Antologi Puisi", shortName: "Antologi Puisi" },
+      { id: 25, versionId: versionId, categoryCode: "sastra", name: "Bacaan PAUD", shortName: "Bacaan PAUD" },
+      { id: 26, versionId: versionId, categoryCode: "sastra", name: "Bacaan SD", shortName: "Bacaan SD" },
+      { id: 27, versionId: versionId, categoryCode: "sastra", name: "Bacaan SMP", shortName: "Bacaan SMP" },
+      { id: 28, versionId: versionId, categoryCode: "sastra", name: "Bacaan SMA", shortName: "Bacaan SMA" },
+      { id: 29, versionId: versionId, categoryCode: "sastra", name: "Bacaan SD Kelas 1, 2, 3", shortName: "Bacaan SD 1-3" },
+      { id: 30, versionId: versionId, categoryCode: "sastra", name: "Bacaan SD Kelas 4, 5, 6", shortName: "Bacaan SD 4-6" },
     ];
 
     // fill default version data
@@ -135,7 +135,7 @@ async function seed() {
       const gradeExists = await db
         .select({ id: educationGrades.id })
         .from(educationGrades)
-        .where(eq(educationGrades.grade, grade.grade))
+        .where(eq(educationGrades.id, grade.id))
         .then((result: { id: number }[]) => !!result[0]?.id);
 
       if (!gradeExists) {
@@ -146,7 +146,7 @@ async function seed() {
         await db
           .update(educationGrades)
           .set(grade)
-          .where(eq(educationGrades.grade, grade.grade));
+          .where(eq(educationGrades.id, grade.id));
       }
     }
 
@@ -155,7 +155,7 @@ async function seed() {
       const categoryExists = await db
         .select({ code: bookCategory.code })
         .from(bookCategory)
-        .where(eq(bookCategory.code, category.code))
+        .where(eq(bookCategory.id, category.id))
         .then((result: { code: string }[]) => !!result[0]?.code);
 
       if (!categoryExists) {
@@ -166,7 +166,7 @@ async function seed() {
         await db
           .update(bookCategory)
           .set(category)
-          .where(eq(bookCategory.code, category.code));
+          .where(eq(bookCategory.id, category.id));
       }
     }
 
@@ -199,9 +199,11 @@ async function seed() {
           .limit(1);
 
         const groupData = {
+          id: group.id,
           versionId: group.versionId,
           categoryId: category.id,
           name: group.name,
+          shortName: group.shortName,
         };
 
         if (!existingGroup) {

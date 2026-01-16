@@ -1,11 +1,11 @@
-import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
-import {Type} from '@sinclair/typebox';
-import {withErrorHandler} from "../../../utils/withErrorHandler.ts";
-import {db} from "../../../db/index.ts";
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import { Type } from '@sinclair/typebox';
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { db } from "../../../db/index.ts";
 import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } from "../../../db/schema/book-schema.ts";
 import { educationGrades } from "../../../db/schema/education-schema.ts";
-import {and, eq, inArray, sql, or, ilike, desc} from "drizzle-orm";
-import type {FastifyReply, FastifyRequest} from "fastify";
+import { and, eq, inArray, sql, or, ilike, desc } from "drizzle-orm";
+import type { FastifyReply, FastifyRequest } from "fastify";
 import { EnumContentStatus, EnumContentType } from "../../../db/schema/enum-app.ts";
 import { appVersion } from "../../../db/schema/version-schema.ts";
 
@@ -13,11 +13,11 @@ const BookListQuery = Type.Object({
   category: Type.Optional(Type.Array(Type.Number())),
   group: Type.Optional(Type.Array(Type.Number())),
   grade: Type.Optional(Type.Array(Type.Number())),
-  search: Type.Optional(Type.String({description: 'Search term for book title or author'})),
+  search: Type.Optional(Type.String({ description: 'Search term for book title or author' })),
   sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, title, rating, viewCount', default: 'createdAt' })),
   sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'desc' })),
-  page: Type.Optional(Type.Number({default: 1, minimum: 1})),
-  limit: Type.Optional(Type.Number({default: 10, minimum: 1, maximum: 20})),
+  page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
+  limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 20 })),
 });
 
 const BookResponse = Type.Object({
@@ -39,6 +39,7 @@ const BookResponse = Type.Object({
   group: Type.Object({
     id: Type.Number(),
     name: Type.String(),
+    shortName: Type.String(),
   }),
   grade: Type.Object({
     id: Type.Number(),
@@ -52,8 +53,8 @@ const BookResponse = Type.Object({
     rating: Type.Number(),
     bookmarked: Type.Boolean(),
   })),
-  createdAt: Type.String({format: 'date-time'}),
-  updatedAt: Type.String({format: 'date-time'}),
+  createdAt: Type.String({ format: 'date-time' }),
+  updatedAt: Type.String({ format: 'date-time' }),
 });
 
 const BookListResponse = Type.Object({
@@ -84,9 +85,9 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof BookListQuery.static }>,
       reply: FastifyReply
     ): Promise<typeof BookListResponse.static> {
-      const {category, group, grade, search, sortBy = 'createdAt', sortOrder = 'desc', page = 1, limit = 10} = req.body;
+      const { category, group, grade, search, sortBy = 'createdAt', sortOrder = 'desc', page = 1, limit = 10 } = req.body;
       const offset = (page - 1) * limit;
-      
+
       // Check if user is logged in
       const isLoggedIn = !!(req.session?.user);
       const userId = isLoggedIn ? req.session.user.id : null;
@@ -114,6 +115,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           group: {
             id: bookGroup.id,
             name: bookGroup.name,
+            shortName: bookGroup.shortName,
           },
           grade: {
             id: educationGrades.id,
@@ -121,7 +123,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             grade: educationGrades.grade,
           },
         };
-        
+
         // Add user interaction data if user is logged in
         if (includeUserInteraction && userId) {
           baseSelect.liked = userBookInteractions.liked;
@@ -129,7 +131,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           baseSelect.userRating = userBookInteractions.rating;
           baseSelect.bookmarked = userBookInteractions.bookmarked;
         }
-        
+
         return baseSelect;
       };
 
@@ -155,7 +157,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         // Only use the first category if multiple categories are provided
         const categoryFilter = category.length > 1 ? [category[0]] : category;
 
-        if(categoryFilter[0] === 0) {
+        if (categoryFilter[0] === 0) {
           // When category is 0, we want to get books with the latest versionId
           const latestVersion = await db
             .select({ id: appVersion.id })
@@ -181,7 +183,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           if (grade?.length) {
             conditions.push(inArray(educationGrades.id, grade));
             conditions.push(eq(books.status, EnumContentStatus.PUBLISHED));
-          }   
+          }
         }
       }
 
@@ -193,7 +195,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         .leftJoin(bookCategory, eq(bookGroup.categoryId, bookCategory.id))
         .leftJoin(educationGrades, eq(books.educationGradeId, educationGrades.id))
         .leftJoin(bookEventStats, eq(books.id, bookEventStats.bookId));
-        
+
       // Add user interaction join if user is logged in
       if (isLoggedIn && userId) {
         baseQuery = baseQuery
@@ -202,37 +204,37 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             eq(userBookInteractions.userId, userId)
           ));
       }
-      
+
       const queryWithWhere = baseQuery.where(and(...conditions));
 
       // Add sorting
       const order = sortOrder === 'asc' ? 'asc' : 'desc';
       let query;
-      
+
       switch (sortBy) {
         case 'title':
-          query = order === 'asc' 
+          query = order === 'asc'
             ? queryWithWhere.orderBy(books.title)
             : queryWithWhere.orderBy(desc(books.title));
           break;
         case 'rating':
-          query = order === 'asc' 
+          query = order === 'asc'
             ? queryWithWhere.orderBy(bookEventStats.rating)
             : queryWithWhere.orderBy(desc(bookEventStats.rating));
           break;
         case 'viewCount':
-          query = order === 'asc' 
+          query = order === 'asc'
             ? queryWithWhere.orderBy(bookEventStats.viewCount)
             : queryWithWhere.orderBy(desc(bookEventStats.viewCount));
           break;
         case 'downloadCount':
-          query = order === 'asc' 
+          query = order === 'asc'
             ? queryWithWhere.orderBy(bookEventStats.downloadCount)
             : queryWithWhere.orderBy(desc(bookEventStats.downloadCount));
           break;
         case 'createdAt':
         default:
-          query = order === 'asc' 
+          query = order === 'asc'
             ? queryWithWhere.orderBy(books.createdAt)
             : queryWithWhere.orderBy(desc(books.createdAt));
           break;
@@ -240,7 +242,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Get total count for pagination
       const countResult = await db
-        .select({count: sql<number>`count(*)`})
+        .select({ count: sql<number>`count(*)` })
         .from(query.as('subquery'));
 
       const total = Number(countResult[0]?.count || 0);
@@ -260,7 +262,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
               createdAt: item.books?.createdAt ? item.books.createdAt.toISOString() : new Date().toISOString(),
               updatedAt: item.books?.updatedAt ? item.books.updatedAt.toISOString() : new Date().toISOString(),
             };
-            
+
             // Add user interaction data if user is logged in
             if (isLoggedIn && 'liked' in item) {
               return {
@@ -273,7 +275,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
                 }
               };
             }
-            
+
             return processedItem;
           }),
           total,

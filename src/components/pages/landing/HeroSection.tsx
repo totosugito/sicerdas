@@ -61,7 +61,7 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
                         transition={{ duration: 0.6, delay: 0.4 }}
                         className="flex flex-wrap justify-center gap-4"
                     >
-                        <Link to={AppRoute.books.latest.url}>
+                        <Link to={AppRoute.book.books.url}>
                             <Button className='gap-2'>
                                 <BookOpen className="h-5 w-5" />
                                 {t('landing.hero.exploreBooks')}

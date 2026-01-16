@@ -1,10 +1,10 @@
-import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
-import {Type} from '@sinclair/typebox';
-import {withErrorHandler} from "../../../utils/withErrorHandler.ts";
-import {db} from "../../../db/index.ts";
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import { Type } from '@sinclair/typebox';
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { db } from "../../../db/index.ts";
 import { bookCategory, bookGroup, bookGroupStats } from "../../../db/schema/book-schema.ts";
 import { eq, and, gt, isNotNull, or, isNull } from "drizzle-orm";
-import type {FastifyReply, FastifyRequest} from "fastify";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 const FilterParamsResponseItem = Type.Object({
   id: Type.Number(),
@@ -15,6 +15,7 @@ const FilterParamsResponseItem = Type.Object({
   groups: Type.Array(Type.Object({
     id: Type.Number(),
     name: Type.String(),
+    shortName: Type.String(),
     desc: Type.Optional(Type.String()),
     status: Type.String(),
     stats: Type.Object({
@@ -54,6 +55,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           categoryStatus: bookCategory.status,
           groupId: bookGroup.id,
           groupName: bookGroup.name,
+          groupShortName: bookGroup.shortName,
           groupDesc: bookGroup.desc,
           groupStatus: bookGroup.status,
           bookTotal: bookGroupStats.bookTotal,
@@ -71,7 +73,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Group the results by category
       const categoriesMap = new Map<number, typeof FilterParamsResponseItem.static>();
-      
+
       for (const row of result) {
         if (!categoriesMap.has(row.categoryId)) {
           categoriesMap.set(row.categoryId, {
@@ -83,14 +85,15 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             groups: [],
           });
         }
-        
+
         const category = categoriesMap.get(row.categoryId)!;
-        
+
         // Add group if it exists and has a valid ID
         if (row.groupId !== null) {
           category.groups.push({
             id: row.groupId,
             name: row.groupName || '',
+            shortName: row.groupShortName || '',
             desc: row.groupDesc || undefined,
             status: row.groupStatus || '',
             stats: {
