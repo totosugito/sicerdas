@@ -1,11 +1,11 @@
-import { Book, getBookCover } from '@/components/pages/books/types/books';
+import { getBookCover } from '@/components/pages/books/types/books';
 import { Badge } from '@/components/ui/badge';
-import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils'
 import { useTranslation } from 'react-i18next'
+import { BookListItem } from '@/api/book/book';
 
 interface BookCardProps {
-  books: Book[];
+  books: BookListItem[];
   viewMode: 'grid' | 'list';
 }
 
@@ -29,7 +29,7 @@ export const BookCard = ({ books, viewMode }: BookCardProps) => {
 };
 
 interface BookCardViewProps {
-  book: Book;
+  book: BookListItem;
   viewMode: 'grid' | 'list';
 }
 
@@ -87,19 +87,16 @@ const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
         </p>
 
         {/* Extra Description for List View */}
-        {isListView && (
+        {/* {isListView && (
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-3 hidden sm:block">
             {book.description || 'No description available for this book.'}
           </p>
-        )}
+        )} */}
 
         <div className="mt-auto pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
-          <div className="flex items-center gap-1 text-yellow-500 text-xs">
-            <Star className="w-4 h-4 fill-current" />
-            <span className="font-medium text-slate-700 dark:text-slate-300">
-              {book.rating || '4.5'}
-            </span>
-          </div>
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            {book.group.shortName || book.group.name}
+          </span>
           <span className="text-xs font-medium text-slate-400">
             {book.publishedYear}
           </span>

@@ -108,6 +108,7 @@ export const BookSearchBar = ({
                   setIsMobileFilterOpen(false);
                 }}
                 filterData={filterData}
+                autoSubmit={false}
               />
             </PopoverContent>
           </Popover>

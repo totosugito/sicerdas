@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { AlertTriangle, Laptop, LucideIcon, Monitor, RefreshCw, Smartphone, Tablet, Globe } from 'lucide-react'
 import { formatDistanceToNow, parseISO } from 'date-fns'
 import { enUS, id } from 'date-fns/locale'
-import type { UserSession } from '@/service/user-api'
+import type { UserSession } from '@/api/user-api'
 import { useState } from 'react'
 import { ModalProps, DialogModal } from '@/components/custom/components'
 
@@ -93,7 +93,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
   const [confirmationModal, setConfirmationModal] = useState<ModalProps | null>(null);
 
   const handleRevokeClick = (sessionToken: string) => {
-    if(!sessionToken) return
+    if (!sessionToken) return
     setConfirmationModal({
       title: t("user.profile.sessions.confirmLogoutTitle"),
       desc: t("user.profile.sessions.confirmLogoutDescription"),
@@ -202,8 +202,8 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
 
   return (
     <>
-      {confirmationModal && <DialogModal modal={confirmationModal}/>}
-      
+      {confirmationModal && <DialogModal modal={confirmationModal} />}
+
       <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full">
         <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
           <CardTitle className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight">

@@ -5,7 +5,7 @@ import {
 import { z } from 'zod'
 
 import { SubmitHandler } from 'react-hook-form'
-import { useLoginMutation } from "@/service/auth-api";
+import { useLoginMutation } from "@/api/auth-api";
 import { useTranslation } from 'react-i18next';
 import { SignInForm } from '@/components/pages/auth/sign-in';
 import { useState } from 'react';
@@ -63,7 +63,7 @@ function LoginComponent() {
         <div className="text-center mb-4">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-500/15 dark:bg-blue-500/20 rounded-full mb-4 backdrop-blur-sm border border-blue-500/40 dark:border-blue-500/30">
             {/* <LogIn className="w-10 h-10 text-blue-500" /> */}
-            <img src='/images/sicerdas-transparent-v1.png' alt="" className='p-2'/>
+            <img src='/images/sicerdas-transparent-v1.png' alt="" className='p-2' />
           </div>
           <h1 className="text-4xl font-bold text-foreground mb-2">
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
@@ -81,11 +81,11 @@ function LoginComponent() {
           </div>
 
           <SignInForm onFormSubmit={onFormSubmit}
-                      loading={loginMutation.isPending}
-                      errorMessage={errorMessage}
-                      onGoogleSignIn={handleGoogleSignIn}
+            loading={loginMutation.isPending}
+            errorMessage={errorMessage}
+            onGoogleSignIn={handleGoogleSignIn}
           />
-          
+
         </div>
 
         {/* Footer */}

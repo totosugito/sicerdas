@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { FileText } from 'lucide-react';
-import { ElementDetail } from '@/service/periodic-table-api';
+import { ElementDetail } from '@/api/periodic-table-api';
 import { CardSection } from './CardSection';
 import { PropertyItemHtml } from './PropertyItemHtml';
 
@@ -10,10 +10,10 @@ interface ElementNotesProps {
   toggleSection: (section: string) => void;
 }
 
-export const ElementNotes: React.FC<ElementNotesProps> = ({ 
-  element, 
-  expandedSections, 
-  toggleSection 
+export const ElementNotes: React.FC<ElementNotesProps> = ({
+  element,
+  expandedSections,
+  toggleSection
 }) => {
   const { t } = useTranslation();
 
@@ -25,22 +25,22 @@ export const ElementNotes: React.FC<ElementNotesProps> = ({
       onToggle={() => toggleSection('notes')}
     >
       <div className='flex flex-col gap-4'>
-          <PropertyItemHtml 
-            label={t('periodicTable.periodicTable.var.atomicOverview')} 
-            value={element.notes?.atomicOverview} 
-          />
-          <PropertyItemHtml 
-            label={t('periodicTable.periodicTable.var.atomicHistory')} 
-            value={element.notes?.atomicHistory} 
-          />
-          <PropertyItemHtml 
-            label={t('periodicTable.periodicTable.var.atomicApps')} 
-            value={element.notes?.atomicApps} 
-          />
-          <PropertyItemHtml 
-            label={t('periodicTable.periodicTable.var.atomicFacts')} 
-            value={element.notes?.atomicFacts} 
-          />
+        <PropertyItemHtml
+          label={t('periodicTable.periodicTable.var.atomicOverview')}
+          value={element.notes?.atomicOverview}
+        />
+        <PropertyItemHtml
+          label={t('periodicTable.periodicTable.var.atomicHistory')}
+          value={element.notes?.atomicHistory}
+        />
+        <PropertyItemHtml
+          label={t('periodicTable.periodicTable.var.atomicApps')}
+          value={element.notes?.atomicApps}
+        />
+        <PropertyItemHtml
+          label={t('periodicTable.periodicTable.var.atomicFacts')}
+          value={element.notes?.atomicFacts}
+        />
       </div>
     </CardSection>
   );

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ElementDetail } from '@/service/periodic-table-api';
+import { ElementDetail } from '@/api/periodic-table-api';
 
 interface ElectronViewProps {
   element: ElementDetail;
@@ -10,7 +10,7 @@ export const ElectronView = ({ element }: ElectronViewProps) => {
 
   const numberOfElectrons = element.atomicProperties.numberOfElectron;
   const numberOfNeutrons = element.atomicProperties.numberOfNeutron;
-  
+
   return (
     <div className="py-2">
       <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6">

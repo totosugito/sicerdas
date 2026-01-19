@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Atom, ChevronRight } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
-import { ElementDetail } from '@/service/periodic-table-api'
+import { ElementDetail } from '@/api/periodic-table-api'
 import { toPhysics } from '@/lib/my-utils'
 import { getIsotopeAbundance, createAtomIsotopeTag } from '../utils/element'
 import { useNavigate } from '@tanstack/react-router'
@@ -20,9 +20,9 @@ export function ElementNuclear({ element, expandedSections, toggleSection }: Ele
   const navigate = useNavigate()
 
   const handleNavigateToIsotope = () => {
-    navigate({ 
-      to: AppRoute.periodicTable.elementIsotope.url, 
-      params: { id: element.atomicNumber.toString() } 
+    navigate({
+      to: AppRoute.periodicTable.elementIsotope.url,
+      params: { id: element.atomicNumber.toString() }
     });
   }
 
@@ -83,8 +83,8 @@ export function ElementNuclear({ element, expandedSections, toggleSection }: Ele
 
         {/* Navigation button to isotope page */}
         <div className="pt-4 flex justify-end">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             onClick={handleNavigateToIsotope}
             className="flex items-center gap-2"

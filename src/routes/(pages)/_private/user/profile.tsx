@@ -10,17 +10,17 @@ import {
     createProfileInfoFormData, createPersonalInfoFormData, createSecurityFormData, createPrivacyFormData,
     ProfileInfoFormRef, ProfileLoadingView, ProfileErrorView
 } from '@/components/pages/user/profile'
-import { useUserProfileQuery, useUpdateUserProfileMutation, useChangeUserPasswordMutation, useUserSessionsQuery } from '@/service/user-api'
+import { useUserProfileQuery, useUpdateUserProfileMutation, useChangeUserPasswordMutation, useUserSessionsQuery } from '@/api/user-api'
 import { showNotifError, showNotifSuccess } from '@/lib/show-notif'
 import { string_to_date } from '@/lib/my-utils'
 import { useAuth } from '@/hooks/use-auth'
-import type { UserSession } from '@/service/user-api'
+import type { UserSession } from '@/api/user-api'
 
 import { authClient } from '@/lib/auth-client'
 
 // Add validation for query parameters
 const profileSearchSchema = z.object({
-  page: z.string().optional().catch('profile'),
+    page: z.string().optional().catch('profile'),
 })
 
 export const Route = createFileRoute('/(pages)/_private/user/profile')({
@@ -50,10 +50,10 @@ function RouteComponent() {
 
     // Fetch user profile data
     const { data: userProfile, isLoading, isError } = useUserProfileQuery();
-    
+
     // Fetch user sessions data
     const { data: sessions, isLoading: sessionsLoading, isError: sessionsError, refetch: refetchSessions } = useUserSessionsQuery();
-        
+
     // Define schemas for each tab inside the component to access the translation function
     const profileFormData = createProfileInfoFormData(t);
     const personalInfoFormData = createPersonalInfoFormData(t);
@@ -300,9 +300,9 @@ function RouteComponent() {
                                         </p>
                                     </div>
                                 )}
-                                
+
                                 {/* show session list */}
-                                <SessionList 
+                                <SessionList
                                     sessions={sessions as UserSession[]}
                                     isLoading={sessionsLoading}
                                     isError={sessionsError}

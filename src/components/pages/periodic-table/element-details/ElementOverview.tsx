@@ -4,7 +4,7 @@ import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
 import { getDiscoveryYear, getElectronShell, getElectronShellValue, getElementImage } from '../utils/element'
 import { toPhysics } from '@/lib/my-utils'
-import { ElementDetail } from '@/service/periodic-table-api'
+import { ElementDetail } from '@/api/periodic-table-api'
 import { ElectronShell } from './ElectronShell'
 
 interface ViewElementOverviewProps {
@@ -45,13 +45,13 @@ export function ElementOverview({ element, atomColor, expandedSections, toggleSe
         {element.atomicProperties?.atomicSpectra && element.atomicProperties?.atomicSpectra.length > 0 && (
           <div className="flex flex-col gap-2">
             <PropertyItem label={t('periodicTable.periodicTable.var.emissionSpectrum')} value={undefined} />
-              <div className="sm:h-14 h-10">
-                <img
-                  src={getElementImage({ element: `${element.atomicNumber}.${element.atomicName.toLowerCase()}`, type: 'spectrum', extension: 'png' })}
-                  alt=""
-                  className="h-full object-contain"
-                />
-              </div>
+            <div className="sm:h-14 h-10">
+              <img
+                src={getElementImage({ element: `${element.atomicNumber}.${element.atomicName.toLowerCase()}`, type: 'spectrum', extension: 'png' })}
+                alt=""
+                className="h-full object-contain"
+              />
+            </div>
           </div>
         )}
         <PropertyItem label={t('periodicTable.periodicTable.var.electronShell')} value={getElectronShell(element.atomicProperties?.electronShell)} />

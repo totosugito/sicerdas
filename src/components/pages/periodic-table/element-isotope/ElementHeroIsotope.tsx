@@ -1,6 +1,6 @@
 import { getPeriodictUnits } from '@/components/pages/periodic-table/utils/element-units';
 import { useTranslation } from 'react-i18next';
-import { ElementDetail } from '@/service/periodic-table-api';
+import { ElementDetail } from '@/api/periodic-table-api';
 import { cn } from '@/lib/utils';
 import { getElementStyle } from '../utils/element-styles';
 import { ElementSearchCombobox } from '../element-details/ElementSearchCombobox';
@@ -39,7 +39,7 @@ export function ElementHeroIsotope({ element, theme }: ElementHeroIsotopeProps) 
               <span className="absolute top-1 left-2 text-lg md:text-xl">{element.atomicNumber}</span>
               <span className="absolute inset-0 flex items-center justify-center text-6xl md:text-7xl">{element.atomicSymbol}</span>
             </div>
-            
+
             <div>
               <h1 className="text-2xl md:text-3xl font-bold">{element.atomicName}</h1>
               <p className="text-muted-foreground text-sm md:text-base">

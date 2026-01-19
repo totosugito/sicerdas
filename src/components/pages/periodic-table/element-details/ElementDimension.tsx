@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Ruler } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
-import { ElementDetail } from '@/service/periodic-table-api'
+import { ElementDetail } from '@/api/periodic-table-api'
 import { toPhysics } from '@/lib/my-utils'
 
 interface ElementDimensionProps {
@@ -32,7 +32,7 @@ export function ElementDimension({ element, expandedSections, toggleSection }: E
           <PropertyItem
             label={t('periodicTable.periodicTable.var.covalentRadius')}
             value={element.atomicProperties?.covalentRadius}
-            // unit={getPeriodictUnits('atomRadius')}
+          // unit={getPeriodictUnits('atomRadius')}
           />
           <PropertyItem
             label={t('periodicTable.periodicTable.var.vanDerWaalsRadius')}

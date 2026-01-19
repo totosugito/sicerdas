@@ -2,7 +2,7 @@ import {
   createFileRoute,
 } from '@tanstack/react-router'
 import { SubmitHandler } from 'react-hook-form'
-import { useEmailOtpForgetPasswordMutation } from "@/service/auth-api";
+import { useEmailOtpForgetPasswordMutation } from "@/api/auth-api";
 import { useTranslation } from 'react-i18next';
 import { AlertCircle, CheckCircle, Mail } from 'lucide-react';
 import { ForgetPasswordForm } from '@/components/pages/auth/otp-forget-password';

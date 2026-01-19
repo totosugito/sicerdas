@@ -1,29 +1,29 @@
-import {createFileRoute} from '@tanstack/react-router'
-import {showNotifError, showNotifSuccess} from "@/lib/show-notif";
-import {PageTitle} from "@/components/app";
-import {SkeTable} from "@/components/custom/skeleton";
-import {DialogModal, DialogModalForm, ModalFormProps, ModalProps} from "@/components/custom/components";
+import { createFileRoute } from '@tanstack/react-router'
+import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
+import { PageTitle } from "@/components/app";
+import { SkeTable } from "@/components/custom/skeleton";
+import { DialogModal, DialogModalForm, ModalFormProps, ModalProps } from "@/components/custom/components";
 import * as React from "react";
-import {FormUserAdd, FormUserEdit, FormPasswordUpdate, DataTableUser} from '@/components/pages/admin/user/list';
-import {useQueryClient} from '@tanstack/react-query';
+import { FormUserAdd, FormUserEdit, FormPasswordUpdate, DataTableUser } from '@/components/pages/admin/user/list';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   useAdminChangePassword,
   useAdminUserCreate,
   useAdminUserDelete,
   useAdminUserList,
   useAdminUserPut
-} from "@/service/admin-users";
-import {useState} from "react";
-import {z} from "zod"
-import {LuUserPlus} from "react-icons/lu";
-import {Button} from "@/components/ui/button";
-import {useTranslation} from "react-i18next";
-import {ObjToOptionList} from "@/lib/my-utils";
-import {EnumUserRole} from "backend/src/db/schema/enum-auth";
+} from "@/api/admin-users";
+import { useState } from "react";
+import { z } from "zod"
+import { LuUserPlus } from "react-icons/lu";
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
+import { ObjToOptionList } from "@/lib/my-utils";
+import { EnumUserRole } from "backend/src/db/schema/enum-auth";
 
 export const Route = createFileRoute('/(pages)/_private/admin/__users/users')({
-  validateSearch: (search: Record<string, unknown>): { 
-    sort?: string; 
+  validateSearch: (search: Record<string, unknown>): {
+    sort?: string;
     order?: 'asc' | 'desc';
     page?: number;
     limit?: number;
@@ -39,11 +39,11 @@ export const Route = createFileRoute('/(pages)/_private/admin/__users/users')({
 })
 
 function RouteComponent() {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const queryClient = useQueryClient();
-  const {sort, order, page, limit} = Route.useSearch();
+  const { sort, order, page, limit } = Route.useSearch();
   const navigate = Route.useNavigate();
-  
+
   // Set default pagination values
   const currentPagination = {
     page: page || 1,
@@ -52,7 +52,7 @@ function RouteComponent() {
     totalPages: 0 // Will be set from API response
   };
 
-  const dataListQuery = useAdminUserList({sort, order, page: currentPagination.page, limit: currentPagination.limit});
+  const dataListQuery = useAdminUserList({ sort, order, page: currentPagination.page, limit: currentPagination.limit });
   const dataCreateMutation = useAdminUserCreate();
   const dataPutMutation = useAdminUserPut();
   const dataDeleteMutation = useAdminUserDelete();
@@ -157,13 +157,13 @@ function RouteComponent() {
       textCancel: "Cancel",
       onConfirmClick: () => {
         dataDeleteMutation.mutate(
-          {body: {userId: item?.id}},
+          { body: { userId: item?.id } },
           {
             onSuccess: async () => {
-              await queryClient.invalidateQueries({queryKey: ['admin-user-list', sort, order, currentPagination.page, currentPagination.limit]});
-              showNotifSuccess({message: "User deleted successfully"});
+              await queryClient.invalidateQueries({ queryKey: ['admin-user-list', sort, order, currentPagination.page, currentPagination.limit] });
+              showNotifSuccess({ message: "User deleted successfully" });
             },
-            onError: (error: any) => showNotifError({message: (error?.response?.data?.message || error?.response?.data?.error) ?? error?.message}),
+            onError: (error: any) => showNotifError({ message: (error?.response?.data?.message || error?.response?.data?.error) ?? error?.message }),
           }
         );
         setConfirmationDelete(null);
@@ -179,17 +179,17 @@ function RouteComponent() {
       defaultValue: formData.defaultValue,
       child: formData.form,
       schema: formData.schema,
-      content: <FormUserAdd/>,
+      content: <FormUserAdd />,
       onCancelClick: () => setConfirmationCreate(null),
       onConfirmClick: (body: Record<string, any>) => {
-        dataCreateMutation.mutate({body}, {
+        dataCreateMutation.mutate({ body }, {
           onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: ['admin-user-list', sort, order, currentPagination.page, currentPagination.limit]});
-            showNotifSuccess({message: "User created successfully"});
+            await queryClient.invalidateQueries({ queryKey: ['admin-user-list', sort, order, currentPagination.page, currentPagination.limit] });
+            showNotifSuccess({ message: "User created successfully" });
             setConfirmationCreate(null);
           },
           onError: (error: any) => {
-            showNotifError({message: (error?.response?.data?.message || error?.response?.data?.error) ?? error?.message})
+            showNotifError({ message: (error?.response?.data?.message || error?.response?.data?.error) ?? error?.message })
           },
         });
       },
@@ -197,8 +197,8 @@ function RouteComponent() {
   };
 
   const onDataPut = (item: any) => {
-    const {password, ...newSchema} = formData.schema;
-    let newItem = {...item};
+    const { password, ...newSchema } = formData.schema;
+    let newItem = { ...item };
 
     setConfirmationPut({
       title: "Update User",
@@ -206,18 +206,18 @@ function RouteComponent() {
       defaultValue: newItem,
       child: formData.form,
       schema: newSchema,
-      content: <FormUserEdit/>,
+      content: <FormUserEdit />,
       textConfirm: "Update",
       onCancelClick: () => setConfirmationPut(null),
       onConfirmClick: (body: Record<string, any>) => {
-        dataPutMutation.mutate({id: item?.id, body: body}, {
+        dataPutMutation.mutate({ id: item?.id, body: body }, {
           onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: ['admin-user-list', sort, order, currentPagination.page, currentPagination.limit]});
-            showNotifSuccess({message: "User updated successfully"});
+            await queryClient.invalidateQueries({ queryKey: ['admin-user-list', sort, order, currentPagination.page, currentPagination.limit] });
+            showNotifSuccess({ message: "User updated successfully" });
             setConfirmationPut(null);
           },
           onError: (error: any) => {
-            showNotifError({message: (error?.response?.data?.message || error?.response?.data?.error) ?? error?.message})
+            showNotifError({ message: (error?.response?.data?.message || error?.response?.data?.error) ?? error?.message })
           },
         });
       },
@@ -231,12 +231,12 @@ function RouteComponent() {
       child: formChangePassword.form,
       schema: formChangePassword.schema,
       defaultValue: formChangePassword.defaultValue,
-      content: <FormPasswordUpdate/>,
+      content: <FormPasswordUpdate />,
       textConfirm: "Change Password",
       onCancelClick: () => setConfirmationUpdatePassword(null),
       onConfirmClick: (body: Record<string, string>) => {
         if (body.password !== body.confirmPassword) {
-          showNotifError({message: "Password and Confirm Password must be the same"});
+          showNotifError({ message: "Password and Confirm Password must be the same" });
           return;
         }
 
@@ -244,13 +244,13 @@ function RouteComponent() {
           newPassword: body.password
         }
 
-        userUpdatePasswordMutation.mutate({id: item?.id, body: newBody}, {
+        userUpdatePasswordMutation.mutate({ id: item?.id, body: newBody }, {
           onSuccess: () => {
-            showNotifSuccess({message: "User updated password successfully"});
+            showNotifSuccess({ message: "User updated password successfully" });
             setConfirmationUpdatePassword(null);
           },
           onError: (error: any) => {
-            showNotifError({message: (error?.response?.data?.message || error?.response?.data?.error) ?? error?.message})
+            showNotifError({ message: (error?.response?.data?.message || error?.response?.data?.error) ?? error?.message })
           },
         });
       },
@@ -261,8 +261,8 @@ function RouteComponent() {
     return (
       <div>
         <Button variant={"outline"} onClick={onDataCreated} disabled={isLoading()}>
-          {isLoading() ? <span className={"animate-spin rounded-full h-3 w-3 border-b-2 border-current"}/> :
-            <LuUserPlus/>} {t("shared.userAdd")}
+          {isLoading() ? <span className={"animate-spin rounded-full h-3 w-3 border-b-2 border-current"} /> :
+            <LuUserPlus />} {t("shared.userAdd")}
         </Button>
       </div>
     )
@@ -270,10 +270,10 @@ function RouteComponent() {
 
   return (
     <div className={"divContent"}>
-      <PageTitle title={<div>User List</div>} showSeparator={false}/>
+      <PageTitle title={<div>User List</div>} showSeparator={false} />
 
       {(dataListQuery.isPending) && <div className={"h-full w-full flex"}>
-        <SkeTable/>
+        <SkeTable />
       </div>}
 
       {dataListQuery.isError &&
@@ -284,25 +284,25 @@ function RouteComponent() {
 
 
           <DataTableUser data={dataListQuery?.data}
-                         onEditClicked={onDataPut}
-                         onDeleteClicked={onDeleteData}
-                         onPasswordChange={onPasswordChange}
-                         loading={isLoading()}
-                         toolbarContent={<ViewAddUser/>}
-                         onPaginationChange={handlePaginationChange}
-                         paginationData={{
-                           ...currentPagination,
-                           total: dataListQuery?.data?.meta?.total || 0,
-                           totalPages: dataListQuery?.data?.meta?.totalPages || 0,
-                         }}
+            onEditClicked={onDataPut}
+            onDeleteClicked={onDeleteData}
+            onPasswordChange={onPasswordChange}
+            loading={isLoading()}
+            toolbarContent={<ViewAddUser />}
+            onPaginationChange={handlePaginationChange}
+            paginationData={{
+              ...currentPagination,
+              total: dataListQuery?.data?.meta?.total || 0,
+              totalPages: dataListQuery?.data?.meta?.totalPages || 0,
+            }}
           />
         </div>
       }
 
-      {confirmationCreate && <DialogModalForm modal={confirmationCreate}/>}
-      {confirmationPut && <DialogModalForm modal={confirmationPut}/>}
-      {confirmationUpdatePassword && <DialogModalForm modal={confirmationUpdatePassword}/>}
-      {confirmationDelete && <DialogModal modal={confirmationDelete} variantSubmit={"destructive"}/>}
+      {confirmationCreate && <DialogModalForm modal={confirmationCreate} />}
+      {confirmationPut && <DialogModalForm modal={confirmationPut} />}
+      {confirmationUpdatePassword && <DialogModalForm modal={confirmationUpdatePassword} />}
+      {confirmationDelete && <DialogModal modal={confirmationDelete} variantSubmit={"destructive"} />}
     </div>
   )
 }

@@ -23,6 +23,7 @@ export type BookListItem = {
     group: {
         id: number
         name: string
+        shortName?: string
     }
     grade: {
         id: number

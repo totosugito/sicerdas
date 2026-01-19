@@ -1,9 +1,11 @@
 import { useCallback, useMemo } from 'react';
-import { FilterParamCategory } from '@/service/book/book';
+import { FilterParamCategory } from '@/api/book/book';
 import { useTranslation } from 'react-i18next';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react"
 
 interface BookFilterProps {
   selectedFilters: {
@@ -22,11 +24,18 @@ interface BookFilterProps {
   autoSubmit?: boolean;
 }
 
-export const BookFilter = ({ selectedFilters, onFilterChange, filterData }: BookFilterProps) => {
+export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSubmit = true }: BookFilterProps) => {
   const { t } = useTranslation();
   const categories = filterData?.data || [];
 
-  const activeCategoryId = selectedFilters.categories[0];
+  const [localFilters, setLocalFilters] = useState(selectedFilters);
+
+  // Sync with prop changes, but only if they are meaningfully different from committed state
+  useEffect(() => {
+    setLocalFilters(selectedFilters);
+  }, [selectedFilters]);
+
+  const activeCategoryId = localFilters.categories[0];
   const activeCategory = categories.find(c => c.id === activeCategoryId);
   const displayedGroups = activeCategory ? activeCategory.groups : [];
 
@@ -51,20 +60,27 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData }: Book
     return { grades: [], gradesGridClass: '' };
   }, [activeCategoryId]);
 
+  const updateFilters = useCallback((newFilters: typeof selectedFilters) => {
+    setLocalFilters(newFilters);
+    if (autoSubmit) {
+      onFilterChange(newFilters);
+    }
+  }, [autoSubmit, onFilterChange]);
+
   const handleCategoryChange = useCallback((value: string) => {
-    onFilterChange({
+    updateFilters({
       categories: [parseInt(value)],
       groups: [],
       grades: []
     });
-  }, [onFilterChange]);
+  }, [updateFilters]);
 
   const toggleGroup = useCallback((groupId: number, checked: boolean) => {
     const newGroups = checked
-      ? [...selectedFilters.groups, groupId]
-      : selectedFilters.groups.filter(g => g !== groupId);
+      ? [...localFilters.groups, groupId]
+      : localFilters.groups.filter(g => g !== groupId);
 
-    let newCategories = [...selectedFilters.categories];
+    let newCategories = [...localFilters.categories];
 
     // If checking a group, ensure its parent category is selected
     if (checked) {
@@ -74,31 +90,31 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData }: Book
       }
     }
 
-    onFilterChange({
-      ...selectedFilters,
+    updateFilters({
+      ...localFilters,
       categories: newCategories,
       groups: newGroups
     });
-  }, [categories, selectedFilters, onFilterChange]);
+  }, [categories, localFilters, updateFilters]);
 
   const toggleGrade = useCallback((gradeId: number, checked: boolean) => {
-    const currentGrades = selectedFilters.grades || [];
+    const currentGrades = localFilters.grades || [];
     const newGrades = checked
       ? [...currentGrades, gradeId]
       : currentGrades.filter(g => g !== gradeId);
 
-    onFilterChange({
-      ...selectedFilters,
+    updateFilters({
+      ...localFilters,
       grades: newGrades
     });
-  }, [selectedFilters, onFilterChange]);
+  }, [localFilters, updateFilters]);
 
   const clearSection = useCallback((key: 'groups' | 'grades') => {
-    onFilterChange({
-      ...selectedFilters,
+    updateFilters({
+      ...localFilters,
       [key]: []
     });
-  }, [selectedFilters, onFilterChange]);
+  }, [localFilters, updateFilters]);
 
   const renderSectionHeader = (title: string, hasSelection: boolean, onReset: () => void) => (
     <div className="flex items-center justify-between mb-4">
@@ -153,7 +169,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData }: Book
           <div>
             {renderSectionHeader(
               t('books.info.groups'),
-              selectedFilters.groups.length > 0,
+              localFilters.groups.length > 0,
               () => clearSection('groups')
             )}
             <div className="space-y-1 max-h-[400px] overflow-y-auto pr-2">
@@ -163,7 +179,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData }: Book
                   id={`group-${group.id}`}
                   label={group.name}
                   count={group.stats?.bookTotal}
-                  checked={selectedFilters.groups.includes(group.id)}
+                  checked={localFilters.groups.includes(group.id)}
                   onCheckedChange={(checked) => toggleGroup(group.id, checked)}
                   className="space-x-3"
                 />
@@ -182,7 +198,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData }: Book
             <div className="h-px bg-slate-100 dark:bg-slate-800 w-full mb-4" />
             {renderSectionHeader(
               t('books.info.grades'),
-              (selectedFilters.grades?.length || 0) > 0,
+              (localFilters.grades?.length || 0) > 0,
               () => clearSection('grades')
             )}
             <div className={`grid ${gradesGridClass} gap-2 max-h-[200px] overflow-y-auto pr-2`}>
@@ -191,7 +207,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData }: Book
                   key={grade.id}
                   id={`grade-${grade.id}`}
                   label={grade.label}
-                  checked={selectedFilters.grades?.includes(grade.id) || false}
+                  checked={localFilters.grades?.includes(grade.id) || false}
                   onCheckedChange={(checked) => toggleGrade(grade.id, checked)}
                   className="space-x-2 p-1"
                 />
@@ -200,6 +216,17 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData }: Book
           </div>
         )}
       </div>
+
+      {!autoSubmit && (
+        <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 sticky bottom-0 bg-white/5 dark:bg-slate-900/5 backdrop-blur-sm">
+          <Button
+            className="w-full"
+            onClick={() => onFilterChange(localFilters)}
+          >
+            {t('home.applyFilters', 'Apply Filters')}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

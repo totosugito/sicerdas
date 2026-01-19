@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { usePeriodicElementQuery } from '@/service/periodic-table-api'
+import { usePeriodicElementQuery } from '@/api/periodic-table-api'
 import {
   ElementErrorDisplay, ElementSkeleton,
 } from '@/components/pages/periodic-table/element-details'
@@ -22,7 +22,7 @@ function RouteComponent() {
   const { viewMode } = store.periodicTable;
   const language = useAuthStore(state => state.language);
 
-  const { data: element, isLoading, isError, error } = usePeriodicElementQuery({ atomicNumber: parseInt(id), language }); 
+  const { data: element, isLoading, isError, error } = usePeriodicElementQuery({ atomicNumber: parseInt(id), language });
 
   if (isLoading) {
     return <ElementSkeleton />
@@ -43,11 +43,11 @@ function RouteComponent() {
       {element && (
         <>
           <ElementHeroIsotope element={element} theme={viewMode} />
-          <ElementIsotope 
+          <ElementIsotope
             atomColor={atomColor}
-            atomicSymbol={element.atomicSymbol} 
+            atomicSymbol={element.atomicSymbol}
             knownIsotopes={element.atomicProperties.knownIsotopes || []}
-            isotopes={element.atomicIsotope} 
+            isotopes={element.atomicIsotope}
           />
         </>
       )}

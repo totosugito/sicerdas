@@ -3,7 +3,7 @@ import {
   redirect,
 } from '@tanstack/react-router'
 import { SubmitHandler } from 'react-hook-form'
-import { useEmailOtpVerifyForgetPasswordMutation, useEmailOtpForgetPasswordMutation, useEmailHasOtpQuery } from "@/service/auth-api";
+import { useEmailOtpVerifyForgetPasswordMutation, useEmailOtpForgetPasswordMutation, useEmailHasOtpQuery } from "@/api/auth-api";
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck, Timer, Loader2 } from 'lucide-react';
 import { OtpVerificationForm } from '@/components/pages/auth/otp-verification';
@@ -76,9 +76,9 @@ function OtpVerificationComponent() {
   // Show NotFoundError if the API returns a 404 (user not found) or if the user doesn't have OTP
   if (
     (emailHasOtpQuery.isSuccess && emailHasOtpQuery.data && !emailHasOtpQuery.data.hasOtp) ||
-    (emailHasOtpQuery.isError && emailHasOtpQuery.error && 
-      ((emailHasOtpQuery.error as any).status === 404 || 
-       ((emailHasOtpQuery.error as any).response?.status === 404)))
+    (emailHasOtpQuery.isError && emailHasOtpQuery.error &&
+      ((emailHasOtpQuery.error as any).status === 404 ||
+        ((emailHasOtpQuery.error as any).response?.status === 404)))
   ) {
     return <NotFoundError />;
   }
