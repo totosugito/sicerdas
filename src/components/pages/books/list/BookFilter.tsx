@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FilterParamCategory } from '@/service/book/book';
 import { useTranslation } from 'react-i18next';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -26,84 +26,96 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData }: Book
   const { t } = useTranslation();
   const categories = filterData?.data || [];
 
+  const activeCategoryId = selectedFilters.categories[0];
+  const activeCategory = categories.find(c => c.id === activeCategoryId);
+  const displayedGroups = activeCategory ? activeCategory.groups : [];
+
+  // Derive grades based on active category
+  const { grades, gradesGridClass } = useMemo(() => {
+    if (!activeCategoryId) return { grades: [], gradesGridClass: '' };
+
+    if ([1, 2, 3].includes(activeCategoryId)) {
+      return {
+        grades: Array.from({ length: 12 }, (_, i) => ({ id: i + 1, label: (i + 1).toString() })),
+        gradesGridClass: 'grid-cols-4'
+      };
+    }
+
+    if (activeCategoryId === 5) {
+      return {
+        grades: [16, 17, 18, 19].map(g => ({ id: g, label: `Level ${g - 15}` })),
+        gradesGridClass: 'grid-cols-2'
+      };
+    }
+
+    return { grades: [], gradesGridClass: '' };
+  }, [activeCategoryId]);
+
   const handleCategoryChange = useCallback((value: string) => {
-    const categoryId = parseInt(value);
-    const newFilters = {
-      categories: [categoryId],
+    onFilterChange({
+      categories: [parseInt(value)],
       groups: [],
       grades: []
-    };
-
-    onFilterChange(newFilters);
-  }, [categories, onFilterChange]);
+    });
+  }, [onFilterChange]);
 
   const toggleGroup = useCallback((groupId: number, checked: boolean) => {
-    let newCategories = [...selectedFilters.categories];
-    let newGroups = [...selectedFilters.groups];
-    let newGrades = [...(selectedFilters.grades || [])];
+    const newGroups = checked
+      ? [...selectedFilters.groups, groupId]
+      : selectedFilters.groups.filter(g => g !== groupId);
 
+    let newCategories = [...selectedFilters.categories];
+
+    // If checking a group, ensure its parent category is selected
     if (checked) {
-      newGroups.push(groupId);
       const parentCat = categories.find(c => c.groups.some(g => g.id === groupId));
       if (parentCat && !newCategories.includes(parentCat.id)) {
         newCategories = [parentCat.id];
       }
-    } else {
-      newGroups = newGroups.filter(g => g !== groupId);
     }
 
-    const newFilters = {
+    onFilterChange({
+      ...selectedFilters,
       categories: newCategories,
-      groups: newGroups,
-      grades: newGrades
-    };
-
-    onFilterChange(newFilters);
+      groups: newGroups
+    });
   }, [categories, selectedFilters, onFilterChange]);
 
   const toggleGrade = useCallback((gradeId: number, checked: boolean) => {
-    let newCategories = [...selectedFilters.categories];
-    let newGroups = [...selectedFilters.groups];
-    let newGrades = [...(selectedFilters.grades || [])];
+    const currentGrades = selectedFilters.grades || [];
+    const newGrades = checked
+      ? [...currentGrades, gradeId]
+      : currentGrades.filter(g => g !== gradeId);
 
-    if (checked) {
-      newGrades.push(gradeId);
-    } else {
-      newGrades = newGrades.filter(g => g !== gradeId);
-    }
-
-    const newFilters = {
-      categories: newCategories,
-      groups: newGroups,
+    onFilterChange({
+      ...selectedFilters,
       grades: newGrades
-    };
-
-    onFilterChange(newFilters);
+    });
   }, [selectedFilters, onFilterChange]);
 
-  const clearGrades = useCallback(() => {
-    const newFilters = {
-      categories: [...selectedFilters.categories],
-      groups: [...selectedFilters.groups],
-      grades: []
-    };
-
-    onFilterChange(newFilters);
+  const clearSection = useCallback((key: 'groups' | 'grades') => {
+    onFilterChange({
+      ...selectedFilters,
+      [key]: []
+    });
   }, [selectedFilters, onFilterChange]);
 
-  const clearGroups = useCallback(() => {
-    const newFilters = {
-      categories: [...selectedFilters.categories],
-      groups: [],
-      grades: [...(selectedFilters.grades || [])]
-    };
-
-    onFilterChange(newFilters);
-  }, [selectedFilters, onFilterChange]);
-
-  const activeCategoryId = selectedFilters.categories[0];
-  const activeCategory = categories.find(c => c.id === activeCategoryId);
-  const displayedGroups = activeCategory ? activeCategory.groups : [];
+  const renderSectionHeader = (title: string, hasSelection: boolean, onReset: () => void) => (
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="text-slate-900 dark:text-white text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+        {title}
+      </h3>
+      {hasSelection && (
+        <button
+          type="button"
+          onClick={onReset}
+          className="text-xs text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary-foreground transition-colors"
+        >
+          {t('books.info.reset')}
+        </button>
+      )}
+    </div>
+  );
 
   return (
     <div className="flex flex-col h-full">
@@ -118,114 +130,103 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData }: Book
             onValueChange={handleCategoryChange}
             className="space-y-1"
           >
-            <div className="flex items-center space-x-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-              <RadioGroupItem value={"0"} id={`cat-0`} />
-              <Label htmlFor={`cat-0`} className="flex-1 cursor-pointer font-medium text-slate-600 dark:text-slate-400 peer-data-[state=checked]:text-slate-900 dark:peer-data-[state=checked]:text-white">
-                {t('books.info.latest')}
-              </Label>
-            </div>
-
-            {categories.map((category) => (
-              <div key={category.id} className="flex items-center space-x-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                <RadioGroupItem value={category.id.toString()} id={`cat-${category.id}`} />
-                <Label htmlFor={`cat-${category.id}`} className="flex-1 cursor-pointer font-medium text-slate-600 dark:text-slate-400 peer-data-[state=checked]:text-slate-900 dark:peer-data-[state=checked]:text-white">
-                  {category.name}
-                </Label>
-              </div>
-            ))}
+            <CategoryOption value="0" id="cat-0" label={t('books.info.latest')} />
+            {categories.map((category) => {
+              const categoryTotal = category.groups.reduce((sum, g) => sum + (g.stats?.bookTotal || 0), 0);
+              return (
+                <CategoryOption
+                  key={category.id}
+                  value={category.id.toString()}
+                  id={`cat-${category.id}`}
+                  label={category.name}
+                  count={categoryTotal}
+                />
+              );
+            })}
           </RadioGroup>
         </div>
 
         <div className="h-px bg-slate-100 dark:bg-slate-800 w-full" />
+
         {/* Groups */}
-        {displayedGroups.length > 0 && (
+        {displayedGroups.length > 0 ? (
           <div>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-slate-900 dark:text-white text-sm font-bold uppercase tracking-wider flex items-center gap-2">
-                {t('books.info.groups')}
-              </h3>
-              {selectedFilters.groups.length > 0 && (
-                <button
-                  type="button"
-                  className="text-xs text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary-foreground transition-colors"
-                  onClick={() => clearGroups()}
-                >
-                  {t('books.info.reset')}
-                </button>
-              )}
-            </div>
+            {renderSectionHeader(
+              t('books.info.groups'),
+              selectedFilters.groups.length > 0,
+              () => clearSection('groups')
+            )}
             <div className="space-y-1 max-h-[400px] overflow-y-auto pr-2">
-              {displayedGroups.map((group) => {
-                const isChecked = selectedFilters.groups.includes(group.id);
-                return (
-                  <div key={group.id} className="flex items-center space-x-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <Checkbox
-                      id={`group-${group.id}`}
-                      checked={isChecked}
-                      onCheckedChange={(checked) => toggleGroup(group.id, checked as boolean)}
-                    />
-                    <Label
-                      htmlFor={`group-${group.id}`}
-                      className="flex-1 cursor-pointer text-sm font-medium text-slate-600 dark:text-slate-400 peer-data-[state=checked]:text-slate-900 dark:peer-data-[state=checked]:text-white"
-                    >
-                      {group.name}
-                    </Label>
-                  </div>
-                )
-              })}
+              {displayedGroups.map((group) => (
+                <FilterCheckbox
+                  key={group.id}
+                  id={`group-${group.id}`}
+                  label={group.name}
+                  count={group.stats?.bookTotal}
+                  checked={selectedFilters.groups.includes(group.id)}
+                  onCheckedChange={(checked) => toggleGroup(group.id, checked)}
+                  className="space-x-3"
+                />
+              ))}
             </div>
           </div>
-        )}
-
-        {displayedGroups.length === 0 && (
+        ) : (
           <div className="text-sm text-slate-400 italic px-2 py-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg text-center border border-dashed border-slate-200 dark:border-slate-700">
             {t('books.info.select_category_to_view_groups')}
           </div>
         )}
 
-        {/* Grades - Only show for categories 1, 2, 3 */}
-        {selectedFilters.categories.length > 0 &&
-          [1, 2, 3].some(cat => selectedFilters.categories.includes(cat)) && (
-            <div>
-              <div className="h-px bg-slate-100 dark:bg-slate-800 w-full" />
-
-              <div className="flex items-center justify-between my-4">
-                <h3 className="text-slate-900 dark:text-white text-sm font-bold uppercase tracking-wider flex items-center gap-2">
-                  {t('books.info.grades')}
-                </h3>
-                {selectedFilters.grades && selectedFilters.grades.length > 0 && (
-                  <button
-                    type="button"
-                    className="text-xs text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary-foreground transition-colors"
-                    onClick={() => clearGrades()}
-                  >
-                    {t('books.info.reset')}
-                  </button>
-                )}
-              </div>
-              <div className="grid grid-cols-4 gap-2 max-h-[200px] overflow-y-auto pr-2">
-                {Array.from({ length: 12 }, (_, i) => i + 1).map((grade) => {
-                  const isChecked = selectedFilters.grades?.includes(grade) || false;
-                  return (
-                    <div key={grade} className="flex items-center space-x-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors p-1">
-                      <Checkbox
-                        id={`grade-${grade}`}
-                        checked={isChecked}
-                        onCheckedChange={(checked) => toggleGrade(grade, checked as boolean)}
-                      />
-                      <Label
-                        htmlFor={`grade-${grade}`}
-                        className="text-sm font-medium text-slate-600 dark:text-slate-400 peer-data-[state=checked]:text-slate-900 dark:peer-data-[state=checked]:text-white cursor-pointer"
-                      >
-                        {grade}
-                      </Label>
-                    </div>
-                  )
-                })}
-              </div>
+        {/* Grades */}
+        {grades.length > 0 && (
+          <div>
+            <div className="h-px bg-slate-100 dark:bg-slate-800 w-full mb-4" />
+            {renderSectionHeader(
+              t('books.info.grades'),
+              (selectedFilters.grades?.length || 0) > 0,
+              () => clearSection('grades')
+            )}
+            <div className={`grid ${gradesGridClass} gap-2 max-h-[200px] overflow-y-auto pr-2`}>
+              {grades.map((grade) => (
+                <FilterCheckbox
+                  key={grade.id}
+                  id={`grade-${grade.id}`}
+                  label={grade.label}
+                  checked={selectedFilters.grades?.includes(grade.id) || false}
+                  onCheckedChange={(checked) => toggleGrade(grade.id, checked)}
+                  className="space-x-2 p-1"
+                />
+              ))}
             </div>
-          )}
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
+// Sub-components for cleaner render
+const CategoryOption = ({ value, id, label, count }: { value: string, id: string, label: string, count?: number }) => (
+  <div className="flex items-center space-x-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+    <RadioGroupItem value={value} id={id} />
+    <Label htmlFor={id} className="flex-1 cursor-pointer font-medium text-slate-600 dark:text-slate-400 peer-data-[state=checked]:text-slate-900 dark:peer-data-[state=checked]:text-white flex items-center">
+      <span>{label}{count !== undefined && <span className="text-xs text-slate-400 font-normal ml-2">({count})</span>}</span>
+    </Label>
+  </div>
+);
+
+const FilterCheckbox = ({ id, label, count, checked, onCheckedChange, className = "" }: { id: string, label: string, count?: number, checked: boolean, onCheckedChange: (c: boolean) => void, className?: string }) => (
+  <div className={`flex items-center rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${className}`}>
+    <Checkbox
+      id={id}
+      checked={checked}
+      onCheckedChange={(c) => onCheckedChange(c as boolean)}
+    />
+    <Label
+      htmlFor={id}
+      className="flex-1 cursor-pointer text-sm font-medium text-slate-600 dark:text-slate-400 peer-data-[state=checked]:text-slate-900 dark:peer-data-[state=checked]:text-white flex items-center"
+    >
+      <span>{label}{count !== undefined && <span className="text-xs text-slate-400 font-normal ml-2">({count})</span>}</span>
+
+    </Label>
+  </div>
+);
