@@ -1,0 +1,14 @@
+{
+    "book": {
+        "detail": {
+            "success": "Berhasil mengambil detail buku",
+            "notFound": "Buku tidak ditemukan"
+        },
+        "filterParams": {
+            "success": "Berhasil mengambil parameter filter"
+        },
+        "list": {
+            "success": "Berhasil mengambil daftar buku"
+        }
+    }
+}

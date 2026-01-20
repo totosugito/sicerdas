@@ -1,8 +1,11 @@
-import { getBookCover } from '@/components/pages/books/types/books';
+import { getBookCover, getGrade, getGradeColor } from '@/components/pages/book/types/books';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils'
 import { useTranslation } from 'react-i18next'
 import { BookListItem } from '@/api/book/book';
+
+import { useNavigate, Link } from '@tanstack/react-router';
+import { AppRoute } from '@/constants/app-route';
 
 interface BookCardProps {
   books: BookListItem[];
@@ -36,19 +39,18 @@ interface BookCardViewProps {
 const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
   const isListView = viewMode === 'list';
 
-  const getGradeColor = (gradeName: string) => {
-    if (gradeName.includes('SD')) return 'bg-red-500';
-    if (gradeName.includes('SMP')) return 'bg-blue-500';
-    if (gradeName.includes('SMA') || gradeName.includes('MA')) return 'bg-[#0089BD]';
-    if (gradeName.includes('SMK')) return 'bg-[#0089BD]';
-    if (gradeName.includes('Umum')) return 'bg-purple-500';
-    return 'bg-emerald-500';
-  };
+  const navigate = useNavigate()
 
-  const getGrade = (grade: string, prefix = '') => {
-    const grades = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
-    if (grades.includes(grade)) return `${prefix}${grade}`;
-    return '';
+  const slug = book.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '');
+
+  const handleBookClick = () => {
+    navigate({
+      to: AppRoute.book.detail.url,
+      params: { id: `${book.bookId}-${slug}` }
+    })
   }
 
   return (
@@ -57,10 +59,12 @@ const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
       isListView ? "flex flex-row h-auto min-h-[160px]" : "flex flex-col h-full"
     )}>
       {/* Image Container */}
-      <div className={cn(
-        "relative overflow-hidden bg-slate-100 dark:bg-slate-700",
-        isListView ? "w-32 sm:w-48 shrink-0" : "aspect-[2/3] w-full max-h-[280px]"
-      )}>
+      <div
+        onClick={handleBookClick}
+        className={cn(
+          "relative overflow-hidden bg-slate-100 dark:bg-slate-700 cursor-pointer",
+          isListView ? "w-32 sm:w-48 shrink-0" : "aspect-[2/3] w-full max-h-[280px]"
+        )}>
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
           style={{
@@ -76,11 +80,18 @@ const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
 
       {/* Content */}
       <div className="p-4 flex flex-col flex-1">
-        <h3 className={cn(
-          "font-bold text-slate-900 dark:text-white leading-tight mb-1 group-hover:text-primary transition-colors",
-          isListView ? "text-lg line-clamp-2" : "text-base line-clamp-2"
-        )}>
-          {book.title}
+        <h3
+          className={cn(
+            "font-bold text-slate-900 dark:text-white leading-tight mb-1 group-hover:text-primary transition-colors",
+            isListView ? "text-lg line-clamp-2" : "text-base line-clamp-2"
+          )}>
+          <Link
+            to={AppRoute.book.detail.url}
+            params={{ id: `${book.bookId}-${slug}` }}
+            className="cursor-pointer"
+          >
+            {book.title}
+          </Link>
         </h3>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-3 line-clamp-1">
           {book.author || 'Unknown Author'}

@@ -1,0 +1,16 @@
+export default {
+    notFound: "Buku Tidak Ditemukan",
+    notFoundDesc: "Kami tidak dapat menemukan buku yang Anda cari. Mungkin telah dihapus atau tidak ada.",
+    backToBooks: "Kembali ke Daftar Buku",
+    readOnline: "Baca Online",
+    download: "Unduh",
+    favorites: "Favorit",
+    report: "Lapor",
+    views: "Dilihat",
+    pages: "Halaman",
+    fileSize: "Ukuran File",
+    group: "Kelompok",
+    addedOn: "Ditambahkan",
+    preview: "Pratinjau",
+    noDescription: "Tidak ada deskripsi tersedia untuk buku ini."
+}

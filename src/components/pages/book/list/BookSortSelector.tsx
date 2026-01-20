@@ -19,9 +19,9 @@ export const BookSortSelector = ({
   const sortOptions = [
     { value: 'createdAt', label: t('books.info.sort.createdAt') },
     { value: 'title', label: t('books.info.sort.title') },
-    { value: 'rating', label: t('books.info.sort.rating') },
+    // { value: 'rating', label: t('books.info.sort.rating') },
     { value: 'viewCount', label: t('books.info.sort.viewCount') },
-    { value: 'downloadCount', label: t('books.info.sort.downloadCount') },
+    // { value: 'downloadCount', label: t('books.info.sort.downloadCount') },
   ];
 
   const handleSortFieldChange = (value: string) => {

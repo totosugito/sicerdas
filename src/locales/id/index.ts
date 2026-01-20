@@ -9,7 +9,7 @@ import otpVerification from './auth/otp-verification-locale';
 import message from './global/message-locale';
 import user from './global/user-locale';
 import landing from './app/landing-locale';
-import booksLatest from './books/books-latest-locale';
+import booksLatest from './book/books-latest-locale';
 import about from './web/about-locale';
 import privacy from './web/privacy-locale';
 import terms from './web/terms-locale';
@@ -19,7 +19,8 @@ import periodicTable from './periodic-table/periodic-table-locale';
 import chemistryDictionary from './periodic-table/chemistry-dictionary-locale';
 import elementComparison from './periodic-table/element-comparison-locale';
 import elementDetail from './periodic-table/element-detail-locale';
-import bookInfo from './books/book-info-locale';
+import bookInfo from './book/book-info-locale';
+import bookDetail from './book/book-detail-locale';
 
 const localeId = {
   translation: {
@@ -52,6 +53,7 @@ const localeId = {
     books: {
       info: bookInfo,
       booksLatest: booksLatest,
+      detail: bookDetail,
     }
   }
 }

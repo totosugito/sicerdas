@@ -1,6 +1,5 @@
 const APP_BASE_URL = import.meta.env.VITE_APP_BASE_URL
 const APP_URL_API = APP_BASE_URL + "/api"
-const APP_URL_V1 = APP_URL_API + "/v1"
 export const AppApi = {
   auth: {
     signIn: APP_URL_API + "/auth/sign-in-email",
@@ -36,20 +35,14 @@ export const AppApi = {
     revokeSession: APP_URL_API + "/user/multi-session-revoke",
     revokeOtherSessions: APP_URL_API + "/user/revoke-other-sessions-v1",
   },
-  project: {
-    list: APP_URL_V1 + "/project/list",
-    ganttView: APP_URL_V1 + "/project/gantt-view",
-    create: APP_URL_V1 + "/project/create",
-    crud: APP_URL_V1 + "/project",
-  },
   book: {
-    list: APP_URL_V1 + "/book/list",
-    detail: APP_URL_V1 + "/book/detail",
-    create: APP_URL_V1 + "/book/create",
-    crud: APP_URL_V1 + "/book",
-    filterParams: APP_URL_V1 + "/book/filter-params",
+    list: APP_URL_API + "/book/list",
+    detail: APP_URL_API + "/book/detail",
+    create: APP_URL_API + "/book/create",
+    crud: APP_URL_API + "/book",
+    filterParams: APP_URL_API + "/book/filter-params",
   },
   periodicTable: {
-    element: APP_URL_V1 + "/periodic-table/element",
+    element: APP_URL_API + "/periodic-table/element",
   }
 }

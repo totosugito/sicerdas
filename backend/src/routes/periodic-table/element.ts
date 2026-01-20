@@ -1,9 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
-import { db } from "../../../db/index.ts";
+import { withErrorHandler } from "../../utils/withErrorHandler.ts";
+import { db } from "../../db/index.ts";
 import { and, eq } from "drizzle-orm";
-import { periodicElements, periodicElementNotes } from "../../../db/schema/index.ts";
+import { periodicElements, periodicElementNotes } from "../../db/schema/index.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
 const GetElementParams = Type.Object({
@@ -22,6 +22,7 @@ const ElementNoteSchema = Type.Object({
 
 const ElementResponse = Type.Object({
   success: Type.Boolean(),
+  message: Type.String(),
   data: Type.Object({
     id: Type.Integer(),
     atomicNumber: Type.Integer(),
@@ -103,7 +104,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           atomicFacts: periodicElementNotes.atomicFacts,
         })
         .from(periodicElements)
-        .leftJoin(periodicElementNotes, 
+        .leftJoin(periodicElementNotes,
           and(
             eq(periodicElements.atomicNumber, periodicElementNotes.atomicNumber),
             eq(periodicElementNotes.localeCode, locale)
@@ -115,7 +116,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
       // Take the first result (there should only be one element)
       const elementData = result[0];
-      
+
       // Initialize navigation data
       let navigation = {
         prev: undefined as {
@@ -131,7 +132,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           atomicSymbol: string;
         } | undefined,
       };
-      
+
       // Only calculate navigation if atomic number is in range 1-118
       if (elementData.atomicNumber >= 1 && elementData.atomicNumber <= 118) {
         // Get previous element
@@ -145,7 +146,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             })
             .from(periodicElements)
             .where(eq(periodicElements.atomicNumber, elementData.atomicNumber - 1));
-          
+
           if (prevResult.length > 0) {
             navigation.prev = {
               atomicNumber: prevResult[0].atomicNumber,
@@ -155,7 +156,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             };
           }
         }
-        
+
         // Get next element
         if (elementData.atomicNumber < 118) {
           const nextResult = await db
@@ -167,7 +168,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             })
             .from(periodicElements)
             .where(eq(periodicElements.atomicNumber, elementData.atomicNumber + 1));
-          
+
           if (nextResult.length > 0) {
             navigation.next = {
               atomicNumber: nextResult[0].atomicNumber,
@@ -178,9 +179,10 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           }
         }
       }
-      
+
       return reply.status(200).send({
         success: true,
+        message: req.i18n.t('periodic.success'),
         data: {
           id: elementData.id,
           atomicNumber: elementData.atomicNumber,

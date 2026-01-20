@@ -1,6 +1,7 @@
 {
   "periodic": {
     "elementNotFound": "Elemen dengan nomor atom %{atomicNumber} tidak ditemukan",
-    "invalidAtomicNumber": "Nomor atom tidak valid"
+    "invalidAtomicNumber": "Nomor atom tidak valid",
+    "success": "Berhasil mengambil data elemen"
   }
 }

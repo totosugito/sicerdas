@@ -1,9 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
-import { db } from "../../../db/index.ts";
-import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } from "../../../db/schema/book-schema.ts";
-import { educationGrades } from "../../../db/schema/education-schema.ts";
+import { withErrorHandler } from "../../utils/withErrorHandler.ts";
+import { db } from "../../db/index.ts";
+import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } from "../../db/schema/book-schema.ts";
+import { educationGrades } from "../../db/schema/education-schema.ts";
 import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
@@ -46,7 +46,13 @@ const BookDetailResponse = Type.Object({
 
 const BookDetailResponseWrapper = Type.Object({
   success: Type.Boolean(),
+  message: Type.String(),
   data: BookDetailResponse,
+});
+
+const BookNotFoundResponse = Type.Object({
+  success: Type.Boolean({ default: false }),
+  message: Type.String()
 });
 
 const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -58,14 +64,19 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: 'Get book detail',
       description: 'Get detailed information about a specific book by its ID',
       params: Type.Object({
-        bookId: Type.String({ description: 'Book ID (UUID format)' }),
+        bookId: Type.Number(),
       }),
       response: {
         200: BookDetailResponseWrapper,
+        '4xx': BookNotFoundResponse,
+        '5xx': Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String()
+        })
       },
     },
     handler: withErrorHandler(async function handler(
-      req: FastifyRequest<{ Params: { bookId: string } }>,
+      req: FastifyRequest<{ Params: { bookId: number } }>,
       reply: FastifyReply
     ): Promise<typeof BookDetailResponseWrapper.static> {
       const { bookId } = req.params;
@@ -123,7 +134,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             eq(books.id, userBookInteractions.bookId),
             eq(userBookInteractions.userId, userId)
           ))
-          .where(eq(books.id, bookId)); // Filter by the specific book ID
+          .where(eq(books.bookId, bookId)); // Filter by the specific book ID
       } else {
         // Query without user interactions
         baseQuery = db
@@ -166,7 +177,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           .leftJoin(bookCategory, eq(bookGroup.categoryId, bookCategory.id))
           .leftJoin(educationGrades, eq(books.educationGradeId, educationGrades.id))
           .leftJoin(bookEventStats, eq(books.id, bookEventStats.bookId))
-          .where(eq(books.id, bookId)); // Filter by the specific book ID
+          .where(eq(books.bookId, bookId)); // Filter by the specific book ID
       }
 
       const result = await baseQuery;
@@ -174,7 +185,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (!result || result.length === 0) {
         return reply.status(404).send({
           success: false,
-          message: 'Book not found'
+          message: req.i18n.t('book.detail.notFound')
         });
       }
 
@@ -224,6 +235,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (isLoggedIn && book.liked !== undefined) {
         return reply.status(200).send({
           success: true,
+          message: req.i18n.t('book.detail.success'),
           data: {
             ...processedBook,
             userInteraction: {
@@ -238,6 +250,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
+        message: req.i18n.t('book.detail.success'),
         data: processedBook
       });
     }),

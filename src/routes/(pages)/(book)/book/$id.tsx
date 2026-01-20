@@ -1,12 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useBookDetail } from '@/api/book/book'
-import { BookDetail } from '@/components/pages/books/book/BookDetail'
-import { Book } from '@/components/pages/books/types/books'
-import { useTranslation } from 'react-i18next'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { ArrowLeft, AlertTriangle } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { useBookDetail } from '@/api/book/book-detail'
+import { BookDetail } from '@/components/pages/book/book/BookDetail'
+import { BookDetailError } from '@/components/pages/book/book/BookDetailError'
 
 export const Route = createFileRoute('/(pages)/(book)/book/$id')({
   component: RouteComponent,
@@ -14,49 +9,34 @@ export const Route = createFileRoute('/(pages)/(book)/book/$id')({
 
 function RouteComponent() {
   const { id } = Route.useParams()
-  const { t } = useTranslation()
-  const { data, isLoading, error, isError } = useBookDetail(id)
+  const bookId = id.split('-')[0]
+  const { data, isLoading, isError } = useBookDetail(bookId)
 
   if (isLoading) {
-    return <BookDetail book={{} as Book} isLoading={true} />
+    return <BookDetail book={{} as any} isLoading={true} />
   }
 
   if (isError || !data?.success) {
-    return (
-      <div className="container mx-auto p-6 max-w-4xl">
-        <div className="mb-4">
-          <Link to="/books">
-            <Button variant="outline" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              {t('shared.backToBooks')}
-            </Button>
-          </Link>
-        </div>
-        <Card className="border-destructive">
-          <CardContent className="p-6">
-            <div className="flex items-center text-destructive">
-              <AlertTriangle className="w-5 h-5 mr-2" />
-              <p>{t('errors.bookNotFound')}</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    return <BookDetailError message={data?.message} />
   }
 
-  const book: Book = data.data
+  const bookData = data.data
+
+  // Adapt new API response to match BookDetail component expectations
+  // The component expects integer 'id' for cover/pdf generation, but API returns UUID as 'id'.
+  // We map bookId (int) to id, and viewCount -> view
+  const book = {
+    ...bookData,
+    id: bookData.bookId, // Component expects the integer ID
+    uuid: bookData.id,   // Keep the UUID
+    view: bookData.viewCount,
+    favorite: bookData.userInteraction?.liked ?? false,
+    favoriteTotal: 0, // Not available in new API yet
+  }
 
   return (
-    <div>
-      <div className="container mx-auto p-6 max-w-4xl mb-4">
-        <Link to="/books">
-          <Button variant="outline" size="sm">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {t('shared.backToBooks')}
-          </Button>
-        </Link>
-      </div>
-      <BookDetail book={book} />
+    <div className="flex flex-col gap-6 w-full">
+      <BookDetail book={book as any} />
     </div>
   )
 }

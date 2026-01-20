@@ -1,8 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
-import { db } from "../../../db/index.ts";
-import { bookCategory, bookGroup, bookGroupStats } from "../../../db/schema/book-schema.ts";
+import { withErrorHandler } from "../../utils/withErrorHandler.ts";
+import { db } from "../../db/index.ts";
+import { bookCategory, bookGroup, bookGroupStats } from "../../db/schema/book-schema.ts";
 import { eq, and, gt, isNotNull, or, isNull } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
@@ -26,6 +26,7 @@ const FilterParamsResponseItem = Type.Object({
 
 const FilterParamsResponse = Type.Object({
   success: Type.Boolean(),
+  message: Type.String(),
   data: Type.Array(FilterParamsResponseItem),
 });
 
@@ -39,6 +40,14 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       description: 'Get all book categories with their associated groups and statistics',
       response: {
         200: FilterParamsResponse,
+        '4xx': Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String()
+        }),
+        '5xx': Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String()
+        })
       },
     },
     handler: withErrorHandler(async function handler(
@@ -108,6 +117,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
+        message: req.i18n.t('book.filterParams.success'),
         data: categoriesWithGroups,
       });
     }),

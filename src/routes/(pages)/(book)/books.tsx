@@ -5,7 +5,7 @@ import { useTranslation, Trans } from 'react-i18next'
 import { useBookList, useBookFilterParams } from '@/api/book/book'
 import { BookOpen, LayoutGrid, ListIcon } from 'lucide-react'
 import { showNotifError } from '@/lib/show-notif'
-import { Book, BookListResponse, BooksSkeleton, BookFilter, BookCard, BookSearchBar, BookSortSelector } from '@/components/pages/books/list'
+import { Book, BookListResponse, BooksSkeleton, BookFilter, BookCard, BookSearchBar, BookSortSelector } from '@/components/pages/book/list'
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from '@/components/custom/table';
 import { useAppStore } from '@/stores/useAppStore'

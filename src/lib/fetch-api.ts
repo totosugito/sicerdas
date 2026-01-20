@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useAppStore } from '@/stores/useAppStore';
-import {APP_CONFIG} from "@/constants/config";
+import { APP_CONFIG } from "@/constants/config";
 
 export const axiosInstance = axios.create({})
 
@@ -15,7 +15,7 @@ axiosInstance.interceptors.response.use(
       const appStore = useAppStore.getState()
       authStore.logout()
       appStore.resetAll()
-      
+
       // Redirect to public page
       window.location.href = APP_CONFIG.path.defaultPublic
     }
@@ -25,13 +25,13 @@ axiosInstance.interceptors.response.use(
 )
 
 export const fetchApi = async ({
-                                 method,
-                                 url,
-                                 body,
-                                 headers,
-                                 params,
-                                 withCredentials = true,
-                               }: {
+  method,
+  url,
+  body,
+  headers,
+  params,
+  withCredentials = true,
+}: {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
   url: string
   body?: any
@@ -55,7 +55,7 @@ export const fetchApi = async ({
       withCredentials
     })
     return response.data
-  } catch (error) {
-    throw error
+  } catch (error: any) {
+    return (error?.response?.data)
   }
 }

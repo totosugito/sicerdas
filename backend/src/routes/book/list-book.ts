@@ -1,13 +1,13 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
-import { db } from "../../../db/index.ts";
-import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } from "../../../db/schema/book-schema.ts";
-import { educationGrades } from "../../../db/schema/education-schema.ts";
+import { withErrorHandler } from "../../utils/withErrorHandler.ts";
+import { db } from "../../db/index.ts";
+import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } from "../../db/schema/book-schema.ts";
+import { educationGrades } from "../../db/schema/education-schema.ts";
 import { and, eq, inArray, sql, or, ilike, desc } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { EnumContentStatus, EnumContentType } from "../../../db/schema/enum-app.ts";
-import { appVersion } from "../../../db/schema/version-schema.ts";
+import { EnumContentStatus, EnumContentType } from "../../db/schema/enum-app.ts";
+import { appVersion } from "../../db/schema/version-schema.ts";
 
 const BookListQuery = Type.Object({
   category: Type.Optional(Type.Array(Type.Number())),
@@ -59,6 +59,7 @@ const BookResponse = Type.Object({
 
 const BookListResponse = Type.Object({
   success: Type.Boolean(),
+  message: Type.String(),
   data: Type.Object({
     items: Type.Array(BookResponse),
     total: Type.Number(),
@@ -79,6 +80,14 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       body: BookListQuery,
       response: {
         200: BookListResponse,
+        '4xx': Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String()
+        }),
+        '5xx': Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String()
+        })
       },
     },
     handler: withErrorHandler(async function handler(
@@ -255,6 +264,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
+        message: req.i18n.t('book.list.success'),
         data: {
           items: items.map(item => {
             const processedItem = {
