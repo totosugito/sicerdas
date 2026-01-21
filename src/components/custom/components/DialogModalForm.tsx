@@ -6,14 +6,15 @@ import {
   DialogHeader,
   DialogTitle
 } from "@/components/ui/dialog"
-import {cloneElement, useEffect, useState} from "react";
+import { cloneElement, useEffect, useState } from "react";
 import * as React from "react";
-import {useForm} from "react-hook-form";
-import {Button} from "@/components/ui/button";
-import {useTranslation} from "react-i18next";
-import {Form} from "@/components/ui/form";
-import {z} from "zod";
-import {zodResolver} from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
+import { Form } from "@/components/ui/form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormWithDetector } from "./FormWithDetector";
 
 export type ModalFormProps = {
   title: string;
@@ -40,29 +41,29 @@ export type DialogModalFormProps = {
 };
 
 export const DialogModalForm = ({
-                           modal = {
-                             title: "Title",
-                             desc: "Text Descriptions",
-                             content: <div/>,
-                             textConfirm: "Yes",
-                             textCancel: "No",
-                             onConfirmClick: () => {
-                             },
-                             onCancelClick: () => {
-                             },
-                             modal: true,
-                             defaultValue: {},
-                             child: null,
-                             schema: null,
-                             info: null
-                           },
-                           onDismissOutside = false,
-                           classNameConfirm = "",
-                           classNameCancel = "",
-                           variantSubmit = "default",
-                           ...props
-                         }: DialogModalFormProps) => {
-  const {t} = useTranslation();
+  modal = {
+    title: "Title",
+    desc: "Text Descriptions",
+    content: <div />,
+    textConfirm: "Yes",
+    textCancel: "No",
+    onConfirmClick: () => {
+    },
+    onCancelClick: () => {
+    },
+    modal: true,
+    defaultValue: {},
+    child: null,
+    schema: null,
+    info: null
+  },
+  onDismissOutside = false,
+  classNameConfirm = "",
+  classNameCancel = "",
+  variantSubmit = "default",
+  ...props
+}: DialogModalFormProps) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(true); // Keep the dialog open
 
   // First, define the expected props type for the content component
@@ -72,9 +73,11 @@ export const DialogModalForm = ({
   }
 
   const form = useForm({
-    resolver: zodResolver(z.object(modal.schema)),
+    resolver: modal.schema ? zodResolver(z.object(modal.schema)) : undefined,
     defaultValues: modal.defaultValue,
   });
+
+
 
   // Reset form when defaultValues change
   useEffect(() => {
@@ -102,9 +105,12 @@ export const DialogModalForm = ({
           {modal?.desc && <DialogDescription>{modal?.desc}</DialogDescription>}
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit((v: Record<string, any>) => {
-            modal?.onConfirmClick(v)
-          })} className={"flex flex-col h-full flex-1 overflow-y-auto"}>
+          <FormWithDetector
+            form={form}
+            onSubmit={(v) => modal?.onConfirmClick(v)}
+            className="flex flex-col h-full flex-1 overflow-y-auto"
+            schema={modal?.schema}
+          >
             <div className={"flex flex-col h-full flex-1 overflow-y-auto"}>
               {(modal?.child && modal?.content) &&
                 cloneElement<DialogContentProps>(modal.content as React.ReactElement<DialogContentProps>, {
@@ -138,7 +144,7 @@ export const DialogModalForm = ({
                 )}
               </div>
             </DialogFooter>
-          </form>
+          </FormWithDetector>
         </Form>
       </DialogContent>
     </Dialog>

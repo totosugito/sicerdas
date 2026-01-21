@@ -44,5 +44,8 @@ export const AppApi = {
   },
   periodicTable: {
     element: APP_URL_API + "/periodic-table/element",
+  },
+  report: {
+    create: APP_URL_API + "/report/create",
   }
 }

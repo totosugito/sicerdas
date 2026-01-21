@@ -12,6 +12,9 @@ import { Link } from "@tanstack/react-router"
 import { cn } from "@/lib/utils"
 import { AppRoute } from "@/constants/app-route"
 import { BookDetil } from "@/api/book/book-detail"
+import { CreateReport } from "@/components/pages/layout/CreateReport"
+import { EnumContentType } from "backend/src/db/schema/enum-app"
+import { useAuth } from "@/hooks/use-auth"
 
 interface BookDetailProps {
   book: BookDetil
@@ -41,9 +44,11 @@ export const BookDetail = ({ book }: BookDetailProps) => {
     // TODO: Implement favorite toggle functionality with API
   }
 
+  const { user } = useAuth();
+  const [showReportDialog, setShowReportDialog] = useState(false);
+
   const handleReport = () => {
-    // TODO: Implement report functionality
-    console.log("Report book:", book.bookId)
+    setShowReportDialog(true);
   }
 
   const samplePages = getBookPageList(book.bookId, 4, 5)
@@ -196,6 +201,18 @@ export const BookDetail = ({ book }: BookDetailProps) => {
           </div>
         </div>
       </div>
+
+      <CreateReport
+        isOpen={showReportDialog}
+        onOpenChange={setShowReportDialog}
+        data={{
+          contentType: EnumContentType.BOOK,
+          referenceId: String(book.bookId),
+          title: book.title,
+          name: user?.user?.name || "",
+          email: user?.user?.email || "",
+        }}
+      />
     </div>
   )
 }

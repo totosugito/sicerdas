@@ -1,5 +1,5 @@
 import { pgTable, uuid, text, timestamp, index, jsonb } from 'drizzle-orm/pg-core';
-import { PgEnumContentType, PgEnumReportStatus, PgEnumReportReason } from './enum-app.ts';
+import { PgEnumContentType, PgEnumReportStatus, PgEnumReportReason, EnumReportReason, EnumReportStatus, EnumContentType } from './enum-app.ts';
 import { users } from './auth-schema.ts';
 
 /**
@@ -13,6 +13,9 @@ import { users } from './auth-schema.ts';
  * - reporterId: ID of the user who submitted the report
  * - contentType: Type of content being reported (book, test, course, or other)
  * - referenceId: ID of the specific content item being reported (optional for "other" content type)
+ * - name: Name of the reporter
+ * - email: Email of the reporter
+ * - title: Title of the content being reported
  * - reason: Reason for the report (from PgEnumReportReason)
  * - description: Additional details about the report
  * - status: Current status of the report (default: pending)
@@ -27,27 +30,30 @@ import { users } from './auth-schema.ts';
  */
 export const userContentReport = pgTable('user_content_report', {
   id: uuid('id').primaryKey().defaultRandom(),
-  
+
   // Reporter information
   reporterId: uuid('reporter_id')
-    .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  
+
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  title: text('title').notNull(),
+
   // Polymorphic relationship to support content type [books, tests, courses, and other]
-  contentType: PgEnumContentType('content_type').notNull(),
-  referenceId: uuid('reference_id'), // Made optional to support "other" content type
-  
+  contentType: PgEnumContentType('content_type').notNull().default(EnumContentType.BOOK),
+  referenceId: uuid('reference_id').notNull(), // Made optional to support "other" content type
+
   // Report details
-  reason: PgEnumReportReason('reason').notNull(), // Reason for the report
+  reason: PgEnumReportReason('reason').notNull().default(EnumReportReason.OTHER), // Reason for the report
   description: text('description'), // Additional details
-  
+
   // Report status
-  status: PgEnumReportStatus('status').notNull().default('pending'),
-  
+  status: PgEnumReportStatus('status').notNull().default(EnumReportStatus.PENDING),
+
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  
+
   // Flexible data storage
   extra: jsonb('extra')
     .$type<Record<string, unknown>>()
@@ -86,25 +92,25 @@ export type SchemaUserReportSelect = typeof userContentReport.$inferSelect;
  */
 export const userReportReplies = pgTable('user_report_replies', {
   id: uuid('id').primaryKey().defaultRandom(),
-  
+
   // Reference to the report
   reportId: uuid('report_id')
     .notNull()
     .references(() => userContentReport.id, { onDelete: 'cascade' }),
-  
+
   // Author of the reply (can be user or admin)
   authorId: uuid('author_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-   
+
   // Reply content
   content: text('content').notNull(),
-  
+
   // Flexible data storage
   extra: jsonb('extra')
     .$type<Record<string, unknown>>()
     .default({}), // JSONB for storing additional structured data with default empty object
-  
+
   // Timestamps
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -133,22 +139,22 @@ export type SchemaUserReportReplySelect = typeof userReportReplies.$inferSelect;
  */
 export const userEventHistory = pgTable('user_event_history', {
   id: uuid('id').primaryKey().defaultRandom(),
-  
+
   // User who performed the event
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-   
+
   // Session information for anonymous tracking
   sessionId: uuid('session_id'), // Generated in frontend and saved in cookie
   ipAddress: text('ip_address'),
   userAgent: text('user_agent'),
-    
+
   // Additional metadata
   extra: jsonb('extra')
     .$type<Record<string, unknown>>()
     .default({}), // JSONB for storing additional event data with default empty object
-  
+
   // Timestamps
   createdAt: timestamp('created_at').notNull().defaultNow(),
 }, (table) => [
