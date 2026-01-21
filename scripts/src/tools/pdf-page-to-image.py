@@ -357,5 +357,5 @@ Examples:
     extractor.run()
 
 if __name__ == "__main__":
-    # python src/pdf-page-to-image.py E:/SiCerdas/perpustakaan/0 E:/SiCerdas/perpustakaan/images/0 --pages 5 --filter "*.pdf" --suffix lg --dpi 300 --compress 80 --height 800
+    # python src/tools/pdf-page-to-image.py E:/Cloud/SiCerdas/perpustakaan/0 E:/Cloud/SiCerdas/perpustakaan/pages/0/lg --pages 5 --filter "*.pdf" --suffix lg --dpi 300 --compress 80 --height 800
     main()

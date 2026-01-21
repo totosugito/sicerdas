@@ -262,5 +262,5 @@ Examples:
     resizer.run()
 
 if __name__ == "__main__":
-    # python ./src/image-resizer.py "E:/SiCerdas/perpustakaan/images/0" "E:/SiCerdas/perpustakaan/images/0" --height 150 --filter "*_lg.jpg" --original lg --replacement xs --compress 80
+    # python ./src/tools/image-resizer.py "E:/Cloud/SiCerdas/perpustakaan/pages/0/lg" "E:/Cloud/SiCerdas/perpustakaan/pages/0/xs" --height 150 --filter "*_lg.jpg" --original lg --replacement xs --compress 80
     main()
