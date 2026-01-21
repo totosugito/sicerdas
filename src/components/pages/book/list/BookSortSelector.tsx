@@ -17,11 +17,11 @@ export const BookSortSelector = ({
   const { t } = useTranslation();
 
   const sortOptions = [
-    { value: 'createdAt', label: t('books.info.sort.createdAt') },
-    { value: 'title', label: t('books.info.sort.title') },
-    // { value: 'rating', label: t('books.info.sort.rating') },
-    { value: 'viewCount', label: t('books.info.sort.viewCount') },
-    // { value: 'downloadCount', label: t('books.info.sort.downloadCount') },
+    { value: 'createdAt', label: t('book.info.sort.createdAt') },
+    { value: 'title', label: t('book.info.sort.title') },
+    // { value: 'rating', label: t('book.info.sort.rating') },
+    { value: 'viewCount', label: t('book.info.sort.viewCount') },
+    // { value: 'downloadCount', label: t('book.info.sort.downloadCount') },
   ];
 
   const handleSortFieldChange = (value: string) => {
@@ -37,7 +37,7 @@ export const BookSortSelector = ({
     <div className="flex items-center gap-2">
       <Select value={sortBy} onValueChange={handleSortFieldChange}>
         <SelectTrigger className="w-[160px]">
-          <SelectValue placeholder={t('books.info.sort.placeholder')} />
+          <SelectValue placeholder={t('book.info.sort.placeholder')} />
         </SelectTrigger>
         <SelectContent>
           {sortOptions.map((option) => (

@@ -129,7 +129,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
           onClick={onReset}
           className="text-xs text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary-foreground transition-colors"
         >
-          {t('books.info.reset')}
+          {t('book.info.reset')}
         </button>
       )}
     </div>
@@ -141,15 +141,15 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
         {/* Categories */}
         <div className=''>
           <h3 className="text-slate-900 dark:text-white text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2">
-            {t('books.info.categories')}
+            {t('book.info.categories')}
           </h3>
           <RadioGroup
             value={activeCategoryId?.toString() || ""}
             onValueChange={handleCategoryChange}
             className="space-y-1"
           >
-            <CategoryOption value="-1" id={`${idPrefix}-cat--1`} label={t('books.info.allBooks')} />
-            <CategoryOption value="0" id={`${idPrefix}-cat-0`} label={t('books.info.latest')} />
+            <CategoryOption value="-1" id={`${idPrefix}-cat--1`} label={t('book.info.allBooks')} />
+            <CategoryOption value="0" id={`${idPrefix}-cat-0`} label={t('book.info.latest')} />
             {categories.map((category) => {
               const categoryTotal = category.groups.reduce((sum, g) => sum + (g.stats?.bookTotal || 0), 0);
               return (
@@ -171,7 +171,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
         {displayedGroups.length > 0 ? (
           <div>
             {renderSectionHeader(
-              t('books.info.groups'),
+              t('book.info.groups'),
               localFilters.groups.length > 0,
               () => clearSection('groups')
             )}
@@ -191,7 +191,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
           </div>
         ) : (
           <div className="text-sm text-slate-400 italic px-2 py-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg text-center border border-dashed border-slate-200 dark:border-slate-700">
-            {t('books.info.select_category_to_view_groups')}
+            {t('book.info.select_category_to_view_groups')}
           </div>
         )}
 
@@ -200,7 +200,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
           <div>
             <div className="h-px bg-slate-100 dark:bg-slate-800 w-full mb-4" />
             {renderSectionHeader(
-              t('books.info.grades'),
+              t('book.info.grades'),
               (localFilters.grades?.length || 0) > 0,
               () => clearSection('grades')
             )}

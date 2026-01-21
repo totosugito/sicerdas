@@ -171,7 +171,7 @@ function RouteComponent() {
               {totalBooks !== undefined && (
                 <p className="text-slate-500 dark:text-slate-400">
                   <Trans
-                    i18nKey="books.info.showingText"
+                    i18nKey="book.info.showingText"
                     values={{ count: books.length, total: totalBooks }}
                     components={{
                       bold: <span className="font-bold text-slate-900 dark:text-white" />

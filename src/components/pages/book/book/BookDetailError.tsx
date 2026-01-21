@@ -25,10 +25,10 @@ export function BookDetailError({ message }: BookDetailErrorProps) {
 
                 <div className="space-y-3 relative">
                     <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-                        {message || t('books.detail.notFound')}
+                        {message || t('book.detail.notFound')}
                     </h2>
                     <p className="text-lg text-slate-500 dark:text-slate-400">
-                        {t('books.detail.notFoundDesc')}
+                        {t('book.detail.notFoundDesc')}
                     </p>
                 </div>
 
@@ -36,7 +36,7 @@ export function BookDetailError({ message }: BookDetailErrorProps) {
                     <Link to={AppRoute.book.books.url}>
                         <Button size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all rounded-full">
                             <ArrowLeft className="w-5 h-5 mr-2" />
-                            {t('books.detail.backToBooks')}
+                            {t('book.detail.backToBooks')}
                         </Button>
                     </Link>
                 </div>

@@ -50,7 +50,7 @@ const localeId = {
       elementComparison: elementComparison,
       elementDetail: elementDetail
     },
-    books: {
+    book: {
       info: bookInfo,
       booksLatest: booksLatest,
       detail: bookDetail,

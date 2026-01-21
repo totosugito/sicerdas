@@ -12,5 +12,7 @@ export default {
     group: "Kelompok",
     addedOn: "Ditambahkan",
     preview: "Pratinjau",
-    noDescription: "Tidak ada deskripsi tersedia untuk buku ini."
+    noDescription: "Tidak ada deskripsi tersedia untuk buku ini.",
+    samplePages: "Contoh Halaman",
+    samplePagesDesc: "Contoh halaman dari buku ini."
 }
