@@ -147,7 +147,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       // Build the base query
       // Start with base conditions that are always applied
       const conditions = [];
-      conditions.push(eq(books.status, 'published'));
+      conditions.push(eq(books.status, EnumContentStatus.PUBLISHED));
 
       // Add search condition if search term is provided
       if (search && search.trim() !== '') {
@@ -182,7 +182,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             conditions.push(eq(books.versionId, latestVersion[0].id));
           }
         }
-        else {
+        else if (categoryFilter[0] > 0) {
           conditions.push(inArray(bookCategory.id, categoryFilter));
 
           if (group?.length) {
@@ -191,7 +191,6 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
           if (grade?.length) {
             conditions.push(inArray(educationGrades.id, grade));
-            conditions.push(eq(books.status, EnumContentStatus.PUBLISHED));
           }
         }
       }

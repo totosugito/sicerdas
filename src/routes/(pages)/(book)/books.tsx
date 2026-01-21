@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { z } from 'zod'
 import { useTranslation, Trans } from 'react-i18next'
-import { useBookList, useBookFilterParams } from '@/api/book/book'
+import { useBookList, useBookFilterParams, BookListItem } from '@/api/book/book'
 import { BookOpen, LayoutGrid, ListIcon } from 'lucide-react'
 import { showNotifError } from '@/lib/show-notif'
 import { Book, BookListResponse, BooksSkeleton, BookFilter, BookCard, BookSearchBar, BookSortSelector } from '@/components/pages/book/list'
@@ -31,12 +31,12 @@ function RouteComponent() {
   const navigate = Route.useNavigate()
 
   const [searchTerm, setSearchTerm] = useState(urlSearch || '')
-  const [books, setBooks] = useState<Book[]>([])
+  const [books, setBooks] = useState<BookListItem[]>([])
   const [currentPage, setCurrentPage] = useState(urlPage || 1)
   const [totalPages, setTotalPages] = useState(0)
   const [totalBooks, setTotalBooks] = useState(0)
   const selectedFilters = {
-    categories: urlCategory || [0],
+    categories: urlCategory || [-1],
     groups: urlGroup || [],
     grades: urlGrade || []
   }
@@ -100,7 +100,7 @@ function RouteComponent() {
 
   useEffect(() => {
     loadBooks(urlPage || 1, urlSearch || '', {
-      categories: urlCategory || [0],
+      categories: urlCategory || [-1],
       groups: urlGroup || [],
       grades: urlGrade || []
     }, {
@@ -142,6 +142,7 @@ function RouteComponent() {
               onFilterChange={handleFilterChange}
               autoSubmit={true}
               filterData={filterParamsQuery.data}
+              idPrefix="sidebar"
             />
           </div>
         </aside>

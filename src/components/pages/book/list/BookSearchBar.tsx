@@ -109,6 +109,7 @@ export const BookSearchBar = ({
                 }}
                 filterData={filterData}
                 autoSubmit={false}
+                idPrefix="search-bar"
               />
             </PopoverContent>
           </Popover>

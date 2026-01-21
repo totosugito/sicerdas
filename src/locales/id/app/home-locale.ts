@@ -12,4 +12,5 @@ export default {
     failedToLoadBooks: "Gagal memuat buku",
     errorLoadingBooks: "Kesalahan memuat buku",
     filters: "Filter",
+    applyFilters: "Terapkan Filter",
 }

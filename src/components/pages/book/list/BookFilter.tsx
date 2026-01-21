@@ -22,9 +22,10 @@ interface BookFilterProps {
     data: FilterParamCategory[];
   };
   autoSubmit?: boolean;
+  idPrefix?: string;
 }
 
-export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSubmit = true }: BookFilterProps) => {
+export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSubmit = true, idPrefix = 'filter' }: BookFilterProps) => {
   const { t } = useTranslation();
   const categories = filterData?.data || [];
 
@@ -62,6 +63,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
 
   const updateFilters = useCallback((newFilters: typeof selectedFilters) => {
     setLocalFilters(newFilters);
+    // console.log('BookFilter updateFilters', { autoSubmit, newFilters });
     if (autoSubmit) {
       onFilterChange(newFilters);
     }
@@ -146,14 +148,15 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
             onValueChange={handleCategoryChange}
             className="space-y-1"
           >
-            <CategoryOption value="0" id="cat-0" label={t('books.info.latest')} />
+            <CategoryOption value="-1" id={`${idPrefix}-cat--1`} label={t('books.info.allBooks')} />
+            <CategoryOption value="0" id={`${idPrefix}-cat-0`} label={t('books.info.latest')} />
             {categories.map((category) => {
               const categoryTotal = category.groups.reduce((sum, g) => sum + (g.stats?.bookTotal || 0), 0);
               return (
                 <CategoryOption
                   key={category.id}
                   value={category.id.toString()}
-                  id={`cat-${category.id}`}
+                  id={`${idPrefix}-cat-${category.id}`}
                   label={category.name}
                   count={categoryTotal}
                 />
@@ -176,7 +179,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
               {displayedGroups.map((group) => (
                 <FilterCheckbox
                   key={group.id}
-                  id={`group-${group.id}`}
+                  id={`${idPrefix}-group-${group.id}`}
                   label={group.name}
                   count={group.stats?.bookTotal}
                   checked={localFilters.groups.includes(group.id)}
@@ -205,7 +208,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
               {grades.map((grade) => (
                 <FilterCheckbox
                   key={grade.id}
-                  id={`grade-${grade.id}`}
+                  id={`${idPrefix}-grade-${grade.id}`}
                   label={grade.label}
                   checked={localFilters.grades?.includes(grade.id) || false}
                   onCheckedChange={(checked) => toggleGrade(grade.id, checked)}
@@ -223,7 +226,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
             className="w-full"
             onClick={() => onFilterChange(localFilters)}
           >
-            {t('home.applyFilters', 'Apply Filters')}
+            {t('home.applyFilters')}
           </Button>
         </div>
       )}

@@ -12,7 +12,7 @@ async function startServer() {
     },
     ignoreDuplicateSlashes: true,
     ajv: {
-      plugins: [ajvFilePlugin],
+      plugins: [ajvFilePlugin as any],
     },
   });
 

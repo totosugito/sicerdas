@@ -1,9 +1,9 @@
-import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
-import {withErrorHandler} from "../../utils/withErrorHandler.ts";
-import {db} from "../../db/index.ts";
-import {users, verifications} from "../../db/schema/auth-schema.ts";
-import {eq, and} from "drizzle-orm";
+import { withErrorHandler } from "../../utils/withErrorHandler.ts";
+import { db } from "../../db/index.ts";
+import { users, verifications } from "../../db/schema/auth-schema.ts";
+import { eq } from "drizzle-orm";
 
 /**
  * Reset password using email OTP
@@ -66,7 +66,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Check if email exists in users table and get user ID
       const existingUser = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.email, email));
-      
+
       if (existingUser.length === 0) {
         return reply.notFound(req.i18n.t('auth.userNotFound'));
       }
@@ -82,19 +82,19 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
         headers: {
           'content-type': 'application/json',
-          'accept-language': req.headers['accept-language'] || 'id', 
+          'accept-language': req.headers['accept-language'] || 'id',
         }
       });
 
       // Check if the response was successful
       const isSuccessful = response.statusCode >= 200 && response.statusCode < 300;
-      
+
       // If successful, delete the verification records for this email
       if (isSuccessful) {
         const identifier = `forget-password-otp-${email}`;
         await db.delete(verifications).where(eq(verifications.identifier, identifier));
       }
-      
+
       // Forward the response
       return reply
         .status(response.statusCode)

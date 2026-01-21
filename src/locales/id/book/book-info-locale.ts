@@ -9,7 +9,8 @@ export default {
   reset: "Atur Ulang",
   apply_filters: "Terapkan Filter",
   auto_apply: "Terapkan Otomatis",
-  latest: "Terbaru",
+  allBooks: "Semua Buku",
+  latest: "Buku Terbaru",
   sort: {
     placeholder: "Urutkan berdasarkan",
     createdAt: "Terbaru",
