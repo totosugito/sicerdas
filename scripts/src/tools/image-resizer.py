@@ -69,11 +69,11 @@ class ImageResizer:
         logger.info(f"Output folder: {self.output_folder}")
         
     def find_images(self):
-        """Find all images using the specified filter pattern in the input folder."""
+        """Find all images using the specified filter pattern in the input folder recursively."""
         pattern_files = []
         
-        # Apply filter pattern directly
-        matches = list(self.input_folder.glob(self.filter_pattern))
+        # Apply filter pattern recursively
+        matches = list(self.input_folder.rglob(self.filter_pattern))
         
         # Filter to keep only supported image formats
         for file_path in matches:
@@ -108,6 +108,9 @@ class ImageResizer:
             
     def generate_output_filename(self, input_path):
         """Generate output filename by replacing original text with replacement text."""
+        # Calculate path relative to input_folder to preserve structure
+        rel_path = input_path.relative_to(self.input_folder)
+        parent_dir = rel_path.parent
         filename = input_path.name
         
         # Replace the original text in the filename
@@ -119,7 +122,7 @@ class ImageResizer:
             suffix = input_path.suffix
             new_filename = f"{stem}_{self.replacement}{suffix}"
             
-        return self.output_folder / new_filename
+        return self.output_folder / parent_dir / new_filename
         
     def process_images(self):
         """Process all found images."""
@@ -144,6 +147,9 @@ class ImageResizer:
                 
             # Generate output filename
             output_path = self.generate_output_filename(image_path)
+            
+            # Ensure output directory exists (preserving structure)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
             
             try:
                 # Save the resized image with compression quality
@@ -262,5 +268,5 @@ Examples:
     resizer.run()
 
 if __name__ == "__main__":
-    # python ./src/tools/image-resizer.py "E:/Cloud/SiCerdas/perpustakaan/pages/0/lg" "E:/Cloud/SiCerdas/perpustakaan/pages/0/xs" --height 150 --filter "*_lg.jpg" --original lg --replacement xs --compress 80
+    # python ./src/tools/image-resizer.py "E:/Cloud/SiCerdas/perpustakaan/pages/0/lg" "E:/Cloud/SiCerdas/perpustakaan/pages/0/xs" --height 200 --filter "*_lg.jpg" --original lg --replacement xs --compress 80
     main()
