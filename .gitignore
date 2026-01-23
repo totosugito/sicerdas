@@ -7,10 +7,10 @@ dist-ssr
 package-lock.json
 yarn.lock
 .idea
-
 src/routeTree.gen.ts
 /backend/src/db/migrations/
 ./scripts/venv/
 test
 .vscode
 .tanstack
+scripts/venv

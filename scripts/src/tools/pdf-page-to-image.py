@@ -41,7 +41,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class PDFPageExtractor:
-    def __init__(self, input_folder, output_folder, pages_count=3, filter_pattern="*.pdf", suffix="page", dpi=150, compress=85, height=800):
+    def __init__(self, input_folder, output_folder, pages_count=3, filter_pattern="*.pdf", suffix="page", dpi=150, compress=85, height=800, include_first_page=True):
         """
         Initialize the PDFPageExtractor.
         
@@ -63,6 +63,7 @@ class PDFPageExtractor:
         self.dpi = max(72, min(300, dpi))  # Ensure DPI is between 72-300
         self.compress = max(1, min(100, compress))  # Ensure value is between 1-100
         self.height = max(100, height)  # Ensure minimum height of 100px
+        self.include_first_page = include_first_page
         
     def validate_inputs(self):
         """Validate input parameters and folders."""
@@ -117,18 +118,32 @@ class PDFPageExtractor:
         if total_pages == 0:
             return []
             
-        # Ensure we don't try to extract more pages than available
-        pages_to_extract = min(self.pages_count, total_pages)
+        final_pages = set()
         
-        # Generate random page numbers (0-indexed)
-        if pages_to_extract == total_pages:
-            # If extracting all pages, just return all page numbers
-            selected_pages = list(range(total_pages))
-        else:
-            # Randomly select pages without replacement
-            selected_pages = random.sample(range(total_pages), pages_to_extract)
+        # Decide the pool of pages to select from
+        if self.include_first_page:
+            # Always include the first page
+            final_pages.add(0)
             
-        return sorted(selected_pages)
+            # Select random pages from the remaining pages (1 to total_pages-1)
+            if total_pages > 1:
+                # The pool of random pages starts from index 1 due to include_first_page
+                count_to_extract = min(self.pages_count, total_pages)
+                
+                # Available pages for random selection
+                available_pages = range(1, total_pages)
+                
+                final_pages.update(random.sample(available_pages, count_to_extract))
+        else:
+            # Normal behavior: select from all pages (0 to total_pages-1)
+            count_to_extract = min(self.pages_count, total_pages)
+            
+            if count_to_extract == total_pages:
+                final_pages.update(range(total_pages))
+            else:
+                final_pages.update(random.sample(range(total_pages), count_to_extract))
+            
+        return sorted(list(final_pages))
         
     def extract_page_as_image(self, pdf_path: Path, page_num: int) -> Image.Image:
         """Extract a specific page from PDF as PIL Image and resize to target height."""
@@ -171,11 +186,15 @@ class PDFPageExtractor:
         # Split filename by "_" and get only the first word
         first_word = pdf_stem.split("_")[0]
         
+        # Create subdirectory based on first word
+        pdf_output_dir = self.output_folder / first_word
+        pdf_output_dir.mkdir(parents=True, exist_ok=True)
+        
         # Format: xxxx_0001_suffix.jpg (extraction_index is 0-indexed, so add 1 for display)
-        extraction_number = f"{extraction_index + 1:04d}"
+        extraction_number = f"{extraction_index:04d}"
         output_filename = f"{first_word}_{extraction_number}_{self.suffix}.jpg"
         
-        return self.output_folder / output_filename
+        return pdf_output_dir / output_filename
         
     def process_pdf_file(self, pdf_path: Path):
         """Process a single PDF file and extract random pages."""
@@ -265,6 +284,7 @@ class PDFPageExtractor:
             logger.info(f"Target height: {self.height}px")
             logger.info(f"DPI: {self.dpi}")
             logger.info(f"JPEG quality: {self.compress}")
+            logger.info(f"Include first page: {self.include_first_page}")
             
             self.validate_inputs()
             self.process_all_pdfs()
@@ -339,6 +359,13 @@ Examples:
         default=85,
         help="JPEG compression quality (1-100, default: 85)"
     )
+
+    parser.add_argument(
+        "--include-first-page",
+        type=bool,
+        default=True,
+        help="Always include the first page in the extracted images"
+    )
     
     args = parser.parse_args()
     
@@ -351,7 +378,8 @@ Examples:
         suffix=args.suffix,
         dpi=args.dpi,
         compress=args.compress,
-        height=args.height
+        height=args.height,
+        include_first_page=args.include_first_page
     )
     
     extractor.run()
