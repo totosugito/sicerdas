@@ -136,7 +136,8 @@ class ImageResizer:
         failed_count = 0
         
         for image_path in image_files:
-            logger.info(f"Processing: {image_path.name}")
+            if processed_count % 200 == 0:
+                logger.info(f"Processing {processed_count}/{len(image_files)} images")
             
             # Resize the image
             resized_img, original_size, new_size = self.resize_image(image_path)
@@ -159,13 +160,14 @@ class ImageResizer:
                     # For non-JPEG formats, use optimize but no quality setting
                     resized_img.save(output_path, optimize=True)
                 
-                if original_size and new_size:
-                    logger.info(
-                        f"✓ Saved: {output_path.name} "
-                        f"({original_size[0]}x{original_size[1]} → {new_size[0]}x{new_size[1]})"
-                    )
-                else:
-                    logger.info(f"✓ Saved: {output_path.name}")
+                if processed_count % 200 == 0:
+                    if original_size and new_size:
+                        logger.info(
+                            f"✓ Saved: {output_path.name} "
+                            f"({original_size[0]}x{original_size[1]} → {new_size[0]}x{new_size[1]})"
+                        )
+                    else:
+                        logger.info(f"✓ Saved: {output_path.name}")
                 processed_count += 1
                 
             except Exception as e:
