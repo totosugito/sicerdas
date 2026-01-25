@@ -15,6 +15,7 @@ import { BookDetil } from "@/api/book/book-detail"
 import { CreateReport } from "@/components/pages/layout/CreateReport"
 import { EnumContentType } from "backend/src/db/schema/enum-app"
 import { useAuth } from "@/hooks/use-auth"
+import { APP_CONFIG } from "@/constants/config"
 
 interface BookDetailProps {
   book: BookDetil
@@ -51,7 +52,7 @@ export const BookDetail = ({ book }: BookDetailProps) => {
     setShowReportDialog(true);
   }
 
-  const samplePages = getBookPageList(book.bookId, 4, 5)
+  const samplePages = getBookPageList(book.bookId, 4, APP_CONFIG.book.samplePages)
 
   return (
     <div className="w-full">
@@ -71,7 +72,7 @@ export const BookDetail = ({ book }: BookDetailProps) => {
           <div className="">
             <div className="w-full relative group rounded-2xl shadow-2xl overflow-hidden bg-white dark:bg-slate-900 aspect-[2/3] max-h-[350px] lg:max-h-none border border-slate-200 dark:border-slate-800">
               <img
-                src={getBookCover(book.bookId, "sm")}
+                src={getBookCover(book.bookId, "lg")}
                 alt={`Cover of ${book.title}`}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />

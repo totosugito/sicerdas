@@ -134,7 +134,7 @@ class PDFPageExtractor:
                 available_pages = range(1, total_pages)
                 
                 # Calculate how many more pages we need (subtracting the first page we already added)
-                needed = max(0, self.pages_count - 1)
+                needed = max(0, self.pages_count)
                 
                 # We can't extract more than available
                 count_to_extract = min(needed, len(available_pages))
