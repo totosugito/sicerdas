@@ -118,39 +118,43 @@ class PDFPageExtractor:
             
     def select_random_pages(self, total_pages: int) -> List[int]:
         """Select random page numbers to extract."""
-        if total_pages == 0:
-            return []
-            
-        final_pages = set()
-        
-        # Decide the pool of pages to select from
-        if self.include_first_page:
-            # Always include the first page
-            final_pages.add(0)
-            
-            # Select random pages from the remaining pages (1 to total_pages-1)
-            if total_pages > 1:
-                # The pool of random pages starts from index 1 due to include_first_page
-                available_pages = range(1, total_pages)
+        try:
+            if total_pages == 0:
+                return []
                 
-                # Calculate how many more pages we need (subtracting the first page we already added)
-                needed = max(0, self.pages_count)
-                
-                # We can't extract more than available
-                count_to_extract = min(needed, len(available_pages))
-                
-                if count_to_extract > 0:
-                    final_pages.update(random.sample(available_pages, count_to_extract))
-        else:
-            # Normal behavior: select from all pages (0 to total_pages-1)
-            count_to_extract = min(self.pages_count, total_pages)
+            final_pages = set()
             
-            if count_to_extract == total_pages:
-                final_pages.update(range(total_pages))
+            # Decide the pool of pages to select from
+            if self.include_first_page:
+                # Always include the first page
+                final_pages.add(0)
+                
+                # Select random pages from the remaining pages (1 to total_pages-1)
+                if total_pages > 1:
+                    # The pool of random pages starts from index 1 due to include_first_page
+                    available_pages = range(1, total_pages)
+                    
+                    # Calculate how many more pages we need (subtracting the first page we already added)
+                    needed = max(0, self.pages_count)
+                    
+                    # We can't extract more than available
+                    count_to_extract = min(needed, len(available_pages))
+                    
+                    if count_to_extract > 0:
+                        final_pages.update(random.sample(available_pages, count_to_extract))
             else:
-                final_pages.update(random.sample(range(total_pages), count_to_extract))
-            
-        return sorted(list(final_pages))
+                # Normal behavior: select from all pages (0 to total_pages-1)
+                count_to_extract = min(self.pages_count, total_pages)
+                
+                if count_to_extract == total_pages:
+                    final_pages.update(range(total_pages))
+                else:
+                    final_pages.update(random.sample(range(total_pages), count_to_extract))
+                
+            return sorted(list(final_pages))
+        except Exception as e:
+            logger.error(f"Error selecting random pages: {e}")
+            return []
         
     def extract_page_as_image(self, pdf_path: Path, page_num: int) -> Image.Image:
         """Extract a specific page from PDF as PIL Image and resize to target height."""
