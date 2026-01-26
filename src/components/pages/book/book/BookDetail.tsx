@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Calendar, BookOpen, FileText, Heart, Star, Download, ArrowLeft, Flag } from "lucide-react"
+import { Calendar, BookOpen, FileText, Heart, Star, Download, ArrowLeft, Flag, ImageOff } from "lucide-react"
 import { getBookCover, getBookPdf, getBookPageList, getGrade } from "@/components/pages/book/types/books"
 import { formatFileSize } from "@/lib/my-utils"
 import { useTranslation } from "react-i18next"
@@ -24,6 +24,7 @@ interface BookDetailProps {
 export const BookDetail = ({ book }: BookDetailProps) => {
   const { t } = useTranslation()
   const [isFavorite, setIsFavorite] = useState(book.userInteraction?.liked || false)
+  const [imageError, setImageError] = useState(false)
 
   const handleRead = () => {
     const pdfUrl = getBookPdf(book.bookId)
@@ -71,12 +72,19 @@ export const BookDetail = ({ book }: BookDetailProps) => {
         <div className="flex-shrink-0 w-full lg:w-[400px]">
           <div className="">
             <div className="w-full relative group rounded-2xl shadow-2xl overflow-hidden bg-white dark:bg-slate-900 aspect-[2/3] max-h-[350px] lg:max-h-none border border-slate-200 dark:border-slate-800">
-              <img
-                src={getBookCover(book.bookId, "lg")}
-                alt={`Cover of ${book.title}`}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 ring-1 ring-inset ring-black/10 dark:ring-white/10 rounded-2xl" />
+              {imageError ? (
+                <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800/50 cursor-default">
+                  <ImageOff className="w-20 h-20 text-slate-400 dark:text-slate-600" />
+                </div>
+              ) : (
+                <img
+                  src={getBookCover(book.bookId, "lg")}
+                  alt={`Cover of ${book.title}`}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  onError={() => setImageError(true)}
+                />
+              )}
+              <div className="absolute inset-0 ring-1 ring-inset ring-black/10 dark:ring-white/10 rounded-2xl pointer-events-none" />
             </div>
 
             {/* Action Buttons */}

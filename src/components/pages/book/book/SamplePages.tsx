@@ -111,7 +111,7 @@ export const SamplePages = ({ book, samplePages }: { book: BookDetil, samplePage
                   <img
                     src={samplePages[selectedIndex].image}
                     alt={`Page ${selectedIndex + 1}`}
-                    className="w-full h-full object-contain rounded-lg shadow-2xl"
+                    className="h-[70vh] w-full object-cover rounded-lg shadow-2xl"
                   />
                   <button
                     onClick={() => setSelectedIndex(null)}

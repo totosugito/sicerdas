@@ -12,6 +12,8 @@ export default {
         email_placeholder: "Masukkan email Anda",
         reason: "Alasan",
         reason_placeholder: "Pilih alasan",
+        title: "Judul",
+        title_placeholder: "Masukkan judul",
         description: "Deskripsi",
         description_placeholder: "Jelaskan masalahnya..."
     },
@@ -20,5 +22,14 @@ export default {
         email_invalid: "Email tidak valid",
         email_required: "Email wajib diisi",
         reason_required: "Alasan wajib dipilih"
+    },
+    reportReason: {
+        duplicate: "Duplikasi",
+        error: "Kesalahan",
+        unknown: "Tidak Tahu",
+        inappropriate: "Tidak Layak",
+        spam: "Spam",
+        copyright: "Hak Cipta",
+        other: "Lainnya"
     }
 };

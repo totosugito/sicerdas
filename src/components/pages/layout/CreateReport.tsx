@@ -23,19 +23,16 @@ const FormReport = ({ values, form }: any) => {
     return (
         <div className="flex flex-col gap-4 w-full">
             {/* name */}
-            <ControlForm form={form} item={values.name} />
+            <ControlForm form={form} item={values.name} showMessage={false} />
 
             {/* email */}
-            <ControlForm form={form} item={values.email} />
-
-            {/* title */}
-            <ControlForm form={form} item={values.title} />
+            <ControlForm form={form} item={values.email} showMessage={false} />
 
             {/* reason */}
-            <ControlForm form={form} item={values.reason} />
+            <ControlForm form={form} item={values.reason} showMessage={false} />
 
             {/* description */}
-            <ControlForm form={form} item={values.description} />
+            <ControlForm form={form} item={values.description} showMessage={false} />
         </div>
     );
 };
@@ -45,9 +42,9 @@ export const CreateReport = ({ isOpen, onOpenChange, data }: CreateReportProps) 
     const mutation = useCreateReportMutation();
 
     const formSchema = {
-        name: z.string().min(1, t("report.validation.name_required") || "Name is required"),
-        email: z.email(t("report.validation.email_invalid") || "Invalid email").min(1, t("report.validation.email_required") || "Email is required"),
-        reason: z.string().min(1, t("report.validation.reason_required") || "Reason is required"),
+        name: z.string().min(1, t("report.validation.name_required")),
+        email: z.email(t("report.validation.email_invalid")).min(1, t("report.validation.email_required")),
+        reason: z.string().min(1, t("report.validation.reason_required")),
         title: z.string(),
         description: z.string().optional(),
     };
@@ -72,7 +69,7 @@ export const CreateReport = ({ isOpen, onOpenChange, data }: CreateReportProps) 
             placeholder: t("report.field.reason_placeholder"),
             options: ObjToOptionList(EnumReportReason).map((opt) => ({
                 ...opt,
-                label: t(`enums.report_reason.${opt.value}`) !== `enums.report_reason.${opt.value}` ? t(`enums.report_reason.${opt.value}`) : opt.label,
+                label: t(`report.reportReason.${opt.value.toLowerCase()}`),
             })),
         },
         title: {
@@ -86,18 +83,21 @@ export const CreateReport = ({ isOpen, onOpenChange, data }: CreateReportProps) 
             name: "description",
             label: t("report.field.description"),
             placeholder: t("report.field.description_placeholder"),
+            minRows: 4,
+            maxRows: 7
         },
     };
 
     const modalProps: ModalFormProps = {
         title: t("report.create.title", { title: data.title }) || `Report: ${data.title}`,
-        desc: t("report.create.desc") || "Please fill in the details below to report this content.",
+        desc: t("report.create.desc"),
         modal: true,
-        textConfirm: t("shared.submit") || "Submit",
-        textCancel: t("shared.cancel") || "Cancel",
+        textConfirm: t("labels.submit"),
+        textCancel: t("labels.cancel"),
         defaultValue: {
             name: data.name || "",
             email: data.email || "",
+            title: data.title || "",
             reason: "",
             description: "",
         },
@@ -120,11 +120,11 @@ export const CreateReport = ({ isOpen, onOpenChange, data }: CreateReportProps) 
                 },
                 {
                     onSuccess: () => {
-                        showNotifSuccess({ message: t("report.create.success") || "Report submitted successfully" });
+                        showNotifSuccess({ message: t("report.create.success") });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
-                        showNotifError({ message: err?.message || t("report.create.error") || "Failed to submit report" });
+                        showNotifError({ message: err?.message || t("report.create.error") });
                     },
                 }
             );

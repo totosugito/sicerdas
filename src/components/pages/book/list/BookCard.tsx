@@ -68,7 +68,7 @@ const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
           style={{
-            backgroundImage: `url("${getBookCover(book.bookId, "md")}")`,
+            backgroundImage: `url("${getBookCover(book.bookId, "xs")}")`,
           }}
         />
         <div className="absolute top-3 left-3">

@@ -29,6 +29,7 @@ export default {
     language: "Bahasa",
     theme: "Tema",
     email: "Email",
+    submit: "Kirim",
     pagination: {
         previous: "Sebelumnya",
         next: "Berikutnya",
