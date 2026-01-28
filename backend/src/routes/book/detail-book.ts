@@ -6,6 +6,7 @@ import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } 
 import { educationGrades } from "../../db/schema/education-schema.ts";
 import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { getBookCoverUrl, getBookPdfUrl, getBookSamplePagesUrl } from "../../utils/book-utils.ts";
 
 const BookDetailResponse = Type.Object({
   id: Type.String({ format: 'uuid' }),
@@ -19,6 +20,15 @@ const BookDetailResponse = Type.Object({
   status: Type.String(),
   rating: Type.Optional(Type.Number()),
   viewCount: Type.Optional(Type.Number()),
+  cover: Type.Object({
+    xs: Type.String(),
+    lg: Type.String(),
+  }),
+  pdf: Type.String(),
+  samples: Type.Object({
+    xs: Type.String(),
+    lg: Type.String(),
+  }),
   category: Type.Object({
     id: Type.Number(),
     name: Type.String(),
@@ -203,6 +213,9 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         status: book.status,
         rating: book.rating !== null ? parseFloat(book.rating.toString()) : undefined,
         viewCount: book.viewCount !== null ? book.viewCount : undefined,
+        cover: getBookCoverUrl({ bookId: book.bookId }),
+        pdf: getBookPdfUrl({ bookId: book.bookId }),
+        samples: getBookSamplePagesUrl({ bookId: book.bookId }),
         category: book.category ? {
           id: book.category.id,
           name: book.category.name,

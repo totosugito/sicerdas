@@ -1,10 +1,10 @@
-import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
-import {withErrorHandler} from "../../utils/withErrorHandler.ts";
-import {db} from "../../db/index.ts";
-import {users, verifications, accounts} from "../../db/schema/auth-schema.ts";
-import {eq, and, gte, count} from "drizzle-orm";
-import {PASSWORD_RESET_RATE_LIMIT, PASSWORD_RESET_RATE_LIMIT_WINDOW_MS} from "../../config/app-constant.ts";
+import { withErrorHandler } from "../../utils/withErrorHandler.ts";
+import { db } from "../../db/index.ts";
+import { users, verifications, accounts } from "../../db/schema/auth-schema.ts";
+import { eq, and, gte, count } from "drizzle-orm";
+import { CONFIG } from "../../config/app-constant.ts";
 
 /**
  * Request forget password OTP via email
@@ -53,7 +53,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Check if email exists in users table and get user ID
       const existingUser = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.email, email));
-      
+
       if (existingUser.length === 0) {
         return reply.notFound(req.i18n.t('auth.userNotFound'));
       }
@@ -62,18 +62,18 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Check if the user's account has providerId "credential" or "email"
       const userAccounts = await db.select({ providerId: accounts.providerId }).from(accounts).where(eq(accounts.userId, userId));
-      
+
       // If no accounts found or if any account has providerId "credential" or "email", return 404
-      const hasCredentialOrEmailProvider = userAccounts.some(account => 
+      const hasCredentialOrEmailProvider = userAccounts.some(account =>
         account.providerId !== 'credential' && account.providerId !== 'email'
       );
-      
+
       if (userAccounts.length === 0 || hasCredentialOrEmailProvider) {
         return reply.notFound(req.i18n.t('auth.userNotFound'));
       }
 
       // Rate limiting: Check if user has made more than N requests in the last hour
-      const ONE_HOUR_AGO = new Date(Date.now() - PASSWORD_RESET_RATE_LIMIT_WINDOW_MS);
+      const ONE_HOUR_AGO = new Date(Date.now() - CONFIG.PASSWORD_RESET_RATE_LIMIT_WINDOW_MS);
 
       // Count password reset requests for this user ID in the last hour
       // We'll look for verifications with value = userId and createdAt within last hour
@@ -86,10 +86,10 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             gte(verifications.createdAt, ONE_HOUR_AGO)
           )
         );
-      
+
       const requestCount = requestCountResult[0]?.count || 0;
 
-      if (requestCount >= PASSWORD_RESET_RATE_LIMIT) {
+      if (requestCount >= CONFIG.PASSWORD_RESET_RATE_LIMIT) {
         return reply.tooManyRequests(req.i18n.t('auth.passwordResetRateLimitExceeded'));
       }
 
@@ -102,7 +102,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
         headers: {
           'content-type': 'application/json',
-          'accept-language': req.headers['accept-language'] || 'id', 
+          'accept-language': req.headers['accept-language'] || 'id',
         }
       });
 
@@ -112,7 +112,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         .headers(response.headers)
         .send({
           success: response.statusCode >= 200 && response.statusCode < 300,
-          message: response.statusCode >= 200 && response.statusCode < 300 
+          message: response.statusCode >= 200 && response.statusCode < 300
             ? req.i18n.t('auth.passwordResetOTPSent')
             : req.i18n.t('auth.passwordResetOTPFailed')
         });

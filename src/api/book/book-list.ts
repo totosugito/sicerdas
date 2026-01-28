@@ -15,7 +15,11 @@ export type BookListItem = {
     rating?: number,
     view?: number,
     favorite?: boolean,
-    favoriteTotal?: number
+    favoriteTotal?: number,
+    cover: {
+        xs: string,
+        lg: string,
+    },
     category: {
         id: number
         name: string

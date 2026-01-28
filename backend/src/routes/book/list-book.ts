@@ -8,6 +8,7 @@ import { and, eq, inArray, sql, or, ilike, desc } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { EnumContentStatus, EnumContentType } from "../../db/schema/enum-app.ts";
 import { appVersion } from "../../db/schema/version-schema.ts";
+import { getBookCoverUrl } from "../../utils/book-utils.ts";
 
 const BookListQuery = Type.Object({
   category: Type.Optional(Type.Array(Type.Number())),
@@ -32,6 +33,10 @@ const BookResponse = Type.Object({
   status: Type.String(),
   rating: Type.Optional(Type.Number()),
   viewCount: Type.Optional(Type.Number()),
+  cover: Type.Object({
+    xs: Type.String(),
+    lg: Type.String(),
+  }),
   category: Type.Object({
     id: Type.Number(),
     name: Type.String(),
@@ -58,8 +63,8 @@ const BookResponse = Type.Object({
 });
 
 const BookListResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
+  success: Type.Boolean({ default: true }),
+  message: Type.String({ default: 'Success' }),
   data: Type.Object({
     items: Type.Array(BookResponse),
     total: Type.Number(),
@@ -265,11 +270,12 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         success: true,
         message: req.i18n.t('book.list.success'),
         data: {
-          items: items.map(item => {
+          items: items.map((item: any) => {
             const processedItem = {
               ...item,
-              createdAt: item.books?.createdAt ? item.books.createdAt.toISOString() : new Date().toISOString(),
-              updatedAt: item.books?.updatedAt ? item.books.updatedAt.toISOString() : new Date().toISOString(),
+              cover: getBookCoverUrl({ bookId: item?.bookId }),
+              createdAt: item?.createdAt ? item?.createdAt.toISOString() : new Date().toISOString(),
+              updatedAt: item?.updatedAt ? item?.updatedAt.toISOString() : new Date().toISOString(),
             };
 
             // Add user interaction data if user is logged in

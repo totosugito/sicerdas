@@ -1,4 +1,4 @@
-import { getBookCover, getGrade, getGradeColor } from '@/components/pages/book/types/books';
+import { getGrade, getGradeColor } from '@/components/pages/book/types/books';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils'
 import { useTranslation } from 'react-i18next'
@@ -68,7 +68,7 @@ const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
           style={{
-            backgroundImage: `url("${getBookCover(book.bookId, "xs")}")`,
+            backgroundImage: `url("${book.cover.xs}")`,
           }}
         />
         <div className="absolute top-3 left-3">
