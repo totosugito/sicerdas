@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Atom } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
-import { getDiscoveryYear, getElectronShell, getElectronShellValue, getElementImage } from '../utils/element'
+import { getDiscoveryYear, getElectronShell, getElectronShellValue } from '../utils/element'
 import { toPhysics } from '@/lib/my-utils'
 import { ElementDetail } from '@/api/periodic-table-api'
 import { ElectronShell } from './ElectronShell'
@@ -47,7 +47,7 @@ export function ElementOverview({ element, atomColor, expandedSections, toggleSe
             <PropertyItem label={t('periodicTable.periodicTable.var.emissionSpectrum')} value={undefined} />
             <div className="sm:h-14 h-10">
               <img
-                src={getElementImage({ element: `${element.atomicNumber}.${element.atomicName.toLowerCase()}`, type: 'spectrum', extension: 'png' })}
+                src={element?.atomicImages?.spectrum}
                 alt=""
                 className="h-full object-contain"
               />

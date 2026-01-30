@@ -1,15 +1,4 @@
-import { APP_CONFIG } from "@/constants/config";
 import { toPhysics } from "@/lib/my-utils";
-
-/**
- * Get the URL for an element's image.
- * @param {string} element - The element's with format atomicNumber.atomicName
- * @param {string} type - The type of image (e.g., 'atomic', 'safety', 'spectrum').
- * @returns {string} The URL for the element's image.
- */
-export const getElementImage = ({ element, type, extension = 'jpg' }: { element: string; type: 'atomic' | 'safety' | 'spectrum', extension?: string }) => {
-  return `${APP_CONFIG.cloud}/bse/table-periodic/${type}/${element.toLowerCase()}.${extension}`;
-};
 
 /**
  * Format the electron shell property for display.

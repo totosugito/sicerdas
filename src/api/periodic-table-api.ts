@@ -149,10 +149,9 @@ export interface ElementDetail {
   notes?: PeriodicElementNote;
   navigation: ElementNavigationData;
   atomicImages?: {
-    name: string;
-    atomic: boolean;
-    safety: boolean;
-    spectrum: boolean;
+    atomic: string;
+    safety: string;
+    spectrum: string;
   }
 }
 

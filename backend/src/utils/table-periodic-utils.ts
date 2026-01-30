@@ -3,27 +3,24 @@ import { CONFIG } from "../config/app-constant.ts";
 
 
 type AtomicImageSource = {
-    name: string;
-    atomic: boolean;
-    safety: boolean;
-    spectrum: boolean;
+    atomic: string;
+    safety: string;
+    spectrum: string;
 };
 
 export const getAtomicImages = (atomImages: object | null | undefined) => {
     if (!atomImages || Object.keys(atomImages).length === 0) {
         return {
-            name: "",
-            atomic: false,
-            safety: false,
-            spectrum: false,
+            atomic: "",
+            safety: "",
+            spectrum: "",
         };
     }
     const img = atomImages as AtomicImageSource;
 
     return {
-        name: `${CONFIG.CLOUD_URL}/table-periodic/images/{dirKey}/${img.name}`,
-        atomic: img.atomic,
-        safety: img.safety,
-        spectrum: img.spectrum,
+        atomic: img.atomic ? `${CONFIG.CLOUD_URL}/table-periodic/images/atomic/${img.atomic}` : "",
+        safety: img.safety ? `${CONFIG.CLOUD_URL}/table-periodic/images/safety/${img.safety}` : "",
+        spectrum: img.spectrum ? `${CONFIG.CLOUD_URL}/table-periodic/images/spectrum/${img.spectrum}` : "",
     };
 }

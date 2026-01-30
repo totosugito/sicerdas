@@ -1,4 +1,4 @@
-export { type Book, type BookListResponse } from "../types/books";
+export { type Book } from "../types/books";
 export { BookFilter } from "./BookFilter";
 export { BooksSkeleton } from "./BooksSkeleton";
 export { BookCard } from "./BookCard";

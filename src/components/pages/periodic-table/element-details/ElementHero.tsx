@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { getPeriodictUnits } from '@/components/pages/periodic-table/utils/element-units'
-import { getElementImage } from '@/components/pages/periodic-table/utils/element'
 import { useTranslation } from 'react-i18next'
 import { ElementDetail } from '@/api/periodic-table-api';
 import { cn } from '@/lib/utils';
@@ -30,7 +29,7 @@ export function ElementHero({ element, theme }: ElementHeroProps) {
         <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
           <DialogTrigger asChild>
             <img
-              src={getElementImage({ element: `${element.atomicNumber}.${element.atomicName}`, type: 'atomic' })}
+              src={element?.atomicImages?.atomic}
               alt={`${element.atomicName} visualization`}
               className="object-cover h-64 w-64 md:h-72 md:w-72 cursor-pointer"
             />
@@ -42,7 +41,7 @@ export function ElementHero({ element, theme }: ElementHeroProps) {
               </DialogTitle>
             </DialogHeader>
             <img
-              src={getElementImage({ element: `${element.atomicNumber}.${element.atomicName}`, type: 'atomic' })}
+              src={element?.atomicImages?.atomic}
               alt={`${element.atomicName} visualization`}
               className="h-full w-full object-contain"
             />

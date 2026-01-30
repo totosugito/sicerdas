@@ -23,7 +23,7 @@ interface JsonPeriodicElementData {
   atomicProperties: Record<string, unknown> | string;
   atomicIsotope: Record<string, unknown> | string;
   atomicExtra: Record<string, unknown> | string;
-  atomicImages: { name: string, atomic: boolean, safety: boolean, spectrum: boolean };
+  atomicImages: { atomic: string, safety: string, spectrum: string };
   [key: string]: any; // Allow for additional fields
 }
 
@@ -89,15 +89,23 @@ async function importPeriodicElements() {
         let parsedImages: Record<string, unknown> = {};
 
         if (jsonElement.atomicNumber >= 1 && jsonElement.atomicNumber <= 200) {
-          const imageName = `${jsonElement.atomicNumber}.${jsonElement.atomicName.toLowerCase()}.png`;
-          parsedImages["name"] = imageName;
+          const atomicIdStr = String(jsonElement.atomicNumber).padStart(3, '0');
+          const extensions = ['jpg', 'png'];
 
           for (const assetDir of dirAssets) {
-            const fullPath = path.join(assetImagesPath, assetDir, imageName);
-            if (fs.existsSync(fullPath)) {
-              parsedImages[assetDir] = true;
-            } else {
-              parsedImages[assetDir] = false;
+            let isFound = false;
+            for (const ext of extensions) {
+              const imageName = `${atomicIdStr}-${assetDir}.${ext}`;
+              const fullPath = path.join(assetImagesPath, assetDir, imageName);
+              if (fs.existsSync(fullPath)) {
+                parsedImages[assetDir] = imageName;
+                isFound = true;
+                break;
+              }
+            }
+
+            if (!isFound) {
+              parsedImages[assetDir] = "";
             }
           }
         }

@@ -35,10 +35,9 @@ const ElementResponse = Type.Object({
     atomicExtra: Type.Record(Type.String(), Type.Unknown()),
     notes: Type.Optional(ElementNoteSchema),
     atomicImages: Type.Object({
-      name: Type.String(),
-      atomic: Type.Boolean(),
-      safety: Type.Boolean(),
-      spectrum: Type.Boolean(),
+      atomic: Type.String(),
+      safety: Type.String(),
+      spectrum: Type.String(),
     }),
     navigation: Type.Object({
       prev: Type.Optional(Type.Object({
