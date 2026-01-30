@@ -2,67 +2,37 @@ import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Calendar, BookOpen, FileText, Heart, Star, Download, ArrowLeft, Flag, ImageOff } from "lucide-react"
+import { Calendar, BookOpen, FileText, Heart, Star, Download, Flag, ImageOff } from "lucide-react"
 import { getGrade } from "@/components/pages/book/types/books"
 import { formatFileSize } from "@/lib/my-utils"
 import { useTranslation } from "react-i18next"
 import { SamplePages } from "./SamplePages"
 import { BookDetailInfoCard } from "./BookDetailInfoCard"
-import { Link } from "@tanstack/react-router"
 import { cn } from "@/lib/utils"
-import { AppRoute } from "@/constants/app-route"
 import { BookDetil } from "@/api/book/book-detail"
-import { CreateReport } from "@/components/pages/layout/CreateReport"
-import { EnumContentType } from "backend/src/db/schema/enum-app"
-import { useAuth } from "@/hooks/use-auth"
-import { APP_CONFIG } from "@/constants/config"
 
 interface BookDetailProps {
   book: BookDetil
+  isFavorite: boolean
+  onRead: () => void
+  onDownload: () => void
+  onToggleFavorite: () => void
+  onReport: () => void
 }
 
-export const BookDetail = ({ book }: BookDetailProps) => {
+export const BookDetail = ({
+  book,
+  isFavorite,
+  onRead,
+  onDownload,
+  onToggleFavorite,
+  onReport
+}: BookDetailProps) => {
   const { t } = useTranslation()
-  const [isFavorite, setIsFavorite] = useState(book.userInteraction?.liked || false)
   const [imageError, setImageError] = useState(false)
-
-  const handleRead = () => {
-    window.open(book.pdf, '_blank')
-  }
-
-  const handleDownload = () => {
-    const link = document.createElement('a')
-    link.href = book.pdf
-    link.download = `${book.bookId}-${book.title}.pdf`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
-  const handleToggleFavorite = () => {
-    setIsFavorite(!isFavorite)
-    // TODO: Implement favorite toggle functionality with API
-  }
-
-  const { user } = useAuth();
-  const [showReportDialog, setShowReportDialog] = useState(false);
-
-  const handleReport = () => {
-    setShowReportDialog(true);
-  }
 
   return (
     <div className="w-full">
-      {/* Navigation */}
-      <div className="mb-2">
-        <Link to={AppRoute.book.books.url} className="inline-flex">
-          <Button variant="ghost" className="pl-0 hover:bg-transparent hover:text-primary transition-colors gap-2 text-slate-500 dark:text-slate-400">
-            <ArrowLeft className="w-5 h-5" />
-            <span className="text-base font-medium">{t('book.detail.backToBooks')}</span>
-          </Button>
-        </Link>
-      </div>
-
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
         {/* Left Column - Cover */}
         <div className="flex-shrink-0 w-full lg:w-[400px]">
@@ -85,17 +55,17 @@ export const BookDetail = ({ book }: BookDetailProps) => {
 
             {/* Action Buttons */}
             <div className="flex flex-col gap-3 mt-6">
-              <Button onClick={handleRead} className="w-full h-10">
+              <Button onClick={onRead} className="w-full h-10">
                 <BookOpen className="w-5 h-5 mr-2" />
                 {t('book.detail.readOnline')}
               </Button>
               <div className="grid grid-cols-3 gap-3">
-                <Button onClick={handleDownload} variant="outline" className="w-full h-10">
+                <Button onClick={onDownload} variant="outline" className="w-full h-10">
                   <Download className="w-5 h-5 mr-2" />
                   {t('book.detail.download')}
                 </Button>
                 <Button
-                  onClick={handleToggleFavorite}
+                  onClick={onToggleFavorite}
                   variant="outline"
                   className={cn(
                     "w-full h-10",
@@ -105,7 +75,7 @@ export const BookDetail = ({ book }: BookDetailProps) => {
                   <Heart className={cn("w-5 h-5 mr-2", isFavorite && "fill-current")} />
                   {t('book.detail.favorites')}
                 </Button>
-                <Button onClick={handleReport} variant="outline" className="w-full h-10 border border-slate-200 dark:border-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400">
+                <Button onClick={onReport} variant="outline" className="w-full h-10 border border-slate-200 dark:border-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400">
                   <Flag className="w-5 h-5 mr-2" />
                   {t('book.detail.report')}
                 </Button>
@@ -207,17 +177,6 @@ export const BookDetail = ({ book }: BookDetailProps) => {
         </div>
       </div>
 
-      <CreateReport
-        isOpen={showReportDialog}
-        onOpenChange={setShowReportDialog}
-        data={{
-          contentType: EnumContentType.BOOK,
-          referenceId: String(book.bookId),
-          title: book.title,
-          name: user?.user?.name || "",
-          email: user?.user?.email || "",
-        }}
-      />
     </div>
   )
 }

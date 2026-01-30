@@ -29,12 +29,11 @@ export const getBookPdfUrl = ({ bookId, maxChar = 4 }: { bookId: number, maxChar
 }
 
 export const createAutoBookName = (bookId: number, maxChar = 4) => {
-    const dirName = Math.floor(bookId / 1000);
     const fileId = bookId.toString().padStart(maxChar, '0');
     const md5Char = Md5.hashStr(bookId.toString());
 
     if (md5Char.length > maxChar) {
-        return (`${dirName}/${fileId}_${md5Char.slice(0, maxChar)}`);
+        return (`${fileId}_${md5Char.slice(0, maxChar)}`);
     }
     return ('');
 }
