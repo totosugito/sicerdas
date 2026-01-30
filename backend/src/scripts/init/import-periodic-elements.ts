@@ -42,7 +42,7 @@ interface JsonPeriodicNoteData {
 // Input from default value from MySQL table
 const elementPathFile = 'E:/Download/periodic-elements.json';
 const notePathFile = 'E:/Download/periodic_note.json';
-const assetImagesPath = "F:/Data/table-periodic/images";
+const assetImagesPath = "E:/Cloud/si-cerdas/table-periodic/images";
 const dirAssets = ["atomic", "safety", "spectrum"];
 
 async function importPeriodicElements() {

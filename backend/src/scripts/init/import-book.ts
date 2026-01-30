@@ -33,65 +33,65 @@ async function importBooks() {
 
   try {
     const db = drizzle({ client: pool, schema });
-    
+
     // Read and parse the JSON file
-    const jsonFilePath = 'E:/temp/books.json';
-    
+    const jsonFilePath = 'E:/Download/books.json';
+
     if (!fs.existsSync(jsonFilePath)) {
       throw new Error(`JSON file not found at: ${jsonFilePath}`);
     }
-    
+
     console.log('Reading books data from JSON file...');
     const jsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf8'));
-    
+
     if (!Array.isArray(jsonData)) {
       throw new Error('JSON file should contain an array of books');
     }
-    
+
     console.log(`Found ${jsonData.length} books to import`);
-    
+
     let successCount = 0;
     let errorCount = 0;
-    
+
     // Process each book
     for (const [index, bookData] of jsonData.entries()) {
       try {
         const jsonBook: JsonBookData = bookData;
         if (!jsonBook.author) {
-            jsonBook.author = '-'
+          jsonBook.author = '-'
         }
-                
+
         // Validate required fields
         if (!jsonBook.id || !jsonBook.title || !jsonBook.author) {
           console.warn(`Skipping book at index ${index} - ${jsonBook.id}: Missing required fields (id, title, or author)`);
           errorCount++;
           continue;
         }
-        
+
         // Validate grade field
         if (!jsonBook.sGrade) {
           console.warn(`Skipping book "${jsonBook.title}": Missing sGrade field`);
           errorCount++;
           continue;
         }
-        
+
         // Validate book_group field
         if (!jsonBook.sGroup) {
           console.warn(`Skipping book "${jsonBook.title}": Missing sGroup field`);
           errorCount++;
           continue;
         }
-               
+
         // Map status
         const status = jsonBook.visible === 0 ? EnumContentStatus.ARCHIVED : EnumContentStatus.PUBLISHED;
-        
+
         // Check if book already exists by bookId
         const existingBook = await db
           .select({ id: books.id })
           .from(books)
           .where(eq(books.bookId, jsonBook.id))
           .limit(1);
-        
+
         const bookInsertData = {
           bookId: jsonBook.id, // Store original BookId in dedicated column
           versionId: 1, // Using version 1 as specified
@@ -105,7 +105,7 @@ async function importBooks() {
           size: jsonBook.sz || 0,
           status
         };
-        
+
         if (existingBook.length > 0) {
           // Update existing book
           await db
@@ -115,24 +115,24 @@ async function importBooks() {
               updatedAt: new Date()
             })
             .where(eq(books.id, existingBook[0].id));
-          
-        //   console.log(`Updated book: "${jsonBook.Judul}" (Original ID: ${jsonBook.BookId})`);
+
+          //   console.log(`Updated book: "${jsonBook.Judul}" (Original ID: ${jsonBook.BookId})`);
         } else {
           // Insert new book
           await db
             .insert(books)
             .values(bookInsertData);
-          
-        //   console.log(`Imported book: "${jsonBook.Judul}" (Original ID: ${jsonBook.BookId})`);
+
+          //   console.log(`Imported book: "${jsonBook.Judul}" (Original ID: ${jsonBook.BookId})`);
         }
-        
+
         successCount++;
-        
+
         // Progress indicator
         if ((index + 1) % 1000 === 0) {
           console.log(`Processed ${index + 1}/${jsonData.length} books...`);
         }
-        
+
       } catch (bookError) {
         const jsonBook = bookData as JsonBookData;
         const bookInfo = jsonBook?.id ? `BookId: ${jsonBook.id}` : 'BookId: unknown';
@@ -140,17 +140,17 @@ async function importBooks() {
         errorCount++;
       }
     }
-    
+
     console.log('\n--- Import Summary ---');
     console.log(`Total books processed: ${jsonData.length}`);
     console.log(`Successfully imported/updated: ${successCount}`);
     console.log(`Errors: ${errorCount}`);
-    
+
     // Update book group statistics after import is complete
     console.log('\n--- Updating Book Group Statistics ---');
     await updateBookGroupStats(db);
     console.log('Book group statistics updated successfully!');
-    
+
   } catch (error) {
     console.error('Import failed:', error);
     process.exit(1);
@@ -167,9 +167,9 @@ async function updateBookGroupStats(db: any) {
     .from(books)
     .where(eq(books.status, EnumContentStatus.PUBLISHED))
     .groupBy(books.bookGroupId);
-  
+
   let updatedGroups = 0;
-  
+
   for (const group of bookGroups) {
     // Count books for this group (only published books)
     const bookCountResult = await db
@@ -179,9 +179,9 @@ async function updateBookGroupStats(db: any) {
         eq(books.bookGroupId, group.bookGroupId),
         eq(books.status, EnumContentStatus.PUBLISHED)
       ));
-    
+
     const bookTotal = Number(bookCountResult[0].count);
-    
+
     // Check if stats record already exists for this group
     const existingStats = await db
       .select()
@@ -193,7 +193,7 @@ async function updateBookGroupStats(db: any) {
       // Update existing stats record
       await db
         .update(bookGroupStats)
-        .set({ 
+        .set({
           bookTotal,
           updatedAt: new Date()
         })
@@ -207,15 +207,15 @@ async function updateBookGroupStats(db: any) {
           bookTotal
         });
     }
-    
+
     updatedGroups++;
-    
+
     // Progress indicator
     if (updatedGroups % 100 === 0) {
       console.log(`Updated statistics for ${updatedGroups} book groups...`);
     }
   }
-  
+
   console.log(`Updated statistics for ${updatedGroups} book groups`);
 }
 

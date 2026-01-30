@@ -83,6 +83,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       // Group the results by category
       const categoriesMap = new Map<number, typeof FilterParamsResponseItem.static>();
 
+      console.log("--------result", result);
       for (const row of result) {
         if (!categoriesMap.has(row.categoryId)) {
           categoriesMap.set(row.categoryId, {
