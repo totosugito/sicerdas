@@ -128,7 +128,7 @@ function RouteComponent() {
       <Dialog open={showViewer} onOpenChange={setShowViewer}>
         <DialogContent aria-describedby={undefined}
           showCloseButton={false}
-          className="!overflow-hidden max-w-[95vw] h-[95vh] sm:max-w-[90vw] sm:h-[90vh] w-full p-0 flex flex-col border-none sm:rounded-2xl shadow-2xl">
+          className="!overflow-hidden max-w-[90vw] h-[90vh] sm:max-w-[85vw] sm:h-[85vh] w-full p-0 flex flex-col border-none sm:rounded-2xl shadow-2xl">
           <DialogTitle className="sr-only">PDF Viewer - {book.title}</DialogTitle>
           <div
             className="relative flex-1 min-h-0 bg-slate-100 dark:bg-slate-900 "
