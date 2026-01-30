@@ -10,7 +10,11 @@ import { useTranslation } from 'react-i18next'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import { CreateReport } from '@/components/pages/layout/CreateReport'
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { EnumContentType } from 'backend/src/db/schema/enum-app'
+import { PDFViewer, ScrollStrategy } from '@embedpdf/react-pdf-viewer'
+import { AppApi } from '@/constants/app-api'
+
 
 export const Route = createFileRoute('/(pages)/(book)/book/$id')({
   component: RouteComponent,
@@ -23,6 +27,7 @@ function RouteComponent() {
   const { t } = useTranslation()
   const { user } = useAuth()
   const [showReportDialog, setShowReportDialog] = useState(false)
+  const [showViewer, setShowViewer] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
 
   useEffect(() => {
@@ -42,7 +47,7 @@ function RouteComponent() {
   }
 
   const handleRead = () => {
-    window.open(book.pdf, '_blank')
+    setShowViewer(true)
   }
 
   const handleDownload = () => {
@@ -94,6 +99,36 @@ function RouteComponent() {
           email: user?.user?.email || "",
         }}
       />
+
+      <Dialog open={showViewer} onOpenChange={setShowViewer}>
+        <DialogContent aria-describedby={undefined}
+          showCloseButton={false}
+          className="!overflow-hidden max-w-[95vw] h-[95vh] sm:max-w-[90vw] sm:h-[90vh] w-full p-0 flex flex-col border-none sm:rounded-2xl shadow-2xl">
+          <DialogTitle className="sr-only">PDF Viewer - {book.title}</DialogTitle>
+          <div
+            className="relative flex-1 min-h-0 bg-slate-100 dark:bg-slate-900 "
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <PDFViewer
+              key={showViewer ? `visible-${book.bookId}` : 'hidden'}
+              config={{
+                src: `${AppApi.book.proxyPdf}/${encodeURIComponent(`${book.bookId}-${book.title}.pdf`)}?url=${encodeURIComponent(book.pdf)}`,
+                disabledCategories: ['panel-comment', 'shapes', 'redaction', 'security'],
+                scroll: {
+                  defaultStrategy: ScrollStrategy.Vertical,
+                  defaultPageGap: 16
+                },
+                theme: {
+                  preference: (document.documentElement.classList.contains('dark') ? 'dark' : 'light') as 'dark' | 'light'
+                }
+              }}
+              style={{ width: '100%', height: '100%', position: 'absolute', inset: 0, display: 'block' }}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
