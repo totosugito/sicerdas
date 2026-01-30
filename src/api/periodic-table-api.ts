@@ -148,6 +148,12 @@ export interface ElementDetail {
   atomicExtra: Record<string, unknown>;
   notes?: PeriodicElementNote;
   navigation: ElementNavigationData;
+  atomicImages?: {
+    name: string;
+    atomic: boolean;
+    safety: boolean;
+    spectrum: boolean;
+  }
 }
 
 interface GetElementParams {

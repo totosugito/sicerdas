@@ -19,6 +19,7 @@ export type SchemaPeriodicElementSelect = InferSelectModel<typeof periodicElemen
  * - atomicGroup: Classification of the element (e.g., otherNonMetals, alkaliMetals).
  * - atomicName: Name of the element.
  * - atomicSymbol: Chemical symbol of the element.
+ * - atomicImages: JSONB field containing image information.
  * - atomicProperties: JSONB field containing detailed element properties.
  * - atomicIsotope: JSONB field containing isotope information.
  * - atomicExtra: JSONB field for additional metadata.
@@ -31,6 +32,9 @@ export const periodicElements = pgTable('periodic_elements', {
   atomicGroup: PgEnumPeriodicGroup('atomic_group').notNull().default('header'),
   atomicName: varchar('atomic_name', { length: 128 }).notNull(),
   atomicSymbol: varchar('atomic_symbol', { length: 8 }).notNull(),
+  atomicImages: jsonb("atomic_images")
+    .$type<Record<string, unknown>>()
+    .default({}),
   atomicProperties: jsonb("atomic_properties")
     .$type<Record<string, unknown>>()
     .default({}),

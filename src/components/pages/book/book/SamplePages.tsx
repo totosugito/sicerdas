@@ -2,18 +2,30 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useTranslation } from "react-i18next"
 import { BookDetil } from "@/api/book/book-detail"
 import { Image, ImageOff, X, ChevronLeft, ChevronRight } from "lucide-react"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { APP_CONFIG } from "@/constants/config"
 
-export const SamplePages = ({ book, samplePages }: { book: BookDetil, samplePages: any }) => {
+export const SamplePages = ({ book }: { book: BookDetil }) => {
   const { t } = useTranslation()
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [invalidIndices, setInvalidIndices] = useState<Set<number>>(new Set())
+
+  const samplePages = useMemo(() => {
+    const pages = []
+    for (let i = 1; i <= APP_CONFIG.book.samplePages; i++) {
+      const paddedIndex = String(i).padStart(4, '0')
+      pages.push({
+        lg: `${book.samples.lg}${paddedIndex}_lg.jpg`,
+        xs: `${book.samples.xs}${paddedIndex}_xs.jpg`,
+      })
+    }
+    return pages
+  }, [book])
 
   const handleImageError = (index: number) => {
     setInvalidIndices((prev) => {
@@ -72,7 +84,7 @@ export const SamplePages = ({ book, samplePages }: { book: BookDetil, samplePage
         </CardHeader>
         <CardContent>
           <div className="flex flex-row flex-wrap gap-4">
-            {samplePages.map((pageUrl: any, index: number) => (
+            {samplePages.map((pageUrl: { xs: string, lg: string }, index: number) => (
               !invalidIndices.has(index) && (
                 <div
                   key={index}
@@ -80,7 +92,7 @@ export const SamplePages = ({ book, samplePages }: { book: BookDetil, samplePage
                 >
                   <div className="w-36 h-42 overflow-hidden rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
                     <SamplePageThumbnail
-                      src={pageUrl.thumb}
+                      src={pageUrl.xs}
                       alt={`Page ${index + 1} of ${book.title}`}
                       onClick={() => setSelectedIndex(index)}
                       onLoadError={() => handleImageError(index)}
@@ -109,7 +121,7 @@ export const SamplePages = ({ book, samplePages }: { book: BookDetil, samplePage
 
                 <div className="relative">
                   <img
-                    src={samplePages[selectedIndex].image}
+                    src={samplePages[selectedIndex].lg}
                     alt={`Page ${selectedIndex + 1}`}
                     className="h-[70vh] w-full object-cover rounded-lg shadow-2xl"
                   />

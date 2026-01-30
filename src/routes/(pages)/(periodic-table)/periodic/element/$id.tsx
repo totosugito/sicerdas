@@ -19,6 +19,7 @@ function RouteComponent() {
   const store = useAppStore();
   const { viewMode } = store.periodicTable;
   const language = useAuthStore(state => state.language);
+  console.log("id", id)
 
   const { data: element, isLoading, isError, error } = usePeriodicElementQuery({ atomicNumber: parseInt(id), language });
   const { elementExpandedSections, setElementExpandedSection } = useAppStore();

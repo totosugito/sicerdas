@@ -45,6 +45,7 @@ import { AppRoute } from '@/constants/app-route'
 import { useLogoutMutation } from "@/api/auth-api";
 import { ModalProps, DialogModal } from "@/components/custom/components";
 import { APP_CONFIG } from '@/constants/config'
+import { useAppMenu, MenuItem } from '@/components/app/hooks/use-app-menu'
 
 export function AppNavbar() {
   const { t, i18n } = useTranslation()
@@ -101,143 +102,7 @@ export function AppNavbar() {
     })
   }
 
-  const booksMenu = [
-    {
-      title: t('landing.navbar.books.latestBooks'),
-      href: `${AppRoute.book.books.url}`,
-      description: t('landing.navbar.books.descriptions.latestBooks')
-    },
-    {
-      title: t('landing.navbar.books.curriculum2006'),
-      href: `${AppRoute.book.books.url}?category=[1]`,
-      description: t('landing.navbar.books.descriptions.curriculum2006')
-    },
-    {
-      title: t('landing.navbar.books.curriculum2013'),
-      href: `${AppRoute.book.books.url}?category=[2]`,
-      description: t('landing.navbar.books.descriptions.curriculum2013')
-    },
-    {
-      title: t('landing.navbar.books.curriculumMerdeka'),
-      href: `${AppRoute.book.books.url}?category=[3]`,
-      description: t('landing.navbar.books.descriptions.curriculumMerdeka')
-    },
-    {
-      title: t('landing.navbar.books.educationBooks'),
-      href: `${AppRoute.book.books.url}?category=[4]`,
-      description: t('landing.navbar.books.descriptions.educationBooks')
-    },
-    {
-      title: t('landing.navbar.books.translationBooks'),
-      href: `${AppRoute.book.books.url}?category=[5]`,
-      description: t('landing.navbar.books.descriptions.translationBooks')
-    },
-    {
-      title: t('landing.navbar.books.computerBooks'),
-      href: `${AppRoute.book.books.url}?category=[6]`,
-      description: t('landing.navbar.books.descriptions.computerBooks')
-    },
-    {
-      title: t('landing.navbar.books.literatureBooks'),
-      href: `${AppRoute.book.books.url}?category=[7]`,
-      description: t('landing.navbar.books.descriptions.literatureBooks')
-    },
-  ]
-
-  const constitutionMenu = [
-    {
-      title: t('landing.navbar.constitution.pancasila'),
-      href: AppRoute.constitution.pancasila.url,
-      description: t('landing.navbar.constitution.descriptions.pancasila')
-    },
-    {
-      title: t('landing.navbar.constitution.pembukaanUud1945'),
-      href: AppRoute.constitution.pembukaanUud1945.url,
-      description: t('landing.navbar.constitution.descriptions.pembukaanUud1945')
-    },
-    {
-      title: t('landing.navbar.constitution.butirPancasila'),
-      href: AppRoute.constitution.butirPancasila.url,
-      description: t('landing.navbar.constitution.descriptions.butirPancasila')
-    },
-    {
-      title: t('landing.navbar.constitution.uud1945'),
-      href: AppRoute.constitution.uud1945.url,
-      description: t('landing.navbar.constitution.descriptions.uud1945')
-    },
-    {
-      title: t('landing.navbar.constitution.uud1945Asli'),
-      href: AppRoute.constitution.uud1945Asli.url,
-      description: t('landing.navbar.constitution.descriptions.uud1945Asli')
-    },
-    {
-      title: t('landing.navbar.constitution.amandemen'),
-      href: AppRoute.constitution.amandemen.url,
-      description: t('landing.navbar.constitution.descriptions.amandemen')
-    },
-  ]
-
-  const tablePeriodicMenu = [
-    {
-      title: t('landing.navbar.periodicTable.periodicTable'),
-      href: AppRoute.periodicTable.periodicTable.url,
-      description: t('landing.navbar.periodicTable.descriptions.periodicTable')
-    },
-    {
-      title: t('landing.navbar.periodicTable.element'),
-      href: (AppRoute.periodicTable.elementDetail.url).replace('$id', '') + "/1",
-      description: t('landing.navbar.periodicTable.descriptions.element')
-    },
-    {
-      title: t('landing.navbar.periodicTable.elementIsotope'),
-      href: (AppRoute.periodicTable.elementIsotope.url).replace('$id', '') + "/1",
-      description: t('landing.navbar.periodicTable.descriptions.elementIsotope')
-    },
-    {
-      title: t('landing.navbar.periodicTable.elementComparison'),
-      href: AppRoute.periodicTable.elementComparison.url,
-      description: t('landing.navbar.periodicTable.descriptions.elementComparison')
-    },
-    {
-      title: t('landing.navbar.periodicTable.chemistryDictionary'),
-      href: AppRoute.periodicTable.chemistryDictionary.url,
-      description: t('landing.navbar.periodicTable.descriptions.chemistryDictionary')
-    },
-
-  ]
-
-  const quizMenu = [
-    {
-      title: t('landing.navbar.quiz.semester'),
-      href: '/quiz/semester',
-      description: t('landing.navbar.quiz.descriptions.semester')
-    },
-    {
-      title: t('landing.navbar.quiz.subjects'),
-      href: '/quiz/subjects',
-      description: t('landing.navbar.quiz.descriptions.subjects')
-    },
-    {
-      title: t('landing.navbar.quiz.national'),
-      href: '/quiz/national',
-      description: t('landing.navbar.quiz.descriptions.national')
-    },
-    {
-      title: t('landing.navbar.quiz.utbk'),
-      href: '/quiz/utbk',
-      description: t('landing.navbar.quiz.descriptions.utbk')
-    },
-    {
-      title: t('landing.navbar.quiz.cpns'),
-      href: '/quiz/cpns',
-      description: t('landing.navbar.quiz.descriptions.cpns')
-    },
-    {
-      title: t('landing.navbar.quiz.umptn'),
-      href: '/quiz/umptn',
-      description: t('landing.navbar.quiz.descriptions.umptn')
-    },
-  ]
+  const { booksMenu, constitutionMenu, tablePeriodicMenu, quizMenu } = useAppMenu()
 
   const getThemeIcon = () => {
     switch (theme) {
@@ -287,11 +152,12 @@ export function AppNavbar() {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
-                      {booksMenu.map((item) => (
+                      {booksMenu.map((item: MenuItem) => (
                         <ListItem
                           key={item.title}
                           title={item.title}
-                          href={item.href}
+                          to={item.to}
+                          search={item.search}
                         >
                           {item.description}
                         </ListItem>
@@ -308,11 +174,11 @@ export function AppNavbar() {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
-                      {constitutionMenu.map((item) => (
+                      {constitutionMenu.map((item: MenuItem) => (
                         <ListItem
                           key={item.title}
                           title={item.title}
-                          href={item.href}
+                          to={item.to}
                         >
                           {item.description}
                         </ListItem>
@@ -329,11 +195,12 @@ export function AppNavbar() {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
-                      {tablePeriodicMenu.map((item) => (
+                      {tablePeriodicMenu.map((item: MenuItem) => (
                         <ListItem
                           key={item.title}
                           title={item.title}
-                          href={item.href}
+                          to={item.to}
+                          params={item.params}
                         >
                           {item.description}
                         </ListItem>
@@ -350,11 +217,11 @@ export function AppNavbar() {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
-                      {quizMenu.map((item) => (
+                      {quizMenu.map((item: MenuItem) => (
                         <ListItem
                           key={item.title}
                           title={item.title}
-                          href={item.href}
+                          to={item.to}
                         >
                           {item.description}
                         </ListItem>
@@ -520,10 +387,11 @@ export function AppNavbar() {
                         </h3>
                       </div>
                       <div className="space-y-1">
-                        {booksMenu.map((item) => (
+                        {booksMenu.map((item: MenuItem) => (
                           <Link
                             key={item.title}
-                            to={item.href}
+                            to={item.to}
+                            search={item.search}
                             onClick={() => setIsOpen(false)}
                             className="block px-4 py-2.5 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 hover:translate-x-1"
                           >
@@ -544,10 +412,10 @@ export function AppNavbar() {
                         </h3>
                       </div>
                       <div className="space-y-1">
-                        {constitutionMenu.map((item) => (
+                        {constitutionMenu.map((item: MenuItem) => (
                           <Link
                             key={item.title}
-                            to={item.href}
+                            to={item.to}
                             onClick={() => setIsOpen(false)}
                             className="block px-4 py-2.5 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 hover:translate-x-1"
                           >
@@ -568,10 +436,11 @@ export function AppNavbar() {
                         </h3>
                       </div>
                       <div className="space-y-1">
-                        {tablePeriodicMenu.map((item) => (
+                        {tablePeriodicMenu.map((item: MenuItem) => (
                           <Link
                             key={item.title}
-                            to={item.href}
+                            to={item.to}
+                            params={item.params}
                             onClick={() => setIsOpen(false)}
                             className="block px-4 py-2.5 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 hover:translate-x-1"
                           >
@@ -592,10 +461,10 @@ export function AppNavbar() {
                         </h3>
                       </div>
                       <div className="space-y-1">
-                        {quizMenu.map((item) => (
+                        {quizMenu.map((item: MenuItem) => (
                           <Link
                             key={item.title}
-                            to={item.href}
+                            to={item.to}
                             onClick={() => setIsOpen(false)}
                             className="block px-4 py-2.5 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 hover:translate-x-1"
                           >
@@ -628,12 +497,19 @@ export function AppNavbar() {
   )
 }
 
-const ListItem = ({ className, title, children, href, ...props }: any) => {
+interface ListItemProps extends Omit<MenuItem, 'description'> {
+  className?: string
+  children: React.ReactNode
+}
+
+const ListItem = ({ className, title, children, to, params, search, ...props }: ListItemProps) => {
   return (
     <li>
       <NavigationMenuLink asChild>
         <Link
-          to={href}
+          to={to}
+          params={params}
+          search={search}
           className={cn(
             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
             className

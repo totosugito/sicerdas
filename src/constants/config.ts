@@ -29,7 +29,6 @@ export const APP_CONFIG = {
     defaultPublic: "/",
     defaultPrivate: "/",
   },
-  cloud: 'https://s3.nevaobjects.id/sicerdas',
   RESEND_OTP_DELAY: 120, // 2 minutes
   book: {
     samplePages: 6

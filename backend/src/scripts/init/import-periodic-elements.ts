@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import pg from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
@@ -22,6 +23,7 @@ interface JsonPeriodicElementData {
   atomicProperties: Record<string, unknown> | string;
   atomicIsotope: Record<string, unknown> | string;
   atomicExtra: Record<string, unknown> | string;
+  atomicImages: { name: string, atomic: boolean, safety: boolean, spectrum: boolean };
   [key: string]: any; // Allow for additional fields
 }
 
@@ -38,8 +40,10 @@ interface JsonPeriodicNoteData {
 }
 
 // Input from default value from MySQL table
-const elementPathFile = 'E:/Download/periodic_element.json';
+const elementPathFile = 'E:/Download/periodic-elements.json';
 const notePathFile = 'E:/Download/periodic_note.json';
+const assetImagesPath = "F:/Data/table-periodic/images";
+const dirAssets = ["atomic", "safety", "spectrum"];
 
 async function importPeriodicElements() {
   const pool = new pg.Pool({
@@ -49,40 +53,55 @@ async function importPeriodicElements() {
 
   try {
     const db = drizzle({ client: pool, schema });
-        
+
     if (!fs.existsSync(elementPathFile)) {
       throw new Error(`JSON file not found at: ${elementPathFile}`);
     }
-    
+
     console.log('Reading periodic elements data from JSON file...');
     const jsonData = JSON.parse(fs.readFileSync(elementPathFile, 'utf8'));
-    
+
     if (!Array.isArray(jsonData)) {
       throw new Error('JSON file should contain an array of periodic elements');
     }
-    
+
     console.log(`Found ${jsonData.length} periodic elements to import`);
-    
+
     let successCount = 0;
     let errorCount = 0;
-    
+
     // Process each element
     for (const [index, elementData] of jsonData.entries()) {
       try {
         const jsonElement = elementData as JsonPeriodicElementData;
-        
+
         // Validate required fields
         if (jsonElement.atomicId === undefined || jsonElement.idx === undefined || jsonElement.idy === undefined) {
           console.warn(`Skipping element at index ${index}: Missing required fields (atomicId, idx, or idy)`);
           errorCount++;
           continue;
         }
-        
+
         // Parse JSON fields if they are strings
         let parsedProperties: Record<string, unknown> = {};
         let parsedIsotope: Record<string, unknown> = {};
         let parsedExtra: Record<string, unknown> = {};
-        
+        let parsedImages: Record<string, unknown> = {};
+
+        if (jsonElement.atomicNumber >= 1 && jsonElement.atomicNumber <= 200) {
+          const imageName = `${jsonElement.atomicNumber}.${jsonElement.atomicName.toLowerCase()}.png`;
+          parsedImages["name"] = imageName;
+
+          for (const assetDir of dirAssets) {
+            const fullPath = path.join(assetImagesPath, assetDir, imageName);
+            if (fs.existsSync(fullPath)) {
+              parsedImages[assetDir] = true;
+            } else {
+              parsedImages[assetDir] = false;
+            }
+          }
+        }
+
         try {
           if (typeof jsonElement.atomicProperties === 'string') {
             parsedProperties = JSON.parse(jsonElement.atomicProperties);
@@ -92,7 +111,7 @@ async function importPeriodicElements() {
         } catch (parseError) {
           console.warn(`Warning: Failed to parse atomicProperties for element "${jsonElement.atomicName}" (atomicId: ${jsonElement.atomicId}):`, parseError);
         }
-        
+
         try {
           if (typeof jsonElement.atomicIsotope === 'string') {
             parsedIsotope = JSON.parse(jsonElement.atomicIsotope);
@@ -102,7 +121,7 @@ async function importPeriodicElements() {
         } catch (parseError) {
           console.warn(`Warning: Failed to parse atomicIsotope for element "${jsonElement.atomicName}" (atomicId: ${jsonElement.atomicId}):`, parseError);
         }
-        
+
         try {
           if (typeof jsonElement.atomicExtra === 'string') {
             parsedExtra = JSON.parse(jsonElement.atomicExtra);
@@ -112,14 +131,14 @@ async function importPeriodicElements() {
         } catch (parseError) {
           console.warn(`Warning: Failed to parse atomicExtra for element "${jsonElement.atomicName}" (atomicId: ${jsonElement.atomicId}):`, parseError);
         }
-        
+
         // Check if element already exists by atomicId
         const existingElement = await db
           .select({ id: periodicElements.id })
           .from(periodicElements)
           .where(eq(periodicElements.id, jsonElement.atomicId))
           .limit(1);
-        
+
         const elementInsertData = {
           id: jsonElement.atomicId,
           idx: jsonElement.idx,
@@ -128,41 +147,46 @@ async function importPeriodicElements() {
           atomicGroup: jsonElement.atomicGroup,
           atomicName: jsonElement.atomicName,
           atomicSymbol: jsonElement.atomicSymbol,
+          atomicImages: parsedImages,
           atomicProperties: parsedProperties,
           atomicIsotope: parsedIsotope,
           atomicExtra: parsedExtra,
         };
 
-        let props = parsedProperties;
-        const numberOfNeutron = props["numberOfElectron"]
-        const numberOfElectron = jsonElement.atomicNumber;
-        props["numberOfNeutron"] = numberOfNeutron;
-        props["numberOfElectron"] = numberOfElectron;
-        elementInsertData.atomicProperties = props;
+        if (jsonElement.atomicNumber >= 1 && jsonElement.atomicNumber <= 200) {
+          let props = parsedProperties;
+          const numberOfNeutron = props["numberOfElectron"]
+          const numberOfElectron = jsonElement.atomicNumber;
+          props["numberOfNeutron"] = numberOfNeutron;
+          props["numberOfElectron"] = numberOfElectron;
+          elementInsertData.atomicProperties = props;
+        } else {
+          elementInsertData.atomicProperties = {};
+        }
 
         let group = jsonElement.atomicGroup;
-        if(group === 'otherNonMetals') {
+        if (group === 'otherNonMetals') {
           elementInsertData.atomicGroup = 'othernonmetals';
-        } else if(group === 'nobleGases') {
+        } else if (group === 'nobleGases') {
           elementInsertData.atomicGroup = 'noble_gases';
-        } else if(group === 'halogens') {
+        } else if (group === 'halogens') {
           elementInsertData.atomicGroup = 'halogens';
-        } else if(group === 'metalloids') {
+        } else if (group === 'metalloids') {
           elementInsertData.atomicGroup = 'metalloids';
-        } else if(group === 'postTransitionMetals') {
+        } else if (group === 'postTransitionMetals') {
           elementInsertData.atomicGroup = 'post_transition_metals';
-        } else if(group === 'transitionMetals') {
+        } else if (group === 'transitionMetals') {
           elementInsertData.atomicGroup = 'transition_metals';
-        } else if(group === 'lanthanides') {
+        } else if (group === 'lanthanides') {
           elementInsertData.atomicGroup = 'lanthanoids';
-        } else if(group === 'actinides') {
+        } else if (group === 'actinides') {
           elementInsertData.atomicGroup = 'actinoids';
-        } else if(group === 'alkalineEarthMetals') {
+        } else if (group === 'alkalineEarthMetals') {
           elementInsertData.atomicGroup = 'alkaline_earth_metals';
-        } else if(group === 'alkaliMetals') {
+        } else if (group === 'alkaliMetals') {
           elementInsertData.atomicGroup = 'alkali_metals';
         }
-        
+
         if (existingElement.length > 0) {
           // Update existing element
           await db
@@ -171,24 +195,24 @@ async function importPeriodicElements() {
               ...elementInsertData,
             })
             .where(eq(periodicElements.id, jsonElement.atomicId));
-          
-        //   console.log(`Updated element: "${jsonElement.atomicName}" (atomicId: ${jsonElement.atomicId})`);
+
+          //   console.log(`Updated element: "${jsonElement.atomicName}" (atomicId: ${jsonElement.atomicId})`);
         } else {
           // Insert new element
           await db
             .insert(periodicElements)
             .values(elementInsertData);
-          
-        //   console.log(`Imported element: "${jsonElement.atomicName}" (atomicId: ${jsonElement.atomicId})`);
+
+          //   console.log(`Imported element: "${jsonElement.atomicName}" (atomicId: ${jsonElement.atomicId})`);
         }
-        
+
         successCount++;
-        
+
         // Progress indicator
         if ((index + 1) % 50 === 0) {
           console.log(`Processed ${index + 1}/${jsonData.length} elements...`);
         }
-        
+
       } catch (elementError) {
         const jsonElement = elementData as JsonPeriodicElementData;
         const elementInfo = jsonElement?.atomicId ? `atomicId: ${jsonElement.atomicId}` : 'atomicId: unknown';
@@ -196,12 +220,12 @@ async function importPeriodicElements() {
         errorCount++;
       }
     }
-    
+
     console.log('\n--- Import Summary ---');
     console.log(`Total elements processed: ${jsonData.length}`);
     console.log(`Successfully imported/updated: ${successCount}`);
     console.log(`Errors: ${errorCount}`);
-    
+
   } catch (error) {
     console.error('Import failed:', error);
     process.exit(1);
@@ -218,42 +242,42 @@ async function importPeriodicNotes() {
 
   try {
     const db = drizzle({ client: pool, schema });
-        
+
     if (!fs.existsSync(notePathFile)) {
       throw new Error(`JSON file not found at: ${notePathFile}`);
     }
-    
+
     console.log('Reading periodic notes data from JSON file...');
     const jsonData = JSON.parse(fs.readFileSync(notePathFile, 'utf8'));
-    
+
     if (!Array.isArray(jsonData)) {
       throw new Error('JSON file should contain an array of periodic notes');
     }
-    
+
     console.log(`Found ${jsonData.length} periodic notes to import`);
-    
+
     let successCount = 0;
     let errorCount = 0;
-    
+
     // Process each note
     for (const [index, noteData] of jsonData.entries()) {
       try {
         const jsonNote = noteData as JsonPeriodicNoteData;
-        
+
         // Validate required fields
         if (jsonNote.rowId === undefined || jsonNote.atomicNumber === undefined || !jsonNote.localeCode) {
           console.warn(`Skipping note at index ${index}: Missing required fields (rowId, atomicNumber, or localeCode)`);
           errorCount++;
           continue;
         }
-        
+
         // Check if note already exists by rowId
         const existingNote = await db
           .select({ id: periodicElementNotes.id })
           .from(periodicElementNotes)
           .where(eq(periodicElementNotes.id, jsonNote.rowId))
           .limit(1);
-        
+
         const noteInsertData = {
           id: jsonNote.rowId,
           atomicNumber: jsonNote.atomicNumber,
@@ -263,31 +287,31 @@ async function importPeriodicNotes() {
           atomicApps: jsonNote.atomicApps,
           atomicFacts: jsonNote.atomicFacts,
         };
-        
+
         if (existingNote.length > 0) {
           // Update existing note
           await db
             .update(periodicElementNotes)
             .set(noteInsertData)
             .where(eq(periodicElementNotes.id, jsonNote.rowId));
-          
-        //   console.log(`Updated note for element with atomic number: ${jsonNote.atomicNumber} (rowId: ${jsonNote.rowId})`);
+
+          //   console.log(`Updated note for element with atomic number: ${jsonNote.atomicNumber} (rowId: ${jsonNote.rowId})`);
         } else {
           // Insert new note
           await db
             .insert(periodicElementNotes)
             .values(noteInsertData);
-          
-        //   console.log(`Imported note for element with atomic number: ${jsonNote.atomicNumber} (rowId: ${jsonNote.rowId})`);
+
+          //   console.log(`Imported note for element with atomic number: ${jsonNote.atomicNumber} (rowId: ${jsonNote.rowId})`);
         }
-        
+
         successCount++;
-        
+
         // Progress indicator
         if ((index + 1) % 50 === 0) {
           console.log(`Processed ${index + 1}/${jsonData.length} notes...`);
         }
-        
+
       } catch (noteError) {
         const jsonNote = noteData as JsonPeriodicNoteData;
         const noteInfo = jsonNote?.rowId ? `rowId: ${jsonNote.rowId}` : 'rowId: unknown';
@@ -295,12 +319,12 @@ async function importPeriodicNotes() {
         errorCount++;
       }
     }
-    
+
     console.log('\n--- Import Summary ---');
     console.log(`Total notes processed: ${jsonData.length}`);
     console.log(`Successfully imported/updated: ${successCount}`);
     console.log(`Errors: ${errorCount}`);
-    
+
   } catch (error) {
     console.error('Import failed:', error);
     process.exit(1);

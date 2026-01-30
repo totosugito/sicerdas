@@ -5,6 +5,7 @@ import { db } from "../../db/index.ts";
 import { and, eq } from "drizzle-orm";
 import { periodicElements, periodicElementNotes } from "../../db/schema/index.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { getAtomicImages } from "../../utils/table-periodic-utils.ts";
 
 const GetElementParams = Type.Object({
   atomicNumber: Type.Integer({ description: 'Atomic number of the element to retrieve' })
@@ -33,6 +34,12 @@ const ElementResponse = Type.Object({
     atomicIsotope: Type.Record(Type.String(), Type.Unknown()),
     atomicExtra: Type.Record(Type.String(), Type.Unknown()),
     notes: Type.Optional(ElementNoteSchema),
+    atomicImages: Type.Object({
+      name: Type.String(),
+      atomic: Type.Boolean(),
+      safety: Type.Boolean(),
+      spectrum: Type.Boolean(),
+    }),
     navigation: Type.Object({
       prev: Type.Optional(Type.Object({
         atomicNumber: Type.Integer(),
@@ -102,6 +109,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           atomicHistory: periodicElementNotes.atomicHistory,
           atomicApps: periodicElementNotes.atomicApps,
           atomicFacts: periodicElementNotes.atomicFacts,
+          atomicImages: periodicElements.atomicImages,
         })
         .from(periodicElements)
         .leftJoin(periodicElementNotes,
@@ -192,6 +200,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           atomicProperties: elementData.atomicProperties || {},
           atomicIsotope: elementData.atomicIsotope || {},
           atomicExtra: elementData.atomicExtra || {},
+          atomicImages: getAtomicImages(elementData.atomicImages || {}),
           ...(elementData.localeCode && {
             notes: {
               localeCode: elementData.localeCode,

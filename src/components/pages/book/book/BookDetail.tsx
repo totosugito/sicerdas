@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Calendar, BookOpen, FileText, Heart, Star, Download, ArrowLeft, Flag, ImageOff } from "lucide-react"
-import { getBookCover, getBookPdf, getBookPageList, getGrade } from "@/components/pages/book/types/books"
+import { getGrade } from "@/components/pages/book/types/books"
 import { formatFileSize } from "@/lib/my-utils"
 import { useTranslation } from "react-i18next"
 import { SamplePages } from "./SamplePages"
@@ -27,14 +27,12 @@ export const BookDetail = ({ book }: BookDetailProps) => {
   const [imageError, setImageError] = useState(false)
 
   const handleRead = () => {
-    const pdfUrl = getBookPdf(book.bookId)
-    window.open(pdfUrl, '_blank')
+    window.open(book.pdf, '_blank')
   }
 
   const handleDownload = () => {
-    const pdfUrl = getBookPdf(book.bookId)
     const link = document.createElement('a')
-    link.href = pdfUrl
+    link.href = book.pdf
     link.download = `${book.bookId}-${book.title}.pdf`
     document.body.appendChild(link)
     link.click()
@@ -52,8 +50,6 @@ export const BookDetail = ({ book }: BookDetailProps) => {
   const handleReport = () => {
     setShowReportDialog(true);
   }
-
-  const samplePages = getBookPageList(book.bookId, 4, APP_CONFIG.book.samplePages)
 
   return (
     <div className="w-full">
@@ -78,7 +74,7 @@ export const BookDetail = ({ book }: BookDetailProps) => {
                 </div>
               ) : (
                 <img
-                  src={getBookCover(book.bookId, "lg")}
+                  src={book.cover.lg}
                   alt={`Cover of ${book.title}`}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   onError={() => setImageError(true)}
@@ -205,7 +201,7 @@ export const BookDetail = ({ book }: BookDetailProps) => {
 
             {/* Sample Pages */}
             <div className="">
-              <SamplePages book={book} samplePages={samplePages} />
+              <SamplePages book={book} />
             </div>
           </div>
         </div>
