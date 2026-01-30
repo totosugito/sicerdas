@@ -1,4 +1,6 @@
 export default {
+    invalidToken: "Token tidak valid atau telah kedaluwarsa",
+    networkError: "Respon jaringan tidak OK",
     notFound: "Buku Tidak Ditemukan",
     notFoundDesc: "Kami tidak dapat menemukan buku yang Anda cari. Mungkin telah dihapus atau tidak ada.",
     backToBooks: "Kembali ke Daftar Buku",
@@ -14,5 +16,6 @@ export default {
     preview: "Pratinjau",
     noDescription: "Tidak ada deskripsi tersedia untuk buku ini.",
     samplePages: "Contoh Halaman",
-    samplePagesDesc: "Contoh halaman dari buku ini."
+    samplePagesDesc: "Contoh halaman dari buku ini.",
+    downloadError: "Gagal mengunduh buku. Mencoba membuka langsung..."
 }
