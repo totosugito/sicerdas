@@ -4,6 +4,7 @@ import updateBookStats from './jobs/update-book-stats.ts';
 import { db } from '../../db/index.ts';
 import { jobLogs } from '../../db/schema/job-logs-schema.ts';
 import { EnumJobStatus, EnumJobGroup, EnumJobTrigger } from '../../db/schema/enum-general.ts';
+import { fileURLToPath } from 'url';
 
 const runJobWithLog = async (
     jobName: string,
@@ -78,7 +79,7 @@ const runDailyJobs = async () => {
 };
 
 // Run if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
     runDailyJobs();
 }
 

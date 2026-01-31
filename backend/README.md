@@ -1,3 +1,8 @@
+## SCHEDULE JOB
+```bash
+npx ts-node src/scripts/schedule/daily.ts
+```
+
 ## A. DB PREPARATION
 Create postgres user and create the database *sicerdas*
 ```
