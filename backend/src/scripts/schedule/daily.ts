@@ -1,0 +1,1 @@
+// write script to run archive-guest-events.ts and update-book-stats.ts

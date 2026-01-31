@@ -6,7 +6,6 @@ import {
   PgEnumContentStatus,
 } from "./enum-app.ts";
 import { appVersion } from "./version-schema.ts";
-import { userEventHistory } from './web-schema.ts';
 import { users } from './auth-schema.ts';
 
 export type SchemaBookCategoryInsert = InferInsertModel<typeof bookCategory>;
@@ -185,44 +184,47 @@ export const bookGroupStats = pgTable('book_group_stats', {
  * Book Event Stats
  * 
  * The `bookEventStats` table tracks various user interaction events for each book.
- * It maintains counters for views, downloads, reads, likes, dislikes, shares, and bookmarks,
+ * It maintains counters for views, downloads, likes, dislikes, shares, and bookmarks,
  * as well as an average rating for the book. This data is crucial for understanding
  * user engagement and content popularity.
  * 
  * Fields:
  * - id: A unique UUID identifier for each event stats record.
- * - userEventHistory: A reference to the user event history that these stats belong to (UUID).
  * - bookId: A reference to the book that these stats belong to (UUID).
  * - viewCount: Number of times the book has been viewed.
  * - downloadCount: Number of times the book has been downloaded.
- * - readCount: Number of times the book has been read.
  * - likeCount: Number of likes received for the book.
  * - dislikeCount: Number of dislikes received for the book.
  * - shareCount: Number of times the book has been shared.
  * - bookmarkCount: Number of times the book has been bookmarked.
  * - rating: Average rating of the book, stored as a decimal value (0.00 to 5.00).
+ * - legacyStats: Archived stats (views/downloads) from deleted guest events.
  * - extra: Additional information about the book, such as its popularity, quality, etc.
  * - createdAt: Timestamp of when the stats record was created.
  * - updatedAt: Timestamp of when the stats record was last updated.
  */
 export const bookEventStats = pgTable('book_event_stats', {
   id: uuid('id').primaryKey().defaultRandom(),
-  userEventHistory: uuid('user_event_history_id')
-    .references(() => userEventHistory.id, { onDelete: 'cascade' })
-    .notNull(),
   bookId: uuid('book_id')
     .references(() => books.id, { onDelete: 'cascade' })
-    .notNull(), // Changed to UUID to match books.id
+    .notNull()
+    .unique(), // Changed to UUID to match books.id
 
   // Event counters for each type
   viewCount: integer('view_count').notNull().default(0),
   downloadCount: integer('download_count').notNull().default(0),
-  readCount: integer('read_count').notNull().default(0),
   likeCount: integer('like_count').notNull().default(0),
   dislikeCount: integer('dislike_count').notNull().default(0),
   shareCount: integer('share_count').notNull().default(0),
   bookmarkCount: integer('bookmark_count').notNull().default(0),
-  rating: numeric('rating', { precision: 3, scale: 2 }).notNull().default('0.00'), // Rating as decimal (0.00 to 5.00)
+  ratingCount: integer('rating_count').notNull().default(0),
+  ratingSum: numeric('rating_sum', { precision: 10, scale: 2 }).notNull().default('0.00'),
+  rating: numeric('rating', { precision: 3, scale: 2 }).notNull().default('0.00'), // Average: ratingSum / ratingCount
+
+  // Legacy/Archived stats (from deleted userEventHistory)
+  legacyStats: jsonb('legacy_stats')
+    .$type<{ viewCount: number; downloadCount: number }>()
+    .default({ viewCount: 0, downloadCount: 0 }),
 
   // Flexible data storage
   extra: jsonb("extra")
@@ -234,7 +236,6 @@ export const bookEventStats = pgTable('book_event_stats', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => [
   index('book_event_stats_book_id_index').on(table.bookId),
-  index('book_event_stats_user_event_history_index').on(table.userEventHistory),
 ]);
 
 /**
@@ -242,8 +243,8 @@ export const bookEventStats = pgTable('book_event_stats', {
  * 
  * The `userBookInteractions` table tracks individual user interactions with books.
  * Unlike bookEventStats which tracks global statistics, this table stores per-user
- * interactions allowing us to know if a specific user has liked, rated, or bookmarked
- * a book. This enables personalized experiences and prevents duplicate actions.
+ * interactions allowing us to know if a specific user has liked, rated, bookmarked,
+ * viewed (multiple times), or downloaded a book. This enables personalized experiences.
  * 
  * Fields:
  * - id: A unique UUID identifier for each interaction record.
@@ -253,6 +254,8 @@ export const bookEventStats = pgTable('book_event_stats', {
  * - disliked: Boolean indicating if the user disliked the book.
  * - rating: User's rating of the book (0.00 to 5.00).
  * - bookmarked: Boolean indicating if the user bookmarked the book.
+ * - viewCount: Number of times user viewed this book.
+ * - downloadCount: Number of times user downloaded this book.
  * - extra: Flexible data storage for additional session details (optional)
  * - createdAt: Timestamp of when the interaction record was created.
  * - updatedAt: Timestamp of when the interaction record was last updated.
@@ -271,6 +274,8 @@ export const userBookInteractions = pgTable('user_book_interactions', {
   disliked: boolean('disliked').default(false),
   rating: numeric('rating', { precision: 3, scale: 2 }).default('0.00'), // User's rating (0.00 to 5.00)
   bookmarked: boolean('bookmarked').default(false),
+  viewCount: integer('view_count').default(0), // Number of times user viewed this book
+  downloadCount: integer('download_count').default(0), // Number of times user downloaded this book
 
   // Flexible data storage
   extra: jsonb("extra")

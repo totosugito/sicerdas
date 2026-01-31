@@ -32,7 +32,8 @@
     "db:init_data_dev": "cross-env NODE_ENV=development ts-node src/scripts/init/init-data.ts --trace-warnings",
     "db:import_book_dev": "cross-env NODE_ENV=development ts-node src/scripts/init/import-book.ts --trace-warnings",
     "db:import_periodic_elements_dev": "cross-env NODE_ENV=development ts-node src/scripts/init/import-periodic-elements.ts --trace-warnings",
-    "db:book_update_ratings": "cross-env NODE_ENV=development ts-node src/scripts/update-book-ratings.ts --trace-warnings"
+    "db:book_update_stats": "cross-env NODE_ENV=development ts-node src/scripts/update-book-stats.ts --trace-warnings",
+    "db:archive_guest_events": "cross-env NODE_ENV=development ts-node src/scripts/archive-guest-events.ts --trace-warnings"
   },
   "dependencies": {
     "@fastify/autoload": "^6.3.1",
@@ -51,6 +52,7 @@
     "@sinclair/typebox": "^0.34.47",
     "better-auth": "^1.4.16",
     "close-with-grace": "^2.4.0",
+    "date-fns": "^4.1.0",
     "drizzle-orm": "^0.45.1",
     "env-schema": "^7.0.0",
     "fastify": "^5.7.1",

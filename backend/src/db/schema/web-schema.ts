@@ -1,5 +1,5 @@
 import { pgTable, uuid, text, timestamp, index, jsonb } from 'drizzle-orm/pg-core';
-import { PgEnumContentType, PgEnumReportStatus, PgEnumReportReason, EnumReportReason, EnumReportStatus, EnumContentType } from './enum-app.ts';
+import { PgEnumContentType, PgEnumReportStatus, PgEnumReportReason, EnumReportReason, EnumReportStatus, EnumContentType, PgEnumEventStatus, EnumEventStatus } from './enum-app.ts';
 import { users } from './auth-schema.ts';
 
 /**
@@ -140,10 +140,14 @@ export type SchemaUserReportReplySelect = typeof userReportReplies.$inferSelect;
 export const userEventHistory = pgTable('user_event_history', {
   id: uuid('id').primaryKey().defaultRandom(),
 
-  // User who performed the event
+  // User who performed the event (optional for guests)
   userId: uuid('user_id')
-    .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
+
+  // Event details
+  action: PgEnumEventStatus('action').notNull().default(EnumEventStatus.VIEW),
+  contentType: PgEnumContentType('content_type').notNull().default(EnumContentType.BOOK),
+  referenceId: uuid('reference_id').notNull(),
 
   // Session information for anonymous tracking
   sessionId: uuid('session_id'), // Generated in frontend and saved in cookie
@@ -161,6 +165,8 @@ export const userEventHistory = pgTable('user_event_history', {
   // Indexes for better query performance
   index('user_event_history_user_id_index').on(table.userId),
   index('user_event_history_session_id_index').on(table.sessionId),
+  index('user_event_history_reference_id_index').on(table.referenceId),
+  index('user_event_history_action_index').on(table.action),
 ]);
 export type SchemaUserEventHistoryInsert = typeof userEventHistory.$inferInsert;
 export type SchemaUserEventHistorySelect = typeof userEventHistory.$inferSelect;
