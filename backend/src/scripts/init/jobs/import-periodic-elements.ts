@@ -3,9 +3,9 @@ import path from 'path';
 import pg from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
-import * as schema from '../../db/schema/index.ts';
-import { periodicElements, periodicElementNotes } from '../../db/schema/periodic-table-schema.ts';
-import envConfig from '../../config/env.config.ts';
+import * as schema from '../../../db/schema/index.ts';
+import { periodicElements, periodicElementNotes } from '../../../db/schema/periodic-table-schema.ts';
+import envConfig from '../../../config/env.config.ts';
 import dotenv from 'dotenv';
 
 // Load environment variables
@@ -40,12 +40,15 @@ interface JsonPeriodicNoteData {
 }
 
 // Input from default value from MySQL table
-const elementPathFile = 'E:/Download/periodic-elements.json';
-const notePathFile = 'E:/Download/periodic_note.json';
-const assetImagesPath = "E:/Cloud/si-cerdas/table-periodic/images";
 const dirAssets = ["atomic", "safety", "spectrum"];
 
-async function importPeriodicElements() {
+interface ImportOptions {
+  elementPathFile?: string;
+  notePathFile?: string;
+  assetImagesPath?: string;
+}
+
+async function importPeriodicElements(elementPathFile: string, assetImagesPath: string) {
   const pool = new pg.Pool({
     connectionString: envConfig.db.url,
     max: 10,
@@ -242,7 +245,7 @@ async function importPeriodicElements() {
   }
 }
 
-async function importPeriodicNotes() {
+async function importPeriodicNotes(notePathFile: string) {
   const pool = new pg.Pool({
     connectionString: envConfig.db.url,
     max: 10,
@@ -342,11 +345,15 @@ async function importPeriodicNotes() {
 }
 
 // Run both import functions
-async function importAll() {
+export default async function importAll(options: ImportOptions = {}) {
+  const elementPathFile = options.elementPathFile || 'E:/Download/periodic-elements.json';
+  const notePathFile = options.notePathFile || 'E:/Download/periodic_note.json';
+  const assetImagesPath = options.assetImagesPath || "E:/Cloud/si-cerdas/table-periodic/images";
+
   try {
-    await importPeriodicElements();
+    await importPeriodicElements(elementPathFile, assetImagesPath);
     console.log('\n------------------------------------\n');
-    await importPeriodicNotes();
+    await importPeriodicNotes(notePathFile);
     console.log('\n------------------------------------\n');
     console.log('All imports completed successfully!');
   } catch (error) {
@@ -356,11 +363,13 @@ async function importAll() {
 }
 
 // Run the import function
-importAll()
-  .then(() => {
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('Import process failed:', error);
-    process.exit(1);
-  });
+if (import.meta.url === `file://${process.argv[1]}`) {
+  importAll()
+    .then(() => {
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error('Import process failed:', error);
+      process.exit(1);
+    });
+}

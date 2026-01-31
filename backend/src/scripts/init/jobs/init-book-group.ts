@@ -1,16 +1,16 @@
 import pg from "pg";
-import envConfig from "../../config/env.config.ts";
+import envConfig from "../../../config/env.config.ts";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { eq, and } from "drizzle-orm";
-import * as schema from '../../db/schema/index.ts';
+import * as schema from '../../../db/schema/index.ts';
 import dotenv from 'dotenv';
-import { bookCategory, bookGroup } from "../../db/schema/book-schema.ts";
-import { educationGrades } from "../../db/schema/education-schema.ts";
-import { EnumContentType, EnumContentStatus } from "../../db/schema/enum-app.ts";
+import { bookCategory, bookGroup } from "../../../db/schema/book-schema.ts";
+import { educationGrades } from "../../../db/schema/education-schema.ts";
+import { EnumContentType, EnumContentStatus } from "../../../db/schema/enum-app.ts";
 
 dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env' });
 
-async function seed() {
+export default async function seed() {
   const pool = new pg.Pool({
     connectionString: envConfig.db.url,
     max: 10,
@@ -230,13 +230,16 @@ async function seed() {
 }
 
 // Run the seed function with error handling
-seed()
-  .then(() => {
-    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-    console.log('Database initialization completed successfully!');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('Database initialization failed:', error);
-    process.exit(1);
-  });
+// Run the seed function with error handling if executed directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  seed()
+    .then(() => {
+      // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+      console.log('Database initialization completed successfully!');
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error('Database initialization failed:', error);
+      process.exit(1);
+    });
+}

@@ -3,10 +3,18 @@ import { Type } from '@sinclair/typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import axios from "axios";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { db } from "../../db/index.ts";
+import { userEventHistory } from "../../db/schema/user-history-schema.ts";
+import { books, bookEventStats, userBookInteractions } from "../../db/schema/book-schema.ts";
+import { EnumContentType, EnumEventStatus } from "../../db/schema/enum-app.ts";
+import { CONFIG } from "../../config/app-constant.ts";
+import { and, eq, desc, sql } from "drizzle-orm";
 
 const ProxyParams = Type.Object({
     url: Type.String({ description: 'URL of the PDF to proxy' }),
     file: Type.Optional(Type.String({ description: 'Filename for the PDF' })),
+    id: Type.Optional(Type.String({ format: 'uuid', description: 'Reference ID (UUID) for history' })),
+    bookId: Type.Optional(Type.Number({ description: 'Book ID (numeric) for history' })),
 });
 
 const ProxyPathParams = Type.Object({
@@ -35,10 +43,10 @@ const proxyRoute: FastifyPluginAsyncTypebox = async (app) => {
             },
         },
         handler: withErrorHandler(async function handler(
-            req: FastifyRequest<{ Querystring: { url: string; file?: string }; Params: { filename?: string } }>,
+            req: FastifyRequest<{ Querystring: { url: string; file?: string; id?: string, bookId?: number }; Params: { filename?: string } }>,
             reply: FastifyReply
         ) {
-            const { url, file } = req.query;
+            const { url, file, id, bookId } = req.query;
             const { filename } = req.params;
 
             try {
@@ -54,7 +62,7 @@ const proxyRoute: FastifyPluginAsyncTypebox = async (app) => {
                 const response = await axios.get(url, {
                     responseType: 'stream',
                     headers,
-                    validateStatus: () => true, // Allow 206 and other status codes
+                    validateStatus: () => true,
                 });
 
                 if (response.status >= 400) {
@@ -79,6 +87,81 @@ const proxyRoute: FastifyPluginAsyncTypebox = async (app) => {
                 if (contentLength) reply.header('Content-Length', contentLength);
                 if (contentRange) reply.header('Content-Range', contentRange);
                 if (acceptRanges) reply.header('Accept-Ranges', acceptRanges);
+
+                // History Tracking Logic
+                let referenceId = id;
+                if (!referenceId && bookId) {
+                    const book = await db.query.books.findFirst({
+                        where: eq(books.bookId, bookId)
+                    });
+                    if (book) referenceId = book.id;
+                }
+
+                if (referenceId) {
+                    const userId = (req as any).session?.user?.id;
+                    const sessionId = (req as any).cookies?.sessionId;
+                    const ipAddress = req.ip;
+                    const userAgent = req.headers['user-agent'];
+
+                    // Check if window since last download has passed
+                    const lastEvent = await db.query.userEventHistory.findFirst({
+                        where: and(
+                            eq(userEventHistory.referenceId, referenceId),
+                            eq(userEventHistory.action, EnumEventStatus.DOWNLOAD),
+                            userId ? eq(userEventHistory.userId, userId) : (sessionId ? eq(userEventHistory.sessionId, sessionId) : eq(userEventHistory.ipAddress, ipAddress))
+                        ),
+                        orderBy: desc(userEventHistory.createdAt)
+                    });
+
+                    const now = new Date();
+                    if (!lastEvent || (now.getTime() - lastEvent.createdAt.getTime() > CONFIG.CONTENT_COUNTER_WINDOW_MS)) {
+                        await db.insert(userEventHistory).values({
+                            userId: userId || null,
+                            referenceId: referenceId,
+                            contentType: EnumContentType.BOOK,
+                            action: EnumEventStatus.DOWNLOAD,
+                            sessionId: sessionId || null,
+                            ipAddress,
+                            userAgent
+                        });
+
+                        // Update global book stats
+                        await db.insert(bookEventStats)
+                            .values({
+                                bookId: referenceId,
+                                downloadCount: 1
+                            })
+                            .onConflictDoUpdate({
+                                target: bookEventStats.bookId,
+                                set: {
+                                    downloadCount: sql`${bookEventStats.downloadCount} + 1`,
+                                    updatedAt: new Date()
+                                }
+                            });
+
+                        // Update user interaction stats if logged in
+                        if (userId) {
+                            await db.insert(userBookInteractions)
+                                .values({
+                                    userId,
+                                    bookId: referenceId,
+                                    downloadCount: 1,
+                                    liked: false,
+                                    disliked: false,
+                                    bookmarked: false,
+                                    rating: '0.00',
+                                    viewCount: 0
+                                })
+                                .onConflictDoUpdate({
+                                    target: [userBookInteractions.userId, userBookInteractions.bookId],
+                                    set: {
+                                        downloadCount: sql`${userBookInteractions.downloadCount} + 1`,
+                                        updatedAt: new Date()
+                                    }
+                                });
+                        }
+                    }
+                }
 
                 return reply.send(response.data);
             } catch (error: any) {

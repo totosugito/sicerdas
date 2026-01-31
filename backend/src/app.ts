@@ -48,12 +48,12 @@ export async function buildApp(options?: FastifyServerOptions) {
     autoHooks: true,
     autoHooksPattern: /\.hook(?:\.ts|\.js|\.cjs|\.mjs)$/i,
     cascadeHooks: true,
-    options: {prefix: "/api"},
+    options: { prefix: "/api" },
   });
 
   // Serve static files
   server.register(fastifyStatic, {
-    root: path.join(__dirname, '..', 'uploads'),
+    root: path.join(__dirname, '../..', 'uploads'),
     prefix: '/uploads/',
     setHeaders: (res, _path) => {
       res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');

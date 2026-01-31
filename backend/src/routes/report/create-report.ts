@@ -2,8 +2,9 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/index.ts";
-import { userContentReport } from "../../db/schema/web-schema.ts";
-import { EnumContentType, EnumReportReason } from "../../db/schema/enum-app.ts";
+import { EnumReportReason } from "../../db/schema/enum-general.ts";
+import { EnumContentType } from "../../db/schema/enum-app.ts";
+import { userContentReport } from "../../db/schema/user-report-schema.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
 const CreateReportBody = Type.Object({

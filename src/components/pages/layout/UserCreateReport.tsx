@@ -1,13 +1,14 @@
 import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
 import { useCreateReportMutation } from "@/api/report/create-report";
-import { EnumContentType, EnumReportReason } from "backend/src/db/schema/enum-app";
+import { EnumContentType } from "backend/src/db/schema/enum-app";
+import { EnumReportReason } from "backend/src/db/schema/enum-general";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
 import { ControlForm } from "@/components/custom/forms";
 import { ObjToOptionList } from "@/lib/my-utils";
 
-export type CreateReportProps = {
+export type UserCreateReportProps = {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
     data: {
@@ -19,7 +20,7 @@ export type CreateReportProps = {
     };
 };
 
-const FormReport = ({ values, form }: any) => {
+const FormUserReport = ({ values, form }: any) => {
     return (
         <div className="flex flex-col gap-4 w-full">
             {/* name */}
@@ -37,7 +38,7 @@ const FormReport = ({ values, form }: any) => {
     );
 };
 
-export const CreateReport = ({ isOpen, onOpenChange, data }: CreateReportProps) => {
+export const UserCreateReport = ({ isOpen, onOpenChange, data }: UserCreateReportProps) => {
     const { t } = useTranslation();
     const mutation = useCreateReportMutation();
 
@@ -103,7 +104,7 @@ export const CreateReport = ({ isOpen, onOpenChange, data }: CreateReportProps) 
         },
         child: formConfig,
         schema: formSchema,
-        content: <FormReport />,
+        content: <FormUserReport />,
         onCancelClick: () => onOpenChange(false),
         onConfirmClick: (values) => {
             mutation.mutate(

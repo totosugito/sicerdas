@@ -11,7 +11,7 @@
 
 import { db } from '../../../db/index.ts';
 import { bookEventStats } from '../../../db/schema/book-schema.ts';
-import { userEventHistory } from '../../../db/schema/web-schema.ts';
+import { userEventHistory } from '../../../db/schema/user-history-schema.ts';
 import { eq, sql, and, lt, or } from 'drizzle-orm';
 import { subMonths } from 'date-fns';
 import { EnumContentType, EnumEventStatus } from '../../../db/schema/enum-app.ts';
@@ -123,19 +123,30 @@ async function archiveGuestEvents() {
             ))
             .returning({ id: userEventHistory.id }); // Optional: verify deletion count
 
-        console.log(`Deleted ${deleteResult.length} old guest event records.`);
-        console.log('Archiving process completed successfully.');
+        return {
+            success: true,
+            details: {
+                cutoffDate: cutoffDate.toISOString(),
+                foundBooksWithViews: viewsToArchive.length,
+                foundBooksWithDownloads: downloadsToArchive.length,
+                updatedLegacyStatsForBooks: updatedBooks,
+                deletedEventsCount: deleteResult.length
+            }
+        };
 
     } catch (error) {
         console.error('Error archiving guest events:', error);
-        process.exit(1);
+        throw error;
     }
 }
 
 // Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
     archiveGuestEvents()
-        .then(() => process.exit(0))
+        .then((result) => {
+            console.log('Result:', JSON.stringify(result, null, 2));
+            process.exit(0);
+        })
         .catch(() => process.exit(1));
 }
 

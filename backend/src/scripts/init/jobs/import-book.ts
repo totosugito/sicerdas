@@ -2,10 +2,10 @@ import fs from 'fs';
 import pg from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { eq, count, and } from 'drizzle-orm';
-import * as schema from '../../db/schema/index.ts';
-import { books, bookGroupStats } from '../../db/schema/book-schema.ts';
-import { EnumContentStatus } from '../../db/schema/enum-app.ts';
-import envConfig from '../../config/env.config.ts';
+import * as schema from '../../../db/schema/index.ts';
+import { books, bookGroupStats } from '../../../db/schema/book-schema.ts';
+import { EnumContentStatus } from '../../../db/schema/enum-app.ts';
+import envConfig from '../../../config/env.config.ts';
 import dotenv from 'dotenv';
 
 // Load environment variables
@@ -25,7 +25,7 @@ interface JsonBookData {
   [key: string]: any; // Allow for additional fields
 }
 
-async function importBooks() {
+export default async function importBooks(jsonFilePath: string = 'E:/Download/books.json') {
   const pool = new pg.Pool({
     connectionString: envConfig.db.url,
     max: 10,
@@ -35,7 +35,6 @@ async function importBooks() {
     const db = drizzle({ client: pool, schema });
 
     // Read and parse the JSON file
-    const jsonFilePath = 'E:/Download/books.json';
 
     if (!fs.existsSync(jsonFilePath)) {
       throw new Error(`JSON file not found at: ${jsonFilePath}`);
@@ -220,12 +219,14 @@ async function updateBookGroupStats(db: any) {
 }
 
 // Run the import function
-importBooks()
-  .then(() => {
-    console.log('Book import completed successfully!');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('Book import failed:', error);
-    process.exit(1);
-  });
+if (import.meta.url === `file://${process.argv[1]}`) {
+  importBooks()
+    .then(() => {
+      console.log('Book import completed successfully!');
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error('Book import failed:', error);
+      process.exit(1);
+    });
+}

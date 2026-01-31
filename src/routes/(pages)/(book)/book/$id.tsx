@@ -9,7 +9,7 @@ import { AppRoute } from '@/constants/app-route'
 import { useTranslation } from 'react-i18next'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
-import { CreateReport } from '@/components/pages/layout/CreateReport'
+import { UserCreateReport } from '@/components/pages/layout/UserCreateReport'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { EnumContentType } from 'backend/src/db/schema/enum-app'
 import { PDFViewer, ScrollStrategy } from '@embedpdf/react-pdf-viewer'
@@ -60,7 +60,7 @@ function RouteComponent() {
   const handleDownload = async () => {
     try {
       // 1. Fetch via Proxy to avoid CORS and get raw data
-      const proxyUrl = `${AppApi.book.proxyPdf}/${encodeURIComponent(`${book.bookId}-${slug}.pdf`)}?url=${encodeURIComponent(book.pdf)}`
+      const proxyUrl = `${AppApi.book.proxyPdf}/${encodeURIComponent(`${book.bookId}-${slug}.pdf`)}?url=${encodeURIComponent(book.pdf)}&id=${book.id}`
       const response = await fetch(proxyUrl)
       if (!response.ok) throw new Error(t('book.detail.networkError'))
 
@@ -113,7 +113,7 @@ function RouteComponent() {
         onReport={handleReport}
       />
 
-      <CreateReport
+      <UserCreateReport
         isOpen={showReportDialog}
         onOpenChange={setShowReportDialog}
         data={{
@@ -139,7 +139,7 @@ function RouteComponent() {
             <PDFViewer
               key={showViewer ? `visible-${book.bookId}` : 'hidden'}
               config={{
-                src: `${AppApi.book.proxyPdf}/${encodeURIComponent(`${book.bookId}-${book.title}.pdf`)}?url=${encodeURIComponent(book.pdf)}`,
+                src: `${AppApi.book.proxyPdf}/${encodeURIComponent(`${book.bookId}-${book.title}.pdf`)}?url=${encodeURIComponent(book.pdf)}&id=${book.id}`,
                 disabledCategories: ['panel-comment', 'shapes', 'redaction', 'security'],
                 scroll: {
                   defaultStrategy: ScrollStrategy.Vertical,

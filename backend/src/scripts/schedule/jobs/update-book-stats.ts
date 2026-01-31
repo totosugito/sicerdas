@@ -12,7 +12,7 @@
 import { EnumContentType, EnumEventStatus } from '../../../db/schema/enum-app.ts';
 import { db } from '../../../db/index.ts';
 import { books, bookEventStats, userBookInteractions } from '../../../db/schema/book-schema.ts';
-import { userEventHistory } from '../../../db/schema/web-schema.ts';
+import { userEventHistory } from '../../../db/schema/user-history-schema.ts';
 import { eq, sql, and } from 'drizzle-orm';
 
 async function updateBookStats() {
@@ -117,20 +117,26 @@ async function updateBookStats() {
             offset += batchSize;
         } while (true);
 
-        console.log(`Updated stats for ${processedCount} books (including guests and logged-in users)`);
-        console.log('Book stats update process completed successfully');
+        return {
+            success: true,
+            details: {
+                processedBooksCount: processedCount,
+                batchSize: batchSize,
+                totalBatches: Math.ceil(processedCount / batchSize)
+            }
+        };
 
     } catch (error) {
         console.error('Error updating book stats:', error);
-        process.exit(1);
+        throw error;
     }
 }
 
 // Run the script if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
     updateBookStats()
-        .then(() => {
-            console.log('Stats update script finished successfully');
+        .then((result) => {
+            console.log('Result:', JSON.stringify(result, null, 2));
             process.exit(0);
         })
         .catch((error) => {

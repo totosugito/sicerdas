@@ -23,17 +23,10 @@
     "dev": "cross-env NODE_ENV=development node --watch src/server.ts | pino-pretty --colorize",
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push",
-    "db:init_user": "ts-node src/scripts/init-user.ts --trace-warnings",
     "db:migrate": "drizzle-kit migrate",
     "db:drop": "drizzle-kit drop",
     "db:push_dev": "cross-env NODE_ENV=development drizzle-kit push",
-    "db:init_user_dev": "cross-env NODE_ENV=development ts-node src/scripts/init/init-user.ts --trace-warnings",
-    "db:init_data_dev": "cross-env NODE_ENV=development ts-node src/scripts/init/init-data.ts --trace-warnings",
-    "db:import_book_dev": "cross-env NODE_ENV=development ts-node src/scripts/init/import-book.ts --trace-warnings",
-    "db:import_periodic_elements_dev": "cross-env NODE_ENV=development ts-node src/scripts/init/import-periodic-elements.ts --trace-warnings",
-    "db:book_update_stats": "cross-env NODE_ENV=development ts-node src/scripts/update-book-stats.ts --trace-warnings",
-    "db:archive_guest_events": "cross-env NODE_ENV=development ts-node src/scripts/archive-guest-events.ts --trace-warnings"
+    "db:init_all": "cross-env NODE_ENV=development ts-node src/scripts/init/run-inital-data.ts --trace-warnings"
   },
   "dependencies": {
     "@fastify/autoload": "^6.3.1",

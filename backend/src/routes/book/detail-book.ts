@@ -4,10 +4,13 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/index.ts";
 import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } from "../../db/schema/book-schema.ts";
 import { educationGrades } from "../../db/schema/education-schema.ts";
-import { userEventHistory } from "../../db/schema/web-schema.ts";
+import { userEventHistory } from "../../db/schema/user-history-schema.ts";
 import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getBookCoverUrl, getBookPdfUrl, getBookSamplePagesUrl } from "../../utils/book-utils.ts";
+import { EnumContentType, EnumEventStatus } from "../../db/schema/enum-app.ts";
+import { CONFIG } from "../../config/app-constant.ts";
+import { desc } from "drizzle-orm";
 
 const BookDetailResponse = Type.Object({
   id: Type.String({ format: 'uuid' }),
@@ -256,40 +259,75 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       };
 
       // Update view count if user is logged in
-      if (isLoggedIn && userId) {
-        await db.insert(userBookInteractions)
-          .values({
-            userId,
-            bookId: book.id, // Using UUID
-            viewCount: 1,
-            liked: false,
-            disliked: false,
-            bookmarked: false,
-            rating: '0.00',
-            downloadCount: 0
-          })
-          .onConflictDoUpdate({
-            target: [userBookInteractions.userId, userBookInteractions.bookId],
-            set: {
-              viewCount: sql`${userBookInteractions.viewCount} + 1`,
-              updatedAt: new Date()
-            }
-          });
-      } else {
-        // Log guest view
-        const sessionId = req.cookies?.sessionId || null; // Assuming sessionId might be in cookies
-        const ipAddress = req.ip;
-        const userAgent = req.headers['user-agent'];
-
-        await db.insert(userEventHistory).values({
-          userId: null,
-          referenceId: book.id,
-          contentType: 'book',
-          action: 'view',
-          sessionId: sessionId ? sessionId : undefined, // Check if uuid valid? let's assume valid or undefined
-          ipAddress,
-          userAgent
+      // Tracking Logic
+      const shouldTrack = async (targetUserId: string | null, targetSessionId: string | null) => {
+        const lastEvent = await db.query.userEventHistory.findFirst({
+          where: and(
+            eq(userEventHistory.referenceId, book.id),
+            eq(userEventHistory.action, EnumEventStatus.VIEW),
+            targetUserId ? eq(userEventHistory.userId, targetUserId) : (targetSessionId ? eq(userEventHistory.sessionId, targetSessionId) : eq(userEventHistory.ipAddress, req.ip))
+          ),
+          orderBy: desc(userEventHistory.createdAt)
         });
+
+        const now = new Date();
+        if (!lastEvent || (now.getTime() - lastEvent.createdAt.getTime() > CONFIG.CONTENT_COUNTER_WINDOW_MS)) {
+          // Log history
+          await db.insert(userEventHistory).values({
+            userId: targetUserId,
+            referenceId: book.id,
+            contentType: EnumContentType.BOOK,
+            action: EnumEventStatus.VIEW,
+            sessionId: targetSessionId,
+            ipAddress: req.ip,
+            userAgent: req.headers['user-agent']
+          });
+
+          // Update Global Stats
+          await db.insert(bookEventStats)
+            .values({
+              bookId: book.id,
+              viewCount: 1
+            })
+            .onConflictDoUpdate({
+              target: bookEventStats.bookId,
+              set: {
+                viewCount: sql`${bookEventStats.viewCount} + 1`,
+                updatedAt: new Date()
+              }
+            });
+
+          return true; // Indicates new view monitored
+        }
+        return false;
+      };
+
+      if (isLoggedIn && userId) {
+        const isNewView = await shouldTrack(userId, null);
+        if (isNewView) {
+          // Update User Personal Stats
+          await db.insert(userBookInteractions)
+            .values({
+              userId,
+              bookId: book.id,
+              viewCount: 1,
+              liked: false,
+              disliked: false,
+              bookmarked: false,
+              rating: '0.00',
+              downloadCount: 0
+            })
+            .onConflictDoUpdate({
+              target: [userBookInteractions.userId, userBookInteractions.bookId],
+              set: {
+                viewCount: sql`${userBookInteractions.viewCount} + 1`,
+                updatedAt: new Date()
+              }
+            });
+        }
+      } else {
+        const sessionId = req.cookies?.sessionId || null;
+        await shouldTrack(null, sessionId);
       }
 
       // Add user interaction data if user is logged in

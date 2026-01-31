@@ -1,4 +1,4 @@
-import {pgEnum} from "drizzle-orm/pg-core";
+import { pgEnum } from "drizzle-orm/pg-core";
 
 export const EnumContentType = {
   BOOK: 'book',
@@ -15,28 +15,6 @@ export const EnumContentStatus = {
   DELETED: 'deleted'
 } as const
 export const PgEnumContentStatus = pgEnum('status', Object.values(EnumContentStatus) as [string, ...string[]]);
-
-export const EnumReportStatus = {
-  PENDING: 'pending',
-  IN_REVIEW: 'in_review',
-  VIOLATE: 'violate',
-  DUPLICATE: 'duplicate',
-  RESOLVED: 'resolved',
-  DISMISSED: 'dismissed',
-  ERROR: 'error'
-} as const
-export const PgEnumReportStatus = pgEnum('report_status', Object.values(EnumReportStatus) as [string, ...string[]]);
-
-export const EnumReportReason = {
-  DUPLICATE: 'duplicate',
-  ERROR: 'error',
-  UNKNOWN: 'unknown',
-  INAPPROPRIATE: 'inappropriate',
-  SPAM: 'spam',
-  COPYRIGHT: 'copyright',
-  OTHER: 'other'
-} as const
-export const PgEnumReportReason = pgEnum('report_reason', Object.values(EnumReportReason) as [string, ...string[]]);
 
 export const EnumContentSortingType = {
   NAME: 'name',
@@ -64,37 +42,6 @@ export const EnumEventStatus = {
 } as const
 export const PgEnumEventStatus = pgEnum('event_status', Object.values(EnumEventStatus) as [string, ...string[]]);
 
-export const EnumNotificationType = {
-  SYSTEM: 'system',
-  USER: 'user',
-  CONTENT: 'content',
-  REPORT: 'report',
-  SUBSCRIPTION: 'subscription',
-  ACHIEVEMENT: 'achievement',
-  REMINDER: 'reminder',
-} as const
-export const PgEnumNotificationType = pgEnum('notification_type', Object.values(EnumNotificationType) as [string, ...string[]]);
-
-export const EnumNotificationStatus = {
-  UNREAD: 'unread',
-  READ: 'read',
-  ARCHIVED: 'archived',
-  DELTED: 'deleted',
-  SENT: 'sent',
-  FAILED: 'failed',
-  PENDING: 'pending',
-} as const
-export const PgEnumNotificationStatus = pgEnum('notification_status', Object.values(EnumNotificationStatus) as [string, ...string[]]);
-
-export const EnumNotificationPriority = {
-  LOW: 'low',
-  NORMAL: 'normal',
-  HIGH: 'high',
-  CRITICAL: 'critical',
-  ERROR: 'error',
-} as const
-export const PgEnumNotificationPriority = pgEnum('notification_priority', Object.values(EnumNotificationPriority) as [string, ...string[]]);
-
 export const EnumEducationLevel = {
   SD: 'sd',
   SMP: 'smp',
@@ -110,12 +57,6 @@ export const EnumEducationLevel = {
   UNKNOWN: '',
 }
 export const PgEnumEducationLevel = pgEnum('education_level', Object.values(EnumEducationLevel) as [string, ...string[]]);
-
-export const EnumUserTier = {
-  FREE: 'free',
-  PRO: 'pro',
-} as const
-export const PgEnumUserTier = pgEnum('user_tier', Object.values(EnumUserTier) as [string, ...string[]]);
 
 export const EnumPeriodicGroup = {
   headerEmpty: 'headerEmpty',
@@ -133,3 +74,9 @@ export const EnumPeriodicGroup = {
   alkali_metals: 'alkali_metals',
 }
 export const PgEnumPeriodicGroup = pgEnum('periodic_group', Object.values(EnumPeriodicGroup) as [string, ...string[]]);
+
+export const EnumUserTier = {
+  FREE: 'free',
+  PRO: 'pro',
+} as const
+export const PgEnumUserTier = pgEnum('user_tier', Object.values(EnumUserTier) as [string, ...string[]]);

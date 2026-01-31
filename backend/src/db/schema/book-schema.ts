@@ -1,4 +1,4 @@
-import { pgTable, varchar, timestamp, integer, text, jsonb, serial, uuid, numeric, index, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, timestamp, integer, text, jsonb, serial, uuid, numeric, index, boolean, uniqueIndex } from 'drizzle-orm/pg-core';
 import { educationGrades } from "./education-schema.ts";
 import { type InferInsertModel, type InferSelectModel } from 'drizzle-orm';
 import {
@@ -219,7 +219,7 @@ export const bookEventStats = pgTable('book_event_stats', {
   bookmarkCount: integer('bookmark_count').notNull().default(0),
   ratingCount: integer('rating_count').notNull().default(0),
   ratingSum: numeric('rating_sum', { precision: 10, scale: 2 }).notNull().default('0.00'),
-  rating: numeric('rating', { precision: 3, scale: 2 }).notNull().default('0.00'), // Average: ratingSum / ratingCount
+  rating: numeric('rating', { precision: 3, scale: 2 }).notNull().default('0.00'),
 
   // Legacy/Archived stats (from deleted userEventHistory)
   legacyStats: jsonb('legacy_stats')
@@ -234,9 +234,7 @@ export const bookEventStats = pgTable('book_event_stats', {
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => [
-  index('book_event_stats_book_id_index').on(table.bookId),
-]);
+});
 
 /**
  * User Book Interactions
@@ -272,10 +270,10 @@ export const userBookInteractions = pgTable('user_book_interactions', {
   // Individual user interactions
   liked: boolean('liked').default(false),
   disliked: boolean('disliked').default(false),
-  rating: numeric('rating', { precision: 3, scale: 2 }).default('0.00'), // User's rating (0.00 to 5.00)
+  rating: numeric('rating', { precision: 3, scale: 2 }).default('0.00'),
   bookmarked: boolean('bookmarked').default(false),
-  viewCount: integer('view_count').default(0), // Number of times user viewed this book
-  downloadCount: integer('download_count').default(0), // Number of times user downloaded this book
+  viewCount: integer('view_count').default(0),
+  downloadCount: integer('download_count').default(0),
 
   // Flexible data storage
   extra: jsonb("extra")
@@ -286,8 +284,8 @@ export const userBookInteractions = pgTable('user_book_interactions', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => [
-  // Ensure a user can only have one interaction record per book
-  index('user_book_interactions_user_book_index').on(table.userId, table.bookId),
+  uniqueIndex('user_book_interactions_user_book_unique_index').on(table.userId, table.bookId),
+  index('user_book_interactions_book_id_index').on(table.bookId),
 ]);
 
 export type SchemaUserBookInteractionInsert = InferInsertModel<typeof userBookInteractions>;

@@ -72,6 +72,7 @@
     "@typescript-eslint/eslint-plugin": "^8.53.1",
     "@typescript-eslint/parser": "^8.53.1",
     "@vitejs/plugin-react": "^5.1.2",
+    "baseline-browser-mapping": "^2.9.19",
     "eslint-plugin-unused-imports": "^4.3.0",
     "motion": "^12.27.5",
     "tailwind-merge": "^3.4.0",

@@ -1,16 +1,17 @@
-import {betterAuth} from "better-auth";
-import {drizzleAdapter} from "better-auth/adapters/drizzle";
-import {users, accounts, userProfile} from '../../db/schema/auth-schema.ts';
-import {eq} from "drizzle-orm";
+import { pathToFileURL } from 'url';
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { users, accounts, userProfile } from '../../../db/schema/auth-schema.ts';
+import { eq } from "drizzle-orm";
 import pg from "pg";
-import envConfig from "../../config/env.config.ts";
-import {drizzle} from "drizzle-orm/node-postgres";
-import * as schema from '../../db/schema/index.ts';
+import envConfig from "../../../config/env.config.ts";
+import { drizzle } from "drizzle-orm/node-postgres";
+import * as schema from '../../../db/schema/index.ts';
 
 import dotenv from 'dotenv';
 dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env' });
 
-async function seed() {
+export default async function seed() {
   const pool = new pg.Pool({
     connectionString: envConfig.db.url,
     max: 10,
@@ -96,7 +97,13 @@ async function seed() {
   }
 }
 
-seed().then(() => {
-  // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-  console.log('Seeding complete');
-})
+// Run the seed function if this file is executed directly
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  seed().then(() => {
+    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+    console.log('Seeding complete');
+  }).catch((error) => {
+    console.error('Seeding failed:', error);
+    process.exit(1);
+  });
+}
