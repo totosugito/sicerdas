@@ -14,7 +14,9 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { EnumContentType } from 'backend/src/db/schema/enum-app'
 import { PDFViewer, ScrollStrategy } from '@embedpdf/react-pdf-viewer'
 import { AppApi } from '@/constants/app-api'
-
+import { useUpdateBookmark } from '@/api/book/book-bookmark'
+import { useUpdateDownload, UpdateDownloadResponse } from '@/api/book/update-download'
+import { showNotifError, showNotifSuccess } from '@/lib/show-notif'
 
 export const Route = createFileRoute('/(pages)/(book)/book/$id')({
   component: RouteComponent,
@@ -24,6 +26,8 @@ function RouteComponent() {
   const { id } = Route.useParams()
   const bookId = id.split('-')[0]
   const { data, isLoading, isError } = useBookDetail(bookId)
+  const { mutate: updateBookmark } = useUpdateBookmark()
+  const { mutate: updateDownload } = useUpdateDownload()
   const { t } = useTranslation()
   const { user } = useAuth()
   const [showReportDialog, setShowReportDialog] = useState(false)
@@ -31,10 +35,10 @@ function RouteComponent() {
   const [isFavorite, setIsFavorite] = useState(false)
 
   useEffect(() => {
-    if (data?.data?.userInteraction?.liked) {
-      setIsFavorite(true)
+    if (data?.data?.userInteraction?.bookmarked !== undefined) {
+      setIsFavorite(data.data.userInteraction.bookmarked)
     }
-  }, [data?.data?.userInteraction?.liked])
+  }, [data?.data?.userInteraction?.bookmarked])
 
   const book = data?.data
 
@@ -48,6 +52,17 @@ function RouteComponent() {
 
   const handleRead = () => {
     setShowViewer(true)
+
+    updateDownload(
+      { bookId: book.bookId },
+      {
+        onSuccess: (response) => {
+          if (response.success && response.data) {
+            book.downloadCount = response.data!.downloadCount
+          }
+        }
+      }
+    )
   }
 
   const slug = book.title
@@ -63,11 +78,54 @@ function RouteComponent() {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+
+    updateDownload(
+      { bookId: book.bookId },
+      {
+        onSuccess: (response: UpdateDownloadResponse) => {
+          if (response.success && response.data) {
+            book.downloadCount = response.data!.downloadCount
+          }
+        }
+      }
+    )
   }
 
   const handleToggleFavorite = () => {
-    setIsFavorite(!isFavorite)
-    // TODO: Implement favorite toggle functionality with API
+    if (!user) {
+      showNotifError({ title: null, message: t('auth.loginRequired') })
+      return
+    }
+
+    const newFavoriteStatus = !isFavorite
+    setIsFavorite(newFavoriteStatus)
+
+    updateBookmark(
+      {
+        bookId: book.bookId,
+        bookmarked: newFavoriteStatus,
+      },
+      {
+        onSuccess: (response) => {
+          if (!response.success) {
+            setIsFavorite(!newFavoriteStatus) // Revert
+            showNotifError({ title: null, message: response.message })
+          } else {
+            showNotifSuccess({ title: null, message: response.message })
+
+            // Update the cache with new data
+            if (book.userInteraction) {
+              book.userInteraction.bookmarked = response.data.bookmarked
+            }
+            book.bookmarkCount = response.data.bookmarkCount
+          }
+        },
+        onError: () => {
+          setIsFavorite(!newFavoriteStatus) // Revert
+          showNotifError({ title: null, message: t('common.error') })
+        },
+      }
+    )
   }
 
   const handleReport = () => {
@@ -110,7 +168,7 @@ function RouteComponent() {
         <DialogContent aria-describedby={undefined}
           showCloseButton={false}
           className="!overflow-hidden max-w-[90vw] h-[90vh] sm:max-w-[85vw] sm:h-[85vh] w-full p-0 flex flex-col border-none sm:rounded-2xl shadow-2xl">
-          <DialogTitle className="sr-only">PDF Viewer - {book.title}</DialogTitle>
+          <DialogTitle className="sr-only">{t('book.detail.pdfViewer')} - {book.title}</DialogTitle>
           <div
             className="relative flex-1 min-h-0 bg-slate-100 dark:bg-slate-900 "
             onWheel={(e) => e.stopPropagation()}

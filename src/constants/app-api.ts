@@ -42,6 +42,8 @@ export const AppApi = {
     crud: APP_URL_API + "/book",
     filterParams: APP_URL_API + "/book/filter-params",
     proxyPdf: APP_URL_API + "/book/proxy-pdf",
+    bookmark: APP_URL_API + "/book/bookmark",
+    updateDownload: APP_URL_API + "/book/update-download",
   },
   periodicTable: {
     element: APP_URL_API + "/periodic-table/element",

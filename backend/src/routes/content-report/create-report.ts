@@ -6,6 +6,8 @@ import { EnumReportReason } from "../../db/schema/enum-general.ts";
 import { EnumContentType } from "../../db/schema/enum-app.ts";
 import { userContentReport } from "../../db/schema/content-report-schema.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { fromNodeHeaders } from 'better-auth/node';
+import { getAuthInstance } from "../../decorators/auth.decorator.ts";
 
 const CreateReportBody = Type.Object({
     name: Type.String({ minLength: 1 }),
@@ -50,8 +52,11 @@ const createReportRoute: FastifyPluginAsyncTypebox = async (app) => {
             const { name, email, title, contentType, referenceId, reason, description, extra } = req.body;
 
             // Attempt to retrieve user ID if available (safe cast)
-            const user = (req as any).user as { id: string } | undefined;
-            const reporterId = user?.id || null;
+            // Attempt to retrieve user ID if available (safe cast)
+            const session = await getAuthInstance(app).api.getSession({
+                headers: fromNodeHeaders(req.headers),
+            });
+            const reporterId = session?.user?.id || null;
 
             const [newReport] = await db.insert(userContentReport).values({
                 name,

@@ -21,14 +21,14 @@ export type CreateContentReportProps = {
     };
 };
 
-const FormCreateContentReport = ({ values, form }: any) => {
+const FormCreateContentReport = ({ values, form, isLoggedIn }: any) => {
     return (
         <div className="flex flex-col gap-4 w-full">
             {/* name */}
-            <ControlForm form={form} item={values.name} showMessage={false} />
+            {!isLoggedIn && <ControlForm form={form} item={values.name} showMessage={false} />}
 
             {/* email */}
-            <ControlForm form={form} item={values.email} showMessage={false} />
+            {!isLoggedIn && <ControlForm form={form} item={values.email} showMessage={false} />}
 
             {/* reason */}
             <ControlForm form={form} item={values.reason} showMessage={false} />
@@ -43,6 +43,7 @@ export const CreateContentReport = ({ isOpen, onOpenChange, data }: CreateConten
     const { t } = useTranslation();
     const mutation = useCreateReportMutation();
     const [showSuccess, setShowSuccess] = useState(false);
+    const isLoggedIn = !!data.name && !!data.email;
 
     const formSchema = {
         name: z.string().min(1, t("contentReport.validation.name_required")),
@@ -106,7 +107,7 @@ export const CreateContentReport = ({ isOpen, onOpenChange, data }: CreateConten
         },
         child: formConfig,
         schema: formSchema,
-        content: <FormCreateContentReport />,
+        content: <FormCreateContentReport isLoggedIn={isLoggedIn} />,
         onCancelClick: () => onOpenChange(false),
         onConfirmClick: async (values) => {
             try {

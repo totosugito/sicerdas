@@ -1,7 +1,7 @@
-import chemistryDictionary from './periodic-table/chemistry-dictionary-locale';
-import periodicTable from './periodic-table/periodic-table-locale';
-import elementComparison from './periodic-table/element-comparison-locale';
-import elementDetail from './periodic-table/element-detail-locale';
+import chemistryDictionary from './periodic-table/chemistry-dictionary';
+import periodicTable from './periodic-table/periodic-table';
+import elementComparison from './periodic-table/element-comparison';
+import elementDetail from './periodic-table/element-detail';
 
 const localeEn = {
   translation: {

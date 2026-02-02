@@ -1,4 +1,4 @@
-import type {FastifyRequest, FastifyReply} from 'fastify';
+import type { FastifyRequest, FastifyReply } from 'fastify';
 
 export function withErrorHandler<
   Req extends FastifyRequest = FastifyRequest,
@@ -29,7 +29,7 @@ export function withErrorHandler<
       // Send error response
       reply.status(statusCode).send({
         success: false,
-        error: errorMessage,
+        message: errorMessage,
       });
 
       // Prevent reaching the end of function without return

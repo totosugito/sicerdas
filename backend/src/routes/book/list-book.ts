@@ -9,6 +9,8 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { EnumContentStatus, EnumContentType } from "../../db/schema/enum-app.ts";
 import { appVersion } from "../../db/schema/version-schema.ts";
 import { getBookCoverUrl } from "../../utils/book-utils.ts";
+import { fromNodeHeaders } from 'better-auth/node';
+import { getAuthInstance } from "../../decorators/auth.decorator.ts";
 
 const BookListQuery = Type.Object({
   category: Type.Optional(Type.Array(Type.Number())),
@@ -33,6 +35,8 @@ const BookResponse = Type.Object({
   status: Type.String(),
   rating: Type.Optional(Type.Number()),
   viewCount: Type.Optional(Type.Number()),
+  downloadCount: Type.Optional(Type.Number()),
+  bookmarkCount: Type.Optional(Type.Number()),
   cover: Type.Object({
     xs: Type.String(),
     lg: Type.String(),
@@ -102,9 +106,13 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const { category, group, grade, search, sortBy = 'createdAt', sortOrder = 'desc', page = 1, limit = 10 } = req.body;
       const offset = (page - 1) * limit;
 
+      const session = await getAuthInstance(app).api.getSession({
+        headers: fromNodeHeaders(req.headers),
+      });
+
       // Check if user is logged in
-      const isLoggedIn = !!(req.session?.user);
-      const userId = isLoggedIn ? req.session.user.id : null;
+      const isLoggedIn = !!(session?.user);
+      const userId = isLoggedIn ? session?.user?.id : null;
 
       // Helper function to build base select query
       const buildBaseSelect = (includeStats: boolean = false, includeUserInteraction: boolean = false, userId: string | null = null) => {
@@ -120,6 +128,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           status: books.status,
           rating: includeStats ? bookEventStats.rating : sql<number | null>`NULL`.as('rating'),
           viewCount: includeStats ? bookEventStats.viewCount : sql<number | null>`NULL`.as('viewCount'),
+          downloadCount: includeStats ? bookEventStats.downloadCount : sql<number | null>`NULL`.as('downloadCount'),
+          bookmarkCount: includeStats ? bookEventStats.bookmarkCount : sql<number | null>`NULL`.as('bookmarkCount'),
           createdAt: books.createdAt,
           updatedAt: books.updatedAt,
           category: {
@@ -245,6 +255,11 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             ? queryWithWhere.orderBy(bookEventStats.downloadCount)
             : queryWithWhere.orderBy(desc(bookEventStats.downloadCount));
           break;
+        case 'bookmarkCount':
+          query = order === 'asc'
+            ? queryWithWhere.orderBy(bookEventStats.bookmarkCount)
+            : queryWithWhere.orderBy(desc(bookEventStats.bookmarkCount));
+          break;
         case 'createdAt':
         default:
           query = order === 'asc'
@@ -285,7 +300,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
                 userInteraction: {
                   liked: (item as any).liked !== undefined ? (item as any).liked : false,
                   disliked: (item as any).disliked !== undefined ? (item as any).disliked : false,
-                  rating: (item as any).userRating !== undefined ? parseFloat((item as any).userRating.toString()) : 0,
+                  rating: (item as any).userRating !== undefined && (item as any).userRating !== null ? parseFloat((item as any).userRating.toString()) : 0,
                   bookmarked: (item as any).bookmarked !== undefined ? (item as any).bookmarked : false,
                 }
               };

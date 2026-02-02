@@ -139,7 +139,16 @@ export const BookDetail = ({
                 <div className="w-px h-8 bg-slate-200 dark:bg-slate-800" />
                 <div className="flex flex-col items-center">
                   <span className="font-bold text-slate-900 dark:text-white text-lg leading-none">
-                    0
+                    {book.downloadCount?.toLocaleString() ?? 0}
+                  </span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
+                    {t('book.detail.download')}
+                  </span>
+                </div>
+                <div className="w-px h-8 bg-slate-200 dark:bg-slate-800" />
+                <div className="flex flex-col items-center">
+                  <span className="font-bold text-slate-900 dark:text-white text-lg leading-none">
+                    {book.bookmarkCount?.toLocaleString() ?? 0}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
                     {t('book.detail.favorites')}

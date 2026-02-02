@@ -4,7 +4,7 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/index.ts";
 import { eq } from "drizzle-orm";
 import { users, userProfile, accounts } from "../../db/schema/auth-schema.ts";
-import {getUserAvatarUrl} from "../../utils/app-utils.ts";
+import { getUserAvatarUrl } from "../../utils/app-utils.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -70,15 +70,15 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         dateOfBirth: userProfile.dateOfBirth,
         extra: userProfile.extra // Add extra field
       })
-      .from(users)
-      .leftJoin(accounts, eq(users.id, accounts.userId))
-      .leftJoin(userProfile, eq(users.id, userProfile.id))
-      .where(eq(users.id, userId))
-      .limit(1);
+        .from(users)
+        .leftJoin(accounts, eq(users.id, accounts.userId))
+        .leftJoin(userProfile, eq(users.id, userProfile.id))
+        .where(eq(users.id, userId))
+        .limit(1);
 
       // Extract user data (there should only be one result)
       const userResult = userWithAllData[0];
-      
+
       if (!userResult) {
         return reply.notFound(req.i18n.t('userNotFound'));
       }

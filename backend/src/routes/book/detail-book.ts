@@ -11,6 +11,8 @@ import { getBookCoverUrl, getBookPdfUrl, getBookSamplePagesUrl } from "../../uti
 import { EnumContentType, EnumEventStatus } from "../../db/schema/enum-app.ts";
 import { CONFIG } from "../../config/app-constant.ts";
 import { desc } from "drizzle-orm";
+import { fromNodeHeaders } from 'better-auth/node';
+import { getAuthInstance } from "../../decorators/auth.decorator.ts";
 
 const BookDetailResponse = Type.Object({
   id: Type.String({ format: 'uuid' }),
@@ -25,6 +27,7 @@ const BookDetailResponse = Type.Object({
   rating: Type.Optional(Type.Number()),
   viewCount: Type.Optional(Type.Number()),
   downloadCount: Type.Optional(Type.Number()),
+  bookmarkCount: Type.Optional(Type.Number()),
   cover: Type.Object({
     xs: Type.String(),
     lg: Type.String(),
@@ -67,11 +70,6 @@ const BookDetailResponseWrapper = Type.Object({
   data: BookDetailResponse,
 });
 
-const BookNotFoundResponse = Type.Object({
-  success: Type.Boolean({ default: false }),
-  message: Type.String()
-});
-
 const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
     url: '/detail/:bookId',
@@ -85,7 +83,10 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       }),
       response: {
         200: BookDetailResponseWrapper,
-        '4xx': BookNotFoundResponse,
+        '4xx': Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String()
+        }),
         '5xx': Type.Object({
           success: Type.Boolean({ default: false }),
           message: Type.String()
@@ -97,10 +98,13 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       reply: FastifyReply
     ): Promise<typeof BookDetailResponseWrapper.static> {
       const { bookId } = req.params;
+      const session = await getAuthInstance(app).api.getSession({
+        headers: fromNodeHeaders(req.headers),
+      });
 
       // Check if user is logged in
-      const isLoggedIn = !!(req.session?.user);
-      const userId = isLoggedIn ? req.session.user.id : null;
+      const isLoggedIn = !!(session?.user);
+      const userId = isLoggedIn ? session?.user?.id : null;
 
       // Build the base query with joins
       let baseQuery;
@@ -121,6 +125,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             rating: bookEventStats.rating,
             viewCount: bookEventStats.viewCount,
             downloadCount: bookEventStats.downloadCount,
+            bookmarkCount: bookEventStats.bookmarkCount,
             createdAt: books.createdAt,
             updatedAt: books.updatedAt,
             category: {
@@ -171,6 +176,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             rating: bookEventStats.rating,
             viewCount: bookEventStats.viewCount,
             downloadCount: bookEventStats.downloadCount,
+            bookmarkCount: bookEventStats.bookmarkCount,
             createdAt: books.createdAt,
             updatedAt: books.updatedAt,
             category: {
@@ -206,10 +212,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const result = await baseQuery;
 
       if (!result || result.length === 0) {
-        return reply.status(404).send({
-          success: false,
-          message: req.i18n.t('book.detail.notFound')
-        });
+        return reply.notFound(req.i18n.t('book.detail.notFound'));
       }
 
       const book = result[0];
@@ -227,6 +230,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         rating: book.rating !== null ? parseFloat(book.rating.toString()) : undefined,
         viewCount: book.viewCount !== null ? book.viewCount : undefined,
         downloadCount: book.downloadCount !== null ? book.downloadCount : undefined,
+        bookmarkCount: book.bookmarkCount !== null ? book.bookmarkCount : undefined,
         cover: getBookCoverUrl({ bookId: book.bookId }),
         pdf: getBookPdfUrl({ bookId: book.bookId }),
         samples: getBookSamplePagesUrl({ bookId: book.bookId }),

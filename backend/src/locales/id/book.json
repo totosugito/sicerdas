@@ -4,6 +4,10 @@
             "success": "Berhasil mengambil detail buku",
             "notFound": "Buku tidak ditemukan"
         },
+        "bookmark": {
+            "noChange": "Status bookmark tidak berubah",
+            "updated": "Status bookmark berhasil diperbarui"
+        },
         "filterParams": {
             "success": "Berhasil mengambil parameter filter"
         },
