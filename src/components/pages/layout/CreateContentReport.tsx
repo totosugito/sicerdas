@@ -1,14 +1,15 @@
-import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
-import { useCreateReportMutation } from "@/api/report/create-report";
+import { DialogModalForm, ModalFormProps, DialogModal } from "@/components/custom/components";
+import { useState } from "react";
+import { useCreateReportMutation } from "@/api/content-report/create-report";
 import { EnumContentType } from "backend/src/db/schema/enum-app";
 import { EnumReportReason } from "backend/src/db/schema/enum-general";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
+import { showNotifSuccess } from "@/lib/show-notif";
 import { ControlForm } from "@/components/custom/forms";
 import { ObjToOptionList } from "@/lib/my-utils";
 
-export type UserCreateReportProps = {
+export type CreateContentReportProps = {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
     data: {
@@ -20,7 +21,7 @@ export type UserCreateReportProps = {
     };
 };
 
-const FormUserReport = ({ values, form }: any) => {
+const FormCreateContentReport = ({ values, form }: any) => {
     return (
         <div className="flex flex-col gap-4 w-full">
             {/* name */}
@@ -38,14 +39,15 @@ const FormUserReport = ({ values, form }: any) => {
     );
 };
 
-export const UserCreateReport = ({ isOpen, onOpenChange, data }: UserCreateReportProps) => {
+export const CreateContentReport = ({ isOpen, onOpenChange, data }: CreateContentReportProps) => {
     const { t } = useTranslation();
     const mutation = useCreateReportMutation();
+    const [showSuccess, setShowSuccess] = useState(false);
 
     const formSchema = {
-        name: z.string().min(1, t("report.validation.name_required")),
-        email: z.email(t("report.validation.email_invalid")).min(1, t("report.validation.email_required")),
-        reason: z.string().min(1, t("report.validation.reason_required")),
+        name: z.string().min(1, t("contentReport.validation.name_required")),
+        email: z.email(t("contentReport.validation.email_invalid")).min(1, t("contentReport.validation.email_required")),
+        reason: z.string().min(1, t("contentReport.validation.reason_required")),
         title: z.string(),
         description: z.string().optional(),
     };
@@ -54,44 +56,44 @@ export const UserCreateReport = ({ isOpen, onOpenChange, data }: UserCreateRepor
         name: {
             type: "text",
             name: "name",
-            label: t("report.field.name"),
-            placeholder: t("report.field.name_placeholder"),
+            label: t("contentReport.field.name"),
+            placeholder: t("contentReport.field.name_placeholder"),
         },
         email: {
             type: "email",
             name: "email",
-            label: t("report.field.email"),
-            placeholder: t("report.field.email_placeholder"),
+            label: t("contentReport.field.email"),
+            placeholder: t("contentReport.field.email_placeholder"),
         },
         reason: {
             type: "select",
             name: "reason",
-            label: t("report.field.reason"),
-            placeholder: t("report.field.reason_placeholder"),
-            options: ObjToOptionList(EnumReportReason).map((opt) => ({
-                ...opt,
-                label: t(`report.reportReason.${opt.value.toLowerCase()}`),
+            label: t("contentReport.field.reason"),
+            placeholder: t("contentReport.field.reason_placeholder"),
+            options: Object.values(EnumReportReason).map((reason) => ({
+                value: reason,
+                label: t(`contentReport.reportReason.${reason}`),
             })),
         },
         title: {
             type: "text",
             name: "title",
-            label: t("report.field.title"),
-            placeholder: t("report.field.title_placeholder"),
+            label: t("contentReport.field.title"),
+            placeholder: t("contentReport.field.title_placeholder"),
         },
         description: {
             type: "textarea",
             name: "description",
-            label: t("report.field.description"),
-            placeholder: t("report.field.description_placeholder"),
+            label: t("contentReport.field.description"),
+            placeholder: t("contentReport.field.description_placeholder"),
             minRows: 4,
             maxRows: 7
         },
     };
 
     const modalProps: ModalFormProps = {
-        title: t("report.create.title", { title: data.title }) || `Report: ${data.title}`,
-        desc: t("report.create.desc"),
+        title: t("contentReport.create.title", { title: data.title }) || `Report: ${data.title}`,
+        desc: t("contentReport.create.desc"),
         modal: true,
         textConfirm: t("labels.submit"),
         textCancel: t("labels.cancel"),
@@ -104,11 +106,11 @@ export const UserCreateReport = ({ isOpen, onOpenChange, data }: UserCreateRepor
         },
         child: formConfig,
         schema: formSchema,
-        content: <FormUserReport />,
+        content: <FormCreateContentReport />,
         onCancelClick: () => onOpenChange(false),
-        onConfirmClick: (values) => {
-            mutation.mutate(
-                {
+        onConfirmClick: async (values) => {
+            try {
+                await mutation.mutateAsync({
                     body: {
                         title: data.title,
                         contentType: data.contentType,
@@ -118,21 +120,34 @@ export const UserCreateReport = ({ isOpen, onOpenChange, data }: UserCreateRepor
                         reason: values.reason as (typeof EnumReportReason)[keyof typeof EnumReportReason],
                         description: values.description,
                     },
-                },
-                {
-                    onSuccess: () => {
-                        showNotifSuccess({ message: t("report.create.success") });
-                        onOpenChange(false);
-                    },
-                    onError: (err: any) => {
-                        showNotifError({ message: err?.message || t("report.create.error") });
-                    },
-                }
-            );
+                });
+                setShowSuccess(true);
+            } catch (err: any) {
+                throw err;
+            }
         },
     };
 
     if (!isOpen) return null;
+
+    if (showSuccess) {
+        return (
+            <DialogModal
+                modal={{
+                    title: t("contentReport.create.success_title"),
+                    desc: t("contentReport.create.success_desc"),
+                    iconType: "success",
+                    textConfirm: t("labels.close"),
+                    onConfirmClick: () => {
+                        setShowSuccess(false);
+                        onOpenChange(false);
+                    },
+                    modal: true,
+                    showCloseButton: true,
+                }}
+            />
+        );
+    }
 
     return <DialogModalForm modal={modalProps} />;
 };

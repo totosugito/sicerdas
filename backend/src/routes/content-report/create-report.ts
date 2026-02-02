@@ -4,7 +4,7 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/index.ts";
 import { EnumReportReason } from "../../db/schema/enum-general.ts";
 import { EnumContentType } from "../../db/schema/enum-app.ts";
-import { userContentReport } from "../../db/schema/user-report-schema.ts";
+import { userContentReport } from "../../db/schema/content-report-schema.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
 const CreateReportBody = Type.Object({

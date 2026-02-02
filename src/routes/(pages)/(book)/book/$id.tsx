@@ -9,13 +9,11 @@ import { AppRoute } from '@/constants/app-route'
 import { useTranslation } from 'react-i18next'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
-import { UserCreateReport } from '@/components/pages/layout/UserCreateReport'
+import { CreateContentReport } from '@/components/pages/layout/CreateContentReport'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { EnumContentType } from 'backend/src/db/schema/enum-app'
 import { PDFViewer, ScrollStrategy } from '@embedpdf/react-pdf-viewer'
 import { AppApi } from '@/constants/app-api'
-import { showNotifError } from '@/lib/show-notif'
-
 
 
 export const Route = createFileRoute('/(pages)/(book)/book/$id')({
@@ -57,31 +55,14 @@ function RouteComponent() {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)+/g, '');
 
-  const handleDownload = async () => {
-    try {
-      // 1. Fetch via Proxy to avoid CORS and get raw data
-      const proxyUrl = `${AppApi.book.proxyPdf}/${encodeURIComponent(`${book.bookId}-${slug}.pdf`)}?url=${encodeURIComponent(book.pdf)}&id=${book.id}`
-      const response = await fetch(proxyUrl)
-      if (!response.ok) throw new Error(t('book.detail.networkError'))
-
-      // 2. Convert to Blob
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-
-      // 3. Trigger native download dialog
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `${book.bookId}-${slug}.pdf`
-      document.body.appendChild(link)
-      link.click()
-
-      // 4. Cleanup memory
-      document.body.removeChild(link)
-      window.URL.revokeObjectURL(url)
-    } catch (error) {
-      showNotifError({ message: t('book.detail.downloadError') })
-      window.open(book.pdf, '_blank') // Fallback
-    }
+  const handleDownload = () => {
+    const link = document.createElement('a')
+    link.href = book.pdf
+    link.target = '_blank'
+    link.download = `${book.bookId}-${slug}.pdf`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   const handleToggleFavorite = () => {
@@ -113,12 +94,12 @@ function RouteComponent() {
         onReport={handleReport}
       />
 
-      <UserCreateReport
+      <CreateContentReport
         isOpen={showReportDialog}
         onOpenChange={setShowReportDialog}
         data={{
           contentType: EnumContentType.BOOK,
-          referenceId: String(book.bookId),
+          referenceId: String(book.id),
           title: book.title,
           name: user?.user?.name || "",
           email: user?.user?.email || "",

@@ -45,7 +45,6 @@ export const fetchApi = async ({
       method,
       url,
       data: body ?? null,
-      // headers: headers ?? {},
       headers: {
         'Content-Type': 'application/json',
         'accept-language': authStore.language || 'id',
@@ -56,6 +55,6 @@ export const fetchApi = async ({
     })
     return response.data
   } catch (error: any) {
-    return (error?.response?.data)
+    throw error?.response?.data
   }
 }

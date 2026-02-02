@@ -25,7 +25,7 @@ import {
 } from './user-history-schema.ts';
 import {
   userContentReport, userReportReplies,
-} from './user-report-schema.ts';
+} from './content-report-schema.ts';
 import { aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares, aiChatModels } from './chat-ai-schema.ts';
 import { periodicElements, periodicElementNotes } from './periodic-table-schema.ts';
 import { jobLogs } from './job-logs-schema.ts';

@@ -21,7 +21,7 @@ import elementComparison from './periodic-table/element-comparison-locale';
 import elementDetail from './periodic-table/element-detail-locale';
 import bookInfo from './book/book-info-locale';
 import bookDetail from './book/book-detail-locale';
-import report from './layout/report-locale';
+import report from './layout/content-report-locale';
 
 const localeId = {
   translation: {
@@ -56,7 +56,7 @@ const localeId = {
       booksLatest: booksLatest,
       detail: bookDetail,
     },
-    report: report
+    contentReport: report
   }
 }
 

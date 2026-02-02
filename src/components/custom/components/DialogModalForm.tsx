@@ -23,7 +23,7 @@ export type ModalFormProps = {
   info?: React.ReactNode;
   textConfirm?: string;
   textCancel?: string;
-  onConfirmClick: (body: Record<string, any>) => void;
+  onConfirmClick: (body: Record<string, any>) => void | Promise<void>;
   onCancelClick?: () => void;
   modal?: boolean;
   child?: any;
@@ -84,7 +84,7 @@ export const DialogModalForm = ({
     if (modal?.defaultValue) {
       form.reset(modal.defaultValue);
     }
-  }, [modal]);
+  }, [JSON.stringify(modal?.defaultValue)]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => {

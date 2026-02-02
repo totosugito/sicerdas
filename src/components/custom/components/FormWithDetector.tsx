@@ -6,7 +6,7 @@ import { z } from "zod";
 
 interface FormWithDetectorProps {
     form: UseFormReturn<any>;
-    onSubmit: (data: any) => void;
+    onSubmit: (data: any) => void | Promise<void>;
     children: React.ReactNode;
     className?: string;
     schema?: z.ZodType<any> | any;
@@ -150,9 +150,9 @@ export const FormWithDetector = ({
 
             // Form is valid, proceed with submission
             // We pass the data to the onSubmit handler
-            onSubmit(form.getValues());
-        } catch (error) {
-            setErrorMessage(t('labels.formValidationErrorUnknown'));
+            await onSubmit(form.getValues());
+        } catch (error: any) {
+            setErrorMessage(error?.message || t('labels.formValidationErrorUnknown'));
         }
     };
 
@@ -161,7 +161,7 @@ export const FormWithDetector = ({
             {/* Display error message */}
             {errorMessage && (
                 <div className="flex items-center bg-destructive/10 border border-destructive/20 text-sm text-destructive mb-4 p-3 rounded-lg gap-3">
-                    <AlertCircle className="h-5 w-5" />
+                    <AlertCircle className="h-5 w-5 shrink-0" />
                     <div className=''>
                         {errorMessage}
                     </div>

@@ -1,7 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
-import { EnumContentType, EnumReportReason } from "backend/src/db/schema/enum-app";
+import { EnumContentType } from "backend/src/db/schema/enum-app";
+import { EnumReportReason } from "backend/src/db/schema/enum-general";
 
 export interface CreateReportBody {
     name: string;
@@ -16,11 +17,11 @@ export interface CreateReportBody {
 
 export const useCreateReportMutation = () => {
     return useMutation({
-        mutationKey: ['createReport'],
+        mutationKey: ['createContentReport'],
         mutationFn: async ({ body }: { body: CreateReportBody }) => {
             const response = await fetchApi({
                 method: "POST",
-                url: AppApi.report.create,
+                url: AppApi.contentReport.create,
                 body: body,
                 headers: { 'Content-Type': 'application/json' }
             });

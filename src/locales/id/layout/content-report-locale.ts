@@ -3,7 +3,9 @@ export default {
         title: "Laporkan: {{title}}",
         desc: "Silakan isi detail di bawah ini untuk melaporkan konten ini.",
         success: "Laporan berhasil dikirim",
-        error: "Gagal mengirim laporan"
+        error: "Gagal mengirim laporan",
+        success_title: "Laporan Dikirim",
+        success_desc: "Terima kasih atas laporan Anda. Kami akan segera meninjaunya."
     },
     field: {
         name: "Nama",

@@ -44,32 +44,32 @@ export type DialogModalProps = {
 };
 
 export const DialogModal = ({
-                              modal = {
-                                title: "Title",
-                                desc: "Text Descriptions",
-                                content: <div />,
-                                textConfirm: "Yes",
-                                textCancel: "No",
-                                onConfirmClick: undefined,
-                                onCancelClick: undefined,
-                                modal: true,
-                                icon: undefined,
-                                iconType: undefined,
-                                showCloseButton: true,
-                                variant: "default",
-                              },
-                              onDismissOutside = false,
-                              classNameConfirm = "",
-                              classNameCancel = "",
-                              variantSubmit = "default",
-                              ...props
-                            }: DialogModalProps) => {
+  modal = {
+    title: "Title",
+    desc: "Text Descriptions",
+    content: <div />,
+    textConfirm: "Yes",
+    textCancel: "No",
+    onConfirmClick: undefined,
+    onCancelClick: undefined,
+    modal: true,
+    icon: undefined,
+    iconType: undefined,
+    showCloseButton: true,
+    variant: "default",
+  },
+  onDismissOutside = false,
+  classNameConfirm = "",
+  classNameCancel = "",
+  variantSubmit = "default",
+  ...props
+}: DialogModalProps) => {
   const [isOpen, setIsOpen] = useState(true);
 
   // Get the appropriate icon based on iconType
   const getIcon = () => {
     if (modal?.icon) return modal.icon;
-    
+
     switch (modal?.iconType) {
       case "warning":
         return <AlertTriangle className="h-8 w-8 text-yellow-500" />;
@@ -113,11 +113,11 @@ export const DialogModal = ({
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ 
-            type: "spring", 
-            stiffness: 300, 
+          transition={{
+            type: "spring",
+            stiffness: 300,
             damping: 25,
-            mass: 0.8 
+            mass: 0.8
           }}
         >
           <DialogHeader className="flex flex-row items-start gap-4">
@@ -125,11 +125,11 @@ export const DialogModal = ({
               <motion.div
                 initial={{ scale: 0, rotate: -10 }}
                 animate={{ scale: 1, rotate: 0 }}
-                transition={{ 
-                  delay: 0.1, 
-                  type: "spring", 
-                  stiffness: 200, 
-                  damping: 15 
+                transition={{
+                  delay: 0.1,
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 15
                 }}
                 className="mt-0.5"
               >
@@ -148,11 +148,11 @@ export const DialogModal = ({
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ 
-                delay: 0.2, 
-                type: "spring", 
-                stiffness: 300, 
-                damping: 25 
+              transition={{
+                delay: 0.2,
+                type: "spring",
+                stiffness: 300,
+                damping: 25
               }}
               className="py-4"
             >
@@ -160,30 +160,30 @@ export const DialogModal = ({
             </motion.div>
           )}
 
-          {modal?.textCancel && modal?.textConfirm && (
+          {modal?.textCancel || modal?.textConfirm && (
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ 
-                delay: 0.3, 
-                type: "spring", 
-                stiffness: 300, 
-                damping: 25 
+              transition={{
+                delay: 0.3,
+                type: "spring",
+                stiffness: 300,
+                damping: 25
               }}
             >
               <DialogFooter className="gap-3 pt-4">
                 {modal?.textCancel && (
-                  <Button 
-                    variant="outline" 
-                    onClick={modal?.onCancelClick} 
+                  <Button
+                    variant="outline"
+                    onClick={modal?.onCancelClick}
                     className={cn("min-w-[100px]", classNameCancel)}
                   >
                     {modal.textCancel}
                   </Button>
                 )}
                 {modal?.textConfirm && (
-                  <Button 
-                    variant={modal.variant === "destructive" ? "destructive" : (variantSubmit as any)} 
+                  <Button
+                    variant={modal.variant === "destructive" ? "destructive" : (variantSubmit as any)}
                     onClick={modal?.onConfirmClick}
                     className={cn("min-w-[100px]", classNameConfirm)}
                   >
