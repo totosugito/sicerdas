@@ -22,6 +22,7 @@ import elementDetail from './periodic-table/element-detail';
 import bookInfo from './book/book-info';
 import bookDetail from './book/book-detail';
 import report from './layout/content-report';
+import butirPancasila from './constitution/butir-pancasila';
 
 const localeId = {
   translation: {
@@ -56,7 +57,10 @@ const localeId = {
       booksLatest: booksLatest,
       detail: bookDetail,
     },
-    contentReport: report
+    contentReport: report,
+    constitution: {
+      butirPancasila: butirPancasila
+    }
   }
 }
 
