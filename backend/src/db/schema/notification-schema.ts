@@ -1,11 +1,11 @@
 import type { InferSelectModel } from 'drizzle-orm';
 import { boolean, jsonb, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { users } from './auth-schema.ts';
-import { 
-  PgEnumNotificationPriority, 
-  PgEnumNotificationStatus, 
-  PgEnumNotificationType 
-} from './enum-app.ts';
+import {
+  PgEnumNotificationPriority,
+  PgEnumNotificationStatus,
+  PgEnumNotificationType
+} from './enum-general.ts';
 
 /**
  * Table: notifications
@@ -69,31 +69,31 @@ import {
  */
 export const notifications = pgTable('notifications', {
   id: uuid().primaryKey().notNull().defaultRandom(),
-  
+
   // User who receives the notification
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-  
+
   // Notification details
   title: varchar('title', { length: 255 }).notNull(),
   message: text('message').notNull(),
-  
+
   // Classification and status
   type: PgEnumNotificationType('type').notNull(),
   status: PgEnumNotificationStatus('status').notNull().default('unread'),
   priority: PgEnumNotificationPriority('priority').notNull().default('normal'),
-  
+
   // Timestamps
   readAt: timestamp('read_at'),
   sentAt: timestamp('sent_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   expiresAt: timestamp('expires_at'),
-  
+
   // Flags
   isArchived: boolean('is_archived').notNull().default(false),
-  
+
   // Flexible data storage
   extra: jsonb("extra")
     .$type<Record<string, unknown>>()
