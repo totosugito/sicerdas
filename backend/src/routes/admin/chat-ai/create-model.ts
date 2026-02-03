@@ -11,6 +11,7 @@ const CreateModelBody = Type.Object({
     provider: Type.String(),
     modelIdentifier: Type.String(),
     description: Type.Optional(Type.String()),
+    apiKey: Type.Optional(Type.String()),
     maxTokens: Type.Optional(Type.Number()),
     supportsImage: Type.Optional(Type.Boolean({ default: false })),
     supportsFile: Type.Optional(Type.Boolean({ default: false })),

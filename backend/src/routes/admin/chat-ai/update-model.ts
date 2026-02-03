@@ -17,6 +17,7 @@ const UpdateModelBody = Type.Object({
     provider: Type.Optional(Type.String()),
     modelIdentifier: Type.Optional(Type.String()),
     description: Type.Optional(Type.String()),
+    apiKey: Type.Optional(Type.String()),
     maxTokens: Type.Optional(Type.Number()),
     supportsImage: Type.Optional(Type.Boolean()),
     supportsFile: Type.Optional(Type.Boolean()),

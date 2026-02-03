@@ -105,6 +105,9 @@ export const aiChatMessages = pgTable('ai_chat_messages', {
 
   // Analytics/Billing
   tokens: integer('tokens'), // Number of tokens in the message (optional)
+
+  // Message Status
+  isSuccess: boolean('is_success').notNull().default(true),
 }, (table) => {
   return {
     sessionIdIdx: index('ai_chat_messages_session_id_idx').on(table.sessionId),
@@ -256,6 +259,7 @@ export const aiModels = pgTable('ai_models', {
   name: varchar('name', { length: 100 }).notNull(),
   provider: varchar('provider', { length: 50 }).notNull(),
   modelIdentifier: varchar('model_identifier', { length: 100 }).notNull().unique(),
+  apiKey: text('api_key'), // Encrypted API Key for the model provider
   description: text('description'),
   maxTokens: integer('max_tokens'),
 
@@ -286,3 +290,40 @@ export const aiModels = pgTable('ai_models', {
 
 export type SchemaAiModelSelect = InferSelectModel<typeof aiModels>;
 export type SchemaAiModelInsert = InferInsertModel<typeof aiModels>;
+
+/**
+ * Table: ai_api_logs
+ * 
+ * This table stores logs of all AI API calls for statistical purposes.
+ * It tracks success rates, duration, and token usage.
+ */
+export const aiApiLogs = pgTable('ai_api_logs', {
+  id: uuid().primaryKey().notNull().defaultRandom(),
+
+  // Reference to the model used
+  modelId: uuid('model_id')
+    .references(() => aiModels.id, { onDelete: 'set null', onUpdate: 'cascade' }),
+
+  provider: varchar('provider', { length: 50 }).notNull(),
+
+  // Status of the call
+  status: varchar('status', { length: 20 }).notNull(), // 'success', 'failed'
+
+  // Performance metrics
+  duration: integer('duration').notNull(), // Duration in milliseconds
+  tokens: integer('tokens'), // Total tokens used
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+
+  // Error details if failed
+  errorMessage: text('error_message'),
+}, (table) => {
+  return {
+    modelIdIdx: index('ai_api_logs_model_id_idx').on(table.modelId),
+    createdAtIdx: index('ai_api_logs_created_at_idx').on(table.createdAt),
+    statusIdx: index('ai_api_logs_status_idx').on(table.status),
+  }
+});
+
+export type SchemaAiApiLogSelect = InferSelectModel<typeof aiApiLogs>;
+export type SchemaAiApiLogInsert = InferInsertModel<typeof aiApiLogs>;

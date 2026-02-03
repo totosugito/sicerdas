@@ -12,6 +12,7 @@ const ModelResponseItem = Type.Object({
     provider: Type.String(),
     modelIdentifier: Type.String(),
     description: Type.Optional(Type.String()),
+    apiKey: Type.Optional(Type.String()),
     status: Type.String(),
     isDefault: Type.Boolean(),
     isEnabled: Type.Boolean(),

@@ -8,7 +8,8 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 
 const UpdateMultipleModelsBody = Type.Object({
     ids: Type.Array(Type.String({ format: 'uuid' })),
-    isEnabled: Type.Boolean(),
+    isEnabled: Type.Optional(Type.Boolean()),
+    apiKey: Type.Optional(Type.String()),
 });
 
 const UpdateMultipleModelsResponse = Type.Object({
@@ -44,18 +45,26 @@ const updateMultipleModelsRoute: FastifyPluginAsyncTypebox = async (app) => {
             req: FastifyRequest<{ Body: typeof UpdateMultipleModelsBody.static }>,
             reply: FastifyReply
         ): Promise<typeof UpdateMultipleModelsResponse.static> {
-            const { ids, isEnabled } = req.body;
+            const { ids, isEnabled, apiKey } = req.body;
 
             if (ids.length === 0) {
                 return reply.badRequest(req.i18n.t('admin.model.updateBatch.emptyIds'));
             }
 
+            if (isEnabled === undefined && apiKey === undefined) {
+                return reply.badRequest(req.i18n.t('admin.model.updateBatch.noFieldsToUpdate'));
+            }
+
+            const updateData: any = {
+                updatedAt: new Date(),
+            };
+
+            if (isEnabled !== undefined) updateData.isEnabled = isEnabled;
+            if (apiKey !== undefined) updateData.apiKey = apiKey;
+
             const updatedModels = await db
                 .update(aiModels)
-                .set({
-                    isEnabled,
-                    updatedAt: new Date(),
-                })
+                .set(updateData)
                 .where(inArray(aiModels.id, ids))
                 .returning({
                     id: aiModels.id,

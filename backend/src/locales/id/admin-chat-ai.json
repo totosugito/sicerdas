@@ -10,7 +10,8 @@
             },
             "updateBatch": {
                 "success": "Status model AI berhasil diperbarui",
-                "emptyIds": "Daftar ID model tidak boleh kosong"
+                "emptyIds": "Daftar ID model tidak boleh kosong",
+                "noFieldsToUpdate": "Tidak ada field yang akan diperbarui"
             },
             "delete": {
                 "success": "Model AI berhasil dihapus",
