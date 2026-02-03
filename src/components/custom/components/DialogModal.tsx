@@ -160,7 +160,7 @@ export const DialogModal = ({
             </motion.div>
           )}
 
-          {modal?.textCancel || modal?.textConfirm && (
+          {(modal?.textCancel || modal?.textConfirm) && (
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}

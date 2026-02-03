@@ -23,7 +23,7 @@ const profileSearchSchema = z.object({
     page: z.string().optional().catch('profile'),
 })
 
-export const Route = createFileRoute('/(pages)/_private/user/profile')({
+export const Route = createFileRoute('/(pages)/(private)/user/profile')({
     component: RouteComponent,
     validateSearch: profileSearchSchema,
 })

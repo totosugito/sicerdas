@@ -15,6 +15,15 @@ export const AppApi = {
     getSession: APP_URL_API + "/auth/get-session",
   },
   admin: {
+    chatAi: {
+      models: {
+        list: APP_URL_API + "/admin/chat-ai/models/list",
+        create: APP_URL_API + "/admin/chat-ai/models",
+        crud: APP_URL_API + "/admin/chat-ai/models", // for GET, PATCH, DELETE single
+        deleteBatch: APP_URL_API + "/admin/chat-ai/models/delete-batch",
+        updateBatch: APP_URL_API + "/admin/chat-ai/models/update-batch",
+      }
+    },
     user: {
       list: APP_URL_API + "/admin/user/list",
       delete: APP_URL_API + "/admin/user/delete",

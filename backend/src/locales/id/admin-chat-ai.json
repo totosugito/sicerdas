@@ -1,0 +1,28 @@
+{
+    "admin": {
+        "model": {
+            "create": {
+                "success": "Model AI berhasil dibuat"
+            },
+            "update": {
+                "success": "Model AI berhasil diperbarui",
+                "notFound": "Model AI tidak ditemukan"
+            },
+            "updateBatch": {
+                "success": "Status model AI berhasil diperbarui",
+                "emptyIds": "Daftar ID model tidak boleh kosong"
+            },
+            "delete": {
+                "success": "Model AI berhasil dihapus",
+                "notFound": "Model AI tidak ditemukan"
+            },
+            "deleteBatch": {
+                "success": "Model AI yang dipilih berhasil dihapus",
+                "emptyIds": "Daftar ID model tidak boleh kosong"
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar model AI"
+            }
+        }
+    }
+}

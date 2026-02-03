@@ -492,7 +492,7 @@ export function AppNavbar() {
           </div>
         </div>
       </div>
-      {confirmationModal && <DialogModal modal={confirmationModal} />}
+      {confirmationModal && <DialogModal modal={confirmationModal} variantSubmit='destructive' />}
     </nav>
   )
 }
