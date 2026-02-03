@@ -29,40 +29,38 @@ export const AutoLoad: FastifyPluginAsyncTypebox = async (fastify) => {
         // 1. Fetch enabled models
         const models = await db.select().from(aiModels).where(eq(aiModels.isEnabled, true));
 
-        // 2. Fetch stats for each model
-        // This could be optimized with a join, but for simplicity/clarity doing separate aggregation or per-model
-        // A better approach is to aggregate all logs by modelId
-
+        // 2. Fetch aggregated stats from aiApiLogs
         const statsQuery = await db.select({
             modelId: aiApiLogs.modelId,
-            status: aiApiLogs.status,
-            duration: aiApiLogs.duration,
+            successCount: aiApiLogs.successCount,
+            failureCount: aiApiLogs.failureCount,
+            totalRequests: aiApiLogs.totalRequests,
+            avgDuration: aiApiLogs.avgDuration,
+            totalTokens: aiApiLogs.totalTokens,
         }).from(aiApiLogs);
 
-        // Process stats in memory (simplified for now, ideally DB aggregation)
-        const modelStats = new Map<string, { success: number, fail: number, totalDuration: number, totalSuccessDuration: number }>();
+        // Aggregate stats per model (sum across all time periods)
+        const modelStats = new Map<string, { success: number, fail: number, totalDuration: number, totalCalls: number }>();
 
         for (const log of statsQuery) {
             if (!log.modelId) continue;
 
-            const current = modelStats.get(log.modelId) || { success: 0, fail: 0, totalDuration: 0, totalSuccessDuration: 0 };
+            const current = modelStats.get(log.modelId) || { success: 0, fail: 0, totalDuration: 0, totalCalls: 0 };
 
-            if (log.status === 'success') {
-                current.success++;
-                current.totalSuccessDuration += log.duration;
-            } else {
-                current.fail++;
-            }
-            current.totalDuration += log.duration; // Total duration of all calls? Or just avg of success? usually avg response time
+            current.success += log.successCount || 0;
+            current.fail += log.failureCount || 0;
+            current.totalCalls += log.totalRequests || 0;
+            // Weighted average: multiply avg by request count, then divide by total
+            current.totalDuration += (log.avgDuration || 0) * (log.totalRequests || 0);
 
             modelStats.set(log.modelId, current);
         }
 
         const result = models.map(model => {
-            const stats = modelStats.get(model.id) || { success: 0, fail: 0, totalDuration: 0, totalSuccessDuration: 0 };
-            const totalCalls = stats.success + stats.fail;
+            const stats = modelStats.get(model.id) || { success: 0, fail: 0, totalDuration: 0, totalCalls: 0 };
+            const totalCalls = stats.totalCalls;
             const successRate = totalCalls > 0 ? (stats.success / totalCalls) * 100 : 0;
-            const avgDuration = stats.success > 0 ? stats.totalSuccessDuration / stats.success : 0;
+            const avgDuration = totalCalls > 0 ? stats.totalDuration / totalCalls : 0;
 
             return {
                 id: model.id,
@@ -85,6 +83,7 @@ export const AutoLoad: FastifyPluginAsyncTypebox = async (fastify) => {
         schema: {
             tags: ['Chat AI'],
             body: Type.Object({
+                sessionId: Type.String({ format: 'uuid' }), // Frontend must provide sessionId
                 modelId: Type.String(),
                 messages: Type.Array(Type.Object({
                     role: Type.Union([Type.Literal('user'), Type.Literal('assistant'), Type.Literal('system')]),
@@ -99,89 +98,61 @@ export const AutoLoad: FastifyPluginAsyncTypebox = async (fastify) => {
             }
         }
     }, async (request, reply) => {
-        const { modelId, messages } = request.body;
+        const { sessionId, modelId, messages } = request.body;
 
-        const startTime = Date.now();
-        let duration = 0;
+        const requestStartedAt = new Date();
 
         try {
-            // 1. Get model to find provider and api key
+            // 1. Verify session exists
+            const session = await db.query.aiChatSessions.findFirst({
+                where: eq(aiChatSessions.id, sessionId)
+            });
+
+            if (!session) {
+                return reply.notFound('Session not found');
+            }
+
+            // 2. Get model
             const model = await db.query.aiModels.findFirst({
                 where: eq(aiModels.id, modelId)
             });
 
             if (!model) {
-                throw new Error('Model not found');
+                return reply.notFound('Model not found');
             }
 
-            // 2. Mock AI call (since we don't have real providers setup yet)
-            // In real implementation, switch(model.provider) ...
-
-            await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000)); // Simulate delay
+            // 3. Call AI API (mocked for now)
+            await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
 
             const responseContent = `This is a simulated response from ${model.name}. You said: "${messages[messages.length - 1].content}"`;
+            const responseReceivedAt = new Date();
 
-            status = 'success';
-            duration = Date.now() - startTime;
-
-
-            // 3. Log statistics & Save Message
-            await db.insert(aiApiLogs).values({
-                modelId: model.id,
-                provider: model.provider,
-                status: 'success',
-                duration: duration,
-                tokens: responseContent.length / 4,
-            });
-
-            // Ideally we should create/get a session first, but simplifying for this task if no sessionId provided
-            // Assuming a session exists or we create a temporary one? 
-            // The user request didn't specify session management fully, but we need sessionId for aiChatMessages
-            // For now, let's just log to aiApiLogs as requested originally, 
-            // BUT user asked for 'aiChatMessages' info too.
-            // So we must have a session.
-
-            // Let's create a dummy session if one doesn't exist just to satisfy the constraint for this demo
-            // In a real app, sessionId would be passed in headers or body
-
-            // For the purpose of "fullstack chat app like chat gpt", we usually have a session.
-            // I will create a new session for each request for simplicity unless we want to managing state.
-            // But wait, the schema requires sessionId.
-
-            // Let's add a quick fix to create a session if needed or just skip aiChatMessages if no session provided 
-            // (though user explicitly asked for aiChatMessages status).
-
-            // BETTER: Create a session for this chat interaction if not managing history in FE yet.
-            // Or simply:
-
-            // Generate a new session ID for this interaction for simplicity
-            const sessionId = uuidv4();
-            await db.insert(aiChatSessions).values({
-                id: sessionId,
-                title: `Chat with ${model.name} - ${new Date().toLocaleString()}`,
-                userId: 'anonymous' // Placeholder for now
-            });
-
-            // Insert user message
+            // 4. Save user message (last message in array)
+            const userMessage = messages[messages.length - 1];
             await db.insert(aiChatMessages).values({
                 sessionId: sessionId,
-                role: messages[messages.length - 1].role,
-                content: messages[messages.length - 1].content,
-                position: messages.length - 1, // Assuming last message is the user's current input
+                role: userMessage.role,
+                content: userMessage.content,
+                position: messages.length - 1,
                 modelId: model.id,
-                isSuccess: true
+                requestStartedAt: requestStartedAt,
+                responseReceivedAt: responseReceivedAt,
+                isSuccess: true,
+                tokens: userMessage.content.length / 4, // Rough estimate
             });
 
-            // Insert assistant response
+            // 5. Save assistant response
             await db.insert(aiChatMessages).values({
                 sessionId: sessionId,
                 role: 'assistant',
                 content: responseContent,
-                position: messages.length, // Position after the user's last message
+                position: messages.length,
                 modelId: model.id,
-                isSuccess: true
+                requestStartedAt: requestStartedAt,
+                responseReceivedAt: responseReceivedAt,
+                isSuccess: true,
+                tokens: responseContent.length / 4,
             });
-
 
             return {
                 role: 'assistant' as const,
@@ -189,17 +160,24 @@ export const AutoLoad: FastifyPluginAsyncTypebox = async (fastify) => {
             };
 
         } catch (error: any) {
-            duration = Date.now() - startTime;
-            const errorMessage = error.message;
+            const responseReceivedAt = new Date();
 
-            // Log failure
-            await db.insert(aiApiLogs).values({
-                modelId: modelId,
-                provider: 'unknown', // or fetch from model if available
-                status: 'failed',
-                duration: duration,
-                errorMessage: errorMessage
-            });
+            // Save failed message
+            try {
+                await db.insert(aiChatMessages).values({
+                    sessionId: sessionId,
+                    role: 'assistant',
+                    content: `Error: ${error.message}`,
+                    position: messages.length,
+                    modelId: modelId,
+                    requestStartedAt: requestStartedAt,
+                    responseReceivedAt: responseReceivedAt,
+                    isSuccess: false,
+                });
+            } catch (dbError) {
+                // If we can't save the error, just log it
+                console.error('Failed to save error message:', dbError);
+            }
 
             throw error;
         }

@@ -27,7 +27,7 @@
     "db:drop": "drizzle-kit drop",
     "db:push_dev": "cross-env NODE_ENV=development drizzle-kit push",
     "db:init_all": "cross-env NODE_ENV=development ts-node src/scripts/init/run-inital-data.ts --trace-warnings",
-    "db:schedule": "cross-env NODE_ENV=development ts-node src/scripts/schedule/daily.ts --trace-warnings"
+    "db:schedule": "cross-env NODE_ENV=development ts-node src/scripts/schedule/daily/daily.ts --trace-warnings"
   },
   "dependencies": {
     "@fastify/autoload": "^6.3.1",

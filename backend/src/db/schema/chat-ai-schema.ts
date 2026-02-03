@@ -46,12 +46,10 @@ export const aiChatSessions = pgTable('ai_chat_sessions', {
 
   // Session status
   isActive: boolean('is_active').notNull().default(true),
-}, (table) => {
-  return {
-    userIdIdx: index('ai_chat_sessions_user_id_idx').on(table.userId),
-    createdAtIdx: index('ai_chat_sessions_created_at_idx').on(table.createdAt),
-  }
-});
+}, (table) => [
+  index('ai_chat_sessions_user_id_idx').on(table.userId),
+  index('ai_chat_sessions_created_at_idx').on(table.createdAt),
+]);
 
 export type SchemaAiChatSessionSelect = InferSelectModel<typeof aiChatSessions>;
 export type SchemaAiChatSessionInsert = InferInsertModel<typeof aiChatSessions>;
@@ -100,6 +98,10 @@ export const aiChatMessages = pgTable('ai_chat_messages', {
   // Timestamp
   createdAt: timestamp('created_at').defaultNow().notNull(),
 
+  // Request/Response timing for analytics
+  requestStartedAt: timestamp('request_started_at'), // When AI request started
+  responseReceivedAt: timestamp('response_received_at'), // When AI response received
+
   // Conversation ordering
   position: integer('position').notNull(), // Position of message in the conversation (zero-indexed)
 
@@ -108,13 +110,11 @@ export const aiChatMessages = pgTable('ai_chat_messages', {
 
   // Message Status
   isSuccess: boolean('is_success').notNull().default(true),
-}, (table) => {
-  return {
-    sessionIdIdx: index('ai_chat_messages_session_id_idx').on(table.sessionId),
-    createdAtIdx: index('ai_chat_messages_created_at_idx').on(table.createdAt),
-    positionIdx: index('ai_chat_messages_position_idx').on(table.position),
-  }
-});
+}, (table) => [
+  index('ai_chat_messages_session_id_idx').on(table.sessionId),
+  index('ai_chat_messages_created_at_idx').on(table.createdAt),
+  index('ai_chat_messages_position_idx').on(table.position),
+]);
 
 export type SchemaAiChatMessageSelect = InferSelectModel<typeof aiChatMessages>;
 export type SchemaAiChatMessageInsert = InferInsertModel<typeof aiChatMessages>;
@@ -165,11 +165,9 @@ export const aiChatAttachments = pgTable('ai_chat_attachments', {
 
   // Optional direct access URL
   url: text('url'), // Public URL to access the file
-}, (table) => {
-  return {
-    messageIdIdx: index('ai_chat_attachments_message_id_idx').on(table.messageId),
-  }
-});
+}, (table) => [
+  index('ai_chat_attachments_message_id_idx').on(table.messageId),
+]);
 
 export type SchemaAiChatAttachmentSelect = InferSelectModel<typeof aiChatAttachments>;
 export type SchemaAiChatAttachmentInsert = InferInsertModel<typeof aiChatAttachments>;
@@ -219,11 +217,9 @@ export const aiChatShares = pgTable('ai_chat_shares', {
 
   // Share status
   isActive: boolean('is_active').notNull().default(true),
-}, (table) => {
-  return {
-    sessionIdIdx: index('ai_chat_shares_session_id_idx').on(table.sessionId),
-  }
-});
+}, (table) => [
+  index('ai_chat_shares_session_id_idx').on(table.sessionId),
+]);
 
 export type SchemaAiChatShareSelect = InferSelectModel<typeof aiChatShares>;
 export type SchemaAiChatShareInsert = InferInsertModel<typeof aiChatShares>;
@@ -294,36 +290,78 @@ export type SchemaAiModelInsert = InferInsertModel<typeof aiModels>;
 /**
  * Table: ai_api_logs
  * 
- * This table stores logs of all AI API calls for statistical purposes.
- * It tracks success rates, duration, and token usage.
+ * This table stores aggregated AI API statistics per hour for analytics and monitoring.
+ * 
+ * **Purpose:**
+ * - Track model performance over time (success rates, response times, token usage)
+ * - Enable historical analysis and trend detection
+ * - Support billing and cost tracking via token counts
+ * - Monitor system health and identify problematic models
+ * 
+ * **Data Population:**
+ * - Populated by hourly scheduled job (cron/scheduler)
+ * - Aggregates data from `aiChatMessages` table
+ * - Each record represents one hour of activity for one model
+ * 
+ * **Performance Benefits:**
+ * - Reduces database load by avoiding real-time statistics calculation
+ * - Pre-aggregated data enables fast dashboard queries
+ * - Scales to millions of messages without performance degradation
+ * 
+ * **Fields:**
+ * - id: Unique identifier for this aggregation record
+ * - modelId: Reference to the AI model (required, cascades on delete)
+ * - periodStart: Start of the hourly period (e.g., 2024-01-01 14:00:00)
+ * - periodEnd: End of the hourly period (e.g., 2024-01-01 15:00:00)
+ * - successCount: Number of successful API calls in this period
+ * - failureCount: Number of failed API calls in this period
+ * - totalRequests: Total requests (successCount + failureCount)
+ * - avgDuration: Average response time in milliseconds for this period
+ * - totalTokens: Total tokens consumed in this period (for billing)
+ * - createdAt: When this aggregation record was created
+ * 
+ * **Indexes:**
+ * - modelId: Fast lookups by model
+ * - periodStart, periodEnd: Time-range queries
+ * - (modelId, periodStart): Composite index for efficient model+time filtering
+ * 
+ * **Example Query:**
+ * ```sql
+ * -- Get last 24 hours of stats for a specific model
+ * SELECT * FROM ai_api_logs 
+ * WHERE model_id = 'xxx' 
+ *   AND period_start >= NOW() - INTERVAL '24 hours'
+ * ORDER BY period_start DESC;
+ * ```
  */
 export const aiApiLogs = pgTable('ai_api_logs', {
   id: uuid().primaryKey().notNull().defaultRandom(),
 
   // Reference to the model used
   modelId: uuid('model_id')
-    .references(() => aiModels.id, { onDelete: 'set null', onUpdate: 'cascade' }),
+    .notNull()
+    .references(() => aiModels.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 
-  provider: varchar('provider', { length: 50 }).notNull(),
+  // Aggregation period
+  periodStart: timestamp('period_start').notNull(), // Start of hour (e.g., 2024-01-01 14:00:00)
+  periodEnd: timestamp('period_end').notNull(),     // End of hour (e.g., 2024-01-01 15:00:00)
 
-  // Status of the call
-  status: varchar('status', { length: 20 }).notNull(), // 'success', 'failed'
+  // Aggregated metrics
+  successCount: integer('success_count').notNull().default(0),
+  failureCount: integer('failure_count').notNull().default(0),
+  totalRequests: integer('total_requests').notNull().default(0), // successCount + failureCount
 
-  // Performance metrics
-  duration: integer('duration').notNull(), // Duration in milliseconds
-  tokens: integer('tokens'), // Total tokens used
+  avgDuration: integer('avg_duration'), // Average duration in milliseconds
+  totalTokens: integer('total_tokens'), // Total tokens used in this period
 
   createdAt: timestamp('created_at').defaultNow().notNull(),
-
-  // Error details if failed
-  errorMessage: text('error_message'),
-}, (table) => {
-  return {
-    modelIdIdx: index('ai_api_logs_model_id_idx').on(table.modelId),
-    createdAtIdx: index('ai_api_logs_created_at_idx').on(table.createdAt),
-    statusIdx: index('ai_api_logs_status_idx').on(table.status),
-  }
-});
+}, (table) => [
+  index('ai_api_logs_model_id_idx').on(table.modelId),
+  index('ai_api_logs_period_start_idx').on(table.periodStart),
+  index('ai_api_logs_period_end_idx').on(table.periodEnd),
+  // Composite index for efficient queries by model and time range
+  index('ai_api_logs_model_period_idx').on(table.modelId, table.periodStart),
+]);
 
 export type SchemaAiApiLogSelect = InferSelectModel<typeof aiApiLogs>;
 export type SchemaAiApiLogInsert = InferInsertModel<typeof aiApiLogs>;
