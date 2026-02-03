@@ -23,6 +23,9 @@ import bookInfo from './book/book-info';
 import bookDetail from './book/book-detail';
 import report from './layout/content-report';
 import butirPancasila from './constitution/butir-pancasila';
+import uud1945 from './constitution/uud-1945';
+import uud1945Asli from './constitution/uud-1945-asli';
+import uudAmandemen from './constitution/uud-amandemen';
 
 const localeId = {
   translation: {
@@ -59,7 +62,10 @@ const localeId = {
     },
     contentReport: report,
     constitution: {
-      butirPancasila: butirPancasila
+      butirPancasila: butirPancasila,
+      uud1945: uud1945,
+      uud1945Asli: uud1945Asli,
+      uudAmandemen: uudAmandemen
     }
   }
 }

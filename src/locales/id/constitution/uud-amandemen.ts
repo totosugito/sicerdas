@@ -1,0 +1,21 @@
+export default {
+    title: "Pasal-Pasal UUD1945 (Amandemen)",
+    description: "Landasan hukum dan konstitusi tertinggi Negara Republik Indonesia",
+    articleCount: "{{count}} Pasal",
+    transitionalProvisionCount: "{{count}} Aturan Peralihan",
+    additionalProvisionCount: "{{count}} Aturan Tambahan",
+    searchPlaceholder: "Cari pasal, ayat, bab, atau amandemen UUD 1945...",
+    closeAll: "Tutup Semua",
+    openAll: "Buka Semua",
+    foundResult: "Ditemukan <1>{{ayatCount}}</1> ayat dari <3>{{pasalCount}}</3> pasal",
+    noResultTitle: "Tidak Ada Hasil",
+    noResultDesc: "Tidak ditemukan pasal atau ayat UUD 1945 Amandemen yang sesuai dengan pencarian \"{{query}}\"",
+    clearSearch: "Hapus Pencarian",
+    transitionalProvision: "Aturan Peralihan",
+    additionalProvision: "Aturan Tambahan",
+    article: "Pasal",
+    amendment: "Amandemen {{val}}",
+    viewAyat: "Lihat Ayat",
+    matchingAyat: "{{matchCount}} dari {{totalCount}} Ayat yang sesuai",
+    ayatCount: "{{totalCount}} Ayat"
+}

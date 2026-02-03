@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import { useTranslation, Trans } from 'react-i18next';
 import { createFileRoute } from '@tanstack/react-router';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion';
 import { Search, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { ConstitutionPagination } from '@/components/pages/constitution/ConstitutionPagination';
 import uud1945Data from '@/data/constitution/pasal_uud_1945_amandemen.json';
 
 // Define TypeScript interfaces for our data
@@ -32,10 +34,14 @@ export const Route = createFileRoute('/(pages)/constitution/pasal-uud-1945-amand
 });
 
 function RouteComponent() {
+  const { t } = useTranslation();
   // Search state
   const [searchTerm, setSearchTerm] = useState('');
   // Expand/collapse all state
   const [expandedAll, setExpandedAll] = useState(false);
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   // Toggle expand/collapse all
   const toggleExpandAll = useCallback(() => {
@@ -45,7 +51,13 @@ function RouteComponent() {
   // Clear search
   const clearSearch = useCallback(() => {
     setSearchTerm('');
+    setCurrentPage(1);
   }, []);
+
+  // Reset pagination when search changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   // Highlight text for search results
   const highlightText = useCallback((text: string, query: string) => {
@@ -80,10 +92,10 @@ function RouteComponent() {
 
   // Count different types of articles
   const counts = {
-      pasal: 37,
-      aturanPeralihan: 3,
-      aturanTambahan: 2
-    };
+    pasal: 37,
+    aturanPeralihan: 3,
+    aturanTambahan: 2
+  };
 
   // Calculate total matching ayat for search summary
   const searchSummary = useMemo(() => {
@@ -107,10 +119,24 @@ function RouteComponent() {
   // Filter ayat based on search term for display
   const filterAyat = useCallback((ayatList: Ayat[], searchTerm: string): Ayat[] => {
     if (!searchTerm.trim()) return ayatList;
-    return ayatList.filter(ayat => 
+    return ayatList.filter(ayat =>
       ayat.isi.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, []);
+
+  // Pagination Logic
+  const totalItems = filteredData.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const currentData = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredData.slice(start, start + itemsPerPage);
+  }, [currentPage, filteredData]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="flex flex-col gap-6 w-full pb-6">
@@ -123,20 +149,20 @@ function RouteComponent() {
             </div>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-            Pasal-Pasal UUD1945 (Amandemen)
+            {t('constitution.uudAmandemen.title')}
           </h1>
           <p className="text-lg text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
-            Landasan hukum dan konstitusi tertinggi Negara Republik Indonesia
+            {t('constitution.uudAmandemen.description')}
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
-              {counts.pasal} Pasal
+              {t('constitution.uudAmandemen.articleCount', { count: counts.pasal })}
             </Badge>
             <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
-              {counts.aturanPeralihan} Aturan Peralihan
+              {t('constitution.uudAmandemen.transitionalProvisionCount', { count: counts.aturanPeralihan })}
             </Badge>
             <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
-              {counts.aturanTambahan} Aturan Tambahan
+              {t('constitution.uudAmandemen.additionalProvisionCount', { count: counts.aturanTambahan })}
             </Badge>
           </div>
         </div>
@@ -153,7 +179,7 @@ function RouteComponent() {
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <Input
                   type="text"
-                  placeholder="Cari pasal, ayat, bab, atau amandemen UUD 1945..."
+                  placeholder={t('constitution.uudAmandemen.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="px-12 h-10 text-lg border-2 border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 dark:border-gray-700 dark:focus:border-red-500 dark:focus:ring-red-900/30 dark:bg-gray-800 dark:text-white"
@@ -178,12 +204,12 @@ function RouteComponent() {
                   {expandedAll ? (
                     <>
                       <ChevronUp className="w-4 h-4" />
-                      Tutup Semua
+                      {t('constitution.uudAmandemen.closeAll')}
                     </>
                   ) : (
                     <>
                       <ChevronDown className="w-4 h-4" />
-                      Buka Semua
+                      {t('constitution.uudAmandemen.openAll')}
                     </>
                   )}
                 </Button>
@@ -191,9 +217,11 @@ function RouteComponent() {
             </div>
             {searchTerm && (
               <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
-                Ditemukan <span className="font-semibold text-red-600 dark:text-red-400">
-                  {searchSummary.ayatCount}
-                </span> ayat dari <span className="font-semibold text-red-600 dark:text-red-400">{searchSummary.pasalCount}</span> pasal
+                <Trans
+                  i18nKey="constitution.uudAmandemen.foundResult"
+                  values={{ ayatCount: searchSummary.ayatCount, pasalCount: searchSummary.pasalCount }}
+                  components={{ 1: <span className="font-semibold text-red-600 dark:text-red-400" />, 3: <span className="font-semibold text-red-600 dark:text-red-400" /> }}
+                />
               </p>
             )}
           </div>
@@ -210,24 +238,24 @@ function RouteComponent() {
                   </div>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white">
-                  Tidak Ada Hasil
+                  {t('constitution.uudAmandemen.noResultTitle')}
                 </h3>
                 <p className="text-gray-600 mb-4 dark:text-gray-400">
-                  Tidak ditemukan pasal atau ayat UUD 1945 Amandemen yang sesuai dengan pencarian "{searchTerm}"
+                  {t('constitution.uudAmandemen.noResultDesc', { query: searchTerm })}
                 </p>
                 <Button
                   onClick={clearSearch}
                   className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 dark:bg-red-700 dark:hover:bg-red-800"
                 >
-                  Hapus Pencarian
+                  {t('constitution.uudAmandemen.clearSearch')}
                 </Button>
               </div>
             ) : (
               <div className="space-y-8">
-                {filteredData.map((pasal: Pasal) => {
+                {currentData.map((pasal: Pasal) => {
                   const filteredAyat = filterAyat(pasal.data, searchTerm);
-                  const matchingAyatCount = searchTerm 
-                    ? filteredAyat.length 
+                  const matchingAyatCount = searchTerm
+                    ? filteredAyat.length
                     : pasal.data.length;
 
                   return (
@@ -239,18 +267,18 @@ function RouteComponent() {
                         <div className="flex items-start gap-4">
                           <div className="p-2 bg-white rounded-lg shadow-md border-2 border-red-200 dark:bg-gray-800 dark:border-gray-700">
                             <div className="text-red-600 font-bold text-xl dark:text-red-400 min-w-6 flex justify-center">
-                             {pasal.title.replace("Pasal ", "").replace(" (Aturan Peralihan)", "").replace(" (Aturan Tambahan)", "")}
+                              {pasal.title.replace("Pasal ", "").replace(" (Aturan Peralihan)", "").replace(" (Aturan Tambahan)", "")}
                             </div>
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2 flex-wrap">
                               <Badge className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-400 dark:hover:bg-red-600 dark:text-gray-900">
-                                {pasal.title.includes("Aturan Peralihan") ? "Aturan Peralihan" : 
-                                 pasal.title.includes("Aturan Tambahan") ? "Aturan Tambahan" : "Pasal"}
+                                {pasal.title.includes("Aturan Peralihan") ? t('constitution.uudAmandemen.transitionalProvision') :
+                                  pasal.title.includes("Aturan Tambahan") ? t('constitution.uudAmandemen.additionalProvision') : t('constitution.uudAmandemen.article')}
                               </Badge>
                               {pasal.amandemen !== "0" && (
                                 <Badge className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-400 dark:hover:bg-blue-600 dark:text-gray-900">
-                                  Amandemen {pasal.amandemen}
+                                  {t('constitution.uudAmandemen.amendment', { val: pasal.amandemen })}
                                 </Badge>
                               )}
                             </div>
@@ -259,25 +287,25 @@ function RouteComponent() {
                             </CardTitle>
                             <CardDescription className="text-gray-600 mt-2 dark:text-gray-300">
                               {pasal.bab} • {
-                                searchTerm 
-                                  ? `${matchingAyatCount} dari ${pasal.data.length} Ayat${searchTerm && ' yang sesuai'}` 
-                                  : `${pasal.data.length} Ayat${searchTerm && ' yang sesuai'}`
+                                searchTerm
+                                  ? t('constitution.uudAmandemen.matchingAyat', { matchCount: matchingAyatCount, totalCount: pasal.data.length })
+                                  : t('constitution.uudAmandemen.ayatCount', { totalCount: pasal.data.length })
                               }
                             </CardDescription>
                           </div>
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <Accordion 
-                          key={`${pasal.title}-${expandedAll}`} 
-                          type="multiple" 
-                          className="w-full" 
+                        <Accordion
+                          key={`${pasal.title}-${expandedAll}`}
+                          type="multiple"
+                          className="w-full"
                           defaultValue={expandedAll ? [`ayat-${pasal.title}`] : []}
                         >
                           <AccordionItem value={`ayat-${pasal.title}`} className="border-none">
                             <AccordionTrigger className="text-red-700 hover:text-red-800 font-semibold hover:no-underline py-0 dark:text-red-400 dark:hover:text-red-300">
                               <span className="flex items-center gap-2">
-                                Lihat Ayat
+                                {t('constitution.uudAmandemen.viewAyat')}
                               </span>
                             </AccordionTrigger>
                             <AccordionContent>
@@ -305,6 +333,14 @@ function RouteComponent() {
                     </Card>
                   );
                 })}
+
+                {/* Pagination */}
+                <ConstitutionPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                  className="mt-8"
+                />
               </div>
             )}
           </div>
