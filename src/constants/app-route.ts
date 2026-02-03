@@ -66,11 +66,11 @@ export const AppRoute = {
     terms: { url: "/terms" },
   },
   admin: {
+    chatAi: {
+      models: { url: "/admin/chat-ai/models" },
+    },
     user: {
-      list: "/admin/users",
+      list: { url: "/admin/users" },
     }
-  },
-  project: {
-    list: { url: "/project" },
-  },
+  }
 }

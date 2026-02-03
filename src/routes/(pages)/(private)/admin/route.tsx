@@ -1,16 +1,28 @@
-import {createFileRoute, Outlet} from '@tanstack/react-router'
-import * as React from "react";
+import { createFileRoute, Outlet } from '@tanstack/react-router'
+import AppSidebar from "@/components/app/sidebar/AppSidebar";
+import { AppNavbar } from "@/components/app/AppNavbar";
+import { AdminNav } from "@/constants/admin-nav";
+import { useTranslation } from "react-i18next";
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 export const Route = createFileRoute('/(pages)/(private)/admin')({
-  // loader: ({context}) => {
-  //   console.log("router admin", !context?.auth)
-  //   if (!context?.auth?.isAuthenticated) {
-  //     // throw redirect({to: APP_CONFIG.path.defaultPublic})
-  //   }
-  // },
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div><Outlet/></div>
+  const { t } = useTranslation();
+  return (
+    <div className="flex h-screen bg-muted/40">
+      <SidebarProvider>
+        <AppSidebar navItems={AdminNav} />
+
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <AppNavbar />
+          <main className="flex-1 overflow-y-auto p-4 md:p-6 mt-14">
+            <Outlet />
+          </main>
+        </div>
+      </SidebarProvider>
+    </div>
+  );
 }

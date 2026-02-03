@@ -19,7 +19,7 @@ import { LuPlus } from "react-icons/lu";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 
-export const Route = createFileRoute('/(pages)/(private)/admin/(chat-ai)/')({
+export const Route = createFileRoute('/(pages)/(private)/admin/chat-ai/models')({
     validateSearch: (search: Record<string, unknown>): {
         sort?: string;
         order?: 'asc' | 'desc';

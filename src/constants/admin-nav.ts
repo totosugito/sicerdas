@@ -1,8 +1,8 @@
-import {MdOutlineDashboard, MdOutlineWorkHistory} from "react-icons/md";
-import {TbFileReport} from "react-icons/tb";
-import {HiOutlineDocumentChartBar, HiOutlineUsers} from "react-icons/hi2";
-import {LuTable2} from "react-icons/lu";
-import {AppRoute} from "@/constants/app-route";
+import { MdOutlineDashboard, MdOutlineWorkHistory } from "react-icons/md";
+import { TbFileReport } from "react-icons/tb";
+import { HiOutlineDocumentChartBar, HiOutlineUsers } from "react-icons/hi2";
+import { LuTable2 } from "react-icons/lu";
+import { AppRoute } from "@/constants/app-route";
 import { CiBoxList } from "react-icons/ci";
 import { GoFileDirectory } from "react-icons/go";
 import { AiOutlineDashboard } from "react-icons/ai";
@@ -14,34 +14,34 @@ import { BsGrid } from "react-icons/bs";
 import { IoIosNotificationsOutline } from "react-icons/io";
 
 export const AdminNav = {
-  user: {},
-  teams: {},
+  user: {
+    name: "Admin",
+    email: "admin@example.com",
+    avatar: "/avatars/admin.jpg",
+  },
+  teams: [],
   navGroups: [
     {
       title: "DATA MANAGEMENT",
       items: [
-        {
-          title: "Project",
-          url: AppRoute.project.list,
-          icon: MdOutlineDashboard,
-        },
-    ]},
+      ]
+    },
     {
       title: "ADMIN",
       items: [
         {
           title: "Users",
-          url: AppRoute.admin.user.list,
+          url: AppRoute.admin.user.list.url,
           icon: HiOutlineUsers,
+        },
+        {
+          title: "Models",
+          url: AppRoute.admin.chatAi.models.url,
+          icon: BsBracesAsterisk,
         },
       ],
       permitUser: false,
       permitContractor: false
     }
   ]
-}
-
-export const UserNav = {
-  ...AdminNav,
-  navGroups: AdminNav.navGroups.filter(group => group.permitUser)
 }

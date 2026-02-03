@@ -224,7 +224,6 @@ function RouteComponent() {
 
     // Add this function to handle session revocation
     const handleRevokeSession = async (sessionToken: string) => {
-        console.log("Revoke session:", sessionToken);
         await authClient.revokeSession({
             token: sessionToken
         }).then(() => {
