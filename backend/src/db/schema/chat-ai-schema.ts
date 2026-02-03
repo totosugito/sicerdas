@@ -1,5 +1,5 @@
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { boolean, pgTable, text, timestamp, uuid, varchar, integer, jsonb } from 'drizzle-orm/pg-core';
+import { boolean, pgTable, text, timestamp, uuid, varchar, integer, jsonb, index } from 'drizzle-orm/pg-core';
 import { users } from './auth-schema.ts';
 import { EnumUserTier, PgEnumUserTier } from './enum-app.ts';
 
@@ -22,19 +22,19 @@ import { EnumUserTier, PgEnumUserTier } from './enum-app.ts';
  */
 export const aiChatSessions = pgTable('ai_chat_sessions', {
   id: uuid().primaryKey().notNull().defaultRandom(),
-  
+
   // User who created the session
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-  
+
   // Session details
   title: varchar('title', { length: 255 }).notNull(),
-  
+
   // Reference to the model used for this session (optional)
   modelId: uuid('model_id')
-    .references(() => aiChatModels.id, { onDelete: 'set null', onUpdate: 'cascade' }),
-  
+    .references(() => aiModels.id, { onDelete: 'set null', onUpdate: 'cascade' }),
+
   // Flexible data storage
   extra: jsonb("extra")
     .$type<Record<string, unknown>>()
@@ -43,9 +43,14 @@ export const aiChatSessions = pgTable('ai_chat_sessions', {
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  
+
   // Session status
   isActive: boolean('is_active').notNull().default(true),
+}, (table) => {
+  return {
+    userIdIdx: index('ai_chat_sessions_user_id_idx').on(table.userId),
+    createdAtIdx: index('ai_chat_sessions_created_at_idx').on(table.createdAt),
+  }
 });
 
 export type SchemaAiChatSessionSelect = InferSelectModel<typeof aiChatSessions>;
@@ -78,28 +83,34 @@ export type SchemaAiChatSessionInsert = InferInsertModel<typeof aiChatSessions>;
  */
 export const aiChatMessages = pgTable('ai_chat_messages', {
   id: uuid().primaryKey().notNull().defaultRandom(),
-  
+
   // Reference to the chat session
   sessionId: uuid('session_id')
     .notNull()
     .references(() => aiChatSessions.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-  
+
   // AI model used for this message (optional, can be null for older messages)
   modelId: uuid('model_id')
-    .references(() => aiChatModels.id, { onDelete: 'set null', onUpdate: 'cascade' }),
-  
+    .references(() => aiModels.id, { onDelete: 'set null', onUpdate: 'cascade' }),
+
   // Message details
   role: varchar('role', { length: 20 }).notNull(), // 'user' or 'assistant'
   content: text('content').notNull(),
-  
+
   // Timestamp
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  
+
   // Conversation ordering
   position: integer('position').notNull(), // Position of message in the conversation (zero-indexed)
-  
+
   // Analytics/Billing
   tokens: integer('tokens'), // Number of tokens in the message (optional)
+}, (table) => {
+  return {
+    sessionIdIdx: index('ai_chat_messages_session_id_idx').on(table.sessionId),
+    createdAtIdx: index('ai_chat_messages_created_at_idx').on(table.createdAt),
+    positionIdx: index('ai_chat_messages_position_idx').on(table.position),
+  }
 });
 
 export type SchemaAiChatMessageSelect = InferSelectModel<typeof aiChatMessages>;
@@ -130,27 +141,31 @@ export type SchemaAiChatMessageInsert = InferInsertModel<typeof aiChatMessages>;
  */
 export const aiChatAttachments = pgTable('ai_chat_attachments', {
   id: uuid().primaryKey().notNull().defaultRandom(),
-  
+
   // Reference to the message
   messageId: uuid('message_id')
     .notNull()
     .references(() => aiChatMessages.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-  
+
   // File metadata
   fileName: varchar('file_name', { length: 255 }).notNull(),
   fileSize: integer('file_size').notNull(), // Size in bytes
   mimeType: varchar('mime_type', { length: 100 }).notNull(),
-  
+
   // Flexible data storage
   extra: jsonb("extra")
     .$type<Record<string, unknown>>()
     .default({}),
-    
+
   // Timestamp
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  
+
   // Optional direct access URL
   url: text('url'), // Public URL to access the file
+}, (table) => {
+  return {
+    messageIdIdx: index('ai_chat_attachments_message_id_idx').on(table.messageId),
+  }
 });
 
 export type SchemaAiChatAttachmentSelect = InferSelectModel<typeof aiChatAttachments>;
@@ -174,20 +189,20 @@ export type SchemaAiChatAttachmentInsert = InferInsertModel<typeof aiChatAttachm
  */
 export const aiChatShares = pgTable('ai_chat_shares', {
   id: uuid().primaryKey().notNull().defaultRandom(),
-  
+
   // Reference to the chat session being shared
   sessionId: uuid('session_id')
     .notNull()
     .references(() => aiChatSessions.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-  
+
   // Unique token for accessing the shared session
   shareToken: varchar('share_token', { length: 255 }).notNull().unique(),
-  
+
   // User who created the share
   createdBy: uuid('created_by')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-  
+
   // Flexible data storage
   extra: jsonb("extra")
     .$type<Record<string, unknown>>()
@@ -195,19 +210,23 @@ export const aiChatShares = pgTable('ai_chat_shares', {
 
   // Optional expiration for the share link
   expiresAt: timestamp('expires_at'),
-  
+
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  
+
   // Share status
   isActive: boolean('is_active').notNull().default(true),
+}, (table) => {
+  return {
+    sessionIdIdx: index('ai_chat_shares_session_id_idx').on(table.sessionId),
+  }
 });
 
 export type SchemaAiChatShareSelect = InferSelectModel<typeof aiChatShares>;
 export type SchemaAiChatShareInsert = InferInsertModel<typeof aiChatShares>;
 
 /**
- * Table: ai_chat_models
+ * Table: ai_models
  * 
  * This table stores available AI chat models that users can select from.
  * Each model has configuration details and can be enabled/disabled.
@@ -219,38 +238,51 @@ export type SchemaAiChatShareInsert = InferInsertModel<typeof aiChatShares>;
  * - modelIdentifier: The actual model identifier used in API calls
  * - description: Brief description of the model's capabilities
  * - maxTokens: Maximum tokens the model can handle
+ * - supportsImage: Whether the model supports image input
+ * - supportsFile: Whether the model supports file input
+ * - acceptedImageExtensions: List of supported image extensions (e.g. ['.jpg', '.png'])
+ * - acceptedFileExtensions: List of supported file extensions (e.g. ['.pdf', '.txt'])
+ * - maxFileSize: Maximum file size allowed for uploads (in bytes)
  * - extra: Flexible data storage for additional model-specific configuration
  * - isDefault: Whether this is the default model for new sessions
  * - isEnabled: Whether the model is currently available for use
  * - createdAt: When the model was added to the system
  * - updatedAt: When the model was last updated
  */
-export const aiChatModels = pgTable('ai_chat_models', {
+export const aiModels = pgTable('ai_models', {
   id: uuid().primaryKey().notNull().defaultRandom(),
-  
+
   // Model details
   name: varchar('name', { length: 100 }).notNull(),
   provider: varchar('provider', { length: 50 }).notNull(),
   modelIdentifier: varchar('model_identifier', { length: 100 }).notNull().unique(),
   description: text('description'),
   maxTokens: integer('max_tokens'),
-  
+
+  supportsImage: boolean('supports_image').notNull().default(false),
+  supportsFile: boolean('supports_file').notNull().default(false),
+
+  acceptedImageExtensions: jsonb('accepted_image_extensions').$type<string[]>().default(['.jpg', '.jpeg', '.png', '.webp']),
+  acceptedFileExtensions: jsonb('accepted_file_extensions').$type<string[]>().default(['.pdf', '.txt', '.csv', '.docx']),
+
+  maxFileSize: integer('max_file_size'),
+
   // Flexible data storage
   extra: jsonb("extra")
     .$type<Record<string, unknown>>()
     .default({}),
-  
+
   // Model status
   isDefault: boolean('is_default').notNull().default(false),
   isEnabled: boolean('is_enabled').notNull().default(true),
-  
+
   // Pricing tier
   status: PgEnumUserTier('status').notNull().default(EnumUserTier.FREE),
-  
+
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-export type SchemaAiChatModelSelect = InferSelectModel<typeof aiChatModels>;
-export type SchemaAiChatModelInsert = InferInsertModel<typeof aiChatModels>;
+export type SchemaAiModelSelect = InferSelectModel<typeof aiModels>;
+export type SchemaAiModelInsert = InferInsertModel<typeof aiModels>;

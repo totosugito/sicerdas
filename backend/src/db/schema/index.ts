@@ -26,7 +26,7 @@ import {
 import {
   userContentReport, userReportReplies,
 } from './content-report-schema.ts';
-import { aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares, aiChatModels } from './chat-ai-schema.ts';
+import { aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares, aiModels } from './chat-ai-schema.ts';
 import { periodicElements, periodicElementNotes } from './periodic-table-schema.ts';
 import { jobLogs } from './job-logs-schema.ts';
 export {
@@ -37,7 +37,7 @@ export {
   users, accounts, sessions, verifications, userProfile,
   bookCategory, bookGroup, books, bookGroupStats, bookEventStats, userBookInteractions,
   educationGrades, appVersion, userContentReport, userReportReplies, userEventHistory,
-  aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares, aiChatModels,
+  aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares, aiModels,
   periodicElements, periodicElementNotes,
   jobLogs
 }
