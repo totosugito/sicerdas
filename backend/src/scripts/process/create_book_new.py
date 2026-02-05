@@ -8,13 +8,16 @@ This program:
 4. Identifies books in the new list that aren't in the unique list
 5. Saves those new books to an output JSON file using the same key structure as the unique books file
 
-Author: Qwen
-Date: 2025-10-06
+Usage:
+    python backend/src/scripts/process/create_book_new.py -u unique_books.json -n new_books.json -o output.json
+    python backend/src/scripts/process/create_book_new.py -u unique_books.json -n new_books.json -o output.json -e "Edition 1" "Old Edition" "2013 Curriculum"
 """
 
 import json
 import sys
+import argparse
 from pathlib import Path
+from typing import List, Dict, Set, Any, Optional
 
 # Define the keys that should be included in the output file (same as unique books file)
 UNIQUE_BOOK_KEYS = [
@@ -24,15 +27,15 @@ UNIQUE_BOOK_KEYS = [
     "cloud", "size", "page"
 ]
 
-def load_books_from_file(file_path):
+def load_books_from_file(file_path: Path) -> List[Dict[str, Any]]:
     """
     Load books from a JSON file.
     
     Args:
-        file_path (str): Path to the JSON file
+        file_path (Path): Path to the JSON file
         
     Returns:
-        list: List of book dictionaries
+        List[Dict[str, Any]]: List of book dictionaries
     """
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -43,15 +46,15 @@ def load_books_from_file(file_path):
         print(f"Error loading books from {file_path}: {e}")
         return []
 
-def get_book_ids(books):
+def get_book_ids(books: List[Dict[str, Any]]) -> Set[Any]:
     """
     Extract book IDs from a list of books.
     
     Args:
-        books (list): List of book dictionaries
+        books (List[Dict[str, Any]]): List of book dictionaries
         
     Returns:
-        set: Set of book IDs
+        Set[Any]: Set of book IDs
     """
     ids = set()
     for book in books:
@@ -64,18 +67,18 @@ def get_book_ids(books):
                 ids.add(book_id)
     return ids
 
-def filter_book_keys(book, keys):
+def filter_book_keys(book: Dict[str, Any], keys: List[str]) -> Dict[str, Any]:
     """
     Filter a book dictionary to only include specified keys.
     
     Args:
-        book (dict): Book dictionary
-        keys (list): List of keys to include
+        book (Dict[str, Any]): Book dictionary
+        keys (List[str]): List of keys to include
         
     Returns:
-        dict: Book dictionary with only the specified keys
+        Dict[str, Any]: Book dictionary with only the specified keys
     """
-    filtered_book = {}
+    filtered_book: Dict[str, Any] = {}
     for key in keys:
         if key in book:
             # Special handling for ID to ensure it's an integer
@@ -95,21 +98,43 @@ def filter_book_keys(book, keys):
                 filtered_book[key] = ""
     return filtered_book
 
-def find_new_books(unique_books, new_books):
+def find_new_books(unique_books: List[Dict[str, Any]], new_books: List[Dict[str, Any]], excluded_values: Optional[List[str]] = None) -> List[Dict[str, Any]]:
     """
     Find books in new_books that are not present in unique_books.
+    Also filters out books with editions or curriculums present in excluded_values.
     
     Args:
-        unique_books (list): List of existing unique books
-        new_books (list): List of new books to check
+        unique_books (List[Dict[str, Any]]): List of existing unique books
+        new_books (List[Dict[str, Any]]): List of new books to check
+        excluded_values (Optional[List[str]]): List of editions or curriculums to exclude
         
     Returns:
-        list: List of books that are new (not in unique_books) with filtered keys
+        List[Dict[str, Any]]: List of books that are new (not in unique_books) with filtered keys
     """
     unique_ids = get_book_ids(unique_books)
     new_book_list = []
     
+    # Normalize excluded values for comparison if provided
+    excluded_set: Set[str] = set(excluded_values or [])
+    
     for book in new_books:
+        attachment = book.get('attachment')
+        if attachment == "":
+            continue
+        
+        # Check if book edition or curriculum is in the excluded list
+        if excluded_set:
+            book_edition = book.get('edition')
+            book_curriculum = book.get('curriculum')
+            
+            # Check edition
+            if book_edition is not None and str(book_edition) in excluded_set:
+                continue
+                
+            # Check curriculum
+            if book_curriculum is not None and str(book_curriculum) in excluded_set:
+                continue
+
         book_id = book.get('id')
         if book_id is not None:
             # Convert to integer if possible for consistent comparison
@@ -125,12 +150,12 @@ def find_new_books(unique_books, new_books):
     
     return new_book_list
 
-def save_books_to_file(books, output_file):
+def save_books_to_file(books: List[Dict[str, Any]], output_file: str):
     """
     Save books to a JSON file.
     
     Args:
-        books (list): List of book dictionaries
+        books (List[Dict[str, Any]]): List of book dictionaries
         output_file (str): Path to the output file
     """
     try:
@@ -140,12 +165,12 @@ def save_books_to_file(books, output_file):
     except Exception as e:
         print(f"Error saving books to {output_file}: {e}")
 
-def save_attachment_urls(books, output_file):
+def save_attachment_urls(books: List[Dict[str, Any]], output_file: str):
     """
     Save attachment URLs from books to a text file, one URL per line.
     
     Args:
-        books (list): List of book dictionaries
+        books (List[Dict[str, Any]]): List of book dictionaries
         output_file (str): Path to the output text file
     """
     try:
@@ -163,20 +188,35 @@ def save_attachment_urls(books, output_file):
     except Exception as e:
         print(f"Error saving attachment URLs to file: {e}")
 
-def main(unique_books_file, new_books_file, output_file):
-    """
-    Main function to process the books.
+def main():
+    parser = argparse.ArgumentParser(description="Identify new books that are not present in an existing unique book list.")
+    parser.add_argument("-u", "--unique_books_file", required=True, help="Path to the existing unique books JSON file")
+    parser.add_argument("-n", "--new_books_file", required=True, help="Path to the new books JSON file")
+    parser.add_argument("-o", "--output_file", required=True, help="Path to the output JSON file")
+    parser.add_argument("-e", "--exclude", nargs='*', help="List of editions or curriculums to exclude", default=[])
     
-    Args:
-        unique_books_file (str): Path to the unique books JSON file
-        new_books_file (str): Path to the new books JSON file
-        output_file (str): Path to the output JSON file
-    """
+    args = parser.parse_args()
+    
+    unique_books_file = Path(args.unique_books_file)
+    new_books_file = Path(args.new_books_file)
+    output_file = Path(args.output_file)
+    excluded_values = args.exclude
+    
     print("Starting book comparison process...")
     print(f"Unique books file: {unique_books_file}")
     print(f"New books file: {new_books_file}")
     print(f"Output file: {output_file}")
+    if excluded_values:
+        print(f"Excluding values: {excluded_values}")
     
+    # Check if input files exist
+    if not unique_books_file.exists():
+        print(f"Error: Unique books file '{unique_books_file}' does not exist.")
+        return
+    if not new_books_file.exists():
+        print(f"Error: New books file '{new_books_file}' does not exist.")
+        return
+
     # Load the unique books
     unique_books = load_books_from_file(unique_books_file)
     if not unique_books:
@@ -190,7 +230,7 @@ def main(unique_books_file, new_books_file, output_file):
         return
     
     # Find new books
-    new_unique_books = find_new_books(unique_books, new_books)
+    new_unique_books = find_new_books(unique_books, new_books, excluded_values)
     
     # Sort the new books by ID in ascending order
     try:
@@ -203,28 +243,16 @@ def main(unique_books_file, new_books_file, output_file):
     
     # Save the new books
     if new_unique_books:
-        save_books_to_file(new_unique_books, output_file)
+        save_books_to_file(new_unique_books, str(output_file))
         # Save attachment URLs to a separate text file
-        save_attachment_urls(new_unique_books, output_file)
+        save_attachment_urls(new_unique_books, str(output_file))
         print("Process completed successfully.")
     else:
         print("No new books found.")
         # Create an empty array file
-        save_books_to_file([], output_file)
+        save_books_to_file([], str(output_file))
         # Create an empty URLs file
-        save_attachment_urls([], output_file)
+        save_attachment_urls([], str(output_file))
 
 if __name__ == "__main__":
-    # Check if the correct number of arguments are provided
-    if len(sys.argv) != 4:
-        print("Usage: python create_new_book_02.py <unique_books_file> <new_books_file> <output_file>")
-        print("Example: python create_new_book_02.py unique_books_251006.json new_books.json new_books_output.json")
-        sys.exit(1)
-    
-    # Get file paths from command line arguments
-    unique_books_file = sys.argv[1]
-    new_books_file = sys.argv[2]
-    output_file = sys.argv[3]
-    
-    # Run the main process
-    main(unique_books_file, new_books_file, output_file)
+    main()
