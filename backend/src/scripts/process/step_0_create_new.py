@@ -9,8 +9,8 @@ This program:
 5. Saves those new books to an output JSON file using the same key structure as the unique books file
 
 Usage:
-    python backend/src/scripts/process/create_book_new.py -u unique_books.json -n new_books.json -o output.json
-    python backend/src/scripts/process/create_book_new.py -u unique_books.json -n new_books.json -o output.json -e "Edition 1" "Old Edition" "2013 Curriculum"
+    python process/step_0_create_new.py -u unique_books.json -n new_books.json -o output.json
+    python process/step_0_create_new.py -u unique_books.json -n new_books.json -o output.json -e "Edition 1" "Old Edition" "2013 Curriculum"
 """
 
 import json
