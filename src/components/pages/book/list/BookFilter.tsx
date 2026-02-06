@@ -149,7 +149,16 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
             className="space-y-1"
           >
             <CategoryOption value="-1" id={`${idPrefix}-cat--1`} label={t('book.info.allBooks')} />
-            <CategoryOption value="0" id={`${idPrefix}-cat-0`} label={t('book.info.latest')} />
+            <CategoryOption
+              value="0"
+              id={`${idPrefix}-cat-0`}
+              label={t('book.info.latest')}
+              subLabel={
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-sm">
+                  {t('book.info.new')}
+                </span>
+              }
+            />
             {categories.map((category) => {
               const categoryTotal = category.groups.reduce((sum, g) => sum + (g.stats?.bookTotal || 0), 0);
               return (
@@ -235,11 +244,14 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
 };
 
 // Sub-components for cleaner render
-const CategoryOption = ({ value, id, label, count }: { value: string, id: string, label: string, count?: number }) => (
-  <div className="flex items-center space-x-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-    <RadioGroupItem value={value} id={id} />
-    <Label htmlFor={id} className="flex-1 cursor-pointer font-medium text-slate-600 dark:text-slate-400 peer-data-[state=checked]:text-slate-900 dark:peer-data-[state=checked]:text-white flex items-center">
-      <span>{label}{count !== undefined && <span className="text-xs text-slate-400 font-normal ml-2">({count})</span>}</span>
+const CategoryOption = ({ value, id, label, count, subLabel }: { value: string, id: string, label: string, count?: number, subLabel?: string | React.ReactNode }) => (
+  <div className={`flex space-x-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors ${subLabel ? 'items-start py-0' : 'items-center'}`}>
+    <RadioGroupItem value={value} id={id} className={`peer ${subLabel ? 'mt-1' : ''}`} />
+    <Label htmlFor={id} className="flex-1 cursor-pointer font-medium text-slate-600 dark:text-slate-400 peer-data-[state=checked]:text-slate-900 dark:peer-data-[state=checked]:text-white">
+      <div className="flex items-center">
+        <span>{label}{count !== undefined && <span className="text-xs text-slate-400 font-normal ml-2">({count})</span>}</span>
+      </div>
+      {subLabel && <div className="text-xs text-slate-500 font-normal mt-0.5">{subLabel}</div>}
     </Label>
   </div>
 );

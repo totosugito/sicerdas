@@ -11,6 +11,7 @@ export default {
   auto_apply: "Terapkan Otomatis",
   allBooks: "Semua Buku",
   latest: "Buku Terbaru",
+  new: "Baru",
   sort: {
     placeholder: "Urutkan berdasarkan",
     createdAt: "Terbaru",

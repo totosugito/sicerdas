@@ -17,6 +17,9 @@
         "proxyPdf": {
             "success": "Berhasil memproksi konten PDF",
             "error": "Gagal mengambil PDF: {{message}}"
+        },
+        "download": {
+            "updated": "Status download berhasil diperbarui"
         }
     }
 }

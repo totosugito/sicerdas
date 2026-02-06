@@ -33,8 +33,14 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
             body: UpdateBookmarkRequest,
             response: {
                 200: UpdateBookmarkResponse,
-                401: Type.Object({ success: Type.Boolean(), message: Type.String() }),
-                404: Type.Object({ success: Type.Boolean(), message: Type.String() }),
+                '4xx': Type.Object({
+                    success: Type.Boolean({ default: false }),
+                    message: Type.String()
+                }),
+                '5xx': Type.Object({
+                    success: Type.Boolean({ default: false }),
+                    message: Type.String()
+                }),
             },
         },
         handler: withErrorHandler(async function handler(
@@ -50,10 +56,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             // Check if user is logged in
             if (!user) {
-                return reply.status(401).send({
-                    success: false,
-                    message: req.i18n.t('auth.unauthorized')
-                });
+                return reply.unauthorized(req.i18n.t('auth.unauthorized'));
             }
 
             const userId = user.id;
@@ -67,10 +70,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
                 .limit(1);
 
             if (bookList.length === 0) {
-                return reply.status(404).send({
-                    success: false,
-                    message: req.i18n.t('book.detail.notFound')
-                });
+                return reply.notFound(req.i18n.t('book.detail.notFound'));
             }
 
             const bookUUID = bookList[0].id;

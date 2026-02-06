@@ -3,5 +3,5 @@ export const CONFIG = {
     PASSWORD_RESET_RATE_LIMIT: 3,  // Maximum requests allowed per hour
     PASSWORD_RESET_RATE_LIMIT_WINDOW_MS: 60 * 60 * 1000,  // 1 hour in milliseconds
     CONTENT_COUNTER_WINDOW_MS: 24 * 60 * 60 * 1000,  // 24 hours in milliseconds
-    CLOUD_URL: 'https://s3.nevaobjects.id/si-cerdas'
+    CLOUD_URL: 'https://storage.sicerdas.com'
 }
