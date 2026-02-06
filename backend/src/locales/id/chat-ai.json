@@ -1,8 +1,10 @@
 {
-    "admin": {
+    "chatAi": {
+        "listSuccess": "Daftar model berhasil diambil",
         "model": {
             "create": {
-                "success": "Model AI berhasil dibuat"
+                "success": "Model AI berhasil dibuat",
+                "exists": "Model dengan nama atau identifier tersebut sudah ada"
             },
             "update": {
                 "success": "Model AI berhasil diperbarui",

@@ -43,104 +43,100 @@ const updateDownloadRoute: FastifyPluginAsyncTypebox = async (app) => {
             },
         },
         handler: withErrorHandler(async function handler(
-            req: FastifyRequest<{ Body: { id?: string, bookId?: number } }>,
+            req: FastifyRequest<{ Body: typeof UpdateDownloadParams.static }>,
             reply: FastifyReply
         ) {
             const { id, bookId } = req.body;
 
-            try {
-                // History Tracking Logic
-                let referenceId = id;
-                // If we only have bookId (numeric), find the UUID referenceId
-                if (!referenceId && bookId) {
-                    const book = await db.query.books.findFirst({
-                        where: eq(books.bookId, bookId)
-                    });
-                    if (book) referenceId = book.id;
-                }
-
-                if (!referenceId) {
-                    return reply.status(400).send({ success: false, message: "Book not found" });
-                }
-
-                const session = await getAuthInstance(app).api.getSession({
-                    headers: fromNodeHeaders(req.headers),
+            // History Tracking Logic
+            let referenceId = id;
+            // If we only have bookId (numeric), find the UUID referenceId
+            if (!referenceId && bookId) {
+                const book = await db.query.books.findFirst({
+                    where: eq(books.bookId, bookId)
                 });
-                const userId = session?.user?.id;
-                const sessionId = (req as any).cookies?.sessionId;
-                const ipAddress = req.ip;
-                const userAgent = req.headers['user-agent'];
+                if (book) referenceId = book.id;
+            }
 
-                // Check if window since last download has passed
-                const lastEvent = await db.query.userEventHistory.findFirst({
-                    where: and(
-                        eq(userEventHistory.referenceId, referenceId),
-                        eq(userEventHistory.action, EnumEventStatus.DOWNLOAD),
-                        userId ? eq(userEventHistory.userId, userId) : (sessionId ? eq(userEventHistory.sessionId, sessionId) : eq(userEventHistory.ipAddress, ipAddress))
-                    ),
-                    orderBy: desc(userEventHistory.createdAt)
+            if (!referenceId) {
+                return reply.notFound(req.i18n.t('book.detail.notFound'));
+            }
+
+            const session = await getAuthInstance(app).api.getSession({
+                headers: fromNodeHeaders(req.headers),
+            });
+            const userId = session?.user?.id;
+            const sessionId = (req as any).cookies?.sessionId;
+            const ipAddress = req.ip;
+            const userAgent = req.headers['user-agent'];
+
+            // Check if window since last download has passed
+            const lastEvent = await db.query.userEventHistory.findFirst({
+                where: and(
+                    eq(userEventHistory.referenceId, referenceId),
+                    eq(userEventHistory.action, EnumEventStatus.DOWNLOAD),
+                    userId ? eq(userEventHistory.userId, userId) : (sessionId ? eq(userEventHistory.sessionId, sessionId) : eq(userEventHistory.ipAddress, ipAddress))
+                ),
+                orderBy: desc(userEventHistory.createdAt)
+            });
+
+            const now = new Date();
+            if (!lastEvent || (now.getTime() - lastEvent.createdAt.getTime() > CONFIG.CONTENT_COUNTER_WINDOW_MS)) {
+                await db.insert(userEventHistory).values({
+                    userId: userId || null,
+                    referenceId: referenceId,
+                    contentType: EnumContentType.BOOK,
+                    action: EnumEventStatus.DOWNLOAD,
+                    sessionId: sessionId || null,
+                    ipAddress,
+                    userAgent
                 });
 
-                const now = new Date();
-                if (!lastEvent || (now.getTime() - lastEvent.createdAt.getTime() > CONFIG.CONTENT_COUNTER_WINDOW_MS)) {
-                    await db.insert(userEventHistory).values({
-                        userId: userId || null,
-                        referenceId: referenceId,
-                        contentType: EnumContentType.BOOK,
-                        action: EnumEventStatus.DOWNLOAD,
-                        sessionId: sessionId || null,
-                        ipAddress,
-                        userAgent
+                // Update global book stats
+                await db.insert(bookEventStats)
+                    .values({
+                        bookId: referenceId,
+                        downloadCount: 1
+                    })
+                    .onConflictDoUpdate({
+                        target: bookEventStats.bookId,
+                        set: {
+                            downloadCount: sql`${bookEventStats.downloadCount} + 1`,
+                            updatedAt: new Date()
+                        }
                     });
 
-                    // Update global book stats
-                    await db.insert(bookEventStats)
+
+                // Update user interaction stats if logged in
+                if (userId) {
+                    await db.insert(userBookInteractions)
                         .values({
+                            userId,
                             bookId: referenceId,
-                            downloadCount: 1
+                            downloadCount: 1,
+                            liked: false,
+                            disliked: false,
+                            bookmarked: false,
+                            rating: '0.00',
+                            viewCount: 0
                         })
                         .onConflictDoUpdate({
-                            target: bookEventStats.bookId,
+                            target: [userBookInteractions.userId, userBookInteractions.bookId],
                             set: {
-                                downloadCount: sql`${bookEventStats.downloadCount} + 1`,
+                                downloadCount: sql`${userBookInteractions.downloadCount} + 1`,
                                 updatedAt: new Date()
                             }
                         });
-
-
-                    // Update user interaction stats if logged in
-                    if (userId) {
-                        await db.insert(userBookInteractions)
-                            .values({
-                                userId,
-                                bookId: referenceId,
-                                downloadCount: 1,
-                                liked: false,
-                                disliked: false,
-                                bookmarked: false,
-                                rating: '0.00',
-                                viewCount: 0
-                            })
-                            .onConflictDoUpdate({
-                                target: [userBookInteractions.userId, userBookInteractions.bookId],
-                                set: {
-                                    downloadCount: sql`${userBookInteractions.downloadCount} + 1`,
-                                    updatedAt: new Date()
-                                }
-                            });
-                    }
                 }
-
-                // Get updated count
-                const stats = await db.query.bookEventStats.findFirst({
-                    where: eq(bookEventStats.bookId, referenceId)
-                });
-                const currentDownloadCount = stats?.downloadCount || 0;
-
-                return reply.send({ success: true, message: "Download count updated", data: { downloadCount: currentDownloadCount } });
-            } catch (error: any) {
-                return reply.internalServerError(req.i18n.t('book.proxyPdf.error', { message: error.message }));
             }
+
+            // Get updated count
+            const stats = await db.query.bookEventStats.findFirst({
+                where: eq(bookEventStats.bookId, referenceId)
+            });
+            const currentDownloadCount = stats?.downloadCount || 0;
+
+            return reply.send({ success: true, message: req.i18n.t('book.download.updated'), data: { downloadCount: currentDownloadCount } });
         }),
     });
 };

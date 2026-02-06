@@ -178,7 +178,8 @@ function RouteComponent() {
             <PDFViewer
               key={showViewer ? `visible-${book.bookId}` : 'hidden'}
               config={{
-                src: `${AppApi.book.proxyPdf}/${encodeURIComponent(`${book.bookId}-${book.title}.pdf`)}?url=${encodeURIComponent(book.pdf)}&id=${book.id}`,
+                // src: `${AppApi.book.proxyPdf}/${encodeURIComponent(`${book.bookId}-${book.title}.pdf`)}?url=${encodeURIComponent(book.pdf)}&id=${book.id}`,
+                src: book.pdf,
                 disabledCategories: ['panel-comment', 'shapes', 'redaction', 'security'],
                 scroll: {
                   defaultStrategy: ScrollStrategy.Vertical,
