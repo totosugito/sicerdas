@@ -184,7 +184,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
               localFilters.groups.length > 0,
               () => clearSection('groups')
             )}
-            <div className="space-y-1 max-h-[400px] overflow-y-auto pr-2">
+            <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
               {displayedGroups.map((group) => (
                 <FilterCheckbox
                   key={group.id}

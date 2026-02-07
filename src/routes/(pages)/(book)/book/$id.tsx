@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useBookDetail } from '@/api/book/book-detail'
 import { BookDetail } from '@/components/pages/book/book/BookDetail'
 import { BookDetailError } from '@/components/pages/book/book/BookDetailError'
@@ -13,7 +13,6 @@ import { CreateContentReport } from '@/components/pages/layout/CreateContentRepo
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { EnumContentType } from 'backend/src/db/schema/enum-app'
 import { PDFViewer, ScrollStrategy } from '@embedpdf/react-pdf-viewer'
-import { AppApi } from '@/constants/app-api'
 import { useUpdateBookmark } from '@/api/book/book-bookmark'
 import { useUpdateDownload, UpdateDownloadResponse } from '@/api/book/update-download'
 import { showNotifError, showNotifSuccess } from '@/lib/show-notif'
@@ -23,6 +22,7 @@ export const Route = createFileRoute('/(pages)/(book)/book/$id')({
 })
 
 function RouteComponent() {
+  const router = useRouter()
   const { id } = Route.useParams()
   const bookId = id.split('-')[0]
   const { data, isLoading, isError } = useBookDetail(bookId)
@@ -132,16 +132,22 @@ function RouteComponent() {
     setShowReportDialog(true)
   }
 
+  const handleBack = () => {
+    router.navigate({ to: AppRoute.book.books.url })
+  }
+
   return (
     <div className="flex flex-col gap-4 w-full">
       {/* Navigation */}
       <div className="mb-2">
-        <Link to={AppRoute.book.books.url} className="inline-flex">
-          <Button variant="ghost" className="pl-0 hover:bg-transparent hover:text-primary transition-colors gap-2 text-slate-500 dark:text-slate-400">
-            <ArrowLeft className="w-5 h-5" />
-            <span className="text-base font-medium">{t('book.detail.backToBooks')}</span>
-          </Button>
-        </Link>
+        <Button
+          variant="ghost"
+          className="pl-0 hover:bg-transparent hover:text-primary transition-colors gap-2 text-slate-500 dark:text-slate-400"
+          onClick={handleBack}
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="text-base font-medium">{t('book.detail.backToBooks')}</span>
+        </Button>
       </div>
       <BookDetail
         book={book}

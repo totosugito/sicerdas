@@ -58,6 +58,8 @@ export default async function seed() {
       { id: 22, versionId: versionId, grade: "sma", name: "SMA" },
       { id: 23, versionId: versionId, grade: "smk", name: "SMK" },
       { id: 24, versionId: versionId, grade: "sd_smp", name: "SD/SMP" },
+      { id: 25, versionId: versionId, grade: "sd_123", name: "SD 1,2,3" },
+      { id: 26, versionId: versionId, grade: "sd_456", name: "SD 4,5,6" },
     ]
 
     // default data for books category

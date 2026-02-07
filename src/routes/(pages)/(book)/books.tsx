@@ -13,14 +13,14 @@ import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/(pages)/(book)/books')({
   validateSearch: z.object({
-    page: z.number().min(1).optional().catch(1),
-    limit: z.number().min(1).max(20).optional().catch(12),
-    search: z.string().optional().catch(''),
-    category: z.array(z.number()).optional().catch([]),
-    group: z.array(z.number()).optional().catch([]),
-    grade: z.array(z.number()).optional().catch([]),
-    sortBy: z.string().optional().catch('createdAt'),
-    sortOrder: z.enum(['asc', 'desc']).optional().catch('desc'),
+    page: z.number().min(1).optional().catch(undefined),
+    limit: z.number().min(1).max(20).optional().catch(undefined),
+    search: z.string().optional().catch(undefined),
+    category: z.array(z.number()).optional().catch(undefined),
+    group: z.array(z.number()).optional().catch(undefined),
+    grade: z.array(z.number()).optional().catch(undefined),
+    sortBy: z.string().optional().catch(undefined),
+    sortOrder: z.enum(['asc', 'desc']).optional().catch(undefined),
   }),
   component: RouteComponent,
 })
@@ -30,23 +30,24 @@ function RouteComponent() {
   const { page: urlPage, limit: urlLimit, search: urlSearch, category: urlCategory, group: urlGroup, grade: urlGrade, sortBy: urlSortBy, sortOrder: urlSortOrder } = Route.useSearch()
   const navigate = Route.useNavigate()
 
-  const [searchTerm, setSearchTerm] = useState(urlSearch || '')
-  const [books, setBooks] = useState<BookListItem[]>([])
-  const [currentPage, setCurrentPage] = useState(urlPage || 1)
-  const [totalPages, setTotalPages] = useState(0)
-  const [totalBooks, setTotalBooks] = useState(0)
-  const selectedFilters = {
-    categories: urlCategory || [-1],
-    groups: urlGroup || [],
-    grades: urlGrade || []
-  }
-  const [sortBy, setSortBy] = useState(urlSortBy || 'createdAt')
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(urlSortOrder || 'desc')
+  const store = useAppStore();
+  const pageStore = store.books;
 
   type ViewMode = (typeof EnumViewMode)[keyof typeof EnumViewMode]["value"];
 
-  const store = useAppStore();
-  const pageStore = store.books;
+  const [searchTerm, setSearchTerm] = useState(urlSearch ?? pageStore.search ?? '')
+  const [books, setBooks] = useState<BookListItem[]>([])
+  const [currentPage, setCurrentPage] = useState(urlPage ?? pageStore.page ?? 1)
+  const [totalPages, setTotalPages] = useState(0)
+  const [totalBooks, setTotalBooks] = useState(0)
+  const selectedFilters = {
+    categories: urlCategory ?? pageStore.category ?? [-1],
+    groups: urlGroup ?? pageStore.group ?? [],
+    grades: urlGrade ?? pageStore.grade ?? []
+  }
+  const [sortBy, setSortBy] = useState(urlSortBy ?? pageStore.sortBy ?? 'createdAt')
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(urlSortOrder ?? pageStore.sortOrder ?? 'desc')
+
   const [viewMode, setViewMode] = useState<ViewMode>(pageStore.viewMode ?? EnumViewMode.grid.value)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -57,7 +58,7 @@ function RouteComponent() {
     navigate({
       search: {
         page: newPage || currentPage,
-        limit: urlLimit || 12,
+        limit: urlLimit ?? pageStore.limit ?? 12,
         search: newSearch !== undefined ? newSearch : searchTerm,
         category: newFilters?.categories || selectedFilters.categories,
         group: newFilters?.groups || selectedFilters.groups,
@@ -99,13 +100,34 @@ function RouteComponent() {
   }
 
   useEffect(() => {
-    loadBooks(urlPage || 1, urlSearch || '', {
-      categories: urlCategory || [-1],
-      groups: urlGroup || [],
-      grades: urlGrade || []
+    const effectivePage = urlPage ?? pageStore.page ?? 1;
+    const effectiveLimit = urlLimit ?? pageStore.limit ?? 12;
+    const effectiveSearch = urlSearch ?? pageStore.search ?? '';
+    const effectiveCategories = urlCategory ?? pageStore.category ?? [-1];
+    const effectiveGroups = urlGroup ?? pageStore.group ?? [];
+    const effectiveGrades = urlGrade ?? pageStore.grade ?? [];
+    const effectiveSortBy = urlSortBy ?? pageStore.sortBy ?? 'createdAt';
+    const effectiveSortOrder = urlSortOrder ?? pageStore.sortOrder ?? 'desc';
+
+    store.setBooks({
+      viewMode: pageStore.viewMode, // Preserve viewMode
+      limit: effectiveLimit,
+      page: effectivePage,
+      search: effectiveSearch,
+      category: effectiveCategories,
+      group: effectiveGroups,
+      grade: effectiveGrades,
+      sortBy: effectiveSortBy,
+      sortOrder: effectiveSortOrder,
+    })
+
+    loadBooks(effectivePage, effectiveSearch, {
+      categories: effectiveCategories,
+      groups: effectiveGroups,
+      grades: effectiveGrades
     }, {
-      sortBy: urlSortBy || 'createdAt',
-      sortOrder: urlSortOrder || 'desc'
+      sortBy: effectiveSortBy,
+      sortOrder: effectiveSortOrder
     })
   }, [urlPage, urlSearch, urlCategory, urlGroup, urlGrade, urlSortBy, urlSortOrder])
 
@@ -251,7 +273,7 @@ function RouteComponent() {
                 rowsCount={totalBooks}
                 paginationData={{
                   page: currentPage,
-                  limit: urlLimit || 12,
+                  limit: urlLimit ?? pageStore.limit ?? 12,
                   total: totalBooks,
                   totalPages: totalPages
                 }}

@@ -1,5 +1,4 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { Type, Static } from '@sinclair/typebox';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import { aiModels, aiApiLogs } from '../../db/schema/chat-ai-schema.ts';
 import { db } from '../../db/index.ts';
@@ -9,10 +8,7 @@ import { fromNodeHeaders } from 'better-auth/node';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { EnumUserTier } from "../../db/schema/enum-app.ts";
 import { EnumUserRole } from '../../db/schema/enum-auth.ts';
-
-const GetModelParams = Type.Object({
-    id: Type.String(),
-});
+import { Type } from '@sinclair/typebox';
 
 const ModelItem = Type.Object({
     id: Type.String(),
@@ -50,7 +46,9 @@ const detailsModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
         method: 'GET',
         schema: {
             tags: ['Chat AI'],
-            params: GetModelParams,
+            params: Type.Object({
+                id: Type.String(),
+            }),
             response: {
                 200: GetModelResponse,
                 '4xx': Type.Object({
@@ -64,16 +62,16 @@ const detailsModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
         },
         handler: withErrorHandler(async function handler(
-            request: FastifyRequest<{ Params: Static<typeof GetModelParams> }>,
+            req: FastifyRequest<{ Params: { id: string } }>,
             reply: FastifyReply
-        ) {
+        ): Promise<typeof GetModelResponse.static> {
             const session = await getAuthInstance(app).api.getSession({
-                headers: fromNodeHeaders(request.headers),
+                headers: fromNodeHeaders(req.headers),
             });
 
             const user = session?.user;
             const isAdmin = user?.role === EnumUserRole.ADMIN;
-            const { id } = request.params;
+            const { id } = req.params;
 
             // Exclude apiKey from response
             const { apiKey, ...safeColumns } = getTableColumns(aiModels);
@@ -107,7 +105,7 @@ const detailsModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             if (!model) {
-                return reply.notFound(request.i18n.t('chatAi.model.notFound'));
+                return reply.notFound(req.i18n.t('chatAi.model.notFound'));
             }
 
             let stats: any = undefined;
@@ -135,7 +133,7 @@ const detailsModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('chatAi.model.found'),
+                message: req.i18n.t('chatAi.model.found'),
                 data: {
                     ...model,
                     description: model.description || undefined,
