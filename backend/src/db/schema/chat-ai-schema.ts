@@ -243,12 +243,13 @@ export type SchemaAiChatShareInsert = InferInsertModel<typeof aiChatShares>;
  * - acceptedFileExtensions: List of supported file extensions (e.g. ['.pdf', '.txt'])
  * - maxFileSize: Maximum file size allowed for uploads (in bytes)
  * - extra: Flexible data storage for additional model-specific configuration
+ * - tierCapabilities: Tier-specific capabilities (overrides base settings)
  * - isDefault: Whether this is the default model for new sessions
  * - isEnabled: Whether the model is currently available for use
  * - createdAt: When the model was added to the system
  * - updatedAt: When the model was last updated
  */
-export const aiModels = pgTable('ai_models', {
+export const aiModels = pgTable('ai_chat_models', {
   id: uuid().primaryKey().notNull().defaultRandom(),
 
   // Model details
@@ -266,6 +267,19 @@ export const aiModels = pgTable('ai_models', {
   acceptedFileExtensions: jsonb('accepted_file_extensions').$type<string[]>().default(['.pdf', '.txt', '.csv', '.docx']),
 
   maxFileSize: integer('max_file_size'),
+
+  // Tier-specific capabilities (overrides base settings)
+  // These values override the base columns (supportsImage, maxFileSize, etc.) for specific user tiers.
+  // If a key is missing here, the base column value is used.
+  // Structure: { "free": { "maxFileSize": 100 }, "pro": { "supportsImage": true } }
+  tierCapabilities: jsonb("tier_capabilities")
+    .$type<Record<string, {
+      supportsImage?: boolean;
+      supportsFile?: boolean;
+      maxFileSize?: number;
+      maxTokens?: number;
+    }>>()
+    .default({}),
 
   // Flexible data storage
   extra: jsonb("extra")

@@ -6,7 +6,7 @@ import { users, userProfile, accounts } from "../../db/schema/auth-schema.ts";
 import { eq, sql } from "drizzle-orm";
 import { processChangeAvatar } from "./avatar-user.ts";
 import type { UploadedFile } from "../../types/file.ts";
-import {getUserAvatarUrl} from "../../utils/app-utils.ts";
+import { getUserAvatarUrl } from "../../utils/app-utils.ts";
 
 // Response schemas
 const UpdateUserResponse = Type.Object({
@@ -25,6 +25,7 @@ const UpdateUserResponse = Type.Object({
     bio: Type.Union([Type.String(), Type.Null()]),
     educationLevel: Type.Union([Type.String(), Type.Null()]),
     dateOfBirth: Type.Union([Type.String(), Type.Null()]),
+    status: Type.Union([Type.String(), Type.Null()]),
     extra: Type.Object({}, { additionalProperties: true }),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' })
@@ -42,6 +43,7 @@ const UpdateUserResponse = Type.Object({
  * - address: string (optional) - User's address
  * - bio: string (optional) - User's biography
  * - dateOfBirth: string (optional) - User's date of birth (YYYY-MM-DD format)
+ * - status: string (optional) - User's status
  * - image: file (optional) - User's avatar image
  * 
  * @param {string} [name] - Optional. User's display name
@@ -51,6 +53,7 @@ const UpdateUserResponse = Type.Object({
  * @param {string} [address] - Optional. User's address
  * @param {string} [bio] - Optional. User's biography
  * @param {string} [dateOfBirth] - Optional. User's date of birth (YYYY-MM-DD format)
+ * @param {string} [status] - Optional. User's status
  * @param {file} [image] - Optional. User's avatar image
  * @param {object} [extra] - Optional. Additional user data
  * 
@@ -80,7 +83,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
     handler: withErrorHandler(async (req, reply) => {
       // Get user ID from session (verified by user.hook.ts)
       const userId = req.session.user.id;
-      
+
       // Initialize variables for form data
       const updateData: {
         name?: string;
@@ -90,11 +93,12 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         address?: string;
         bio?: string;
         dateOfBirth?: string;
+        status?: string;
         extra?: string; // Add extra field
       } = {};
-      
+
       let imageFile: UploadedFile | null = null;
-      
+
       // Parse multipart form data
       const parts = req.parts();
       for await (const part of parts) {
@@ -157,7 +161,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Separate user and profile data
       const userFields = ['name'];
-      const profileFields = ['school', 'grade', 'phone', 'address', 'bio', 'dateOfBirth', 'extra', 'educationLevel']; // Add 'extra' to profileFields
+      const profileFields = ['school', 'grade', 'phone', 'address', 'bio', 'dateOfBirth', 'status', 'extra', 'educationLevel']; // Add 'extra' to profileFields
 
       const userData: Record<string, unknown> = {};
       const profileData: Record<string, unknown> = {};
@@ -223,17 +227,18 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         bio: userProfile.bio,
         educationLevel: userProfile.educationLevel,
         dateOfBirth: userProfile.dateOfBirth,
+        status: userProfile.status,
         extra: userProfile.extra
       })
-      .from(users)
-      .leftJoin(accounts, eq(users.id, accounts.userId))
-      .leftJoin(userProfile, eq(users.id, userProfile.id))
-      .where(eq(users.id, userId))
-      .limit(1);
+        .from(users)
+        .leftJoin(accounts, eq(users.id, accounts.userId))
+        .leftJoin(userProfile, eq(users.id, userProfile.id))
+        .where(eq(users.id, userId))
+        .limit(1);
 
       // Extract user data (there should only be one result)
       const userResult = userWithAllData[0];
-      
+
       if (!userResult) {
         return reply.notFound(req.i18n.t('user.userNotFound'));
       }

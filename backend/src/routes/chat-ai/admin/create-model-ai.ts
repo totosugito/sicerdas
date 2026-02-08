@@ -1,14 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
-import { aiModels } from '../../db/schema/chat-ai-schema.ts';
-import { db } from '../../db/index.ts';
+import { aiModels } from '../../../db/schema/chat-ai-schema.ts';
+import { db } from '../../../db/index.ts';
 import { eq, or, and } from 'drizzle-orm';
-import { getAuthInstance } from "../../decorators/auth.decorator.ts";
-import { fromNodeHeaders } from 'better-auth/node';
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
-import { EnumUserRole } from '../../db/schema/enum-auth.ts';
-import { EnumUserTier } from "../../db/schema/enum-app.ts";
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { EnumUserTier } from "../../../db/schema/enum-app.ts";
 
 const CreateModelBody = Type.Object({
     name: Type.String({ minLength: 1 }),
@@ -25,6 +22,12 @@ const CreateModelBody = Type.Object({
     isDefault: Type.Optional(Type.Boolean({ default: false })),
     isEnabled: Type.Optional(Type.Boolean({ default: true })),
     status: Type.Optional(Type.Enum(EnumUserTier, { default: EnumUserTier.FREE })),
+    tierCapabilities: Type.Optional(Type.Record(Type.String(), Type.Object({
+        supportsImage: Type.Optional(Type.Boolean()),
+        supportsFile: Type.Optional(Type.Boolean()),
+        maxFileSize: Type.Optional(Type.Number()),
+        maxTokens: Type.Optional(Type.Number()),
+    }))),
     extra: Type.Optional(Type.Record(Type.String(), Type.Unknown())),
 });
 
@@ -42,6 +45,7 @@ const ModelResponseItem = Type.Object({
     maxFileSize: Type.Optional(Type.Number()),
     isDefault: Type.Boolean(),
     status: Type.String(),
+    tierCapabilities: Type.Optional(Type.Record(Type.String(), Type.Unknown())),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
 });
@@ -75,17 +79,6 @@ const createModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreateModelBody.static }>,
             reply: FastifyReply
         ): Promise<typeof CreateModelResponse.static> {
-            const session = await getAuthInstance(app).api.getSession({
-                headers: fromNodeHeaders(request.headers),
-            });
-
-            const user = session?.user;
-            const isAdmin = user?.role === EnumUserRole.ADMIN;
-
-            if (!isAdmin) {
-                return reply.unauthorized(request.i18n.t('auth.unauthorized'));
-            }
-
             const { name, provider, modelIdentifier } = request.body;
 
             const existingModel = await db.query.aiModels.findFirst({

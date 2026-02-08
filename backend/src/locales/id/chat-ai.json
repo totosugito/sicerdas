@@ -25,6 +25,9 @@
             },
             "list": {
                 "success": "Berhasil mengambil daftar model AI"
+            },
+            "stats": {
+                "success": "Statistik AI berhasil diambil"
             }
         }
     }

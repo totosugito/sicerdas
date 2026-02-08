@@ -1,13 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import { aiModels, aiApiLogs } from '../../db/schema/chat-ai-schema.ts';
-import { db } from '../../db/index.ts';
-import { eq, getTableColumns, desc, and } from 'drizzle-orm';
-import { getAuthInstance } from "../../decorators/auth.decorator.ts";
-import { fromNodeHeaders } from 'better-auth/node';
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
-import { EnumUserTier } from "../../db/schema/enum-app.ts";
-import { EnumUserRole } from '../../db/schema/enum-auth.ts';
+import { aiModels, aiApiLogs } from '../../../db/schema/chat-ai-schema.ts';
+import { db } from '../../../db/index.ts';
+import { eq, getTableColumns, desc } from 'drizzle-orm';
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { Type } from '@sinclair/typebox';
 
 const ModelItem = Type.Object({
@@ -24,6 +20,7 @@ const ModelItem = Type.Object({
     maxFileSize: Type.Optional(Type.Number()),
     isDefault: Type.Boolean(),
     status: Type.String(),
+    tierCapabilities: Type.Optional(Type.Record(Type.String(), Type.Unknown())),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
     stats: Type.Optional(Type.Array(Type.Object({
@@ -65,44 +62,18 @@ const detailsModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
             req: FastifyRequest<{ Params: { id: string } }>,
             reply: FastifyReply
         ): Promise<typeof GetModelResponse.static> {
-            const session = await getAuthInstance(app).api.getSession({
-                headers: fromNodeHeaders(req.headers),
-            });
-
-            const user = session?.user;
-            const isAdmin = user?.role === EnumUserRole.ADMIN;
             const { id } = req.params;
 
+            // This route is protected by adminHook, so only admins can access it
             // Exclude apiKey from response
             const { apiKey, ...safeColumns } = getTableColumns(aiModels);
 
-            // Fetch model based on permissions
-            let model: any;
-
-            if (isAdmin) {
-                // Admin can see any model by ID
-                const [foundModel] = await db.select({
-                    ...safeColumns
-                })
-                    .from(aiModels)
-                    .where(eq(aiModels.id, id));
-
-                model = foundModel;
-
-            } else {
-                // Users can only see enabled free models
-                const [foundModel] = await db.select({
-                    ...safeColumns
-                })
-                    .from(aiModels)
-                    .where(and(
-                        eq(aiModels.id, id),
-                        eq(aiModels.isEnabled, true),
-                        eq(aiModels.status, EnumUserTier.FREE)
-                    ));
-
-                model = foundModel;
-            }
+            // Fetch model
+            const [model] = await db.select({
+                ...safeColumns
+            })
+                .from(aiModels)
+                .where(eq(aiModels.id, id));
 
             if (!model) {
                 return reply.notFound(req.i18n.t('chatAi.model.notFound'));
@@ -111,25 +82,23 @@ const detailsModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
             let stats: any = undefined;
 
             // Admin-specific stats calculation (last 5 logs)
-            if (isAdmin) {
-                const logs = await db.select({
-                    periodStart: aiApiLogs.periodStart,
-                    successCount: aiApiLogs.successCount,
-                    totalRequests: aiApiLogs.totalRequests,
-                    avgDuration: aiApiLogs.avgDuration,
-                })
-                    .from(aiApiLogs)
-                    .where(eq(aiApiLogs.modelId, model.id))
-                    .orderBy(desc(aiApiLogs.periodStart))
-                    .limit(5);
+            const logs = await db.select({
+                periodStart: aiApiLogs.periodStart,
+                successCount: aiApiLogs.successCount,
+                totalRequests: aiApiLogs.totalRequests,
+                avgDuration: aiApiLogs.avgDuration,
+            })
+                .from(aiApiLogs)
+                .where(eq(aiApiLogs.modelId, model.id))
+                .orderBy(desc(aiApiLogs.periodStart))
+                .limit(5);
 
-                stats = logs.map(log => ({
-                    date: log.periodStart.toISOString(),
-                    successCount: log.successCount,
-                    totalRequests: log.totalRequests,
-                    avgDuration: log.avgDuration || 0,
-                }));
-            }
+            stats = logs.map(log => ({
+                date: log.periodStart.toISOString(),
+                successCount: log.successCount,
+                totalRequests: log.totalRequests,
+                avgDuration: log.avgDuration || 0,
+            }));
 
             return reply.status(200).send({
                 success: true,

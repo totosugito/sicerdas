@@ -9,6 +9,8 @@ yarn.lock
 .idea
 src/routeTree.gen.ts
 /backend/src/db/migrations/
+backend/.env
+backend/.env.devel
 ./scripts/venv/
 test
 .vscode

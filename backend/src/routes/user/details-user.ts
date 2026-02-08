@@ -30,6 +30,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
             address: Type.Union([Type.String(), Type.Null()]),
             bio: Type.Union([Type.String(), Type.Null()]),
             dateOfBirth: Type.Union([Type.String(), Type.Null()]),
+            status: Type.Union([Type.String(), Type.Null()]),
             createdAt: Type.String({ format: 'date-time' }),
             updatedAt: Type.String({ format: 'date-time' }),
             providerId: Type.String(),
@@ -68,6 +69,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         address: userProfile.address,
         bio: userProfile.bio,
         dateOfBirth: userProfile.dateOfBirth,
+        status: userProfile.status,
         extra: userProfile.extra // Add extra field
       })
         .from(users)

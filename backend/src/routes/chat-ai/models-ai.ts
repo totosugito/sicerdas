@@ -1,8 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { Type } from '@sinclair/typebox';
-import { aiModels, aiApiLogs } from '../../db/schema/chat-ai-schema.ts';
+import { aiModels } from '../../db/schema/chat-ai-schema.ts';
+import { userProfile } from '../../db/schema/auth-schema.ts';
 import { db } from '../../db/index.ts';
-import { eq, getTableColumns, desc, and } from 'drizzle-orm';
+import { eq, getTableColumns, and, inArray } from 'drizzle-orm';
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
@@ -23,14 +24,9 @@ const ModelItem = Type.Object({
     maxFileSize: Type.Optional(Type.Number()),
     isDefault: Type.Boolean(),
     status: Type.String(),
+    tierCapabilities: Type.Optional(Type.Record(Type.String(), Type.Unknown())),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
-    stats: Type.Optional(Type.Array(Type.Object({
-        date: Type.String(),
-        successCount: Type.Number(),
-        totalRequests: Type.Number(),
-        avgDuration: Type.Number(),
-    })))
 });
 
 const ModelsResponseWrapper = Type.Object({
@@ -65,6 +61,17 @@ const modelsRoute: FastifyPluginAsyncTypebox = async (app) => {
             const user = session?.user;
             const isAdmin = user?.role === EnumUserRole.ADMIN;
 
+            // Get user tier from profile
+            let userTier: string = EnumUserTier.FREE;
+            if (user?.id) {
+                const [profile] = await db.select({ status: userProfile.status })
+                    .from(userProfile)
+                    .where(eq(userProfile.id, user.id));
+                if (profile?.status) {
+                    userTier = profile.status as any;
+                }
+            }
+
             let baseQuery: any;
 
             // Exclude apiKey from response
@@ -76,50 +83,46 @@ const modelsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
                     .from(aiModels);
             } else {
+                // Define visible tiers based on user tier
+                // Free users see: FREE
+                // Pro users see: FREE, PRO
+                const visibleTiers: string[] = [EnumUserTier.FREE];
+                if (userTier === EnumUserTier.PRO) {
+                    visibleTiers.push(EnumUserTier.PRO);
+                }
+
                 baseQuery = db.select({
                     ...safeColumns
                 })
                     .from(aiModels)
                     .where(and(
                         eq(aiModels.isEnabled, true),
-                        eq(aiModels.status, EnumUserTier.FREE)
+                        inArray(aiModels.status, visibleTiers)
                     ));
             }
 
             const models = await baseQuery;
 
-            const result = await Promise.all(models.map(async (model: any) => {
-                let stats: any = undefined;
+            const result = models.map((model: any) => {
+                // Apply tier capabilities override
+                let mergedModel = { ...model };
 
-                // Admin-specific stats calculation (last 5 logs)
-                if (isAdmin) {
-                    const logs = await db.select({
-                        periodStart: aiApiLogs.periodStart,
-                        successCount: aiApiLogs.successCount,
-                        totalRequests: aiApiLogs.totalRequests,
-                        avgDuration: aiApiLogs.avgDuration,
-                    })
-                        .from(aiApiLogs)
-                        .where(eq(aiApiLogs.modelId, model.id))
-                        .orderBy(desc(aiApiLogs.periodStart))
-                        .limit(5);
-
-                    stats = logs.map(log => ({
-                        date: log.periodStart.toISOString(),
-                        successCount: log.successCount,
-                        totalRequests: log.totalRequests,
-                        avgDuration: log.avgDuration || 0,
-                    }));
+                // Check if there are specific capabilities for the user's tier
+                if (model.tierCapabilities && model.tierCapabilities[userTier]) {
+                    const overrides = model.tierCapabilities[userTier];
+                    mergedModel = {
+                        ...mergedModel,
+                        ...overrides
+                    };
                 }
 
                 return {
-                    ...model,
-                    description: model.description || undefined,
-                    createdAt: model.createdAt.toISOString(),
-                    updatedAt: model.updatedAt.toISOString(),
-                    ...(stats ? { stats } : {})
+                    ...mergedModel,
+                    description: mergedModel.description || undefined,
+                    createdAt: mergedModel.createdAt.toISOString(),
+                    updatedAt: mergedModel.updatedAt.toISOString(),
                 };
-            }));
+            });
 
             return reply.status(200).send({
                 success: true,

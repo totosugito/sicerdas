@@ -9,6 +9,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from '../../../db/schema/index.ts';
 
 import dotenv from 'dotenv';
+import { EnumUserTier } from '../../../db/schema/enum-app.ts';
 dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env' });
 
 export default async function seed() {
@@ -83,6 +84,7 @@ export default async function seed() {
       address: "",
       bio: "",
       dateOfBirth: null,
+      status: EnumUserTier.PRO,
       createdAt: now,
       updatedAt: now,
     }).onConflictDoNothing();

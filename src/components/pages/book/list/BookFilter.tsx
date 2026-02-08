@@ -245,7 +245,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
 
 // Sub-components for cleaner render
 const CategoryOption = ({ value, id, label, count, subLabel }: { value: string, id: string, label: string, count?: number, subLabel?: string | React.ReactNode }) => (
-  <div className={`flex space-x-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors ${subLabel ? 'items-start py-0' : 'items-center'}`}>
+  <div className={`flex space-x-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors ${subLabel ? 'items-center py-0' : 'items-center'}`}>
     <RadioGroupItem value={value} id={id} className={`peer ${subLabel ? 'mt-1' : ''}`} />
     <Label htmlFor={id} className="flex-1 cursor-pointer font-medium text-slate-600 dark:text-slate-400 peer-data-[state=checked]:text-slate-900 dark:peer-data-[state=checked]:text-white">
       <div className="flex items-center">
