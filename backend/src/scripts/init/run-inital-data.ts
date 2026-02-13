@@ -4,6 +4,7 @@ import initUser from './jobs/init-user.ts';
 import initBookGroup from './jobs/init-book-group.ts';
 import importBooks from './jobs/import-book.ts';
 import importPeriodicElements from './jobs/import-periodic-elements.ts';
+import initTierPricing from './jobs/init-tier-pricing.ts';
 
 const runInitialData = async () => {
     // Configuration for data initialization
@@ -16,33 +17,58 @@ const runInitialData = async () => {
         }
     };
 
+    // Configuration for enabling/disabling specific initialization tasks
+    const processConfig = {
+        initTierPricing: true,
+        initUser: true,
+        initBookGroup: false,
+        importBooks: false,
+        importPeriodicElements: false
+    };
+
     console.log('Starting initialization of all data...');
     const startTime = Date.now();
 
     try {
-        console.log('----------------------------------------');
-        console.log('1. Initializing Users');
-        console.log('----------------------------------------');
-        await initUser();
-        console.log('✓ User initialization completed');
+        if (processConfig.initTierPricing) {
+            console.log('----------------------------------------');
+            console.log('0. Initializing Tier Pricing');
+            console.log('----------------------------------------');
+            await initTierPricing();
+            console.log('✓ Tier Pricing initialization completed');
+        }
 
-        console.log('\n----------------------------------------');
-        console.log('2. Initializing Core Book Data');
-        console.log('----------------------------------------');
-        await initBookGroup();
-        console.log('✓ Core Book Data initialization completed');
+        if (processConfig.initUser) {
+            console.log('\n----------------------------------------');
+            console.log('1. Initializing Users');
+            console.log('----------------------------------------');
+            await initUser();
+            console.log('✓ User initialization completed');
+        }
 
-        console.log('\n----------------------------------------');
-        console.log('3. Importing Books');
-        console.log('----------------------------------------');
-        await importBooks(dataInput.book);
-        console.log('✓ Book import completed');
+        if (processConfig.initBookGroup) {
+            console.log('\n----------------------------------------');
+            console.log('2. Initializing Core Book Data');
+            console.log('----------------------------------------');
+            await initBookGroup();
+            console.log('✓ Core Book Data initialization completed');
+        }
 
-        console.log('\n----------------------------------------');
-        console.log('4. Importing Periodic Elements');
-        console.log('----------------------------------------');
-        await importPeriodicElements(dataInput.periodicTable);
-        console.log('✓ Periodic elements import completed');
+        if (processConfig.importBooks) {
+            console.log('\n----------------------------------------');
+            console.log('3. Importing Books');
+            console.log('----------------------------------------');
+            await importBooks(dataInput.book);
+            console.log('✓ Book import completed');
+        }
+
+        if (processConfig.importPeriodicElements) {
+            console.log('\n----------------------------------------');
+            console.log('4. Importing Periodic Elements');
+            console.log('----------------------------------------');
+            await importPeriodicElements(dataInput.periodicTable);
+            console.log('✓ Periodic elements import completed');
+        }
 
         const duration = ((Date.now() - startTime) / 1000).toFixed(2);
         console.log('\n========================================');
