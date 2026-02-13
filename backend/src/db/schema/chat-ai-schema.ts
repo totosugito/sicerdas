@@ -1,7 +1,28 @@
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { boolean, pgTable, text, timestamp, uuid, varchar, integer, jsonb, index } from 'drizzle-orm/pg-core';
+import { boolean, pgTable, text, timestamp, uuid, varchar, integer, jsonb, index, decimal } from 'drizzle-orm/pg-core';
 import { users } from './auth-schema.ts';
-import { EnumUserTier, PgEnumUserTier } from './enum-app.ts';
+import { tierPricing } from './tier-pricing.ts';
+import { EnumUsageType, PgEnumUsageType } from './enum-app.ts';
+
+/**
+ * Table: ai_chat_folders
+ * 
+ * This table stores folders for organizing chat sessions.
+ */
+export const aiChatFolders = pgTable('ai_chat_folders', {
+  id: uuid().primaryKey().notNull().defaultRandom(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  color: varchar('color', { length: 50 }),
+  sortOrder: integer('sort_order').notNull().default(0),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => [
+  index('ai_chat_folders_user_idx').on(table.userId),
+]);
+
+export type SchemaAiChatFolderSelect = InferSelectModel<typeof aiChatFolders>;
+export type SchemaAiChatFolderInsert = InferInsertModel<typeof aiChatFolders>;
 
 /**
  * Table: ai_chat_sessions
@@ -12,12 +33,17 @@ import { EnumUserTier, PgEnumUserTier } from './enum-app.ts';
  * Fields:
  * - id: Unique identifier for the chat session
  * - userId: ID of the user who created the session
+ * - folderId: Optional folder for organization
  * - title: Descriptive name for the chat session
  * - modelId: Reference to the AI model used for this session (optional)
+ * - isPinned: Whether the session is pinned to top
+ * - systemInstruction: Custom system prompt for this session
+ * - temperature: Model temperature setting (0-1)
+ * - topP: Model topP setting (0-1)
+ * - contextCount: Number of previous messages to include in context
  * - extra: Flexible data storage for additional session details (optional)
  * - createdAt: When the session was created
- * - updatedAt: When the session was last updated (e.g., title change, activation status)
- *   Note: Automatically updated when new messages are added to the session
+ * - updatedAt: When the session was last updated
  * - isActive: Whether the session is currently active or archived
  */
 export const aiChatSessions = pgTable('ai_chat_sessions', {
@@ -28,12 +54,24 @@ export const aiChatSessions = pgTable('ai_chat_sessions', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 
+  // Organization
+  folderId: uuid('folder_id')
+    .references(() => aiChatFolders.id, { onDelete: 'set null', onUpdate: 'cascade' }),
+
+  isPinned: boolean('is_pinned').notNull().default(false),
+
   // Session details
   title: varchar('title', { length: 255 }).notNull(),
 
   // Reference to the model used for this session (optional)
   modelId: uuid('model_id')
     .references(() => aiModels.id, { onDelete: 'set null', onUpdate: 'cascade' }),
+
+  // Session Settings
+  systemInstruction: text('system_instruction'),
+  temperature: decimal('temperature', { precision: 3, scale: 2 }), // e.g. 0.70
+  topP: decimal('top_p', { precision: 3, scale: 2 }),
+  contextCount: integer('context_count'),
 
   // Flexible data storage
   extra: jsonb("extra")
@@ -48,6 +86,7 @@ export const aiChatSessions = pgTable('ai_chat_sessions', {
   isActive: boolean('is_active').notNull().default(true),
 }, (table) => [
   index('ai_chat_sessions_user_id_idx').on(table.userId),
+  index('ai_chat_sessions_folder_id_idx').on(table.folderId),
   index('ai_chat_sessions_created_at_idx').on(table.createdAt),
 ]);
 
@@ -69,15 +108,9 @@ export type SchemaAiChatSessionInsert = InferInsertModel<typeof aiChatSessions>;
  * - createdAt: When the message was created
  * - position: Order of the message in the conversation (0-indexed)
  * - tokens: Number of tokens in the message (optional, for analytics/billing)
- * 
- * Design Notes:
- * - Messages are typically immutable after creation, so there's no updatedAt field.
- * - The position field is intentionally included despite having createdAt:
- *   1. Ensures precise ordering regardless of timestamp precision issues
- *   2. Simplifies queries for retrieving conversation history in order
- *   3. Allows for future features like message reordering or insertion
- * - The position field is zero-indexed and incremented for each new message in a session.
- * - When a message is created, it automatically updates the parent session's updatedAt field.
+ * - isEdited: Whether the message content has been edited
+ * - rating: User rating (1=like, -1=dislike, 0=none)
+ * - feedback: Text feedback from user
  */
 export const aiChatMessages = pgTable('ai_chat_messages', {
   id: uuid().primaryKey().notNull().defaultRandom(),
@@ -108,8 +141,11 @@ export const aiChatMessages = pgTable('ai_chat_messages', {
   // Analytics/Billing
   tokens: integer('tokens'), // Number of tokens in the message (optional)
 
-  // Message Status
+  // Status & Feedback
   isSuccess: boolean('is_success').notNull().default(true),
+  isEdited: boolean('is_edited').notNull().default(false),
+  rating: integer('rating').default(0), // 1: like, -1: dislike, 0: null
+  feedback: text('feedback'),
 }, (table) => [
   index('ai_chat_messages_session_id_idx').on(table.sessionId),
   index('ai_chat_messages_created_at_idx').on(table.createdAt),
@@ -271,6 +307,7 @@ export const aiModels = pgTable('ai_chat_models', {
   // Tier-specific capabilities (overrides base settings)
   // These values override the base columns (supportsImage, maxFileSize, etc.) for specific user tiers.
   // If a key is missing here, the base column value is used.
+  // Key: tier_pricing.slug (e.g., "free", "pro")
   // Structure: { "free": { "maxFileSize": 100 }, "pro": { "supportsImage": true } }
   tierCapabilities: jsonb("tier_capabilities")
     .$type<Record<string, {
@@ -291,7 +328,8 @@ export const aiModels = pgTable('ai_chat_models', {
   isEnabled: boolean('is_enabled').notNull().default(true),
 
   // Pricing tier
-  status: PgEnumUserTier('status').notNull().default(EnumUserTier.FREE),
+  requiredTierId: uuid('required_tier_id')
+    .references(() => tierPricing.id, { onDelete: 'set null', onUpdate: 'cascade' }),
 
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -300,6 +338,53 @@ export const aiModels = pgTable('ai_chat_models', {
 
 export type SchemaAiModelSelect = InferSelectModel<typeof aiModels>;
 export type SchemaAiModelInsert = InferInsertModel<typeof aiModels>;
+
+/**
+ * Table: user_ai_usage
+ * 
+ * This table tracks the AI usage of a user for a specific billing period or cycle.
+ * It is used to enforce tier limits (e.g., max tokens per month).
+ * 
+ * Fields:
+ * - id: Unique identifier
+ * - userId: The user
+ * - tierId: The tier the user was on during this usage period (snapshot for audit)
+ * - type: The type of usage record (daily or monthly)
+ * - periodStart: Start of the usage period
+ * - periodEnd: End of the usage period
+ * - tokensUsed: Total tokens used in this period
+ * - requestCount: Total number of requests made
+ * - extra: JSONB for breakdown by model or other stats if needed
+ */
+export const userAiUsage = pgTable('user_ai_usage', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+
+  tierId: uuid('tier_id')
+    .references(() => tierPricing.id, { onDelete: 'set null', onUpdate: 'cascade' }),
+
+  type: PgEnumUsageType('type').notNull().default(EnumUsageType.MONTHLY),
+
+  periodStart: timestamp('period_start').notNull(),
+  periodEnd: timestamp('period_end').notNull(),
+
+  tokensUsed: integer('tokens_used').notNull().default(0),
+  requestCount: integer('request_count').notNull().default(0),
+
+  // Potential for detailed breakdown, e.g. { "gpt-4": 100, "claude-3": 200 }
+  extra: jsonb('extra').$type<Record<string, any>>().default({}),
+
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => [
+  index('user_ai_usage_user_period_idx').on(table.userId, table.periodStart, table.periodEnd),
+  index('user_ai_usage_type_idx').on(table.type),
+]);
+
+export type SchemaUserAiUsageSelect = InferSelectModel<typeof userAiUsage>;
+export type SchemaUserAiUsageInsert = InferInsertModel<typeof userAiUsage>;
 
 /**
  * Table: ai_api_logs

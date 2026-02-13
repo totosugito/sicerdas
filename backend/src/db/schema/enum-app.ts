@@ -75,8 +75,9 @@ export const EnumPeriodicGroup = {
 }
 export const PgEnumPeriodicGroup = pgEnum('periodic_group', Object.values(EnumPeriodicGroup) as [string, ...string[]]);
 
-export const EnumUserTier = {
-  FREE: 'free',
-  PRO: 'pro',
+export const EnumUsageType = {
+  DAILY: 'daily',
+  MONTHLY: 'monthly',
 } as const
-export const PgEnumUserTier = pgEnum('user_tier', Object.values(EnumUserTier) as [string, ...string[]]);
+export const PgEnumUsageType = pgEnum('usage_type', Object.values(EnumUsageType) as [string, ...string[]]);
+

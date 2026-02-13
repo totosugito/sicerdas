@@ -5,7 +5,7 @@ import { aiModels } from '../../../db/schema/chat-ai-schema.ts';
 import { db } from '../../../db/index.ts';
 import { eq, ne, and, or } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
-import { EnumUserTier } from "../../../db/schema/enum-app.ts";
+
 
 const UpdateModelParams = Type.Object({
     id: Type.String(),
@@ -25,7 +25,7 @@ const UpdateModelBody = Type.Object({
     maxFileSize: Type.Optional(Type.Number()),
     isDefault: Type.Optional(Type.Boolean()),
     isEnabled: Type.Optional(Type.Boolean()),
-    status: Type.Optional(Type.Enum(EnumUserTier)),
+    requiredTierId: Type.Optional(Type.String()),
     tierCapabilities: Type.Optional(Type.Record(Type.String(), Type.Object({
         supportsImage: Type.Optional(Type.Boolean()),
         supportsFile: Type.Optional(Type.Boolean()),
@@ -48,7 +48,7 @@ const ModelResponseItem = Type.Object({
     acceptedFileExtensions: Type.Optional(Type.Array(Type.String())),
     maxFileSize: Type.Optional(Type.Number()),
     isDefault: Type.Boolean(),
-    status: Type.String(),
+    requiredTierId: Type.Optional(Type.String()),
     tierCapabilities: Type.Optional(Type.Record(Type.String(), Type.Unknown())),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),

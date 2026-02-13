@@ -19,7 +19,7 @@ const ModelItem = Type.Object({
     acceptedFileExtensions: Type.Optional(Type.Array(Type.String())),
     maxFileSize: Type.Optional(Type.Number()),
     isDefault: Type.Boolean(),
-    status: Type.String(),
+    requiredTierId: Type.Optional(Type.String()),
     tierCapabilities: Type.Optional(Type.Record(Type.String(), Type.Unknown())),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
@@ -106,6 +106,7 @@ const detailsModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
                 data: {
                     ...model,
                     description: model.description || undefined,
+                    requiredTierId: model.requiredTierId || undefined,
                     createdAt: model.createdAt.toISOString(),
                     updatedAt: model.updatedAt.toISOString(),
                     ...(stats ? { stats } : {})

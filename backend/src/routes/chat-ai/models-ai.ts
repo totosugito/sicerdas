@@ -2,12 +2,12 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { Type } from '@sinclair/typebox';
 import { aiModels } from '../../db/schema/chat-ai-schema.ts';
 import { userProfile } from '../../db/schema/auth-schema.ts';
+import { tierPricing } from '../../db/schema/tier-pricing.ts';
 import { db } from '../../db/index.ts';
-import { eq, getTableColumns, and, inArray } from 'drizzle-orm';
+import { eq, getTableColumns, desc, asc } from 'drizzle-orm';
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
-import { EnumUserTier } from "../../db/schema/enum-app.ts";
 import { EnumUserRole } from '../../db/schema/enum-auth.ts';
 
 const ModelItem = Type.Object({
@@ -23,7 +23,7 @@ const ModelItem = Type.Object({
     acceptedFileExtensions: Type.Optional(Type.Array(Type.String())),
     maxFileSize: Type.Optional(Type.Number()),
     isDefault: Type.Boolean(),
-    status: Type.String(),
+    requiredTierId: Type.Optional(Type.String()),
     tierCapabilities: Type.Optional(Type.Record(Type.String(), Type.Unknown())),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
@@ -61,55 +61,63 @@ const modelsRoute: FastifyPluginAsyncTypebox = async (app) => {
             const user = session?.user;
             const isAdmin = user?.role === EnumUserRole.ADMIN;
 
-            // Get user tier from profile
-            let userTier: string = EnumUserTier.FREE;
+            // 1. Get User's Tier Info (sortOrder, slug)
+            let userTierOrder = 0; // Default to lowest
+            let userTierSlug = 'free'; // Default slug
+
             if (user?.id) {
-                const [profile] = await db.select({ status: userProfile.status })
+                const [userData] = await db.select({
+                    tierSlug: tierPricing.slug,
+                    tierOrder: tierPricing.sortOrder,
+                })
                     .from(userProfile)
+                    .leftJoin(tierPricing, eq(userProfile.tierId, tierPricing.id))
                     .where(eq(userProfile.id, user.id));
-                if (profile?.status) {
-                    userTier = profile.status as any;
+
+                if (userData) {
+                    if (userData.tierOrder !== null) userTierOrder = userData.tierOrder;
+                    if (userData.tierSlug) userTierSlug = userData.tierSlug;
                 }
             }
-
-            let baseQuery: any;
 
             // Exclude apiKey from response
             const { apiKey, ...safeColumns } = getTableColumns(aiModels);
 
-            if (isAdmin) {
-                baseQuery = db.select({
-                    ...safeColumns,
-                })
-                    .from(aiModels);
-            } else {
-                // Define visible tiers based on user tier
-                // Free users see: FREE
-                // Pro users see: FREE, PRO
-                const visibleTiers: string[] = [EnumUserTier.FREE];
-                if (userTier === EnumUserTier.PRO) {
-                    visibleTiers.push(EnumUserTier.PRO);
-                }
+            // 2. Fetch Models with their Required Tier Info
+            // We join with tierPricing to get the sortOrder of the required tier
+            const modelsData = await db.select({
+                ...safeColumns,
+                requiredTierOrder: tierPricing.sortOrder,
+            })
+                .from(aiModels)
+                .leftJoin(tierPricing, eq(aiModels.requiredTierId, tierPricing.id))
+                .where(eq(aiModels.isEnabled, true))
+                .orderBy(asc(tierPricing.sortOrder), desc(aiModels.isDefault));
 
-                baseQuery = db.select({
-                    ...safeColumns
-                })
-                    .from(aiModels)
-                    .where(and(
-                        eq(aiModels.isEnabled, true),
-                        inArray(aiModels.status, visibleTiers)
-                    ));
-            }
+            // 3. Filter Models
+            // Logic: User sees model IF:
+            //   - User is Admin OR
+            //   - Model has no required tier (null) OR
+            //   - User's tier sortOrder >= Model's required tier sortOrder
 
-            const models = await baseQuery;
+            const filteredModels = modelsData.filter(model => {
+                if (isAdmin) return true;
+                if (!model.requiredTierId) return true; // No requirement
+                const requiredOrder = model.requiredTierOrder || 0;
+                return userTierOrder >= requiredOrder;
+            });
 
-            const result = models.map((model: any) => {
-                // Apply tier capabilities override
+            // 4. Map and Apply Capabilities Overrides
+            const result = filteredModels.map((model) => {
                 let mergedModel = { ...model };
 
-                // Check if there are specific capabilities for the user's tier
-                if (model.tierCapabilities && model.tierCapabilities[userTier]) {
-                    const overrides = model.tierCapabilities[userTier];
+                // Delete the joined column before returning
+                delete (mergedModel as any).requiredTierOrder;
+
+                // Check if there are specific capabilities for the user's tier slug
+                // tierCapabilities is Record<string, overrides> where string is the tier slug
+                if (model.tierCapabilities && (model.tierCapabilities as any)[userTierSlug]) {
+                    const overrides = (model.tierCapabilities as any)[userTierSlug];
                     mergedModel = {
                         ...mergedModel,
                         ...overrides
@@ -119,6 +127,7 @@ const modelsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 return {
                     ...mergedModel,
                     description: mergedModel.description || undefined,
+                    requiredTierId: mergedModel.requiredTierId || undefined,
                     createdAt: mergedModel.createdAt.toISOString(),
                     updatedAt: mergedModel.updatedAt.toISOString(),
                 };

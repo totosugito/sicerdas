@@ -1,7 +1,8 @@
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { boolean, pgTable, text, timestamp, uuid, varchar, jsonb } from 'drizzle-orm/pg-core';
 import { EnumUserRole, PgEnumUserRole } from "./enum-auth.ts";
-import { EnumEducationLevel, EnumUserTier, PgEnumEducationLevel, PgEnumUserTier } from './enum-app.ts';
+import { EnumEducationLevel, PgEnumEducationLevel } from './enum-app.ts';
+import { tierPricing } from './tier-pricing.ts';
 
 /**
  * Table: users
@@ -171,7 +172,7 @@ export const verifications = pgTable("users_verifications", {
  * - address: User's address (optional)
  * - bio: Short biography or description of the user (optional)
  * - dateOfBirth: User's date of birth (optional)
- * - status: User's status (optional)
+ * - tierId: Link to the user's current pricing tier
  * - extra: JSONB field for storing additional structured data without requiring schema changes with default empty object
  * - createdAt: When the profile record was created
  * - updatedAt: When the profile record was last updated
@@ -201,7 +202,9 @@ export const userProfile = pgTable('user_profiles', {
   bio: text('bio'),
   dateOfBirth: timestamp('date_of_birth'),
 
-  status: PgEnumUserTier('status').notNull().default(EnumUserTier.FREE),
+  // Pricing / Tier Link
+  tierId: uuid('tier_id')
+    .references(() => tierPricing.id, { onDelete: 'set null', onUpdate: 'cascade' }),
 
   // Flexible data storage
   extra: jsonb('extra')

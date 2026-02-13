@@ -5,7 +5,7 @@ import { aiModels } from '../../../db/schema/chat-ai-schema.ts';
 import { db } from '../../../db/index.ts';
 import { eq, or, and } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
-import { EnumUserTier } from "../../../db/schema/enum-app.ts";
+
 
 const CreateModelBody = Type.Object({
     name: Type.String({ minLength: 1 }),
@@ -21,7 +21,7 @@ const CreateModelBody = Type.Object({
     maxFileSize: Type.Optional(Type.Number()),
     isDefault: Type.Optional(Type.Boolean({ default: false })),
     isEnabled: Type.Optional(Type.Boolean({ default: true })),
-    status: Type.Optional(Type.Enum(EnumUserTier, { default: EnumUserTier.FREE })),
+    requiredTierId: Type.Optional(Type.String()),
     tierCapabilities: Type.Optional(Type.Record(Type.String(), Type.Object({
         supportsImage: Type.Optional(Type.Boolean()),
         supportsFile: Type.Optional(Type.Boolean()),
@@ -44,7 +44,7 @@ const ModelResponseItem = Type.Object({
     acceptedFileExtensions: Type.Optional(Type.Array(Type.String())),
     maxFileSize: Type.Optional(Type.Number()),
     isDefault: Type.Boolean(),
-    status: Type.String(),
+    requiredTierId: Type.Optional(Type.String()),
     tierCapabilities: Type.Optional(Type.Record(Type.String(), Type.Unknown())),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
@@ -97,7 +97,7 @@ const createModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             const [newModel] = await db.insert(aiModels).values({
                 ...request.body,
-                status: request.body.status || EnumUserTier.FREE,
+                requiredTierId: request.body.requiredTierId || null,
                 isDefault: request.body.isDefault || false,
                 isEnabled: request.body.isEnabled !== undefined ? request.body.isEnabled : true,
                 supportsImage: request.body.supportsImage || false,
@@ -110,6 +110,7 @@ const createModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
                 data: {
                     ...newModel,
                     description: newModel.description || undefined,
+                    requiredTierId: newModel.requiredTierId || undefined,
                     createdAt: newModel.createdAt.toISOString(),
                     updatedAt: newModel.updatedAt.toISOString(),
                 }
