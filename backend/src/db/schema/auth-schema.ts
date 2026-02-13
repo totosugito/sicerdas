@@ -203,8 +203,8 @@ export const userProfile = pgTable('user_profiles', {
   dateOfBirth: timestamp('date_of_birth'),
 
   // Pricing / Tier Link
-  tierId: uuid('tier_id')
-    .references(() => tierPricing.id, { onDelete: 'set null', onUpdate: 'cascade' }),
+  tierId: varchar('tier_id', { length: 50 })
+    .references(() => tierPricing.slug, { onDelete: 'set null', onUpdate: 'cascade' }),
 
   // Flexible data storage
   extra: jsonb('extra')

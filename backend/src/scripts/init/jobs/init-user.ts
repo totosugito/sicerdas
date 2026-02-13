@@ -86,7 +86,7 @@ export default async function seed() {
       address: "",
       bio: "",
       dateOfBirth: null,
-      tierId: proTier?.id || null,
+      tierId: proTier?.slug || null,
       createdAt: now,
       updatedAt: now,
     }).onConflictDoNothing();

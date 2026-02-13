@@ -328,8 +328,8 @@ export const aiModels = pgTable('ai_chat_models', {
   isEnabled: boolean('is_enabled').notNull().default(true),
 
   // Pricing tier
-  requiredTierId: uuid('required_tier_id')
-    .references(() => tierPricing.id, { onDelete: 'set null', onUpdate: 'cascade' }),
+  requiredTierId: varchar('required_tier_id', { length: 50 })
+    .references(() => tierPricing.slug, { onDelete: 'set null', onUpdate: 'cascade' }),
 
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -363,8 +363,8 @@ export const userAiUsage = pgTable('user_ai_usage', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 
-  tierId: uuid('tier_id')
-    .references(() => tierPricing.id, { onDelete: 'set null', onUpdate: 'cascade' }),
+  tierId: varchar('tier_id', { length: 50 })
+    .references(() => tierPricing.slug, { onDelete: 'set null', onUpdate: 'cascade' }),
 
   type: PgEnumUsageType('type').notNull().default(EnumUsageType.MONTHLY),
 

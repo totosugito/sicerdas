@@ -1,4 +1,4 @@
-import { boolean, integer, jsonb, pgTable, timestamp, uuid, varchar, decimal } from 'drizzle-orm/pg-core';
+import { boolean, integer, jsonb, pgTable, timestamp, varchar, decimal } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 /**
@@ -20,11 +20,12 @@ import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
  * - sortOrder: Integer for controlling display order in UI
  */
 export const tierPricing = pgTable('tier_pricing', {
-    id: uuid('id').primaryKey().notNull().defaultRandom(),
+    // Identity & Primary Key
+    // We use slug as PK for better readability in foreign keys (e.g. user_profiles.tier_id = 'pro')
+    slug: varchar('slug', { length: 50 }).primaryKey().notNull(),
 
-    // Display and Identity
+    // Display
     name: varchar('name', { length: 100 }).notNull().unique(),
-    slug: varchar('slug', { length: 50 }).notNull().unique(),
 
     // Pricing
     price: decimal('price', { precision: 10, scale: 2 }).notNull().default('0'),
