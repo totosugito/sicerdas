@@ -38,7 +38,7 @@ export const defaultStore = {
     limit: 12,
     page: 1,
     search: '',
-    category: [-1],
+    category: [0],
     group: [] as number[],
     grade: [] as number[],
     sortBy: 'createdAt',

@@ -10,12 +10,14 @@ import { useTranslation } from 'react-i18next'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import { CreateContentReport } from '@/components/pages/layout/CreateContentReport'
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog'
 import { EnumContentType } from 'backend/src/db/schema/enum-app'
 import { PDFViewer, ScrollStrategy } from '@embedpdf/react-pdf-viewer'
 import { useUpdateBookmark } from '@/api/book/book-bookmark'
 import { useUpdateDownload, UpdateDownloadResponse } from '@/api/book/update-download'
 import { showNotifError, showNotifSuccess } from '@/lib/show-notif'
+import { ModernDialog } from '@/components/custom/components'
+
 
 export const Route = createFileRoute('/(pages)/(book)/book/$id')({
   component: RouteComponent,
@@ -31,6 +33,7 @@ function RouteComponent() {
   const { t } = useTranslation()
   const { user } = useAuth()
   const [showReportDialog, setShowReportDialog] = useState(false)
+  const [showLoginDialog, setShowLoginDialog] = useState(false)
   const [showViewer, setShowViewer] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
 
@@ -93,7 +96,7 @@ function RouteComponent() {
 
   const handleToggleFavorite = () => {
     if (!user) {
-      showNotifError({ title: null, message: t('auth.loginRequired') })
+      setShowLoginDialog(true)
       return
     }
 
@@ -136,6 +139,10 @@ function RouteComponent() {
     router.navigate({ to: AppRoute.book.books.url })
   }
 
+  const handleLogin = () => {
+    router.navigate({ to: AppRoute.auth.signIn.url })
+  }
+
   return (
     <div className="flex flex-col gap-4 w-full">
       {/* Navigation */}
@@ -167,6 +174,20 @@ function RouteComponent() {
           title: book.title,
           name: user?.user?.name || "",
           email: user?.user?.email || "",
+        }}
+      />
+
+      <ModernDialog
+        open={showLoginDialog}
+        onOpenChange={setShowLoginDialog}
+        modal={{
+          title: t('book.detail.loginRequired'),
+          desc: t('book.detail.loginRequiredDesc'),
+          textConfirm: t('book.detail.login'),
+          textCancel: t('book.detail.cancel'),
+          onConfirmClick: handleLogin,
+          onCancelClick: () => setShowLoginDialog(false),
+          iconType: "info",
         }}
       />
 

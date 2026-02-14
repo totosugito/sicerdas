@@ -9,4 +9,5 @@ export default {
     passwordMinLength: "Kata sandi minimal 6 karakter",
     passwordTooShort: "Kata sandi terlalu pendek",
     invalidToken: "Token tidak valid atau telah kedaluwarsa",
+    unauthorized: "Anda tidak memiliki akses untuk melakukan operasi ini",
 }

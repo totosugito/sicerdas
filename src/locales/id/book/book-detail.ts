@@ -18,5 +18,9 @@ export default {
     samplePages: "Contoh Halaman",
     samplePagesDesc: "Contoh halaman dari buku ini.",
     downloadError: "Gagal mengunduh buku. Mencoba membuka langsung...",
-    pdfViewer: "Penampil PDF"
+    pdfViewer: "Penampil PDF",
+    loginRequired: "Masuk Diperlukan",
+    loginRequiredDesc: "Anda perlu masuk untuk mengakses fitur ini.",
+    login: "Masuk",
+    cancel: "Batal"
 }

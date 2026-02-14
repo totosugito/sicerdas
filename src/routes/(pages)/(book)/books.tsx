@@ -40,8 +40,9 @@ function RouteComponent() {
   const [currentPage, setCurrentPage] = useState(urlPage ?? pageStore.page ?? 1)
   const [totalPages, setTotalPages] = useState(0)
   const [totalBooks, setTotalBooks] = useState(0)
+
   const selectedFilters = {
-    categories: urlCategory ?? pageStore.category ?? [-1],
+    categories: urlCategory ?? pageStore.category ?? [0],
     groups: urlGroup ?? pageStore.group ?? [],
     grades: urlGrade ?? pageStore.grade ?? []
   }
@@ -103,7 +104,7 @@ function RouteComponent() {
     const effectivePage = urlPage ?? pageStore.page ?? 1;
     const effectiveLimit = urlLimit ?? pageStore.limit ?? 12;
     const effectiveSearch = urlSearch ?? pageStore.search ?? '';
-    const effectiveCategories = urlCategory ?? pageStore.category ?? [-1];
+    const effectiveCategories = urlCategory ?? pageStore.category ?? [0];
     const effectiveGroups = urlGroup ?? pageStore.group ?? [];
     const effectiveGrades = urlGrade ?? pageStore.grade ?? [];
     const effectiveSortBy = urlSortBy ?? pageStore.sortBy ?? 'createdAt';
