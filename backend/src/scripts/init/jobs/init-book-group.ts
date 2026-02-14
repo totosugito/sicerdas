@@ -58,8 +58,8 @@ export default async function seed() {
       { id: 22, versionId: versionId, grade: "sma", name: "SMA" },
       { id: 23, versionId: versionId, grade: "smk", name: "SMK" },
       { id: 24, versionId: versionId, grade: "sd_smp", name: "SD/SMP" },
-      { id: 25, versionId: versionId, grade: "sd_123", name: "SD 1,2,3" },
-      { id: 26, versionId: versionId, grade: "sd_456", name: "SD 4,5,6" },
+      { id: 25, versionId: versionId, grade: "sd_123", name: "SD 1-3" },
+      { id: 26, versionId: versionId, grade: "sd_456", name: "SD 4-6" },
     ]
 
     // default data for books category
@@ -103,8 +103,8 @@ export default async function seed() {
       { id: 26, versionId: versionId, categoryCode: "sastra", name: "Bacaan SD", shortName: "Bacaan SD" },
       { id: 27, versionId: versionId, categoryCode: "sastra", name: "Bacaan SMP", shortName: "Bacaan SMP" },
       { id: 28, versionId: versionId, categoryCode: "sastra", name: "Bacaan SMA", shortName: "Bacaan SMA" },
-      { id: 29, versionId: versionId, categoryCode: "sastra", name: "Bacaan SD Kelas 1, 2, 3", shortName: "Bacaan SD 1-3" },
-      { id: 30, versionId: versionId, categoryCode: "sastra", name: "Bacaan SD Kelas 4, 5, 6", shortName: "Bacaan SD 4-6" },
+      { id: 29, versionId: versionId, categoryCode: "sastra", name: "Bacaan SD Kelas 1-3", shortName: "Bacaan SD 1-3" },
+      { id: 30, versionId: versionId, categoryCode: "sastra", name: "Bacaan SD Kelas 4-6", shortName: "Bacaan SD 4-6" },
     ];
 
     // fill default version data
