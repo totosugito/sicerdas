@@ -23,14 +23,14 @@ export const useAuthStore = create<Store>()(
         // Auth slice
         user: null,
         login: (user) => set({ user }),
-        logout: () => set({ user: null, theme: 'light', language: 'id', openSideMenu: true }),
+        logout: () => set({ user: null, theme: 'light', language: 'id', openSideMenu: false }),
 
         // Theme slice
         theme: 'light',
         setTheme: (theme) => set({ theme }),
         language: 'id',
         setLanguage: (language) => set({ language }),
-        openSideMenu: true,
+        openSideMenu: false,
         setOpenSideMenu: (openSideMenu) => set({ openSideMenu }),
       }
     ),

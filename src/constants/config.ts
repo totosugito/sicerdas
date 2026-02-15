@@ -1,4 +1,5 @@
 import AppLogo from "../assets/app/logo.png";
+import { AppRoute } from "./app-route";
 export const APP_CONFIG = {
   prefixStore: "sicerdas",
   isDev: false,
@@ -28,6 +29,7 @@ export const APP_CONFIG = {
   path: {
     defaultPublic: "/",
     defaultPrivate: "/",
+    defaultAdmin: AppRoute.admin.dashboard.url,
   },
   RESEND_OTP_DELAY: 120, // 2 minutes
   book: {

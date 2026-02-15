@@ -1,10 +1,22 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { AppRoute } from '@/constants/app-route';
+import { isAdmin } from '@/types/auth';
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useState } from 'react';
 import { AndroidAppSection, CTASection, FeaturesSection, Footer, HeroSection } from '@/components/pages/landing';
 import { AppNavbar } from '@/components/app';
-import { AppRoute } from '@/constants/app-route';
 
 export const Route = createFileRoute('/')({
+    // loader: ({ context }) => {
+    //     let path_ = '';
+
+    //     if (context.auth.isAuthenticated) {
+    //         const user_ = context.auth.user;
+    //         if (isAdmin(user_)) {
+    //             path_ = AppRoute.admin.dashboard.url;
+    //             return redirect({ to: path_ })
+    //         }
+    //     }
+    // },
     component: RouteComponent,
 })
 

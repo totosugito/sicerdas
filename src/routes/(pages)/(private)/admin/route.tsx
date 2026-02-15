@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import AppSidebar from "@/components/app/sidebar/AppSidebar";
-import { AppNavbar } from "@/components/app/AppNavbar";
+import { AppNavbar } from "@/components/app/navbar/AppNavbar";
 import { AdminNav } from "@/constants/admin-nav";
 import { useTranslation } from "react-i18next";
 import { SidebarProvider } from '@/components/ui/sidebar';

@@ -106,16 +106,15 @@ export const BookDetail = ({
                 {book.title}
               </h1>
 
-              <div className="flex items-center gap-4 text-slate-500 dark:text-slate-400 text-lg">
-                <span className="font-medium text-slate-800 dark:text-slate-200">
-                  {book.author}
+              <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-lg">
+                <span className="flex flex-row gap-2 font-medium text-slate-800 dark:text-slate-200">
+                  {book.publishedYear && (
+                    <>
+                      {book.publishedYear}
+                    </>
+                  )}
                 </span>
-                {book.publishedYear && (
-                  <>
-                    <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600" />
-                    <span>{book.publishedYear}</span>
-                  </>
-                )}
+                ◉ {book.author}
               </div>
 
               {/* Rating & Action Stats */}
@@ -123,14 +122,14 @@ export const BookDetail = ({
                 <div className="flex items-center gap-1.5">
                   <Star className="w-6 h-6 text-amber-500 fill-amber-500" />
                   <span className="text-2xl font-bold text-slate-900 dark:text-white">
-                    {book.rating || "0.0"}
+                    {book.rating?.toFixed(1)}
                   </span>
                   <span className="text-slate-500 dark:text-slate-400 text-sm mt-1">/ 5.0</span>
                 </div>
                 <div className="w-px h-8 bg-slate-200 dark:bg-slate-800" />
                 <div className="flex flex-col items-center">
                   <span className="font-bold text-slate-900 dark:text-white text-lg leading-none">
-                    {book.viewCount?.toLocaleString() ?? 0}
+                    {book.viewCount?.toLocaleString()}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
                     {t('book.detail.views')}
@@ -139,7 +138,7 @@ export const BookDetail = ({
                 <div className="w-px h-8 bg-slate-200 dark:bg-slate-800" />
                 <div className="flex flex-col items-center">
                   <span className="font-bold text-slate-900 dark:text-white text-lg leading-none">
-                    {book.downloadCount?.toLocaleString() ?? 0}
+                    {book.downloadCount?.toLocaleString()}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
                     {t('book.detail.download')}
@@ -148,7 +147,7 @@ export const BookDetail = ({
                 <div className="w-px h-8 bg-slate-200 dark:bg-slate-800" />
                 <div className="flex flex-col items-center">
                   <span className="font-bold text-slate-900 dark:text-white text-lg leading-none">
-                    {book.bookmarkCount?.toLocaleString() ?? 0}
+                    {book.bookmarkCount?.toLocaleString()}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
                     {t('book.detail.favorites')}

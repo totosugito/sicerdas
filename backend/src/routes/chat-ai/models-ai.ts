@@ -71,7 +71,7 @@ const modelsRoute: FastifyPluginAsyncTypebox = async (app) => {
                     tierOrder: tierPricing.sortOrder,
                 })
                     .from(userProfile)
-                    .leftJoin(tierPricing, eq(userProfile.tierId, tierPricing.id))
+                    .leftJoin(tierPricing, eq(userProfile.tierId, tierPricing.slug))
                     .where(eq(userProfile.id, user.id));
 
                 if (userData) {
@@ -90,7 +90,7 @@ const modelsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 requiredTierOrder: tierPricing.sortOrder,
             })
                 .from(aiModels)
-                .leftJoin(tierPricing, eq(aiModels.requiredTierId, tierPricing.id))
+                .leftJoin(tierPricing, eq(aiModels.requiredTierId, tierPricing.slug))
                 .where(eq(aiModels.isEnabled, true))
                 .orderBy(asc(tierPricing.sortOrder), desc(aiModels.isDefault));
 

@@ -1,4 +1,5 @@
-import {SubmitHandler} from "react-hook-form";
+import { EnumUserRole } from "backend/src/db/schema/enum-auth";
+import { SubmitHandler } from "react-hook-form";
 
 export type LoginFormValues = {
   email: string
@@ -28,4 +29,18 @@ export interface AuthContext {
   login: (user: AuthProps) => Promise<void>
   logout: () => Promise<void>
   user: AuthProps | null
+}
+
+export const isShowSidebar = (user: AuthProps | null) => {
+  const sidebarUsers: string[] = [EnumUserRole.ADMIN];
+  return (
+    sidebarUsers.includes(user?.user?.role as string)
+  )
+}
+
+export const isAdmin = (user: AuthProps | null) => {
+  const adminOrUsers: string[] = [EnumUserRole.ADMIN];
+  return (
+    adminOrUsers.includes(user?.user?.role as string)
+  )
 }

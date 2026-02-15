@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils'
 import { useTranslation } from 'react-i18next'
 import { BookListItem } from '@/api/book/book';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 import { useNavigate, Link } from '@tanstack/react-router';
 import { AppRoute } from '@/constants/app-route';
@@ -15,8 +16,12 @@ interface BookCardProps {
 export const BookCard = ({ books, viewMode }: BookCardProps) => {
   const { t } = useTranslation()
 
+  const { openSideMenu } = useAuthStore()
+
   const gridClass = viewMode === 'grid'
-    ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
+    ? openSideMenu
+      ? "grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6"
+      : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
     : "grid grid-cols-1 gap-4";
 
   return (
