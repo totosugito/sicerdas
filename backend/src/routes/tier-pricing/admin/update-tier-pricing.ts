@@ -67,11 +67,6 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             reply: FastifyReply
         ): Promise<typeof UpdateTierResponse.static> {
             const { slug } = request.params;
-            const { slug: newSlug, name } = request.body;
-
-            if (['free', 'pro'].includes(slug) && newSlug && newSlug !== slug) {
-                return reply.badRequest(request.i18n.t('tierPricing.update.defaultData') ?? "Cannot change slug of default tier pricing data");
-            }
 
             // Check if tier exists
             const existingTier = await db.query.tierPricing.findFirst({
@@ -81,6 +76,17 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             if (!existingTier) {
                 return reply.notFound(request.i18n.t('tierPricing.update.notFound'));
             }
+
+            // Prepare update data
+            const updateData = { ...request.body };
+
+            // Ignore slug and isActive updates for default tiers (free, pro)
+            if (['free', 'pro'].includes(slug)) {
+                delete updateData.slug;
+                delete updateData.isActive;
+            }
+
+            const { slug: newSlug, name } = updateData;
 
             // Check for duplicates if slug or name is being updated
             if (newSlug || name) {
@@ -105,7 +111,7 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             // Update
             const [updatedTier] = await db.update(tierPricing)
                 .set({
-                    ...request.body,
+                    ...updateData,
                     updatedAt: new Date(),
                 })
                 .where(eq(tierPricing.slug, slug))
