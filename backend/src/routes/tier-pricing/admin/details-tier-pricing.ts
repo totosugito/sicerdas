@@ -1,10 +1,10 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
-import { tierPricing } from '../../db/schema/tier-pricing.ts';
-import { db } from '../../db/index.ts';
-import { asc, eq } from 'drizzle-orm';
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
+import { tierPricing } from '../../../db/schema/tier-pricing.ts';
+import { db } from '../../../db/index.ts';
+import { eq } from 'drizzle-orm';
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 
 const TierResponseItem = Type.Object({
     slug: Type.String(),
@@ -20,20 +20,23 @@ const TierResponseItem = Type.Object({
     updatedAt: Type.String({ format: 'date-time' }),
 });
 
-const ListTierResponse = Type.Object({
+const GetTierResponse = Type.Object({
     success: Type.Boolean(),
     message: Type.String(),
-    data: Type.Array(TierResponseItem),
+    data: TierResponseItem,
 });
 
-const clientTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
+const detailsTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
     app.route({
-        url: '/tier-pricing',
+        url: '/tier-pricing/admin/:slug',
         method: 'GET',
         schema: {
             tags: ['Tier Pricing'],
+            params: Type.Object({
+                slug: Type.String(),
+            }),
             response: {
-                200: ListTierResponse,
+                200: GetTierResponse,
                 '4xx': Type.Object({
                     success: Type.Boolean({ default: false }),
                     message: Type.String()
@@ -45,27 +48,32 @@ const clientTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
         },
         handler: withErrorHandler(async function handler(
-            request: FastifyRequest,
+            request: FastifyRequest<{ Params: { slug: string } }>,
             reply: FastifyReply
-        ): Promise<typeof ListTierResponse.static> {
-            const tiers = await db.query.tierPricing.findMany({
-                where: eq(tierPricing.isActive, true),
-                orderBy: [asc(tierPricing.sortOrder)]
+        ): Promise<typeof GetTierResponse.static> {
+            const { slug } = request.params;
+
+            const tier = await db.query.tierPricing.findFirst({
+                where: eq(tierPricing.slug, slug)
             });
+
+            if (!tier) {
+                return reply.notFound(request.i18n.t('tierPricing.details.notFound'));
+            }
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('tierPricing.listSuccess'),
-                data: tiers.map(tier => ({
+                message: request.i18n.t('tierPricing.details.found'),
+                data: {
                     ...tier,
                     features: tier.features || [],
                     limits: tier.limits || {},
                     createdAt: tier.createdAt.toISOString(),
                     updatedAt: tier.updatedAt.toISOString(),
-                }))
+                }
             });
         }),
     });
 };
 
-export default clientTierPricingRoute;
+export default detailsTierPricingRoute;

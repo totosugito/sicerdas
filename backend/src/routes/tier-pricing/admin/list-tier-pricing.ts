@@ -1,10 +1,10 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
-import { tierPricing } from '../../db/schema/tier-pricing.ts';
-import { db } from '../../db/index.ts';
-import { asc, eq } from 'drizzle-orm';
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
+import { tierPricing } from '../../../db/schema/tier-pricing.ts';
+import { db } from '../../../db/index.ts';
+import { asc } from 'drizzle-orm';
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 
 const TierResponseItem = Type.Object({
     slug: Type.String(),
@@ -26,9 +26,9 @@ const ListTierResponse = Type.Object({
     data: Type.Array(TierResponseItem),
 });
 
-const clientTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
+const listTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
     app.route({
-        url: '/tier-pricing',
+        url: '/tier-pricing/admin',
         method: 'GET',
         schema: {
             tags: ['Tier Pricing'],
@@ -49,7 +49,6 @@ const clientTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             reply: FastifyReply
         ): Promise<typeof ListTierResponse.static> {
             const tiers = await db.query.tierPricing.findMany({
-                where: eq(tierPricing.isActive, true),
                 orderBy: [asc(tierPricing.sortOrder)]
             });
 
@@ -68,4 +67,4 @@ const clientTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
     });
 };
 
-export default clientTierPricingRoute;
+export default listTierPricingRoute;
