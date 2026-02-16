@@ -69,6 +69,10 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             const { slug } = request.params;
             const { slug: newSlug, name } = request.body;
 
+            if (['free', 'pro'].includes(slug) && newSlug && newSlug !== slug) {
+                return reply.badRequest(request.i18n.t('tierPricing.update.defaultData') ?? "Cannot change slug of default tier pricing data");
+            }
+
             // Check if tier exists
             const existingTier = await db.query.tierPricing.findFirst({
                 where: eq(tierPricing.slug, slug)

@@ -33,8 +33,10 @@ export default async function initTierPricing() {
                     'Standard Response Speed'
                 ],
                 limits: {
-                    daily_messages: 10,
-                    max_tokens: 1000
+                    chatAi: {
+                        daily_messages: 10,
+                        max_tokens: 1000
+                    }
                 },
                 isActive: true,
                 sortOrder: 1
@@ -52,8 +54,10 @@ export default async function initTierPricing() {
                     'Image Generation'
                 ],
                 limits: {
-                    daily_messages: -1, // Unlimited
-                    max_tokens: 4000
+                    chatAi: {
+                        daily_messages: -1, // Unlimited
+                        max_tokens: 4000
+                    }
                 },
                 isActive: true,
                 sortOrder: 2

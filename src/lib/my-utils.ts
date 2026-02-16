@@ -1,4 +1,4 @@
-import {format as formatDateFns, parseISO} from "date-fns";
+import { format as formatDateFns, parseISO } from "date-fns";
 
 export function convertOklchToRgbaStringFromString(oklchString: string, alpha = 1) {
   const match = oklchString.match(/^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)$/i);
@@ -67,7 +67,7 @@ export const getShadcnColor = (color: string) => {
 export const getShadcnRgbaColor = (color: any, alpha = 0.3) => {
   let tmpColor = getShadcnColor(color);
   if (tmpColor.startsWith('oklch')) {
-    return(convertOklchToRgbaStringFromString(tmpColor, alpha));
+    return (convertOklchToRgbaStringFromString(tmpColor, alpha));
   }
   return hexToRGBA(tmpColor, alpha);
 }
@@ -80,12 +80,12 @@ export function to_decimal_formatted(value: number, precision = 2) {
   return (formattedNumber);
 }
 
-export function to_decimal_compact({value, intl = "en", maximumFractionDigits = 2}:
-                             {
-                               value: number,
-                               intl?: string,
-                               maximumFractionDigits?: number
-                             }) {
+export function to_decimal_compact({ value, intl = "en", maximumFractionDigits = 2 }:
+  {
+    value: number,
+    intl?: string,
+    maximumFractionDigits?: number
+  }) {
   try {
     const formatter = new Intl.NumberFormat(intl, {
       notation: "compact",
@@ -150,7 +150,7 @@ export const string_to_date = (value: string, format = "yyyy-MM-dd") => {
 }
 
 export const string_gmt_to_string = (value: string) => {
-  if(!value) return '';
+  if (!value) return '';
   const v = value.split('T');
   return (v?.[0] ?? "");
 }
@@ -165,14 +165,14 @@ export const string_date_to_formatted = (value: string, format = "yyyy-MM-dd HH:
     const mm = String(date.getUTCMinutes()).padStart(2, '0');
 
     const formattedUTC = `${yyyy}-${MM}-${dd} ${HH}:${mm}`;
-    return(formattedUTC);
+    return (formattedUTC);
   } catch (e) {
     return (formatDateFns(new Date(), format));
   }
 }
 
 export function getShortName(fullName: string): string {
-  if(!fullName) return '';
+  if (!fullName) return '';
 
   const parts = fullName.trim().split(/\s+/);
 
@@ -267,11 +267,11 @@ export function getDaysFromCurrentDate(t: (key: string) => string, date: Date | 
 }
 
 export const ObjToOptionList = (obj: Record<string, string>) => {
-  return Object.keys(obj).map((key) => ({value: key, label: obj[key]}));
+  return Object.keys(obj).map((key) => ({ value: key, label: obj[key] }));
 }
 
 export const ObjToOptionListValue = (obj: Record<string, Record<string, string>>) => {
-  return Object.keys(obj).map((key) => ({value: key, label: obj[key]["value"]}));
+  return Object.keys(obj).map((key) => ({ value: key, label: obj[key]["value"] }));
 }
 
 export const formatFileSize = (bytes: number) => {
@@ -287,7 +287,7 @@ export function toPhysics({ value, precision = -1 }: { value: number; precision?
     return "N/A";
   }
 
-  if(value === 0) return "0";
+  if (value === 0) return "0";
 
   const absValue = Math.abs(value);
   if ((absValue < 1e-5) || (absValue > 1e+5)) {
@@ -305,4 +305,13 @@ export function toPhysics({ value, precision = -1 }: { value: number; precision?
   } else {
     return (precision < 0 ? `${value}` : value.toFixed(precision));
   }
+}
+
+export function formatCurrency(amount: number, currency: string = "IDR", locale: string = "id-ID") {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount)
 }

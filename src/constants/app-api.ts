@@ -33,7 +33,15 @@ export const AppApi = {
       avatar: APP_URL_API + "/admin/user/:id/avatar",
       deletes: APP_URL_API + "/admin/user/deletes",
       ban: APP_URL_API + "/admin/user/:id/ban",
+    },
+    tierPricing: {
+      create: APP_URL_API + "/tier-pricing/admin",
+      list: APP_URL_API + "/tier-pricing/admin/list-tier-pricing",
+      crud: APP_URL_API + "/tier-pricing/admin",
     }
+  },
+  tierPricing: {
+    list: APP_URL_API + "/tier-pricing",
   },
   user: {
     details: APP_URL_API + "/user/details",

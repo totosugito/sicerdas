@@ -25,6 +25,7 @@ import report from './layout/content-report';
 import butirPancasila from './constitution/butir-pancasila';
 import uud1945 from './constitution/uud-1945';
 import uud1945Asli from './constitution/uud-1945-asli';
+import listTierPricing from './tier-pricing/list-tier-pricing';
 import uudAmandemen from './constitution/uud-amandemen';
 
 const localeId = {
@@ -66,6 +67,9 @@ const localeId = {
       uud1945: uud1945,
       uud1945Asli: uud1945Asli,
       uudAmandemen: uudAmandemen
+    },
+    tierPricing: {
+      list: listTierPricing
     }
   }
 }

@@ -65,6 +65,12 @@ export const AppRoute = {
     support: { url: "/support" },
     terms: { url: "/terms" },
   },
+  tierPricing: {
+    adminList: { url: "/admin/list-tier" },
+    adminCreate: { url: "/admin/create-tier" },
+    adminEdit: { url: "/admin/edit-tier/$id" },
+    publicList: { url: "/tier-pricing" },
+  },
   admin: {
     dashboard: { url: "/admin/dashboard" },
     chatAi: {

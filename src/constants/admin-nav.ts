@@ -30,6 +30,11 @@ export const AdminNav = {
       title: "ADMIN",
       items: [
         {
+          title: "Tier Pricing",
+          url: AppRoute.tierPricing.adminList.url,
+          icon: HiOutlineUsers,
+        },
+        {
           title: "Users",
           url: AppRoute.admin.user.list.url,
           icon: HiOutlineUsers,

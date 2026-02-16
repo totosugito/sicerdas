@@ -36,7 +36,12 @@ const deleteTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: { slug: string } }>,
             reply: FastifyReply
         ): Promise<typeof DeleteTierResponse.static> {
+
             const { slug } = request.params;
+
+            if (['free', 'pro'].includes(slug)) {
+                return reply.badRequest(request.i18n.t('tierPricing.delete.defaultData') ?? "Cannot delete default tier pricing data");
+            }
 
             const existingTier = await db.query.tierPricing.findFirst({
                 where: eq(tierPricing.slug, slug)
