@@ -249,7 +249,7 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button asChild variant="default" size="sm" className="h-9 px-3">
+            <Button asChild variant="default" size="sm" className="px-3">
               <Link to={AppRoute.auth.signIn.url}>
                 {t('landing.navbar.login')}
               </Link>

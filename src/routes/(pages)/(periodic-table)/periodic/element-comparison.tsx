@@ -101,7 +101,7 @@ function RouteComponent() {
       }
 
       let propA, propB;
-      if(sortBy_ === 'atomicNumber') {
+      if (sortBy_ === 'atomicNumber') {
         propA = b.atomicNumber
         propB = a.atomicNumber
       }
@@ -146,7 +146,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="container mx-auto pt-6">
       <ElementComparisonHeader />
 
       {/* Search and Controls Section */}

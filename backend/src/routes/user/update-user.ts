@@ -116,7 +116,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       // Remove any restricted fields that might have been sent
-      const restrictedFields = ['id', 'email', 'password', 'role', 'banned', 'banReason', 'image'];
+      const restrictedFields = ['id', 'email', 'password', 'role', 'banned', 'banReason', 'image', 'tierId'];
       const safeUpdateData = Object.entries(updateData)
         .filter(([key]) => !restrictedFields.includes(key))
         .reduce((obj, [key, value]) => {

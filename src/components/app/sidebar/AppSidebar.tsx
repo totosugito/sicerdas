@@ -15,11 +15,11 @@ function AppSidebar({ navItems, ...props }: { navItems: SidebarData }) {
   return (
     <Sidebar
       collapsible='icon'
-      variant='floating'
+      variant='sidebar'
       className="border-sidebar-border"
       {...props}
     >
-      <SidebarHeader className="bg-sidebar border-b border-sidebar-border/50 rounded-t-lg">
+      <SidebarHeader className="bg-card/70 border-b border-sidebar-border/30 py-2">
         <AppLogo className="text-sidebar-foreground" />
       </SidebarHeader>
 

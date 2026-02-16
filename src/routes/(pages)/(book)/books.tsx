@@ -156,8 +156,8 @@ function RouteComponent() {
   }
 
   return (
-    <div className="flex flex-col flex-1 w-full px-8 pt-14 py-6">
-      <div className="flex flex-col lg:flex-row gap-8 pt-6">
+    <div className="flex flex-col flex-1 w-full px-6 pb-6">
+      <div className="flex flex-col lg:flex-row gap-6 pt-6">
         <aside className="hidden lg:block w-70 flex-shrink-0">
           <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
             <BookFilter

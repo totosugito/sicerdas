@@ -6,7 +6,11 @@ export type TierPricing = {
     billingCycle: string;
     features: string[];
     limits: {
-        chatAi: Record<string, unknown>;
+        chatAi: {
+            daily_messages?: number;
+            max_tokens?: number;
+            [key: string]: unknown;
+        };
     };
     isActive: boolean;
     sortOrder: number;

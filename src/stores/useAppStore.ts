@@ -29,6 +29,9 @@ type Store = {
   setElementExpandedSection: (section: string, expanded: boolean) => void;
   resetElementExpandedSections: () => void;
 
+  mobileMenu: Record<string, boolean>;
+  setMobileMenuExpanded: (id: string, expanded: boolean) => void;
+
   resetAll: () => void;
 }
 
@@ -61,6 +64,7 @@ export const defaultStore = {
     healthSafety: true,
     nuclear: true
   },
+  mobileMenu: {} as Record<string, boolean>,
 }
 
 export const useAppStore = create<Store>()(
@@ -87,10 +91,19 @@ export const useAppStore = create<Store>()(
         elementExpandedSections: defaultStore.elementExpandedSections
       }),
 
+      mobileMenu: defaultStore.mobileMenu,
+      setMobileMenuExpanded: (id: string, expanded: boolean) => set((state) => ({
+        mobileMenu: {
+          ...state.mobileMenu,
+          [id]: expanded
+        }
+      })),
+
       resetAll: () => set({
         books: defaultStore.books,
         periodicTable: defaultStore.periodicTable,
-        elementExpandedSections: defaultStore.elementExpandedSections
+        elementExpandedSections: defaultStore.elementExpandedSections,
+        mobileMenu: defaultStore.mobileMenu
       }),
     }),
     {

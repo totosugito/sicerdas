@@ -204,6 +204,7 @@ export const userProfile = pgTable('user_profiles', {
 
   // Pricing / Tier Link
   tierId: varchar('tier_id', { length: 50 })
+    .default("free")
     .references(() => tierPricing.slug, { onDelete: 'set null', onUpdate: 'cascade' }),
 
   // Flexible data storage

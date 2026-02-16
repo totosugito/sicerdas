@@ -130,7 +130,7 @@ const PancasilaCard: React.FC<{
 const HeroSection: React.FC = () => {
   const { t } = useTranslation();
   return (
-    <section className="relative py-6">
+    <section className="relative">
       <div className="flex flex-col gap-2 mx-auto text-center">
         <div className="mb-6 flex justify-center">
           <div className="p-4 rounded-full shadow-sm transform hover:scale-110 transition-transform duration-300">
@@ -357,7 +357,7 @@ function RouteComponent() {
   }, [searchTerm]);
 
   return (
-    <div className="flex flex-col gap-6 w-full pb-6">
+    <div className="flex flex-col gap-6 w-full pt-6">
       <HeroSection />
 
       <div className='flex flex-col gap-6 w-full'>

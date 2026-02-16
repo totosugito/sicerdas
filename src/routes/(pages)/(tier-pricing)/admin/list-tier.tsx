@@ -100,7 +100,7 @@ function AdminTierPricingPage() {
 
     if (isLoading) {
         return (
-            <div className="space-y-4 p-8">
+            <div className="space-y-4 p-6">
                 <div className="flex justify-between items-center">
                     <PageTitle title={t('tierPricing.list.pageTitle')} />
                 </div>
@@ -110,7 +110,7 @@ function AdminTierPricingPage() {
     }
 
     return (
-        <div className="space-y-4 px-4 py-6">
+        <div className="flex flex-col w-full space-y-4 py-6">
             <div className="flex justify-between items-center">
                 <PageTitle title={t('tierPricing.list.pageTitle')} />
                 {items.length > 0 && <Button asChild>

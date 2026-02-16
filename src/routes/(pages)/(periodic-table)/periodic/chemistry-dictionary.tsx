@@ -27,26 +27,26 @@ function ChemistryDictionary() {
     // Select dictionary data based on current language from auth store
     const dictionaryData = authLanguage === 'id' ? dictionaryDataId : dictionaryDataEn
     let filtered = dictionaryData as ChemistryTerm[]
-    
+
     // Apply alphabet group filter
     if (activeGroup !== 'all') {
       const group = ALPHABET_GROUPS.find(g => g.id === activeGroup)
       if (group) {
-        filtered = filtered.filter(entry => 
+        filtered = filtered.filter(entry =>
           group.range.test(entry.w.charAt(0).toUpperCase())
         )
       }
     }
-    
+
     // Apply search term filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase()
-      filtered = filtered.filter(entry => 
-        entry.w.toLowerCase().includes(term) || 
+      filtered = filtered.filter(entry =>
+        entry.w.toLowerCase().includes(term) ||
         entry.tr.toLowerCase().includes(term)
       )
     }
-    
+
     return filtered
   }, [activeGroup, searchTerm, authLanguage])
 
@@ -67,32 +67,32 @@ function ChemistryDictionary() {
   }
 
   return (
-    <div className="container mx-auto py-6">
-      <ChemistryHeader 
-        totalTerms={authLanguage === 'id' ? dictionaryDataId.length : dictionaryDataEn.length} 
+    <div className="container mx-auto pt-6">
+      <ChemistryHeader
+        totalTerms={authLanguage === 'id' ? dictionaryDataId.length : dictionaryDataEn.length}
       />
-      
+
       {/* Search Bar */}
-      <SearchBar 
-        searchTerm={searchTerm} 
-        onSearchChange={handleSearchChange} 
+      <SearchBar
+        searchTerm={searchTerm}
+        onSearchChange={handleSearchChange}
       />
-      
+
       {/* Alphabet Group Navigation */}
-      <AlphabetFilter 
-        activeGroup={activeGroup} 
-        onGroupChange={handleFilterChange} 
+      <AlphabetFilter
+        activeGroup={activeGroup}
+        onGroupChange={handleFilterChange}
       />
-      
+
       {/* Results Info */}
       <div className="mb-4 text-sm text-muted-foreground text-center">
-        {t('periodicTable.chemistryDictionary.resultsInfo', { 
-          start: startIndex + 1, 
-          end: Math.min(startIndex + itemsPerPage, filteredTerms.length), 
-          total: filteredTerms.length 
+        {t('periodicTable.chemistryDictionary.resultsInfo', {
+          start: startIndex + 1,
+          end: Math.min(startIndex + itemsPerPage, filteredTerms.length),
+          total: filteredTerms.length
         })}
       </div>
-      
+
       {/* Dictionary Entries Grid */}
       {paginatedTerms.length > 0 ? (
         <>
@@ -101,7 +101,7 @@ function ChemistryDictionary() {
               <ChemistryCard key={term.id} term={term} index={index} />
             ))}
           </div>
-          
+
           {/* Pagination */}
           {totalPages > 1 && (
             <LocalePagination

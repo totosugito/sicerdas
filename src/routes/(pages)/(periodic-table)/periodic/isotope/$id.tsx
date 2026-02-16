@@ -39,7 +39,7 @@ function RouteComponent() {
 
   const atomColor = getElementStyle(element?.atomicGroup as string, viewMode).atomColor ?? "";
   return (
-    <div className="container mx-auto gap-4 flex flex-col pb-6">
+    <div className="container mx-auto gap-4 flex flex-col">
       {element && (
         <>
           <ElementHeroIsotope element={element} theme={viewMode} />

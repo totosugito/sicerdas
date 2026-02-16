@@ -139,7 +139,7 @@ function RouteComponent() {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full pb-6">
+    <div className="flex flex-col gap-6 w-full">
       {/* Hero Section */}
       <section className="relative py-6">
         <div className="flex flex-col gap-2 mx-auto text-center">

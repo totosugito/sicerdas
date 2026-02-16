@@ -8,5 +8,12 @@ export default {
     pageTitle: "Manajemen Tier Pricing",
     createButton: "Buat Tier Baru",
     noDataTitle: "Tidak Ada Tingkatan Harga",
-    noDataDescription: "Belum ada tingkatan harga yang dibuat. Mulailah dengan membuat yang baru."
+    noDataDescription: "Belum ada tingkatan harga yang dibuat. Mulailah dengan membuat yang baru.",
+    active: "Aktif",
+    inactive: "Tidak Aktif",
+    moreFeatures: "Lainnya",
+    allFeatures: "Semua Fitur",
+    tokens: "token",
+    unlimited: "Tidak Terbatas",
+    perDay: "/hari"
 }

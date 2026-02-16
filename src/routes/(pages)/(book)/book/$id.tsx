@@ -17,6 +17,7 @@ import { useUpdateBookmark } from '@/api/book/book-bookmark'
 import { useUpdateDownload, UpdateDownloadResponse } from '@/api/book/update-download'
 import { showNotifError, showNotifSuccess } from '@/lib/show-notif'
 import { ModernDialog } from '@/components/custom/components'
+import { AppApi } from '@/constants/app-api'
 
 
 export const Route = createFileRoute('/(pages)/(book)/book/$id')({

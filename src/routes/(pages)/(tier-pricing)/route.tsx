@@ -15,6 +15,10 @@ function RouteComponent() {
         return <NotFoundError />
     }
 
-    return (<Outlet />)
+    return (
+        <div className="page-container">
+            <Outlet />
+        </div>
+    )
 }
 

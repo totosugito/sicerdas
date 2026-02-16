@@ -11,7 +11,7 @@ function RouteComponent() {
   const pageProps = store.periodicTable;
 
   return (
-    <div className='flex flex-col flex-1 mt-14'>
+    <div className='flex flex-col flex-1'>
       <PeriodicTable
         elements={periodicLayouts}
         theme={pageProps.viewMode} // Pass theme from store
