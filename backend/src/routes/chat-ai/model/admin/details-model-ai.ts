@@ -1,9 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import { aiModels, aiApiLogs } from '../../../db/schema/chat-ai-schema.ts';
-import { db } from '../../../db/index.ts';
+import { aiModels, aiApiLogs } from '../../../../db/schema/chat-ai-schema.ts';
+import { db } from '../../../../db/index.ts';
 import { eq, getTableColumns, desc } from 'drizzle-orm';
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { Type } from '@sinclair/typebox';
 
 const ModelItem = Type.Object({
