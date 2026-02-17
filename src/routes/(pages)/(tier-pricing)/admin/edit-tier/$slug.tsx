@@ -1,11 +1,10 @@
 import { useDetailsTierPricing } from '@/api/tier-pricing';
-import { TierPricingForm } from '@/components/pages/tier-pricing/list-tier-pricing/TierPricingForm';
 import PageTitle from '@/components/app/PageTitle';
 import { Button } from '@/components/ui/button';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { ChevronLeft } from 'lucide-react';
 
-export const Route = createFileRoute('/(pages)/(tier-pricing)/admin/$slug')({
+export const Route = createFileRoute('/(pages)/(tier-pricing)/admin/edit-tier/$slug')({
     component: EditTierPricingPage,
 });
 
@@ -22,7 +21,7 @@ function EditTierPricingPage() {
     }
 
     return (
-        <div className="space-y-6 p-8">
+        <div className="flex flex-col w-full space-y-4 py-6">
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild>
                     <Link to="/admin/tier-pricing">
@@ -31,8 +30,6 @@ function EditTierPricingPage() {
                 </Button>
                 <PageTitle title={`Edit Tier Pricing: ${data.data.name}`} />
             </div>
-
-            <TierPricingForm initialData={data.data} isEditing />
         </div>
     );
 }

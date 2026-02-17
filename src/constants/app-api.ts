@@ -35,8 +35,8 @@ export const AppApi = {
       ban: APP_URL_API + "/admin/user/:id/ban",
     },
     tierPricing: {
-      create: APP_URL_API + "/tier-pricing/admin",
-      list: APP_URL_API + "/tier-pricing/admin/list-tier-pricing",
+      create: APP_URL_API + "/tier-pricing/admin/create-tier",
+      list: APP_URL_API + "/tier-pricing/admin/list-tier",
       crud: APP_URL_API + "/tier-pricing/admin",
     }
   },

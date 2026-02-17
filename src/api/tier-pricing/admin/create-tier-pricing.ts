@@ -13,6 +13,7 @@ export type CreateTierPricingRequest = {
     limits?: Record<string, unknown>;
     isActive?: boolean;
     sortOrder?: number;
+    isPopular?: boolean;
 };
 
 export type CreateTierPricingResponse = {

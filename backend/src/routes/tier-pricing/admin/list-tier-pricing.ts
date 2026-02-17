@@ -29,7 +29,7 @@ const ListTierResponse = Type.Object({
 
 const listTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
     app.route({
-        url: '/list-tier-pricing',
+        url: '/list-tier',
         method: 'GET',
         schema: {
             tags: ['Tier Pricing'],

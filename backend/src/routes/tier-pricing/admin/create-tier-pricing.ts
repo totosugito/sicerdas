@@ -3,7 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { tierPricing } from '../../../db/schema/tier-pricing.ts';
 import { db } from '../../../db/index.ts';
-import { eq, or } from 'drizzle-orm';
+import { eq, or, count } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 
 const CreateTierBody = Type.Object({
@@ -15,7 +15,7 @@ const CreateTierBody = Type.Object({
     features: Type.Array(Type.String(), { default: [] }),
     limits: Type.Record(Type.String(), Type.Unknown(), { default: {} }),
     isActive: Type.Boolean({ default: true }),
-    sortOrder: Type.Number({ default: 0 }),
+    sortOrder: Type.Number({ default: -1 }),
     isPopular: Type.Boolean({ default: false }),
 });
 
@@ -76,8 +76,16 @@ const createTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
                 return reply.badRequest(request.i18n.t('tierPricing.create.exists'));
             }
 
+            // If sortOrder is not defined or is -1, set it to the total count of existing tiers
+            let sortOrder = request.body.sortOrder;
+            if (sortOrder === undefined || sortOrder === -1) {
+                const [result] = await db.select({ count: count() }).from(tierPricing);
+                sortOrder = result.count + 1;
+            }
+
             const [newTier] = await db.insert(tierPricing).values({
                 ...request.body,
+                sortOrder,
                 features: request.body.features || [],
                 limits: request.body.limits || {},
             }).returning();

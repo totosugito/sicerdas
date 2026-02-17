@@ -1,4 +1,4 @@
-import { TierPricingList, TierPricingListSkeleton, TierPricingEmptyState } from '@/components/pages/tier-pricing/list-tier-pricing';
+import { TierPricingList, TierPricingListSkeleton, TierPricingEmptyState } from '@/components/pages/tier-pricing/list-tier';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useListTierPricing, useDeleteTierPricing, useUpdateTierPricing, TierPricing } from '@/api/tier-pricing';
 import { useQueryClient } from '@tanstack/react-query';
@@ -112,9 +112,9 @@ function AdminTierPricingPage() {
 
     if (isLoading) {
         return (
-            <div className="space-y-4 p-6">
-                <div className="flex justify-between items-center">
-                    <PageTitle title={t('tierPricing.list.pageTitle')} />
+            <div className="flex flex-col w-full space-y-4 py-6">
+                <div className="flex justify-between items-start">
+                    <PageTitle title={t('tierPricing.list.pageTitle')} description={<span>{t('tierPricing.list.description')}</span>} />
                 </div>
                 <TierPricingListSkeleton />
             </div>
@@ -123,14 +123,15 @@ function AdminTierPricingPage() {
 
     return (
         <div className="flex flex-col w-full space-y-4 py-6">
-            <div className="flex justify-between items-center">
-                <PageTitle title={t('tierPricing.list.pageTitle')} />
-                {items.length > 0 && <Button asChild>
-                    <Link to={AppRoute.tierPricing.adminCreate.url} className="gap-2">
-                        <Plus className="h-4 w-4" />
-                        {t('tierPricing.list.createButton')}
-                    </Link>
-                </Button>}
+            <div className="flex justify-between items-start">
+                <PageTitle title={t('tierPricing.list.pageTitle')} description={<span>{t('tierPricing.list.description')}</span>} />
+                {items.length > 0 &&
+                    <Button asChild className="flex-shrink-0 gap-1.5 shadow-sm">
+                        <Link to={AppRoute.tierPricing.adminCreate.url} className="gap-2">
+                            <Plus className="h-4 w-4" />
+                            <span className="hidden sm:inline">{t('tierPricing.list.createButton')}</span>
+                        </Link>
+                    </Button>}
             </div>
             {items.length === 0 ? (
                 <TierPricingEmptyState />
