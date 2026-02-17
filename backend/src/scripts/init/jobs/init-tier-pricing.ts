@@ -39,6 +39,7 @@ export default async function initTierPricing() {
                     }
                 },
                 isActive: true,
+                isPopular: false,
                 sortOrder: 1
             },
             {
@@ -60,6 +61,7 @@ export default async function initTierPricing() {
                     }
                 },
                 isActive: true,
+                isPopular: true,
                 sortOrder: 2
             }
         ];
@@ -78,6 +80,7 @@ export default async function initTierPricing() {
                         limits: tier.limits,
                         isActive: tier.isActive,
                         sortOrder: tier.sortOrder,
+                        isPopular: tier.isPopular,
                         updatedAt: new Date()
                     }
                 });

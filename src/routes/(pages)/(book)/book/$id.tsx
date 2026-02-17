@@ -16,9 +16,7 @@ import { PDFViewer, ScrollStrategy } from '@embedpdf/react-pdf-viewer'
 import { useUpdateBookmark } from '@/api/book/book-bookmark'
 import { useUpdateDownload, UpdateDownloadResponse } from '@/api/book/update-download'
 import { showNotifError, showNotifSuccess } from '@/lib/show-notif'
-import { ModernDialog } from '@/components/custom/components'
-import { AppApi } from '@/constants/app-api'
-
+import { DialogModal } from '@/components/custom/components'
 
 export const Route = createFileRoute('/(pages)/(book)/book/$id')({
   component: RouteComponent,
@@ -178,7 +176,7 @@ function RouteComponent() {
         }}
       />
 
-      <ModernDialog
+      <DialogModal
         open={showLoginDialog}
         onOpenChange={setShowLoginDialog}
         modal={{

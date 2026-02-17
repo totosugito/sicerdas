@@ -20,6 +20,7 @@ const UpdateTierBody = Type.Object({
     limits: Type.Optional(Type.Record(Type.String(), Type.Unknown())),
     isActive: Type.Optional(Type.Boolean()),
     sortOrder: Type.Optional(Type.Number()),
+    isPopular: Type.Optional(Type.Boolean()),
 });
 
 const TierResponseItem = Type.Object({
@@ -32,6 +33,7 @@ const TierResponseItem = Type.Object({
     limits: Type.Record(Type.String(), Type.Unknown()),
     isActive: Type.Boolean(),
     sortOrder: Type.Number(),
+    isPopular: Type.Boolean(),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
 });
@@ -44,7 +46,7 @@ const UpdateTierResponse = Type.Object({
 
 const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
     app.route({
-        url: '/tier-pricing/admin/:slug',
+        url: '/:slug',
         method: 'PATCH',
         schema: {
             tags: ['Tier Pricing'],

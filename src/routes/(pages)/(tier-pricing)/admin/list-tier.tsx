@@ -19,7 +19,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/app';
 import { AppRoute } from '@/constants/app-route';
-import { Plus } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
+import { DialogModal } from '@/components/custom/components';
 
 export const Route = createFileRoute('/(pages)/(tier-pricing)/admin/list-tier')({
     component: AdminTierPricingPage,
@@ -33,6 +34,8 @@ function AdminTierPricingPage() {
     const queryClient = useQueryClient();
 
     const [items, setItems] = useState<TierPricing[]>([]);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [tierToDelete, setTierToDelete] = useState<{ slug: string; name: string } | null>(null);
 
     useEffect(() => {
         if (data?.data) {
@@ -49,18 +52,27 @@ function AdminTierPricingPage() {
         })
     );
 
-    const handleDelete = (slug: string) => {
-        if (confirm(t('tierPricing.list.confirmDelete'))) {
-            deleteMutation.mutate(slug, {
-                onSuccess: (data) => {
-                    showNotifSuccess({ message: data.message });
-                    queryClient.invalidateQueries({ queryKey: ['admin-tier-pricing-list'] });
-                },
-                onError: (error: any) => {
-                    showNotifError({ message: error.message || t('tierPricing.list.deleteError') });
-                }
-            });
-        }
+    const handleDelete = (slug: string, name: string) => {
+        setTierToDelete({ slug, name });
+        setShowDeleteDialog(true);
+    };
+
+    const confirmDelete = () => {
+        if (!tierToDelete) return;
+
+        deleteMutation.mutate(tierToDelete.slug, {
+            onSuccess: (data) => {
+                showNotifSuccess({ message: data.message });
+                queryClient.invalidateQueries({ queryKey: ['admin-tier-pricing-list'] });
+                setShowDeleteDialog(false);
+                setTierToDelete(null);
+            },
+            onError: (error: any) => {
+                showNotifError({ message: error.message || t('tierPricing.list.deleteError') });
+                setShowDeleteDialog(false);
+                setTierToDelete(null);
+            }
+        });
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -130,6 +142,33 @@ function AdminTierPricingPage() {
                     onDelete={handleDelete}
                 />
             )}
+
+            {/* Delete Confirmation Dialog */}
+            <DialogModal
+                open={showDeleteDialog}
+                onOpenChange={setShowDeleteDialog}
+                modal={{
+                    title: t('tierPricing.list.deleteDialog.title', { name: tierToDelete?.name }),
+                    desc: t('tierPricing.list.deleteDialog.description'),
+                    variant: "destructive",
+                    iconType: "error",
+                    headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
+                    showInfoSection: true,
+                    infoTitle: t('tierPricing.list.deleteDialog.infoTitle'),
+                    infoItems: [
+                        { text: t('tierPricing.list.deleteDialog.consequence1') },
+                        { text: t('tierPricing.list.deleteDialog.consequence2') },
+                        { text: t('tierPricing.list.deleteDialog.consequence3') },
+                    ],
+                    textCancel: t('tierPricing.list.deleteDialog.cancel'),
+                    textConfirm: t('tierPricing.list.deleteDialog.confirm'),
+                    onConfirmClick: confirmDelete,
+                    onCancelClick: () => {
+                        setShowDeleteDialog(false);
+                        setTierToDelete(null);
+                    },
+                }}
+            />
         </div>
     );
 }

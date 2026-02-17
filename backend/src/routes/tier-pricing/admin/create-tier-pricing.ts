@@ -16,6 +16,7 @@ const CreateTierBody = Type.Object({
     limits: Type.Record(Type.String(), Type.Unknown(), { default: {} }),
     isActive: Type.Boolean({ default: true }),
     sortOrder: Type.Number({ default: 0 }),
+    isPopular: Type.Boolean({ default: false }),
 });
 
 const TierResponseItem = Type.Object({
@@ -28,6 +29,7 @@ const TierResponseItem = Type.Object({
     limits: Type.Record(Type.String(), Type.Unknown()),
     isActive: Type.Boolean(),
     sortOrder: Type.Number(),
+    isPopular: Type.Boolean(),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
 });
@@ -40,7 +42,7 @@ const CreateTierResponse = Type.Object({
 
 const createTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
     app.route({
-        url: '/tier-pricing/admin',
+        url: '/create-tier',
         method: 'POST',
         schema: {
             tags: ['Tier Pricing'],

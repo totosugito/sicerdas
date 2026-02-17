@@ -16,6 +16,7 @@ const TierResponseItem = Type.Object({
     limits: Type.Record(Type.String(), Type.Unknown()),
     isActive: Type.Boolean(),
     sortOrder: Type.Number(),
+    isPopular: Type.Boolean(),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
 });
@@ -28,7 +29,7 @@ const GetTierResponse = Type.Object({
 
 const detailsTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
     app.route({
-        url: '/tier-pricing/admin/:slug',
+        url: '/:slug',
         method: 'GET',
         schema: {
             tags: ['Tier Pricing'],

@@ -13,7 +13,7 @@ const DeleteTierResponse = Type.Object({
 
 const deleteTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
     app.route({
-        url: '/tier-pricing/admin/:slug',
+        url: '/:slug',
         method: 'DELETE',
         schema: {
             tags: ['Tier Pricing'],

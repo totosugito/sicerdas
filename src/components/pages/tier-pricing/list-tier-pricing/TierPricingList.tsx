@@ -7,7 +7,7 @@ interface TierPricingListProps {
     items: TierPricing[];
     sensors: SensorDescriptor<SensorOptions>[];
     onDragEnd: (event: DragEndEvent) => void;
-    onDelete: (slug: string) => void;
+    onDelete: (slug: string, name: string) => void;
 }
 
 export const TierPricingList = ({ items, sensors, onDragEnd, onDelete }: TierPricingListProps) => {

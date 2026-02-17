@@ -14,6 +14,7 @@ export type TierPricing = {
     };
     isActive: boolean;
     sortOrder: number;
+    isPopular: boolean;
     createdAt: string;
     updatedAt: string;
 };

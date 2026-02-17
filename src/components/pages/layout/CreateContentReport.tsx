@@ -5,9 +5,7 @@ import { EnumContentType } from "backend/src/db/schema/enum-app";
 import { EnumReportReason } from "backend/src/db/schema/enum-general";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { showNotifSuccess } from "@/lib/show-notif";
 import { ControlForm } from "@/components/custom/forms";
-import { ObjToOptionList } from "@/lib/my-utils";
 
 export type CreateContentReportProps = {
     isOpen: boolean;

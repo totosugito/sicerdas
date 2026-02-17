@@ -1,4 +1,4 @@
-import { GripVertical, Edit2, Trash2, Zap, MessageSquare, Check } from "lucide-react";
+import { GripVertical, Edit2, Trash2, Zap, MessageSquare, Check, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 
 interface TierRowProps {
     tier: TierPricing;
-    onDelete: (slug: string) => void;
+    onDelete: (slug: string, name: string) => void;
 }
 
 export const TierRow = ({ tier, onDelete }: TierRowProps) => {
@@ -41,9 +41,24 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
         <div
             ref={setNodeRef}
             style={style}
-            className={`group rounded-xl border bg-card p-4 transition-all mb-3 ${isDragging ? "shadow-lg opacity-90 z-10 border-primary" : "hover:border-primary/30 hover:shadow-sm"
+            className={`group relative rounded-xl border bg-card p-4 transition-all mb-4 ${tier.isPopular
+                ? isDragging
+                    ? "shadow-lg opacity-90 z-10 border-amber-500 dark:border-amber-400 ring-2 ring-amber-500/20 dark:ring-amber-400/30"
+                    : "border-amber-500/50 dark:border-amber-400/60 hover:border-amber-500 dark:hover:border-amber-400 shadow-md shadow-amber-500/10 dark:shadow-amber-400/20 hover:shadow-lg hover:shadow-amber-500/20 dark:hover:shadow-amber-400/30"
+                : isDragging
+                    ? "shadow-lg opacity-90 z-10 border-primary"
+                    : "hover:border-primary/30 hover:shadow-sm"
                 }`}
         >
+            {/* Popular Badge */}
+            {tier.isPopular && (
+                <div className="absolute -top-2 -right-2 z-10">
+                    <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 dark:from-amber-400 dark:to-yellow-400 text-white dark:text-gray-900 border-0 shadow-md dark:shadow-lg dark:shadow-amber-400/30 px-2 py-0.5 text-xs font-semibold flex items-center gap-1">
+                        <Star className="w-3 h-3 fill-current" />
+                        {t('tierPricing.list.popular')}
+                    </Badge>
+                </div>
+            )}
             {/* Top row: drag handle, name, price, status, actions */}
             <div className="flex items-center gap-3">
                 <button
@@ -83,15 +98,16 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                 </Badge>
 
                 <div className="flex-shrink-0 flex items-center gap-2">
-                    <Button variant="outline" size="icon" asChild>
+                    <Button variant="ghost" size="icon" asChild>
                         <Link to="/admin/tier-pricing/$slug" params={{ slug: tier.slug }}>
                             <Edit2 className="w-4 h-4" />
                         </Link>
                     </Button>
                     <Button
-                        variant="destructive"
+                        variant="ghost"
                         size="icon"
-                        onClick={() => onDelete(tier.slug)}
+                        className="hover:text-destructive hover:bg-destructive/10"
+                        onClick={() => onDelete(tier.slug, tier.name)}
                     >
                         <Trash2 className="w-4 h-4" />
                     </Button>

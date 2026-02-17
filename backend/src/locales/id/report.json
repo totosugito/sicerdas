@@ -1,6 +1,8 @@
 {
-    "create": {
-        "success": "Laporan Anda telah berhasil dikirim. Terima kasih atas masukan Anda.",
-        "error": "Gagal mengirim laporan. Silakan coba lagi nanti."
+    "report": {
+        "create": {
+            "success": "Terima kasih atas laporan Anda. Kami akan segera meninjaunya.",
+            "error": "Gagal mengirim laporan. Silakan coba lagi nanti."
+        }
     }
 }

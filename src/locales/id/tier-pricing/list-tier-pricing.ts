@@ -15,5 +15,16 @@ export default {
     allFeatures: "Semua Fitur",
     tokens: "token",
     unlimited: "Tidak Terbatas",
-    perDay: "/hari"
+    perDay: "/hari",
+    popular: "Populer",
+    deleteDialog: {
+        title: "Hapus \"{{name}}\"?",
+        description: "Tindakan ini bersifat permanen dan tidak dapat dibatalkan.",
+        infoTitle: "Apa yang akan terjadi",
+        consequence1: "Semua pengguna pada tier ini akan kehilangan akses",
+        consequence2: "Langganan aktif akan dibatalkan",
+        consequence3: "Konfigurasi & batasan tier akan dihapus",
+        cancel: "Batalkan",
+        confirm: "Ya, Hapus",
+    }
 }

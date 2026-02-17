@@ -18,6 +18,7 @@ import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
  * - limits: JSON object defining specific limits (tokens, storage, etc.)
  * - isActive: Whether the plan is currently available
  * - sortOrder: Integer for controlling display order in UI
+ * - isPopular: Boolean for highlighting the popular plan
  */
 export const tierPricing = pgTable('tier_pricing', {
     // Identity & Primary Key
@@ -39,6 +40,7 @@ export const tierPricing = pgTable('tier_pricing', {
     // Status and Ordering
     isActive: boolean('is_active').notNull().default(true),
     sortOrder: integer('sort_order').notNull().default(0),
+    isPopular: boolean('is_popular').notNull().default(false),
 
     // Timestamps
     createdAt: timestamp('created_at').defaultNow().notNull(),
