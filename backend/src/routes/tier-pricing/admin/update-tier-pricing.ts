@@ -11,7 +11,6 @@ const UpdateTierParams = Type.Object({
 });
 
 const UpdateTierBody = Type.Object({
-    slug: Type.Optional(Type.String({ minLength: 1 })),
     name: Type.Optional(Type.String({ minLength: 1 })),
     price: Type.Optional(Type.String()),
     currency: Type.Optional(Type.String()),
@@ -80,19 +79,19 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             // Prepare update data
-            const updateData = { ...request.body };
+            // Explicitly exclude slug from update data to ensure it cannot be changed
+            const { slug: _, ...updateData } = { ...request.body } as any;
 
-            // Ignore slug and isActive updates for default tiers (free, pro)
-            if (['free', 'pro'].includes(slug)) {
-                delete updateData.slug;
+            // Ignore isActive updates for default tiers (free, pro)
+            if (['free', 'pro', 'enterprise'].includes(slug)) {
                 delete updateData.isActive;
             }
 
-            const { slug: newSlug, name } = updateData;
+            const { name } = updateData;
 
-            // Check for duplicates if slug or name is being updated
-            if (newSlug || name) {
-                const targetSlug = newSlug || existingTier.slug;
+            // Check for duplicates if name is being updated
+            if (name) {
+                const targetSlug = existingTier.slug;
                 const targetName = name || existingTier.name;
 
                 const duplicateCheck = await db.query.tierPricing.findFirst({

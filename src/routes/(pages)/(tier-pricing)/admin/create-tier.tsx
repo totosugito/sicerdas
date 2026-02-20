@@ -1,10 +1,10 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@/components/app';
 import { CreateTierForm } from '@/components/pages/tier-pricing/create-tier';
 import { useCreateTierPricing, CreateTierPricingRequest } from '@/api/tier-pricing/admin/create-tier-pricing';
-import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
-import { useQueryClient } from '@tanstack/react-query';
+import { showNotifSuccess } from "@/lib/show-notif";
 import { AppRoute } from '@/constants/app-route';
 
 export const Route = createFileRoute('/(pages)/(tier-pricing)/admin/create-tier')({
@@ -14,20 +14,18 @@ export const Route = createFileRoute('/(pages)/(tier-pricing)/admin/create-tier'
 function CreateTierPage() {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const queryClient = useQueryClient();
     const createMutation = useCreateTierPricing();
+    const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = (data: CreateTierPricingRequest) => {
+        setError(null);
         createMutation.mutate(data, {
             onSuccess: (response) => {
                 showNotifSuccess({ message: response.message || t('tierPricing.createTier.messages.success') });
-                queryClient.invalidateQueries({ queryKey: ['admin-tier-pricing-list'] });
                 navigate({ to: AppRoute.tierPricing.adminList.url });
             },
             onError: (error: any) => {
-                showNotifError({
-                    message: error.message || t('tierPricing.createTier.messages.error')
-                });
+                setError(error.message || t('tierPricing.createTier.messages.error'));
             }
         });
     };
@@ -41,15 +39,16 @@ function CreateTierPage() {
             <PageTitle
                 title={t('tierPricing.createTier.pageTitle')}
                 description={<span>{t('tierPricing.createTier.description')}</span>}
+                showBack
+                backTo={AppRoute.tierPricing.adminList.url}
             />
 
-            <div className="max-w-4xl">
-                <CreateTierForm
-                    onSubmit={handleSubmit}
-                    onCancel={handleCancel}
-                    isLoading={createMutation.isPending}
-                />
-            </div>
+            <CreateTierForm
+                onSubmit={handleSubmit}
+                onCancel={handleCancel}
+                isLoading={createMutation.isPending}
+                error={error}
+            />
         </div>
     );
 }

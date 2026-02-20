@@ -8,15 +8,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ControlForm } from "@/components/custom/forms/ControlForm";
 import { CreateTierPricingRequest } from "@/api/tier-pricing/admin/create-tier-pricing";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface CreateTierFormProps {
     onSubmit: (data: CreateTierPricingRequest) => void;
     isLoading?: boolean;
     onCancel?: () => void;
+    error?: string | null;
 }
 
-export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel }: CreateTierFormProps) => {
+export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error }: CreateTierFormProps) => {
     const { t } = useTranslation();
 
     const formSchema = z.object({
@@ -121,6 +123,16 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel }: Create
                         <CardDescription>{t('tierPricing.createTier.form.basicInfoDescription')}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6 py-6">
+                        {error && (
+                            <Alert variant="destructive">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertTitle>{t('tierPricing.createTier.messages.error')}</AlertTitle>
+                                <AlertDescription>
+                                    {error}
+                                </AlertDescription>
+                            </Alert>
+                        )}
+
                         {basicInfoFields.map((field) => (
                             <ControlForm
                                 key={field.name}
