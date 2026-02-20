@@ -1,22 +1,10 @@
 import { AppRoute } from '@/constants/app-route';
-import { isAdmin } from '@/types/auth';
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react';
 import { AndroidAppSection, CTASection, FeaturesSection, Footer, HeroSection } from '@/components/pages/landing';
 import { AppNavbar } from '@/components/app';
 
 export const Route = createFileRoute('/')({
-    // loader: ({ context }) => {
-    //     let path_ = '';
-
-    //     if (context.auth.isAuthenticated) {
-    //         const user_ = context.auth.user;
-    //         if (isAdmin(user_)) {
-    //             path_ = AppRoute.admin.dashboard.url;
-    //             return redirect({ to: path_ })
-    //         }
-    //     }
-    // },
     component: RouteComponent,
 })
 
@@ -33,7 +21,7 @@ function RouteComponent() {
     return (
         <div className="flex flex-col min-h-screen w-full bg-background">
             <AppNavbar />
-            <div className='flex flex-col flex-1 mt-12'>
+            <div className='flex flex-col flex-1'>
                 <HeroSection
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}

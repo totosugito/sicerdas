@@ -74,8 +74,8 @@ export default async function seed() {
       updatedAt: now,
     }).onConflictDoNothing();
 
-    // Get Pro Tier ID
-    const [proTier] = await db.select().from(schema.tierPricing).where(eq(schema.tierPricing.slug, 'pro')).limit(1);
+    // Get Enterprise Tier ID
+    const [enterpriseTier] = await db.select().from(schema.tierPricing).where(eq(schema.tierPricing.slug, 'enterprise')).limit(1);
 
     // Insert user profile
     await db.insert(userProfile).values({
@@ -86,7 +86,7 @@ export default async function seed() {
       address: "",
       bio: "",
       dateOfBirth: null,
-      tierId: proTier?.slug || null,
+      tierId: enterpriseTier?.slug || null,
       createdAt: now,
       updatedAt: now,
     }).onConflictDoNothing();

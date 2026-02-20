@@ -31,6 +31,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { AppNavbarMobile } from './AppNavbarMobile'
 import { AppNavbarDesktop } from './AppNavbarDesktop'
+import AppLogo from '../AppLogo'
 
 export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }) {
   const { t, i18n } = useTranslation()
@@ -121,12 +122,7 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
               <SidebarTrigger variant={"outline"} onClick={() => { }} />
               <Separator orientation={"vertical"} className={'h-6'} style={{ height: "20px" }} />
             </> :
-            <Link to="/" className="flex items-center gap-2 group">
-              <img src={APP_CONFIG.app.logo} alt={APP_CONFIG.app.name} className="h-8 w-8" />
-              <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                {t('app.appName')}
-              </span>
-            </Link>
+            <AppLogo disableColapsed />
           }
         </div>
 

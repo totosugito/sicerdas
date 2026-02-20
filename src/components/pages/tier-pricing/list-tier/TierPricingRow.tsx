@@ -32,7 +32,7 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
         transition,
     };
 
-    const maxVisibleFeatures = 2;
+    const maxVisibleFeatures = 4;
     const visibleFeatures = tier.features?.slice(0, maxVisibleFeatures) || [];
     const remainingFeatures = tier.features?.slice(maxVisibleFeatures) || [];
     const hasMoreFeatures = remainingFeatures.length > 0;

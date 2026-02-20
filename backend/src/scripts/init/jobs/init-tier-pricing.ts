@@ -49,6 +49,28 @@ export default async function initTierPricing() {
                 currency: 'USD',
                 billingCycle: 'monthly',
                 features: [
+                    'Priority Chat Access',
+                    'Priority Response Speed',
+                    'Access to Advanced Models',
+                    'Image Generation'
+                ],
+                limits: {
+                    chatAi: {
+                        daily_messages: 100,
+                        max_tokens: 4000
+                    }
+                },
+                isActive: true,
+                isPopular: true,
+                sortOrder: 2
+            },
+            {
+                name: 'Enterprise',
+                slug: 'enterprise',
+                price: '99.99',
+                currency: 'USD',
+                billingCycle: 'monthly',
+                features: [
                     'Unlimited Chat Access',
                     'Priority Response Speed',
                     'Access to Advanced Models',
@@ -56,13 +78,13 @@ export default async function initTierPricing() {
                 ],
                 limits: {
                     chatAi: {
-                        daily_messages: -1, // Unlimited
+                        daily_messages: -1,
                         max_tokens: 4000
                     }
                 },
                 isActive: true,
-                isPopular: true,
-                sortOrder: 2
+                isPopular: false,
+                sortOrder: 3
             }
         ];
 

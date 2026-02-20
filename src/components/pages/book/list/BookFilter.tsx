@@ -154,7 +154,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
               id={`${idPrefix}-cat-0`}
               label={t('book.info.latest')}
               subLabel={
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-sm">
+                <span className={"new-badge"}>
                   {t('book.info.new')}
                 </span>
               }
