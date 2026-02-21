@@ -4,7 +4,7 @@ import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
 import { getDiscoveryYear, getElectronShell, getElectronShellValue } from '../utils/element'
 import { toPhysics } from '@/lib/my-utils'
-import { ElementDetail } from '@/api/periodic-table-api'
+import { ElementDetail } from '@/api/periodic-table/periodic-table'
 import { ElectronShell } from './ElectronShell'
 
 interface ViewElementOverviewProps {

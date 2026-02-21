@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Mountain } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
-import { ElementDetail } from '@/api/periodic-table-api'
+import { ElementDetail } from '@/api/periodic-table/periodic-table'
 import { toPhysics } from '@/lib/my-utils'
 
 interface ElementAbundancesProps {

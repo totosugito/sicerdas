@@ -4,7 +4,7 @@ import {
 } from '@tanstack/react-router'
 import { z } from 'zod'
 import { SubmitHandler } from 'react-hook-form'
-import { useSignUpMutation } from "@/api/auth-api";
+import { useSignUpMutation } from "@/api/auth/sign-up";
 import { useTranslation } from 'react-i18next';
 import { SignUpForm } from '@/components/pages/auth/sign-up';
 import { useState } from 'react';

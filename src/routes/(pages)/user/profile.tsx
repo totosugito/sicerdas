@@ -10,11 +10,11 @@ import {
     createProfileInfoFormData, createPersonalInfoFormData, createSecurityFormData, createPrivacyFormData,
     ProfileInfoFormRef, ProfileLoadingView, ProfileErrorView
 } from '@/components/pages/user/profile'
-import { useUserProfileQuery, useUpdateUserProfileMutation, useChangeUserPasswordMutation, useUserSessionsQuery } from '@/api/user-api'
+import { useUserProfileQuery, useUpdateUserProfileMutation, useChangeUserPasswordMutation, useUserSessionsQuery } from '@/api/user'
 import { showNotifError, showNotifSuccess } from '@/lib/show-notif'
 import { string_to_date } from '@/lib/my-utils'
 import { useAuth } from '@/hooks/use-auth'
-import type { UserSession } from '@/api/user-api'
+import type { UserSession } from '@/api/user/user-sessions'
 
 import { authClient } from '@/lib/auth-client'
 

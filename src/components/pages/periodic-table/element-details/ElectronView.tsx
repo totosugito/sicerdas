@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ElementDetail } from '@/api/periodic-table-api';
+import { ElementDetail } from '@/api/periodic-table/periodic-table';
 
 interface ElectronViewProps {
   element: ElementDetail;

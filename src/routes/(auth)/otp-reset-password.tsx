@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { z } from 'zod';
 
 // Add the import for the OTP verification mutation and OTP reset password mutation
-import { useEmailOtpVerifyForgetPasswordMutation, useEmailOtpResetPasswordMutation } from "@/api/auth-api";
+import { useEmailOtpVerifyForgetPasswordMutation, useEmailOtpResetPasswordMutation } from "@/api/auth";
 import { AuthHeader, AuthLayout } from '@/components/pages/auth';
 
 export const Route = createFileRoute('/(auth)/otp-reset-password')({

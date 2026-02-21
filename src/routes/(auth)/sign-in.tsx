@@ -5,7 +5,7 @@ import {
 import { z } from 'zod'
 
 import { SubmitHandler } from 'react-hook-form'
-import { useLoginMutation } from "@/api/auth-api";
+import { useLoginMutation } from "@/api/auth/login";
 import { useTranslation } from 'react-i18next';
 import { SignInForm } from '@/components/pages/auth/sign-in';
 import { useState } from 'react';

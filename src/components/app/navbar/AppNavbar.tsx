@@ -24,7 +24,7 @@ import { useTheme } from '@/lib/theme-provider'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useAuth } from '@/hooks/use-auth'
 import { AppRoute } from '@/constants/app-route'
-import { useLogoutMutation } from "@/api/auth-api";
+import { useLogoutMutation } from "@/api/auth/logout";
 import { ModalProps, DialogModal } from "@/components/custom/components";
 import { APP_CONFIG } from '@/constants/config'
 import { SidebarTrigger } from '@/components/ui/sidebar'

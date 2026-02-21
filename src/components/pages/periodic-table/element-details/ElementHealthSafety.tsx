@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { ShieldAlert } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
-import { ElementDetail } from '@/api/periodic-table-api'
+import { ElementDetail } from '@/api/periodic-table/periodic-table'
 import { cn } from '@/lib/utils';
 
 interface ViewNfpaProps {

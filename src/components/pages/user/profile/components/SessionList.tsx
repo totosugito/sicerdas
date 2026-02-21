@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { AlertTriangle, Laptop, LucideIcon, Monitor, RefreshCw, Smartphone, Tablet, Globe } from 'lucide-react'
 import { formatDistanceToNow, parseISO } from 'date-fns'
 import { enUS, id } from 'date-fns/locale'
-import type { UserSession } from '@/api/user-api'
+import type { UserSession } from '@/api/user/user-sessions'
 import { useState } from 'react'
 import { ModalProps, DialogModal } from '@/components/custom/components'
 

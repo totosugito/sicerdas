@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Thermometer } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
-import { ElementDetail } from '@/api/periodic-table-api'
+import { ElementDetail } from '@/api/periodic-table/periodic-table'
 import { toPhysics } from '@/lib/my-utils'
 import { celsiusToOther, kelvinToOther } from '../utils/element'
 

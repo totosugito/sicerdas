@@ -1,6 +1,6 @@
 import { getPeriodictUnits } from '@/components/pages/periodic-table/utils/element-units';
 import { useTranslation } from 'react-i18next';
-import { ElementDetail } from '@/api/periodic-table-api';
+import { ElementDetail } from '@/api/periodic-table/periodic-table';
 import { cn } from '@/lib/utils';
 import { getElementStyle } from '../utils/element-styles';
 import { ElementSearchCombobox } from '../element-details/ElementSearchCombobox';

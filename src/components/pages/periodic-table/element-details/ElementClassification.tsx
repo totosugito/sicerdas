@@ -3,7 +3,7 @@ import { Layers } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
 import { toPhysics } from '@/lib/my-utils'
-import { ElementDetail } from '@/api/periodic-table-api'
+import { ElementDetail } from '@/api/periodic-table/periodic-table'
 import ViewOxidationStates from './ViewOxidationStates'
 import { getColumnGroup } from '../utils/element'
 

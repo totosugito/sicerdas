@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { FileText } from 'lucide-react';
-import { ElementDetail } from '@/api/periodic-table-api';
+import { ElementDetail } from '@/api/periodic-table/periodic-table';
 import { CardSection } from './CardSection';
 import { PropertyItemHtml } from './PropertyItemHtml';
 

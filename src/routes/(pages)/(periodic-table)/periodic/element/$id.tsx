@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { usePeriodicElementQuery } from '@/api/periodic-table-api'
+import { usePeriodicElementQuery } from '@/api/periodic-table/periodic-table'
 import {
   ElementErrorDisplay, ElementSkeleton, ElementHero, ElementNavigation,
   ElectronView, ElementOverview, ElementClassification, ElementDimension, ElementNotes, ElementThermal, ElementBulkPhysical, ElementElectrical, ElementMagnetic, ElementAbundances, ElementReactivity, ElementHealthSafety, ElementNuclear

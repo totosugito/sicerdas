@@ -3,7 +3,7 @@ import {
   redirect,
 } from '@tanstack/react-router'
 import { SubmitHandler } from 'react-hook-form'
-import { useEmailOtpVerifyForgetPasswordMutation, useEmailOtpForgetPasswordMutation, useEmailHasOtpQuery } from "@/api/auth-api";
+import { useEmailOtpVerifyForgetPasswordMutation, useEmailOtpForgetPasswordMutation, useEmailHasOtpQuery } from "@/api/auth";
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck, Timer, Loader2 } from 'lucide-react';
 import { OtpVerificationForm } from '@/components/pages/auth/otp-verification';
