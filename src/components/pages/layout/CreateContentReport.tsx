@@ -1,8 +1,8 @@
 import { DialogModalForm, ModalFormProps, DialogModal } from "@/components/custom/components";
 import { useState } from "react";
 import { useCreateReportMutation } from "@/api/content-report/create-report";
-import { EnumContentType } from "backend/src/db/schema/enum-app";
-import { EnumReportReason } from "backend/src/db/schema/enum-general";
+import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
+import { EnumReportReason } from "backend/src/db/schema/enum/enum-general";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { ControlForm } from "@/components/custom/forms";

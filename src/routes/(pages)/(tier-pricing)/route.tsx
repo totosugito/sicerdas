@@ -1,7 +1,7 @@
 import { NotFoundError } from '@/components/custom/errors';
 import { useAuth } from '@/hooks/use-auth';
 import { createFileRoute, Outlet } from '@tanstack/react-router'
-import { EnumUserRole } from 'backend/src/db/schema/enum-auth';
+import { EnumUserRole } from 'backend/src/db/schema/user/types';
 
 export const Route = createFileRoute('/(pages)/(tier-pricing)')({
     component: RouteComponent,

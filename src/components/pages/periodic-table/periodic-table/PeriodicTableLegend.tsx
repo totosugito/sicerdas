@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { EnumPeriodicGroup } from "backend/src/db/schema/enum-app";
+import { EnumPeriodicGroup } from "backend/src/db/schema/table-periodic/types";
 import { getElementStyle } from "../utils/element-styles";
 import { useTranslation } from "react-i18next";
 

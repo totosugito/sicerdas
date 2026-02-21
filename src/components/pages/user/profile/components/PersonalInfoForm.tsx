@@ -6,7 +6,7 @@ import { ControlForm } from '@/components/custom/forms'
 import { z } from 'zod'
 import { AlertCircle } from 'lucide-react'
 import { date_to_string } from '@/lib/my-utils'
-import { EnumEducationLevel } from 'backend/src/db/schema/enum-app'
+import { EnumEducationLevel } from 'backend/src/db/schema/enum/enum-app'
 
 // Define the form values type
 export type PersonalInfoFormValues = {

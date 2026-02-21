@@ -7,7 +7,7 @@ import { PeriodicTableHeader } from "./PeriodicTableHeader";
 import { ThemeSelector } from "./ThemeSelector";
 import { ElementDetailPopover } from "./ElementDetailPopover";
 import { useAppStore } from "@/stores/useAppStore";
-import { EnumPeriodicGroup } from "backend/src/db/schema/enum-app";
+import { EnumPeriodicGroup } from "backend/src/db/schema/table-periodic/types";
 import { PeriodicTableLegend } from "./PeriodicTableLegend";
 
 interface PeriodicTableProps {
@@ -228,7 +228,7 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
             <div
               className="absolute z-30 p-3"
               style={{
-                top: `${(cellSize / 2) + gap*2}px`, // Position at top of grid (idy 0)
+                top: `${(cellSize / 2) + gap * 2}px`, // Position at top of grid (idy 0)
                 left: `${(cellSize / 2) + (4 * cellSize) + (5 * gap)}px`, // Position at idx 5
                 width: `${8 * cellSize}px`, // Span 7 columns (idx 5-11)
                 height: `${3 * cellSize}px`, // Span 4 rows (idy 0-3)
@@ -236,7 +236,7 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
               }}
             >
               <div className="flex h-full items-end justify-end">
-              <PeriodicTableLegend theme={pageProps.viewMode} />
+                <PeriodicTableLegend theme={pageProps.viewMode} />
               </div>
             </div>
           </div>

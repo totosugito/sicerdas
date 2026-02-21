@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
-import { EnumContentType } from "backend/src/db/schema/enum-app";
-import { EnumReportReason } from "backend/src/db/schema/enum-general";
+import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
+import { EnumReportReason } from "backend/src/db/schema/enum/enum-general";
 
 export interface CreateReportBody {
     name: string;

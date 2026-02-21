@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { PeriodicElement } from "../types/types";
 import { getElementStyle } from "../utils/element-styles";
-import { EnumPeriodicGroup } from "backend/src/db/schema/enum-app";
+import { EnumPeriodicGroup } from "backend/src/db/schema/table-periodic/types";
 import { getColumnGroup } from "../utils/element";
 
 interface PeriodicCellProps {
@@ -15,10 +15,10 @@ interface PeriodicCellProps {
   theme?: string; // Add theme prop
 }
 
-export const PeriodicCell = ({ 
-  element, 
-  onCellClick, 
-  cellSize, 
+export const PeriodicCell = ({
+  element,
+  onCellClick,
+  cellSize,
   isSelected = false,
   isHeaderHighlighted = false,
   isSearchMatch = false,
@@ -35,14 +35,14 @@ export const PeriodicCell = ({
   // Handle header cells
   if (atomicGroup === EnumPeriodicGroup.header || atomicGroup === EnumPeriodicGroup.headerEmpty) {
     return (
-      <div 
+      <div
         className={cn(
           "flex items-center justify-center transition-all duration-300 border",
-          isHeaderHighlighted 
-            ? "bg-muted/95 shadow-sm" 
+          isHeaderHighlighted
+            ? "bg-muted/95 shadow-sm"
             : "bg-card/95 backdrop-blur-sm"
         )}
-        style={{ width: element.idx === 0 ? `${cellSize/2}px`: `${cellSize}px`, height: element.idy === 0 ? `${cellSize/2}px`: `${cellSize}px` }}
+        style={{ width: element.idx === 0 ? `${cellSize / 2}px` : `${cellSize}px`, height: element.idy === 0 ? `${cellSize / 2}px` : `${cellSize}px` }}
       >
         <span className={cn(
           "text-sm font-bold transition-colors",
