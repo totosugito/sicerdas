@@ -1,11 +1,11 @@
-import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
-import {Type} from '@sinclair/typebox';
-import {withErrorHandler} from "../../../utils/withErrorHandler.ts";
-import {db} from "../../../db/index.ts";
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import { Type } from '@sinclair/typebox';
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { db } from "../../../db/db-pool.ts";
 import { bookGroup, bookGroupStats, books } from "../../../db/schema/book-schema.ts";
-import {eq, count, and} from "drizzle-orm";
-import type {FastifyReply, FastifyRequest} from "fastify";
-import { EnumContentStatus } from "../../../db/schema/enum-app.ts";
+import { eq, count, and } from "drizzle-orm";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
 const adminRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -22,7 +22,7 @@ const adminRoute: FastifyPluginAsyncTypebox = async (app) => {
           data: Type.Array(Type.Object({
             groupId: Type.Number(),
             bookTotal: Type.Number(),
-            updatedAt: Type.String({format: 'date-time'})
+            updatedAt: Type.String({ format: 'date-time' })
           }))
         })
       },
@@ -66,7 +66,7 @@ const adminRoute: FastifyPluginAsyncTypebox = async (app) => {
           // Update existing stats record
           updatedStats = await db
             .update(bookGroupStats)
-            .set({ 
+            .set({
               bookTotal,
               updatedAt: new Date()
             })

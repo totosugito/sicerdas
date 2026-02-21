@@ -1,10 +1,10 @@
-import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
-import {withErrorHandler} from "../../utils/withErrorHandler.ts";
-import {getAuthInstance} from '../../decorators/auth.decorator.ts';
-import {db} from "../../db/index.ts";
-import {Type} from '@fastify/type-provider-typebox';
-import {accounts} from "../../db/schema/index.ts";
-import {eq} from "drizzle-orm";
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import { withErrorHandler } from "../../utils/withErrorHandler.ts";
+import { getAuthInstance } from '../../decorators/auth.decorator.ts';
+import { db } from "../../db/db-pool.ts";
+import { Type } from '@fastify/type-provider-typebox';
+import { accounts } from "../../db/schema/index.ts";
+import { eq } from "drizzle-orm";
 
 // Response schemas
 const ChangePasswordResponse = Type.Object({
@@ -56,7 +56,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
     },
     handler: withErrorHandler(async (req, reply) => {
       const auth = getAuthInstance(app);
-      const {currentPassword, newPassword} = req.body as {
+      const { currentPassword, newPassword } = req.body as {
         currentPassword: string,
         newPassword: string
       };
@@ -96,9 +96,9 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Verify current password
       const isPasswordValid = await context.password.verify({
-          password: currentPassword,
-          hash: userAccount.password
-        },
+        password: currentPassword,
+        hash: userAccount.password
+      },
       );
 
       if (!isPasswordValid) {

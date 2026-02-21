@@ -1,9 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
-import { db } from "../../db/index.ts";
-import { EnumReportReason } from "../../db/schema/enum-general.ts";
-import { EnumContentType } from "../../db/schema/enum-app.ts";
+import { db } from "../../db/db-pool.ts";
+import { EnumReportReason } from "../../db/schema/enum/enum-general.ts";
+import { EnumContentType } from "../../db/schema/enum/enum-app.ts";
 import { userContentReport } from "../../db/schema/content-report-schema.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { fromNodeHeaders } from 'better-auth/node';

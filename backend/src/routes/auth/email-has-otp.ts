@@ -1,9 +1,9 @@
-import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
-import {withErrorHandler} from "../../utils/withErrorHandler.ts";
-import {db} from "../../db/index.ts";
-import {users, verifications} from "../../db/schema/auth-schema.ts";
-import {eq, and, gte} from "drizzle-orm";
+import { withErrorHandler } from "../../utils/withErrorHandler.ts";
+import { db } from "../../db/db-pool.ts";
+import { users, verifications } from "../../db/schema/auth-schema.ts";
+import { eq, and, gte } from "drizzle-orm";
 
 /**
  * Check if user has pending OTP verification
@@ -56,7 +56,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Check if email exists in users table and get user ID
       const existingUser = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.email, email));
-      
+
       if (existingUser.length === 0) {
         return reply.notFound(req.i18n.t('auth.userNotFound'));
       }
@@ -74,7 +74,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             gte(verifications.expiresAt, new Date()) // Check if verification hasn't expired yet
           )
         );
-      
+
       // Check if there are any pending verifications that haven't expired
       const hasOtp = pendingVerifications.length > 0;
 
@@ -83,8 +83,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         .send({
           success: true,
           hasOtp: hasOtp,
-          message: hasOtp 
-            ? req.i18n.t('auth.pendingVerificationFound') 
+          message: hasOtp
+            ? req.i18n.t('auth.pendingVerificationFound')
             : req.i18n.t('auth.noPendingVerification')
         });
     }),

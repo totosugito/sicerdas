@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
-import { db } from '../../db/index.ts';
+import { db } from '../../db/db-pool.ts';
 
 async function dbPlugin(fastify: FastifyInstance) {
   fastify.decorate('db', db);

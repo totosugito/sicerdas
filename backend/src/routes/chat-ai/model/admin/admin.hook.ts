@@ -1,7 +1,7 @@
 import { fromNodeHeaders } from 'better-auth/node';
 import type { FastifyInstance } from 'fastify';
 import { getAuthInstance } from '../../../../decorators/auth.decorator.ts';
-import { EnumUserRole } from '../../../../db/schema/enum-auth.ts';
+import { EnumUserRole } from '../../../../db/schema/user/types.ts';
 
 async function adminHook(fastify: FastifyInstance) {
   fastify.decorateRequest('session');

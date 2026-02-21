@@ -9,12 +9,12 @@
  *   cross-env NODE_ENV=development ts-node src/scripts/archive-guest-events.ts
  */
 
-import { db } from '../../../../db/index.ts';
+import { db } from '../../../../db/db-pool.ts';
 import { bookEventStats } from '../../../../db/schema/book-schema.ts';
-import { userEventHistory } from '../../../../db/schema/user-history-schema.ts';
+import { userEventHistory } from '../../../../db/schema/app/user-history.ts';
 import { eq, sql, and, lt, or } from 'drizzle-orm';
 import { subMonths } from 'date-fns';
-import { EnumContentType, EnumEventStatus } from '../../../../db/schema/enum-app.ts';
+import { EnumContentType, EnumEventStatus } from '../../../../db/schema/enum/enum-app.ts';
 
 async function archiveGuestEvents() {
     console.log('Starting guest events archiving process...');

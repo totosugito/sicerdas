@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
-import { db } from "../../db/index.ts";
+import { db } from "../../db/db-pool.ts";
 import { eq, and, ne } from "drizzle-orm";
 import { sessions } from "../../db/schema/index.ts";
 
@@ -45,7 +45,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
     handler: withErrorHandler(async (req, reply) => {
       // Get the session token from the request body
       const { token } = req.body as { token: string };
-      
+
       // Get user ID from session (already verified by user.hook.ts)
       const userId = req.session.user.id;
 
@@ -56,7 +56,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         })
         .from(sessions)
         .where(eq(sessions.token, token));
-        
+
       if (!tokenSession.length || tokenSession[0].userId !== userId) {
         return reply.status(403).send({
           success: false,

@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { aiModels } from '../../../../db/schema/chat-ai-schema.ts';
-import { db } from '../../../../db/index.ts';
+import { db } from '../../../../db/db-pool.ts';
 import { eq, ne, and, or } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 

@@ -1,47 +1,32 @@
-import {
-  PgEnumUserRole,
-} from './enum-auth.ts';
-import {
-  PgEnumContentStatus,
-  PgEnumEventStatus,
-  PgEnumContentType,
-  PgEnumContentSortingType,
-  PgEnumEducationLevel,
-  PgEnumPeriodicGroup,
-  PgEnumUsageType
-} from './enum-app.ts';
-import {
-  PgEnumReportStatus, PgEnumReportReason, PgEnumNotificationType, PgEnumNotificationStatus, PgEnumNotificationPriority,
-  PgEnumJobStatus, PgEnumJobTrigger, PgEnumJobGroup
-} from './enum-general.ts';
-import { users, accounts, sessions, verifications, userProfile } from './auth-schema.ts';
-import {
-  bookCategory, bookGroup, books, bookGroupStats, bookEventStats, userBookInteractions,
-} from './book-schema.ts';
-import { educationGrades } from './education-schema.ts';
-import { appVersion } from './version-schema.ts';
-import {
-  userEventHistory,
-} from './user-history-schema.ts';
-import {
-  userContentReport, userReportReplies,
-} from './content-report-schema.ts';
-import { aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares, aiModels, aiChatFolders, userAiUsage, aiApiLogs } from './chat-ai-schema.ts';
-import { notifications } from './notification-schema.ts';
-import { periodicElements, periodicElementNotes } from './periodic-table-schema.ts';
-import { jobLogs } from './job-logs-schema.ts';
-import { tierPricing } from './tier-pricing.ts';
-export {
-  PgEnumUserRole,
-  PgEnumContentStatus, PgEnumEventStatus, PgEnumContentType, PgEnumContentSortingType, PgEnumEducationLevel, PgEnumPeriodicGroup, PgEnumUsageType,
-  PgEnumReportStatus, PgEnumReportReason, PgEnumNotificationType, PgEnumNotificationStatus, PgEnumNotificationPriority,
-  PgEnumJobStatus, PgEnumJobTrigger, PgEnumJobGroup,
-  users, accounts, sessions, verifications, userProfile,
-  bookCategory, bookGroup, books, bookGroupStats, bookEventStats, userBookInteractions,
-  educationGrades, appVersion, userContentReport, userReportReplies, userEventHistory,
-  aiChatSessions, aiChatMessages, aiChatAttachments, aiChatShares, aiModels, aiChatFolders, userAiUsage, aiApiLogs,
-  notifications,
-  periodicElements, periodicElementNotes,
-  jobLogs,
-  tierPricing
-}
+// Enum
+export * as enumSchema from './enum/index.ts';
+
+// User Module
+export * as userSchema from './user/index.ts';
+
+// Job Module
+export * as jobSchema from './jobs/index.ts';
+
+// Chat AI Module
+export * as chatAiSchema from './ai-chat/index.ts';
+
+// App Module
+export * as appSchema from './app/index.ts';
+
+// Exam Module
+export * as examSchema from './exam/index.ts';
+
+// Periodic Module
+export * as periodicSchema from './table-periodic/index.ts';
+
+// Book Module
+export * as bookSchema from './book/index.ts';
+
+// Education Module
+export * as educationSchema from './education/index.ts';
+
+// Notification Module
+export * as notificationSchema from './notification/index.ts';
+
+// Content Report Module
+export * as contentReportSchema from './content-report/index.ts';

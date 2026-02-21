@@ -1,14 +1,14 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
-import { db } from "../../db/index.ts";
+import { db } from "../../db/db-pool.ts";
 import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } from "../../db/schema/book-schema.ts";
-import { educationGrades } from "../../db/schema/education-schema.ts";
-import { userEventHistory } from "../../db/schema/user-history-schema.ts";
+import { educationGrades } from "../../db/schema/education/education.ts";
+import { userEventHistory } from "../../db/schema/app/user-history.ts";
 import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getBookCoverUrl, getBookPdfUrl, getBookSamplePagesUrl } from "../../utils/book-utils.ts";
-import { EnumContentType, EnumEventStatus } from "../../db/schema/enum-app.ts";
+import { EnumContentType, EnumEventStatus } from "../../db/schema/enum/enum-app.ts";
 import { CONFIG } from "../../config/app-constant.ts";
 import { desc } from "drizzle-orm";
 import { fromNodeHeaders } from 'better-auth/node';

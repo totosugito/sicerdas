@@ -1,11 +1,11 @@
 import type { InferSelectModel } from 'drizzle-orm';
 import { boolean, jsonb, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
-import { users } from './auth-schema.ts';
+import { users } from '../auth-schema.ts';
 import {
   PgEnumNotificationPriority,
   PgEnumNotificationStatus,
   PgEnumNotificationType
-} from './enum-general.ts';
+} from '../enum/enum-general.ts';
 
 /**
  * Table: notifications

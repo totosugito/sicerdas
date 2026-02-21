@@ -1,9 +1,9 @@
-import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
-import {withErrorHandler} from "../../utils/withErrorHandler.ts";
-import {db} from "../../db/index.ts";
-import {verifications} from "../../db/schema/auth-schema.ts";
-import {eq, desc} from "drizzle-orm";
+import { withErrorHandler } from "../../utils/withErrorHandler.ts";
+import { db } from "../../db/db-pool.ts";
+import { verifications } from "../../db/schema/auth-schema.ts";
+import { eq, desc } from "drizzle-orm";
 
 /**
  * Verify forget password OTP

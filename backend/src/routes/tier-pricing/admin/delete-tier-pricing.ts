@@ -1,10 +1,10 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
-import { tierPricing } from '../../../db/schema/tier-pricing.ts';
+import { tierPricing } from '../../../db/schema/app/tier-pricing.ts';
 import { userProfile } from '../../../db/schema/auth-schema.ts';
 import { aiModels } from '../../../db/schema/chat-ai-schema.ts';
-import { db } from '../../../db/index.ts';
+import { db } from '../../../db/db-pool.ts';
 import { eq, count } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 

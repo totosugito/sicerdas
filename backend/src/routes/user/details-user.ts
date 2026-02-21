@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
-import { db } from "../../db/index.ts";
+import { db } from "../../db/db-pool.ts";
 import { eq } from "drizzle-orm";
 import { users, userProfile, accounts } from "../../db/schema/auth-schema.ts";
 import { getUserAvatarUrl } from "../../utils/app-utils.ts";

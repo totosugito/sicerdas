@@ -3,8 +3,8 @@ import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { EnumExamType, PgEnumExamType } from './enums.ts';
 import { examCategories } from './categories.ts';
 import { users } from '../auth-schema.ts';
-import { tierPricing } from '../tier-pricing.ts';
-import { educationGrades } from '../education-schema.ts';
+import { tierPricing } from '../app/tier-pricing.ts';
+import { educationGrades } from '../education/education.ts';
 
 /**
  * Table: exam_packages

@@ -2,7 +2,7 @@ import { pgTable, uuid, varchar, timestamp, integer, jsonb, index } from 'drizzl
 import { EnumSolutionType, PgEnumSolutionType } from './enums.ts';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { examQuestions } from './questions.ts';
-import { tierPricing } from '../tier-pricing.ts';
+import { tierPricing } from '../app/tier-pricing.ts';
 
 /**
  * Table: exam_question_solutions

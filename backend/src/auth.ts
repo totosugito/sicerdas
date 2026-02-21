@@ -1,11 +1,11 @@
-import {betterAuth} from 'better-auth';
-import {drizzleAdapter} from 'better-auth/adapters/drizzle';
-import {admin, openAPI, emailOTP, multiSession, customSession} from 'better-auth/plugins';
-import {db} from './db/index.ts';
+import { betterAuth } from 'better-auth';
+import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { admin, openAPI, emailOTP, multiSession, customSession } from 'better-auth/plugins';
+import { db } from './db/db-pool.ts';
 import envConfig from "./config/env.config.ts";
 import fs from 'fs';
 import path from 'path';
-import {fileURLToPath} from 'url';
+import { fileURLToPath } from 'url';
 
 // Brevo email client
 import Brevo from '@getbrevo/brevo';
@@ -33,11 +33,11 @@ const auth = betterAuth({
     openAPI({
       path: '/docs',
     }),
-	 customSession(async ({ user, session }) => {
-     // get user role from database
-     const userRecord = await db.query.users.findFirst({
-       where: (fields) => eq(fields.id, user.id),
-     });
+    customSession(async ({ user, session }) => {
+      // get user role from database
+      const userRecord = await db.query.users.findFirst({
+        where: (fields) => eq(fields.id, user.id),
+      });
 
       return {
         user: {
@@ -69,7 +69,7 @@ const auth = betterAuth({
             // Read the email template
             const templatePath = path.join(__dirname, 'templates', 'reset-password-otp.html');
             let htmlContent = fs.readFileSync(templatePath, 'utf8');
-            
+
             // Replace placeholders with actual values
             htmlContent = htmlContent
               .replace(/{{name}}/g, email.split('@')[0]) // Using email prefix as name
@@ -98,7 +98,7 @@ const auth = betterAuth({
           }
         }
       },
-    }), 
+    }),
   ],
   socialProviders: {
     google: {
@@ -122,7 +122,7 @@ const auth = betterAuth({
     minPasswordLength: 1,
     maxPasswordLength: 128,
     autoSignIn: false,
-    sendResetPassword: async ({user, url, token}, request) => {
+    sendResetPassword: async ({ user, url, token }, request) => {
       // Only send email if Brevo is configured
       if (!apiInstance) {
         console.warn('Brevo API key not configured. Skipping email sending.');
@@ -133,7 +133,7 @@ const auth = betterAuth({
         // Read the email template
         const templatePath = path.join(__dirname, 'templates', 'request-password-reset.html');
         let htmlContent = fs.readFileSync(templatePath, 'utf8');
-        
+
         // Replace placeholders with actual values
         htmlContent = htmlContent
           .replace(/{{name}}/g, user.name || user.email)

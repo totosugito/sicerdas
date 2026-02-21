@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import { aiModels, aiApiLogs } from '../../../../db/schema/chat-ai-schema.ts';
-import { db } from '../../../../db/index.ts';
+import { db } from '../../../../db/db-pool.ts';
 import { eq, getTableColumns, desc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { Type } from '@sinclair/typebox';

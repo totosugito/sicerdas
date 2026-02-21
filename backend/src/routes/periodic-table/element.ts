@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
-import { db } from "../../db/index.ts";
+import { db } from "../../db/db-pool.ts";
 import { and, eq } from "drizzle-orm";
 import { periodicElements, periodicElementNotes } from "../../db/schema/index.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";

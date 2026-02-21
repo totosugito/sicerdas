@@ -1,5 +1,5 @@
-import {jsonb, pgTable, serial, text, timestamp, integer} from "drizzle-orm/pg-core";
-import {EnumContentStatus, EnumContentType, PgEnumContentStatus, PgEnumContentType} from "./enum-app.ts";
+import { jsonb, pgTable, serial, text, timestamp, integer } from "drizzle-orm/pg-core";
+import { EnumContentStatus, EnumContentType, PgEnumContentStatus, PgEnumContentType } from "../enum/enum-app.ts";
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 /**

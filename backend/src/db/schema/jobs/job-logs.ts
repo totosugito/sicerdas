@@ -4,7 +4,7 @@ import {
     EnumJobStatus, PgEnumJobStatus,
     EnumJobTrigger, PgEnumJobTrigger,
     EnumJobGroup, PgEnumJobGroup
-} from './enum-general.ts';
+} from '../enum/enum-general.ts';
 
 export type SchemaJobLogInsert = InferInsertModel<typeof jobLogs>;
 export type SchemaJobLogSelect = InferSelectModel<typeof jobLogs>;

@@ -9,10 +9,10 @@
  *   cross-env NODE_ENV=development ts-node src/scripts/update-book-stats.ts
  */
 
-import { EnumContentType, EnumEventStatus } from '../../../../db/schema/enum-app.ts';
-import { db } from '../../../../db/index.ts';
+import { EnumContentType, EnumEventStatus } from '../../../../db/schema/enum/enum-app.ts';
+import { db } from '../../../../db/db-pool.ts';
 import { books, bookEventStats, userBookInteractions } from '../../../../db/schema/book-schema.ts';
-import { userEventHistory } from '../../../../db/schema/user-history-schema.ts';
+import { userEventHistory } from '../../../../db/schema/app/user-history.ts';
 import { eq, sql, and } from 'drizzle-orm';
 
 async function updateBookStats() {

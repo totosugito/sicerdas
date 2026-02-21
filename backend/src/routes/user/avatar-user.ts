@@ -1,23 +1,23 @@
-import type {FastifyPluginAsyncTypebox} from '@fastify/type-provider-typebox';
-import {withErrorHandler} from '../../utils/withErrorHandler.ts';
-import {db} from '../../db/index.ts';
-import {users} from '../../db/schema/index.ts';
-import {eq} from 'drizzle-orm';
-import {join} from 'node:path';
-import {writeFile, unlink} from 'node:fs/promises';
-import {existsSync, mkdirSync} from 'node:fs';
+import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+import { withErrorHandler } from '../../utils/withErrorHandler.ts';
+import { db } from '../../db/db-pool.ts';
+import { users } from '../../db/schema/index.ts';
+import { eq } from 'drizzle-orm';
+import { join } from 'node:path';
+import { writeFile, unlink } from 'node:fs/promises';
+import { existsSync, mkdirSync } from 'node:fs';
 import sharp from 'sharp';
-import type {UploadedFile} from "../../types/file.ts";
+import type { UploadedFile } from "../../types/file.ts";
 import env from "../../config/env.config.ts";
-import {createUniqueFileName} from "../../utils/my-utils.ts";
-import {Type} from '@sinclair/typebox';
-import type {FastifyReply} from "fastify";
-import {getUserAvatarUrl} from "../../utils/app-utils.ts";
+import { createUniqueFileName } from "../../utils/my-utils.ts";
+import { Type } from '@sinclair/typebox';
+import type { FastifyReply } from "fastify";
+import { getUserAvatarUrl } from "../../utils/app-utils.ts";
 
 const uploadDir = join(process.cwd(), env.server.uploadsUserDir);
 
 export const processChangeAvatar = async (req: any, reply: FastifyReply, userId: string, file: UploadedFile) => {
-  const {buffer, filename: originalName, mimetype} = file;
+  const { buffer, filename: originalName, mimetype } = file;
 
   // Validate file type
   const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
@@ -43,7 +43,7 @@ export const processChangeAvatar = async (req: any, reply: FastifyReply, userId:
   // Create user-specific directory
   const userDir = join(uploadDir, userId);
   if (!existsSync(userDir)) {
-    mkdirSync(userDir, {recursive: true});
+    mkdirSync(userDir, { recursive: true });
   }
 
   const filePath = join(userDir, fileName);

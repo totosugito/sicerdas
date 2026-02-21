@@ -5,8 +5,8 @@ import { eq, and } from "drizzle-orm";
 import * as schema from '../../../db/schema/index.ts';
 import dotenv from 'dotenv';
 import { bookCategory, bookGroup } from "../../../db/schema/book-schema.ts";
-import { educationGrades } from "../../../db/schema/education-schema.ts";
-import { EnumContentType, EnumContentStatus } from "../../../db/schema/enum-app.ts";
+import { educationGrades } from "../../../db/schema/education/education.ts";
+import { EnumContentType, EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
 dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env' });
 

@@ -1,13 +1,13 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
-import { db } from "../../db/index.ts";
+import { db } from "../../db/db-pool.ts";
 import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } from "../../db/schema/book-schema.ts";
-import { educationGrades } from "../../db/schema/education-schema.ts";
+import { educationGrades } from "../../db/schema/education/education.ts";
 import { and, eq, inArray, sql, or, ilike, desc } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { EnumContentStatus, EnumContentType } from "../../db/schema/enum-app.ts";
-import { appVersion } from "../../db/schema/version-schema.ts";
+import { EnumContentStatus, EnumContentType } from "../../db/schema/enum/enum-app.ts";
+import { appVersion } from "../../db/schema/app/version-schema.ts";
 import { getBookCoverUrl } from "../../utils/book-utils.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
