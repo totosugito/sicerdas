@@ -2,7 +2,7 @@ import { pgTable, uuid, varchar, timestamp, integer, jsonb, index } from 'drizzl
 import { EnumSolutionType, PgEnumSolutionType } from './enums.ts';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { examQuestions } from './questions.ts';
-import { tierPricing } from '../app/tier-pricing.ts';
+import { appTier } from '../app/app-tier.ts';
 
 /**
  * Table: exam_question_solutions
@@ -30,7 +30,7 @@ export const examQuestionSolutions = pgTable('exam_question_solutions', {
     order: integer('order').notNull().default(0),
 
     // Access Gate: Minimum subscription tier required to view this specific solution trick
-    requiredTier: varchar('required_tier', { length: 50 }).references(() => tierPricing.slug, { onDelete: 'set null' }).default('free'),
+    requiredTier: varchar('required_tier', { length: 50 }).references(() => appTier.slug, { onDelete: 'set null' }).default('free'),
 
     // Timestamp when this solution was created
     createdAt: timestamp('created_at').defaultNow().notNull(),

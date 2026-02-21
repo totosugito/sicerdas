@@ -1,6 +1,6 @@
 import type { InferSelectModel } from 'drizzle-orm';
 import { boolean, jsonb, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
-import { users } from '../auth-schema.ts';
+import { users } from '../user/users.ts';
 import {
   PgEnumNotificationPriority,
   PgEnumNotificationStatus,

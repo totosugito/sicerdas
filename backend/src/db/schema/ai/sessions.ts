@@ -1,11 +1,11 @@
 import { pgTable, varchar, timestamp, text, uuid, integer, boolean, jsonb, decimal, index } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { users } from '../auth-schema.ts';
-import { aiChatFolders } from './folders.ts';
+import { users } from '../user/users.ts';
+import { aiFolders } from './folders.ts';
 import { aiModels } from './models.ts';
 
 /**
- * Table: ai_chat_sessions
+ * Table: ai_sessions
  * 
  * This table stores chat sessions created by users for AI interactions.
  * Each session represents a distinct conversation thread with the AI.
@@ -26,7 +26,7 @@ import { aiModels } from './models.ts';
  * - updatedAt: When the session was last updated
  * - isActive: Whether the session is currently active or archived
  */
-export const aiChatSessions = pgTable('ai_chat_sessions', {
+export const aiSessions = pgTable('ai_sessions', {
     id: uuid().primaryKey().notNull().defaultRandom(),
 
     // User who created the session
@@ -36,7 +36,7 @@ export const aiChatSessions = pgTable('ai_chat_sessions', {
 
     // Organization
     folderId: uuid('folder_id')
-        .references(() => aiChatFolders.id, { onDelete: 'set null', onUpdate: 'cascade' }),
+        .references(() => aiFolders.id, { onDelete: 'set null', onUpdate: 'cascade' }),
 
     isPinned: boolean('is_pinned').notNull().default(false),
 
@@ -65,10 +65,10 @@ export const aiChatSessions = pgTable('ai_chat_sessions', {
     // Session status
     isActive: boolean('is_active').notNull().default(true),
 }, (table) => [
-    index('ai_chat_sessions_user_id_idx').on(table.userId),
-    index('ai_chat_sessions_folder_id_idx').on(table.folderId),
-    index('ai_chat_sessions_created_at_idx').on(table.createdAt),
+    index('ai_sessions_user_id_idx').on(table.userId),
+    index('ai_sessions_folder_id_idx').on(table.folderId),
+    index('ai_sessions_created_at_idx').on(table.createdAt),
 ]);
 
-export type SchemaAiChatSessionSelect = InferSelectModel<typeof aiChatSessions>;
-export type SchemaAiChatSessionInsert = InferInsertModel<typeof aiChatSessions>;
+export type SchemaAiSessionSelect = InferSelectModel<typeof aiSessions>;
+export type SchemaAiSessionInsert = InferInsertModel<typeof aiSessions>;

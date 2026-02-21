@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import envConfig from "../../../config/env.config.ts";
 import * as schema from '../../../db/schema/index.ts';
-import { tierPricing } from '../../../db/schema/app/tier-pricing.ts';
+import { tierPricing } from '../../../db/schema/app/app-tier.ts';
 
 /**
  * Initializes the default tier pricing plans (Free and Pro).

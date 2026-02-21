@@ -1,11 +1,11 @@
 import { pgTable, varchar, timestamp, uuid, integer, jsonb, index } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { users } from '../auth-schema.ts';
-import { tierPricing } from '../app/tier-pricing.ts';
+import { users } from '../user/users.ts';
+import { appTier } from '../app/app-tier.ts';
 import { EnumUsageType, PgEnumUsageType } from '../enum/enum-app.ts';
 
 /**
- * Table: user_ai_usage
+ * Table: ai_user_usage
  * 
  * This table tracks the AI usage of a user for a specific billing period or cycle.
  * It is used to enforce tier limits (e.g., max tokens per month).
@@ -21,7 +21,7 @@ import { EnumUsageType, PgEnumUsageType } from '../enum/enum-app.ts';
  * - requestCount: Total number of requests made
  * - extra: JSONB for breakdown by model or other stats if needed
  */
-export const userAiUsage = pgTable('user_ai_usage', {
+export const aiUserUsage = pgTable('ai_user_usage', {
     id: uuid('id').primaryKey().notNull().defaultRandom(),
 
     userId: uuid('user_id')
@@ -29,7 +29,7 @@ export const userAiUsage = pgTable('user_ai_usage', {
         .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 
     tierId: varchar('tier_id', { length: 50 })
-        .references(() => tierPricing.slug, { onDelete: 'set null', onUpdate: 'cascade' }),
+        .references(() => appTier.slug, { onDelete: 'set null', onUpdate: 'cascade' }),
 
     type: PgEnumUsageType('type').notNull().default(EnumUsageType.MONTHLY),
 
@@ -44,9 +44,9 @@ export const userAiUsage = pgTable('user_ai_usage', {
 
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => [
-    index('user_ai_usage_user_period_idx').on(table.userId, table.periodStart, table.periodEnd),
-    index('user_ai_usage_type_idx').on(table.type),
+    index('ai_user_usage_period_idx').on(table.userId, table.periodStart, table.periodEnd),
+    index('ai_user_usage_type_idx').on(table.type),
 ]);
 
-export type SchemaUserAiUsageSelect = InferSelectModel<typeof userAiUsage>;
-export type SchemaUserAiUsageInsert = InferInsertModel<typeof userAiUsage>;
+export type SchemaAiUserUsageSelect = InferSelectModel<typeof aiUserUsage>;
+export type SchemaAiUserUsageInsert = InferInsertModel<typeof aiUserUsage>;

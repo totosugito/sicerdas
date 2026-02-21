@@ -5,7 +5,7 @@ import { users } from '../user/users.ts';
 
 
 /**
- * Table: user_event_history
+ * Table: app_event_history
  * 
  * This table tracks user interactions with content items.
  * It also supports polymorphic relationships and includes session tracking.
@@ -18,7 +18,7 @@ import { users } from '../user/users.ts';
  * - userAgent: Browser information
  * - createdAt: When the event occurred
  */
-export const userEventHistory = pgTable('user_event_history', {
+export const appEventHistory = pgTable('app_event_history', {
   id: uuid('id').primaryKey().defaultRandom(),
 
   // User who performed the event (optional for guests)
@@ -39,14 +39,14 @@ export const userEventHistory = pgTable('user_event_history', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
 }, (table) => [
   // Indexes for better query performance
-  index('user_event_history_user_id_index').on(table.userId),
-  index('user_event_history_session_id_index').on(table.sessionId),
-  index('user_event_history_reference_id_index').on(table.referenceId),
-  index('user_event_history_action_index').on(table.action),
+  index('app_event_history_user_id_index').on(table.userId),
+  index('app_event_history_session_id_index').on(table.sessionId),
+  index('app_event_history_reference_id_index').on(table.referenceId),
+  index('app_event_history_action_index').on(table.action),
   // Optimized composite indexes for recent history lookup
-  index('user_event_history_user_lookup_idx').on(table.userId, table.referenceId, table.action, table.createdAt),
-  index('user_event_history_session_lookup_idx').on(table.sessionId, table.referenceId, table.action, table.createdAt),
-  index('user_event_history_ip_lookup_idx').on(table.ipAddress, table.referenceId, table.action, table.createdAt),
+  index('app_event_history_user_lookup_idx').on(table.userId, table.referenceId, table.action, table.createdAt),
+  index('app_event_history_session_lookup_idx').on(table.sessionId, table.referenceId, table.action, table.createdAt),
+  index('app_event_history_ip_lookup_idx').on(table.ipAddress, table.referenceId, table.action, table.createdAt),
 ]);
-export type SchemaUserEventHistoryInsert = typeof userEventHistory.$inferInsert;
-export type SchemaUserEventHistorySelect = typeof userEventHistory.$inferSelect;
+export type SchemaAppEventHistoryInsert = typeof appEventHistory.$inferInsert;
+export type SchemaAppEventHistorySelect = typeof appEventHistory.$inferSelect;

@@ -1,6 +1,6 @@
 import { pgTable, varchar, timestamp, text, uuid, integer, jsonb, index } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { aiChatMessages } from './messages.ts';
+import { aiMessages } from './messages.ts';
 
 /**
  * Table: ai_chat_attachments
@@ -25,13 +25,13 @@ import { aiChatMessages } from './messages.ts';
  * - This eliminates the need for individual storage paths in the database
  * - The url field provides direct access to files when using CDNs or public storage
  */
-export const aiChatAttachments = pgTable('ai_chat_attachments', {
+export const aiAttachments = pgTable('ai_attachments', {
     id: uuid().primaryKey().notNull().defaultRandom(),
 
     // Reference to the message
     messageId: uuid('message_id')
         .notNull()
-        .references(() => aiChatMessages.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+        .references(() => aiMessages.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 
     // File metadata
     fileName: varchar('file_name', { length: 255 }).notNull(),
@@ -49,8 +49,8 @@ export const aiChatAttachments = pgTable('ai_chat_attachments', {
     // Optional direct access URL
     url: text('url'), // Public URL to access the file
 }, (table) => [
-    index('ai_chat_attachments_message_id_idx').on(table.messageId),
+    index('ai_attachments_message_id_idx').on(table.messageId),
 ]);
 
-export type SchemaAiChatAttachmentSelect = InferSelectModel<typeof aiChatAttachments>;
-export type SchemaAiChatAttachmentInsert = InferInsertModel<typeof aiChatAttachments>;
+export type SchemaAiAttachmentSelect = InferSelectModel<typeof aiAttachments>;
+export type SchemaAiAttachmentInsert = InferInsertModel<typeof aiAttachments>;

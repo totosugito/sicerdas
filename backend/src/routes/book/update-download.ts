@@ -3,7 +3,7 @@ import { Type } from '@sinclair/typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { db } from "../../db/db-pool.ts";
-import { userEventHistory } from "../../db/schema/app/user-history.ts";
+import { appEventHistory } from "../../db/schema/app/app-event-history.ts";
 import { books, bookEventStats, userBookInteractions } from "../../db/schema/book-schema.ts";
 import { EnumContentType, EnumEventStatus } from "../../db/schema/enum/enum-app.ts";
 import { CONFIG } from "../../config/app-constant.ts";
@@ -73,16 +73,16 @@ const updateDownloadRoute: FastifyPluginAsyncTypebox = async (app) => {
             // Check if window since last download has passed
             const lastEvent = await db.query.userEventHistory.findFirst({
                 where: and(
-                    eq(userEventHistory.referenceId, referenceId),
-                    eq(userEventHistory.action, EnumEventStatus.DOWNLOAD),
-                    userId ? eq(userEventHistory.userId, userId) : (sessionId ? eq(userEventHistory.sessionId, sessionId) : eq(userEventHistory.ipAddress, ipAddress))
+                    eq(appEventHistory.referenceId, referenceId),
+                    eq(appEventHistory.action, EnumEventStatus.DOWNLOAD),
+                    userId ? eq(appEventHistory.userId, userId) : (sessionId ? eq(appEventHistory.sessionId, sessionId) : eq(appEventHistory.ipAddress, ipAddress))
                 ),
-                orderBy: desc(userEventHistory.createdAt)
+                orderBy: desc(appEventHistory.createdAt)
             });
 
             const now = new Date();
             if (!lastEvent || (now.getTime() - lastEvent.createdAt.getTime() > CONFIG.CONTENT_COUNTER_WINDOW_MS)) {
-                await db.insert(userEventHistory).values({
+                await db.insert(appEventHistory).values({
                     userId: userId || null,
                     referenceId: referenceId,
                     contentType: EnumContentType.BOOK,

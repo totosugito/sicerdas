@@ -1,7 +1,7 @@
 import { pgTable, varchar, timestamp, text, jsonb, uuid, integer, index } from 'drizzle-orm/pg-core';
 import { type InferInsertModel, type InferSelectModel } from 'drizzle-orm';
 import { EnumContentStatus, PgEnumContentStatus } from "../enum/enum-app.ts";
-import { appVersion } from "../app/version-schema.ts";
+import { appVersion } from "../app/app-version.ts";
 import { educationGrades } from "../education/education.ts";
 import { bookGroup } from "./group.ts";
 

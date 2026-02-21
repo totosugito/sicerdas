@@ -1,6 +1,6 @@
 import { pgTable, varchar, timestamp, text, uuid, integer, boolean, jsonb } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { tierPricing } from '../app/tier-pricing.ts';
+import { appTier } from '../app/app-tier.ts';
 
 /**
  * Table: ai_models
@@ -27,7 +27,7 @@ import { tierPricing } from '../app/tier-pricing.ts';
  * - createdAt: When the model was added to the system
  * - updatedAt: When the model was last updated
  */
-export const aiModels = pgTable('ai_chat_models', {
+export const aiModels = pgTable('ai_models', {
     id: uuid().primaryKey().notNull().defaultRandom(),
 
     // Model details
@@ -71,7 +71,7 @@ export const aiModels = pgTable('ai_chat_models', {
 
     // Pricing tier
     requiredTierId: varchar('required_tier_id', { length: 50 })
-        .references(() => tierPricing.slug, { onDelete: 'set null', onUpdate: 'cascade' }),
+        .references(() => appTier.slug, { onDelete: 'set null', onUpdate: 'cascade' }),
 
     // Timestamps
     createdAt: timestamp('created_at').defaultNow().notNull(),

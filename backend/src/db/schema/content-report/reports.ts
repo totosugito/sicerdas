@@ -1,10 +1,10 @@
 import { pgTable, uuid, text, timestamp, index, jsonb } from 'drizzle-orm/pg-core';
 import { PgEnumContentType, EnumContentType } from '../enum/enum-app.ts';
 import { PgEnumReportStatus, PgEnumReportReason, EnumReportReason, EnumReportStatus } from '../enum/enum-general.ts';
-import { users } from '../auth-schema.ts';
+import { users } from '../user/users.ts';
 
 /**
- * Table: user_reports
+ * Table: content_report
  * 
  * This table stores user-generated reports for various content types (books, tests, courses, and other).
  * It supports a polymorphic relationship through dataType and referenceId fields.
@@ -29,7 +29,7 @@ import { users } from '../auth-schema.ts';
  * 
  * Note: Detailed discussion between user and admin is stored in user_report_replies table.
  */
-export const userContentReport = pgTable('user_content_report', {
+export const contentReport = pgTable('content_report', {
     id: uuid('id').primaryKey().defaultRandom(),
 
     // Reporter information
@@ -67,11 +67,11 @@ export const userContentReport = pgTable('user_content_report', {
     resolutionNotes: text('resolution_notes'),
 }, (table) => [
     // Indexes for better query performance
-    index('user_content_report_content_type_index').on(table.contentType),
-    index('user_content_report_reference_id_index').on(table.referenceId),
-    index('user_content_report_status_index').on(table.status),
-    index('user_content_report_reporter_id_index').on(table.reporterId),
+    index('content_report_content_type_index').on(table.contentType),
+    index('content_report_reference_id_index').on(table.referenceId),
+    index('content_report_status_index').on(table.status),
+    index('content_report_reporter_id_index').on(table.reporterId),
 ]);
 
-export type SchemaUserReportInsert = typeof userContentReport.$inferInsert;
-export type SchemaUserReportSelect = typeof userContentReport.$inferSelect;
+export type SchemaContentReportInsert = typeof contentReport.$inferInsert;
+export type SchemaContentReportSelect = typeof contentReport.$inferSelect;

@@ -2,8 +2,8 @@ import { pgTable, uuid, varchar, text, timestamp, integer, index } from 'drizzle
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { EnumExamType, PgEnumExamType } from './enums.ts';
 import { examCategories } from './categories.ts';
-import { users } from '../auth-schema.ts';
-import { tierPricing } from '../app/tier-pricing.ts';
+import { users } from '../user/users.ts';
+import { appTier } from '../app/app-tier.ts';
 import { educationGrades } from '../education/education.ts';
 
 /**
@@ -36,7 +36,7 @@ export const examPackages = pgTable('exam_packages', {
     description: text('description'),
 
     // Access Gate: Minimum subscription tier required to start this exam
-    requiredTier: varchar('required_tier', { length: 50 }).references(() => tierPricing.slug, { onDelete: 'set null' }).default('free'),
+    requiredTier: varchar('required_tier', { length: 50 }).references(() => appTier.slug, { onDelete: 'set null' }).default('free'),
 
     // Target Audience: The educational level/grade this exam is tailored for
     educationGradeId: integer('education_grade_id').references(() => educationGrades.id, { onDelete: 'set null' }),

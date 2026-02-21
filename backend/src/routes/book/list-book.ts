@@ -7,7 +7,7 @@ import { educationGrades } from "../../db/schema/education/education.ts";
 import { and, eq, inArray, sql, or, ilike, desc } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { EnumContentStatus, EnumContentType } from "../../db/schema/enum/enum-app.ts";
-import { appVersion } from "../../db/schema/app/version-schema.ts";
+import { appVersion } from "../../db/schema/app/app-version.ts";
 import { getBookCoverUrl } from "../../utils/book-utils.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";

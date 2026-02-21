@@ -1,6 +1,6 @@
 import { pgTable, timestamp, jsonb, uuid, numeric, integer, boolean, uniqueIndex, index } from 'drizzle-orm/pg-core';
 import { type InferInsertModel, type InferSelectModel } from 'drizzle-orm';
-import { users } from '../auth-schema.ts';
+import { users } from '../user/users.ts';
 import { books } from "./books.ts";
 
 /**
@@ -25,7 +25,7 @@ import { books } from "./books.ts";
  * - createdAt: Timestamp of when the interaction record was created.
  * - updatedAt: Timestamp of when the interaction record was last updated.
  */
-export const userBookInteractions = pgTable('user_book_interactions', {
+export const bookUserInteractions = pgTable('book_user_interactions', {
     id: uuid('id').primaryKey().defaultRandom(),
     userId: uuid('user_id')
         .references(() => users.id, { onDelete: 'cascade' })
@@ -51,9 +51,9 @@ export const userBookInteractions = pgTable('user_book_interactions', {
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => [
-    uniqueIndex('user_book_interactions_user_book_unique_index').on(table.userId, table.bookId),
-    index('user_book_interactions_book_id_index').on(table.bookId),
+    uniqueIndex('book_user_interactions_user_book_unique_index').on(table.userId, table.bookId),
+    index('book_user_interactions_book_id_index').on(table.bookId),
 ]);
 
-export type SchemaUserBookInteractionInsert = InferInsertModel<typeof userBookInteractions>;
-export type SchemaUserBookInteractionSelect = InferSelectModel<typeof userBookInteractions>;
+export type SchemaBookUserInteractionInsert = InferInsertModel<typeof bookUserInteractions>;
+export type SchemaBookUserInteractionSelect = InferSelectModel<typeof bookUserInteractions>;

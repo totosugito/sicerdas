@@ -4,7 +4,7 @@ import { EnumDifficultyLevel, EnumQuestionType, PgEnumDifficultyLevel, PgEnumQue
 import { examPassages } from './passages.ts';
 import { examSubjects } from './subjects.ts';
 import { educationGrades } from '../education/education.ts';
-import { tierPricing } from '../app/tier-pricing.ts';
+import { appTier } from '../app/app-tier.ts';
 
 /**
  * Table: exam_questions
@@ -32,7 +32,7 @@ export const examQuestions = pgTable('exam_questions', {
     type: PgEnumQuestionType('type').default(EnumQuestionType.MULTIPLE_CHOICE).notNull(),
 
     // Access Gate: Minimum subscription tier required to view this question's details
-    requiredTier: varchar('required_tier', { length: 50 }).references(() => tierPricing.slug, { onDelete: 'set null' }).default('free'),
+    requiredTier: varchar('required_tier', { length: 50 }).references(() => appTier.slug, { onDelete: 'set null' }).default('free'),
 
     // Target Audience: The educational level/grade this question is meant for
     educationGradeId: integer('education_grade_id').references(() => educationGrades.id, { onDelete: 'set null' }),

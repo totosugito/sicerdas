@@ -1,6 +1,6 @@
 import { pgTable, varchar, timestamp, text, uuid, integer, boolean, index } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { aiChatSessions } from './sessions.ts';
+import { aiSessions } from './sessions.ts';
 import { aiModels } from './models.ts';
 
 /**
@@ -22,13 +22,13 @@ import { aiModels } from './models.ts';
  * - rating: User rating (1=like, -1=dislike, 0=none)
  * - feedback: Text feedback from user
  */
-export const aiChatMessages = pgTable('ai_chat_messages', {
+export const aiMessages = pgTable('ai_messages', {
     id: uuid().primaryKey().notNull().defaultRandom(),
 
     // Reference to the chat session
     sessionId: uuid('session_id')
         .notNull()
-        .references(() => aiChatSessions.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+        .references(() => aiSessions.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 
     // AI model used for this message (optional, can be null for older messages)
     modelId: uuid('model_id')
@@ -57,10 +57,10 @@ export const aiChatMessages = pgTable('ai_chat_messages', {
     rating: integer('rating').default(0), // 1: like, -1: dislike, 0: null
     feedback: text('feedback'),
 }, (table) => [
-    index('ai_chat_messages_session_id_idx').on(table.sessionId),
-    index('ai_chat_messages_created_at_idx').on(table.createdAt),
-    index('ai_chat_messages_position_idx').on(table.position),
+    index('ai_messages_session_id_idx').on(table.sessionId),
+    index('ai_messages_created_at_idx').on(table.createdAt),
+    index('ai_messages_position_idx').on(table.position),
 ]);
 
-export type SchemaAiChatMessageSelect = InferSelectModel<typeof aiChatMessages>;
-export type SchemaAiChatMessageInsert = InferInsertModel<typeof aiChatMessages>;
+export type SchemaAiMessageSelect = InferSelectModel<typeof aiMessages>;
+export type SchemaAiMessageInsert = InferInsertModel<typeof aiMessages>;

@@ -11,7 +11,7 @@
 
 import { db } from '../../../../db/db-pool.ts';
 import { bookEventStats } from '../../../../db/schema/book-schema.ts';
-import { userEventHistory } from '../../../../db/schema/app/user-history.ts';
+import { appEventHistory } from '../../../../db/schema/app/app-event-history.ts';
 import { eq, sql, and, lt, or } from 'drizzle-orm';
 import { subMonths } from 'date-fns';
 import { EnumContentType, EnumEventStatus } from '../../../../db/schema/enum/enum-app.ts';
@@ -28,31 +28,31 @@ async function archiveGuestEvents() {
 
         // Count Views to archive
         const viewsToArchive = await db.select({
-            referenceId: userEventHistory.referenceId,
-            count: sql<number>`count(distinct ${userEventHistory.sessionId})`
+            referenceId: appEventHistory.referenceId,
+            count: sql<number>`count(distinct ${appEventHistory.sessionId})`
         })
-            .from(userEventHistory)
+            .from(appEventHistory)
             .where(and(
-                lt(userEventHistory.createdAt, cutoffDate),
-                eq(userEventHistory.contentType, EnumContentType.BOOK),
-                eq(userEventHistory.action, EnumEventStatus.VIEW),
-                sql`${userEventHistory.userId} IS NULL`
+                lt(appEventHistory.createdAt, cutoffDate),
+                eq(appEventHistory.contentType, EnumContentType.BOOK),
+                eq(appEventHistory.action, EnumEventStatus.VIEW),
+                sql`${appEventHistory.userId} IS NULL`
             ))
-            .groupBy(userEventHistory.referenceId);
+            .groupBy(appEventHistory.referenceId);
 
         // Count Downloads to archive
         const downloadsToArchive = await db.select({
-            referenceId: userEventHistory.referenceId,
-            count: sql<number>`count(distinct ${userEventHistory.sessionId})`
+            referenceId: appEventHistory.referenceId,
+            count: sql<number>`count(distinct ${appEventHistory.sessionId})`
         })
-            .from(userEventHistory)
+            .from(appEventHistory)
             .where(and(
-                lt(userEventHistory.createdAt, cutoffDate),
-                eq(userEventHistory.contentType, EnumContentType.BOOK),
-                eq(userEventHistory.action, EnumEventStatus.DOWNLOAD),
-                sql`${userEventHistory.userId} IS NULL`
+                lt(appEventHistory.createdAt, cutoffDate),
+                eq(appEventHistory.contentType, EnumContentType.BOOK),
+                eq(appEventHistory.action, EnumEventStatus.DOWNLOAD),
+                sql`${appEventHistory.userId} IS NULL`
             ))
-            .groupBy(userEventHistory.referenceId);
+            .groupBy(appEventHistory.referenceId);
 
         console.log(`Found ${viewsToArchive.length} books with old views to archive.`);
         console.log(`Found ${downloadsToArchive.length} books with old downloads to archive.`);
@@ -112,16 +112,16 @@ async function archiveGuestEvents() {
         // 3. Delete old events (both guest and logged-in)
         console.log('Deleting archived events...');
 
-        const deleteResult = await db.delete(userEventHistory)
+        const deleteResult = await db.delete(appEventHistory)
             .where(and(
-                lt(userEventHistory.createdAt, cutoffDate),
-                eq(userEventHistory.contentType, EnumContentType.BOOK),
+                lt(appEventHistory.createdAt, cutoffDate),
+                eq(appEventHistory.contentType, EnumContentType.BOOK),
                 or(
-                    eq(userEventHistory.action, EnumEventStatus.VIEW),
-                    eq(userEventHistory.action, EnumEventStatus.DOWNLOAD)
+                    eq(appEventHistory.action, EnumEventStatus.VIEW),
+                    eq(appEventHistory.action, EnumEventStatus.DOWNLOAD)
                 )
             ))
-            .returning({ id: userEventHistory.id }); // Optional: verify deletion count
+            .returning({ id: appEventHistory.id }); // Optional: verify deletion count
 
         return {
             success: true,

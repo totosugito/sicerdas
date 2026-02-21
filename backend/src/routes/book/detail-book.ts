@@ -4,7 +4,7 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } from "../../db/schema/book-schema.ts";
 import { educationGrades } from "../../db/schema/education/education.ts";
-import { userEventHistory } from "../../db/schema/app/user-history.ts";
+import { appEventHistory } from "../../db/schema/app/app-event-history.ts";
 import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getBookCoverUrl, getBookPdfUrl, getBookSamplePagesUrl } from "../../utils/book-utils.ts";
@@ -267,17 +267,17 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const shouldTrack = async (targetUserId: string | null, targetSessionId: string | null) => {
         const lastEvent = await db.query.userEventHistory.findFirst({
           where: and(
-            eq(userEventHistory.referenceId, book.id),
-            eq(userEventHistory.action, EnumEventStatus.VIEW),
-            targetUserId ? eq(userEventHistory.userId, targetUserId) : (targetSessionId ? eq(userEventHistory.sessionId, targetSessionId) : eq(userEventHistory.ipAddress, req.ip))
+            eq(appEventHistory.referenceId, book.id),
+            eq(appEventHistory.action, EnumEventStatus.VIEW),
+            targetUserId ? eq(appEventHistory.userId, targetUserId) : (targetSessionId ? eq(appEventHistory.sessionId, targetSessionId) : eq(appEventHistory.ipAddress, req.ip))
           ),
-          orderBy: desc(userEventHistory.createdAt)
+          orderBy: desc(appEventHistory.createdAt)
         });
 
         const now = new Date();
         if (!lastEvent || (now.getTime() - lastEvent.createdAt.getTime() > CONFIG.CONTENT_COUNTER_WINDOW_MS)) {
           // Log history
-          await db.insert(userEventHistory).values({
+          await db.insert(appEventHistory).values({
             userId: targetUserId,
             referenceId: book.id,
             contentType: EnumContentType.BOOK,

@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
-import { tierPricing } from '../../../db/schema/app/tier-pricing.ts';
+import { tierPricing } from '../../../db/schema/app/app-tier.ts';
 import { db } from '../../../db/db-pool.ts';
 import { eq, or, count } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";

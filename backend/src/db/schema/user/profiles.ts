@@ -1,11 +1,11 @@
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { pgTable, text, timestamp, uuid, varchar, jsonb } from 'drizzle-orm/pg-core';
 import { EnumEducationLevel, PgEnumEducationLevel } from '../enum/enum-app.ts';
-import { tierPricing } from '../app/tier-pricing.ts';
+import { appTier } from '../app/app-tier.ts';
 import { users } from "./users.ts";
 
 /**
- * Table: user_profiles
+ * Table: users_profiles
  * 
  * This table stores additional user information such as school, grade, phone number, and other profile details.
  * This table has a one-to-one relationship with the users table.
@@ -30,7 +30,7 @@ import { users } from "./users.ts";
  *   without requiring database migrations
  * - The id field references the user's ID directly, ensuring data consistency
  */
-export const userProfile = pgTable('user_profiles', {
+export const usersProfile = pgTable('users_profiles', {
     // Primary key that matches the user ID for one-to-one relationship
     id: uuid('id').primaryKey().notNull()
         .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
@@ -51,7 +51,7 @@ export const userProfile = pgTable('user_profiles', {
     // Pricing / Tier Link
     tierId: varchar('tier_id', { length: 50 })
         .default("free")
-        .references(() => tierPricing.slug, { onDelete: 'set null', onUpdate: 'cascade' }),
+        .references(() => appTier.slug, { onDelete: 'set null', onUpdate: 'cascade' }),
 
     // Flexible data storage
     extra: jsonb('extra')
@@ -63,5 +63,5 @@ export const userProfile = pgTable('user_profiles', {
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-export type SchemaUserProfileSelect = InferSelectModel<typeof userProfile>;
-export type SchemaUserProfileInsert = InferInsertModel<typeof userProfile>;
+export type SchemaUsersProfileSelect = InferSelectModel<typeof usersProfile>;
+export type SchemaUsersProfileInsert = InferInsertModel<typeof usersProfile>;

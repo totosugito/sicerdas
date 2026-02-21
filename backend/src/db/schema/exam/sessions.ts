@@ -1,7 +1,7 @@
 import { pgTable, uuid, timestamp, decimal, index } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { EnumExamSessionStatus, PgEnumExamSessionStatus } from './enums.ts';
-import { users } from '../auth-schema.ts';
+import { users } from '../user/users.ts';
 import { examPackages } from './packages.ts';
 
 /**

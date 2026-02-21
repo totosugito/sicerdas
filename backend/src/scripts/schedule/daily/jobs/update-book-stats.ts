@@ -12,7 +12,7 @@
 import { EnumContentType, EnumEventStatus } from '../../../../db/schema/enum/enum-app.ts';
 import { db } from '../../../../db/db-pool.ts';
 import { books, bookEventStats, userBookInteractions } from '../../../../db/schema/book-schema.ts';
-import { userEventHistory } from '../../../../db/schema/app/user-history.ts';
+import { appEventHistory } from '../../../../db/schema/app/app-event-history.ts';
 import { eq, sql, and } from 'drizzle-orm';
 
 async function updateBookStats() {
@@ -71,26 +71,26 @@ async function updateBookStats() {
 
                 // 2. Get Guest Stats (Views) - Count Unique Sessions
                 const guestViewStats = await db.select({
-                    count: sql<number>`count(distinct ${userEventHistory.sessionId})`
+                    count: sql<number>`count(distinct ${appEventHistory.sessionId})`
                 })
-                    .from(userEventHistory)
+                    .from(appEventHistory)
                     .where(and(
-                        eq(userEventHistory.referenceId, book.id),
-                        eq(userEventHistory.contentType, EnumContentType.BOOK),
-                        eq(userEventHistory.action, EnumEventStatus.VIEW),
-                        sql`${userEventHistory.userId} IS NULL`
+                        eq(appEventHistory.referenceId, book.id),
+                        eq(appEventHistory.contentType, EnumContentType.BOOK),
+                        eq(appEventHistory.action, EnumEventStatus.VIEW),
+                        sql`${appEventHistory.userId} IS NULL`
                     ));
 
                 // 3. Get Guest Stats (Downloads)
                 const guestDownloadStats = await db.select({
-                    count: sql<number>`count(distinct ${userEventHistory.sessionId})`
+                    count: sql<number>`count(distinct ${appEventHistory.sessionId})`
                 })
-                    .from(userEventHistory)
+                    .from(appEventHistory)
                     .where(and(
-                        eq(userEventHistory.referenceId, book.id),
-                        eq(userEventHistory.contentType, EnumContentType.BOOK),
-                        eq(userEventHistory.action, EnumEventStatus.DOWNLOAD),
-                        sql`${userEventHistory.userId} IS NULL`
+                        eq(appEventHistory.referenceId, book.id),
+                        eq(appEventHistory.contentType, EnumContentType.BOOK),
+                        eq(appEventHistory.action, EnumEventStatus.DOWNLOAD),
+                        sql`${appEventHistory.userId} IS NULL`
                     ));
 
                 const guestViews = Number(guestViewStats[0]?.count || 0);

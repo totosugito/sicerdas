@@ -1,10 +1,10 @@
 import { pgTable, varchar, timestamp, uuid, boolean, jsonb, index } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { users } from '../auth-schema.ts';
-import { aiChatSessions } from './sessions.ts';
+import { users } from '../user/users.ts';
+import { aiSessions } from './sessions.ts';
 
 /**
- * Table: ai_chat_shares
+ * Table: ai_shares
  * 
  * This table stores information about shared AI chat sessions.
  * It enables read-only access to chat sessions for users who have the share link.
@@ -19,13 +19,13 @@ import { aiChatSessions } from './sessions.ts';
  * - createdAt: When the share was created
  * - isActive: Whether the share link is active or disabled
  */
-export const aiChatShares = pgTable('ai_chat_shares', {
+export const aiShares = pgTable('ai_shares', {
     id: uuid().primaryKey().notNull().defaultRandom(),
 
     // Reference to the chat session being shared
     sessionId: uuid('session_id')
         .notNull()
-        .references(() => aiChatSessions.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+        .references(() => aiSessions.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 
     // Unique token for accessing the shared session
     shareToken: varchar('share_token', { length: 255 }).notNull().unique(),
@@ -49,8 +49,8 @@ export const aiChatShares = pgTable('ai_chat_shares', {
     // Share status
     isActive: boolean('is_active').notNull().default(true),
 }, (table) => [
-    index('ai_chat_shares_session_id_idx').on(table.sessionId),
+    index('ai_shares_session_id_idx').on(table.sessionId),
 ]);
 
-export type SchemaAiChatShareSelect = InferSelectModel<typeof aiChatShares>;
-export type SchemaAiChatShareInsert = InferInsertModel<typeof aiChatShares>;
+export type SchemaAiShareSelect = InferSelectModel<typeof aiShares>;
+export type SchemaAiShareInsert = InferInsertModel<typeof aiShares>;

@@ -1,11 +1,11 @@
 import { pgTable, uuid, text, timestamp, index, jsonb } from 'drizzle-orm/pg-core';
-import { users } from '../auth-schema.ts';
-import { userContentReport } from './reports.ts';
+import { users } from '../user/users.ts';
+import { contentReport } from './reports.ts';
 
 /**
- * Table: user_report_replies
+ * Table: content_report_replies
  * 
- * This table stores replies/discussions related to user reports.
+ * This table stores replies/discussions related to content reports.
  * It enables back-and-forth communication between users and admins.
  * 
  * Fields:
@@ -17,13 +17,13 @@ import { userContentReport } from './reports.ts';
  * - createdAt: When the reply was created
  * - updatedAt: When the reply was last updated
  */
-export const userReportReplies = pgTable('user_report_replies', {
+export const contentReportReplies = pgTable('content_report_replies', {
     id: uuid('id').primaryKey().defaultRandom(),
 
     // Reference to the report
     reportId: uuid('report_id')
         .notNull()
-        .references(() => userContentReport.id, { onDelete: 'cascade' }),
+        .references(() => contentReport.id, { onDelete: 'cascade' }),
 
     // Author of the reply (can be user or admin)
     authorId: uuid('author_id')
@@ -43,8 +43,8 @@ export const userReportReplies = pgTable('user_report_replies', {
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
 }, (table) => [
     // Indexes for better query performance
-    index('user_report_replies_report_id_index').on(table.reportId),
-    index('user_report_replies_author_id_index').on(table.authorId),
+    index('content_report_replies_report_id_index').on(table.reportId),
+    index('content_report_replies_author_id_index').on(table.authorId),
 ]);
-export type SchemaUserReportReplyInsert = typeof userReportReplies.$inferInsert;
-export type SchemaUserReportReplySelect = typeof userReportReplies.$inferSelect;
+export type SchemaContentReportReplyInsert = typeof contentReportReplies.$inferInsert;
+export type SchemaContentReportReplySelect = typeof contentReportReplies.$inferSelect;

@@ -2,7 +2,7 @@ import { boolean, integer, jsonb, pgTable, timestamp, varchar, decimal } from 'd
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 /**
- * Table: tier_pricing
+ * Table: app_tier
  * 
  * This table defines the subscription tiers available in the application.
  * It replaces the hardcoded EnumUserTier to allow for dynamic plan management.
@@ -20,7 +20,7 @@ import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
  * - sortOrder: Integer for controlling display order in UI
  * - isPopular: Boolean for highlighting the popular plan
  */
-export const tierPricing = pgTable('tier_pricing', {
+export const appTier = pgTable('app_tier', {
     // Identity & Primary Key
     // We use slug as PK for better readability in foreign keys (e.g. user_profiles.tier_id = 'pro')
     slug: varchar('slug', { length: 50 }).primaryKey().notNull(),
@@ -47,5 +47,5 @@ export const tierPricing = pgTable('tier_pricing', {
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-export type SchemaTierPricingSelect = InferSelectModel<typeof tierPricing>;
-export type SchemaTierPricingInsert = InferInsertModel<typeof tierPricing>;
+export type SchemaAppTierSelect = InferSelectModel<typeof appTier>;
+export type SchemaAppTierInsert = InferInsertModel<typeof appTier>;
