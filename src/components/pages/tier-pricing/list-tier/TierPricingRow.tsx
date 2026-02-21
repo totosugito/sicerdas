@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { TierPricing } from "@/api/tier-pricing";
+import { AppTier } from "@/api/app-tier";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 interface TierRowProps {
-    tier: TierPricing;
+    tier: AppTier;
     onDelete: (slug: string, name: string) => void;
 }
 

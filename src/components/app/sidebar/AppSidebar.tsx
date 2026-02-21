@@ -20,7 +20,7 @@ function AppSidebar({ navItems, ...props }: { navItems: SidebarData }) {
       {...props}
     >
       <SidebarHeader className="bg-card/70 border-b border-sidebar-border/30 py-2">
-        <AppLogo className="text-sidebar-foreground" />
+        <AppLogo />
       </SidebarHeader>
 
       <SidebarContent className={cn(

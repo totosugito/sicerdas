@@ -1,10 +1,10 @@
-import { TierPricing } from '@/api/tier-pricing';
+import { AppTier } from '@/api/app-tier';
 import { DndContext, closestCenter, DragEndEvent, SensorDescriptor, SensorOptions } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { TierRow } from './TierPricingRow';
 
 interface TierPricingListProps {
-    items: TierPricing[];
+    items: AppTier[];
     sensors: SensorDescriptor<SensorOptions>[];
     onDragEnd: (event: DragEndEvent) => void;
     onDelete: (slug: string, name: string) => void;

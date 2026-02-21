@@ -7,12 +7,12 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ControlForm } from "@/components/custom/forms/ControlForm";
-import { CreateTierPricingRequest } from "@/api/tier-pricing/admin/create-tier-pricing";
+import { CreateTierRequest } from "@/api/app-tier/admin/create-tier";
 import { Loader2, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface CreateTierFormProps {
-    onSubmit: (data: CreateTierPricingRequest) => void;
+    onSubmit: (data: CreateTierRequest) => void;
     isLoading?: boolean;
     onCancel?: () => void;
     error?: string | null;
@@ -45,7 +45,7 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error }:
     });
 
     const handleSubmit = (values: z.infer<typeof formSchema>) => {
-        const data: CreateTierPricingRequest = {
+        const data: CreateTierRequest = {
             slug: values.slug,
             name: values.name,
             price: values.price?.toString(),

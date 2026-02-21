@@ -14,36 +14,21 @@ export const AppApi = {
     emailHasOtp: APP_URL_API + "/auth/email-has-otp",
     getSession: APP_URL_API + "/auth/get-session",
   },
-  admin: {
-    chatAi: {
-      models: {
-        list: APP_URL_API + "/admin/chat-ai/models/list",
-        create: APP_URL_API + "/admin/chat-ai/models",
-        crud: APP_URL_API + "/admin/chat-ai/models", // for GET, PATCH, DELETE single
-        deleteBatch: APP_URL_API + "/admin/chat-ai/models/delete-batch",
-        updateBatch: APP_URL_API + "/admin/chat-ai/models/update-batch",
-      }
-    },
-    user: {
-      list: APP_URL_API + "/admin/user/list",
-      delete: APP_URL_API + "/admin/user/delete",
-      create: APP_URL_API + "/admin/user/create",
-      changePassword: APP_URL_API + "/admin/user/:id/reset-password",
-      crud: APP_URL_API + "/admin/user/:id",
-      avatar: APP_URL_API + "/admin/user/:id/avatar",
-      deletes: APP_URL_API + "/admin/user/deletes",
-      ban: APP_URL_API + "/admin/user/:id/ban",
-    },
-    tierPricing: {
-      create: APP_URL_API + "/tier-pricing/admin/create-tier",
-      list: APP_URL_API + "/tier-pricing/admin/list-tier",
-      crud: APP_URL_API + "/tier-pricing/admin",
-    }
-  },
-  tierPricing: {
-    list: APP_URL_API + "/tier-pricing",
+  appTier: {
+    adminCreate: APP_URL_API + "/app-tier/admin/create-tier",
+    adminList: APP_URL_API + "/app-tier/admin/list-tier",
+    adminCrud: APP_URL_API + "/app-tier/admin",
+    list: APP_URL_API + "/app-tier",
   },
   user: {
+    adminList: APP_URL_API + "/admin/user/list",
+    adminDelete: APP_URL_API + "/admin/user/delete",
+    adminCreate: APP_URL_API + "/admin/user/create",
+    adminChangePassword: APP_URL_API + "/admin/user/:id/reset-password",
+    adminCrud: APP_URL_API + "/admin/user/:id",
+    adminAvatar: APP_URL_API + "/admin/user/:id/avatar",
+    adminDeletes: APP_URL_API + "/admin/user/deletes",
+    adminBan: APP_URL_API + "/admin/user/:id/ban",
     details: APP_URL_API + "/user/details",
     update: APP_URL_API + "/user/update",
     changePassword: APP_URL_API + "/user/change-password",
@@ -51,6 +36,15 @@ export const AppApi = {
     sessions: APP_URL_API + "/user/sessions-list",
     revokeSession: APP_URL_API + "/user/multi-session-revoke",
     revokeOtherSessions: APP_URL_API + "/user/revoke-other-sessions-v1",
+  },
+  ai: {
+    models: {
+      list: APP_URL_API + "/admin/chat-ai/models/list",
+      create: APP_URL_API + "/admin/chat-ai/models",
+      crud: APP_URL_API + "/admin/chat-ai/models", // for GET, PATCH, DELETE single
+      deleteBatch: APP_URL_API + "/admin/chat-ai/models/delete-batch",
+      updateBatch: APP_URL_API + "/admin/chat-ai/models/update-batch",
+    }
   },
   book: {
     list: APP_URL_API + "/book/list",
