@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
-import { tierPricing } from '../../../db/schema/app/app-tier.ts';
+import { appTier } from '../../../db/schema/app/index.ts';
 import { db } from '../../../db/db-pool.ts';
 import { asc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
@@ -49,8 +49,8 @@ const listTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest,
             reply: FastifyReply
         ): Promise<typeof ListTierResponse.static> {
-            const tiers = await db.query.tierPricing.findMany({
-                orderBy: [asc(tierPricing.sortOrder)]
+            const tiers = await db.query.appTier.findMany({
+                orderBy: [asc(appTier.sortOrder)]
             });
 
             return reply.status(200).send({

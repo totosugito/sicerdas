@@ -3,4 +3,4 @@ export { bookGroup, type SchemaBookGroupInsert, type SchemaBookGroupSelect } fro
 export { books, type SchemaBookInsert, type SchemaBookSelect } from './books.ts';
 export { bookGroupStats, type SchemaBookGroupStatInsert, type SchemaBookGroupStatSelect } from './group-stats.ts';
 export { bookEventStats, type SchemaBookEventStatInsert, type SchemaBookEventStatSelect } from './event-stats.ts';
-export { bookUserInteractions, type SchemaBookUserInteractionInsert, type SchemaBookUserInteractionSelect } from './user-interactions.ts';
+export { bookInteractions, type SchemaBookInteractionInsert, type SchemaBookInteractionSelect } from './user-interactions.ts';

@@ -3,7 +3,7 @@ import { Type } from '@fastify/type-provider-typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { eq } from "drizzle-orm";
-import { users, userProfile, accounts } from "../../db/schema/auth-schema.ts";
+import { users, usersProfile, accounts } from "../../db/schema/user/index.ts";
 import { getUserAvatarUrl } from "../../utils/app-utils.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -62,19 +62,19 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         userCreatedAt: users.createdAt,
         userUpdatedAt: users.updatedAt,
         providerId: accounts.providerId,
-        school: userProfile.school,
-        educationLevel: userProfile.educationLevel,
-        grade: userProfile.grade,
-        phone: userProfile.phone,
-        address: userProfile.address,
-        bio: userProfile.bio,
-        dateOfBirth: userProfile.dateOfBirth,
+        school: usersProfile.school,
+        educationLevel: usersProfile.educationLevel,
+        grade: usersProfile.grade,
+        phone: usersProfile.phone,
+        address: usersProfile.address,
+        bio: usersProfile.bio,
+        dateOfBirth: usersProfile.dateOfBirth,
 
-        extra: userProfile.extra // Add extra field
+        extra: usersProfile.extra // Add extra field
       })
         .from(users)
         .leftJoin(accounts, eq(users.id, accounts.userId))
-        .leftJoin(userProfile, eq(users.id, userProfile.id))
+        .leftJoin(usersProfile, eq(users.id, usersProfile.id))
         .where(eq(users.id, userId))
         .limit(1);
 

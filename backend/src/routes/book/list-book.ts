@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
-import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } from "../../db/schema/book-schema.ts";
+import { books, bookCategory, bookGroup, bookEventStats, bookInteractions } from "../../db/schema/book/index.ts";
 import { educationGrades } from "../../db/schema/education/education.ts";
 import { and, eq, inArray, sql, or, ilike, desc } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
@@ -150,10 +150,10 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         // Add user interaction data if user is logged in
         if (includeUserInteraction && userId) {
-          baseSelect.liked = userBookInteractions.liked;
-          baseSelect.disliked = userBookInteractions.disliked;
-          baseSelect.userRating = userBookInteractions.rating;
-          baseSelect.bookmarked = userBookInteractions.bookmarked;
+          baseSelect.liked = bookInteractions.liked;
+          baseSelect.disliked = bookInteractions.disliked;
+          baseSelect.userRating = bookInteractions.rating;
+          baseSelect.bookmarked = bookInteractions.bookmarked;
         }
 
         return baseSelect;
@@ -222,9 +222,9 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       // Add user interaction join if user is logged in
       if (isLoggedIn && userId) {
         baseQuery = baseQuery
-          .leftJoin(userBookInteractions, and(
-            eq(books.id, userBookInteractions.bookId),
-            eq(userBookInteractions.userId, userId)
+          .leftJoin(bookInteractions, and(
+            eq(books.id, bookInteractions.bookId),
+            eq(bookInteractions.userId, userId)
           ));
       }
 

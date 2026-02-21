@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
-import { users, verifications } from "../../db/schema/auth-schema.ts";
+import { users, verifications } from "../../db/schema/user/index.ts";
 import { eq, and, gte, count } from "drizzle-orm";
 import { CONFIG } from "../../config/app-constant.ts";
 

@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
-import { books, bookEventStats, userBookInteractions } from "../../db/schema/book-schema.ts";
+import { books, bookEventStats, bookInteractions } from "../../db/schema/book/index.ts";
 import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { fromNodeHeaders } from 'better-auth/node';
@@ -76,10 +76,10 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
             const bookUUID = bookList[0].id;
 
             // Check existing interaction to determine if stats update is needed
-            const existingInteraction = await db.query.userBookInteractions.findFirst({
+            const existingInteraction = await db.query.bookInteractions.findFirst({
                 where: and(
-                    eq(userBookInteractions.userId, userId),
-                    eq(userBookInteractions.bookId, bookUUID)
+                    eq(bookInteractions.userId, userId),
+                    eq(bookInteractions.bookId, bookUUID)
                 )
             });
 
@@ -103,7 +103,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             // Upsert User Interaction
-            await db.insert(userBookInteractions)
+            await db.insert(bookInteractions)
                 .values({
                     userId,
                     bookId: bookUUID,
@@ -116,7 +116,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
                     downloadCount: 0
                 })
                 .onConflictDoUpdate({
-                    target: [userBookInteractions.userId, userBookInteractions.bookId],
+                    target: [bookInteractions.userId, bookInteractions.bookId],
                     set: {
                         bookmarked: bookmarked,
                         updatedAt: new Date()

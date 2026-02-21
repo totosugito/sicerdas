@@ -25,7 +25,7 @@ import { books } from "./books.ts";
  * - createdAt: Timestamp of when the interaction record was created.
  * - updatedAt: Timestamp of when the interaction record was last updated.
  */
-export const bookUserInteractions = pgTable('book_user_interactions', {
+export const bookInteractions = pgTable('book_interactions', {
     id: uuid('id').primaryKey().defaultRandom(),
     userId: uuid('user_id')
         .references(() => users.id, { onDelete: 'cascade' })
@@ -51,9 +51,9 @@ export const bookUserInteractions = pgTable('book_user_interactions', {
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => [
-    uniqueIndex('book_user_interactions_user_book_unique_index').on(table.userId, table.bookId),
-    index('book_user_interactions_book_id_index').on(table.bookId),
+    uniqueIndex('book_interactions_user_book_unique_index').on(table.userId, table.bookId),
+    index('book_interactions_book_id_index').on(table.bookId),
 ]);
 
-export type SchemaBookUserInteractionInsert = InferInsertModel<typeof bookUserInteractions>;
-export type SchemaBookUserInteractionSelect = InferSelectModel<typeof bookUserInteractions>;
+export type SchemaBookInteractionInsert = InferInsertModel<typeof bookInteractions>;
+export type SchemaBookInteractionSelect = InferSelectModel<typeof bookInteractions>;

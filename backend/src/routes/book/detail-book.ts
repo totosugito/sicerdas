@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
-import { books, bookCategory, bookGroup, bookEventStats, userBookInteractions } from "../../db/schema/book-schema.ts";
+import { books, bookCategory, bookGroup, bookEventStats, bookInteractions } from "../../db/schema/book/index.ts";
 import { educationGrades } from "../../db/schema/education/education.ts";
 import { appEventHistory } from "../../db/schema/app/app-event-history.ts";
 import { and, eq, sql } from "drizzle-orm";
@@ -143,21 +143,21 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
               grade: educationGrades.grade,
             },
             // User interaction data
-            liked: userBookInteractions.liked,
-            disliked: userBookInteractions.disliked,
-            userRating: userBookInteractions.rating,
-            bookmarked: userBookInteractions.bookmarked,
-            userViewCount: userBookInteractions.viewCount,
-            userDownloadCount: userBookInteractions.downloadCount,
+            liked: bookInteractions.liked,
+            disliked: bookInteractions.disliked,
+            userRating: bookInteractions.rating,
+            bookmarked: bookInteractions.bookmarked,
+            userViewCount: bookInteractions.viewCount,
+            userDownloadCount: bookInteractions.downloadCount,
           })
           .from(books)
           .leftJoin(bookGroup, eq(books.bookGroupId, bookGroup.id))
           .leftJoin(bookCategory, eq(bookGroup.categoryId, bookCategory.id))
           .leftJoin(educationGrades, eq(books.educationGradeId, educationGrades.id))
           .leftJoin(bookEventStats, eq(books.id, bookEventStats.bookId))
-          .leftJoin(userBookInteractions, and(
-            eq(books.id, userBookInteractions.bookId),
-            eq(userBookInteractions.userId, userId)
+          .leftJoin(bookInteractions, and(
+            eq(books.id, bookInteractions.bookId),
+            eq(bookInteractions.userId, userId)
           ))
           .where(eq(books.bookId, bookId)); // Filter by the specific book ID
       } else {
@@ -310,7 +310,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         const isNewView = await shouldTrack(userId, null);
         if (isNewView) {
           // Update User Personal Stats
-          await db.insert(userBookInteractions)
+          await db.insert(bookInteractions)
             .values({
               userId,
               bookId: book.id,
@@ -322,9 +322,9 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
               downloadCount: 0
             })
             .onConflictDoUpdate({
-              target: [userBookInteractions.userId, userBookInteractions.bookId],
+              target: [bookInteractions.userId, bookInteractions.bookId],
               set: {
-                viewCount: sql`${userBookInteractions.viewCount} + 1`,
+                viewCount: sql`${bookInteractions.viewCount} + 1`,
                 updatedAt: new Date()
               }
             });

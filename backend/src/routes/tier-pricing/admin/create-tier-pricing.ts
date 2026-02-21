@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
-import { tierPricing } from '../../../db/schema/app/app-tier.ts';
+import { appTier } from '../../../db/schema/app/app-tier.ts';
 import { db } from '../../../db/db-pool.ts';
 import { eq, or, count } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
@@ -65,10 +65,10 @@ const createTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
         ): Promise<typeof CreateTierResponse.static> {
             const { slug, name } = request.body;
 
-            const existingTier = await db.query.tierPricing.findFirst({
+            const existingTier = await db.query.appTier.findFirst({
                 where: or(
-                    eq(tierPricing.slug, slug),
-                    eq(tierPricing.name, name)
+                    eq(appTier.slug, slug),
+                    eq(appTier.name, name)
                 )
             });
 
@@ -79,11 +79,11 @@ const createTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             // If sortOrder is not defined or is -1, set it to the total count of existing tiers
             let sortOrder = request.body.sortOrder;
             if (sortOrder === undefined || sortOrder === -1) {
-                const [result] = await db.select({ count: count() }).from(tierPricing);
+                const [result] = await db.select({ count: count() }).from(appTier);
                 sortOrder = result.count + 1;
             }
 
-            const [newTier] = await db.insert(tierPricing).values({
+            const [newTier] = await db.insert(appTier).values({
                 ...request.body,
                 sortOrder,
                 features: request.body.features || [],

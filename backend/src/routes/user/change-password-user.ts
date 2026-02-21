@@ -3,7 +3,7 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { getAuthInstance } from '../../decorators/auth.decorator.ts';
 import { db } from "../../db/db-pool.ts";
 import { Type } from '@fastify/type-provider-typebox';
-import { accounts } from "../../db/schema/index.ts";
+import { accounts } from "../../db/schema/user/index.ts";
 import { eq } from "drizzle-orm";
 
 // Response schemas

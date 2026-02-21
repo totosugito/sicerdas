@@ -4,7 +4,7 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { db } from "../../db/db-pool.ts";
 import { appEventHistory } from "../../db/schema/app/app-event-history.ts";
-import { books, bookEventStats, userBookInteractions } from "../../db/schema/book-schema.ts";
+import { books, bookEventStats, bookInteractions } from "../../db/schema/book/index.ts";
 import { EnumContentType, EnumEventStatus } from "../../db/schema/enum/enum-app.ts";
 import { CONFIG } from "../../config/app-constant.ts";
 import { and, eq, desc, sql } from "drizzle-orm";
@@ -109,7 +109,7 @@ const updateDownloadRoute: FastifyPluginAsyncTypebox = async (app) => {
 
                 // Update user interaction stats if logged in
                 if (userId) {
-                    await db.insert(userBookInteractions)
+                    await db.insert(bookInteractions)
                         .values({
                             userId,
                             bookId: referenceId,
@@ -121,9 +121,9 @@ const updateDownloadRoute: FastifyPluginAsyncTypebox = async (app) => {
                             viewCount: 0
                         })
                         .onConflictDoUpdate({
-                            target: [userBookInteractions.userId, userBookInteractions.bookId],
+                            target: [bookInteractions.userId, bookInteractions.bookId],
                             set: {
-                                downloadCount: sql`${userBookInteractions.downloadCount} + 1`,
+                                downloadCount: sql`${bookInteractions.downloadCount} + 1`,
                                 updatedAt: new Date()
                             }
                         });

@@ -1,7 +1,7 @@
 import { pathToFileURL } from 'url';
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { users, accounts, userProfile } from '../../../db/schema/auth-schema.ts';
+import { users, accounts, usersProfile } from '../../../db/schema/user/index.ts';
 import { eq } from "drizzle-orm";
 import pg from "pg";
 import envConfig from "../../../config/env.config.ts";
@@ -75,10 +75,10 @@ export default async function seed() {
     }).onConflictDoNothing();
 
     // Get Enterprise Tier ID
-    const [enterpriseTier] = await db.select().from(schema.tierPricing).where(eq(schema.tierPricing.slug, 'enterprise')).limit(1);
+    const [enterpriseTier] = await db.select().from(schema.appTier).where(eq(schema.appTier.slug, 'enterprise')).limit(1);
 
     // Insert user profile
-    await db.insert(userProfile).values({
+    await db.insert(usersProfile).values({
       id: user_.id,
       school: "",
       grade: "",

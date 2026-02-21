@@ -11,7 +11,7 @@
 
 import { EnumContentType, EnumEventStatus } from '../../../../db/schema/enum/enum-app.ts';
 import { db } from '../../../../db/db-pool.ts';
-import { books, bookEventStats, userBookInteractions } from '../../../../db/schema/book-schema.ts';
+import { books, bookEventStats, bookInteractions } from '../../../../db/schema/book/index.ts';
 import { appEventHistory } from '../../../../db/schema/app/app-event-history.ts';
 import { eq, sql, and } from 'drizzle-orm';
 
@@ -50,13 +50,13 @@ async function updateBookStats() {
 
                 // 1. Get Logged-in Stats (Views, Downloads, Ratings)
                 const loggedInStats = await db.select({
-                    ratingCount: sql<number>`count(case when ${userBookInteractions.rating} > 0 then 1 else null end)`,
-                    ratingSum: sql<string>`sum(case when ${userBookInteractions.rating} > 0 then ${userBookInteractions.rating} else 0 end)`,
-                    viewCount: sql<number>`sum(${userBookInteractions.viewCount})`,
-                    downloadCount: sql<number>`sum(${userBookInteractions.downloadCount})`
+                    ratingCount: sql<number>`count(case when ${bookInteractions.rating} > 0 then 1 else null end)`,
+                    ratingSum: sql<string>`sum(case when ${bookInteractions.rating} > 0 then ${bookInteractions.rating} else 0 end)`,
+                    viewCount: sql<number>`sum(${bookInteractions.viewCount})`,
+                    downloadCount: sql<number>`sum(${bookInteractions.downloadCount})`
                 })
-                    .from(userBookInteractions)
-                    .where(eq(userBookInteractions.bookId, book.id));
+                    .from(bookInteractions)
+                    .where(eq(bookInteractions.bookId, book.id));
 
                 const loggedInViews = Number(loggedInStats[0]?.viewCount || 0);
                 const loggedInDownloads = Number(loggedInStats[0]?.downloadCount || 0);

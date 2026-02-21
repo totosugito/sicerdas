@@ -1,9 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
-import { tierPricing } from '../../../db/schema/app/app-tier.ts';
-import { userProfile } from '../../../db/schema/auth-schema.ts';
-import { aiModels } from '../../../db/schema/chat-ai-schema.ts';
+import { appTier } from '../../../db/schema/app/index.ts';
+import { usersProfile } from '../../../db/schema/user/index.ts';
+import { aiModels } from '../../../db/schema/ai/index.ts';
 import { db } from '../../../db/db-pool.ts';
 import { eq, count } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
@@ -45,8 +45,8 @@ const deleteTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
                 return reply.badRequest(request.i18n.t('tierPricing.delete.defaultData') ?? "Cannot delete default tier pricing data");
             }
 
-            const existingTier = await db.query.tierPricing.findFirst({
-                where: eq(tierPricing.slug, slug)
+            const existingTier = await db.query.appTier.findFirst({
+                where: eq(appTier.slug, slug)
             });
 
             if (!existingTier) {
@@ -56,8 +56,8 @@ const deleteTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             // Check if tier is being used by any user profiles
             const [userProfileCount] = await db
                 .select({ count: count() })
-                .from(userProfile)
-                .where(eq(userProfile.tierId, slug));
+                .from(usersProfile)
+                .where(eq(usersProfile.tierId, slug));
 
             if (userProfileCount.count > 0) {
                 return reply.badRequest(
@@ -79,7 +79,7 @@ const deleteTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
                 );
             }
 
-            await db.delete(tierPricing).where(eq(tierPricing.slug, slug));
+            await db.delete(appTier).where(eq(appTier.slug, slug));
 
             return reply.status(200).send({
                 success: true,

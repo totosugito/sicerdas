@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
-import { users, userProfile, accounts } from "../../db/schema/auth-schema.ts";
+import { users, usersProfile, accounts } from "../../db/schema/user/index.ts";
 import { eq, sql } from "drizzle-orm";
 import { processChangeAvatar } from "./avatar-user.ts";
 import type { UploadedFile } from "../../types/file.ts";
@@ -191,14 +191,14 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       // Update user profile table if there's profile data to update
       if (Object.keys(profileData).length > 0) {
         profileData.updatedAt = new Date();
-        const [updatedProfileResult] = await db.insert(userProfile)
+        const [updatedProfileResult] = await db.insert(usersProfile)
           .values({ id: userId, ...profileData })
           .onConflictDoUpdate({
-            target: userProfile.id,
+            target: usersProfile.id,
             set: profileData.extra
               ? {
                 ...profileData,
-                extra: sql`${userProfile.extra} || ${JSON.stringify(profileData.extra)}::jsonb`
+                extra: sql`${usersProfile.extra} || ${JSON.stringify(profileData.extra)}::jsonb`
               }
               : profileData
           })
@@ -220,19 +220,19 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         userCreatedAt: users.createdAt,
         userUpdatedAt: users.updatedAt,
         providerId: accounts.providerId,
-        school: userProfile.school,
-        grade: userProfile.grade,
-        phone: userProfile.phone,
-        address: userProfile.address,
-        bio: userProfile.bio,
-        educationLevel: userProfile.educationLevel,
-        dateOfBirth: userProfile.dateOfBirth,
+        school: usersProfile.school,
+        grade: usersProfile.grade,
+        phone: usersProfile.phone,
+        address: usersProfile.address,
+        bio: usersProfile.bio,
+        educationLevel: usersProfile.educationLevel,
+        dateOfBirth: usersProfile.dateOfBirth,
 
-        extra: userProfile.extra
+        extra: usersProfile.extra
       })
         .from(users)
         .leftJoin(accounts, eq(users.id, accounts.userId))
-        .leftJoin(userProfile, eq(users.id, userProfile.id))
+        .leftJoin(usersProfile, eq(users.id, usersProfile.id))
         .where(eq(users.id, userId))
         .limit(1);
 

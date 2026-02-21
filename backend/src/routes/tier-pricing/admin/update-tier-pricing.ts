@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
-import { tierPricing } from '../../../db/schema/app/app-tier.ts';
+import { appTier } from '../../../db/schema/app/index.ts';
 import { db } from '../../../db/db-pool.ts';
 import { eq, ne, and, or } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
@@ -70,8 +70,8 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             const { slug } = request.params;
 
             // Check if tier exists
-            const existingTier = await db.query.tierPricing.findFirst({
-                where: eq(tierPricing.slug, slug)
+            const existingTier = await db.query.appTier.findFirst({
+                where: eq(appTier.slug, slug)
             });
 
             if (!existingTier) {
@@ -94,12 +94,12 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
                 const targetSlug = existingTier.slug;
                 const targetName = name || existingTier.name;
 
-                const duplicateCheck = await db.query.tierPricing.findFirst({
+                const duplicateCheck = await db.query.appTier.findFirst({
                     where: and(
-                        ne(tierPricing.slug, slug), // Exclude current tier
+                        ne(appTier.slug, slug), // Exclude current tier
                         or(
-                            eq(tierPricing.slug, targetSlug),
-                            eq(tierPricing.name, targetName)
+                            eq(appTier.slug, targetSlug),
+                            eq(appTier.name, targetName)
                         )
                     )
                 });
@@ -110,12 +110,12 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             // Update
-            const [updatedTier] = await db.update(tierPricing)
+            const [updatedTier] = await db.update(appTier)
                 .set({
                     ...updateData,
                     updatedAt: new Date(),
                 })
-                .where(eq(tierPricing.slug, slug))
+                .where(eq(appTier.slug, slug))
                 .returning();
 
             return reply.status(200).send({

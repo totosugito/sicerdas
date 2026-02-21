@@ -2,7 +2,7 @@
 import archiveGuestEvents from './jobs/archive-guest-events.ts';
 import updateBookStats from './jobs/update-book-stats.ts';
 import { db } from '../../../db/db-pool.ts';
-import { jobLogs } from '../../../db/schema/job-logs-schema.ts';
+import { jobLogs } from '../../../db/schema/jobs/index.ts';
 import { EnumJobStatus, EnumJobGroup, EnumJobTrigger } from '../../../db/schema/enum/enum-general.ts';
 import { fileURLToPath } from 'url';
 

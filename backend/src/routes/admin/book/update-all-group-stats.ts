@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { db } from "../../../db/db-pool.ts";
-import { bookGroup, bookGroupStats, books } from "../../../db/schema/book-schema.ts";
+import { bookGroup, bookGroupStats, books } from "../../../db/schema/book/index.ts";
 import { eq, count, and } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";

@@ -3,7 +3,7 @@ import pg from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { eq, count, and } from 'drizzle-orm';
 import * as schema from '../../../db/schema/index.ts';
-import { books, bookGroupStats } from '../../../db/schema/book-schema.ts';
+import { books, bookGroupStats } from '../../../db/schema/book/index.ts';
 import { EnumContentStatus } from '../../../db/schema/enum/enum-app.ts';
 import envConfig from '../../../config/env.config.ts';
 import dotenv from 'dotenv';

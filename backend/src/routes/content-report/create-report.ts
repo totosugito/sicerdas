@@ -4,7 +4,7 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { EnumReportReason } from "../../db/schema/enum/enum-general.ts";
 import { EnumContentType } from "../../db/schema/enum/enum-app.ts";
-import { userContentReport } from "../../db/schema/content-report-schema.ts";
+import { contentReport } from "../../db/schema/content-report/index.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
@@ -58,7 +58,7 @@ const createReportRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
             const reporterId = session?.user?.id || null;
 
-            const [newReport] = await db.insert(userContentReport).values({
+            const [newReport] = await db.insert(contentReport).values({
                 name,
                 email,
                 title,
@@ -68,7 +68,7 @@ const createReportRoute: FastifyPluginAsyncTypebox = async (app) => {
                 description,
                 reporterId,
                 extra: extra || {},
-            }).returning({ id: userContentReport.id });
+            }).returning({ id: contentReport.id });
 
             if (!newReport) {
                 return reply.internalServerError(req.i18n.t('report.create.error'));

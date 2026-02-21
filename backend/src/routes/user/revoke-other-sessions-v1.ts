@@ -3,7 +3,7 @@ import { Type } from '@fastify/type-provider-typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { eq, and, ne } from "drizzle-orm";
-import { sessions } from "../../db/schema/index.ts";
+import { sessions } from "../../db/schema/user/index.ts";
 
 // Request schema
 const RevokeOtherSessionsRequest = Type.Object({

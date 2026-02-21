@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import envConfig from "../../../config/env.config.ts";
 import * as schema from '../../../db/schema/index.ts';
-import { tierPricing } from '../../../db/schema/app/app-tier.ts';
+import { appTier } from '../../../db/schema/app/app-tier.ts';
 
 /**
  * Initializes the default tier pricing plans (Free and Pro).
@@ -89,10 +89,10 @@ export default async function initTierPricing() {
         ];
 
         for (const tier of tiers) {
-            await db.insert(tierPricing)
+            await db.insert(appTier)
                 .values(tier as any)
                 .onConflictDoUpdate({
-                    target: tierPricing.slug,
+                    target: appTier.slug,
                     set: {
                         name: tier.name,
                         price: tier.price,

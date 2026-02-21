@@ -3,7 +3,7 @@ import { Type } from '@sinclair/typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { and, eq } from "drizzle-orm";
-import { periodicElements, periodicElementNotes } from "../../db/schema/index.ts";
+import { periodicElements, periodicElementNotes } from "../../db/schema/table-periodic/index.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getAtomicImages } from "../../utils/table-periodic-utils.ts";
 

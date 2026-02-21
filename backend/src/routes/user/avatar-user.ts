@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { withErrorHandler } from '../../utils/withErrorHandler.ts';
 import { db } from '../../db/db-pool.ts';
-import { users } from '../../db/schema/index.ts';
+import { users } from '../../db/schema/user/index.ts';
 import { eq } from 'drizzle-orm';
 import { join } from 'node:path';
 import { writeFile, unlink } from 'node:fs/promises';

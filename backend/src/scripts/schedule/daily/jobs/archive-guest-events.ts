@@ -10,7 +10,7 @@
  */
 
 import { db } from '../../../../db/db-pool.ts';
-import { bookEventStats } from '../../../../db/schema/book-schema.ts';
+import { bookEventStats } from '../../../../db/schema/book/index.ts';
 import { appEventHistory } from '../../../../db/schema/app/app-event-history.ts';
 import { eq, sql, and, lt, or } from 'drizzle-orm';
 import { subMonths } from 'date-fns';

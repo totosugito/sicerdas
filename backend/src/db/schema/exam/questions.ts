@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, timestamp, integer, jsonb, index } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, integer, jsonb, index } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { EnumDifficultyLevel, EnumQuestionType, PgEnumDifficultyLevel, PgEnumQuestionType } from './enums.ts';
 import { examPassages } from './passages.ts';
