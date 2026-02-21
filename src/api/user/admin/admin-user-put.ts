@@ -6,7 +6,7 @@ export const useAdminUserPut = () => {
     return useMutation({
         mutationKey: ['admin-user-put'],
         mutationFn: async ({ id, body }: { id: string, body: any }) => {
-            return await fetchApi({ method: "PUT", url: (AppApi.user.adminCrud).replace(':id', id), body: body, withCredentials: true });
+            return await fetchApi({ method: "PUT", url: (AppApi.user.admin.crud).replace(':id', id), body: body, withCredentials: true });
         },
     });
 }

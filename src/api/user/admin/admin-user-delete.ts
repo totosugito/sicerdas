@@ -6,7 +6,7 @@ export const useAdminUserDelete = () => {
     return useMutation({
         mutationKey: ['admin-user-delete'],
         mutationFn: async ({ body }: { body: any }) => {
-            return await fetchApi({ method: "DELETE", url: `${AppApi.user.adminDelete}`, body: body, withCredentials: true });
+            return await fetchApi({ method: "DELETE", url: `${AppApi.user.admin.delete}`, body: body, withCredentials: true });
         },
     });
 }

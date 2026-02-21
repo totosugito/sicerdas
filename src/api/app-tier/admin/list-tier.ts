@@ -15,7 +15,7 @@ export const useListTier = () => {
         queryFn: async () => {
             const response = await fetchApi({
                 method: "GET",
-                url: AppApi.appTier.adminList,
+                url: AppApi.appTier.admin.list,
                 withCredentials: true,
             });
             return response as ListTierResponse;

@@ -6,7 +6,7 @@ export const useAdminChangePassword = () => {
     return useMutation({
         mutationKey: ['admin-user-change-password'],
         mutationFn: async ({ id, body }: { id: string, body: Record<string, any> }) => {
-            return await fetchApi({ method: "PATCH", url: (AppApi.user.adminChangePassword).replace(':id', id), body: body, withCredentials: true });
+            return await fetchApi({ method: "PATCH", url: (AppApi.user.admin.changePassword).replace(':id', id), body: body, withCredentials: true });
         },
     });
 }

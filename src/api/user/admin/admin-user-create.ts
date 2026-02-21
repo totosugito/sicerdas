@@ -6,7 +6,7 @@ export const useAdminUserCreate = () => {
     return useMutation({
         mutationKey: ['admin-user-create'],
         mutationFn: async ({ body }: { body: any }) => {
-            return await fetchApi({ method: "POST", url: `${AppApi.user.adminCreate}`, body: body, withCredentials: true });
+            return await fetchApi({ method: "POST", url: `${AppApi.user.admin.create}`, body: body, withCredentials: true });
         },
     });
 }

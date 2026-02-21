@@ -12,7 +12,7 @@ export const useDeleteTier = () => {
         mutationFn: async (slug: string) => {
             const response = await fetchApi({
                 method: "DELETE",
-                url: `${AppApi.appTier.adminCrud}/${slug}`,
+                url: `${AppApi.appTier.admin.crud}/${slug}`,
                 withCredentials: true,
             });
             return response as DeleteTierResponse;

@@ -6,7 +6,7 @@ export const useAdminUserList = (params: { sort?: string; order?: 'asc' | 'desc'
     return useQuery({
         queryKey: ['admin-user-list', params.sort, params.order, params.page, params.limit],
         queryFn: async () => {
-            const response = await fetchApi({ method: "GET", url: `${AppApi.user.adminList}`, withCredentials: true, params: params });
+            const response = await fetchApi({ method: "GET", url: `${AppApi.user.admin.list}`, withCredentials: true, params: params });
             return (response);
         },
     });
