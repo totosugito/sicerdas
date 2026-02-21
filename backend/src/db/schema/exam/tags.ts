@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, boolean } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 /**
@@ -17,8 +17,14 @@ export const examTags = pgTable('exam_tags', {
     // Optional description of the topic
     description: text('description'),
 
+    // Control flag to softly hide tags without deleting them
+    isActive: boolean('is_active').default(true).notNull(),
+
     // Timestamp when this tag was created
     createdAt: timestamp('created_at').defaultNow().notNull(),
+
+    // Timestamp when this tag was last updated
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export type SchemaExamTagSelect = InferSelectModel<typeof examTags>;

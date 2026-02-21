@@ -71,10 +71,12 @@ const BookListResponse = Type.Object({
   message: Type.String({ default: 'Success' }),
   data: Type.Object({
     items: Type.Array(BookResponse),
-    total: Type.Number(),
-    page: Type.Number(),
-    limit: Type.Number(),
-    totalPages: Type.Number(),
+    meta: Type.Object({
+      total: Type.Number(),
+      page: Type.Number(),
+      limit: Type.Number(),
+      totalPages: Type.Number(),
+    })
   }),
 });
 
@@ -308,10 +310,12 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return processedItem;
           }),
-          total,
-          page,
-          limit,
-          totalPages,
+          meta: {
+            total,
+            page,
+            limit,
+            totalPages,
+          },
         },
       });
     }),

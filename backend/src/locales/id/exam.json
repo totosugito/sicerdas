@@ -1,0 +1,59 @@
+{
+    "exam": {
+        "categories": {
+            "create": {
+                "success": "Kategori ujian berhasil dibuat",
+                "exists": "Kategori dengan nama tersebut sudah ada"
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar kategori ujian"
+            },
+            "update": {
+                "success": "Kategori ujian berhasil diperbarui",
+                "notFound": "Kategori ujian tidak ditemukan",
+                "exists": "Sudah ada kategori lain dengan nama tersebut"
+            },
+            "delete": {
+                "success": "Kategori ujian berhasil dihapus",
+                "notFound": "Kategori ujian tidak ditemukan",
+                "inUse": "Kategori tidak dapat dihapus karena masih digunakan oleh paket ujian"
+            }
+        },
+        "subjects": {
+            "create": {
+                "success": "Mata pelajaran ujian berhasil dibuat",
+                "exists": "Mata pelajaran dengan nama tersebut sudah ada"
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar mata pelajaran ujian"
+            },
+            "update": {
+                "success": "Mata pelajaran ujian berhasil diperbarui",
+                "notFound": "Mata pelajaran tidak ditemukan",
+                "exists": "Sudah ada mata pelajaran lain dengan nama tersebut"
+            },
+            "delete": {
+                "success": "Mata pelajaran ujian berhasil dihapus",
+                "notFound": "Mata pelajaran tidak ditemukan"
+            }
+        },
+        "tags": {
+            "create": {
+                "success": "Tag/Topik ujian berhasil dibuat",
+                "exists": "Tag/Topik dengan nama tersebut sudah ada"
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar tag/topik ujian"
+            },
+            "update": {
+                "success": "Tag/Topik ujian berhasil diperbarui",
+                "notFound": "Tag tidak ditemukan",
+                "exists": "Sudah ada tag lain dengan nama tersebut"
+            },
+            "delete": {
+                "success": "Tag/Topik ujian berhasil dihapus",
+                "notFound": "Tag tidak ditemukan"
+            }
+        }
+    }
+}

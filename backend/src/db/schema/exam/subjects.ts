@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, boolean } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 /**
@@ -16,6 +16,9 @@ export const examSubjects = pgTable('exam_subjects', {
 
     // Detailed description or syllabus summary for this subject
     description: text('description'),
+
+    // Control flag to softly hide subjects without deleting them
+    isActive: boolean('is_active').default(true).notNull(),
 
     // Timestamp when this subject was created
     createdAt: timestamp('created_at').defaultNow().notNull(),
