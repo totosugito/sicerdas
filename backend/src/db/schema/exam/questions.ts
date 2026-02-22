@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, timestamp, integer, jsonb, index } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, integer, jsonb, index, boolean } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { EnumDifficultyLevel, EnumQuestionType, PgEnumDifficultyLevel, PgEnumQuestionType } from './enums.ts';
 import { examPassages } from './passages.ts';
@@ -36,6 +36,9 @@ export const examQuestions = pgTable('exam_questions', {
 
     // Target Audience: The educational level/grade this question is meant for
     educationGradeId: integer('education_grade_id').references(() => educationGrades.id, { onDelete: 'set null' }),
+
+    // Control flag to softly hide questions without deleting them
+    isActive: boolean('is_active').default(true).notNull(),
 
     // Timestamp when this question was created
     createdAt: timestamp('created_at').defaultNow().notNull(),

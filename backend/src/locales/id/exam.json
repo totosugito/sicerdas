@@ -54,6 +54,48 @@
                 "success": "Tag/Topik ujian berhasil dihapus",
                 "notFound": "Tag tidak ditemukan"
             }
+        },
+        "questions": {
+            "create": {
+                "success": "Soal ujian berhasil dibuat",
+                "exists": "Soal ujian dengan kriteria tersebut sudah ada",
+                "invalidSubject": "Mata pelajaran (Subject ID) yang diberikan tidak valid atau tidak ditemukan.",
+                "invalidPassage": "Bacaan (Passage ID) yang diberikan tidak valid atau tidak ditemukan."
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar soal ujian"
+            },
+            "update": {
+                "success": "Soal ujian berhasil diperbarui",
+                "notFound": "Soal ujian tidak ditemukan",
+                "invalidSubject": "Mata pelajaran (Subject ID) yang diberikan tidak valid atau tidak ditemukan.",
+                "invalidPassage": "Bacaan (Passage ID) yang diberikan tidak valid atau tidak ditemukan."
+            },
+            "delete": {
+                "success": "Soal ujian berhasil dihapus",
+                "notFound": "Soal ujian tidak ditemukan",
+                "inUse": "Soal tidak dapat dihapus karena masih digunakan dalam paket ujian",
+                "hasChildren": "Soal ini tidak dapat dihapus karena masih memiliki Pilihan Ganda (Options) atau Kunci Jawaban (Solutions) yang terikat. Harap hapus terlebih dahulu child records-nya."
+            }
+        },
+        "question-options": {
+            "create": {
+                "success": "Pilihan jawaban berhasil dibuat",
+                "invalidQuestion": "Soal (Question ID) yang diberikan tidak valid atau tidak ditemukan."
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar pilihan jawaban"
+            },
+            "update": {
+                "success": "Pilihan jawaban berhasil diperbarui",
+                "notFound": "Pilihan jawaban tidak ditemukan",
+                "invalidQuestion": "Soal (Question ID) yang diberikan tidak valid atau tidak ditemukan."
+            },
+            "delete": {
+                "success": "Pilihan jawaban berhasil dihapus",
+                "successMultiple": "Pilihan jawaban berhasil dihapus",
+                "notFound": "Pilihan jawaban tidak ditemukan"
+            }
         }
     }
 }
