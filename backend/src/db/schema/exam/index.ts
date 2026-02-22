@@ -23,6 +23,7 @@ export { examQuestionTags, type SchemaExamQuestionTagSelect, type SchemaExamQues
 
 // Packages
 export { examPackages, type SchemaExamPackageSelect, type SchemaExamPackageInsert } from './packages.ts';
+export { examPackageSections, type SchemaExamPackageSectionSelect, type SchemaExamPackageSectionInsert } from './package-sections.ts';
 export { examPackageQuestions, type SchemaExamPackageQuestionSelect, type SchemaExamPackageQuestionInsert } from './package-questions.ts';
 
 // Sessions & Answers

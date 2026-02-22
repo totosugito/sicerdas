@@ -3,7 +3,8 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examTags } from '../../../../db/schema/exam/tags.ts';
-import { desc, ilike, or, and, sql, eq } from 'drizzle-orm';
+import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
+import { desc, ilike, or, and, sql, eq, count, getTableColumns } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
 const TagListQuery = Type.Object({
@@ -20,6 +21,7 @@ const TagResponseItem = Type.Object({
     name: Type.String(),
     description: Type.Union([Type.String(), Type.Null()]),
     isActive: Type.Boolean(),
+    totalQuestions: Type.Number(),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
 });
@@ -83,7 +85,14 @@ const listTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             // Build Query
-            let baseQuery = db.select().from(examTags);
+            let baseQuery = db.select({
+                ...getTableColumns(examTags),
+                totalQuestions: count(examQuestionTags.questionId).mapWith(Number)
+            })
+                .from(examTags)
+                .leftJoin(examQuestionTags, eq(examTags.id, examQuestionTags.tagId))
+                .groupBy(examTags.id);
+
             if (conditions.length > 0) {
                 baseQuery = baseQuery.where(and(...conditions)) as any;
             }
@@ -124,7 +133,11 @@ const listTagRoute: FastifyPluginAsyncTypebox = async (app) => {
                 message: request.i18n.t('exam.tags.list.success'),
                 data: {
                     items: items.map(tag => ({
-                        ...tag,
+                        id: tag.id,
+                        name: tag.name,
+                        description: tag.description,
+                        isActive: tag.isActive,
+                        totalQuestions: tag.totalQuestions,
                         createdAt: tag.createdAt.toISOString(),
                         updatedAt: tag.updatedAt.toISOString(),
                     })),

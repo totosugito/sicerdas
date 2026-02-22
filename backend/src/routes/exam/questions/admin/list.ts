@@ -4,6 +4,8 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { examQuestionOptions } from '../../../../db/schema/exam/question-options.ts';
+import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
+import { examTags } from '../../../../db/schema/exam/tags.ts';
 import { desc, and, sql, eq, count, getTableColumns } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -37,6 +39,10 @@ const QuestionResponseItem = Type.Object({
     educationGradeId: Type.Union([Type.Number(), Type.Null()]),
     isActive: Type.Boolean(),
     totalOptions: Type.Number(),
+    tags: Type.Array(Type.Object({
+        id: Type.String({ format: 'uuid' }),
+        name: Type.String()
+    })),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
 });
@@ -108,10 +114,18 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             // Build Query
             let baseQuery = db.select({
                 ...getTableColumns(examQuestions),
-                totalOptions: count(examQuestionOptions.id).mapWith(Number)
+                totalOptions: count(examQuestionOptions.id).mapWith(Number),
+                tags: sql`coalesce(
+                    json_agg(
+                        json_build_object('id', ${examTags.id}, 'name', ${examTags.name})
+                    ) filter (where ${examTags.id} is not null), 
+                    '[]'
+                )`.as('tags')
             })
                 .from(examQuestions)
                 .leftJoin(examQuestionOptions, eq(examQuestions.id, examQuestionOptions.questionId))
+                .leftJoin(examQuestionTags, eq(examQuestions.id, examQuestionTags.questionId))
+                .leftJoin(examTags, eq(examQuestionTags.tagId, examTags.id))
                 .groupBy(examQuestions.id);
 
             if (conditions.length > 0) {
@@ -159,6 +173,7 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                         educationGradeId: q.educationGradeId,
                         isActive: q.isActive,
                         totalOptions: q.totalOptions,
+                        tags: (q as any).tags as { id: string, name: string }[],
                         createdAt: q.createdAt.toISOString(),
                         updatedAt: q.updatedAt.toISOString(),
                     })),

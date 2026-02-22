@@ -37,7 +37,7 @@ The foundational content components of the exam module have been built. We have 
   - Schema: Includes `isActive` and `updatedAt` boolean.
   - Endpoints:
     - [x] POST `/exam/admin/tags/create`
-    - [x] POST `/exam/admin/tags/list`
+    - [x] POST `/exam/admin/tags/list` (Supports pagination and name/description search; Includes `totalQuestions` count)
     - [x] PUT `/exam/admin/tags/update/:id`
     - [x] DELETE `/exam/admin/tags/delete/:id`
 
@@ -54,7 +54,7 @@ The foundational content components of the exam module have been built. We have 
   - Deletion Constraint: Built with cascading deletes for its children (Options/Solutions are deleted synchronously when the parent question is deleted).
   - Endpoints:
     - [x] POST `/exam/admin/questions/create`
-    - [x] POST `/exam/admin/questions/list` (Detailed filters including difficulty, tier, subject, and grade; Includes `totalOptions` count)
+    - [x] POST `/exam/admin/questions/list` (Detailed filters including difficulty, tier, subject, and grade; Includes `totalOptions` count and `tags` array)
     - [x] PUT `/exam/admin/questions/update/:id`
     - [x] DELETE `/exam/admin/questions/delete/:id`
 
@@ -75,6 +75,13 @@ The foundational content components of the exam module have been built. We have 
     - [x] PUT `/exam/admin/question-solutions/update/:id`
     - [x] DELETE `/exam/admin/question-solutions/delete/:id`
     - [x] POST `/exam/admin/question-solutions/deletes` (Added bulk delete capability)
+
+- **Question Tags (`exam_question_tags`)**
+  - Schema: Junction between Questions and Tags.
+  - Endpoints:
+    - [x] POST `/exam/admin/question-tags/assign` (Bulk assign tags to a question)
+    - [x] POST `/exam/admin/question-tags/unassign` (Bulk remove tags from a question)
+    - [x] POST `/exam/admin/question-tags/list` (List tags for a question or vice versa)
 
 ## Phase 5: Packages & Test Taking (Client)
 

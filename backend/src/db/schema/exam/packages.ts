@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, timestamp, integer, index } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, integer, index, boolean } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { EnumExamType, PgEnumExamType } from './enums.ts';
 import { examCategories } from './categories.ts';
@@ -40,6 +40,9 @@ export const examPackages = pgTable('exam_packages', {
 
     // Target Audience: The educational level/grade this exam is tailored for
     educationGradeId: integer('education_grade_id').references(() => educationGrades.id, { onDelete: 'set null' }),
+
+    // Control flag to softly hide packages
+    isActive: boolean('is_active').default(true).notNull(),
 
     // Timestamp when this package was created
     createdAt: timestamp('created_at').defaultNow().notNull(),

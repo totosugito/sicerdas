@@ -132,6 +132,57 @@
                 "notFound": "Bacaan tidak ditemukan",
                 "hasChildren": "Bacaan ini tidak dapat dihapus karena masih digunakan oleh satu atau lebih soal ujian."
             }
+        },
+        "question-tags": {
+            "assign": {
+                "success": "Tag berhasil ditautkan ke soal"
+            },
+            "unassign": {
+                "success": "Tag berhasil dilepas dari soal"
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar tag/soal"
+            }
+        },
+        "packages": {
+            "create": {
+                "success": "Paket ujian berhasil dibuat"
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar paket ujian"
+            },
+            "update": {
+                "success": "Paket ujian berhasil diperbarui",
+                "notFound": "Paket ujian tidak ditemukan"
+            },
+            "delete": {
+                "success": "Paket ujian berhasil dihapus",
+                "notFound": "Paket ujian tidak ditemukan"
+            }
+        },
+        "package-sections": {
+            "create": {
+                "success": "Seksi paket ujian berhasil dibuat"
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar seksi"
+            },
+            "update": {
+                "success": "Seksi paket ujian berhasil diperbarui",
+                "notFound": "Seksi tidak ditemukan"
+            },
+            "delete": {
+                "success": "Seksi paket ujian berhasil dihapus",
+                "notFound": "Seksi tidak ditemukan"
+            }
+        },
+        "package-questions": {
+            "assign": {
+                "success": "Soal berhasil ditautkan ke paket ujian"
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar soal dalam paket"
+            }
         }
     }
 }
