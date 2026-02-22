@@ -1,6 +1,7 @@
 
 import archiveGuestEvents from './jobs/archive-guest-events.ts';
 import updateBookStats from './jobs/update-book-stats.ts';
+import reconcileExamStats from './jobs/reconcile-exam-stats.ts';
 import { db } from '../../../db/db-pool.ts';
 import { jobLogs } from '../../../db/schema/jobs/index.ts';
 import { EnumJobStatus, EnumJobGroup, EnumJobTrigger } from '../../../db/schema/enum/enum-general.ts';
@@ -58,11 +59,18 @@ const runDailyJobs = async () => {
         console.log('✓ Archiving Guest Events completed');
 
         console.log('\n----------------------------------------');
-        console.log('Job 2/2: Updating Book Statistics');
+        console.log('Job 2/3: Updating Book Statistics');
         console.log('----------------------------------------');
 
         await runJobWithLog('update-book-stats', updateBookStats);
         console.log('✓ Updating Book Statistics completed');
+
+        console.log('\n----------------------------------------');
+        console.log('Job 3/3: Reconciling Exam Statistics');
+        console.log('----------------------------------------');
+
+        await runJobWithLog('reconcile-exam-stats', reconcileExamStats);
+        console.log('✓ Reconciling Exam Statistics completed');
 
         const endTime = new Date();
         const duration = endTime.getTime() - startTime.getTime();

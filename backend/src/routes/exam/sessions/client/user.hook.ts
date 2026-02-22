@@ -1,6 +1,6 @@
 import { fromNodeHeaders } from 'better-auth/node';
 import type { FastifyInstance } from 'fastify';
-import { getAuthInstance } from '../../decorators/auth.decorator.ts';
+import { getAuthInstance } from '../../../../decorators/auth.decorator.ts';
 
 async function userHook(fastify: FastifyInstance) {
   fastify.decorateRequest('session');

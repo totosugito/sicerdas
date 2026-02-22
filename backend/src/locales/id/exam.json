@@ -183,6 +183,46 @@
             "list": {
                 "success": "Berhasil mengambil daftar soal dalam paket"
             }
+        },
+        "sessions": {
+            "start": {
+                "success": "Ujian dimulai, selamat mengerjakan!"
+            },
+            "details": {
+                "notFound": "Sesi tidak ditemukan"
+            },
+            "saveAnswer": {
+                "success": "Jawaban berhasil disimpan",
+                "notFound": "Sesi tidak ditemukan",
+                "finished": "Sesi sudah berakhir"
+            },
+            "submit": {
+                "success": "Ujian telah selesai dikirim",
+                "notFound": "Sesi tidak ditemukan",
+                "alreadySubmitted": "Ujian sudah dikirim sebelumnya"
+            }
+        },
+        "user-stats": {
+            "global": {
+                "success": "Berhasil mengambil statistik global",
+                "notFound": "Data statistik tidak ditemukan"
+            },
+            "subjects": {
+                "success": "Berhasil mengambil statistik per mata pelajaran"
+            },
+            "tags": {
+                "success": "Berhasil mengambil statistik per topik"
+            }
+        },
+        "leaderboard": {
+            "list": {
+                "success": "Berhasil mengambil daftar peringkat"
+            }
+        },
+        "maintenance": {
+            "reconcile": {
+                "success": "Sinkronisasi ulang statistik berhasil diselesaikan"
+            }
         }
     }
 }
