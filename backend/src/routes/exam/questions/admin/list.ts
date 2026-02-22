@@ -3,7 +3,8 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
-import { desc, and, sql, eq } from 'drizzle-orm';
+import { examQuestionOptions } from '../../../../db/schema/exam/question-options.ts';
+import { desc, and, sql, eq, count, getTableColumns } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
 const QuestionListQuery = Type.Object({
@@ -35,6 +36,7 @@ const QuestionResponseItem = Type.Object({
     requiredTier: Type.Union([Type.String(), Type.Null()]),
     educationGradeId: Type.Union([Type.Number(), Type.Null()]),
     isActive: Type.Boolean(),
+    totalOptions: Type.Number(),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
 });
@@ -104,7 +106,14 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             // }
 
             // Build Query
-            let baseQuery = db.select().from(examQuestions);
+            let baseQuery = db.select({
+                ...getTableColumns(examQuestions),
+                totalOptions: count(examQuestionOptions.id).mapWith(Number)
+            })
+                .from(examQuestions)
+                .leftJoin(examQuestionOptions, eq(examQuestions.id, examQuestionOptions.questionId))
+                .groupBy(examQuestions.id);
+
             if (conditions.length > 0) {
                 baseQuery = baseQuery.where(and(...conditions)) as any;
             }
@@ -140,7 +149,16 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                 message: request.i18n.t('exam.questions.list.success'),
                 data: {
                     items: items.map(q => ({
-                        ...q,
+                        id: q.id,
+                        subjectId: q.subjectId,
+                        passageId: q.passageId,
+                        content: q.content as Record<string, unknown>[],
+                        difficulty: q.difficulty,
+                        type: q.type,
+                        requiredTier: q.requiredTier,
+                        educationGradeId: q.educationGradeId,
+                        isActive: q.isActive,
+                        totalOptions: q.totalOptions,
                         createdAt: q.createdAt.toISOString(),
                         updatedAt: q.updatedAt.toISOString(),
                     })),

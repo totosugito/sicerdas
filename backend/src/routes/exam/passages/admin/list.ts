@@ -3,7 +3,8 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examPassages } from '../../../../db/schema/exam/passages.ts';
-import { desc, ilike, and, sql, eq } from 'drizzle-orm';
+import { examQuestions } from '../../../../db/schema/exam/questions.ts';
+import { desc, ilike, and, sql, eq, count, getTableColumns } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
 const PassageListQuery = Type.Object({
@@ -21,6 +22,7 @@ const PassageResponseItem = Type.Object({
     title: Type.Union([Type.String(), Type.Null()]),
     content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
     isActive: Type.Boolean(),
+    totalQuestions: Type.Number(),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
 });
@@ -79,7 +81,14 @@ const listPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             // Build Query
-            let baseQuery = db.select().from(examPassages);
+            let baseQuery = db.select({
+                ...getTableColumns(examPassages),
+                totalQuestions: count(examQuestions.id).mapWith(Number)
+            })
+                .from(examPassages)
+                .leftJoin(examQuestions, eq(examPassages.id, examQuestions.passageId))
+                .groupBy(examPassages.id);
+
             if (conditions.length > 0) {
                 baseQuery = baseQuery.where(and(...conditions)) as any;
             }
@@ -120,8 +129,11 @@ const listPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
                 message: request.i18n.t('exam.passages.list.success'),
                 data: {
                     items: items.map(p => ({
-                        ...p,
+                        id: p.id,
+                        title: p.title,
                         content: p.content as Record<string, unknown>[],
+                        isActive: p.isActive,
+                        totalQuestions: p.totalQuestions,
                         createdAt: p.createdAt.toISOString(),
                         updatedAt: p.updatedAt.toISOString(),
                     })),

@@ -54,7 +54,7 @@ The foundational content components of the exam module have been built. We have 
   - Deletion Constraint: Built with cascading deletes for its children (Options/Solutions are deleted synchronously when the parent question is deleted).
   - Endpoints:
     - [x] POST `/exam/admin/questions/create`
-    - [x] POST `/exam/admin/questions/list` (Detailed filters including difficulty, tier, subject, and grade)
+    - [x] POST `/exam/admin/questions/list` (Detailed filters including difficulty, tier, subject, and grade; Includes `totalOptions` count)
     - [x] PUT `/exam/admin/questions/update/:id`
     - [x] DELETE `/exam/admin/questions/delete/:id`
 
