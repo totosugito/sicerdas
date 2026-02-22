@@ -96,6 +96,42 @@
                 "successMultiple": "Pilihan jawaban berhasil dihapus",
                 "notFound": "Pilihan jawaban tidak ditemukan"
             }
+        },
+        "question-solutions": {
+            "create": {
+                "success": "Solusi jawaban berhasil dibuat",
+                "invalidQuestion": "Soal (Question ID) yang diberikan tidak valid atau tidak ditemukan."
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar solusi jawaban"
+            },
+            "update": {
+                "success": "Solusi jawaban berhasil diperbarui",
+                "notFound": "Solusi jawaban tidak ditemukan",
+                "invalidQuestion": "Soal (Question ID) yang diberikan tidak valid atau tidak ditemukan."
+            },
+            "delete": {
+                "success": "Solusi jawaban berhasil dihapus",
+                "successMultiple": "Solusi jawaban berhasil dihapus",
+                "notFound": "Solusi jawaban tidak ditemukan"
+            }
+        },
+        "passages": {
+            "create": {
+                "success": "Bacaan/Passage berhasil dibuat"
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar bacaan"
+            },
+            "update": {
+                "success": "Bacaan berhasil diperbarui",
+                "notFound": "Bacaan tidak ditemukan"
+            },
+            "delete": {
+                "success": "Bacaan berhasil dihapus",
+                "notFound": "Bacaan tidak ditemukan",
+                "hasChildren": "Bacaan ini tidak dapat dihapus karena masih digunakan oleh satu atau lebih soal ujian."
+            }
         }
     }
 }

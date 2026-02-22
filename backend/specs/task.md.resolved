@@ -1,0 +1,43 @@
+# Database Schema Design for Practice Questions
+
+- [x] Identify core requirements (exams, subjects, categories, questions, options)
+- [x] Design passage/reading grouping
+- [x] Design user session and answer tracking
+- [x] Design statistical aggregation (incremental)
+- [x] Incorporate tags and custom practices
+- [x] Support multi-step question solutions
+- [x] Finalize naming conventions (prefixes)
+- [x] Compile the final schema conceptual document
+
+## API Implementation
+- [x] **Phase 1: Categories**
+  - [x] POST `/exam/admin/categories`
+  - [x] GET `/exam/admin/categories`
+  - [x] PUT `/exam/admin/categories/:id`
+  - [x] DELETE `/exam/admin/categories/:id`
+- [x] **Phase 2: Subjects**
+  - [x] POST `/exam/admin/subjects`
+  - [x] GET `/exam/admin/subjects`
+  - [x] PUT `/exam/admin/subjects/:id`
+  - [x] DELETE `/exam/admin/subjects/:id`
+- [x] **Phase 3: Tags**
+  - [x] POST `/exam/admin/tags`
+  - [x] GET `/exam/admin/tags`
+  - [x] PUT `/exam/admin/tags/:id`
+  - [x] DELETE `/exam/admin/tags/:id`
+- [x] **Phase 4: Passages & Questions (Content)**
+  - [x] POST `/exam/admin/questions`
+  - [x] GET `/exam/admin/questions`
+  - [x] PUT `/exam/admin/questions/:id`
+  - [x] DELETE `/exam/admin/questions/:id`
+  - [x] POST `/exam/admin/question-options/create`
+  - [x] POST `/exam/admin/question-options/list`
+  - [x] PUT `/exam/admin/question-options/update/:id`
+  - [x] DELETE `/exam/admin/question-options/delete/:id`
+  - [x] POST `/exam/admin/question-options/deletes`
+  - [x] POST `/exam/admin/question-solutions/create`
+  - [x] POST `/exam/admin/question-solutions/list`
+  - [x] PUT `/exam/admin/question-solutions/update/:id`
+  - [x] DELETE `/exam/admin/question-solutions/delete/:id`
+  - [x] POST `/exam/admin/question-solutions/deletes`
+- [ ] Phase 5: Packages & Test Taking (Client)

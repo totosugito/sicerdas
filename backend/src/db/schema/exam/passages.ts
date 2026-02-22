@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, timestamp, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, jsonb, boolean } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 /**
@@ -16,6 +16,9 @@ export const examPassages = pgTable('exam_passages', {
 
     // Rich text content of the passage stored in BlockNote JSON format
     content: jsonb('content').$type<Record<string, unknown>[]>().notNull(),
+
+    // Control flag to softly hide passages without deleting them
+    isActive: boolean('is_active').default(true).notNull(),
 
     // Timestamp when this passage was created
     createdAt: timestamp('created_at').defaultNow().notNull(),
