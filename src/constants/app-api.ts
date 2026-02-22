@@ -65,5 +65,15 @@ export const AppApi = {
   },
   contentReport: {
     create: APP_URL_API + "/content-report/create",
+  },
+  exam: {
+    categories: {
+      admin: {
+        list: APP_URL_API + "/exam/categories/admin/list",
+        create: APP_URL_API + "/exam/categories/admin/create",
+        update: APP_URL_API + "/exam/categories/admin/update/:id",
+        delete: APP_URL_API + "/exam/categories/admin/delete/:id",
+      }
+    }
   }
 }
