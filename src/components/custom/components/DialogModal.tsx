@@ -199,7 +199,7 @@ export function DialogModal({
                     {/* Info Container (String only) */}
                     {modal?.infoContainer && (
                         <div className={cn(
-                            "rounded-xl border p-3.5 text-center",
+                            "rounded-lg border p-3.5 text-center",
                             modal?.infoContainerVariant === "warning" ? "border-amber-500/20 bg-amber-500/5" :
                                 modal?.infoContainerVariant === "success" ? "border-emerald-500/20 bg-emerald-500/5" :
                                     modal?.infoContainerVariant === "error" ? "border-destructive/20 bg-destructive/5" :
@@ -215,7 +215,7 @@ export function DialogModal({
 
                     {/* Info Section */}
                     {modal?.showInfoSection && modal?.infoItems && modal.infoItems.length > 0 && (
-                        <div className={cn("rounded-xl border border-border bg-secondary/50 p-4 space-y-2.5 mb-6", classNameInfoSection)}>
+                        <div className={cn("rounded-lg border border-border bg-secondary/50 p-4 space-y-2.5 mb-6", classNameInfoSection)}>
                             {modal?.infoTitle && (
                                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                                     {modal.infoTitle}
@@ -227,7 +227,7 @@ export function DialogModal({
                                         {item.icon || (
                                             <div className={cn(
                                                 "mt-1 h-1.5 w-1.5 rounded-full flex-shrink-0",
-                                                modal?.variant === "destructive" ? "bg-destructive" : "bg-primary"
+                                                modal?.variant
                                             )} />
                                         )}
                                         {item.text}

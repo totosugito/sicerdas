@@ -1,6 +1,6 @@
-import {ColumnDef, flexRender, type Table as TanstackTable} from "@tanstack/react-table";
+import { ColumnDef, flexRender, type Table as TanstackTable, type Header } from "@tanstack/react-table";
 import type * as React from "react";
-import {DataTablePagination} from "./data-table-pagination";
+import { DataTablePagination } from "./data-table-pagination";
 import {
   Table,
   TableBody,
@@ -9,8 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {getCommonPinningStyles} from "./lib/data-table";
-import {cn} from "@/lib/utils";
+import { getCommonPinningStyles } from "./lib/data-table";
+import { cn } from "@/lib/utils";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -28,6 +28,9 @@ interface DataTableProps<TData> extends React.ComponentProps<"div"> {
     withBorder?: boolean
   },
   isStickyHeader?: boolean; // Show/hide sticky header
+  showSideBorders?: boolean; // Show/hide table side borders
+  showZebraStriping?: boolean; // Show/hide zebra striping
+  zebraStripingClassName?: string; // Custom class for zebra striping
   styles?: {
     container?: {
       default?: string,
@@ -68,9 +71,9 @@ type RowNumberColumnDef<T> = ColumnDef<T> & {
   }
 };
 
-export function createRowNumberColumn<T>({ id="__row_number__", accessorKey="__row_number__", header="No", size=60, 
-  enableResizing=false, enableSorting=false,
-  enableColumnFilter=false, paginationData, styles}: RowNumberColumnDef<T>): ColumnDef<T> {
+export function createRowNumberColumn<T>({ id = "__row_number__", accessorKey = "__row_number__", header = "No", size = 60,
+  enableResizing = false, enableSorting = false,
+  enableColumnFilter = false, paginationData, styles }: RowNumberColumnDef<T>): ColumnDef<T> {
   return {
     id: id,
     accessorKey: accessorKey,
@@ -116,12 +119,12 @@ type RowSelectColumnDef = {
   }
 };
 
-export function createRowSelectColumn<T>({ 
-  id = "select", 
-  size = 40, 
-  enableSorting = false, 
+export function createRowSelectColumn<T>({
+  id = "select",
+  size = 40,
+  enableSorting = false,
   enableHiding = false,
-  styles 
+  styles
 }: RowSelectColumnDef = {}): ColumnDef<T> {
   return {
     id: id,
@@ -158,67 +161,80 @@ export function createRowSelectColumn<T>({
 }
 
 export function DataTable<TData>({
-                                   table,
-                                   actionBar,
-                                   children,
-                                   className,
-                                   pageSizeOptions,
-                                   totalRowCount,
-                                   paginationData,
-                                   pinned,
-                                   isStickyHeader = true,
-                                   styles,
-                                   ...props
-                                 }: DataTableProps<TData> & { pageSizeOptions?: number[] }) {
+  table,
+  actionBar,
+  children,
+  className,
+  pageSizeOptions,
+  totalRowCount,
+  paginationData,
+  pinned,
+  isStickyHeader = true,
+  showSideBorders = true,
+  showZebraStriping = false,
+  zebraStripingClassName,
+  styles,
+  ...props
+}: DataTableProps<TData> & { pageSizeOptions?: number[] }) {
   const rowLength = table.getFilteredSelectedRowModel().rows.length;
 
   return (
     <div
-      className={cn("flex w-full flex-col gap-2 overflow-hidden", "[&_td]:align-center", className)}
+      className={cn("flex w-full flex-col gap-4 overflow-hidden", "[&_td]:align-center", className)}
       {...props}
     >
       {children}
-      <div className={cn("w-full overflow-hidden", isStickyHeader ? "[&>div]:max-h-[80vh]" : "", styles?.container?.default)}>
-        <Table className="[&_td]:border-border [&_th]:border-border border-separate border-spacing-0 [&_tfoot_td]:border-t [&_th]:border-b [&_tr]:border-none [&_tr:not(:last-child)_td]:border-b"
-        style={{
-          // width: table.getCenterTotalSize(),
+      <div className={cn(
+        "w-full overflow-hidden",
+        isStickyHeader ? "[&>div]:max-h-[80vh]" : "",
+        !showSideBorders && "[&>div]:overflow-x-hidden",
+        styles?.container?.default
+      )}>
+        <Table className="border-separate border-spacing-0 border-none"
+          style={{
+            // width: table.getCenterTotalSize(),
           }}
         >
           <TableHeader className={cn("w-full", isStickyHeader ? "sticky top-0 z-10 backdrop-blur-xs" : "", styles?.TableHeader?.default)}>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="">
-                {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead
-                        className={cn("bg-[#fafafa]/85 dark:bg-[#28313e]/85 py-0 px-2 border relative group", styles?.TableHead?.default)}
-                        key={header.id}
-                        colSpan={header.colSpan}
-                        style={{
-                          ...getCommonPinningStyles({column: header.column, withBorder: pinned?.withBorder ?? true}),
-                        }}
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-
-                        {header.column.getCanResize() && (
-                          <div
-                            {...{
-                              onDoubleClick: () => header.column.resetSize(),
-                              onMouseDown: header.getResizeHandler(),
-                              onTouchStart: header.getResizeHandler(),
-                              className:
-                                "absolute top-0 h-full w-0 cursor-col-resize user-select-none touch-none -right-0 z-10 flex justify-center before:absolute before:w-px before:inset-y-0 before:bg-border before:translate-x-px",
-                            }}
-                          />
+                {headerGroup.headers.map((header: Header<TData, any>) => {
+                  return (
+                    <TableHead
+                      className={cn(
+                        "bg-[#fafafa]/85 dark:bg-[#28313e]/85 py-0 px-2 relative group",
+                        "border-b border-r border-t",
+                        showSideBorders ? "first:border-l" : "first:border-l-0",
+                        !showSideBorders && "last:border-r-0",
+                        styles?.TableHead?.default
+                      )}
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      style={{
+                        ...getCommonPinningStyles({ column: header.column, withBorder: pinned?.withBorder ?? true }),
+                      }}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
                         )}
-                      </TableHead>
-                    )
-                  }
-                )}
+
+                      {header.column.getCanResize() && (
+                        <div
+                          {...{
+                            onDoubleClick: () => header.column.resetSize(),
+                            onMouseDown: header.getResizeHandler(),
+                            onTouchStart: header.getResizeHandler(),
+                            className:
+                              "absolute top-0 h-full w-0 cursor-col-resize user-select-none touch-none -right-0 z-10 flex justify-center before:absolute before:w-px before:inset-y-0 before:bg-border before:translate-x-px",
+                          }}
+                        />
+                      )}
+                    </TableHead>
+                  )
+                })}
               </TableRow>
             ))}
           </TableHeader>
@@ -233,9 +249,15 @@ export function DataTable<TData>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className={cn("bg-card border py-1 px-2", styles?.TableCell?.default)}
+                      className={cn(
+                        "border-b border-r py-1 px-2",
+                        showZebraStriping ? (index % 2 === 0 ? "" : (zebraStripingClassName || "bg-muted/30")) : "",
+                        showSideBorders ? "first:border-l" : "first:border-l-0",
+                        !showSideBorders && "last:border-r-0",
+                        styles?.TableCell?.default
+                      )}
                       style={{
-                        ...getCommonPinningStyles({column: cell.column, withBorder: pinned?.withBorder ?? true}),
+                        ...getCommonPinningStyles({ column: cell.column, withBorder: pinned?.withBorder ?? true }),
                         width: cell.column.getSize(),
                         minWidth: cell.column.columnDef.minSize,
                         maxWidth: cell.column.columnDef.maxSize,
@@ -262,7 +284,7 @@ export function DataTable<TData>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 px-4 pb-4">
         <DataTablePagination
           pageIndex={table.getState().pagination.pageIndex}
           setPageIndex={table.setPageIndex}

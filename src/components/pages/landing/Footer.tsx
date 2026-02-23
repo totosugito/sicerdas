@@ -3,20 +3,18 @@ import { useTranslation } from 'react-i18next'
 import { APP_CONFIG } from '@/constants/config'
 import { RiDiscordLine, RiMailLine, RiYoutubeLine } from 'react-icons/ri'
 import { AppRoute } from '@/constants/app-route'
+import { AppLogo } from '@/components/app'
 
 export function Footer() {
     const { t } = useTranslation()
 
     return (
-        <footer className="bg-card border-t border-border py-6">
-            <div className="container mx-auto px-4">
+        <footer className="bg-card border-t border-border p-6">
+            <div className="container mx-auto">
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
                     {/* Brand */}
                     <div>
-                        <div className="flex items-center gap-2 mb-4">
-                            <img src={APP_CONFIG.app.logo} alt={APP_CONFIG.app.name} className="h-12 w-12" />
-                            <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{t('app.appName')}</span>
-                        </div>
+                        <AppLogo />
                         <p className="text-muted-foreground text-sm">
                             {t('landing.footer.brand.description')}
                         </p>

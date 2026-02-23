@@ -19,24 +19,22 @@ function AppSidebar({ navItems, ...props }: { navItems: SidebarData }) {
       className="border-sidebar-border"
       {...props}
     >
-      <SidebarHeader className="bg-card/70 border-b border-sidebar-border/30 py-2">
+      <SidebarHeader className="bg-sidebar border-b border-sidebar-border/30 py-2">
         <AppLogo />
       </SidebarHeader>
 
       <SidebarContent className={cn(
         "scrollbar overflow-x-hidden bg-sidebar",
-        "[&>*]:text-sidebar-foreground"
       )}>
         {navItems.navGroups.map((props_: any, index: number) => (
           <NavGroup
             key={`${props_.title}-${index}`}
             {...props_}
-            className="text-sidebar-foreground [&>*]:text-sidebar-foreground"
           />
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="bg-sidebar border-t border-sidebar-border/50 rounded-b-lg">
+      <SidebarFooter className="bg-sidebar border-t border-sidebar-border/50">
         {/* Add any footer content here if needed */}
       </SidebarFooter>
     </Sidebar>

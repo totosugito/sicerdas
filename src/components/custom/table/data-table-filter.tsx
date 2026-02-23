@@ -11,6 +11,7 @@ interface DataTableFilterProps<TData> extends React.ComponentProps<"div"> {
   table: Table<TData>;
   searchPlaceholder?: string;
   searchColumnIds?: string[];
+  searchOnEnter?: boolean;
 }
 
 export function DataTableFilter<TData>({
@@ -19,13 +20,16 @@ export function DataTableFilter<TData>({
   className,
   searchPlaceholder = "Search...",
   searchColumnIds = [],
+  searchOnEnter = false,
   ...props
 }: DataTableFilterProps<TData>) {
   const [searchValue, setSearchValue] = React.useState("");
 
   // Handle global search
-  const handleGlobalSearch = (value: string) => {
+  const handleGlobalSearch = (value: string, force: boolean = false) => {
     setSearchValue(value);
+
+    if (searchOnEnter && !force) return;
 
     // If table has manual filtering enabled, only update the filter state
     // The parent component will handle the actual filtering via onColumnFiltersChange
@@ -87,6 +91,11 @@ export function DataTableFilter<TData>({
             placeholder={searchPlaceholder}
             value={searchValue}
             onChange={(e) => handleGlobalSearch(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleGlobalSearch(searchValue, true);
+              }
+            }}
             className="w-64 pl-8 pr-8 focus-visible:ring-[0px] w-full"
           />
           {searchValue && (

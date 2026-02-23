@@ -49,6 +49,7 @@ export function CategoryTable({
     const columns: ColumnDef<ExamCategory>[] = [
         createRowNumberColumn<ExamCategory>({
             id: "no",
+            size: 50
         }),
         {
             accessorKey: "name",
@@ -154,13 +155,15 @@ export function CategoryTable({
     });
 
     return (
-        <div className="flex flex-col gap-4">
-            <div className={"flex flex-row gap-2 justify-between"}>
+        <div className="flex flex-col gap-4 border border-border rounded-lg bg-card">
+            <div className={"flex flex-row gap-2 justify-between px-4 pt-4"}>
                 <div></div>
                 <div className={"flex flex-row gap-2 max-w-sm"}>
                     <DataTableFilter
                         table={table}
                         searchPlaceholder={t("exam.categories.categories.table.search")}
+                        className='min-w-sm'
+                        searchOnEnter={true}
                     >
                     </DataTableFilter>
                 </div>
@@ -169,6 +172,8 @@ export function CategoryTable({
                 table={table}
                 paginationData={data?.data.meta}
                 totalRowCount={data?.data.meta.total}
+                showSideBorders={false}
+                showZebraStriping={true}
             />
         </div>
     );
