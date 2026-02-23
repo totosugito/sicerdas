@@ -1,18 +1,10 @@
-import { MdOutlineDashboard, MdOutlineWorkHistory } from "react-icons/md";
-import { TbFileReport } from "react-icons/tb";
-import { HiOutlineDocumentChartBar, HiOutlineUsers } from "react-icons/hi2";
-import { LuTable2 } from "react-icons/lu";
+import { HiOutlineUsers } from "react-icons/hi2";
 import { AppRoute } from "@/constants/app-route";
-import { CiBoxList } from "react-icons/ci";
-import { GoFileDirectory } from "react-icons/go";
-import { AiOutlineDashboard } from "react-icons/ai";
-import { RiGuideLine } from "react-icons/ri";
 import { BsBracesAsterisk } from "react-icons/bs";
-import { GrScorecard } from "react-icons/gr";
-import { PiUsersThree } from "react-icons/pi";
-import { BsGrid } from "react-icons/bs";
-import { IoIosNotificationsOutline } from "react-icons/io";
+import i18n from '@/i18n';
+import { Bookmark } from "lucide-react";
 
+const t = i18n.t;
 export const AdminNav = {
   user: {
     name: "Admin",
@@ -22,9 +14,15 @@ export const AdminNav = {
   teams: [],
   navGroups: [
     {
-      title: "DATA MANAGEMENT",
+      title: t("exam.menu").toUpperCase(),
       items: [
-      ]
+        {
+          title: t("exam.categories.categories.menu"),
+          url: AppRoute.exam.categories.admin.list.url,
+          icon: Bookmark,
+        },
+      ],
+      permitUser: false,
     },
     {
       title: "ADMIN",
@@ -46,7 +44,6 @@ export const AdminNav = {
         },
       ],
       permitUser: false,
-      permitContractor: false
     }
   ]
 }

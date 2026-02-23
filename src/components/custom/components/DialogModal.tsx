@@ -39,6 +39,9 @@ export type ModalProps = {
     infoTitle?: string
     infoItems?: DialogInfoItem[]
     showInfoSection?: boolean
+    infoContainer?: string
+    infoContainerVariant?: "warning" | "success" | "info" | "error" | "default"
+    infoContainerClassName?: string
     maxWidth?: "sm" | "md" | "lg" | "xl"
 }
 
@@ -78,6 +81,9 @@ export function DialogModal({
         infoTitle: undefined,
         infoItems: undefined,
         showInfoSection: false,
+        infoContainer: undefined,
+        infoContainerVariant: "info",
+        infoContainerClassName: undefined,
         maxWidth: "sm",
     },
     onDismissOutside = true,
@@ -187,6 +193,23 @@ export function DialogModal({
                     {modal?.content && (
                         <div className="w-full">
                             {modal.content}
+                        </div>
+                    )}
+
+                    {/* Info Container (String only) */}
+                    {modal?.infoContainer && (
+                        <div className={cn(
+                            "rounded-xl border p-3.5 text-center",
+                            modal?.infoContainerVariant === "warning" ? "border-amber-500/20 bg-amber-500/5" :
+                                modal?.infoContainerVariant === "success" ? "border-emerald-500/20 bg-emerald-500/5" :
+                                    modal?.infoContainerVariant === "error" ? "border-destructive/20 bg-destructive/5" :
+                                        "border-primary/20 bg-primary/5",
+                            modal?.infoContainerClassName,
+                            classNameInfoSection
+                        )}>
+                            <p className="text-sm text-foreground/90 leading-relaxed font-medium">
+                                {modal.infoContainer}
+                            </p>
                         </div>
                     )}
 

@@ -28,6 +28,7 @@ import uud1945Asli from './constitution/uud-1945-asli';
 import listTierPricing from './tier-pricing/list-tier-pricing';
 import createTier from './tier-pricing/create-tier';
 import uudAmandemen from './constitution/uud-amandemen';
+import exam from './exam';
 
 const localeId = {
   translation: {
@@ -72,7 +73,8 @@ const localeId = {
     tierPricing: {
       list: listTierPricing,
       createTier: createTier
-    }
+    },
+    exam: exam
   }
 }
 

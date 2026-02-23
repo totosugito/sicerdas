@@ -26,7 +26,7 @@ export function DataTableFilter<TData>({
   // Handle global search
   const handleGlobalSearch = (value: string) => {
     setSearchValue(value);
-    
+
     // If table has manual filtering enabled, only update the filter state
     // The parent component will handle the actual filtering via onColumnFiltersChange
     if (table.options.manualFiltering) {
@@ -45,19 +45,19 @@ export function DataTableFilter<TData>({
     } else {
       table.setGlobalFilter(undefined);
       table.resetColumnFilters();
-      
+
       if (value) {
         const globalFilterFn = (row: any, columnId: string, filterValue: string) => {
           return searchColumnIds.some(colId => {
             const cellValue = row.getValue(colId);
             if (cellValue == null) return false;
-            
+
             return String(cellValue)
               .toLowerCase()
               .includes(filterValue.toLowerCase());
           });
         };
-        
+
         table.options.globalFilterFn = globalFilterFn;
         table.setGlobalFilter(value);
       }
@@ -87,7 +87,7 @@ export function DataTableFilter<TData>({
             placeholder={searchPlaceholder}
             value={searchValue}
             onChange={(e) => handleGlobalSearch(e.target.value)}
-            className="w-64 pl-8 pr-8 focus-visible:ring-[0px]"
+            className="w-64 pl-8 pr-8 focus-visible:ring-[0px] w-full"
           />
           {searchValue && (
             <Button
@@ -102,7 +102,7 @@ export function DataTableFilter<TData>({
           )}
         </div>
       </div>
-      
+
       {/* Individual column filters (optional) */}
       {React.Children.count(children) > 0 && (
         <div className="flex items-center gap-2">

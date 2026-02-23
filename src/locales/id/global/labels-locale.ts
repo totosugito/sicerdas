@@ -10,6 +10,7 @@ export default {
     verifyingOtp: "Memverifikasi OTP",
     cancel: "Batal",
     save: "Simpan",
+    saving: "Menyimpan",
     close: "Tutup",
     edit: "Edit",
     delete: "Hapus",
@@ -30,6 +31,8 @@ export default {
     theme: "Tema",
     email: "Email",
     submit: "Kirim",
+    row: "Baris",
+    of: "dari",
     pagination: {
         previous: "Sebelumnya",
         next: "Berikutnya",

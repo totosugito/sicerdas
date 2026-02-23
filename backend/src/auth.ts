@@ -8,15 +8,16 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 // Brevo email client
-import Brevo from '@getbrevo/brevo';
+import { BrevoClient } from '@getbrevo/brevo';
 import { getUserAvatarUrl } from './utils/app-utils.ts';
 import { eq } from 'drizzle-orm';
 
 // Initialize Brevo API client if API key is provided
-let apiInstance: Brevo.TransactionalEmailsApi | null = null;
+let brevo: BrevoClient | null = null;
 if (envConfig.email?.brevo?.apiKey) {
-  apiInstance = new Brevo.TransactionalEmailsApi();
-  apiInstance.setApiKey(0, envConfig.email.brevo.apiKey); // 0 corresponds to 'apiKey'
+  brevo = new BrevoClient({
+    apiKey: envConfig.email.brevo.apiKey,
+  });
 }
 
 // Get __dirname equivalent in ES modules
@@ -60,7 +61,7 @@ const auth = betterAuth({
         } else {
           // Send the OTP for password reset
           // Only send email if Brevo is configured
-          if (!apiInstance) {
+          if (!brevo) {
             console.warn('Brevo API key not configured. Skipping email sending.');
             return Promise.resolve();
           }
@@ -77,21 +78,19 @@ const auth = betterAuth({
               .replace(/{{otp}}/g, otp)
               .replace(/{{year}}/g, new Date().getFullYear().toString());
 
-            // Create email object
-            const sendSmtpEmail = new Brevo.SendSmtpEmail();
-            sendSmtpEmail.subject = 'Kode OTP Reset Kata Sandi';
-            sendSmtpEmail.htmlContent = htmlContent;
-            sendSmtpEmail.sender = {
-              name: 'SiCerdas No-Reply',
-              email: 'no-reply@sicerdas.com'
-            };
-            sendSmtpEmail.to = [{
-              email: email,
-              name: email.split('@')[0],
-            }];
-
             // Send email
-            await apiInstance.sendTransacEmail(sendSmtpEmail);
+            await brevo.transactionalEmails.sendTransacEmail({
+              subject: 'Kode OTP Reset Kata Sandi',
+              htmlContent: htmlContent,
+              sender: {
+                name: 'SiCerdas No-Reply',
+                email: 'no-reply@sicerdas.com'
+              },
+              to: [{
+                email: email,
+                name: email.split('@')[0],
+              }]
+            });
           } catch (error) {
             console.error('Failed to send password reset OTP email:', error);
             // We don't reject the promise as we don't want to break the auth flow
@@ -124,7 +123,7 @@ const auth = betterAuth({
     autoSignIn: false,
     sendResetPassword: async ({ user, url, token }, request) => {
       // Only send email if Brevo is configured
-      if (!apiInstance) {
+      if (!brevo) {
         console.warn('Brevo API key not configured. Skipping email sending.');
         return Promise.resolve();
       }
@@ -141,21 +140,19 @@ const auth = betterAuth({
           .replace(/{{resetLink}}/g, url)
           .replace(/{{year}}/g, new Date().getFullYear().toString());
 
-        // Create email object
-        const sendSmtpEmail = new Brevo.SendSmtpEmail();
-        sendSmtpEmail.subject = 'Reset Password';
-        sendSmtpEmail.htmlContent = htmlContent;
-        sendSmtpEmail.sender = {
-          name: 'SiCerdas No-Reply', // envConfig.email.noReply.name,
-          email: 'no-reply@sicerdas.com' //envConfig.email.noReply.email
-        };
-        sendSmtpEmail.to = [{
-          email: user.email,
-          name: user.name || user.email,
-        }];
-
         // Send email
-        await apiInstance.sendTransacEmail(sendSmtpEmail);
+        await brevo.transactionalEmails.sendTransacEmail({
+          subject: 'Reset Password',
+          htmlContent: htmlContent,
+          sender: {
+            name: 'SiCerdas No-Reply', // envConfig.email.noReply.name,
+            email: 'no-reply@sicerdas.com' //envConfig.email.noReply.email
+          },
+          to: [{
+            email: user.email,
+            name: user.name || user.email,
+          }]
+        });
         // console.info(`Password reset email sent to ${user.email}`);
       } catch (error) {
         console.error('Failed to send password reset email:', error);

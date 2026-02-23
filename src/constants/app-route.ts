@@ -35,10 +35,6 @@ export const AppRoute = {
   dashboard: {
     dashboard: "/",
   },
-  book: {
-    detail: { url: "/book/$id" },
-    books: { url: "/books" },
-  },
   periodicTable: {
     periodicTable: { url: "/periodic-table" },
     elementDetail: { url: "/periodic/element/$id" },
@@ -70,6 +66,19 @@ export const AppRoute = {
     adminCreate: { url: "/admin/create-tier" },
     adminEdit: { url: "/admin/edit-tier/$id" },
     publicList: { url: "/tier-pricing" },
+  },
+  book: {
+    detail: { url: "/book/$id" },
+    books: { url: "/books" },
+  },
+  exam: {
+    categories: {
+      admin: {
+        list: { url: "/exam/categories/admin/categories" },
+        create: { url: "/exam/categories/admin/create" },
+        edit: { url: "/exam/categories/admin/edit/$id" },
+      },
+    }
   },
   admin: {
     dashboard: { url: "/admin/dashboard" },
