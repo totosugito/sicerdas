@@ -14,7 +14,7 @@ import { Plus, Trash2 } from 'lucide-react';
 import { DialogModal } from '@/components/custom/components';
 import { CategoryTable, DialogCategoryCreate } from '@/components/pages/exam/categories';
 
-export const Route = createFileRoute('/(pages)/exam/categories/admin/categories')({
+export const Route = createFileRoute('/(pages)/exam/categories/admin/list-category')({
     component: AdminExamCategoriesPage,
 });
 
@@ -65,7 +65,7 @@ function AdminExamCategoriesPage() {
         if (!selectedCategory) return;
         deleteMutation.mutate(selectedCategory.id, {
             onSuccess: (res) => {
-                showNotifSuccess({ message: res.message || t("exam.categories.categories.delete.success") });
+                showNotifSuccess({ message: res.message || t("exam.categories.list.delete.success") });
                 queryClient.invalidateQueries({ queryKey: ["admin-exam-categories-list"] });
                 setShowDeleteDialog(false);
             },
@@ -79,8 +79,8 @@ function AdminExamCategoriesPage() {
         <div className="flex flex-col gap-6 w-full">
             <div className="flex justify-between items-start">
                 <PageTitle
-                    title={t("exam.categories.categories.title")}
-                    description={<span>{t("exam.categories.categories.description")}</span>}
+                    title={t("exam.categories.list.title")}
+                    description={<span>{t("exam.categories.list.description")}</span>}
                 />
                 <Button onClick={handleAdd} className="flex-shrink-0 gap-1.5 shadow-sm">
                     <Plus className="h-4 w-4" />
@@ -110,9 +110,9 @@ function AdminExamCategoriesPage() {
                 open={showDeleteDialog}
                 onOpenChange={setShowDeleteDialog}
                 modal={{
-                    title: t("exam.categories.categories.delete.confirmTitle"),
-                    desc: t("exam.categories.categories.delete.confirmDesc", { name: selectedCategory?.name }),
-                    infoContainer: t("exam.categories.categories.delete.deleteInfo"),
+                    title: t("exam.categories.list.delete.confirmTitle"),
+                    desc: t("exam.categories.list.delete.confirmDesc", { name: selectedCategory?.name }),
+                    infoContainer: t("exam.categories.list.delete.deleteInfo"),
                     infoContainerVariant: "error",
                     variant: "destructive",
                     iconType: "error",

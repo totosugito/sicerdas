@@ -7,7 +7,6 @@ import forgetPassword from './auth/forget-password';
 import resetPassword from './auth/reset-password';
 import otpVerification from './auth/otp-verification';
 import message from './global/message-locale';
-import user from './global/user-locale';
 import landing from './app/landing-locale';
 import booksLatest from './book/books-latest';
 import about from './web/about-locale';
@@ -25,10 +24,10 @@ import report from './layout/content-report';
 import butirPancasila from './constitution/butir-pancasila';
 import uud1945 from './constitution/uud-1945';
 import uud1945Asli from './constitution/uud-1945-asli';
-import listTierPricing from './tier-pricing/list-tier-pricing';
-import createTier from './tier-pricing/create-tier';
 import uudAmandemen from './constitution/uud-amandemen';
 import exam from './exam';
+import appTier from './app-tier';
+import user from './user';
 
 const localeId = {
   translation: {
@@ -37,7 +36,6 @@ const localeId = {
     labels: labels,
     message: message,
     landing: landing,
-    user: user,
     auth: {
       signIn: signIn,
       signUp: signUp,
@@ -70,11 +68,9 @@ const localeId = {
       uud1945Asli: uud1945Asli,
       uudAmandemen: uudAmandemen
     },
-    tierPricing: {
-      list: listTierPricing,
-      createTier: createTier
-    },
-    exam: exam
+    appTier: appTier,
+    exam: exam,
+    user: user,
   }
 }
 

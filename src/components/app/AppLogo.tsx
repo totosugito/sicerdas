@@ -8,7 +8,7 @@ type Props = {
 }
 
 const AppLogo = ({ disableColapsed = false }: Props) => {
-  if (disableColapsed) {
+  if (disableColapsed === false) {
     return (
       <Link to="/" className="flex items-center gap-2 group">
         <div className={cn("flex items-center justify-center justify-items-center rounded-full bg-card shadow-sm", "p-[2px]")} >

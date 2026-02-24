@@ -55,7 +55,7 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                 <div className="absolute -top-2 -right-2 z-10">
                     <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 dark:from-amber-400 dark:to-yellow-400 text-white dark:text-gray-900 border-0 shadow-md dark:shadow-lg dark:shadow-amber-400/30 px-2 py-0.5 text-xs font-semibold flex items-center gap-1">
                         <Star className="w-3 h-3 fill-current" />
-                        {t('tierPricing.list.popular')}
+                        {t('appTier.list.popular')}
                     </Badge>
                 </div>
             )}
@@ -94,7 +94,7 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                             : "flex-shrink-0 text-xs"
                     }
                 >
-                    {tier.isActive ? t('tierPricing.list.active') : t('tierPricing.list.inactive')}
+                    {tier.isActive ? t('appTier.list.active') : t('appTier.list.inactive')}
                 </Badge>
 
                 <div className="flex-shrink-0 flex items-center gap-2">
@@ -130,12 +130,12 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                         <Popover>
                             <PopoverTrigger asChild>
                                 <button className="inline-flex items-center gap-1 text-xs bg-muted text-muted-foreground hover:bg-muted/80 rounded-full px-2.5 py-0.5 transition-colors">
-                                    +{remainingFeatures.length} {t('tierPricing.list.moreFeatures')}
+                                    +{remainingFeatures.length} {t('appTier.list.moreFeatures')}
                                 </button>
                             </PopoverTrigger>
                             <PopoverContent className="w-80" align="start">
                                 <div className="space-y-2">
-                                    <h4 className="font-semibold text-sm">{t('tierPricing.list.allFeatures')}</h4>
+                                    <h4 className="font-semibold text-sm">{t('appTier.list.allFeatures')}</h4>
                                     <div className="flex flex-wrap gap-1.5">
                                         {tier.features.map((f) => (
                                             <span
@@ -158,11 +158,11 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
             <div className="mt-2 ml-[52px] flex items-center gap-4 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                     <Zap className="w-3.5 h-3.5" />
-                    {tier.limits.chatAi.max_tokens ? tier.limits.chatAi.max_tokens.toLocaleString() : 'N/A'} {t('tierPricing.list.tokens')}
+                    {tier.limits.chatAi.max_tokens ? tier.limits.chatAi.max_tokens.toLocaleString() : 'N/A'} {t('appTier.list.tokens')}
                 </span>
                 <span className="flex items-center gap-1">
                     <MessageSquare className="w-3.5 h-3.5" />
-                    {isUnlimited ? t('tierPricing.list.unlimited') : `${tier.limits.chatAi.daily_messages ?? 'N/A'}${t('tierPricing.list.perDay')}`}
+                    {isUnlimited ? t('appTier.list.unlimited') : `${tier.limits.chatAi.daily_messages ?? 'N/A'}${t('appTier.list.perDay')}`}
                 </span>
             </div>
         </div>

@@ -4,7 +4,7 @@ import { Link } from '@tanstack/react-router';
 import { AppRoute } from '@/constants/app-route';
 import { useTranslation } from 'react-i18next';
 
-export const TierPricingEmptyState = () => {
+export const TierEmptyState = () => {
     const { t } = useTranslation();
 
     return (
@@ -13,15 +13,15 @@ export const TierPricingEmptyState = () => {
                 <Inbox className="h-8 w-8 text-muted-foreground/50" />
             </div>
             <h3 className="text-lg font-semibold mb-2 tracking-tight">
-                {t('tierPricing.list.noDataTitle')}
+                {t('appTier.list.noDataTitle')}
             </h3>
             <p className="text-muted-foreground max-w-sm mx-auto mb-6 text-sm">
-                {t('tierPricing.list.noDataDescription')}
+                {t('appTier.list.noDataDescription')}
             </p>
             <Button asChild>
-                <Link to={AppRoute.tierPricing.adminCreate.url} className="gap-2">
+                <Link to={AppRoute.appTier.adminCreate.url} className="gap-2">
                     <Plus className="h-4 w-4" />
-                    {t('tierPricing.list.createButton')}
+                    {t('appTier.list.createButton')}
                 </Link>
             </Button>
         </div>

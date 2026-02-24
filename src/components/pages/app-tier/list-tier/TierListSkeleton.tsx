@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function TierPricingListSkeleton() {
+export function TierListSkeleton() {
     return (
         <div className="w-full space-y-2">
             {[...Array(3)].map((_, i) => (

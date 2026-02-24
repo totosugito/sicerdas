@@ -1,6 +1,7 @@
 import { useDetailsTier } from '@/api/app-tier';
 import PageTitle from '@/components/app/PageTitle';
 import { Button } from '@/components/ui/button';
+import { AppRoute } from '@/constants/app-route';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { ChevronLeft } from 'lucide-react';
 
@@ -24,7 +25,7 @@ function EditTierPricingPage() {
         <div className="flex flex-col w-full space-y-4 py-6">
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild>
-                    <Link to="/admin/tier-pricing">
+                    <Link to={AppRoute.appTier.adminList.url}>
                         <ChevronLeft className="h-4 w-4" />
                     </Link>
                 </Button>

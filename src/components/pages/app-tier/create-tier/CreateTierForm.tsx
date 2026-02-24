@@ -23,14 +23,14 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error }:
 
     const formSchema = z.object({
         slug: z.string()
-            .min(1, { message: t('tierPricing.createTier.validation.slugRequired') })
-            .regex(/^[a-z0-9-]+$/, { message: t('tierPricing.createTier.validation.slugInvalid') }),
-        name: z.string().min(1, { message: t('tierPricing.createTier.validation.nameRequired') }),
+            .min(1, { message: t('appTier.create.validation.slugRequired') })
+            .regex(/^[a-z0-9-]+$/, { message: t('appTier.create.validation.slugInvalid') }),
+        name: z.string().min(1, { message: t('appTier.create.validation.nameRequired') }),
         price: z.number()
-            .min(0, { message: t('tierPricing.createTier.validation.priceRequired') })
-            .refine((val) => !isNaN(val), { message: t('tierPricing.createTier.validation.priceInvalid') }),
-        currency: z.string().min(1, { message: t('tierPricing.createTier.validation.currencyRequired') }),
-        billingCycle: z.string().min(1, { message: t('tierPricing.createTier.validation.billingCycleRequired') }),
+            .min(0, { message: t('appTier.create.validation.priceRequired') })
+            .refine((val) => !isNaN(val), { message: t('appTier.create.validation.priceInvalid') }),
+        currency: z.string().min(1, { message: t('appTier.create.validation.currencyRequired') }),
+        billingCycle: z.string().min(1, { message: t('appTier.create.validation.billingCycleRequired') }),
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -69,30 +69,30 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error }:
     const basicInfoFields = [
         {
             name: "slug",
-            label: t('tierPricing.createTier.form.slug'),
-            placeholder: t('tierPricing.createTier.form.slugPlaceholder'),
-            description: t('tierPricing.createTier.form.slugDescription'),
+            label: t('appTier.create.form.slug'),
+            placeholder: t('appTier.create.form.slugPlaceholder'),
+            description: t('appTier.create.form.slugDescription'),
             type: "text",
         },
         {
             name: "name",
-            label: t('tierPricing.createTier.form.name'),
-            placeholder: t('tierPricing.createTier.form.namePlaceholder'),
-            description: t('tierPricing.createTier.form.nameDescription'),
+            label: t('appTier.create.form.name'),
+            placeholder: t('appTier.create.form.namePlaceholder'),
+            description: t('appTier.create.form.nameDescription'),
             type: "text",
         },
         {
             name: "price",
-            label: t('tierPricing.createTier.form.price'),
-            placeholder: t('tierPricing.createTier.form.pricePlaceholder'),
-            description: t('tierPricing.createTier.form.priceDescription'),
+            label: t('appTier.create.form.price'),
+            placeholder: t('appTier.create.form.pricePlaceholder'),
+            description: t('appTier.create.form.priceDescription'),
             type: "number",
         },
         {
             name: "currency",
-            label: t('tierPricing.createTier.form.currency'),
-            placeholder: t('tierPricing.createTier.form.currencyPlaceholder'),
-            description: t('tierPricing.createTier.form.currencyDescription'),
+            label: t('appTier.create.form.currency'),
+            placeholder: t('appTier.create.form.currencyPlaceholder'),
+            description: t('appTier.create.form.currencyDescription'),
             type: "select",
             options: [
                 { value: "IDR", label: "IDR" },
@@ -101,15 +101,15 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error }:
         },
         {
             name: "billingCycle",
-            label: t('tierPricing.createTier.form.billingCycle'),
-            placeholder: t('tierPricing.createTier.form.billingCyclePlaceholder'),
-            description: t('tierPricing.createTier.form.billingCycleDescription'),
+            label: t('appTier.create.form.billingCycle'),
+            placeholder: t('appTier.create.form.billingCyclePlaceholder'),
+            description: t('appTier.create.form.billingCycleDescription'),
             type: "select",
             options: [
-                { value: "monthly", label: t('tierPricing.createTier.form.billingCycleOptions.monthly') },
-                { value: "quarterly", label: t('tierPricing.createTier.form.billingCycleOptions.quarterly') },
-                { value: "semiAnnually", label: t('tierPricing.createTier.form.billingCycleOptions.semiAnnually') },
-                { value: "annually", label: t('tierPricing.createTier.form.billingCycleOptions.annually') },
+                { value: "monthly", label: t('appTier.create.form.billingCycleOptions.monthly') },
+                { value: "quarterly", label: t('appTier.create.form.billingCycleOptions.quarterly') },
+                { value: "semiAnnually", label: t('appTier.create.form.billingCycleOptions.semiAnnually') },
+                { value: "annually", label: t('appTier.create.form.billingCycleOptions.annually') },
             ],
         },
     ];
@@ -119,14 +119,14 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error }:
             <FormWithDetector form={form} onSubmit={handleSubmit} schema={formSchema}>
                 <Card className="pb-0 gap-0">
                     <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
-                        <CardTitle>{t('tierPricing.createTier.form.basicInfo')}</CardTitle>
-                        <CardDescription>{t('tierPricing.createTier.form.basicInfoDescription')}</CardDescription>
+                        <CardTitle>{t('appTier.create.form.basicInfo')}</CardTitle>
+                        <CardDescription>{t('appTier.create.form.basicInfoDescription')}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6 py-6">
                         {error && (
                             <Alert variant="destructive">
                                 <AlertCircle className="h-4 w-4" />
-                                <AlertTitle>{t('tierPricing.createTier.messages.error')}</AlertTitle>
+                                <AlertTitle>{t('appTier.create.messages.error')}</AlertTitle>
                                 <AlertDescription>
                                     {error}
                                 </AlertDescription>
@@ -145,7 +145,7 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error }:
 
                         {/* Info Message */}
                         <div className="text-sm text-muted-foreground bg-muted/50 p-4 rounded-lg border mt-4">
-                            💡 {t('tierPricing.createTier.form.createNote')}
+                            💡 {t('appTier.create.form.createNote')}
                         </div>
                     </CardContent>
 
@@ -158,17 +158,17 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error }:
                                     onClick={onCancel}
                                     disabled={isLoading}
                                 >
-                                    {t('tierPricing.createTier.buttons.cancel')}
+                                    {t('appTier.create.buttons.cancel')}
                                 </Button>
                             )}
                             <Button type="submit" disabled={isLoading}>
                                 {isLoading ? (
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        {t('tierPricing.createTier.buttons.creating')}
+                                        {t('appTier.create.buttons.creating')}
                                     </>
                                 ) : (
-                                    t('tierPricing.createTier.buttons.create')
+                                    t('appTier.create.buttons.create')
                                 )}
                             </Button>
                         </CardFooter>

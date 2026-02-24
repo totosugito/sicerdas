@@ -32,13 +32,14 @@ import { Separator } from '@/components/ui/separator'
 import { AppNavbarMobile } from './AppNavbarMobile'
 import { AppNavbarDesktop } from './AppNavbarDesktop'
 import AppLogo from '../AppLogo'
+import { isAdmin } from '@/types/auth'
 
 export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }) {
   const { t, i18n } = useTranslation()
   const { theme, setTheme } = useTheme()
   const { language, setLanguage: setStoreLanguage } = useAuthStore()
   const [isOpen, setIsOpen] = useState(false)
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [confirmationModal, setConfirmationModal] = useState<ModalProps | null>(null);
   const logOffMutation = useLogoutMutation();
 
@@ -122,7 +123,7 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
               <SidebarTrigger variant={"outline"} onClick={() => { }} />
               <Separator orientation={"vertical"} className={'h-6'} style={{ height: "20px" }} />
             </> :
-            <AppLogo disableColapsed />
+            <AppLogo disableColapsed={(isAdmin(user) && isShowSidebar)} />
           }
         </div>
 

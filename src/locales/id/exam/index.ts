@@ -1,9 +1,9 @@
-import categories from "./categories/categories";
+import list from "./categories/list-category";
 import exam from "./exam";
 const obj = {
-    ...exam.exam,
+    ...exam,
     categories: {
-        categories: categories
+        list: list
     },
 }
 export default obj

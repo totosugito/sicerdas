@@ -1,8 +1,7 @@
 import { HiOutlineUsers } from "react-icons/hi2";
 import { AppRoute } from "@/constants/app-route";
-import { BsBracesAsterisk } from "react-icons/bs";
 import i18n from '@/i18n';
-import { Bookmark } from "lucide-react";
+import { Bookmark, DollarSign } from "lucide-react";
 
 const t = i18n.t;
 export const AdminNav = {
@@ -17,7 +16,7 @@ export const AdminNav = {
       title: t("exam.menu").toUpperCase(),
       items: [
         {
-          title: t("exam.categories.categories.menu"),
+          title: t("exam.categories.list.menu"),
           url: AppRoute.exam.categories.admin.list.url,
           icon: Bookmark,
         },
@@ -28,19 +27,14 @@ export const AdminNav = {
       title: "ADMIN",
       items: [
         {
-          title: "Tier Pricing",
-          url: AppRoute.tierPricing.adminList.url,
-          icon: HiOutlineUsers,
+          title: t("appTier.title"),
+          url: AppRoute.appTier.adminList.url,
+          icon: DollarSign,
         },
         {
-          title: "Users",
+          title: t("user.title"),
           url: AppRoute.admin.user.list.url,
           icon: HiOutlineUsers,
-        },
-        {
-          title: "Models",
-          url: AppRoute.admin.chatAi.models.url,
-          icon: BsBracesAsterisk,
         },
       ],
       permitUser: false,

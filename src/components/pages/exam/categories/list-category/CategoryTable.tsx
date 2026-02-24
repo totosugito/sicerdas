@@ -55,7 +55,7 @@ export function CategoryTable({
             accessorKey: "name",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.categories.categories.table.columns.name")} />
+                <DataTableColumnHeader column={column} title={t("exam.categories.list.table.columns.name")} />
             ),
             cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
         },
@@ -63,7 +63,7 @@ export function CategoryTable({
             accessorKey: "description",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.categories.categories.table.columns.description")} />
+                <DataTableColumnHeader column={column} title={t("exam.categories.list.table.columns.description")} />
             ),
             cell: ({ row }) => (
                 <LongText
@@ -79,14 +79,16 @@ export function CategoryTable({
             minSize: 50,
             maxSize: 50,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.categories.categories.table.columns.status")} />
+                <DataTableColumnHeader column={column} title={t("exam.categories.list.table.columns.status")} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const isActive = row.getValue("isActive") as boolean;
                 return (
-                    <Badge variant={isActive ? "success" : "secondary"}>
-                        {isActive ? t("exam.categories.categories.table.status.active") : t("exam.categories.categories.table.status.inactive")}
-                    </Badge>
+                    <div className='flex justify-center'>
+                        <Badge variant={isActive ? "success" : "secondary"}>
+                            {isActive ? t("exam.categories.list.table.status.active") : t("exam.categories.list.table.status.inactive")}
+                        </Badge>
+                    </div>
                 );
             },
         },
@@ -95,35 +97,37 @@ export function CategoryTable({
             minSize: 50,
             maxSize: 50,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.categories.categories.table.columns.actions")} />
+                <DataTableColumnHeader column={column} title={t("exam.categories.list.table.columns.actions")} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const category = row.original;
 
                 return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">{t("exam.categories.categories.table.actions.openMenu")}</span>
-                                <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>{t("exam.categories.categories.table.columns.actions")}</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => onEdit(category)}>
-                                <Pencil className="mr-2 h-4 w-4" />
-                                {t("exam.categories.categories.table.actions.edit")}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                className="text-destructive focus:text-destructive"
-                                onClick={() => onDelete(category)}
-                            >
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                {t("exam.categories.categories.table.actions.delete")}
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className='flex justify-center'>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                    <span className="sr-only">{t("exam.categories.list.table.actions.openMenu")}</span>
+                                    <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>{t("exam.categories.list.table.columns.actions")}</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => onEdit(category)}>
+                                    <Pencil className="mr-2 h-4 w-4" />
+                                    {t("exam.categories.list.table.actions.edit")}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    className="text-destructive focus:text-destructive"
+                                    onClick={() => onDelete(category)}
+                                >
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    {t("exam.categories.list.table.actions.delete")}
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 );
             },
         },
@@ -161,7 +165,7 @@ export function CategoryTable({
                 <div className={"flex flex-row gap-2 max-w-sm"}>
                     <DataTableFilter
                         table={table}
-                        searchPlaceholder={t("exam.categories.categories.table.search")}
+                        searchPlaceholder={t("exam.categories.list.table.search")}
                         className='min-w-sm'
                         searchOnEnter={true}
                     >

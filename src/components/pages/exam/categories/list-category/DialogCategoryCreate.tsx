@@ -35,7 +35,7 @@ export const DialogCategoryCreate = ({ open, onOpenChange, category }: DialogCat
     const updateMutation = useUpdateCategory();
 
     const formSchema = {
-        name: z.string().min(1, t("exam.categories.categories.form.name.required")),
+        name: z.string().min(1, t("exam.categories.list.form.name.required")),
         description: z.string().optional(),
         isActive: z.boolean().default(true),
     };
@@ -44,27 +44,27 @@ export const DialogCategoryCreate = ({ open, onOpenChange, category }: DialogCat
         name: {
             type: "text",
             name: "name",
-            label: t("exam.categories.categories.form.name.label"),
-            placeholder: t("exam.categories.categories.form.name.placeholder"),
+            label: t("exam.categories.list.form.name.label"),
+            placeholder: t("exam.categories.list.form.name.placeholder"),
         },
         description: {
             type: "textarea",
             name: "description",
-            label: t("exam.categories.categories.form.description.label"),
-            placeholder: t("exam.categories.categories.form.description.placeholder"),
+            label: t("exam.categories.list.form.description.label"),
+            placeholder: t("exam.categories.list.form.description.placeholder"),
             minRows: 3,
         },
         isActive: {
             type: "switch",
             name: "isActive",
-            label: t("exam.categories.categories.form.isActive.label"),
-            description: t("exam.categories.categories.form.isActive.description"),
+            label: t("exam.categories.list.form.isActive.label"),
+            description: t("exam.categories.list.form.isActive.description"),
         },
     };
 
     const modalProps: ModalFormProps = {
-        title: category ? t("labels.edit") + " " + t("exam.categories.categories.title") : t("labels.add") + " " + t("exam.categories.categories.title"),
-        desc: category ? t("exam.categories.categories.editDescription") : t("exam.categories.categories.createDescription"),
+        title: category ? t("labels.edit") + " " + t("exam.categories.list.title") : t("labels.add") + " " + t("exam.categories.list.title"),
+        desc: category ? t("exam.categories.list.editDescription") : t("exam.categories.list.createDescription"),
         modal: true,
         textConfirm: (createMutation.isPending || updateMutation.isPending) ? t("labels.saving") : t("labels.save"),
         textCancel: t("labels.cancel"),
@@ -81,7 +81,7 @@ export const DialogCategoryCreate = ({ open, onOpenChange, category }: DialogCat
             if (category) {
                 await updateMutation.mutateAsync({ id: category.id, ...values } as UpdateCategoryRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t("exam.categories.categories.notifications.updateSuccess") });
+                        showNotifSuccess({ message: res.message || t("exam.categories.list.notifications.updateSuccess") });
                         queryClient.invalidateQueries({ queryKey: ["admin-exam-categories-list"] });
                         onOpenChange(false);
                     },
@@ -92,7 +92,7 @@ export const DialogCategoryCreate = ({ open, onOpenChange, category }: DialogCat
             } else {
                 await createMutation.mutateAsync(values as CreateCategoryRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t("exam.categories.categories.notifications.createSuccess") });
+                        showNotifSuccess({ message: res.message || t("exam.categories.list.notifications.createSuccess") });
                         queryClient.invalidateQueries({ queryKey: ["admin-exam-categories-list"] });
                         onOpenChange(false);
                     },

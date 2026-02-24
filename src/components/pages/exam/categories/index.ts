@@ -1,2 +1,2 @@
-export { DialogCategoryCreate } from "./categories/DialogCategoryCreate";
-export { CategoryTable } from "./categories/CategoryTable";
+export { DialogCategoryCreate } from "./list-category/DialogCategoryCreate";
+export { CategoryTable } from "./list-category/CategoryTable";

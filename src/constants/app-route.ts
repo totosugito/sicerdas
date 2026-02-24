@@ -61,7 +61,7 @@ export const AppRoute = {
     support: { url: "/support" },
     terms: { url: "/terms" },
   },
-  tierPricing: {
+  appTier: {
     adminList: { url: "/admin/list-tier" },
     adminCreate: { url: "/admin/create-tier" },
     adminEdit: { url: "/admin/edit-tier/$id" },
@@ -74,7 +74,7 @@ export const AppRoute = {
   exam: {
     categories: {
       admin: {
-        list: { url: "/exam/categories/admin/categories" },
+        list: { url: "/exam/categories/admin/list-category" },
         create: { url: "/exam/categories/admin/create" },
         edit: { url: "/exam/categories/admin/edit/$id" },
       },
