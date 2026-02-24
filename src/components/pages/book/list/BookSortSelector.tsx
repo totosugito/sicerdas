@@ -49,9 +49,8 @@ export const BookSortSelector = ({
       </Select>
       <Button
         variant="outline"
-        size="sm"
         onClick={toggleSortOrder}
-        className="h-8 w-8 p-0"
+        className="p-0"
       >
         {sortOrder === 'asc' ? (
           <ArrowUpAZ className="h-4 w-4" />

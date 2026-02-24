@@ -87,14 +87,14 @@ function RouteComponent() {
 
       if (response.success) {
         setBooks(response.data.items)
-        setTotalPages(response.data.totalPages)
-        setTotalBooks(response.data.total)
-        setCurrentPage(response.data.page)
+        setTotalPages(response.data.meta.totalPages)
+        setTotalBooks(response.data.meta.total)
+        setCurrentPage(response.data.meta.page)
       } else {
-        showNotifError({ message: t('home.failedToLoadBooks') })
+        showNotifError({ message: t('book.failedToLoadBooks') })
       }
     } catch (error) {
-      showNotifError({ message: t('home.errorLoadingBooks') })
+      showNotifError({ message: t('book.errorLoadingBooks') })
     } finally {
       setIsLoading(false)
     }
@@ -212,16 +212,14 @@ function RouteComponent() {
                 <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
                   <Button
                     variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                    size="sm"
-                    className="h-6 w-6"
+                    className="h-7 w-7"
                     onClick={() => handleViewModeChange?.('grid')}
                   >
                     <LayoutGrid className="w-4 h-4" />
                   </Button>
                   <Button
                     variant={viewMode === 'list' ? 'default' : 'ghost'}
-                    size="sm"
-                    className="h-6 w-6"
+                    className="h-7 w-7"
                     onClick={() => handleViewModeChange?.('list')}
                   >
                     <ListIcon className="w-4 h-4" />
@@ -245,11 +243,11 @@ function RouteComponent() {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
                 <BookOpen className="w-8 h-8 text-slate-400" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{t("home.noBooksFound")}</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{t("book.noBooksFound")}</h3>
               <p className="text-slate-500 dark:text-slate-400 mb-4 max-w-sm mx-auto">
                 {searchTerm
-                  ? `${t(`home.noSearchResults`)} "${searchTerm}"`
-                  : t('home.noBooksAvailable')
+                  ? `${t(`book.noSearchResults`)} "${searchTerm}"`
+                  : t('book.noBooksAvailable')
                 }
               </p>
               {searchTerm && (
@@ -257,7 +255,7 @@ function RouteComponent() {
                   setSearchTerm('')
                   updateUrlParams(1, '')
                 }}>
-                  {t('home.clearSearch')}
+                  {t('book.clearSearch')}
                 </Button>
               )}
             </div>

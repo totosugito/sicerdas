@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/(pages)/(periodic-table)/periodic')({
@@ -6,7 +7,7 @@ export const Route = createFileRoute('/(pages)/(periodic-table)/periodic')({
 
 function RouteComponent() {
     return (
-        <div className='page-container'>
+        <div className={cn('page-container-no-top')}>
             <Outlet />
         </div>)
 }

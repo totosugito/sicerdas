@@ -3,7 +3,7 @@ import {
     useListCategory,
     useDeleteCategory,
     ExamCategory
-} from '@/api/exam/categories';
+} from '@/api/(exam)/(categories)';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from 'react';
@@ -14,7 +14,7 @@ import { Plus, Trash2 } from 'lucide-react';
 import { DialogModal } from '@/components/custom/components';
 import { CategoryTable, DialogCategoryCreate } from '@/components/pages/exam/categories';
 
-export const Route = createFileRoute('/(pages)/exam/categories/admin/list-category')({
+export const Route = createFileRoute('/(pages)/(exam)/(categories)/admin/list-category')({
     component: AdminExamCategoriesPage,
 });
 

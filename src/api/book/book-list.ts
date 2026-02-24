@@ -41,11 +41,13 @@ export type BookListItem = {
 export type BookListResponse = {
     success: boolean
     data: {
-        items: BookListItem[]
-        total: number
-        page: number
-        limit: number
-        totalPages: number
+        items: BookListItem[],
+        meta: {
+            total: number
+            page: number
+            limit: number
+            totalPages: number
+        }
     }
 }
 

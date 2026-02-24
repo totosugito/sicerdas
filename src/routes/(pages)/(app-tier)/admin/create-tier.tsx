@@ -35,7 +35,7 @@ function CreateTierPage() {
     };
 
     return (
-        <div className="flex flex-col w-full space-y-6 pt-6">
+        <div className="flex flex-col w-full space-y-6">
             <PageTitle
                 title={t('appTier.create.pageTitle')}
                 description={<span>{t('appTier.create.description')}</span>}

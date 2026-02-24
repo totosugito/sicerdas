@@ -7,7 +7,7 @@ export const Route = createFileRoute('/(pages)/(web)')({
 function RouteComponent() {
     return (
         <div className='page-container'>
-            <div className='w-full py-6'>
+            <div className='w-full'>
                 <Outlet />
             </div>
         </div>)

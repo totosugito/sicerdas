@@ -313,6 +313,10 @@ body {
   @apply flex flex-col flex-1 w-full items-center p-6 max-w-5xl mx-auto xl:px-0
 }
 
+.page-container-no-top {
+  @apply flex flex-col flex-1 w-full items-center pb-6 px-6 max-w-5xl mx-auto xl:px-0
+}
+
 .new-badge {
   @apply inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-sm
 }

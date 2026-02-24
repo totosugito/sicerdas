@@ -64,7 +64,7 @@ export const AppRoute = {
   appTier: {
     adminList: { url: "/admin/list-tier" },
     adminCreate: { url: "/admin/create-tier" },
-    adminEdit: { url: "/admin/edit-tier/$id" },
+    adminEdit: { url: "/admin/edit-tier/$slug" },
     publicList: { url: "/tier-pricing" },
   },
   book: {
@@ -74,9 +74,16 @@ export const AppRoute = {
   exam: {
     categories: {
       admin: {
-        list: { url: "/exam/categories/admin/list-category" },
-        create: { url: "/exam/categories/admin/create" },
-        edit: { url: "/exam/categories/admin/edit/$id" },
+        list: { url: "/admin/list-category" },
+        create: { url: "/admin/create-category" },
+        edit: { url: "/admin/edit-category/$id" },
+      },
+    },
+    packages: {
+      admin: {
+        list: { url: "/admin/list-package" },
+        create: { url: "/admin/create-package" },
+        edit: { url: "/admin/edit-package/$id" },
       },
     }
   },

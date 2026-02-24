@@ -22,7 +22,7 @@ function EditTierPricingPage() {
     }
 
     return (
-        <div className="flex flex-col w-full space-y-4 py-6">
+        <div className="flex flex-col w-full space-y-4">
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild>
                     <Link to={AppRoute.appTier.adminList.url}>

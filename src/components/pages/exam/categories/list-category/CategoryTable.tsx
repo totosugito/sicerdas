@@ -1,4 +1,4 @@
-import { ExamCategory } from '@/api/exam/categories';
+import { ExamCategory } from '@/api/(exam)/(categories)';
 import {
     DataTable,
     useDataTable,

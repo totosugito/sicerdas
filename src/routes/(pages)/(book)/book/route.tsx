@@ -7,8 +7,6 @@ export const Route = createFileRoute('/(pages)/(book)/book')({
 function RouteComponent() {
     return (
         <div className='page-container'>
-            <div className='w-full pt-6'>
-                <Outlet />
-            </div>
+            <Outlet />
         </div>)
 }

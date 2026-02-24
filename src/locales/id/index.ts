@@ -1,30 +1,13 @@
 import app from './app/app-locale';
-import home from './app/home-locale';
 import labels from './global/labels-locale';
-import signIn from './auth/sign-in';
-import signUp from './auth/sign-up';
-import forgetPassword from './auth/forget-password';
-import resetPassword from './auth/reset-password';
-import otpVerification from './auth/otp-verification';
+import auth from './auth';
 import message from './global/message-locale';
 import landing from './app/landing-locale';
-import booksLatest from './book/books-latest';
-import about from './web/about-locale';
-import privacy from './web/privacy-locale';
-import terms from './web/terms-locale';
-import support from './web/support-locale';
-import faq from './web/faq-locale';
-import periodicTable from './periodic-table/periodic-table';
-import chemistryDictionary from './periodic-table/chemistry-dictionary';
-import elementComparison from './periodic-table/element-comparison';
-import elementDetail from './periodic-table/element-detail';
-import bookInfo from './book/book-info';
-import bookDetail from './book/book-detail';
+import web from './web';
+import periodicTable from './periodic-table';
+import book from './book';
 import report from './layout/content-report';
-import butirPancasila from './constitution/butir-pancasila';
-import uud1945 from './constitution/uud-1945';
-import uud1945Asli from './constitution/uud-1945-asli';
-import uudAmandemen from './constitution/uud-amandemen';
+import constitution from './constitution';
 import exam from './exam';
 import appTier from './app-tier';
 import user from './user';
@@ -32,42 +15,15 @@ import user from './user';
 const localeId = {
   translation: {
     app: app,
-    home: home,
     labels: labels,
     message: message,
     landing: landing,
-    auth: {
-      signIn: signIn,
-      signUp: signUp,
-      forgetPassword: forgetPassword,
-      resetPassword: resetPassword,
-      otpVerification: otpVerification,
-    },
-    web: {
-      about: about,
-      privacy: privacy,
-      terms: terms,
-      support: support,
-      faq: faq
-    },
-    periodicTable: {
-      periodicTable: periodicTable,
-      chemistryDictionary: chemistryDictionary,
-      elementComparison: elementComparison,
-      elementDetail: elementDetail
-    },
-    book: {
-      info: bookInfo,
-      booksLatest: booksLatest,
-      detail: bookDetail,
-    },
+    auth: auth,
+    web: web,
+    periodicTable: periodicTable,
+    book: book,
     contentReport: report,
-    constitution: {
-      butirPancasila: butirPancasila,
-      uud1945: uud1945,
-      uud1945Asli: uud1945Asli,
-      uudAmandemen: uudAmandemen
-    },
+    constitution: constitution,
     appTier: appTier,
     exam: exam,
     user: user,

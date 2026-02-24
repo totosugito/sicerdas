@@ -64,8 +64,8 @@ export const BookSearchBar = ({
 
   return (
     <div className={`p-2 rounded-xl border shadow-sm flex flex-col sm:flex-row gap-2 transition-colors duration-200 ${localSearchTerm
-        ? 'bg-primary/5 border-primary/20'
-        : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800'
+      ? 'bg-primary/5 border-primary/20'
+      : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800'
       }`}>
       <div className="relative flex-1">
         <Search
@@ -73,7 +73,7 @@ export const BookSearchBar = ({
             }`}
         />
         <Input
-          placeholder={t('home.searchPlaceholder')}
+          placeholder={t('book.searchPlaceholder')}
           value={localSearchTerm}
           onChange={(e) => setLocalSearchTerm(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -104,7 +104,7 @@ export const BookSearchBar = ({
                 className="flex-1 visible lg:hidden "
               >
                 <Filter className="w-4 h-4 mr-2" />
-                {t('home.filters')}
+                {t('book.filters')}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[300px] px-4">
@@ -123,7 +123,7 @@ export const BookSearchBar = ({
         )}
 
         <Button variant={'outline'} size={'sm'} onClick={handleSearchClick} disabled={isSearchDisabled} className="flex-1">
-          {t('home.search')}
+          {t('book.search')}
         </Button>
       </div>
     </div>

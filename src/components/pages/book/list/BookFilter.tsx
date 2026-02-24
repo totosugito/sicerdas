@@ -235,7 +235,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
             className="w-full"
             onClick={() => onFilterChange(localFilters)}
           >
-            {t('home.applyFilters')}
+            {t('book.applyFilters')}
           </Button>
         </div>
       )}

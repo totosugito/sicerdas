@@ -7,6 +7,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { AppTier } from "@/api/app-tier";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { AppRoute } from "@/constants/app-route";
 
 interface TierRowProps {
     tier: AppTier;
@@ -75,7 +76,11 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
 
                 <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2 flex-wrap">
-                        <h3 className="font-semibold text-foreground leading-tight">{tier.name}</h3>
+                        <h3 className="font-semibold leading-tight inline-block">
+                            <Link to={AppRoute.appTier.adminEdit.url} params={{ slug: tier.slug }} className="text-foreground hover:text-primary transition-colors">
+                                {tier.name}
+                            </Link>
+                        </h3>
                         <span className="text-xs text-muted-foreground">{tier.slug}</span>
                     </div>
                     <div className="flex items-baseline gap-1 mt-0.5">
@@ -99,7 +104,7 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
 
                 <div className="flex-shrink-0 flex items-center gap-2">
                     <Button variant="ghost" size="icon" asChild>
-                        <Link to="/admin/tier-pricing/$slug" params={{ slug: tier.slug }}>
+                        <Link to={AppRoute.appTier.adminEdit.url} params={{ slug: tier.slug }}>
                             <Edit2 className="w-4 h-4" />
                         </Link>
                     </Button>

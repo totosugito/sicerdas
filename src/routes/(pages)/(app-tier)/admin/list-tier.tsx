@@ -112,7 +112,7 @@ function AdminTierPricingPage() {
 
     if (isLoading) {
         return (
-            <div className="flex flex-col w-full space-y-4 py-6">
+            <div className="flex flex-col w-full space-y-4">
                 <div className="flex justify-between items-start">
                     <PageTitle title={t('appTier.list.pageTitle')} description={<span>{t('appTier.list.description')}</span>} />
                 </div>
@@ -122,7 +122,7 @@ function AdminTierPricingPage() {
     }
 
     return (
-        <div className="flex flex-col w-full space-y-4 py-6">
+        <div className="flex flex-col w-full space-y-4">
             <div className="flex justify-between items-start">
                 <PageTitle title={t('appTier.list.pageTitle')} description={<span>{t('appTier.list.description')}</span>} />
                 {items.length > 0 &&
