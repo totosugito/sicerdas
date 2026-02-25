@@ -3,7 +3,7 @@ import {
     useListCategory,
     useDeleteCategory,
     ExamCategory
-} from '@/api/(exam)/(categories)';
+} from '@/api/exam/categories';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from 'react';
