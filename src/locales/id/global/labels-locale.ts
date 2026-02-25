@@ -33,6 +33,11 @@ export default {
     submit: "Kirim",
     row: "Baris",
     of: "dari",
+    profile: "Profil",
+    settings: "Pengaturan",
+    light: "Terang",
+    dark: "Gelap",
+    system: "Sistem",
     pagination: {
         previous: "Sebelumnya",
         next: "Berikutnya",
