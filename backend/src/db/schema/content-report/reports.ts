@@ -52,8 +52,8 @@ export const contentReport = pgTable('content_report', {
     status: PgEnumReportStatus('status').notNull().default(EnumReportStatus.PENDING),
 
     // Timestamps
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Flexible data storage
     extra: jsonb('extra')
@@ -61,7 +61,7 @@ export const contentReport = pgTable('content_report', {
         .default({}), // JSONB for storing additional structured data with default empty object
 
     // Resolution information
-    resolvedAt: timestamp('resolved_at'),
+    resolvedAt: timestamp('resolved_at', { withTimezone: true }),
     resolvedBy: uuid('resolved_by')
         .references(() => users.id, { onDelete: 'set null' }),
     resolutionNotes: text('resolution_notes'),

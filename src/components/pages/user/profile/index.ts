@@ -1,4 +1,3 @@
-export { ProfileHeader } from './components/ProfileHeader'
 export { TabNavigation } from './components/TabNavigation'
 export { ProfileInfoForm, createProfileInfoFormData, type ProfileInfoFormRef } from './components/ProfileInfoForm'
 export { PersonalInfoForm, createPersonalInfoFormData } from './components/PersonalInfoForm'

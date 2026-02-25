@@ -74,8 +74,8 @@ export const aiModels = pgTable('ai_models', {
         .references(() => appTier.slug, { onDelete: 'set null', onUpdate: 'cascade' }),
 
     // Timestamps
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type SchemaAiModelSelect = InferSelectModel<typeof aiModels>;

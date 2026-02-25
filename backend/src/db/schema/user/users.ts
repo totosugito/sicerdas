@@ -35,11 +35,11 @@ export const users = pgTable('users', {
     name: varchar('name', { length: 50 }).notNull(),
     role: PgEnumUserRole('role').notNull().default(EnumUserRole.USER),
     image: text('image'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
     banned: boolean().notNull().default(false),
     banReason: text('ban_reason'),
-    banExpires: timestamp('ban_expires'),
+    banExpires: timestamp('ban_expires', { withTimezone: true }),
 });
 
 export type User = InferSelectModel<typeof users>;

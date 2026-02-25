@@ -28,10 +28,10 @@ export const examUserStatsGlobal = pgTable('exam_user_stats_global', {
     averageScore: decimal('average_score', { precision: 10, scale: 2 }).default('0').notNull(),
 
     // Timestamp when the user last took an exam
-    lastActiveAt: timestamp('last_active_at'),
+    lastActiveAt: timestamp('last_active_at', { withTimezone: true }),
 
     // Timestamp when this statistics row was last updated incrementally
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type SchemaExamUserStatGlobalSelect = InferSelectModel<typeof examUserStatsGlobal>;

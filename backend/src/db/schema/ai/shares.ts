@@ -41,10 +41,10 @@ export const aiShares = pgTable('ai_shares', {
         .default({}),
 
     // Optional expiration for the share link
-    expiresAt: timestamp('expires_at'),
+    expiresAt: timestamp('expires_at', { withTimezone: true }),
 
     // Timestamps
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Share status
     isActive: boolean('is_active').notNull().default(true),

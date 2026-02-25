@@ -2,7 +2,8 @@ import { createFileRoute } from '@tanstack/react-router';
 import {
     useListCategory,
     useDeleteCategory,
-    ExamCategory
+    ExamCategory,
+    ListCategoryResponse
 } from '@/api/exam/categories';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
@@ -89,7 +90,7 @@ function AdminExamCategoriesPage() {
             </div>
 
             <CategoryTable
-                data={data}
+                data={data as ListCategoryResponse}
                 isLoading={isLoading}
                 page={page}
                 limit={limit}

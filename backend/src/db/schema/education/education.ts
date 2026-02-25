@@ -1,4 +1,4 @@
-import {pgTable, varchar, timestamp, text, jsonb, serial} from 'drizzle-orm/pg-core';
+import { pgTable, varchar, timestamp, text, jsonb, serial } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 /**
@@ -25,15 +25,15 @@ import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
  */
 export const educationGrades = pgTable('education_grade', {
   id: serial('id').primaryKey().notNull(),
-  grade: varchar('grade', {length: 32}).unique().notNull(),
-  name: varchar('name', {length: 128}).notNull(),
+  grade: varchar('grade', { length: 32 }).unique().notNull(),
+  name: varchar('name', { length: 128 }).notNull(),
   desc: text('desc')
     .default(''),
   extra: jsonb("extra")
     .$type<Record<string, unknown>>()
     .default({}),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
 
 export type SchemaEducationGradeSelect = InferSelectModel<typeof educationGrades>;

@@ -39,11 +39,11 @@ export const aiMessages = pgTable('ai_messages', {
     content: text('content').notNull(),
 
     // Timestamp
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Request/Response timing for analytics
-    requestStartedAt: timestamp('request_started_at'), // When AI request started
-    responseReceivedAt: timestamp('response_received_at'), // When AI response received
+    requestStartedAt: timestamp('request_started_at', { withTimezone: true }), // When AI request started
+    responseReceivedAt: timestamp('response_received_at', { withTimezone: true }), // When AI response received
 
     // Conversation ordering
     position: integer('position').notNull(), // Position of message in the conversation (zero-indexed)

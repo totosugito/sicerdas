@@ -108,20 +108,23 @@ export function string_gmt_to_date(value: string, format = "yyyy/MM/dd") {
   }
 }
 
-export const string_to_date_yyyyMMMMdd = (localeId: string, dateString: string) => {
+export const string_to_locale_date = (
+  localeId: string,
+  dateString: string,
+  options: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }
+) => {
   if (!dateString) return null;
 
-  const options: Record<string, any> = {
-    // weekday: 'long',    // "Senin", "Selasa", etc.
-    year: 'numeric',    // 2024
-    month: 'long',      // "September"
-    day: 'numeric'      // 19
-  };
+  const date = new Date(dateString);
 
-  const date = new Date(dateString)
-  const formattedDate = date.toLocaleDateString(localeId, options)
-  return `${formattedDate} `
-}
+  return date.toLocaleString(localeId, options);
+};
 
 export const date_to_string_yyyyMMdd = (date: Date, localeId: string) => {
   const options: Record<string, any> = {

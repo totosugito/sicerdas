@@ -28,10 +28,10 @@ import { users } from "./users.ts";
  */
 export const sessions = pgTable('users_sessions', {
     id: uuid().primaryKey().notNull().defaultRandom(),
-    expiresAt: timestamp('expires_at').notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
     token: text('token').notNull().unique(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
     ipAddress: text('ip_address'),
     userAgent: text('user_agent'),
     userId: uuid('user_id')

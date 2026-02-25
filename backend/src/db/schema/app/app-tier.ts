@@ -43,8 +43,8 @@ export const appTier = pgTable('app_tier', {
     isPopular: boolean('is_popular').notNull().default(false),
 
     // Timestamps
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type SchemaAppTierSelect = InferSelectModel<typeof appTier>;

@@ -21,10 +21,10 @@ export const examTags = pgTable('exam_tags', {
     isActive: boolean('is_active').default(true).notNull(),
 
     // Timestamp when this tag was created
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Timestamp when this tag was last updated
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type SchemaExamTagSelect = InferSelectModel<typeof examTags>;

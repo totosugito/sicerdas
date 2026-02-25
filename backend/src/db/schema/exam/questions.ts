@@ -41,10 +41,10 @@ export const examQuestions = pgTable('exam_questions', {
     isActive: boolean('is_active').default(true).notNull(),
 
     // Timestamp when this question was created
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Timestamp when this question was last updated
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
     index('exam_questions_subject_id_idx').on(table.subjectId),
     index('exam_questions_passage_id_idx').on(table.passageId),

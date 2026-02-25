@@ -58,8 +58,8 @@ export const aiApiLogs = pgTable('ai_api_logs', {
         .references(() => aiModels.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 
     // Aggregation period
-    periodStart: timestamp('period_start').notNull(), // Start of hour (e.g., 2024-01-01 14:00:00)
-    periodEnd: timestamp('period_end').notNull(),     // End of hour (e.g., 2024-01-01 15:00:00)
+    periodStart: timestamp('period_start', { withTimezone: true }).notNull(), // Start of hour (e.g., 2024-01-01 14:00:00)
+    periodEnd: timestamp('period_end', { withTimezone: true }).notNull(),     // End of hour (e.g., 2024-01-01 15:00:00)
 
     // Aggregated metrics
     successCount: integer('success_count').notNull().default(0),
@@ -69,7 +69,7 @@ export const aiApiLogs = pgTable('ai_api_logs', {
     avgDuration: integer('avg_duration'), // Average duration in milliseconds
     totalTokens: integer('total_tokens'), // Total tokens used in this period
 
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
     index('ai_api_logs_model_id_idx').on(table.modelId),
     index('ai_api_logs_period_start_idx').on(table.periodStart),

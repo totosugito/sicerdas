@@ -1,4 +1,4 @@
-import { ExamCategory } from '@/api/exam/categories';
+import { ExamCategory, ListCategoryResponse } from '@/api/exam/categories';
 import {
     DataTable,
     useDataTable,
@@ -20,9 +20,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { string_date_to_formatted, string_gmt_to_date, string_gmt_to_string, string_to_locale_date } from '@/lib/my-utils';
 
 interface CategoryTableProps {
-    data: any;
+    data: ListCategoryResponse;
     isLoading: boolean;
     page: number;
     limit: number;
@@ -57,7 +58,6 @@ export function CategoryTable({
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title={t("exam.categories.list.table.columns.name")} />
             ),
-            cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
         },
         {
             accessorKey: "description",
@@ -76,8 +76,8 @@ export function CategoryTable({
         {
             accessorKey: "isActive",
             enableSorting: false,
-            minSize: 50,
-            maxSize: 50,
+            minSize: 70,
+            maxSize: 70,
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title={t("exam.categories.list.table.columns.status")} className='justify-center' />
             ),
@@ -91,6 +91,20 @@ export function CategoryTable({
                     </div>
                 );
             },
+        },
+        {
+            accessorKey: "updatedAt",
+            enableSorting: false,
+            minSize: 100,
+            maxSize: 100,
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title={t("exam.categories.list.table.columns.updatedAt")} />
+            ),
+            cell: ({ row }) => (
+                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                    {string_to_locale_date("id-ID", row.getValue("updatedAt"))}
+                </span>
+            ),
         },
         {
             id: "actions",

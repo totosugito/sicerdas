@@ -59,8 +59,8 @@ export const aiSessions = pgTable('ai_sessions', {
         .default({}),
 
     // Timestamps
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Session status
     isActive: boolean('is_active').notNull().default(true),

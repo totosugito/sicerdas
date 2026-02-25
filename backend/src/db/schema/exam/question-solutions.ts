@@ -33,10 +33,10 @@ export const examQuestionSolutions = pgTable('exam_question_solutions', {
     requiredTier: varchar('required_tier', { length: 50 }).references(() => appTier.slug, { onDelete: 'set null' }).default('free'),
 
     // Timestamp when this solution was created
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Timestamp when this solution was last updated
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
     index('exam_question_solutions_question_id_idx').on(table.questionId),
     index('exam_question_solutions_tier_idx').on(table.requiredTier),

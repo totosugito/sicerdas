@@ -40,8 +40,8 @@ export const bookGroup = pgTable('book_group', {
         .$type<Record<string, unknown>>()
         .default({}),
     status: PgEnumContentStatus('status').notNull().default(EnumContentStatus.PUBLISHED),
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
 
 export type SchemaBookGroupInsert = InferInsertModel<typeof bookGroup>;

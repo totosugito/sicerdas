@@ -26,9 +26,9 @@ export const verifications = pgTable("users_verifications", {
     id: uuid().primaryKey().notNull().defaultRandom(),
     identifier: varchar("identifier", { length: 255 }).notNull(),
     value: varchar("value", { length: 255 }).notNull(),
-    expiresAt: timestamp("expires_at").notNull(),
-    createdAt: timestamp("created_at").notNull(),
-    updatedAt: timestamp("updated_at").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull(),
 });
 
 export type SchemaVerificationSelect = InferSelectModel<typeof verifications>;

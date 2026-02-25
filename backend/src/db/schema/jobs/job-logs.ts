@@ -26,8 +26,8 @@ export const jobLogs = pgTable('job_logs', {
     status: PgEnumJobStatus('status').notNull().default(EnumJobStatus.PENDING),
     triggeredBy: PgEnumJobTrigger('triggered_by').default(EnumJobTrigger.SYSTEM), // 'system', 'manual', 'api'
 
-    startTime: timestamp('start_time').defaultNow().notNull(),
-    endTime: timestamp('end_time'),
+    startTime: timestamp('start_time', { withTimezone: true }).defaultNow().notNull(),
+    endTime: timestamp('end_time', { withTimezone: true }),
     durationMs: integer('duration_ms'),
 
     // Results & Errors
@@ -36,7 +36,7 @@ export const jobLogs = pgTable('job_logs', {
         .default({}),
     error: text('error'), // Stack trace or error message
 
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 
 }, (table) => [
     index('job_logs_name_index').on(table.jobName),

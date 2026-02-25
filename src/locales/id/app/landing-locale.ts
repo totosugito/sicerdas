@@ -167,15 +167,6 @@ export default {
                 national: "Latihan ujian nasional",
                 subjects: "Kuis khusus mata pelajaran"
             }
-        },
-        login: "Masuk",
-        profile: "Profil",
-        settings: "Pengaturan",
-        logout: "Keluar",
-        theme: {
-            light: "Terang",
-            dark: "Gelap",
-            system: "Sistem"
         }
     }
 }

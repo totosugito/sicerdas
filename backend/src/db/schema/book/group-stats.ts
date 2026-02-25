@@ -29,8 +29,8 @@ export const bookGroupStats = pgTable('book_group_stats', {
         .$type<Record<string, unknown>>()
         .default({}),
 
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 }, (table) => [
     index('book_group_stats_book_group_id_index').on(table.bookGroupId),
 ]);

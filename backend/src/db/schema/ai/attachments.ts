@@ -44,7 +44,7 @@ export const aiAttachments = pgTable('ai_attachments', {
         .default({}),
 
     // Timestamp
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Optional direct access URL
     url: text('url'), // Public URL to access the file

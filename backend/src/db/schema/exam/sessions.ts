@@ -24,19 +24,19 @@ export const examSessions = pgTable('exam_sessions', {
     status: PgEnumExamSessionStatus('status').default(EnumExamSessionStatus.IN_PROGRESS).notNull(),
 
     // Exact time the user clicked "Start"
-    startTime: timestamp('start_time').defaultNow().notNull(),
+    startTime: timestamp('start_time', { withTimezone: true }).defaultNow().notNull(),
 
     // Exact time the system auto-submitted or user manually submitted
-    endTime: timestamp('end_time'),
+    endTime: timestamp('end_time', { withTimezone: true }),
 
     // Final calculated score for the entire session. Uses decimal to support IRT grading systems.
     score: decimal('score', { precision: 10, scale: 2 }),
 
     // Timestamp when this session was created
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Timestamp when this session was last updated
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
     index('exam_sessions_user_id_idx').on(table.userId),
     index('exam_sessions_package_id_idx').on(table.packageId),

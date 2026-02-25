@@ -21,10 +21,10 @@ export const examCategories = pgTable('exam_categories', {
     isActive: boolean('is_active').default(true).notNull(),
 
     // Timestamp when this category was created
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Timestamp when this category was last updated
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type SchemaExamCategorySelect = InferSelectModel<typeof examCategories>;

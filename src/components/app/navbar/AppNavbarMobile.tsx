@@ -121,8 +121,8 @@ export function AppNavbarMobile({ isOpen, setIsOpen }: AppNavbarMobileProps) {
                             to={AppRoute.auth.signIn.url}
                             onClick={() => setIsOpen(false)}
                         >
-                            <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-primary-foreground rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 h-12 font-semibold">
-                                {t('landing.navbar.login')}
+                            <Button className="w-full bg-gradient-to-r from-primary to-primary/70 hover:opacity-90 text-primary-foreground rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 h-12 font-semibold">
+                                {t('labels.login')}
                             </Button>
                         </Link>
                     </div>

@@ -38,6 +38,7 @@ export default {
     light: "Terang",
     dark: "Gelap",
     system: "Sistem",
+    login: "Masuk",
     pagination: {
         previous: "Sebelumnya",
         next: "Berikutnya",

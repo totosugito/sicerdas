@@ -36,7 +36,7 @@ export const appEventHistory = pgTable('app_event_history', {
   userAgent: text('user_agent'),
 
   // Timestamps
-  createdAt: timestamp('created_at').notNull().defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [
   // Indexes for better query performance
   index('app_event_history_user_id_index').on(table.userId),

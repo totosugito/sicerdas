@@ -174,21 +174,21 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
                 className={cn('my-1', theme === 'light' ? 'bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90' : 'hover:bg-accent focus:bg-accent')}
               >
                 <Sun className={cn("mr-2 h-4 w-4", theme === 'light' ? 'text-primary-foreground' : '')} />
-                {t('landing.navbar.theme.light')}
+                {t('labels.light')}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => changeTheme('dark')}
                 className={cn('my-1', theme === 'dark' ? 'bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90' : 'hover:bg-accent focus:bg-accent')}
               >
                 <Moon className={cn("mr-2 h-4 w-4", theme === 'dark' ? 'text-primary-foreground' : '')} />
-                {t('landing.navbar.theme.dark')}
+                {t('labels.dark')}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => changeTheme('system')}
                 className={cn('my-1', theme === 'system' ? 'bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90' : 'hover:bg-accent focus:bg-accent')}
               >
                 <Monitor className="mr-2 h-4 w-4 text-foreground" />
-                {t('landing.navbar.theme.system')}
+                {t('labels.system')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -235,20 +235,20 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
                 <DropdownMenuItem asChild>
                   <Link to={AppRoute.user.profile.url}>
                     <User className="mr-2 h-4 w-4" />
-                    {t('landing.navbar.profile')}
+                    {t('labels.profile')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={onLogoutClick}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  {t('landing.navbar.logout')}
+                  {t('labels.logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <Button asChild variant="default" size="sm" className="px-3">
               <Link to={AppRoute.auth.signIn.url}>
-                {t('landing.navbar.login')}
+                {t('labels.login')}
               </Link>
             </Button>
           )}

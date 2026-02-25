@@ -21,10 +21,10 @@ export const examSubjects = pgTable('exam_subjects', {
     isActive: boolean('is_active').default(true).notNull(),
 
     // Timestamp when this subject was created
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Timestamp when this subject was last updated
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type SchemaExamSubjectSelect = InferSelectModel<typeof examSubjects>;

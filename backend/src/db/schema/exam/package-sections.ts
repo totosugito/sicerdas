@@ -28,10 +28,10 @@ export const examPackageSections = pgTable('exam_package_sections', {
     isActive: boolean('is_active').default(true).notNull(),
 
     // Timestamp when this section was created
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Timestamp when this section was last updated
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
     index('exam_package_sections_package_id_idx').on(table.packageId),
 ]);

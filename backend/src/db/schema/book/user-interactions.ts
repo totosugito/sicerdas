@@ -48,8 +48,8 @@ export const bookInteractions = pgTable('book_interactions', {
         .default({}),
 
     // Timestamps
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
     uniqueIndex('book_interactions_user_book_unique_index').on(table.userId, table.bookId),
     index('book_interactions_book_id_index').on(table.bookId),

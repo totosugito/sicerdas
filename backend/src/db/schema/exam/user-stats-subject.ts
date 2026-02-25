@@ -26,7 +26,7 @@ export const examUserStatsSubject = pgTable('exam_user_stats_subject', {
     accuracyRate: decimal('accuracy_rate', { precision: 5, scale: 2 }).default('0').notNull(),
 
     // Timestamp representing the last time this specific aggregate was incremented
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
     index('exam_user_stats_subject_lookup_idx').on(table.userId, table.subjectId),
 ]);

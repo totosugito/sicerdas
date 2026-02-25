@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ProfileHeader } from '@/components/pages/user/profile'
 import { AlertCircle, User } from 'lucide-react'
+import { PageTitle } from '@/components/app'
 
 interface ProfileLoadingViewProps {
     isLoading?: boolean
@@ -15,7 +15,7 @@ export function ProfileLoadingView({ isLoading = true }: ProfileLoadingViewProps
 
     return (
         <div className="flex flex-col gap-6 w-full">
-            <ProfileHeader />
+            <PageTitle title={t('user.profile.title')} description={<span>{t('user.profile.description')}</span>} />
 
             <div className="grid md:grid-cols-[220px_minmax(0px,_1fr)] max-w-6xl gap-x-6 w-full">
                 {/* Navigation Tabs Skeleton */}
@@ -66,7 +66,7 @@ export function ProfileErrorView({ isError = true }: ProfileErrorViewProps) {
 
     return (
         <div className="flex flex-col gap-6 w-full">
-            <ProfileHeader />
+            <PageTitle title={t('user.profile.title')} description={<span>{t('user.profile.description')}</span>} />
 
             <div className="grid md:grid-cols-[220px_minmax(0px,_1fr)] max-w-6xl gap-x-6 w-full">
                 {/* Navigation Tabs Skeleton */}

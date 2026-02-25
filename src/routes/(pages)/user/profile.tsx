@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-    ProfileHeader, TabNavigation, ProfileInfoForm, PersonalInfoForm, SecurityForm, PrivacyForm, SessionList,
+    TabNavigation, ProfileInfoForm, PersonalInfoForm, SecurityForm, PrivacyForm, SessionList,
     createProfileInfoFormData, createPersonalInfoFormData, createSecurityFormData, createPrivacyFormData,
     ProfileInfoFormRef, ProfileLoadingView, ProfileErrorView
 } from '@/components/pages/user/profile'
@@ -17,6 +17,7 @@ import { useAuth } from '@/hooks/use-auth'
 import type { UserSession } from '@/api/user/user-sessions'
 
 import { authClient } from '@/lib/auth-client'
+import { PageTitle } from '@/components/app'
 
 // Add validation for query parameters
 const profileSearchSchema = z.object({
@@ -254,74 +255,71 @@ function RouteComponent() {
     }
 
     return (
-        <div className="page-container">
-            <div className="flex flex-col gap-4 w-full py-6">
-                <ProfileHeader />
-
-                <Tabs value={currentTab} onValueChange={handleTabChange}>
-                    <div className="grid md:grid-cols-[220px_minmax(0px,_1fr)] max-w-6xl gap-x-6 w-full ">
-                        {/* Navigation Tabs */}
-                        <div className="md:col-span-1 w-full">
-                            <TabNavigation />
-                        </div>
-
-                        {/* Tab Content - Set to same width */}
-                        <div className="w-full">
-                            {/* Profile Tab */}
-                            <TabsContent value="profile" className="mt-0 w-full">
-                                <ProfileInfoForm
-                                    ref={profileInfoFormRef}
-                                    form={profileForm}
-                                    onSubmit={onProfileFormSubmit}
-                                    error={profileUpdateError}
-                                />
-                            </TabsContent>
-
-                            {/* Personal Info Tab */}
-                            <TabsContent value="personal" className="mt-0 w-full">
-                                <PersonalInfoForm form={personalInfoForm}
-                                    onSubmit={onPersonalInfoSubmit}
-                                    error={personalInfoUpdateError} />
-                            </TabsContent>
-
-                            {/* Security Tab */}
-                            <TabsContent value="security" className="mt-0 w-full">
-                                <div className='flex flex-col gap-6'>
-                                    {userProfile && (userProfile.providerId === "email" || userProfile.providerId === "credential") ? (
-                                        <SecurityForm
-                                            form={securityForm}
-                                            onSubmit={onSecuritySubmit}
-                                            error={securityUpdateError}
-                                        />
-                                    ) : (
-                                        <div className="p-4 text-center">
-                                            <p className="text-muted-foreground">
-                                                {t("user.profile.security.notAvailable")}
-                                            </p>
-                                        </div>
-                                    )}
-
-                                    {/* show session list */}
-                                    <SessionList
-                                        sessions={sessions as UserSession[]}
-                                        isLoading={sessionsLoading}
-                                        isError={sessionsError}
-                                        currentToken={authUser?.token || null}
-                                        refetch={refetchSessions}
-                                        onRevokeSession={handleRevokeSession}
-                                        onRevokeAllSessions={handleRevokeAllSessions}
-                                    />
-                                </div>
-                            </TabsContent>
-
-                            {/* Privacy Tab */}
-                            <TabsContent value="privacy" className="mt-0 w-full">
-                                <PrivacyForm form={privacyForm} onSubmit={onPrivacySubmit} error={privacyUpdateError} />
-                            </TabsContent>
-                        </div>
+        <div className="flex flex-col gap-6 w-full">
+            <PageTitle title={t('user.profile.title')} description={<span>{t('user.profile.description')}</span>} />
+            <Tabs value={currentTab} onValueChange={handleTabChange}>
+                <div className="grid md:grid-cols-[220px_minmax(0px,_1fr)] max-w-6xl gap-x-6 w-full ">
+                    {/* Navigation Tabs */}
+                    <div className="md:col-span-1 w-full">
+                        <TabNavigation />
                     </div>
-                </Tabs>
-            </div>
+
+                    {/* Tab Content - Set to same width */}
+                    <div className="w-full">
+                        {/* Profile Tab */}
+                        <TabsContent value="profile" className="mt-0 w-full">
+                            <ProfileInfoForm
+                                ref={profileInfoFormRef}
+                                form={profileForm}
+                                onSubmit={onProfileFormSubmit}
+                                error={profileUpdateError}
+                            />
+                        </TabsContent>
+
+                        {/* Personal Info Tab */}
+                        <TabsContent value="personal" className="mt-0 w-full">
+                            <PersonalInfoForm form={personalInfoForm}
+                                onSubmit={onPersonalInfoSubmit}
+                                error={personalInfoUpdateError} />
+                        </TabsContent>
+
+                        {/* Security Tab */}
+                        <TabsContent value="security" className="mt-0 w-full">
+                            <div className='flex flex-col gap-6'>
+                                {userProfile && (userProfile.providerId === "email" || userProfile.providerId === "credential") ? (
+                                    <SecurityForm
+                                        form={securityForm}
+                                        onSubmit={onSecuritySubmit}
+                                        error={securityUpdateError}
+                                    />
+                                ) : (
+                                    <div className="p-4 text-center">
+                                        <p className="text-muted-foreground">
+                                            {t("user.profile.security.notAvailable")}
+                                        </p>
+                                    </div>
+                                )}
+
+                                {/* show session list */}
+                                <SessionList
+                                    sessions={sessions as UserSession[]}
+                                    isLoading={sessionsLoading}
+                                    isError={sessionsError}
+                                    currentToken={authUser?.token || null}
+                                    refetch={refetchSessions}
+                                    onRevokeSession={handleRevokeSession}
+                                    onRevokeAllSessions={handleRevokeAllSessions}
+                                />
+                            </div>
+                        </TabsContent>
+
+                        {/* Privacy Tab */}
+                        <TabsContent value="privacy" className="mt-0 w-full">
+                            <PrivacyForm form={privacyForm} onSubmit={onPrivacySubmit} error={privacyUpdateError} />
+                        </TabsContent>
+                    </div>
+                </div>
+            </Tabs>
         </div>
     )
 }

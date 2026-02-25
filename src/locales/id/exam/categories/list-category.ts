@@ -12,6 +12,7 @@ export default {
             description: "Deskripsi",
             status: "Status",
             createdAt: "Dibuat Pada",
+            updatedAt: "Diperbarui Pada",
             actions: "Aksi"
         },
         status: {

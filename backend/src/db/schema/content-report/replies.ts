@@ -39,8 +39,8 @@ export const contentReportReplies = pgTable('content_report_replies', {
         .default({}), // JSONB for storing additional structured data with default empty object
 
     // Timestamps
-    createdAt: timestamp('created_at').notNull().defaultNow(),
-    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [
     // Indexes for better query performance
     index('content_report_replies_report_id_index').on(table.reportId),

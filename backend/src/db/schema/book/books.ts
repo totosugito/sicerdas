@@ -53,8 +53,8 @@ export const books = pgTable('books', {
     extra: jsonb("extra")
         .$type<Record<string, unknown>>()
         .default({}),
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 }, (table) => [
     index('books_title_index').on(table.title),
     index('books_author_index').on(table.author),

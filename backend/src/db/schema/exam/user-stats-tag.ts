@@ -27,7 +27,7 @@ export const examUserStatsTag = pgTable('exam_user_stats_tag', {
     accuracyRate: decimal('accuracy_rate', { precision: 5, scale: 2 }).default('0').notNull(),
 
     // Timestamp tracking data freshness for the Cron reconciliation script
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
     index('exam_user_stats_tag_lookup_idx').on(table.userId, table.tagId),
 ]);

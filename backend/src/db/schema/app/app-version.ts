@@ -41,8 +41,8 @@ export const appVersion = pgTable('app_version', {
   extra: jsonb("extra")
     .$type<Record<string, unknown>>()
     .default({}),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
 
 export type SchemaAppVersionSelect = InferSelectModel<typeof appVersion>;

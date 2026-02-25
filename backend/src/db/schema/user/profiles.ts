@@ -46,7 +46,7 @@ export const usersProfile = pgTable('users_profiles', {
 
     // Personal information
     bio: text('bio'),
-    dateOfBirth: timestamp('date_of_birth'),
+    dateOfBirth: timestamp('date_of_birth', { withTimezone: true }),
 
     // Pricing / Tier Link
     tierId: varchar('tier_id', { length: 50 })
@@ -59,8 +59,8 @@ export const usersProfile = pgTable('users_profiles', {
         .default({}),
 
     // Timestamps
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type SchemaUsersProfileSelect = InferSelectModel<typeof usersProfile>;

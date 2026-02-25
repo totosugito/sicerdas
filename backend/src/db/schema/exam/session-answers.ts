@@ -36,10 +36,10 @@ export const examSessionAnswers = pgTable('exam_session_answers', {
     isDoubtful: boolean('is_doubtful').default(false).notNull(),
 
     // Timestamp when this answer was initially populated
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Timestamp when this answer was last auto-saved
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
     index('exam_session_answers_session_id_idx').on(table.sessionId),
     index('exam_session_answers_question_id_idx').on(table.questionId),

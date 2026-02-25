@@ -85,11 +85,11 @@ export const notifications = pgTable('notifications', {
   priority: PgEnumNotificationPriority('priority').notNull().default('normal'),
 
   // Timestamps
-  readAt: timestamp('read_at'),
-  sentAt: timestamp('sent_at'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  expiresAt: timestamp('expires_at'),
+  readAt: timestamp('read_at', { withTimezone: true }),
+  sentAt: timestamp('sent_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }),
 
   // Flags
   isArchived: boolean('is_archived').notNull().default(false),

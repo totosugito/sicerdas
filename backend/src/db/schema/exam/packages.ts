@@ -45,10 +45,10 @@ export const examPackages = pgTable('exam_packages', {
     isActive: boolean('is_active').default(true).notNull(),
 
     // Timestamp when this package was created
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 
     // Timestamp when this package was last updated
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
     index('exam_packages_category_id_idx').on(table.categoryId),
     index('exam_packages_creator_idx').on(table.createdByUserId),

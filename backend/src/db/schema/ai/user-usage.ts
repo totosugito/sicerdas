@@ -33,8 +33,8 @@ export const aiUserUsage = pgTable('ai_user_usage', {
 
     type: PgEnumUsageType('type').notNull().default(EnumUsageType.MONTHLY),
 
-    periodStart: timestamp('period_start').notNull(),
-    periodEnd: timestamp('period_end').notNull(),
+    periodStart: timestamp('period_start', { withTimezone: true }).notNull(),
+    periodEnd: timestamp('period_end', { withTimezone: true }).notNull(),
 
     tokensUsed: integer('tokens_used').notNull().default(0),
     requestCount: integer('request_count').notNull().default(0),
@@ -42,7 +42,7 @@ export const aiUserUsage = pgTable('ai_user_usage', {
     // Potential for detailed breakdown, e.g. { "gpt-4": 100, "claude-3": 200 }
     extra: jsonb('extra').$type<Record<string, any>>().default({}),
 
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
     index('ai_user_usage_period_idx').on(table.userId, table.periodStart, table.periodEnd),
     index('ai_user_usage_type_idx').on(table.type),
