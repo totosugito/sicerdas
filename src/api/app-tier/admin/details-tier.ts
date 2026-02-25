@@ -11,7 +11,7 @@ export type GetTierResponse = {
 
 export const useDetailsTier = (slug: string) => {
     return useQuery({
-        queryKey: ["admin-tier-pricing-details", slug],
+        queryKey: ["admin-app-tier-details", slug],
         queryFn: async () => {
             const response = await fetchApi({
                 method: "GET",

@@ -17,7 +17,7 @@ export interface CreateReportBody {
 
 export const useCreateReportMutation = () => {
     return useMutation({
-        mutationKey: ['createContentReport'],
+        mutationKey: ["content-report-create"],
         mutationFn: async ({ body }: { body: CreateReportBody }) => {
             const response = await fetchApi({
                 method: "POST",

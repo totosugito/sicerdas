@@ -9,6 +9,7 @@ export type DeleteTierResponse = {
 
 export const useDeleteTier = () => {
     return useMutation({
+        mutationKey: ["admin-app-tier-delete"],
         mutationFn: async (slug: string) => {
             const response = await fetchApi({
                 method: "DELETE",

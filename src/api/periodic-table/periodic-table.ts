@@ -168,7 +168,7 @@ export const usePeriodicElementQuery = (
   { atomicNumber, language }: GetElementParamsWithLanguage
 ) => {
   return useQuery<ElementDetail>({
-    queryKey: ['periodicElement', atomicNumber, language],
+    queryKey: ["periodic-table-element", atomicNumber, language],
     queryFn: async () => {
       const url = `${AppApi.periodicTable.element}/${atomicNumber}`;
       const response = await fetchApi({ method: "GET", url });

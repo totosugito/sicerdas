@@ -24,6 +24,7 @@ export type CreateTierResponse = {
 
 export const useCreateTier = () => {
     return useMutation({
+        mutationKey: ["admin-app-tier-create"],
         mutationFn: async (data: CreateTierRequest) => {
             const response = await fetchApi({
                 method: "POST",

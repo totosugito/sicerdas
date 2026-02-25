@@ -18,6 +18,7 @@ export type UpdateBookmarkResponse = {
 
 export const useUpdateBookmark = () => {
     return useMutation({
+        mutationKey: ["book-bookmark-update"],
         mutationFn: async (data: UpdateBookmarkRequest) => {
             const response = await fetchApi({
                 method: "POST",

@@ -2,7 +2,7 @@ import { getGrade, getGradeColor } from '@/components/pages/book/types/books';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils'
 import { useTranslation } from 'react-i18next'
-import { BookListItem } from '@/api/book/book';
+import { BookListItem } from '@/api/book';
 import { useAuthStore } from '@/stores/useAuthStore';
 
 import { useNavigate, Link } from '@tanstack/react-router';

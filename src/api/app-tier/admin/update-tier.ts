@@ -16,6 +16,7 @@ export type UpdateTierResponse = {
 
 export const useUpdateTier = () => {
     return useMutation({
+        mutationKey: ["admin-app-tier-update"],
         mutationFn: async (data: UpdateTierRequest) => {
             const { slug, ...body } = data;
             const response = await fetchApi({

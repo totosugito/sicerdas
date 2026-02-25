@@ -11,7 +11,7 @@ export type ListTierResponse = {
 
 export const useListTier = () => {
     return useQuery({
-        queryKey: ["admin-tier-pricing-list"],
+        queryKey: ["admin-app-tier-list"],
         queryFn: async () => {
             const response = await fetchApi({
                 method: "GET",
