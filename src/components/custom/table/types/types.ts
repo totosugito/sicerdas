@@ -16,3 +16,10 @@ export type ColumnWithMeta<TData> = Column<TData> & {
     meta?: ColumnMeta<TData>;
   };
 };
+
+export interface PaginationData {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}

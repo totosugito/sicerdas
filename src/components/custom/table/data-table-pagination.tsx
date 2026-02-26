@@ -30,16 +30,16 @@ interface DataTablePaginationProps extends React.ComponentProps<"div"> {
 }
 
 export function DataTablePagination({
-                                      pageIndex, setPageIndex, pageSize, setPageSize,
-                                      rowsCount,
-                                      pageSizeOptions = [5, 10, 20, 30, 40, 50],
-                                      paginationData,
-                                      showPageSize = true,
-                                      disabled = false,
-                                      onPaginationChange,
-                                      showPageLabel = true,
-                                      className,
-                                    }: DataTablePaginationProps) {
+  pageIndex, setPageIndex, pageSize, setPageSize,
+  rowsCount,
+  pageSizeOptions = [5, 10, 20, 30, 40, 50],
+  paginationData,
+  showPageSize = true,
+  disabled = false,
+  onPaginationChange,
+  showPageLabel = true,
+  className,
+}: DataTablePaginationProps) {
 
   const { t } = useTranslation();
   const maxDisplayedPages = 1; // Number of pages to show before and after the current page
@@ -130,7 +130,7 @@ export function DataTablePagination({
 
   const pageNumbers = generatePageNumbers();
   let startIndex = (currentPageSize * currentPageIndex) + 1;
-  if (startIndex >= totalRowsCount) {
+  if (startIndex > totalRowsCount) {
     startIndex = 1;
   }
 
@@ -182,7 +182,7 @@ export function DataTablePagination({
                         // className="rounded-none shadow-none focus-visible:z-10 aria-disabled:pointer-events-none [&[aria-disabled]>svg]:opacity-50"
                         isActive={currentPageIndex === page}
                         onClick={() => {
-                          if(disabled) {
+                          if (disabled) {
                             return;
                           }
                           handlePageChange(page);

@@ -23,7 +23,8 @@ export default {
             edit: "Ubah",
             delete: "Hapus",
             openMenu: "Buka menu"
-        }
+        },
+        noResult: "Tidak ada data kategori."
     },
     form: {
         name: {

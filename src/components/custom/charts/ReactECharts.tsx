@@ -1,14 +1,13 @@
 import * as React from 'react'
-import {useEffect, useImperativeHandle, useMemo, useRef, forwardRef} from 'react'
-import {getInstanceByDom, init, use} from "echarts/core";
+import { useEffect, useImperativeHandle, useMemo, useRef, forwardRef } from 'react'
+import { getInstanceByDom, init, use } from "echarts/core";
 
-import {cn} from "@/lib/utils";
-import {getShadcnRgbaColor} from "@/lib/my-utils";
+import { cn } from "@/lib/utils";
 
-import {CanvasRenderer} from "echarts/renderers";
-import {BarChart, LineChart, ScatterChart, FunnelChart} from "echarts/charts";
-import {GridComponent, LegendComponent, TitleComponent, ToolboxComponent, TooltipComponent, GraphicComponent} from "echarts/components";
-import {useTheme} from "@/lib/theme-provider";
+import { CanvasRenderer } from "echarts/renderers";
+import { BarChart, LineChart, ScatterChart, FunnelChart } from "echarts/charts";
+import { GridComponent, LegendComponent, TitleComponent, ToolboxComponent, TooltipComponent, GraphicComponent } from "echarts/components";
+import { useTheme } from "@/lib/theme-provider";
 
 use([
   LegendComponent,
@@ -49,9 +48,9 @@ const EChartsConfig = {
 
 const UpdateChartWatermark = (text: string, color: any, z = 100, font = "normal 10px Arial") => {
   let color_ = color;
-  if (!color_) {
-    color_ = getShadcnRgbaColor('--foreground', 0.3);
-  }
+  // if (!color_) {
+  //   color_ = getShadcnRgbaColor('--foreground', 0.3);
+  // }
 
   let elements = [];
   for (let i = 0; i < text.length; i++) {
@@ -67,7 +66,7 @@ const UpdateChartWatermark = (text: string, color: any, z = 100, font = "normal 
       z: z
     });
   }
-  return ({elements: elements});
+  return ({ elements: elements });
 }
 
 const EChartsDefaultsOptions = {
@@ -89,13 +88,13 @@ const EChartsDefaultsOptions = {
     },
     renderMode: 'html',
     className: 'custom-echarts-tooltip',
-    formatter: (params: any) => ChartTooltip({params: params, useSeriesColor: false}),
+    formatter: (params: any) => ChartTooltip({ params: params, useSeriesColor: false }),
   },
   toolbox: {
     feature: {
-      dataView: {show: false, readOnly: false},
-      restore: {show: false},
-      saveAsImage: {show: false}
+      dataView: { show: false, readOnly: false },
+      restore: { show: false },
+      saveAsImage: { show: false }
     }
   },
   legend: {
@@ -118,19 +117,19 @@ interface Props {
 }
 
 const ReactECharts = forwardRef(({
-                                   options,
-                                   series = [],
-                                   chartSettings = {useCoarsePointer: true}, // enables clicking near a line and still highlighting it
-                                   optionSettings = {notMerge: true}, // don't merge two options together when updating option
-                                   className = "h-[350px]",
-                                   loading = false,
-                                   onEvents,
-                                   watermark,
-                                   // theme = "light",
-                                   ...props
-                                 }: Props, ref) => {
+  options,
+  series = [],
+  chartSettings = { useCoarsePointer: true }, // enables clicking near a line and still highlighting it
+  optionSettings = { notMerge: true }, // don't merge two options together when updating option
+  className = "h-[350px]",
+  loading = false,
+  onEvents,
+  watermark,
+  // theme = "light",
+  ...props
+}: Props, ref) => {
   const chartRef = useRef(null)
-  const {theme} = useTheme();
+  const { theme } = useTheme();
 
   useImperativeHandle(ref, () => ({
     getChartInstance: () => chartRef.current ? getInstanceByDom(chartRef.current) : null
@@ -211,7 +210,7 @@ const ReactECharts = forwardRef(({
       // --------------------------------------------------------------------------------
       // onEvents
       // --------------------------------------------------------------------------------
-      if(onEvents) {
+      if (onEvents) {
         Object.entries(onEvents).forEach(([event, handler]) => {
           if (handler && event !== 'zrClick') {  // Skip zrClick as it's handled separately
             chart.on(event, handler as (params: any) => void);
@@ -272,7 +271,7 @@ const ReactECharts = forwardRef(({
   // }, [series]);
   // }, [option]);
 
-  return <div ref={chartRef} className={cn("h-full w-full", className)} {...props}/>
+  return <div ref={chartRef} className={cn("h-full w-full", className)} {...props} />
 })
 
 interface TooltipParam {
@@ -297,7 +296,7 @@ const ChartTooltip = ({ params, showIndicators = true, useSeriesColor = false, c
   return `
     <div class="${tooltipClass}">
     <div class="font-bold text-popover-foreground">${title}</div>
-      ${params.map(({name, value, marker, seriesName, color}) => `
+      ${params.map(({ name, value, marker, seriesName, color }) => `
         <div>
           <div class="flex flex-row gap-2 items-center">
             ${showIndicators ? marker : ''}
@@ -322,7 +321,7 @@ interface ChartTooltipXYProps {
 }
 
 const ChartTooltipXY = ({ params, showIndicators = true, className = "" }: ChartTooltipXYProps) => {
-  const {data, seriesName, marker, dimensionNames} = params;
+  const { data, seriesName, marker, dimensionNames } = params;
   const tooltipClass = cn("flex flex-col gap-0 p-2 rounded-md border shadow-sm text-xs bg-popover/90", className);
 
   return `
@@ -352,8 +351,8 @@ interface ChartTooltipSeriesProps {
   className?: string;
 }
 
-const ChartTooltipSeries = ({params, showIndicators = true, className = ""}: ChartTooltipSeriesProps) => {
-  const {data, seriesName, marker, dimensionNames, name} = params;
+const ChartTooltipSeries = ({ params, showIndicators = true, className = "" }: ChartTooltipSeriesProps) => {
+  const { data, seriesName, marker, dimensionNames, name } = params;
   const tooltipClass = cn("flex flex-col gap-0 p-2 rounded-md border shadow-sm text-xs bg-popover/90", className);
 
   return `
@@ -366,4 +365,4 @@ const ChartTooltipSeries = ({params, showIndicators = true, className = ""}: Cha
     </div>
   `
 }
-export {EChartsConfig, EChartsDefaultsOptions, ReactECharts, ChartTooltip, UpdateChartWatermark, ChartTooltipXY, ChartTooltipSeries}
+export { EChartsConfig, EChartsDefaultsOptions, ReactECharts, ChartTooltip, UpdateChartWatermark, ChartTooltipXY, ChartTooltipSeries }

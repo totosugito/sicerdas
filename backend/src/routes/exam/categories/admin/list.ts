@@ -9,7 +9,7 @@ import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 const CategoryListQuery = Type.Object({
     search: Type.Optional(Type.String({ description: 'Search term for category name or description' })),
     isActive: Type.Optional(Type.Boolean({ description: 'Filter by active status. Omit to fetch all.' })),
-    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, name', default: 'createdAt' })),
+    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, updatedAt, name, isActive', default: 'updatedAt' })),
     sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'desc' })),
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
     limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
@@ -61,7 +61,7 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CategoryListQuery.static }>,
             reply: FastifyReply
         ) {
-            const { search, isActive, sortBy = 'createdAt', sortOrder = 'desc', page = 1, limit = 10 } = request.body;
+            const { search, isActive, sortBy = 'updatedAt', sortOrder = 'desc', page = 1, limit = 10 } = request.body;
             const offset = (page - 1) * limit;
 
             const conditions = [];
@@ -97,6 +97,16 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
                     queryWithSort = order === 'asc'
                         ? baseQuery.orderBy(examCategories.name)
                         : baseQuery.orderBy(desc(examCategories.name));
+                    break;
+                case 'isActive':
+                    queryWithSort = order === 'asc'
+                        ? baseQuery.orderBy(examCategories.isActive)
+                        : baseQuery.orderBy(desc(examCategories.isActive));
+                    break;
+                case 'updatedAt':
+                    queryWithSort = order === 'asc'
+                        ? baseQuery.orderBy(examCategories.updatedAt)
+                        : baseQuery.orderBy(desc(examCategories.updatedAt));
                     break;
                 case 'createdAt':
                 default:

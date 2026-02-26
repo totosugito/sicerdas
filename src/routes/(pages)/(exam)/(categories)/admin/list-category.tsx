@@ -7,28 +7,39 @@ import {
 } from '@/api/exam/categories';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/app';
 import { Plus, Trash2 } from 'lucide-react';
 import { DialogModal } from '@/components/custom/components';
 import { CategoryTable, DialogCategoryCreate } from '@/components/pages/exam/categories';
+import { PaginationData } from '@/components/custom/table';
+import { z } from 'zod';
 
 export const Route = createFileRoute('/(pages)/(exam)/(categories)/admin/list-category')({
+    validateSearch: z.object({
+        page: z.number().min(1).optional().catch(undefined),
+        limit: z.number().min(5).optional().catch(undefined),
+        search: z.string().optional().catch(undefined),
+        sortBy: z.string().optional().catch(undefined),
+        sortOrder: z.enum(['asc', 'desc']).optional().catch(undefined),
+    }),
     component: AdminExamCategoriesPage,
 });
 
 function AdminExamCategoriesPage() {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
+    const navigate = Route.useNavigate();
+    const searchParams = Route.useSearch();
 
     // States for pagination, search, and sorting
-    const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(10);
-    const [search, setSearch] = useState("");
-    const [sortBy, setSortBy] = useState("createdAt");
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>("desc");
+    const page = searchParams.page ?? 1;
+    const limit = searchParams.limit ?? 10;
+    const search = searchParams.search ?? "";
+    const sortBy = searchParams.sortBy ?? "updatedAt";
+    const sortOrder = searchParams.sortOrder ?? "desc";
 
     // API Hooks
     const { data, isLoading } = useListCategory({
@@ -92,11 +103,40 @@ function AdminExamCategoriesPage() {
             <CategoryTable
                 data={data as ListCategoryResponse}
                 isLoading={isLoading}
-                page={page}
-                limit={limit}
-                setPage={setPage}
-                setLimit={setLimit}
-                setSearch={setSearch}
+                paginationData={data?.data.meta as PaginationData}
+                onPaginationChange={(pagination: { page: number; limit: number }) => {
+                    navigate({
+                        search: {
+                            ...searchParams,
+                            page: pagination.page,
+                            limit: pagination.limit,
+                        },
+                        replace: true,
+                    });
+                }}
+                setSearch={(newSearch) => {
+                    navigate({
+                        search: {
+                            ...searchParams,
+                            search: newSearch || undefined,
+                            page: 1,
+                        },
+                        replace: true,
+                    });
+                }}
+                sortBy={sortBy}
+                sortOrder={sortOrder as "asc" | "desc"}
+                onSortChange={(newSortBy, newSortOrder) => {
+                    navigate({
+                        search: {
+                            ...searchParams,
+                            sortBy: newSortBy,
+                            sortOrder: newSortOrder,
+                            page: 1, // Reset to page 1 on resort
+                        },
+                        replace: true,
+                    });
+                }}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
             />

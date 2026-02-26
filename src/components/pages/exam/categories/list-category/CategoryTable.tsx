@@ -4,7 +4,8 @@ import {
     useDataTable,
     DataTableFilter,
     createRowNumberColumn,
-    DataTableColumnHeader
+    DataTableColumnHeader,
+    PaginationData
 } from '@/components/custom/table';
 import { LongText } from '@/components/custom/components';
 import { useTranslation } from 'react-i18next';
@@ -20,16 +21,17 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { string_date_to_formatted, string_gmt_to_date, string_gmt_to_string, string_to_locale_date } from '@/lib/my-utils';
+import { string_to_locale_date } from '@/lib/my-utils';
 
 interface CategoryTableProps {
     data: ListCategoryResponse;
     isLoading: boolean;
-    page: number;
-    limit: number;
-    setPage: (page: number) => void;
-    setLimit: (limit: number) => void;
+    paginationData: PaginationData;
+    onPaginationChange?: (pagination: { page: number; limit: number }) => void;
     setSearch: (search: string) => void;
+    sortBy: string;
+    sortOrder: "asc" | "desc";
+    onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
     onEdit: (category: ExamCategory) => void;
     onDelete: (category: ExamCategory) => void;
 }
@@ -37,11 +39,12 @@ interface CategoryTableProps {
 export function CategoryTable({
     data,
     isLoading,
-    page,
-    limit,
-    setPage,
-    setLimit,
+    paginationData,
+    onPaginationChange,
     setSearch,
+    sortBy,
+    sortOrder,
+    onSortChange,
     onEdit,
     onDelete,
 }: CategoryTableProps) {
@@ -50,11 +53,12 @@ export function CategoryTable({
     const columns: ColumnDef<ExamCategory>[] = [
         createRowNumberColumn<ExamCategory>({
             id: "no",
-            size: 50
+            size: 50,
+            paginationData: paginationData
         }),
         {
             accessorKey: "name",
-            enableSorting: false,
+            enableSorting: true,
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title={t("exam.categories.list.table.columns.name")} />
             ),
@@ -75,7 +79,7 @@ export function CategoryTable({
         },
         {
             accessorKey: "isActive",
-            enableSorting: false,
+            enableSorting: true,
             minSize: 70,
             maxSize: 70,
             header: ({ column }) => (
@@ -94,7 +98,7 @@ export function CategoryTable({
         },
         {
             accessorKey: "updatedAt",
-            enableSorting: false,
+            enableSorting: true,
             minSize: 100,
             maxSize: 100,
             header: ({ column }) => (
@@ -150,25 +154,41 @@ export function CategoryTable({
     const { table } = useDataTable({
         data: data?.data.items || [],
         columns,
-        pageCount: data?.data.meta.totalPages || 0,
+        pageCount: paginationData?.totalPages || -1,
+        initialState: {
+            pagination: {
+                pageIndex: (paginationData?.page || 1) - 1,
+                pageSize: paginationData?.limit || 10,
+            },
+            sorting: [
+                {
+                    id: sortBy,
+                    desc: sortOrder === "desc",
+                },
+            ],
+        },
+        manualSorting: true,
+        onSortingChange: (updater: any) => {
+            const nextSorting = typeof updater === "function" ? updater(table.getState().sorting) : updater;
+            if (nextSorting && nextSorting.length > 0) {
+                onSortChange(nextSorting[0].id, nextSorting[0].desc ? "desc" : "asc");
+            } else {
+                onSortChange("updatedAt", "desc");
+            }
+        },
         manualPagination: true,
         onPaginationChange: (updater: any) => {
-            const nextPagination = typeof updater === 'function'
-                ? updater({ pageIndex: page - 1, pageSize: limit })
-                : updater;
-            setPage(nextPagination.pageIndex + 1);
-            setLimit(nextPagination.pageSize);
+            const nextPagination = typeof updater === "function" ? updater(table.getState().pagination) : updater;
+            if (onPaginationChange) {
+                onPaginationChange({
+                    page: nextPagination.pageIndex + 1,
+                    limit: nextPagination.pageSize,
+                });
+            }
         },
         manualFiltering: true,
         onGlobalFilterChange: (searchValue: any) => {
             setSearch(searchValue);
-            setPage(1);
-        },
-        initialState: {
-            pagination: {
-                pageIndex: page - 1,
-                pageSize: limit,
-            },
         },
     });
 
@@ -188,10 +208,11 @@ export function CategoryTable({
             </div>
             <DataTable
                 table={table}
-                paginationData={data?.data.meta}
-                totalRowCount={data?.data.meta.total}
+                paginationData={paginationData}
+                totalRowCount={paginationData?.total || 0}
                 showSideBorders={false}
                 showZebraStriping={true}
+                defaultNoResultText={t("exam.categories.list.table.noResult")}
             />
         </div>
     );

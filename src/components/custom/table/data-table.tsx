@@ -44,7 +44,8 @@ interface DataTableProps<TData> extends React.ComponentProps<"div"> {
     TableCell?: {
       default?: string,
     }
-  }
+  },
+  defaultNoResultText?: string;
 }
 
 type RowNumberColumnDef<T> = ColumnDef<T> & {
@@ -174,6 +175,7 @@ export function DataTable<TData>({
   showZebraStriping = false,
   zebraStripingClassName,
   styles,
+  defaultNoResultText = "No result found",
   ...props
 }: DataTableProps<TData> & { pageSizeOptions?: number[] }) {
   const rowLength = table.getFilteredSelectedRowModel().rows.length;
@@ -277,7 +279,7 @@ export function DataTable<TData>({
                   colSpan={table.getAllColumns().length}
                   className="h-15 text-center bg-secondary"
                 >
-                  No results.
+                  {defaultNoResultText}
                 </TableCell>
               </TableRow>
             )}

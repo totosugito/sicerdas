@@ -15,7 +15,7 @@ import {
   VisibilityState
 } from "@tanstack/react-table";
 import * as React from "react";
-import {useState} from "react";
+import { useState } from "react";
 
 interface UseDataTableProps<TData>
   extends Omit<
@@ -26,9 +26,9 @@ interface UseDataTableProps<TData>
     "getCoreRowModel" |
     "getSubRows"
   >,
-    Required<Pick<TableOptions<TData>, "pageCount">> {
+  Required<Pick<TableOptions<TData>, "pageCount">> {
   getSubRows?: (row: TData) => TData[] | undefined;
-  initialState?: Omit<Partial<TableState>, "sorting" | "columnFilters"> & {};
+  initialState?: Omit<Partial<TableState>, "columnFilters"> & {};
 }
 
 export function useDataTable<TData>(props: UseDataTableProps<TData>) {
@@ -45,7 +45,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     onColumnFiltersChange,
     onExpandedChange,
     getSubRows,
-    columnResizeMode="onChange",
+    columnResizeMode = "onChange",
     ...tableProps
   } = props;
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>(
@@ -53,7 +53,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
   );
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(initialState?.columnVisibility ?? {});
 
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>(initialState?.sorting ?? []);
   const [pagination, setPagination] = React.useState<PaginationState>(
     initialState?.pagination ??
     {
@@ -62,6 +62,30 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     });
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>(initialState?.expanded ?? {});
+
+  React.useEffect(() => {
+    if (initialState?.pagination) {
+      setPagination(prev => {
+        const nextPageIndex = initialState.pagination?.pageIndex ?? prev.pageIndex;
+        const nextPageSize = initialState.pagination?.pageSize ?? prev.pageSize;
+        if (prev.pageIndex !== nextPageIndex || prev.pageSize !== nextPageSize) {
+          return { pageIndex: nextPageIndex, pageSize: nextPageSize };
+        }
+        return prev;
+      });
+    }
+  }, [initialState?.pagination?.pageIndex, initialState?.pagination?.pageSize]);
+
+  React.useEffect(() => {
+    if (initialState?.sorting) {
+      setSorting((prev) => {
+        const next = initialState.sorting!;
+        if (prev.length !== next.length) return next;
+        const isSame = prev.every((v, index) => v.id === next[index].id && v.desc === next[index].desc);
+        return isSame ? prev : next;
+      });
+    }
+  }, [initialState?.sorting]);
 
   const handleSortingChange = manualSorting ? onSortingChange : setSorting;
   const handlePaginationChange = manualPagination ? onPaginationChange : setPagination;
@@ -109,5 +133,5 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     }
   });
 
-  return {table};
+  return { table };
 }

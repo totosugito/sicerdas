@@ -1,7 +1,7 @@
 "use client";
 
 import type { Column } from "@tanstack/react-table";
-import { ChevronDown, ChevronUp, ChevronsUpDown, ArrowUpDown } from "lucide-react";
+import { ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -24,16 +24,12 @@ export function DataTableColumnHeader<TData, TValue>({
 
   const handleSort = (direction: 'asc' | 'desc' | 'toggle') => {
     if (direction === 'toggle') {
-      // Toggle through sort states: none -> asc -> desc -> none
-      if (!isSorted) {
-        column.toggleSorting(false);
-      } else if (isSorted === 'asc') {
-        column.toggleSorting(true);
+      // Toggle through sort states: asc <-> desc
+      if (isSorted !== 'asc') {
+        column.toggleSorting(false); // Enable asc
       } else {
-        column.clearSorting();
+        column.toggleSorting(true); // Enable desc
       }
-    } else if (isSorted === direction) {
-      column.clearSorting();
     } else {
       column.toggleSorting(direction === 'desc');
     }
@@ -45,7 +41,7 @@ export function DataTableColumnHeader<TData, TValue>({
   }
 
   return (
-    <div 
+    <div
       className={cn("group flex items-center space-x-1 cursor-pointer select-none hover:text-foreground transition-colors w-fit", className)}
       onClick={() => handleSort('toggle')}
     >
@@ -71,7 +67,7 @@ export function DataTableColumnHeader<TData, TValue>({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-36 p-1" align="start" onClick={(e) => e.stopPropagation()}>
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-y-1">
             <Button
               variant="ghost"
               size="sm"
@@ -96,20 +92,6 @@ export function DataTableColumnHeader<TData, TValue>({
               <ChevronDown className="mr-2 h-4 w-4" />
               Sort Z → A
             </Button>
-            {isSorted && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="justify-start text-muted-foreground"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSort('toggle');
-                }}
-              >
-                <ArrowUpDown className="mr-2 h-4 w-4" />
-                Clear sort
-              </Button>
-            )}
           </div>
         </PopoverContent>
       </Popover>

@@ -2,6 +2,7 @@ import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
 import { ExamCategory } from "../types";
+import { PaginationData } from "@/components/custom/table";
 
 export interface ListCategoryRequest {
     search?: string;
@@ -17,12 +18,7 @@ export interface ListCategoryResponse {
     message: string;
     data: {
         items: ExamCategory[];
-        meta: {
-            total: number;
-            page: number;
-            limit: number;
-            totalPages: number;
-        };
+        meta: PaginationData;
     };
 }
 

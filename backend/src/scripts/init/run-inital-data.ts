@@ -5,6 +5,7 @@ import initBookGroup from './jobs/init-book-group.ts';
 import importBooks from './jobs/import-book.ts';
 import importPeriodicElements from './jobs/import-periodic-elements.ts';
 import initTierPricing from './jobs/init-tier-pricing.ts';
+import { runUpdateBookStats } from './jobs/update-book-stats.ts';
 
 const runInitialData = async () => {
     // Configuration for data initialization
@@ -19,10 +20,11 @@ const runInitialData = async () => {
 
     // Configuration for enabling/disabling specific initialization tasks
     const processConfig = {
-        initTierPricing: true,
-        initUser: true,
+        initTierPricing: false,
+        initUser: false,
         initBookGroup: false,
         importBooks: false,
+        updateBookStats: true,
         importPeriodicElements: false
     };
 
@@ -62,9 +64,17 @@ const runInitialData = async () => {
             console.log('✓ Book import completed');
         }
 
+        if (processConfig.updateBookStats) {
+            console.log('\n----------------------------------------');
+            console.log('4. Updating Book Statistics');
+            console.log('----------------------------------------');
+            await runUpdateBookStats();
+            console.log('✓ Book statistics update completed');
+        }
+
         if (processConfig.importPeriodicElements) {
             console.log('\n----------------------------------------');
-            console.log('4. Importing Periodic Elements');
+            console.log('5. Importing Periodic Elements');
             console.log('----------------------------------------');
             await importPeriodicElements(dataInput.periodicTable);
             console.log('✓ Periodic elements import completed');
