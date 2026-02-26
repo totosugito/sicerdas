@@ -58,7 +58,7 @@ const deleteTagRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             if (inUseCheck) {
                 // Return a friendly error using Sensible, instead of raw pg constraint error
-                return reply.badRequest('Tag ini tidak dapat dihapus karena masih terikat pada satu atau lebih soal ujian.');
+                return reply.badRequest(request.i18n.t('exam.tags.delete.inUse'));
             }
 
             // Perform Hard Delete

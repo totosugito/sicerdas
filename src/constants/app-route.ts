@@ -75,8 +75,11 @@ export const AppRoute = {
     categories: {
       admin: {
         list: { url: "/admin/list-category" },
-        create: { url: "/admin/create-category" },
-        edit: { url: "/admin/edit-category/$id" },
+      },
+    },
+    tags: {
+      admin: {
+        list: { url: "/admin/list-tag" },
       },
     },
     packages: {

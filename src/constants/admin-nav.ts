@@ -1,7 +1,7 @@
 import { HiOutlineUsers } from "react-icons/hi2";
 import { AppRoute } from "@/constants/app-route";
 import i18n from '@/i18n';
-import { Bookmark, DollarSign } from "lucide-react";
+import { Badge, Bookmark, BookTemplateIcon, DollarSign, LucideBadge } from "lucide-react";
 
 const t = i18n.t;
 export const AdminNav = {
@@ -19,6 +19,16 @@ export const AdminNav = {
           title: t("exam.categories.list.menu"),
           url: AppRoute.exam.categories.admin.list.url,
           icon: Bookmark,
+        },
+        {
+          title: t("exam.tags.list.menu"),
+          url: AppRoute.exam.tags.admin.list.url,
+          icon: Badge,
+        },
+        {
+          title: t("exam.packages.list.menu"),
+          url: AppRoute.exam.packages.admin.list.url,
+          icon: BookTemplateIcon,
         },
       ],
       permitUser: false,

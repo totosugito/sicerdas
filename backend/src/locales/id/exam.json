@@ -52,7 +52,8 @@
             },
             "delete": {
                 "success": "Tag/Topik ujian berhasil dihapus",
-                "notFound": "Tag tidak ditemukan"
+                "notFound": "Tag tidak ditemukan",
+                "inUse": "Tag tidak dapat dihapus karena masih digunakan oleh soal ujian"
             }
         },
         "questions": {

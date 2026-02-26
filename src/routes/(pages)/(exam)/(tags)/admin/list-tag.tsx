@@ -1,10 +1,10 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import {
-  useListPackage,
-  useDeletePackage,
-  ExamPackage,
-  ListPackagesResponse
-} from '@/api/exam/packages';
+  useListTag,
+  useDeleteTag,
+  ExamTag,
+  ListTagResponse
+} from '@/api/exam/tags';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from 'react';
@@ -13,12 +13,11 @@ import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/app';
 import { Plus, Trash2 } from 'lucide-react';
 import { DialogModal } from '@/components/custom/components';
-import { PackageTable } from '@/components/pages/exam/packages';
+import { TagTable, DialogTagCreate } from '@/components/pages/exam/tags';
 import { PaginationData } from '@/components/custom/table';
 import { z } from 'zod';
-import { AppRoute } from '@/constants/app-route';
 
-export const Route = createFileRoute('/(pages)/(exam)/(packages)/admin/list-package')({
+export const Route = createFileRoute('/(pages)/(exam)/(tags)/admin/list-tag')({
   validateSearch: z.object({
     page: z.number().min(1).optional().catch(undefined),
     limit: z.number().min(5).optional().catch(undefined),
@@ -26,10 +25,10 @@ export const Route = createFileRoute('/(pages)/(exam)/(packages)/admin/list-pack
     sortBy: z.string().optional().catch(undefined),
     sortOrder: z.enum(['asc', 'desc']).optional().catch(undefined),
   }),
-  component: AdminExamPackagesPage,
+  component: AdminExamTagsPage,
 });
 
-function AdminExamPackagesPage() {
+function AdminExamTagsPage() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = Route.useNavigate();
@@ -43,7 +42,7 @@ function AdminExamPackagesPage() {
   const sortOrder = searchParams.sortOrder ?? "desc";
 
   // API Hooks
-  const { data, isLoading } = useListPackage({
+  const { data, isLoading } = useListTag({
     page,
     limit,
     search,
@@ -51,24 +50,35 @@ function AdminExamPackagesPage() {
     sortOrder,
   });
 
-  const deleteMutation = useDeletePackage();
+  const deleteMutation = useDeleteTag();
 
   // Dialog & Modal States
+  const [showDialog, setShowDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState<ExamPackage | null>(null);
+  const [selectedTag, setSelectedTag] = useState<ExamTag | null>(null);
 
   // Handlers
-  const handleDelete = (pkg: ExamPackage) => {
-    setSelectedPackage(pkg);
+  const handleAdd = () => {
+    setSelectedTag(null);
+    setShowDialog(true);
+  };
+
+  const handleEdit = (tag: ExamTag) => {
+    setSelectedTag(tag);
+    setShowDialog(true);
+  };
+
+  const handleDelete = (tag: ExamTag) => {
+    setSelectedTag(tag);
     setShowDeleteDialog(true);
   };
 
   const confirmDelete = () => {
-    if (!selectedPackage) return;
-    deleteMutation.mutate(selectedPackage.id, {
+    if (!selectedTag) return;
+    deleteMutation.mutate(selectedTag.id, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t("exam.packages.list.delete.success") });
-        queryClient.invalidateQueries({ queryKey: ["admin-exam-packages-list"] });
+        showNotifSuccess({ message: res.message || t("exam.tags.list.delete.success") });
+        queryClient.invalidateQueries({ queryKey: ["admin-exam-tags-list"] });
         setShowDeleteDialog(false);
       },
       onError: (err: any) => {
@@ -81,19 +91,17 @@ function AdminExamPackagesPage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={t("exam.packages.list.title")}
-          description={<span>{t("exam.packages.list.description")}</span>}
+          title={t("exam.tags.list.title")}
+          description={<span>{t("exam.tags.list.description")}</span>}
         />
-        <Button asChild className="flex-shrink-0 gap-1.5 shadow-sm">
-          <Link to={AppRoute.exam.packages.admin.create.url}>
-            <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">{t("labels.add")}</span>
-          </Link>
+        <Button onClick={handleAdd} className="flex-shrink-0 gap-1.5 shadow-sm">
+          <Plus className="h-4 w-4" />
+          <span className="hidden sm:inline">{t("labels.add")}</span>
         </Button>
       </div>
 
-      <PackageTable
-        data={data as ListPackagesResponse}
+      <TagTable
+        data={data as ListTagResponse}
         isLoading={isLoading}
         paginationData={data?.data.meta as PaginationData}
         onPaginationChange={(pagination: { page: number; limit: number }) => {
@@ -129,16 +137,23 @@ function AdminExamPackagesPage() {
             replace: true,
           });
         }}
+        onEdit={handleEdit}
         onDelete={handleDelete}
+      />
+
+      <DialogTagCreate
+        open={showDialog}
+        onOpenChange={setShowDialog}
+        tag={selectedTag}
       />
 
       <DialogModal
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
-          title: t("exam.packages.list.delete.confirmTitle"),
-          desc: t("exam.packages.list.delete.confirmDesc", { title: selectedPackage?.title }),
-          infoContainer: t("exam.packages.list.delete.deleteInfo"),
+          title: t("exam.tags.list.delete.confirmTitle"),
+          desc: t("exam.tags.list.delete.confirmDesc", { name: selectedTag?.name }),
+          infoContainer: t("exam.tags.list.delete.deleteInfo"),
           infoContainerVariant: "error",
           variant: "destructive",
           iconType: "error",

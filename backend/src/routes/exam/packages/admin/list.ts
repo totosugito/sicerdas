@@ -13,7 +13,7 @@ const PackageListQuery = Type.Object({
     isActive: Type.Optional(Type.Boolean()),
     educationGradeId: Type.Optional(Type.Number()),
 
-    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, title', default: 'createdAt' })),
+    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, title, isActive, updatedAt, durationMinutes, categoryId, examType, educationGradeId', default: 'createdAt' })),
     sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'desc' })),
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
     limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
@@ -89,10 +89,33 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
             // Sorting
             const orderDir = sortOrder === 'asc' ? 'asc' : 'desc';
             let queryWithSort;
-            if (sortBy === 'title') {
-                queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.title) : baseQuery.orderBy(desc(examPackages.title));
-            } else {
-                queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.createdAt) : baseQuery.orderBy(desc(examPackages.createdAt));
+
+            switch (sortBy) {
+                case 'title':
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.title) : baseQuery.orderBy(desc(examPackages.title));
+                    break;
+                case 'isActive':
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.isActive) : baseQuery.orderBy(desc(examPackages.isActive));
+                    break;
+                case 'updatedAt':
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.updatedAt) : baseQuery.orderBy(desc(examPackages.updatedAt));
+                    break;
+                case 'durationMinutes':
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.durationMinutes) : baseQuery.orderBy(desc(examPackages.durationMinutes));
+                    break;
+                case 'categoryId':
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.categoryId) : baseQuery.orderBy(desc(examPackages.categoryId));
+                    break;
+                case 'examType':
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.examType) : baseQuery.orderBy(desc(examPackages.examType));
+                    break;
+                case 'educationGradeId':
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.educationGradeId) : baseQuery.orderBy(desc(examPackages.educationGradeId));
+                    break;
+                case 'createdAt':
+                default:
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.createdAt) : baseQuery.orderBy(desc(examPackages.createdAt));
+                    break;
             }
 
             // Count

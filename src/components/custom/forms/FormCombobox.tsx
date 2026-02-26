@@ -1,15 +1,15 @@
-import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import React from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import {Check, ChevronsUpDown} from "lucide-react"
-import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
-import {Button} from "@/components/ui/button";
-import {cn} from "@/lib/utils";
-import {UseFormReturn} from "react-hook-form";
+import { Check, ChevronsUpDown } from "lucide-react"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { UseFormReturn } from "react-hook-form";
 
 export type FormComboboxProps = {
   form: UseFormReturn<any>;
@@ -22,14 +22,17 @@ export type FormComboboxProps = {
     searchPlaceholder?: string
     options: Array<{ label: string, value: string }>
     readonly?: boolean
+    onSearchChange?: (search: string) => void
+    isLoading?: boolean
+    serverSideSearch?: boolean
   };
   disabled?: boolean
   className?: string
-  labelClassName?: string;  // Added labelClassName prop
-  showMessage?: boolean;  // Added showMessage prop
+  labelClassName?: string;
+  showMessage?: boolean;
 }
 
-export const FormCombobox = ({form, item, labelClassName = "", showMessage = true, ...props}: FormComboboxProps) => {
+export const FormCombobox = ({ form, item, labelClassName = "", showMessage = true, ...props }: FormComboboxProps) => {
   const [open, setOpen] = React.useState(false)
 
   const selectedRef = React.useRef<HTMLDivElement>(null);
@@ -37,7 +40,7 @@ export const FormCombobox = ({form, item, labelClassName = "", showMessage = tru
     if (open) {
       requestAnimationFrame(() => {
         if (selectedRef.current) {
-          selectedRef.current.scrollIntoView({block: "nearest"});
+          selectedRef.current.scrollIntoView({ block: "nearest" });
         }
       });
     }
@@ -47,16 +50,16 @@ export const FormCombobox = ({form, item, labelClassName = "", showMessage = tru
     <FormField
       control={form.control}
       name={item.name}
-      render={({field}) => (
+      render={({ field }) => (
         <FormItem>
           <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
           <Popover open={open} onOpenChange={
             setOpen
-          //   (v) => {
-          //   if(!item?.readonly) {
-          //     setOpen(v);
-          //   }
-          // }
+            //   (v) => {
+            //   if(!item?.readonly) {
+            //     setOpen(v);
+            //   }
+            // }
           } {...props} modal={true}>
             <PopoverTrigger asChild>
               <FormControl>
@@ -70,19 +73,27 @@ export const FormCombobox = ({form, item, labelClassName = "", showMessage = tru
                   {field.value
                     ? item?.options.find((it: any) => it.value === field.value)?.label
                     : (item?.placeholder ?? "Search...")}
-                  <ChevronsUpDown className="opacity-50"/>
+                  <ChevronsUpDown className="opacity-50" />
                 </Button>
               </FormControl>
             </PopoverTrigger>
             <PopoverContent className="p-0 overflow-y-auto">
-              <Command filter={(value, search) => {
-                const option = item?.options.find((it: any) => it.value === value);
-                if (!option) return 0;
-                return option.label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
-              }}>
-                <CommandInput placeholder={item?.searchPlaceholder ?? "Search..."} className="h-9"/>
+              <Command
+                shouldFilter={!item?.serverSideSearch}
+                filter={(value, search) => {
+                  if (item?.serverSideSearch) return 1;
+                  const option = item?.options.find((it: any) => it.value === value);
+                  if (!option) return 0;
+                  return option.label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
+                }}
+              >
+                <CommandInput
+                  placeholder={item?.searchPlaceholder ?? "Search..."}
+                  className="h-9"
+                  onValueChange={item?.onSearchChange}
+                />
                 <CommandList>
-                  <CommandEmpty>No item found.</CommandEmpty>
+                  <CommandEmpty>{item.isLoading ? "Loading..." : "No item found."}</CommandEmpty>
                   <CommandGroup>
                     {item?.options.map((it: any) => (
                       <CommandItem
@@ -94,7 +105,7 @@ export const FormCombobox = ({form, item, labelClassName = "", showMessage = tru
                           form.setValue(field.name, newValue);
                           setOpen(false);
                         }}
-                        // className={cn(`${field.value === it.value ? "bg-chart-2 text-background" : ""}`)}
+                      // className={cn(`${field.value === it.value ? "bg-chart-2 text-background" : ""}`)}
                       >
                         {it.label}
                         <Check
@@ -111,7 +122,7 @@ export const FormCombobox = ({form, item, labelClassName = "", showMessage = tru
             </PopoverContent>
           </Popover>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
-          {showMessage && <FormMessage/>}
+          {showMessage && <FormMessage />}
         </FormItem>
       )}
     />

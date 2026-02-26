@@ -74,6 +74,22 @@ export const AppApi = {
         update: APP_URL_API + "/exam/categories/admin/update/:id",
         delete: APP_URL_API + "/exam/categories/admin/delete/:id",
       }
+    },
+    tags: {
+      admin: {
+        list: APP_URL_API + "/exam/tags/admin/list",
+        create: APP_URL_API + "/exam/tags/admin/create",
+        update: APP_URL_API + "/exam/tags/admin/update/:id",
+        delete: APP_URL_API + "/exam/tags/admin/delete/:id",
+      }
+    },
+    packages: {
+      admin: {
+        list: APP_URL_API + "/exam/packages/admin/list",
+        create: APP_URL_API + "/exam/packages/admin/create",
+        update: APP_URL_API + "/exam/packages/admin/update/:id",
+        delete: APP_URL_API + "/exam/packages/admin/delete/:id",
+      }
     }
   }
 }

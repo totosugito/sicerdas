@@ -10,7 +10,7 @@ import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 const TagListQuery = Type.Object({
     search: Type.Optional(Type.String({ description: 'Search term for tag name or description' })),
     isActive: Type.Optional(Type.Boolean({ description: 'Filter by active status. Omit to fetch all.' })),
-    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, name', default: 'createdAt' })),
+    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, updatedAt, isActive, name', default: 'createdAt' })),
     sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'desc' })),
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
     limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
@@ -106,6 +106,16 @@ const listTagRoute: FastifyPluginAsyncTypebox = async (app) => {
                     queryWithSort = order === 'asc'
                         ? baseQuery.orderBy(examTags.name)
                         : baseQuery.orderBy(desc(examTags.name));
+                    break;
+                case 'isActive':
+                    queryWithSort = order === 'asc'
+                        ? baseQuery.orderBy(examTags.isActive)
+                        : baseQuery.orderBy(desc(examTags.isActive));
+                    break;
+                case 'updatedAt':
+                    queryWithSort = order === 'asc'
+                        ? baseQuery.orderBy(examTags.updatedAt)
+                        : baseQuery.orderBy(desc(examTags.updatedAt));
                     break;
                 case 'createdAt':
                 default:
