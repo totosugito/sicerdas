@@ -1,3 +1,3 @@
 export default {
-    title: "Jenjang Pendidikan",
+    title: "Pendidikan",
 }

@@ -21,8 +21,8 @@ export type FormComboboxProps = {
     selectLabel?: string
     searchPlaceholder?: string
     options: Array<{ label: string, value: string }>
-    readonly?: boolean
     onSearchChange?: (search: string) => void
+    onScrollEnd?: () => void
     isLoading?: boolean
     serverSideSearch?: boolean
   };
@@ -36,6 +36,23 @@ export const FormCombobox = ({ form, item, labelClassName = "", showMessage = tr
   const [open, setOpen] = React.useState(false)
 
   const selectedRef = React.useRef<HTMLDivElement>(null);
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  React.useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  const handleSearchChange = React.useCallback((value: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      if (item?.onSearchChange) {
+        item.onSearchChange(value);
+      }
+    }, 300);
+  }, [item]);
+
   React.useEffect(() => {
     if (open) {
       requestAnimationFrame(() => {
@@ -77,7 +94,7 @@ export const FormCombobox = ({ form, item, labelClassName = "", showMessage = tr
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="p-0 overflow-y-auto">
+            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 overflow-y-auto">
               <Command
                 shouldFilter={!item?.serverSideSearch}
                 filter={(value, search) => {
@@ -90,9 +107,18 @@ export const FormCombobox = ({ form, item, labelClassName = "", showMessage = tr
                 <CommandInput
                   placeholder={item?.searchPlaceholder ?? "Search..."}
                   className="h-9"
-                  onValueChange={item?.onSearchChange}
+                  onValueChange={item?.onSearchChange ? handleSearchChange : undefined}
                 />
-                <CommandList>
+                <CommandList
+                  onScroll={(e) => {
+                    const target = e.currentTarget;
+                    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 1) {
+                      if (item?.onScrollEnd) {
+                        item.onScrollEnd();
+                      }
+                    }
+                  }}
+                >
                   <CommandEmpty>{item.isLoading ? "Loading..." : "No item found."}</CommandEmpty>
                   <CommandGroup>
                     {item?.options.map((it: any) => (

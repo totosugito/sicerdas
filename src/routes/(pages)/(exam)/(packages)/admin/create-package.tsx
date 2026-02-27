@@ -18,6 +18,7 @@ import { EnumExamType } from '@/constants/exam-enums';
 // Hooks for dropdowns
 import { useListCategory } from '@/api/exam/categories';
 import { useListTier } from '@/api/app-tier';
+import { useListEducationGrade } from '@/api/education-grade';
 
 export const Route = createFileRoute('/(pages)/(exam)/(packages)/admin/create-package')({
   component: AdminExamPackagesCreatePage,
@@ -30,9 +31,33 @@ function AdminExamPackagesCreatePage() {
   const createMutation = useCreatePackage();
 
   // Data for dropdowns
-  const [searchCategory, setSearchCategory] = useState("");
-  const { data: categoriesData, isLoading: isLoadingCategories } = useListCategory({ search: searchCategory, limit: 10, isActive: true });
+  const [searchCategory, setSearchCategory] = React.useState("");
+  const [pageCategory, setPageCategory] = React.useState(1);
+  const { data: categoriesData, isFetching: isFetchingCategories } = useListCategory({ search: searchCategory, limit: 10, isActive: true, page: pageCategory });
+  const [categoryOptions, setCategoryOptions] = React.useState<{ label: string, value: string }[]>([]);
+
+  const [searchGrade, setSearchGrade] = React.useState("");
+  const [pageGrade, setPageGrade] = React.useState(1);
+  const { data: gradesData, isFetching: isFetchingGrades } = useListEducationGrade({ search: searchGrade, limit: 10, page: pageGrade });
+  const [educationGradeOptions, setEducationGradeOptions] = React.useState<{ label: string, value: string }[]>([]);
+
   const { data: tierData, isLoading: isLoadingTier } = useListTier();
+
+  React.useEffect(() => {
+    if (categoriesData?.data?.items) {
+      const newItems = categoriesData.data.items.map(cat => ({ label: cat.name, value: cat.id }));
+      if (pageCategory === 1) setCategoryOptions(newItems);
+      else setCategoryOptions(prev => [...prev, ...newItems.filter(n => !prev.some(p => p.value === n.value))]);
+    }
+  }, [categoriesData, pageCategory]);
+
+  React.useEffect(() => {
+    if (gradesData?.data?.items) {
+      const newItems = gradesData.data.items.map(grade => ({ label: grade.name, value: String(grade.id) }));
+      if (pageGrade === 1) setEducationGradeOptions(newItems);
+      else setEducationGradeOptions(prev => [...prev, ...newItems.filter(n => !prev.some(p => p.value === n.value))]);
+    }
+  }, [gradesData, pageGrade]);
 
   const formSchema = z.object({
     title: z.string().min(1, t("exam.packages.list.form.title.required")),
@@ -81,11 +106,6 @@ function AdminExamPackagesCreatePage() {
     });
   };
 
-  const categoryOptions = categoriesData?.data.items.map(cat => ({
-    label: cat.name,
-    value: cat.id
-  })) || [];
-
   const tierOptions = tierData?.data?.map((tier: any) => ({
     label: tier.name,
     value: tier.slug
@@ -94,14 +114,6 @@ function AdminExamPackagesCreatePage() {
   const examTypeOptions = [
     { label: t("exam.packages.list.form.examType.options.official"), value: EnumExamType.OFFICIAL },
     { label: t("exam.packages.list.form.examType.options.custom_practice"), value: EnumExamType.CUSTOM_PRACTICE },
-  ];
-
-  // Dummy data for education grades. Ideally this would correspond to a real list or API if there is one.
-  const educationGradeOptions = [
-    { label: "SD", value: 1 },
-    { label: "SMP", value: 2 },
-    { label: "SMA/SMK", value: 3 },
-    { label: "Mahasiswa/Persiapan", value: 4 },
   ];
 
   const formConfig = {
@@ -117,10 +129,18 @@ function AdminExamPackagesCreatePage() {
       label: t("exam.packages.list.form.category.label"),
       placeholder: t("exam.packages.list.form.category.placeholder"),
       options: categoryOptions,
-      disabled: isLoadingCategories,
-      isLoading: isLoadingCategories,
+      disabled: isFetchingCategories,
+      isLoading: isFetchingCategories,
       serverSideSearch: true,
-      onSearchChange: (value: string) => setSearchCategory(value),
+      onSearchChange: (value: string) => {
+        setSearchCategory(value);
+        setPageCategory(1);
+      },
+      onScrollEnd: () => {
+        if (!isFetchingCategories && categoriesData?.data?.meta && pageCategory < categoriesData.data.meta.totalPages) {
+          setPageCategory(prev => prev + 1);
+        }
+      }
     },
     examType: {
       type: "select",
@@ -136,11 +156,23 @@ function AdminExamPackagesCreatePage() {
       placeholder: t("exam.packages.list.form.durationMinutes.placeholder"),
     },
     educationGradeId: {
-      type: "select",
+      type: "combobox",
       name: "educationGradeId",
       label: t("exam.packages.list.form.educationGradeId.label"),
       placeholder: t("exam.packages.list.form.educationGradeId.placeholder"),
       options: educationGradeOptions,
+      disabled: isFetchingGrades,
+      isLoading: isFetchingGrades,
+      serverSideSearch: true,
+      onSearchChange: (value: string) => {
+        setSearchGrade(value);
+        setPageGrade(1);
+      },
+      onScrollEnd: () => {
+        if (!isFetchingGrades && gradesData?.data?.meta && pageGrade < gradesData.data.meta.totalPages) {
+          setPageGrade(prev => prev + 1);
+        }
+      }
     },
     requiredTier: {
       type: "select",
@@ -168,12 +200,11 @@ function AdminExamPackagesCreatePage() {
   return (
     <div className="flex flex-col gap-6 w-full max-w-4xl mx-auto pb-10">
       <div className="flex items-center gap-4">
-        <Button variant="outline" size="icon" onClick={() => navigate({ to: AppRoute.exam.packages.admin.list.url })}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
         <PageTitle
           title={t("exam.packages.list.create.title")}
           description={<span>{t("exam.packages.list.create.description")}</span>}
+          showBack
+          backTo={AppRoute.exam.packages.admin.list.url}
         />
       </div>
 

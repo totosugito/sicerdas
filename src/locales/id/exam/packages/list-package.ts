@@ -61,7 +61,7 @@ export default {
         },
         educationGradeId: {
             label: "Tingkat Pendidikan",
-            placeholder: "Pilih tingkat pendidikan (Opsional)"
+            placeholder: "Tingkat pendidikan (Opsional)"
         },
         requiredTier: {
             label: "Tier / Subscription",
