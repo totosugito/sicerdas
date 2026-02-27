@@ -1,7 +1,7 @@
 import pg from "pg";
 import envConfig from "../../../config/env.config.ts";
 import { drizzle } from "drizzle-orm/node-postgres";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import * as schema from '../../../db/schema/index.ts';
 import dotenv from 'dotenv';
 import { bookCategory, bookGroup } from "../../../db/schema/book/index.ts";
@@ -222,6 +222,14 @@ export default async function seed() {
         console.error(`Error processing group: ${group.name}`, error);
       }
     }
+
+    // Fix sequences to prevent duplicate key errors on future inserts
+    console.log("Fixing sequences for tables with hardcoded IDs...");
+    await db.execute(sql`SELECT setval('education_grade_id_seq', COALESCE((SELECT MAX(id) FROM education_grade), 1));`);
+    await db.execute(sql`SELECT setval('book_category_id_seq', COALESCE((SELECT MAX(id) FROM book_category), 1));`);
+    await db.execute(sql`SELECT setval('book_group_id_seq', COALESCE((SELECT MAX(id) FROM book_group), 1));`);
+    await db.execute(sql`SELECT setval('app_version_id_seq', COALESCE((SELECT MAX(id) FROM app_version), 1));`);
+
   }
   catch (error) {
     console.error(error);

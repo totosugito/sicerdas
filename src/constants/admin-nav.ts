@@ -1,7 +1,7 @@
 import { HiOutlineUsers } from "react-icons/hi2";
 import { AppRoute } from "@/constants/app-route";
 import i18n from '@/i18n';
-import { Badge, Bookmark, BookTemplateIcon, DollarSign, LucideBadge } from "lucide-react";
+import { Badge, Bookmark, BookTemplateIcon, DollarSign, GraduationCap, LucideBadge } from "lucide-react";
 
 const t = i18n.t;
 export const AdminNav = {
@@ -40,6 +40,11 @@ export const AdminNav = {
           title: t("appTier.title"),
           url: AppRoute.appTier.adminList.url,
           icon: DollarSign,
+        },
+        {
+          title: t("educationGrade.title"),
+          url: AppRoute.educationGrade.admin.list.url,
+          icon: GraduationCap,
         },
         {
           title: t("user.title"),

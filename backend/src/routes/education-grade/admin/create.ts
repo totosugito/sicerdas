@@ -52,7 +52,7 @@ const createEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreateEducationGradeBody.static }>,
             reply: FastifyReply
         ) {
-            const { grade, name, desc, extra } = request.body;
+            const { grade, name, desc = "", extra = {} } = request.body;
 
             // Check if grade or name already exists
             const existingGrade = await db.query.educationGrades.findFirst({
@@ -66,12 +66,12 @@ const createEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
                 return reply.badRequest(request.i18n.t('educationGrade.create.exists'));
             }
 
-            const [newGrade] = await db.insert(educationGrades).values({
-                grade,
-                name,
-                desc,
-                extra,
-            }).returning();
+            // Clean payload
+            const payload: any = { grade, name };
+            if (desc !== undefined) payload.desc = desc;
+            if (extra !== undefined) payload.extra = extra;
+
+            const [newGrade] = await db.insert(educationGrades).values(payload).returning();
 
             return reply.status(201).send({
                 success: true,

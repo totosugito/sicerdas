@@ -91,5 +91,13 @@ export const AppApi = {
       },
       list: APP_URL_API + "/exam/packages/list",
     }
+  },
+  educationGrade: {
+    admin: {
+      create: APP_URL_API + "/education-grade/admin/create",
+      update: APP_URL_API + "/education-grade/admin/update/:id",
+      delete: APP_URL_API + "/education-grade/admin/delete/:id",
+    },
+    list: APP_URL_API + "/education-grade/list",
   }
 }

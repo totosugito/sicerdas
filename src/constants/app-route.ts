@@ -71,6 +71,13 @@ export const AppRoute = {
     detail: { url: "/book/$id" },
     books: { url: "/books" },
   },
+  educationGrade: {
+    admin: {
+      list: { url: "/admin/list-grade" },
+      create: { url: "/admin/create-grade" },
+      edit: { url: "/admin/edit-grade/$id" },
+    }
+  },
   exam: {
     categories: {
       admin: {

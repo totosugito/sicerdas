@@ -3,6 +3,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
 import { educationGrades } from '../../../db/schema/education-grade/education.ts';
+import { books } from '../../../db/schema/book/books.ts';
+import { examPackages } from '../../../db/schema/exam/packages.ts';
+import { examQuestions } from '../../../db/schema/exam/questions.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 
@@ -47,6 +50,30 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             if (!existingGrade) {
                 return reply.notFound(request.i18n.t('educationGrade.delete.notFound'));
+            }
+
+            // Check if any books are associated with this grade
+            const bookUsage = await db.query.books.findFirst({
+                where: eq(books.educationGradeId, id)
+            });
+            if (bookUsage) {
+                return reply.badRequest(request.i18n.t('educationGrade.delete.inUseBook'));
+            }
+
+            // Check if any exam packages are associated with this grade
+            const packageUsage = await db.query.examPackages.findFirst({
+                where: eq(examPackages.educationGradeId, id)
+            });
+            if (packageUsage) {
+                return reply.badRequest(request.i18n.t('educationGrade.delete.inUsePackage'));
+            }
+
+            // Check if any exam questions are associated with this grade
+            const questionUsage = await db.query.examQuestions.findFirst({
+                where: eq(examQuestions.educationGradeId, id)
+            });
+            if (questionUsage) {
+                return reply.badRequest(request.i18n.t('educationGrade.delete.inUseQuestion'));
             }
 
             // Perform Hard Delete

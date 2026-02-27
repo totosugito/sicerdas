@@ -11,6 +11,7 @@ import constitution from './constitution';
 import exam from './exam';
 import appTier from './app-tier';
 import user from './user';
+import educationGrade from './education-grade';
 
 const localeId = {
   translation: {
@@ -27,6 +28,7 @@ const localeId = {
     appTier: appTier,
     exam: exam,
     user: user,
+    educationGrade: educationGrade,
   }
 }
 

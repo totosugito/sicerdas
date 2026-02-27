@@ -11,7 +11,10 @@
         },
         "delete": {
             "notFound": "Grade tidak ditemukan",
-            "success": "Grade berhasil dihapus"
+            "success": "Grade berhasil dihapus",
+            "inUseBook": "Tidak dapat menghapus tingkat pendidikan ini karena sedang digunakan oleh Modul Buku.",
+            "inUsePackage": "Tidak dapat menghapus tingkat pendidikan ini karena sedang digunakan oleh Modul Paket Soal.",
+            "inUseQuestion": "Tidak dapat menghapus tingkat pendidikan ini karena sedang digunakan oleh Modul Bank Soal."
         },
         "list": {
             "success": "Grades berhasil diambil"
