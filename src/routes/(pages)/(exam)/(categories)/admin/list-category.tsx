@@ -7,7 +7,7 @@ import {
 } from '@/api/exam/categories';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/app';
@@ -38,8 +38,8 @@ function AdminExamCategoriesPage() {
     const page = searchParams.page ?? 1;
     const limit = searchParams.limit ?? 10;
     const search = searchParams.search ?? "";
-    const sortBy = searchParams.sortBy ?? "updatedAt";
-    const sortOrder = searchParams.sortOrder ?? "desc";
+    const sortBy = searchParams.sortBy ?? "name";
+    const sortOrder = searchParams.sortOrder ?? "asc";
 
     // API Hooks
     const { data, isLoading } = useListCategory({
@@ -78,7 +78,7 @@ function AdminExamCategoriesPage() {
         deleteMutation.mutate(selectedCategory.id, {
             onSuccess: (res) => {
                 showNotifSuccess({ message: res.message || t("exam.categories.list.delete.success") });
-                queryClient.invalidateQueries({ queryKey: ["admin-exam-categories-list"] });
+                queryClient.invalidateQueries({ queryKey: ["exam-categories-list"] });
                 setShowDeleteDialog(false);
             },
             onError: (err: any) => {

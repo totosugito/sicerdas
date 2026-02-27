@@ -3,7 +3,7 @@ import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { EnumDifficultyLevel, EnumQuestionType, PgEnumDifficultyLevel, PgEnumQuestionType } from './enums.ts';
 import { examPassages } from './passages.ts';
 import { examSubjects } from './subjects.ts';
-import { educationGrades } from '../education/education.ts';
+import { educationGrades } from '../education-grade/education.ts';
 import { appTier } from '../app/app-tier.ts';
 
 /**

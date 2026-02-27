@@ -69,11 +69,11 @@ export const AppApi = {
   exam: {
     categories: {
       admin: {
-        list: APP_URL_API + "/exam/categories/admin/list",
         create: APP_URL_API + "/exam/categories/admin/create",
         update: APP_URL_API + "/exam/categories/admin/update/:id",
         delete: APP_URL_API + "/exam/categories/admin/delete/:id",
-      }
+      },
+      list: APP_URL_API + "/exam/categories/list",
     },
     tags: {
       admin: {
@@ -85,11 +85,11 @@ export const AppApi = {
     },
     packages: {
       admin: {
-        list: APP_URL_API + "/exam/packages/admin/list",
         create: APP_URL_API + "/exam/packages/admin/create",
         update: APP_URL_API + "/exam/packages/admin/update/:id",
         delete: APP_URL_API + "/exam/packages/admin/delete/:id",
-      }
+      },
+      list: APP_URL_API + "/exam/packages/list",
     }
   }
 }

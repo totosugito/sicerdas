@@ -23,7 +23,7 @@ export * from './table-periodic/index.ts';
 export * from './book/index.ts';
 
 // Education Module
-export * from './education/index.ts';
+export * from './education-grade/index.ts';
 
 // Notification Module
 export * from './notification/index.ts';

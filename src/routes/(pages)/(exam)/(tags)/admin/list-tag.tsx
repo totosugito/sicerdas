@@ -38,8 +38,8 @@ function AdminExamTagsPage() {
   const page = searchParams.page ?? 1;
   const limit = searchParams.limit ?? 10;
   const search = searchParams.search ?? "";
-  const sortBy = searchParams.sortBy ?? "updatedAt";
-  const sortOrder = searchParams.sortOrder ?? "desc";
+  const sortBy = searchParams.sortBy ?? "name";
+  const sortOrder = searchParams.sortOrder ?? "asc";
 
   // API Hooks
   const { data, isLoading } = useListTag({

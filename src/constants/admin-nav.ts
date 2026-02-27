@@ -16,9 +16,9 @@ export const AdminNav = {
       title: t("exam.menu").toUpperCase(),
       items: [
         {
-          title: t("exam.categories.list.menu"),
-          url: AppRoute.exam.categories.admin.list.url,
-          icon: Bookmark,
+          title: t("exam.packages.list.menu"),
+          url: AppRoute.exam.packages.admin.list.url,
+          icon: BookTemplateIcon,
         },
         {
           title: t("exam.tags.list.menu"),
@@ -26,9 +26,9 @@ export const AdminNav = {
           icon: Badge,
         },
         {
-          title: t("exam.packages.list.menu"),
-          url: AppRoute.exam.packages.admin.list.url,
-          icon: BookTemplateIcon,
+          title: t("exam.categories.list.menu"),
+          url: AppRoute.exam.categories.admin.list.url,
+          icon: Bookmark,
         },
       ],
       permitUser: false,

@@ -4,7 +4,7 @@ import { EnumExamType, PgEnumExamType } from './enums.ts';
 import { examCategories } from './categories.ts';
 import { users } from '../user/users.ts';
 import { appTier } from '../app/app-tier.ts';
-import { educationGrades } from '../education/education.ts';
+import { educationGrades } from '../education-grade/education.ts';
 
 /**
  * Table: exam_packages

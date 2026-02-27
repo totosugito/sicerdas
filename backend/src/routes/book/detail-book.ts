@@ -3,7 +3,7 @@ import { Type } from '@sinclair/typebox';
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { books, bookCategory, bookGroup, bookEventStats, bookInteractions } from "../../db/schema/book/index.ts";
-import { educationGrades } from "../../db/schema/education/education.ts";
+import { educationGrades } from "../../db/schema/education-grade/education.ts";
 import { appEventHistory } from "../../db/schema/app/app-event-history.ts";
 import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";

@@ -78,7 +78,7 @@ const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
         />
         <div className="absolute top-3 left-3">
           <Badge className={cn(getGradeColor(book.grade.name), "text-white rounded shadow-sm backdrop-blur-sm text-xs px-2 py-1 border-muted", isListView ? "" : "")}>
-            {book.grade.name}{getGrade(book.grade.grade, ' - ')}
+            {book.grade.name}
           </Badge>
         </div>
       </div>

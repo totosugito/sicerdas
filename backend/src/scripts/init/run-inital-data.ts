@@ -22,7 +22,7 @@ const runInitialData = async () => {
     const processConfig = {
         initTierPricing: false,
         initUser: false,
-        initBookGroup: false,
+        initBookGroup: true,
         importBooks: false,
         updateBookStats: true,
         importPeriodicElements: false

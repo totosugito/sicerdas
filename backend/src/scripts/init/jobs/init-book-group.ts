@@ -5,7 +5,7 @@ import { eq, and } from "drizzle-orm";
 import * as schema from '../../../db/schema/index.ts';
 import dotenv from 'dotenv';
 import { bookCategory, bookGroup } from "../../../db/schema/book/index.ts";
-import { educationGrades } from "../../../db/schema/education/index.ts";
+import { educationGrades } from "../../../db/schema/education-grade/index.ts";
 import { EnumContentType, EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
 dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env' });
@@ -34,18 +34,18 @@ export default async function seed() {
 
     // default data for education grade
     const educationGrades_ = [
-      { id: 1, versionId: versionId, grade: "1", name: "SD" },
-      { id: 2, versionId: versionId, grade: "2", name: "SD" },
-      { id: 3, versionId: versionId, grade: "3", name: "SD" },
-      { id: 4, versionId: versionId, grade: "4", name: "SD" },
-      { id: 5, versionId: versionId, grade: "5", name: "SD" },
-      { id: 6, versionId: versionId, grade: "6", name: "SD" },
-      { id: 7, versionId: versionId, grade: "7", name: "SMP" },
-      { id: 8, versionId: versionId, grade: "8", name: "SMP" },
-      { id: 9, versionId: versionId, grade: "9", name: "SMP" },
-      { id: 10, versionId: versionId, grade: "10", name: "SMA" },
-      { id: 11, versionId: versionId, grade: "11", name: "SMA" },
-      { id: 12, versionId: versionId, grade: "12", name: "SMA" },
+      { id: 1, versionId: versionId, grade: "1", name: "SD-1" },
+      { id: 2, versionId: versionId, grade: "2", name: "SD-2" },
+      { id: 3, versionId: versionId, grade: "3", name: "SD-3" },
+      { id: 4, versionId: versionId, grade: "4", name: "SD-4" },
+      { id: 5, versionId: versionId, grade: "5", name: "SD-5" },
+      { id: 6, versionId: versionId, grade: "6", name: "SD-6" },
+      { id: 7, versionId: versionId, grade: "7", name: "SMP-7" },
+      { id: 8, versionId: versionId, grade: "8", name: "SMP-8" },
+      { id: 9, versionId: versionId, grade: "9", name: "SMP-9" },
+      { id: 10, versionId: versionId, grade: "10", name: "SMA-10" },
+      { id: 11, versionId: versionId, grade: "11", name: "SMA-11" },
+      { id: 12, versionId: versionId, grade: "12", name: "SMA-12" },
       { id: 13, versionId: versionId, grade: "preschool", name: "Pra Sekolah" },
       { id: 14, versionId: versionId, grade: "paud", name: "PAUD" },
       { id: 15, versionId: versionId, grade: "empty", name: "Umum" },

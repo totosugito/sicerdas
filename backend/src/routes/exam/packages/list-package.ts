@@ -1,10 +1,13 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
-import { db } from '../../../../db/db-pool.ts';
-import { examPackages } from '../../../../db/schema/exam/packages.ts';
+import { db } from '../../../db/db-pool.ts';
+import { examPackages } from '../../../db/schema/exam/packages.ts';
 import { desc, ilike, and, sql, eq } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { fromNodeHeaders } from 'better-auth/node';
+import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
+import { EnumUserRole } from '../../../db/schema/index.ts';
 
 const PackageListQuery = Type.Object({
     search: Type.Optional(Type.String({ description: 'Search term for package title' })),
@@ -13,8 +16,8 @@ const PackageListQuery = Type.Object({
     isActive: Type.Optional(Type.Boolean()),
     educationGradeId: Type.Optional(Type.Number()),
 
-    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, title, isActive, updatedAt, durationMinutes, categoryId, examType, educationGradeId', default: 'createdAt' })),
-    sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'desc' })),
+    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, title, isActive, updatedAt, durationMinutes, categoryId, examType, educationGradeId', default: 'title' })),
+    sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'asc' })),
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
     limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
 });
@@ -52,7 +55,7 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
         url: '/list',
         method: 'POST',
         schema: {
-            tags: ['Admin Exam Packages'],
+            tags: ['Exam Packages'],
             body: PackageListQuery,
             response: {
                 200: ListPackagesResponse,
@@ -62,15 +65,33 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof PackageListQuery.static }>,
             reply: FastifyReply
         ) {
+            // Determine user role from session
+            const session = await getAuthInstance(app).api.getSession({
+                headers: fromNodeHeaders(request.headers),
+            });
+            const user = session?.user;
+            const isAdmin = user?.role === EnumUserRole.ADMIN;
+
             const {
                 search, categoryId, examType, isActive, educationGradeId,
-                sortBy = 'createdAt', sortOrder = 'desc', page = 1, limit = 10
+                sortOrder = 'asc', page = 1, limit = 10
             } = request.body;
+
+            let { sortBy = 'title' } = request.body;
 
             const offset = (page - 1) * limit;
             const conditions = [];
 
-            if (isActive !== undefined) conditions.push(eq(examPackages.isActive, isActive));
+            if (!isAdmin) {
+                // Client must only see active packages
+                conditions.push(eq(examPackages.isActive, true));
+                // Force sorting ignoring isActive for clients
+                if (sortBy === 'isActive') sortBy = 'title';
+            } else {
+                // Admin can filter by active status
+                if (isActive !== undefined) conditions.push(eq(examPackages.isActive, isActive));
+            }
+
             if (categoryId) conditions.push(eq(examPackages.categoryId, categoryId));
             if (examType) conditions.push(eq(examPackages.examType, examType as any));
             if (educationGradeId) conditions.push(eq(examPackages.educationGradeId, educationGradeId));
@@ -91,9 +112,6 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
             let queryWithSort;
 
             switch (sortBy) {
-                case 'title':
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.title) : baseQuery.orderBy(desc(examPackages.title));
-                    break;
                 case 'isActive':
                     queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.isActive) : baseQuery.orderBy(desc(examPackages.isActive));
                     break;
@@ -113,8 +131,11 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
                     queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.educationGradeId) : baseQuery.orderBy(desc(examPackages.educationGradeId));
                     break;
                 case 'createdAt':
-                default:
                     queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.createdAt) : baseQuery.orderBy(desc(examPackages.createdAt));
+                    break;
+                case 'title':
+                default:
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.title) : baseQuery.orderBy(desc(examPackages.title));
                     break;
             }
 

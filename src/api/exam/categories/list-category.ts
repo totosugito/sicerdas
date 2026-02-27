@@ -1,41 +1,38 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ExamPackage } from "../types";
+import { ExamCategory } from "../types";
 import { PaginationData } from "@/components/custom/table";
 
-export interface ListPackageRequest {
+export interface ListCategoryRequest {
     search?: string;
-    categoryId?: string;
-    examType?: string;
     isActive?: boolean;
-    educationGradeId?: number;
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
     page?: number;
     limit?: number;
 }
 
-export interface ListPackagesResponse {
+export interface ListCategoryResponse {
     success: boolean;
     message: string;
     data: {
-        items: ExamPackage[];
+        items: ExamCategory[];
         meta: PaginationData;
     };
 }
 
-export const useListPackage = (params: ListPackageRequest) => {
+export const useListCategory = (params: ListCategoryRequest) => {
     return useQuery({
-        queryKey: ["admin-exam-packages-list", params],
+        queryKey: ["exam-categories-list", params],
         queryFn: async () => {
             const response = await fetchApi({
                 method: "POST",
-                url: AppApi.exam.packages.admin.list,
+                url: AppApi.exam.categories.list,
                 body: params,
                 withCredentials: true,
             });
-            return response as ListPackagesResponse;
+            return response as ListCategoryResponse;
         },
     });
 };

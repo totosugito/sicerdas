@@ -39,8 +39,8 @@ function AdminExamPackagesPage() {
   const page = searchParams.page ?? 1;
   const limit = searchParams.limit ?? 10;
   const search = searchParams.search ?? "";
-  const sortBy = searchParams.sortBy ?? "updatedAt";
-  const sortOrder = searchParams.sortOrder ?? "desc";
+  const sortBy = searchParams.sortBy ?? "title";
+  const sortOrder = searchParams.sortOrder ?? "asc";
 
   // API Hooks
   const { data, isLoading } = useListPackage({
@@ -68,7 +68,7 @@ function AdminExamPackagesPage() {
     deleteMutation.mutate(selectedPackage.id, {
       onSuccess: (res) => {
         showNotifSuccess({ message: res.message || t("exam.packages.list.delete.success") });
-        queryClient.invalidateQueries({ queryKey: ["admin-exam-packages-list"] });
+        queryClient.invalidateQueries({ queryKey: ["exam-packages-list"] });
         setShowDeleteDialog(false);
       },
       onError: (err: any) => {

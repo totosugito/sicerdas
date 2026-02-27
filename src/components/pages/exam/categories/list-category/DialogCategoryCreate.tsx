@@ -82,7 +82,7 @@ export const DialogCategoryCreate = ({ open, onOpenChange, category }: DialogCat
                 await updateMutation.mutateAsync({ id: category.id, ...values } as UpdateCategoryRequest, {
                     onSuccess: (res) => {
                         showNotifSuccess({ message: res.message || t("exam.categories.list.notifications.updateSuccess") });
-                        queryClient.invalidateQueries({ queryKey: ["admin-exam-categories-list"] });
+                        queryClient.invalidateQueries({ queryKey: ["exam-categories-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
@@ -93,7 +93,7 @@ export const DialogCategoryCreate = ({ open, onOpenChange, category }: DialogCat
                 await createMutation.mutateAsync(values as CreateCategoryRequest, {
                     onSuccess: (res) => {
                         showNotifSuccess({ message: res.message || t("exam.categories.list.notifications.createSuccess") });
-                        queryClient.invalidateQueries({ queryKey: ["admin-exam-categories-list"] });
+                        queryClient.invalidateQueries({ queryKey: ["exam-categories-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
