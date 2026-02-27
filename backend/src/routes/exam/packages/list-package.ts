@@ -3,6 +3,8 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
 import { examPackages } from '../../../db/schema/exam/packages.ts';
+import { examCategories } from '../../../db/schema/exam/categories.ts';
+import { educationGrades } from '../../../db/schema/education-grade/education.ts';
 import { desc, ilike, and, sql, eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
@@ -31,6 +33,8 @@ const PackageResponseItem = Type.Object({
     description: Type.Union([Type.String(), Type.Null()]),
     requiredTier: Type.Union([Type.String(), Type.Null()]),
     educationGradeId: Type.Union([Type.Number(), Type.Null()]),
+    categoryName: Type.Union([Type.String(), Type.Null()]),
+    educationGradeName: Type.Union([Type.String(), Type.Null()]),
     isActive: Type.Boolean(),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
@@ -102,7 +106,15 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             // Build Query
-            let baseQuery = db.select().from(examPackages);
+            let baseQuery = db.select({
+                package: examPackages,
+                categoryName: examCategories.name,
+                educationGradeName: educationGrades.name,
+            })
+                .from(examPackages)
+                .leftJoin(examCategories, eq(examPackages.categoryId, examCategories.id))
+                .leftJoin(educationGrades, eq(examPackages.educationGradeId, educationGrades.id));
+
             if (conditions.length > 0) {
                 baseQuery = baseQuery.where(and(...conditions)) as any;
             }
@@ -154,11 +166,16 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
                 success: true,
                 message: request.i18n.t('exam.packages.list.success'),
                 data: {
-                    items: items.map(p => ({
-                        ...p,
-                        createdAt: p.createdAt.toISOString(),
-                        updatedAt: p.updatedAt.toISOString(),
-                    })),
+                    items: items.map(r => {
+                        const p = r.package;
+                        return {
+                            ...p,
+                            categoryName: r.categoryName,
+                            educationGradeName: r.educationGradeName,
+                            createdAt: p.createdAt.toISOString(),
+                            updatedAt: p.updatedAt.toISOString(),
+                        };
+                    }),
                     meta: {
                         total,
                         page,

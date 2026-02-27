@@ -192,11 +192,7 @@ export function DataTable<TData>({
         !showSideBorders && "[&>div]:overflow-x-hidden",
         styles?.container?.default
       )}>
-        <Table className="border-separate border-spacing-0 border-none"
-          style={{
-            // width: table.getCenterTotalSize(),
-          }}
-        >
+        <Table className="border-separate border-spacing-0 border-none w-full">
           <TableHeader className={cn("w-full", isStickyHeader ? "sticky top-0 z-10 backdrop-blur-xs" : "", styles?.TableHeader?.default)}>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="">
@@ -214,6 +210,9 @@ export function DataTable<TData>({
                       colSpan={header.colSpan}
                       style={{
                         ...getCommonPinningStyles({ column: header.column, withBorder: pinned?.withBorder ?? true }),
+                        width: header.column.columnDef.size,
+                        minWidth: header.column.columnDef.minSize,
+                        maxWidth: header.column.columnDef.maxSize,
                       }}
                     >
                       {header.isPlaceholder
@@ -260,7 +259,7 @@ export function DataTable<TData>({
                       )}
                       style={{
                         ...getCommonPinningStyles({ column: cell.column, withBorder: pinned?.withBorder ?? true }),
-                        width: cell.column.getSize(),
+                        width: cell.column.columnDef.size,
                         minWidth: cell.column.columnDef.minSize,
                         maxWidth: cell.column.columnDef.maxSize,
                       }}

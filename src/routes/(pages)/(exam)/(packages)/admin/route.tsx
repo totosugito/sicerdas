@@ -16,7 +16,7 @@ function RouteComponent() {
     }
 
     return (
-        <div className='page-container'>
+        <div className='p-6'>
             <Outlet />
         </div>
     )

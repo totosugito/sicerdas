@@ -7,6 +7,8 @@ export interface ExamPackage {
     description: string | null;
     requiredTier: string | null;
     educationGradeId: number | null;
+    categoryName: string | null;
+    educationGradeName: string | null;
     isActive: boolean;
     createdAt: string;
     updatedAt: string;
@@ -18,5 +20,5 @@ export interface ExamPackageResponse {
 }
 
 export interface ExamPackageDetailResponse extends ExamPackageResponse {
-    data: { id: string };
+    data: ExamPackage;
 }

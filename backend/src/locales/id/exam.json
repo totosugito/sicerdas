@@ -159,6 +159,10 @@
             "delete": {
                 "success": "Paket ujian berhasil dihapus",
                 "notFound": "Paket ujian tidak ditemukan"
+            },
+            "detail": {
+                "success": "Berhasil mengambil daftar paket ujian",
+                "notFound": "Paket ujian tidak ditemukan"
             }
         },
         "package-sections": {

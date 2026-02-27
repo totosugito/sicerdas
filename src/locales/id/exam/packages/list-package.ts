@@ -2,6 +2,7 @@ export default {
     menu: "Paket",
     title: "Manajemen Paket Ujian",
     description: "Kelola paket soal ujian, atur waktu, dan kategorikan berdasarkan tingkat pendidikan.",
+    backToPage: "Kembali ke Daftar",
     table: {
         search: "Cari paket ujian...",
         noData: "Tidak ada data paket ujian.",
@@ -57,7 +58,9 @@ export default {
             label: "Durasi (Menit)",
             placeholder: "Contoh: 120",
             required: "Durasi wajib diisi",
-            min: "Durasi minimal 1 menit"
+            min: "Durasi minimal 0 menit",
+            max: "Durasi maksimal 1440 menit",
+            description: "Durasi ujian dalam menit. 0 berarti tidak terbatas."
         },
         educationGradeId: {
             label: "Tingkat Pendidikan",
@@ -79,6 +82,10 @@ export default {
     create: {
         title: "Tambah Paket Ujian",
         description: "Tambah paket soal ujian baru.",
+    },
+    edit: {
+        title: "Ubah Paket Ujian",
+        description: "Perbarui detail paket ujian.",
     },
     notifications: {
         createSuccess: "Paket ujian berhasil ditambahkan.",

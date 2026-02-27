@@ -1,10 +1,10 @@
-import type {Column} from "@tanstack/react-table";
+import type { Column } from "@tanstack/react-table";
 import React from "react";
 
 export function getCommonPinningStyles<TData>({
-                                                column,
-                                                withBorder = false,
-                                              }: {
+  column,
+  withBorder = false,
+}: {
   column: Column<TData>;
   withBorder?: boolean;
 }): React.CSSProperties {

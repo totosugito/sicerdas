@@ -5,12 +5,14 @@ import { db } from '../../../../db/db-pool.ts';
 import { examPackages } from '../../../../db/schema/exam/packages.ts';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { EnumExamType } from '../../../../db/schema/exam/enums.ts';
+import { fromNodeHeaders } from 'better-auth/node';
+import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
 
 const CreatePackageBody = Type.Object({
     categoryId: Type.String({ format: 'uuid' }),
     title: Type.String({ minLength: 1, maxLength: 255 }),
     examType: Type.Enum(EnumExamType, { default: EnumExamType.OFFICIAL }),
-    durationMinutes: Type.Number({ minimum: 1, default: 120 }),
+    durationMinutes: Type.Number({ minimum: 0, default: 0 }),
     description: Type.Optional(Type.String()),
     requiredTier: Type.Optional(Type.String({ default: 'free' })),
     educationGradeId: Type.Optional(Type.Number()),
@@ -50,6 +52,11 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
         ) {
             const body = request.body;
 
+            const session = await getAuthInstance(app).api.getSession({
+                headers: fromNodeHeaders(request.headers),
+            });
+            const user = session?.user;
+
             const [newPackage] = await db.insert(examPackages)
                 .values({
                     categoryId: body.categoryId,
@@ -60,6 +67,7 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
                     requiredTier: body.requiredTier,
                     educationGradeId: body.educationGradeId,
                     isActive: body.isActive,
+                    createdByUserId: user?.id,
                 })
                 .returning({ id: examPackages.id });
 

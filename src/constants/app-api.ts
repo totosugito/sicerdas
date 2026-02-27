@@ -90,6 +90,7 @@ export const AppApi = {
         delete: APP_URL_API + "/exam/packages/admin/delete/:id",
       },
       list: APP_URL_API + "/exam/packages/list",
+      detail: APP_URL_API + "/exam/packages/detail/:id",
     }
   },
   educationGrade: {

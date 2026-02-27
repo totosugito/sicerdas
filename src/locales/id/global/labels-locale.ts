@@ -39,6 +39,7 @@ export default {
     dark: "Gelap",
     system: "Sistem",
     login: "Masuk",
+    error: "Terjadi Kesalahan",
     pagination: {
         previous: "Sebelumnya",
         next: "Berikutnya",

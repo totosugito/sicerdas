@@ -68,8 +68,26 @@ export function PackageTable({
             )
         },
         {
+            accessorKey: "categoryName",
+            enableSorting: false, // Sorting by joined column names might need more complex backend logic
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title={t("exam.packages.list.table.columns.category")} />
+            ),
+            cell: ({ row }) => row.getValue("categoryName") || <span className="text-muted-foreground italic text-xs">-</span>
+        },
+        {
+            accessorKey: "educationGradeName",
+            enableSorting: false,
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title={t("exam.packages.list.table.columns.educationGrade")} />
+            ),
+            cell: ({ row }) => row.getValue("educationGradeName") || <span className="text-muted-foreground italic text-xs">-</span>
+        },
+        {
             accessorKey: "examType",
             enableSorting: true,
+            minSize: 70,
+            maxSize: 100,
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title={t("exam.packages.list.table.columns.examType")} />
             ),
@@ -82,13 +100,15 @@ export function PackageTable({
         {
             accessorKey: "durationMinutes",
             enableSorting: true,
+            minSize: 70,
+            maxSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packages.list.table.columns.duration")} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t("exam.packages.list.table.columns.duration")} className='justify-center bg-red-300' />
             ),
             cell: ({ row }) => {
                 const duration = row.getValue("durationMinutes") as number;
                 return (
-                    <div className='flex justify-center'>
+                    <div className='flex justify-center bg-red-300'>
                         <span className="text-sm">{duration}</span>
                     </div>
                 );
@@ -97,6 +117,7 @@ export function PackageTable({
         {
             accessorKey: "isActive",
             enableSorting: true,
+            size: 70,
             minSize: 70,
             maxSize: 70,
             header: ({ column }) => (
@@ -116,8 +137,8 @@ export function PackageTable({
         {
             accessorKey: "updatedAt",
             enableSorting: true,
-            minSize: 100,
-            maxSize: 100,
+            minSize: 70,
+            maxSize: 70,
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title={t("exam.packages.list.table.columns.updatedAt")} />
             ),

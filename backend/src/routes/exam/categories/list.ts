@@ -12,7 +12,7 @@ const CategoryListQuery = Type.Object({
     sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, updatedAt, name, isActive', default: 'name' })),
     sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'asc' })),
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
-    limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
+    limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 1000 })),
 });
 
 const CategoryResponseItem = Type.Object({
