@@ -6,6 +6,7 @@ import importBooks from './jobs/import-book.ts';
 import importPeriodicElements from './jobs/import-periodic-elements.ts';
 import initTierPricing from './jobs/init-tier-pricing.ts';
 import { runUpdateBookStats } from './jobs/update-book-stats.ts';
+import initExam from './jobs/init-exam.ts';
 
 const runInitialData = async () => {
     // Configuration for data initialization
@@ -22,10 +23,11 @@ const runInitialData = async () => {
     const processConfig = {
         initTierPricing: false,
         initUser: false,
-        initBookGroup: true,
+        initBookGroup: false,
         importBooks: false,
-        updateBookStats: true,
-        importPeriodicElements: false
+        updateBookStats: false,
+        importPeriodicElements: false,
+        initExam: true
     };
 
     console.log('Starting initialization of all data...');
@@ -78,6 +80,14 @@ const runInitialData = async () => {
             console.log('----------------------------------------');
             await importPeriodicElements(dataInput.periodicTable);
             console.log('✓ Periodic elements import completed');
+        }
+
+        if (processConfig.initExam) {
+            console.log('\n----------------------------------------');
+            console.log('6. Initializing Exam Categories');
+            console.log('----------------------------------------');
+            await initExam();
+            console.log('✓ Exam Categories initialization completed');
         }
 
         const duration = ((Date.now() - startTime) / 1000).toFixed(2);
