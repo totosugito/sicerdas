@@ -46,4 +46,17 @@ export default defineConfig({
       },
     },
   },
+  define: {
+    '__BUILD_VERSION__': JSON.stringify(
+      (() => {
+        const now = new Date();
+        const yy = now.getFullYear().toString().slice(-1);
+        const MM = (now.getMonth() + 1).toString().padStart(2, '0');
+        const DD = now.getDate().toString().padStart(2, '0');
+        const HH = now.getHours().toString().padStart(2, '0');
+        const mm = now.getMinutes().toString().padStart(2, '0');
+        return `${yy}.${MM}.${DD}.${HH}${mm}`;
+      })()
+    ),
+  },
 })

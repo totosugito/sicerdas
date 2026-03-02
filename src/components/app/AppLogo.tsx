@@ -23,7 +23,6 @@ const AppLogo = ({ disableColapsed = false }: Props) => {
 
   const { state } = useSidebar();
   const isCollapsed = (state === "collapsed");
-
   return (
     <Link to="/" className="flex items-center gap-2 group">
       <div className={cn("flex items-center justify-center justify-items-center rounded-full bg-card shadow-sm", isCollapsed ? "p-[2px]" : "p-[3px]")} >

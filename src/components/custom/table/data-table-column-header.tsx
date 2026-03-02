@@ -36,22 +36,23 @@ export function DataTableColumnHeader<TData, TValue>({
     setIsOpen(false);
   };
 
-  const minSize = column.columnDef.minSize;
-  const maxSize = column.columnDef.maxSize;
-
-  const style: React.CSSProperties = {
-    minWidth: minSize ? `${minSize}px` : undefined,
-    maxWidth: maxSize ? `${maxSize}px` : undefined,
-  };
+  // const minSize = column.columnDef.minSize;
+  // const maxSize = column.columnDef.maxSize;
+  // const style: React.CSSProperties = {
+  //   minWidth: minSize ? `${minSize}px` : undefined,
+  //   maxWidth: maxSize ? `${maxSize}px` : undefined,
+  // };
 
   if (!canSort) {
-    return <div className={cn("flex items-center", className)} style={style}>{title}</div>;
+    return <div className={cn("flex items-center", className)}
+    // style={style}
+    >{title}</div>;
   }
 
   return (
     <div
       className={cn("group flex items-center space-x-1 cursor-pointer select-none hover:text-foreground transition-colors w-full min-w-0", className)}
-      style={style}
+      // style={style}
       onClick={() => handleSort('toggle')}
     >
       <span className="group-hover:text-foreground break-words leading-tight flex-1">{title}</span>

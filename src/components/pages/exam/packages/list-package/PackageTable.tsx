@@ -103,12 +103,12 @@ export function PackageTable({
             minSize: 70,
             maxSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packages.list.table.columns.duration")} className='justify-center bg-red-300' />
+                <DataTableColumnHeader column={column} title={t("exam.packages.list.table.columns.duration")} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const duration = row.getValue("durationMinutes") as number;
                 return (
-                    <div className='flex justify-center bg-red-300'>
+                    <div className='flex justify-center'>
                         <span className="text-sm">{duration}</span>
                     </div>
                 );
@@ -138,12 +138,12 @@ export function PackageTable({
             accessorKey: "updatedAt",
             enableSorting: true,
             minSize: 70,
-            maxSize: 70,
+            maxSize: 100,
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title={t("exam.packages.list.table.columns.updatedAt")} />
             ),
             cell: ({ row }) => (
-                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                <span className="text-sm text-muted-foreground">
                     {string_to_locale_date("id-ID", row.getValue("updatedAt"))}
                 </span>
             ),
