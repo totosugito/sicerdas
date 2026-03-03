@@ -58,7 +58,7 @@ const deleteSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             if (inUseCheck) {
                 // Return a friendly error using Sensible, instead of raw pg constraint error
-                return reply.badRequest('Mata pelajaran ini tidak dapat dihapus karena masih terikat pada beberapa soal ujian.');
+                return reply.badRequest(request.i18n.t('exam.subjects.delete.inUse'));
             }
 
             // Perform Hard Delete

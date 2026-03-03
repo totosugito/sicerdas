@@ -2,20 +2,23 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
-import { examCategories } from '../../../db/schema/exam/categories.ts';
+import { examSubjects } from '../../../db/schema/exam/subjects.ts';
 import { desc, ilike, or, and, sql, eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { fromNodeHeaders } from 'better-auth/node';
+import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
+import { EnumUserRole } from '../../../db/schema/index.ts';
 
-const CategoryListQuery = Type.Object({
-    search: Type.Optional(Type.String({ description: 'Search term for category name or description' })),
-    isActive: Type.Optional(Type.Boolean({ description: 'Filter by active status. Omit to fetch all.' })),
-    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, updatedAt, name, isActive', default: 'name' })),
+const SubjectListQuery = Type.Object({
+    search: Type.Optional(Type.String({ description: 'Search term for subject name or description' })),
+    isActive: Type.Optional(Type.Boolean()),
+    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, name, isActive, updatedAt', default: 'name' })),
     sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'asc' })),
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
-    limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 1000 })),
+    limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
 });
 
-const CategoryResponseItem = Type.Object({
+const SubjectResponseItem = Type.Object({
     id: Type.String({ format: 'uuid' }),
     name: Type.String(),
     description: Type.Union([Type.String(), Type.Null()]),
@@ -24,11 +27,11 @@ const CategoryResponseItem = Type.Object({
     updatedAt: Type.String({ format: 'date-time' }),
 });
 
-const ListCategoriesResponse = Type.Object({
+const ListSubjectsResponse = Type.Object({
     success: Type.Boolean(),
     message: Type.String(),
     data: Type.Object({
-        items: Type.Array(CategoryResponseItem),
+        items: Type.Array(SubjectResponseItem),
         meta: Type.Object({
             total: Type.Number(),
             page: Type.Number(),
@@ -38,15 +41,15 @@ const ListCategoriesResponse = Type.Object({
     }),
 });
 
-const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
+const listSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
     app.route({
         url: '/list',
-        method: 'POST', // Changed to POST to conventionally accept complex query body like in `list-book.ts`
+        method: 'POST',
         schema: {
-            tags: ['Exam Categories'],
-            body: CategoryListQuery,
+            tags: ['Exam Subjects'],
+            body: SubjectListQuery,
             response: {
-                200: ListCategoriesResponse,
+                200: ListSubjectsResponse,
                 '4xx': Type.Object({
                     success: Type.Boolean({ default: false }),
                     message: Type.String()
@@ -58,17 +61,30 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
         },
         handler: withErrorHandler(async function handler(
-            request: FastifyRequest<{ Body: typeof CategoryListQuery.static }>,
+            request: FastifyRequest<{ Body: typeof SubjectListQuery.static }>,
             reply: FastifyReply
         ) {
-            const { search, isActive, sortBy = 'name', sortOrder = 'asc', page = 1, limit = 10 } = request.body;
+            // Determine user role from session
+            const session = await getAuthInstance(app).api.getSession({
+                headers: fromNodeHeaders(request.headers),
+            });
+            const user = session?.user;
+            const isAdmin = user?.role === EnumUserRole.ADMIN;
+
+            const { search, isActive, sortOrder = 'asc', page = 1, limit = 10 } = request.body;
+            let { sortBy = 'name' } = request.body;
             const offset = (page - 1) * limit;
 
             const conditions = [];
 
-            // Add active status condition if provided
-            if (isActive !== undefined) {
-                conditions.push(eq(examCategories.isActive, isActive));
+            if (!isAdmin) {
+                // Client must only see active subjects
+                conditions.push(eq(examSubjects.isActive, true));
+                // Force sorting ignoring isActive for clients
+                if (sortBy === 'isActive') sortBy = 'name';
+            } else {
+                // Admin can filter by active status
+                if (isActive !== undefined) conditions.push(eq(examSubjects.isActive, isActive));
             }
 
             // Add search condition
@@ -76,14 +92,14 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
                 const searchTerm = `%${search.trim().toLowerCase()}%`;
                 conditions.push(
                     or(
-                        ilike(examCategories.name, searchTerm),
-                        ilike(examCategories.description, searchTerm)
+                        ilike(examSubjects.name, searchTerm),
+                        ilike(examSubjects.description, searchTerm)
                     )
                 );
             }
 
             // Build Query
-            let baseQuery = db.select().from(examCategories);
+            let baseQuery = db.select().from(examSubjects);
             if (conditions.length > 0) {
                 baseQuery = baseQuery.where(and(...conditions)) as any;
             }
@@ -95,24 +111,28 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             switch (sortBy) {
                 case 'name':
                     queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examCategories.name)
-                        : baseQuery.orderBy(desc(examCategories.name));
+                        ? baseQuery.orderBy(examSubjects.name)
+                        : baseQuery.orderBy(desc(examSubjects.name));
                     break;
                 case 'isActive':
                     queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examCategories.isActive)
-                        : baseQuery.orderBy(desc(examCategories.isActive));
+                        ? baseQuery.orderBy(examSubjects.isActive)
+                        : baseQuery.orderBy(desc(examSubjects.isActive));
                     break;
                 case 'updatedAt':
                     queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examCategories.updatedAt)
-                        : baseQuery.orderBy(desc(examCategories.updatedAt));
+                        ? baseQuery.orderBy(examSubjects.updatedAt)
+                        : baseQuery.orderBy(desc(examSubjects.updatedAt));
                     break;
                 case 'createdAt':
+                    queryWithSort = order === 'asc'
+                        ? baseQuery.orderBy(examSubjects.createdAt)
+                        : baseQuery.orderBy(desc(examSubjects.createdAt));
+                    break;
                 default:
                     queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examCategories.createdAt)
-                        : baseQuery.orderBy(desc(examCategories.createdAt));
+                        ? baseQuery.orderBy(examSubjects.name)
+                        : baseQuery.orderBy(desc(examSubjects.name));
                     break;
             }
 
@@ -131,12 +151,12 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.categories.list.success'),
+                message: request.i18n.t('exam.subjects.list.success'),
                 data: {
-                    items: items.map(cat => ({
-                        ...cat,
-                        createdAt: cat.createdAt.toISOString(),
-                        updatedAt: cat.updatedAt.toISOString(),
+                    items: items.map(sub => ({
+                        ...sub,
+                        createdAt: sub.createdAt.toISOString(),
+                        updatedAt: sub.updatedAt.toISOString(),
                     })),
                     meta: {
                         total,
@@ -150,4 +170,4 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
     });
 };
 
-export default listCategoryRoute;
+export default listSubjectRoute;

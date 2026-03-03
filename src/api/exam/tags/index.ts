@@ -1,8 +1,8 @@
 export type { ExamTag, ExamTagDetailData, ExamTagResponse, ExamTagDetailResponse } from "./types";
 
 // Admin exports
-export { useListTag } from "./admin/list-tag";
-export type { ListTagRequest, ListTagResponse } from "./admin/list-tag";
+export { useListTag } from "./list-tag";
+export type { ListTagRequest, ListTagResponse } from "./list-tag";
 
 export { useCreateTag } from "./admin/create-tag";
 export type { CreateTagRequest } from "./admin/create-tag";

@@ -2,16 +2,20 @@ import list from "./categories/list-category";
 import exam from "./exam";
 import tags from "./tags/list-tags";
 import packages from "./packages/list-package";
+import subjects from "./subjects/list-subject";
 const obj = {
     ...exam,
-    categories: {
-        list: list
+    subjects: {
+        list: subjects
+    },
+    packages: {
+        list: packages
     },
     tags: {
         list: tags
     },
-    packages: {
-        list: packages
-    }
+    categories: {
+        list: list
+    },
 }
 export default obj

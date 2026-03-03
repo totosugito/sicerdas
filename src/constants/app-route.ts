@@ -79,14 +79,11 @@ export const AppRoute = {
     }
   },
   exam: {
-    categories: {
+    subjects: {
       admin: {
-        list: { url: "/admin/list-category" },
-      },
-    },
-    tags: {
-      admin: {
-        list: { url: "/admin/list-tag" },
+        list: { url: "/admin/list-subject" },
+        create: { url: "/admin/create-subject" },
+        edit: { url: "/admin/edit-subject/$id" },
       },
     },
     packages: {
@@ -95,7 +92,17 @@ export const AppRoute = {
         create: { url: "/admin/create-package" },
         edit: { url: "/admin/edit-package/$id" },
       },
-    }
+    },
+    tags: {
+      admin: {
+        list: { url: "/admin/list-tag" },
+      },
+    },
+    categories: {
+      admin: {
+        list: { url: "/admin/list-category" },
+      },
+    },
   },
   admin: {
     dashboard: { url: "/admin/dashboard" },

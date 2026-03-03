@@ -34,6 +34,11 @@
             },
             "delete": {
                 "success": "Mata pelajaran ujian berhasil dihapus",
+                "notFound": "Mata pelajaran tidak ditemukan",
+                "inUse": "Mata pelajaran ini tidak dapat dihapus karena masih terikat pada beberapa soal ujian."
+            },
+            "detail": {
+                "success": "Berhasil mengambil detail mata pelajaran ujian",
                 "notFound": "Mata pelajaran tidak ditemukan"
             }
         },
@@ -158,7 +163,9 @@
             },
             "delete": {
                 "success": "Paket ujian berhasil dihapus",
-                "notFound": "Paket ujian tidak ditemukan"
+                "notFound": "Paket ujian tidak ditemukan",
+                "inUse": "Paket ujian ini tidak dapat dihapus karena masih digunakan dalam sesi ujian pengguna.",
+                "hasContent": "Paket ujian tidak dapat dihapus karena masih memiliki seksi atau soal yang tertaut. Harap hapus seksi dan soal terlebih dahulu."
             },
             "detail": {
                 "success": "Berhasil mengambil daftar paket ujian",

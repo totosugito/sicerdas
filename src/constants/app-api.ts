@@ -67,21 +67,14 @@ export const AppApi = {
     create: APP_URL_API + "/content-report/create",
   },
   exam: {
-    categories: {
+    subjects: {
       admin: {
-        create: APP_URL_API + "/exam/categories/admin/create",
-        update: APP_URL_API + "/exam/categories/admin/update/:id",
-        delete: APP_URL_API + "/exam/categories/admin/delete/:id",
+        create: APP_URL_API + "/exam/subjects/admin/create",
+        update: APP_URL_API + "/exam/subjects/admin/update/:id",
+        delete: APP_URL_API + "/exam/subjects/admin/delete/:id",
       },
-      list: APP_URL_API + "/exam/categories/list",
-    },
-    tags: {
-      admin: {
-        list: APP_URL_API + "/exam/tags/admin/list",
-        create: APP_URL_API + "/exam/tags/admin/create",
-        update: APP_URL_API + "/exam/tags/admin/update/:id",
-        delete: APP_URL_API + "/exam/tags/admin/delete/:id",
-      }
+      list: APP_URL_API + "/exam/subjects/list",
+      detail: APP_URL_API + "/exam/subjects/detail/:id",
     },
     packages: {
       admin: {
@@ -91,7 +84,23 @@ export const AppApi = {
       },
       list: APP_URL_API + "/exam/packages/list",
       detail: APP_URL_API + "/exam/packages/detail/:id",
-    }
+    },
+    tags: {
+      admin: {
+        create: APP_URL_API + "/exam/tags/admin/create",
+        update: APP_URL_API + "/exam/tags/admin/update/:id",
+        delete: APP_URL_API + "/exam/tags/admin/delete/:id",
+      },
+      list: APP_URL_API + "/exam/tags/list",
+    },
+    categories: {
+      admin: {
+        create: APP_URL_API + "/exam/categories/admin/create",
+        update: APP_URL_API + "/exam/categories/admin/update/:id",
+        delete: APP_URL_API + "/exam/categories/admin/delete/:id",
+      },
+      list: APP_URL_API + "/exam/categories/list",
+    },
   },
   educationGrade: {
     admin: {

@@ -3,22 +3,22 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { ControlForm } from "@/components/custom/forms";
 import {
-    ExamTag,
-    useCreateTag,
-    useUpdateTag,
-    CreateTagRequest,
-    UpdateTagRequest
-} from "@/api/exam/tags";
+    ExamSubject,
+    useCreateSubject,
+    useUpdateSubject,
+    CreateSubjectRequest,
+    UpdateSubjectRequest
+} from "@/api/exam/subjects";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 
-export type DialogTagCreateProps = {
+export type DialogSubjectCreateProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    tag?: ExamTag | null;
+    subject?: ExamSubject | null;
 };
 
-const FormTag = ({ values, form }: any) => {
+const FormSubject = ({ values, form }: any) => {
     return (
         <div className="flex flex-col gap-4 w-full">
             <ControlForm form={form} item={values.name} showMessage={false} />
@@ -28,14 +28,14 @@ const FormTag = ({ values, form }: any) => {
     );
 };
 
-export const DialogTagCreate = ({ open, onOpenChange, tag }: DialogTagCreateProps) => {
+export const DialogSubjectCreate = ({ open, onOpenChange, subject }: DialogSubjectCreateProps) => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
-    const createMutation = useCreateTag();
-    const updateMutation = useUpdateTag();
+    const createMutation = useCreateSubject();
+    const updateMutation = useUpdateSubject();
 
     const formSchema = {
-        name: z.string().min(1, t("exam.tags.list.form.name.required")),
+        name: z.string().min(1, t("exam.subjects.list.form.name.required")),
         description: z.string().optional(),
         isActive: z.boolean().default(true),
     };
@@ -44,45 +44,45 @@ export const DialogTagCreate = ({ open, onOpenChange, tag }: DialogTagCreateProp
         name: {
             type: "text",
             name: "name",
-            label: t("exam.tags.list.form.name.label"),
-            placeholder: t("exam.tags.list.form.name.placeholder"),
+            label: t("exam.subjects.list.form.name.label"),
+            placeholder: t("exam.subjects.list.form.name.placeholder"),
         },
         description: {
             type: "textarea",
             name: "description",
-            label: t("exam.tags.list.form.description.label"),
-            placeholder: t("exam.tags.list.form.description.placeholder"),
+            label: t("exam.subjects.list.form.description.label"),
+            placeholder: t("exam.subjects.list.form.description.placeholder"),
             minRows: 3,
         },
         isActive: {
             type: "switch",
             name: "isActive",
-            label: t("exam.tags.list.form.isActive.label"),
-            description: t("exam.tags.list.form.isActive.description"),
+            label: t("exam.subjects.list.form.isActive.label"),
+            description: t("exam.subjects.list.form.isActive.description"),
         },
     };
 
     const modalProps: ModalFormProps = {
-        title: tag ? t("labels.edit") + " " + t("exam.tags.list.title") : t("labels.add") + " " + t("exam.tags.list.title"),
-        desc: tag ? t("exam.tags.list.editDescription") : t("exam.tags.list.createDescription"),
+        title: subject ? t("labels.edit") + " " + t("exam.subjects.list.title") : t("labels.add") + " " + t("exam.subjects.list.title"),
+        desc: subject ? t("exam.subjects.list.editDescription") : t("exam.subjects.list.createDescription"),
         modal: true,
         textConfirm: (createMutation.isPending || updateMutation.isPending) ? t("labels.saving") : t("labels.save"),
         textCancel: t("labels.cancel"),
         defaultValue: {
-            name: tag?.name || "",
-            description: tag?.description || "",
-            isActive: tag?.isActive ?? true,
+            name: subject?.name || "",
+            description: subject?.description || "",
+            isActive: subject?.isActive ?? true,
         },
         child: formConfig,
         schema: formSchema,
-        content: <FormTag />,
+        content: <FormSubject />,
         onCancelClick: () => onOpenChange(false),
         onConfirmClick: async (values) => {
-            if (tag) {
-                await updateMutation.mutateAsync({ id: tag.id, ...values } as UpdateTagRequest, {
+            if (subject) {
+                await updateMutation.mutateAsync({ id: subject.id, ...(values as any) } as UpdateSubjectRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t("exam.tags.list.notifications.updateSuccess") });
-                        queryClient.invalidateQueries({ queryKey: ["exam-tags-list"] });
+                        showNotifSuccess({ message: res.message || t("exam.subjects.list.notifications.updateSuccess") });
+                        queryClient.invalidateQueries({ queryKey: ["exam-subjects-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
@@ -90,10 +90,10 @@ export const DialogTagCreate = ({ open, onOpenChange, tag }: DialogTagCreateProp
                     }
                 });
             } else {
-                await createMutation.mutateAsync(values as CreateTagRequest, {
+                await createMutation.mutateAsync(values as CreateSubjectRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t("exam.tags.list.notifications.createSuccess") });
-                        queryClient.invalidateQueries({ queryKey: ["exam-tags-list"] });
+                        showNotifSuccess({ message: res.message || t("exam.subjects.list.notifications.createSuccess") });
+                        queryClient.invalidateQueries({ queryKey: ["exam-subjects-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {

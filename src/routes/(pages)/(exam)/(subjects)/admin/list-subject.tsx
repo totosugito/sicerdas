@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
 import {
-  useListTag,
-  useDeleteTag,
-  ExamTag,
-  ListTagResponse
-} from '@/api/exam/tags';
+  useListSubject,
+  useDeleteSubject,
+  ExamSubject,
+  ListSubjectResponse
+} from '@/api/exam/subjects';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from 'react';
@@ -13,11 +13,11 @@ import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/app';
 import { Plus, Trash2 } from 'lucide-react';
 import { DialogModal } from '@/components/custom/components';
-import { TagTable, DialogTagCreate } from '@/components/pages/exam/tags';
+import { SubjectTable, DialogSubjectCreate } from '@/components/pages/exam/subjects';
 import { PaginationData } from '@/components/custom/table';
 import { z } from 'zod';
 
-export const Route = createFileRoute('/(pages)/(exam)/(tags)/admin/list-tag')({
+export const Route = createFileRoute('/(pages)/(exam)/(subjects)/admin/list-subject')({
   validateSearch: z.object({
     page: z.number().min(1).optional().catch(undefined),
     limit: z.number().min(5).optional().catch(undefined),
@@ -25,10 +25,10 @@ export const Route = createFileRoute('/(pages)/(exam)/(tags)/admin/list-tag')({
     sortBy: z.string().optional().catch(undefined),
     sortOrder: z.enum(['asc', 'desc']).optional().catch(undefined),
   }),
-  component: AdminExamTagsPage,
+  component: AdminExamSubjectsPage,
 });
 
-function AdminExamTagsPage() {
+function AdminExamSubjectsPage() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = Route.useNavigate();
@@ -42,7 +42,7 @@ function AdminExamTagsPage() {
   const sortOrder = searchParams.sortOrder ?? "asc";
 
   // API Hooks
-  const { data, isLoading } = useListTag({
+  const { data, isLoading } = useListSubject({
     page,
     limit,
     search,
@@ -50,35 +50,35 @@ function AdminExamTagsPage() {
     sortOrder,
   });
 
-  const deleteMutation = useDeleteTag();
+  const deleteMutation = useDeleteSubject();
 
   // Dialog & Modal States
   const [showDialog, setShowDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [selectedTag, setSelectedTag] = useState<ExamTag | null>(null);
+  const [selectedSubject, setSelectedSubject] = useState<ExamSubject | null>(null);
 
   // Handlers
   const handleAdd = () => {
-    setSelectedTag(null);
+    setSelectedSubject(null);
     setShowDialog(true);
   };
 
-  const handleEdit = (tag: ExamTag) => {
-    setSelectedTag(tag);
+  const handleEdit = (subject: ExamSubject) => {
+    setSelectedSubject(subject);
     setShowDialog(true);
   };
 
-  const handleDelete = (tag: ExamTag) => {
-    setSelectedTag(tag);
+  const handleDelete = (subject: ExamSubject) => {
+    setSelectedSubject(subject);
     setShowDeleteDialog(true);
   };
 
   const confirmDelete = () => {
-    if (!selectedTag) return;
-    deleteMutation.mutate(selectedTag.id, {
+    if (!selectedSubject) return;
+    deleteMutation.mutate(selectedSubject.id, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t("exam.tags.list.delete.success") });
-        queryClient.invalidateQueries({ queryKey: ["exam-tags-list"] });
+        showNotifSuccess({ message: res.message || t("exam.subjects.list.delete.success") });
+        queryClient.invalidateQueries({ queryKey: ["exam-subjects-list"] });
         setShowDeleteDialog(false);
       },
       onError: (err: any) => {
@@ -91,8 +91,8 @@ function AdminExamTagsPage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={t("exam.tags.list.title")}
-          description={<span>{t("exam.tags.list.description")}</span>}
+          title={t("exam.subjects.list.title")}
+          description={<span>{t("exam.subjects.list.description")}</span>}
         />
         <Button onClick={handleAdd} className="flex-shrink-0 gap-1.5 shadow-sm">
           <Plus className="h-4 w-4" />
@@ -100,8 +100,8 @@ function AdminExamTagsPage() {
         </Button>
       </div>
 
-      <TagTable
-        data={data as ListTagResponse}
+      <SubjectTable
+        data={data as ListSubjectResponse}
         isLoading={isLoading}
         paginationData={data?.data.meta as PaginationData}
         onPaginationChange={(pagination: { page: number; limit: number }) => {
@@ -141,19 +141,19 @@ function AdminExamTagsPage() {
         onDelete={handleDelete}
       />
 
-      <DialogTagCreate
+      <DialogSubjectCreate
         open={showDialog}
         onOpenChange={setShowDialog}
-        tag={selectedTag}
+        subject={selectedSubject}
       />
 
       <DialogModal
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
-          title: t("exam.tags.list.delete.confirmTitle"),
-          desc: t("exam.tags.list.delete.confirmDesc", { name: selectedTag?.name }),
-          infoContainer: t("exam.tags.list.delete.deleteInfo"),
+          title: t("exam.subjects.list.delete.confirmTitle"),
+          desc: t("exam.subjects.list.delete.confirmDesc", { name: selectedSubject?.name }),
+          infoContainer: t("exam.subjects.list.delete.deleteInfo"),
           infoContainerVariant: "error",
           variant: "destructive",
           iconType: "error",

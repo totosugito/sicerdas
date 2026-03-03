@@ -1,7 +1,7 @@
 import { HiOutlineUsers } from "react-icons/hi2";
 import { AppRoute } from "@/constants/app-route";
 import i18n from '@/i18n';
-import { Badge, Bookmark, BookTemplateIcon, DollarSign, GraduationCap, LucideBadge } from "lucide-react";
+import { Badge, Bookmark, BookTemplateIcon, DollarSign, GraduationCap, LucideBadge, TagsIcon } from "lucide-react";
 
 const t = i18n.t;
 export const AdminNav = {
@@ -15,6 +15,11 @@ export const AdminNav = {
     {
       title: t("exam.menu").toUpperCase(),
       items: [
+        {
+          title: t("exam.subjects.list.menu"),
+          url: AppRoute.exam.subjects.admin.list.url,
+          icon: TagsIcon,
+        },
         {
           title: t("exam.packages.list.menu"),
           url: AppRoute.exam.packages.admin.list.url,

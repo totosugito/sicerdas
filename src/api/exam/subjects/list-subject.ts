@@ -1,10 +1,10 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ExamTag } from "../types";
+import { ExamSubject } from "./types";
 import { PaginationData } from "@/components/custom/table";
 
-export interface ListTagRequest {
+export interface ListSubjectRequest {
     search?: string;
     isActive?: boolean;
     sortBy?: string;
@@ -13,26 +13,26 @@ export interface ListTagRequest {
     limit?: number;
 }
 
-export interface ListTagResponse {
+export interface ListSubjectResponse {
     success: boolean;
     message: string;
     data: {
-        items: ExamTag[];
+        items: ExamSubject[];
         meta: PaginationData;
     };
 }
 
-export const useListTag = (params: ListTagRequest) => {
+export const useListSubject = (params: ListSubjectRequest) => {
     return useQuery({
-        queryKey: ["admin-exam-tags-list", params],
+        queryKey: ["exam-subjects-list", params],
         queryFn: async () => {
             const response = await fetchApi({
                 method: "POST",
-                url: AppApi.exam.tags.admin.list,
+                url: AppApi.exam.subjects.list,
                 body: params,
                 withCredentials: true,
             });
-            return response as ListTagResponse;
+            return response as ListSubjectResponse;
         },
     });
 };

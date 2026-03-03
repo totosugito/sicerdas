@@ -3,7 +3,10 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examPackages } from '../../../../db/schema/exam/packages.ts';
-import { eq } from 'drizzle-orm';
+import { examSessions } from '../../../../db/schema/exam/sessions.ts';
+import { examPackageSections } from '../../../../db/schema/exam/package-sections.ts';
+import { examPackageQuestions } from '../../../../db/schema/exam/package-questions.ts';
+import { eq, or } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
 const DeletePackageParams = Type.Object({
@@ -45,8 +48,26 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
                 });
             }
 
-            // NOTE: Deleting a package will cascade to package_sections and package_questions 
-            // because of the references in those schemas (onDelete: 'cascade').
+            // Check if package is in use by any sessions
+            const inUseCheck = await db.query.examSessions.findFirst({
+                where: eq(examSessions.packageId, id)
+            });
+
+            if (inUseCheck) {
+                return reply.badRequest(request.i18n.t('exam.packages.delete.inUse'));
+            }
+
+            // Check if package has sections or question assignments
+            const [hasContent] = await Promise.all([
+                db.query.examPackageSections.findFirst({ where: eq(examPackageSections.packageId, id) }),
+                db.query.examPackageQuestions.findFirst({ where: eq(examPackageQuestions.packageId, id) }),
+            ]);
+
+            if (hasContent) {
+                return reply.badRequest(request.i18n.t('exam.packages.delete.hasContent'));
+            }
+
+            // Perform Hard Delete
             await db.delete(examPackages).where(eq(examPackages.id, id));
 
             return reply.status(200).send({
