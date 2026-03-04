@@ -3,8 +3,8 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
 import { examPackages } from '../../../db/schema/exam/packages.ts';
-import { contentCategories } from '../../../db/schema/core/categories.ts';
-import { educationGrades } from '../../../db/schema/education-grade/education.ts';
+import { educationCategories } from '../../../db/schema/education/education-categories.ts';
+import { educationGrades } from '../../../db/schema/education/education-grades.ts';
 import { desc, ilike, and, sql, eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
@@ -108,11 +108,11 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
             // Build Query
             let baseQuery = db.select({
                 package: examPackages,
-                categoryName: contentCategories.name,
+                categoryName: educationCategories.name,
                 educationGradeName: educationGrades.name,
             })
                 .from(examPackages)
-                .leftJoin(contentCategories, eq(examPackages.categoryId, contentCategories.id))
+                .leftJoin(educationCategories, eq(examPackages.categoryId, educationCategories.id))
                 .leftJoin(educationGrades, eq(examPackages.educationGradeId, educationGrades.id));
 
             if (conditions.length > 0) {

@@ -1,1 +1,0 @@
-export { educationGrades, type SchemaEducationGradeSelect, type SchemaEducationGradeInsert } from './education.ts';

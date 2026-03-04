@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
-import { contentCategories } from '../../../../db/schema/core/categories.ts';
+import { educationCategories } from '../../../../db/schema/education/education-categories.ts';
 import { examPackages } from '../../../../db/schema/exam/packages.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
@@ -42,8 +42,8 @@ const deleteCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             const { id } = request.params;
 
             // Ensure category exists
-            const existingCategory = await db.query.contentCategories.findFirst({
-                where: eq(contentCategories.id, id)
+            const existingCategory = await db.query.educationCategories.findFirst({
+                where: eq(educationCategories.id, id)
             });
 
             if (!existingCategory) {
@@ -60,7 +60,7 @@ const deleteCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             // Perform Hard Delete
-            await db.delete(contentCategories).where(eq(contentCategories.id, id));
+            await db.delete(educationCategories).where(eq(educationCategories.id, id));
 
             return reply.status(200).send({
                 success: true,

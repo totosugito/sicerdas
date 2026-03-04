@@ -1,10 +1,10 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
-import { db } from '../../../db/db-pool.ts';
-import { educationGrades } from '../../../db/schema/education-grade/education.ts';
+import { db } from '../../../../db/db-pool.ts';
+import { educationGrades } from '../../../../db/schema/education/education-grades.ts';
 import { eq, or } from 'drizzle-orm';
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
 const CreateEducationGradeBody = Type.Object({
     grade: Type.String({ minLength: 1, maxLength: 32 }),

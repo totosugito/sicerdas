@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
-import { contentCategories } from '../../../../db/schema/core/categories.ts';
+import { educationCategories } from '../../../../db/schema/education/education-categories.ts';
 import { eq, and, ne } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -59,8 +59,8 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             const { name, description, isActive } = request.body;
 
             // Ensure category exists
-            const existingCategory = await db.query.contentCategories.findFirst({
-                where: eq(contentCategories.id, id)
+            const existingCategory = await db.query.educationCategories.findFirst({
+                where: eq(educationCategories.id, id)
             });
 
             if (!existingCategory) {
@@ -68,10 +68,10 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             // Check if new name conflicts with another existing category
-            const nameConflict = await db.query.contentCategories.findFirst({
+            const nameConflict = await db.query.educationCategories.findFirst({
                 where: and(
-                    eq(contentCategories.name, name),
-                    ne(contentCategories.id, id)
+                    eq(educationCategories.name, name),
+                    ne(educationCategories.id, id)
                 )
             });
 
@@ -90,9 +90,9 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
                 updatePayload.isActive = isActive;
             }
 
-            const [updatedCategory] = await db.update(contentCategories)
+            const [updatedCategory] = await db.update(educationCategories)
                 .set(updatePayload)
-                .where(eq(contentCategories.id, id))
+                .where(eq(educationCategories.id, id))
                 .returning();
 
             return reply.status(200).send({

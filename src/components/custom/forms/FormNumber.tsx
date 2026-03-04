@@ -45,17 +45,26 @@ export const FormNumber = ({
               props?.className
             )}
               precision={item?.precision ?? undefined}
-              formatter={(value) => {
-                if (item?.prefix) {
-                  return (`${item?.prefix} ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','))
-                } else if (item?.suffix) {
-                  return (`${value} ${item?.suffix}`.replace(/\B(?=(\d{3})+(?!\d))/g, ","))
-                } else {
-                  return (`${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','))
-                }
-              }}
               {...field}
               disabled={props?.disabled}
+              formatter={(value) => {
+                const formatNumber = (val: any) => {
+                  if (val === undefined || val === null || val === '') return '';
+                  const parts = val.toString().split('.');
+                  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                  return parts.join('.');
+                };
+
+                const formattedValue = (item?.precision === 0) ? `${value}` : formatNumber(value);
+
+                if (item?.prefix) {
+                  return `${item?.prefix} ${formattedValue}`;
+                } else if (item?.suffix) {
+                  return `${formattedValue} ${item?.suffix}`;
+                } else {
+                  return formattedValue;
+                }
+              }}
             />
           </FormControl>
           {item.description && <FormDescription>{item.description}</FormDescription>}

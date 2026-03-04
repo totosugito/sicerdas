@@ -3,8 +3,8 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
 import { examPackages } from '../../../db/schema/exam/packages.ts';
-import { contentCategories } from '../../../db/schema/core/categories.ts';
-import { educationGrades } from '../../../db/schema/education-grade/education.ts';
+import { educationCategories } from '../../../db/schema/education/education-categories.ts';
+import { educationGrades } from '../../../db/schema/education/education-grades.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 
@@ -54,11 +54,11 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             const [result] = await db.select({
                 package: examPackages,
-                categoryName: contentCategories.name,
+                categoryName: educationCategories.name,
                 educationGradeName: educationGrades.name,
             })
                 .from(examPackages)
-                .leftJoin(contentCategories, eq(examPackages.categoryId, contentCategories.id))
+                .leftJoin(educationCategories, eq(examPackages.categoryId, educationCategories.id))
                 .leftJoin(educationGrades, eq(examPackages.educationGradeId, educationGrades.id))
                 .where(eq(examPackages.id, id))
                 .limit(1);

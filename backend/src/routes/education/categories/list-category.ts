@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
-import { contentCategories } from '../../../db/schema/core/categories.ts';
+import { educationCategories } from '../../../db/schema/education/education-categories.ts';
 import { desc, ilike, or, and, sql, eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
@@ -79,12 +79,12 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             if (!isAdmin) {
                 // Client must only see active categories
-                conditions.push(eq(contentCategories.isActive, true));
+                conditions.push(eq(educationCategories.isActive, true));
                 // Force sorting ignoring isActive for clients
                 if (sortBy === 'isActive') sortBy = 'name';
             } else {
                 // Admin can filter by active status
-                if (isActive !== undefined) conditions.push(eq(contentCategories.isActive, isActive));
+                if (isActive !== undefined) conditions.push(eq(educationCategories.isActive, isActive));
             }
 
             // Add search condition
@@ -92,14 +92,14 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
                 const searchTerm = `%${search.trim().toLowerCase()}%`;
                 conditions.push(
                     or(
-                        ilike(contentCategories.name, searchTerm),
-                        ilike(contentCategories.description, searchTerm)
+                        ilike(educationCategories.name, searchTerm),
+                        ilike(educationCategories.description, searchTerm)
                     )
                 );
             }
 
             // Build Query
-            let baseQuery = db.select().from(contentCategories);
+            let baseQuery = db.select().from(educationCategories);
             if (conditions.length > 0) {
                 baseQuery = baseQuery.where(and(...conditions)) as any;
             }
@@ -111,24 +111,24 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             switch (sortBy) {
                 case 'name':
                     queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(contentCategories.name)
-                        : baseQuery.orderBy(desc(contentCategories.name));
+                        ? baseQuery.orderBy(educationCategories.name)
+                        : baseQuery.orderBy(desc(educationCategories.name));
                     break;
                 case 'isActive':
                     queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(contentCategories.isActive)
-                        : baseQuery.orderBy(desc(contentCategories.isActive));
+                        ? baseQuery.orderBy(educationCategories.isActive)
+                        : baseQuery.orderBy(desc(educationCategories.isActive));
                     break;
                 case 'updatedAt':
                     queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(contentCategories.updatedAt)
-                        : baseQuery.orderBy(desc(contentCategories.updatedAt));
+                        ? baseQuery.orderBy(educationCategories.updatedAt)
+                        : baseQuery.orderBy(desc(educationCategories.updatedAt));
                     break;
                 case 'createdAt':
                 default:
                     queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(contentCategories.createdAt)
-                        : baseQuery.orderBy(desc(contentCategories.createdAt));
+                        ? baseQuery.orderBy(educationCategories.createdAt)
+                        : baseQuery.orderBy(desc(educationCategories.createdAt));
                     break;
             }
 

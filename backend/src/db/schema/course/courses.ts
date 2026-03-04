@@ -2,7 +2,7 @@ import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { boolean, index, integer, jsonb, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { users } from '../user/users.ts';
 import { EnumCourseStatus, PgEnumCourseStatus, EnumPublishDateType, PgEnumPublishDateType } from './enums.ts';
-import { contentCategories } from '../core/categories.ts';
+import { educationCategories } from '../education/education-categories.ts';
 
 /**
  * Table: courses
@@ -48,7 +48,7 @@ export const courses = pgTable('courses', {
     whatYouWillLearn: text('what_you_will_learn'),
     price: integer('price').default(0),
     thumbnail: text('thumbnail'),
-    categoryId: uuid('category_id').references(() => contentCategories.id, { onDelete: 'set null', onUpdate: 'cascade' }),
+    categoryId: uuid('category_id').references(() => educationCategories.id, { onDelete: 'set null', onUpdate: 'cascade' }),
     tags: text('tags').array(),
     instructions: text('instructions'),
     status: PgEnumCourseStatus('status').default(EnumCourseStatus.DRAFT),

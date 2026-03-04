@@ -23,7 +23,7 @@ import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
  *   without requiring database migrations
  * - This table is referenced by other content tables to associate content with grade levels
  */
-export const educationGrades = pgTable('education_grade', {
+export const educationGrades = pgTable('education_grades', {
   id: serial('id').primaryKey().notNull(),
   grade: varchar('grade', { length: 32 }).unique().notNull(),
   name: varchar('name', { length: 128 }).notNull(),

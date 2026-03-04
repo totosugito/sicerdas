@@ -7,7 +7,7 @@ import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
  * Defines macro-level groupings for exams and courses. This is the highest level of organization
  * in the learning management system. Examples include 'UTBK', 'CPNS', or 'Daily Practice'.
  */
-export const contentCategories = pgTable('content_categories', {
+export const educationCategories = pgTable('education_categories', {
     // Unique identifier for the category
     id: uuid('id').primaryKey().defaultRandom(),
 
@@ -27,5 +27,5 @@ export const contentCategories = pgTable('content_categories', {
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-export type SchemaContentCategorySelect = InferSelectModel<typeof contentCategories>;
-export type SchemaContentCategoryInsert = InferInsertModel<typeof contentCategories>;
+export type SchemaEducationCategorySelect = InferSelectModel<typeof educationCategories>;
+export type SchemaEducationCategoryInsert = InferInsertModel<typeof educationCategories>;

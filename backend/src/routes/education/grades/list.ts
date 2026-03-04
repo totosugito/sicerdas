@@ -1,10 +1,10 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
-import { db } from '../../db/db-pool.ts';
-import { educationGrades } from '../../db/schema/education-grade/education.ts';
+import { db } from '../../../db/db-pool.ts';
+import { educationGrades } from '../../../db/schema/education/education-grades.ts';
 import { desc, ilike, or, and, sql } from 'drizzle-orm';
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 
 const EducationGradeListQuery = Type.Object({
     search: Type.Optional(Type.String({ description: 'Search term for grade name or desc' })),

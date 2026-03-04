@@ -21,11 +21,11 @@ const runInitialData = async () => {
 
     // Configuration for enabling/disabling specific initialization tasks
     const processConfig = {
-        initTierPricing: false,
+        initTierPricing: true,
         initUser: false,
-        initBookGroup: false,
+        initBookGroup: true,
         importBooks: false,
-        updateBookStats: false,
+        updateBookStats: true,
         importPeriodicElements: false,
         initExam: true
     };

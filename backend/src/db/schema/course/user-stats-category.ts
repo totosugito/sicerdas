@@ -1,7 +1,7 @@
 import { index, integer, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { users } from '../user/users.ts';
-import { contentCategories } from '../core/categories.ts';
+import { educationCategories } from '../education/education-categories.ts';
 
 /**
  * Table: course_user_stats_category
@@ -15,7 +15,7 @@ export const courseUserStatsCategory = pgTable('course_user_stats_category', {
 
     // Category and User relationship
     userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
-    categoryId: uuid('category_id').references(() => contentCategories.id, { onDelete: 'cascade' }).notNull(),
+    categoryId: uuid('category_id').references(() => educationCategories.id, { onDelete: 'cascade' }).notNull(),
 
     // Analytical counters
     coursesEnrolled: integer('courses_enrolled').default(0).notNull(),

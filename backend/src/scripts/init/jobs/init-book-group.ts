@@ -5,7 +5,7 @@ import { eq, and, sql } from "drizzle-orm";
 import * as schema from '../../../db/schema/index.ts';
 import dotenv from 'dotenv';
 import { bookCategory, bookGroup } from "../../../db/schema/book/index.ts";
-import { educationGrades } from "../../../db/schema/education-grade/index.ts";
+import { educationGrades } from "../../../db/schema/education/index.ts";
 import { EnumContentType, EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
 dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env' });
@@ -225,7 +225,7 @@ export default async function seed() {
 
     // Fix sequences to prevent duplicate key errors on future inserts
     console.log("Fixing sequences for tables with hardcoded IDs...");
-    await db.execute(sql`SELECT setval('education_grade_id_seq', COALESCE((SELECT MAX(id) FROM education_grade), 1));`);
+    await db.execute(sql`SELECT setval(pg_get_serial_sequence('education_grades', 'id'), COALESCE((SELECT MAX(id) FROM education_grades), 1));`);
     await db.execute(sql`SELECT setval('book_category_id_seq', COALESCE((SELECT MAX(id) FROM book_category), 1));`);
     await db.execute(sql`SELECT setval('book_group_id_seq', COALESCE((SELECT MAX(id) FROM book_group), 1));`);
     await db.execute(sql`SELECT setval('app_version_id_seq', COALESCE((SELECT MAX(id) FROM app_version), 1));`);
