@@ -20,3 +20,8 @@ export { courseChapters, type SchemaChapterSelect, type SchemaChapterInsert } fr
 
 // Lectures
 export { courseLectures, type SchemaLectureSelect, type SchemaLectureInsert } from './lectures.ts';
+
+// User Statistics & Progress
+export { courseUserStatsGlobal, type SchemaCourseUserStatGlobalSelect, type SchemaCourseUserStatGlobalInsert } from './user-stats-global.ts';
+export { courseUserProgress, type SchemaCourseUserProgressSelect, type SchemaCourseUserProgressInsert } from './user-progress.ts';
+export { courseUserStatsCategory, type SchemaCourseUserStatCategorySelect, type SchemaCourseUserStatCategoryInsert } from './user-stats-category.ts';
