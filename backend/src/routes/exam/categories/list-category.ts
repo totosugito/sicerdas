@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
-import { examCategories } from '../../../db/schema/exam/categories.ts';
+import { contentCategories } from '../../../db/schema/core/categories.ts';
 import { desc, ilike, or, and, sql, eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
@@ -79,12 +79,12 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             if (!isAdmin) {
                 // Client must only see active categories
-                conditions.push(eq(examCategories.isActive, true));
+                conditions.push(eq(contentCategories.isActive, true));
                 // Force sorting ignoring isActive for clients
                 if (sortBy === 'isActive') sortBy = 'name';
             } else {
                 // Admin can filter by active status
-                if (isActive !== undefined) conditions.push(eq(examCategories.isActive, isActive));
+                if (isActive !== undefined) conditions.push(eq(contentCategories.isActive, isActive));
             }
 
             // Add search condition
@@ -92,14 +92,14 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
                 const searchTerm = `%${search.trim().toLowerCase()}%`;
                 conditions.push(
                     or(
-                        ilike(examCategories.name, searchTerm),
-                        ilike(examCategories.description, searchTerm)
+                        ilike(contentCategories.name, searchTerm),
+                        ilike(contentCategories.description, searchTerm)
                     )
                 );
             }
 
             // Build Query
-            let baseQuery = db.select().from(examCategories);
+            let baseQuery = db.select().from(contentCategories);
             if (conditions.length > 0) {
                 baseQuery = baseQuery.where(and(...conditions)) as any;
             }
@@ -111,24 +111,24 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             switch (sortBy) {
                 case 'name':
                     queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examCategories.name)
-                        : baseQuery.orderBy(desc(examCategories.name));
+                        ? baseQuery.orderBy(contentCategories.name)
+                        : baseQuery.orderBy(desc(contentCategories.name));
                     break;
                 case 'isActive':
                     queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examCategories.isActive)
-                        : baseQuery.orderBy(desc(examCategories.isActive));
+                        ? baseQuery.orderBy(contentCategories.isActive)
+                        : baseQuery.orderBy(desc(contentCategories.isActive));
                     break;
                 case 'updatedAt':
                     queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examCategories.updatedAt)
-                        : baseQuery.orderBy(desc(examCategories.updatedAt));
+                        ? baseQuery.orderBy(contentCategories.updatedAt)
+                        : baseQuery.orderBy(desc(contentCategories.updatedAt));
                     break;
                 case 'createdAt':
                 default:
                     queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examCategories.createdAt)
-                        : baseQuery.orderBy(desc(examCategories.createdAt));
+                        ? baseQuery.orderBy(contentCategories.createdAt)
+                        : baseQuery.orderBy(desc(contentCategories.createdAt));
                     break;
             }
 

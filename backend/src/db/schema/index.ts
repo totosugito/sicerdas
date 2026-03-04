@@ -13,6 +13,12 @@ export * from './ai/index.ts';
 // App Module
 export * from './app/index.ts';
 
+// Core Module
+export * from './core/index.ts';
+
+// Course Module
+export * from './course/index.ts';
+
 // Exam Module
 export * from './exam/index.ts';
 

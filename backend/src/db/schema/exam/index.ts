@@ -8,7 +8,6 @@ export {
 } from './enums.ts';
 
 // Categories & Subjects
-export { examCategories, type SchemaExamCategorySelect, type SchemaExamCategoryInsert } from './categories.ts';
 export { examSubjects, type SchemaExamSubjectSelect, type SchemaExamSubjectInsert } from './subjects.ts';
 export { examPassages, type SchemaExamPassageSelect, type SchemaExamPassageInsert } from './passages.ts';
 

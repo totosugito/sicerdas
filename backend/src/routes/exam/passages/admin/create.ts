@@ -3,12 +3,15 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examPassages } from '../../../../db/schema/exam/passages.ts';
+import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
+import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
 const CreatePassageBody = Type.Object({
     title: Type.Optional(Type.String({ maxLength: 255 })), // Optional internal title
     content: Type.Array(Type.Record(Type.String(), Type.Unknown())), // BlockNote JSON format
-    isActive: Type.Optional(Type.Boolean({ default: true }))
+    isActive: Type.Optional(Type.Boolean({ default: true })),
+    subjectId: Type.String({ format: 'uuid' }),
 });
 
 const PassageResponseItem = Type.Object({
@@ -18,6 +21,7 @@ const PassageResponseItem = Type.Object({
     isActive: Type.Boolean(),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
+    subjectId: Type.String({ format: 'uuid' }),
 });
 
 const CreatePassageResponse = Type.Object({
@@ -49,12 +53,22 @@ const createPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreatePassageBody.static }>,
             reply: FastifyReply
         ) {
-            const { title, content, isActive } = request.body;
+            const { title, content, isActive, subjectId } = request.body;
+
+            // Ensure subject exists
+            const existingSubject = await db.query.examSubjects.findFirst({
+                where: eq(examSubjects.id, subjectId)
+            });
+
+            if (!existingSubject) {
+                return reply.notFound(request.i18n.t('exam.subjects.detail.notFound'));
+            }
 
             const [newPassage] = await db.insert(examPassages).values({
                 title: title || null,
                 content,
                 isActive: isActive !== undefined ? isActive : true,
+                subjectId,
             }).returning();
 
             return reply.status(201).send({

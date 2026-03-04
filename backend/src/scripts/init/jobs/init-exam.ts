@@ -4,7 +4,8 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { eq } from "drizzle-orm";
 import * as schema from '../../../db/schema/index.ts';
 import dotenv from 'dotenv';
-import { examCategories, examTags, examSubjects } from "../../../db/schema/exam/index.ts";
+import { contentCategories } from "../../../db/schema/core/index.ts";
+import { examTags, examSubjects } from "../../../db/schema/exam/index.ts";
 
 dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env' });
 
@@ -29,18 +30,18 @@ export default async function seed() {
 
         for (const category of categoriesData) {
             const existingCategory = await db
-                .select({ id: examCategories.id })
-                .from(examCategories)
-                .where(eq(examCategories.name, category.name))
+                .select({ id: contentCategories.id })
+                .from(contentCategories)
+                .where(eq(contentCategories.name, category.name))
                 .then((result) => !!result[0]?.id);
 
             if (!existingCategory) {
-                await db.insert(examCategories).values(category);
+                await db.insert(contentCategories).values(category);
             } else {
                 await db
-                    .update(examCategories)
+                    .update(contentCategories)
                     .set({ description: category.description })
-                    .where(eq(examCategories.name, category.name));
+                    .where(eq(contentCategories.name, category.name));
             }
         }
         console.log("✓ Kategori ujian berhasil diinisialisasi.");

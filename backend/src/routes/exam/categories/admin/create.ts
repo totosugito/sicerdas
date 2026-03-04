@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
-import { examCategories } from '../../../../db/schema/exam/categories.ts';
+import { contentCategories } from '../../../../db/schema/core/categories.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -53,15 +53,15 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             const { name, description, isActive } = request.body;
 
             // Check if name already exists
-            const existingCategory = await db.query.examCategories.findFirst({
-                where: eq(examCategories.name, name)
+            const existingCategory = await db.query.contentCategories.findFirst({
+                where: eq(contentCategories.name, name)
             });
 
             if (existingCategory) {
                 return reply.badRequest(request.i18n.t('exam.categories.create.exists'));
             }
 
-            const [newCategory] = await db.insert(examCategories).values({
+            const [newCategory] = await db.insert(contentCategories).values({
                 name,
                 description,
                 isActive: isActive !== undefined ? isActive : true,

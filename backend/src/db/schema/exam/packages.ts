@@ -1,7 +1,7 @@
 import { pgTable, uuid, varchar, text, timestamp, integer, index, boolean } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { EnumExamType, PgEnumExamType } from './enums.ts';
-import { examCategories } from './categories.ts';
+import { contentCategories } from '../core/categories.ts';
 import { users } from '../user/users.ts';
 import { appTier } from '../app/app-tier.ts';
 import { educationGrades } from '../education-grade/education.ts';
@@ -18,7 +18,7 @@ export const examPackages = pgTable('exam_packages', {
     id: uuid('id').primaryKey().defaultRandom(),
 
     // Category this exam belongs to
-    categoryId: uuid('category_id').references(() => examCategories.id, { onDelete: 'restrict' }).notNull(),
+    categoryId: uuid('category_id').references(() => contentCategories.id, { onDelete: 'restrict' }).notNull(),
 
     // Display title representing this exam
     title: varchar('title', { length: 255 }).notNull(),

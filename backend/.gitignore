@@ -160,3 +160,4 @@ src/db/migrations
 /uploads/
 
 .idea
+test

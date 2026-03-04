@@ -16,14 +16,14 @@ export const AdminNav = {
       title: t("exam.menu").toUpperCase(),
       items: [
         {
-          title: t("exam.subjects.list.menu"),
-          url: AppRoute.exam.subjects.admin.list.url,
-          icon: TagsIcon,
-        },
-        {
           title: t("exam.packages.list.menu"),
           url: AppRoute.exam.packages.admin.list.url,
           icon: BookTemplateIcon,
+        },
+        {
+          title: t("exam.subjects.list.menu"),
+          url: AppRoute.exam.subjects.admin.list.url,
+          icon: TagsIcon,
         },
         {
           title: t("exam.tags.list.menu"),

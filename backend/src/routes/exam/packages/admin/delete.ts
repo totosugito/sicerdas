@@ -6,7 +6,7 @@ import { examPackages } from '../../../../db/schema/exam/packages.ts';
 import { examSessions } from '../../../../db/schema/exam/sessions.ts';
 import { examPackageSections } from '../../../../db/schema/exam/package-sections.ts';
 import { examPackageQuestions } from '../../../../db/schema/exam/package-questions.ts';
-import { eq, or } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
 const DeletePackageParams = Type.Object({

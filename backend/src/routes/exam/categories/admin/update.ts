@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
-import { examCategories } from '../../../../db/schema/exam/categories.ts';
+import { contentCategories } from '../../../../db/schema/core/categories.ts';
 import { eq, and, ne } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -59,8 +59,8 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             const { name, description, isActive } = request.body;
 
             // Ensure category exists
-            const existingCategory = await db.query.examCategories.findFirst({
-                where: eq(examCategories.id, id)
+            const existingCategory = await db.query.contentCategories.findFirst({
+                where: eq(contentCategories.id, id)
             });
 
             if (!existingCategory) {
@@ -68,10 +68,10 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             // Check if new name conflicts with another existing category
-            const nameConflict = await db.query.examCategories.findFirst({
+            const nameConflict = await db.query.contentCategories.findFirst({
                 where: and(
-                    eq(examCategories.name, name),
-                    ne(examCategories.id, id)
+                    eq(contentCategories.name, name),
+                    ne(contentCategories.id, id)
                 )
             });
 
@@ -90,9 +90,9 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
                 updatePayload.isActive = isActive;
             }
 
-            const [updatedCategory] = await db.update(examCategories)
+            const [updatedCategory] = await db.update(contentCategories)
                 .set(updatePayload)
-                .where(eq(examCategories.id, id))
+                .where(eq(contentCategories.id, id))
                 .returning();
 
             return reply.status(200).send({
