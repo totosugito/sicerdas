@@ -29,6 +29,8 @@ const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
             body: AssignPackageQuestionsBody,
             response: {
                 200: AssignPackageQuestionsResponse,
+                '4xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+                '5xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
             }
         },
         handler: withErrorHandler(async function handler(

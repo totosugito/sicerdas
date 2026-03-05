@@ -185,7 +185,8 @@
             },
             "delete": {
                 "success": "Seksi paket ujian berhasil dihapus",
-                "notFound": "Seksi tidak ditemukan"
+                "notFound": "Seksi tidak ditemukan",
+                "inUse": "Seksi paket ujian ini tidak dapat dihapus karena masih tertaut dengan soal ujian."
             }
         },
         "package-questions": {

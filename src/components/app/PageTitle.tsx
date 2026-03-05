@@ -7,7 +7,7 @@ import { useNavigate, useRouter } from "@tanstack/react-router";
 
 type PageTitleProps = {
   title?: React.ReactElement | string;
-  description?: React.ReactElement;
+  description?: React.ReactElement | string;
   showSeparator?: boolean;
   className?: string;
   classNameTitle?: string;

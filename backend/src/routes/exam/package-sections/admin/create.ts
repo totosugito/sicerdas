@@ -30,6 +30,8 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
             body: CreateSectionBody,
             response: {
                 201: CreateSectionResponse,
+                '4xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+                '5xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
             }
         },
         handler: withErrorHandler(async function handler(

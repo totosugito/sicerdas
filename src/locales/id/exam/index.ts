@@ -1,6 +1,7 @@
 import exam from "./exam";
 import tags from "./tags/list-tags";
 import packages from "./packages/list-package";
+import { detailPackage } from "./packages/detail-package";
 import subjects from "./subjects/list-subject";
 const obj = {
     ...exam,
@@ -8,7 +9,8 @@ const obj = {
         list: subjects
     },
     packages: {
-        list: packages
+        list: packages,
+        detail: detailPackage
     },
     tags: {
         list: tags

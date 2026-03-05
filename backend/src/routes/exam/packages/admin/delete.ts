@@ -27,7 +27,8 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
             params: DeletePackageParams,
             response: {
                 200: DeletePackageResponse,
-                404: Type.Object({ success: Type.Boolean(), message: Type.String() }),
+                '4xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+                '5xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
             }
         },
         handler: withErrorHandler(async function handler(

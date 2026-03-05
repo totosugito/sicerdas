@@ -27,6 +27,8 @@ const leaderboardRoute: FastifyPluginAsyncTypebox = async (app) => {
             tags: ['Client Exam Leaderboard'],
             response: {
                 200: LeaderboardResponse,
+                '4xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+                '5xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
             }
         },
         handler: withErrorHandler(async function handler(

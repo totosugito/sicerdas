@@ -63,6 +63,8 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
             body: PackageListQuery,
             response: {
                 200: ListPackagesResponse,
+                '4xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+                '5xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
             }
         },
         handler: withErrorHandler(async function handler(
