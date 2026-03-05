@@ -1,7 +1,7 @@
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function PackageDetailSkeleton() {
+export function PackageEditSkeleton() {
     return (
         <div className="flex flex-col gap-6 w-full max-w-4xl mx-auto pb-10">
             <div className="flex items-center gap-4">

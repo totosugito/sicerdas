@@ -91,6 +91,7 @@ export const AppRoute = {
         list: { url: "/admin/list-package" },
         create: { url: "/admin/create-package" },
         edit: { url: "/admin/edit-package/$id" },
+        detail: { url: "/admin/detail-package/$id" },
       },
     },
     tags: {

@@ -16,7 +16,7 @@ function RouteComponent() {
     }
 
     return (
-        <div className='p-6'>
+        <div className='page-full'>
             <Outlet />
         </div>
     )

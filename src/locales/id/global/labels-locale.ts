@@ -41,6 +41,7 @@ export default {
     login: "Masuk",
     error: "Terjadi Kesalahan",
     management: "Manajemen",
+    formValidationError: "Terjadi kesalahan pada form",
     pagination: {
         previous: "Sebelumnya",
         next: "Berikutnya",

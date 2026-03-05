@@ -21,6 +21,7 @@ export default {
             inactive: "Tidak Aktif"
         },
         actions: {
+            detail: "Detail",
             edit: "Ubah",
             delete: "Hapus",
             openMenu: "Buka menu"

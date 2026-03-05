@@ -15,7 +15,7 @@ const UpdatePackageBody = Type.Object({
     categoryId: Type.Optional(Type.String({ format: 'uuid' })),
     title: Type.Optional(Type.String({ minLength: 1, maxLength: 255 })),
     examType: Type.Optional(Type.Enum(EnumExamType)),
-    durationMinutes: Type.Optional(Type.Number({ minimum: 1 })),
+    durationMinutes: Type.Optional(Type.Number({ minimum: 0 })),
     description: Type.Optional(Type.String()),
     requiredTier: Type.Optional(Type.String()),
     educationGradeId: Type.Optional(Type.Number()),

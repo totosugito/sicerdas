@@ -10,7 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -61,11 +61,16 @@ export function PackageTable({
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title={t("exam.packages.list.table.columns.title")} />
             ),
-            cell: ({ row }) => (
-                <div className="font-medium text-primary">
-                    {row.getValue("title")}
-                </div>
-            )
+            cell: ({ row }) => {
+                const pkg = row.original;
+                return (
+                    <div className="font-medium text-primary">
+                        <Link to={AppRoute.exam.packages.admin.detail.url.replace("$id", pkg.id)} className="hover:underline">
+                            {row.getValue("title")}
+                        </Link>
+                    </div>
+                );
+            }
         },
         {
             accessorKey: "categoryName",
@@ -170,6 +175,12 @@ export function PackageTable({
                             <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>{t("exam.packages.list.table.columns.actions")}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                    <Link to={AppRoute.exam.packages.admin.detail.url.replace("$id", pkg.id)}>
+                                        <Eye className="mr-2 h-4 w-4" />
+                                        {t("exam.packages.list.table.actions.detail")}
+                                    </Link>
+                                </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
                                     <Link to={AppRoute.exam.packages.admin.edit.url.replace("$id", pkg.id)}>
                                         <Pencil className="mr-2 h-4 w-4" />
