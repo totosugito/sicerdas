@@ -136,8 +136,10 @@ function DetailPackagePage() {
     <div className="flex flex-col w-full space-y-4">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={t('exam.packages.detail.pageTitle')}
+          title={data?.data?.package?.packageName || t('exam.packages.detail.pageTitle')}
           description={t('exam.packages.detail.description')}
+          showBack={true}
+          backTo={AppRoute.exam.packages.admin.list.url}
         />
       </div>
 

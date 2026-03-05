@@ -37,6 +37,10 @@ const ListSectionsResponse = Type.Object({
     success: Type.Boolean(),
     message: Type.String(),
     data: Type.Object({
+        package: Type.Object({
+            packageId: Type.String(),
+            packageName: Type.String(),
+        }),
         items: Type.Array(SectionResponseItem),
         meta: Type.Object({
             total: Type.Number(),
@@ -79,10 +83,13 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             const offset = (page - 1) * limit;
 
+            let returnPackageId = "";
+            let returnPackageName = "";
+
             const conditions: any[] = [];
 
             if (packageId) {
-                const [existingPackage] = await db.select({ id: examPackages.id })
+                const [existingPackage] = await db.select({ id: examPackages.id, title: examPackages.title })
                     .from(examPackages)
                     .where(eq(examPackages.id, packageId))
                     .limit(1);
@@ -90,6 +97,9 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 if (!existingPackage) {
                     return reply.notFound(request.i18n.t('exam.packages.detail.notFound'));
                 }
+
+                returnPackageId = existingPackage.id;
+                returnPackageName = existingPackage.title;
 
                 conditions.push(eq(examPackageSections.packageId, packageId));
             }
@@ -161,6 +171,10 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 success: true,
                 message: request.i18n.t('exam.package-sections.list.success'),
                 data: {
+                    package: {
+                        packageId: returnPackageId,
+                        packageName: returnPackageName,
+                    },
                     items: items.map(r => {
                         const s = r.section;
                         return {

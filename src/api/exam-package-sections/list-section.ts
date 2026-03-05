@@ -17,6 +17,10 @@ export interface ListSectionsResponse {
     success: boolean;
     message: string;
     data: {
+        package: {
+            packageId: string;
+            packageName: string;
+        };
         items: ExamPackageSection[];
         meta: PaginationData;
     };
