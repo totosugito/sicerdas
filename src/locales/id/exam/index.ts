@@ -1,4 +1,3 @@
-import list from "./categories/list-category";
 import exam from "./exam";
 import tags from "./tags/list-tags";
 import packages from "./packages/list-package";
@@ -13,9 +12,6 @@ const obj = {
     },
     tags: {
         list: tags
-    },
-    categories: {
-        list: list
     },
 }
 export default obj

@@ -117,7 +117,7 @@ const SidebarMenuCollapsible = ({
                   className="data-[active=true]:bg-primary/10 data-[active=true]:text-primary hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
                 >
                   <Link to={subItem.url} onClick={() => setOpenMobile(false)}>
-                    {subItem.icon && <span><subItem.icon /></span>}
+                    {subItem.icon && <subItem.icon />}
                     <span>{subItem.title}</span>
                     {subItem.badge && <NavBadge>{subItem.badge}</NavBadge>}
                   </Link>

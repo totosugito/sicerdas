@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { PageTitle, ErrorContainer } from '@/components/app';
 import { PackageDetailSkeleton } from '@/components/pages/exam/packages/detail-package';
-import { useUpdatePackage, useDetailPackage } from '@/api/exam/packages';
+import { useUpdatePackage, useDetailPackage } from '@/api/exam-packages';
 import { showNotifSuccess, showNotifError } from '@/lib/show-notif';
 import { useQueryClient } from '@tanstack/react-query';
 import { AppRoute } from '@/constants/app-route';

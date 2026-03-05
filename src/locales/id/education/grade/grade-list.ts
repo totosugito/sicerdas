@@ -1,4 +1,5 @@
 export default {
+    menu: "Jenjang",
     title: "Tingkat Pendidikan",
     description: "Kelola data tingkat pendidikan untuk dihubungkan ke kelas",
     createDescription: "Tambahkan tingkat pendidikan baru",

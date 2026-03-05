@@ -4,7 +4,7 @@ import {
   useDeleteTag,
   ExamTag,
   ListTagResponse
-} from '@/api/exam/tags';
+} from '@/api/exam-tags';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from 'react';

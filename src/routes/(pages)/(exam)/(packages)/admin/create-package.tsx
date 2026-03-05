@@ -2,7 +2,7 @@ import React from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@/components/app';
-import { useCreatePackage } from '@/api/exam/packages';
+import { useCreatePackage } from '@/api/exam-packages';
 import { showNotifSuccess, showNotifError } from '@/lib/show-notif';
 import { useQueryClient } from '@tanstack/react-query';
 import { AppRoute } from '@/constants/app-route';

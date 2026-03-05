@@ -11,11 +11,11 @@ export interface CreateCategoryRequest {
 
 export const useCreateCategory = () => {
     return useMutation({
-        mutationKey: ["admin-exam-categories-create"],
+        mutationKey: ["admin-education-categories-create"],
         mutationFn: async (body: CreateCategoryRequest) => {
             const response = await fetchApi({
                 method: "POST",
-                url: AppApi.exam.categories.admin.create,
+                url: AppApi.education.categories.admin.create,
                 body,
                 withCredentials: true,
             });

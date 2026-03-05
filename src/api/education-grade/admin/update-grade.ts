@@ -16,7 +16,7 @@ export const useUpdateEducationGrade = () => {
         mutationFn: async ({ id, ...body }: UpdateEducationGradeRequest) => {
             const response = await fetchApi({
                 method: "PUT",
-                url: AppApi.educationGrade.admin.update.replace(":id", id.toString()),
+                url: AppApi.education.grade.admin.update.replace(":id", id.toString()),
                 body,
                 withCredentials: true,
             });

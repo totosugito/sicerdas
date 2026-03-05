@@ -59,7 +59,7 @@ export function GradeTable({
             accessorKey: "grade",
             enableSorting: true,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("educationGrade.list.table.columns.grade")} />
+                <DataTableColumnHeader column={column} title={t("education.grade.table.columns.grade")} />
             ),
             cell: ({ row }) => (
                 <span className="font-medium">{row.getValue("grade")}</span>
@@ -69,14 +69,14 @@ export function GradeTable({
             accessorKey: "name",
             enableSorting: true,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("educationGrade.list.table.columns.name")} />
+                <DataTableColumnHeader column={column} title={t("education.grade.table.columns.name")} />
             ),
         },
         {
             accessorKey: "desc",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("educationGrade.list.table.columns.desc")} />
+                <DataTableColumnHeader column={column} title={t("education.grade.table.columns.desc")} />
             ),
             cell: ({ row }) => (
                 <LongText
@@ -92,12 +92,12 @@ export function GradeTable({
             minSize: 100,
             maxSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("educationGrade.list.table.columns.updatedAt")} />
+                <DataTableColumnHeader column={column} title={t("education.grade.table.columns.updatedAt")} />
             ),
             cell: ({ row }) => {
                 const updatedAt = row.getValue("updatedAt");
                 return (
-                    <span className="text-sm text-muted-foreground whitespace-nowrap">
+                    <span className="text-sm text-muted-foreground">
                         {updatedAt ? string_to_locale_date("id-ID", updatedAt as string) : "-"}
                     </span>
                 );
@@ -108,7 +108,7 @@ export function GradeTable({
             minSize: 50,
             maxSize: 50,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("educationGrade.list.table.columns.actions")} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t("education.grade.table.columns.actions")} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const grade = row.original;
@@ -118,23 +118,23 @@ export function GradeTable({
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <span className="sr-only">{t("educationGrade.list.table.actions.openMenu")}</span>
+                                    <span className="sr-only">{t("education.grade.table.actions.openMenu")}</span>
                                     <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>{t("educationGrade.list.table.columns.actions")}</DropdownMenuLabel>
+                                <DropdownMenuLabel>{t("education.grade.table.columns.actions")}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => onEdit(grade)}>
                                     <Pencil className="mr-2 h-4 w-4" />
-                                    {t("educationGrade.list.table.actions.edit")}
+                                    {t("education.grade.table.actions.edit")}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                     className="text-destructive focus:text-destructive"
                                     onClick={() => onDelete(grade)}
                                 >
                                     <Trash2 className="mr-2 h-4 w-4" />
-                                    {t("educationGrade.list.table.actions.delete")}
+                                    {t("education.grade.table.actions.delete")}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -192,7 +192,7 @@ export function GradeTable({
                 <div className={"flex flex-row gap-2 max-w-sm"}>
                     <DataTableFilter
                         table={table}
-                        searchPlaceholder={t("educationGrade.list.table.search")}
+                        searchPlaceholder={t("education.grade.table.search")}
                         className='min-w-sm'
                         searchOnEnter={true}
                     >
@@ -205,7 +205,7 @@ export function GradeTable({
                 totalRowCount={paginationData?.total || 0}
                 showSideBorders={false}
                 showZebraStriping={true}
-                defaultNoResultText={t("educationGrade.list.table.noResult")}
+                defaultNoResultText={t("education.grade.table.noResult")}
             />
         </div>
     );

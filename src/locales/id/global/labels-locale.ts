@@ -40,6 +40,7 @@ export default {
     system: "Sistem",
     login: "Masuk",
     error: "Terjadi Kesalahan",
+    management: "Manajemen",
     pagination: {
         previous: "Sebelumnya",
         next: "Berikutnya",

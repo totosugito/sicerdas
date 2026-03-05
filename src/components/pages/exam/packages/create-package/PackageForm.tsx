@@ -10,7 +10,7 @@ import { EnumExamType } from '@/constants/exam-enums';
 import { FormWithDetector } from '@/components/custom/components';
 
 // Hooks for dropdowns
-import { useListCategory } from '@/api/exam/categories';
+import { useListCategory } from '@/api/education-categories';
 import { useListTier } from '@/api/app-tier';
 import { useListEducationGrade } from '@/api/education-grade';
 

@@ -27,7 +27,7 @@ export const useListEducationGrade = (params: ListEducationGradeRequest) => {
         queryFn: async () => {
             const response = await fetchApi({
                 method: "POST",
-                url: AppApi.educationGrade.list,
+                url: AppApi.education.grade.list,
                 body: params,
                 withCredentials: true,
             });

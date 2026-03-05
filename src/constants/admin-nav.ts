@@ -1,7 +1,7 @@
 import { HiOutlineUsers } from "react-icons/hi2";
 import { AppRoute } from "@/constants/app-route";
 import i18n from '@/i18n';
-import { Badge, Bookmark, BookTemplateIcon, DollarSign, GraduationCap, LucideBadge, TagsIcon } from "lucide-react";
+import { Badge, Bookmark, BookTemplateIcon, CalendarCheck2, DollarSign, GraduationCap, LucideBadge, School, School2, TagsIcon } from "lucide-react";
 
 const t = i18n.t;
 export const AdminNav = {
@@ -13,28 +13,47 @@ export const AdminNav = {
   teams: [],
   navGroups: [
     {
-      title: t("exam.menu").toUpperCase(),
+      title: t("labels.management").toUpperCase(),
       items: [
         {
-          title: t("exam.packages.list.menu"),
-          url: AppRoute.exam.packages.admin.list.url,
-          icon: BookTemplateIcon,
+          title: t("exam.menu"),
+          url: "/base",
+          icon: CalendarCheck2,
+          items: [
+            {
+              title: t("exam.packages.list.menu"),
+              url: AppRoute.exam.packages.admin.list.url,
+              icon: BookTemplateIcon,
+            },
+            {
+              title: t("exam.subjects.list.menu"),
+              url: AppRoute.exam.subjects.admin.list.url,
+              icon: TagsIcon,
+            },
+            {
+              title: t("exam.tags.list.menu"),
+              url: AppRoute.exam.tags.admin.list.url,
+              icon: Badge,
+            },
+          ]
         },
         {
-          title: t("exam.subjects.list.menu"),
-          url: AppRoute.exam.subjects.admin.list.url,
-          icon: TagsIcon,
-        },
-        {
-          title: t("exam.tags.list.menu"),
-          url: AppRoute.exam.tags.admin.list.url,
-          icon: Badge,
-        },
-        {
-          title: t("exam.categories.list.menu"),
-          url: AppRoute.exam.categories.admin.list.url,
-          icon: Bookmark,
-        },
+          title: t("education.title"),
+          url: "/base",
+          icon: School,
+          items: [
+            {
+              title: t("education.categories.menu"),
+              url: AppRoute.education.categories.admin.list.url,
+              icon: Bookmark,
+            },
+            {
+              title: t("education.grade.menu"),
+              url: AppRoute.education.grade.admin.list.url,
+              icon: GraduationCap,
+            },
+          ]
+        }
       ],
       permitUser: false,
     },
@@ -45,11 +64,6 @@ export const AdminNav = {
           title: t("appTier.title"),
           url: AppRoute.appTier.adminList.url,
           icon: DollarSign,
-        },
-        {
-          title: t("educationGrade.title"),
-          url: AppRoute.educationGrade.admin.list.url,
-          icon: GraduationCap,
         },
         {
           title: t("user.title"),

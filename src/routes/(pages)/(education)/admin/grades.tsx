@@ -13,11 +13,11 @@ import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/app';
 import { Plus, Trash2 } from 'lucide-react';
 import { DialogModal } from '@/components/custom/components';
-import { GradeTable, DialogGradeCreate } from '@/components/pages/education-grade';
+import { GradeTable, DialogGradeCreate } from '@/components/pages/education';
 import { PaginationData } from '@/components/custom/table';
 import { z } from 'zod';
 
-export const Route = createFileRoute('/(pages)/(education-grade)/admin/list-grade')({
+export const Route = createFileRoute('/(pages)/(education)/admin/grades')({
   validateSearch: z.object({
     page: z.number().min(1).optional().catch(undefined),
     limit: z.number().min(5).optional().catch(undefined),
@@ -77,7 +77,7 @@ function AdminEducationGradesPage() {
     if (!selectedGrade) return;
     deleteMutation.mutate(selectedGrade.id, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t("educationGrade.list.delete.success") });
+        showNotifSuccess({ message: res.message || t("education.grade.delete.success") });
         queryClient.invalidateQueries({ queryKey: ["education-grade-list"] });
         setShowDeleteDialog(false);
       },
@@ -91,8 +91,8 @@ function AdminEducationGradesPage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={t("educationGrade.title")}
-          description={<span>{t("educationGrade.list.description")}</span>}
+          title={t("education.grade.title")}
+          description={<span>{t("education.grade.description")}</span>}
         />
         <Button onClick={handleAdd} className="flex-shrink-0 gap-1.5 shadow-sm">
           <Plus className="h-4 w-4" />
@@ -151,9 +151,9 @@ function AdminEducationGradesPage() {
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
-          title: t("educationGrade.list.delete.confirmTitle"),
-          desc: t("educationGrade.list.delete.confirmDesc", { name: selectedGrade?.name }),
-          infoContainer: t("educationGrade.list.delete.deleteInfo"),
+          title: t("education.grade.delete.confirmTitle"),
+          desc: t("education.grade.delete.confirmDesc", { name: selectedGrade?.name }),
+          infoContainer: t("education.grade.delete.deleteInfo"),
           infoContainerVariant: "error",
           variant: "destructive",
           iconType: "error",

@@ -36,10 +36,10 @@ export const DialogGradeCreate = ({ open, onOpenChange, gradeData }: DialogGrade
 
     const formSchema = {
         grade: z.string()
-            .min(1, t("educationGrade.list.form.grade.required"))
+            .min(1, t("education.grade.form.grade.required"))
             .max(32)
-            .regex(/^[a-z0-9_\-]+$/, t("educationGrade.list.form.grade.invalidFormat")),
-        name: z.string().min(1, t("educationGrade.list.form.name.required")).max(128),
+            .regex(/^[a-z0-9_\-]+$/, t("education.grade.form.grade.invalidFormat")),
+        name: z.string().min(1, t("education.grade.form.name.required")).max(128),
         desc: z.string().optional(),
     };
 
@@ -47,28 +47,28 @@ export const DialogGradeCreate = ({ open, onOpenChange, gradeData }: DialogGrade
         grade: {
             type: "text",
             name: "grade",
-            label: t("educationGrade.list.form.grade.label"),
-            placeholder: t("educationGrade.list.form.grade.placeholder"),
+            label: t("education.grade.form.grade.label"),
+            placeholder: t("education.grade.form.grade.placeholder"),
             disabled: !!gradeData,
         },
         name: {
             type: "text",
             name: "name",
-            label: t("educationGrade.list.form.name.label"),
-            placeholder: t("educationGrade.list.form.name.placeholder"),
+            label: t("education.grade.form.name.label"),
+            placeholder: t("education.grade.form.name.placeholder"),
         },
         desc: {
             type: "textarea",
             name: "desc",
-            label: t("educationGrade.list.form.desc.label"),
-            placeholder: t("educationGrade.list.form.desc.placeholder"),
+            label: t("education.grade.form.desc.label"),
+            placeholder: t("education.grade.form.desc.placeholder"),
             minRows: 3,
         },
     };
 
     const modalProps: ModalFormProps = {
-        title: gradeData ? t("labels.edit") + " " + t("educationGrade.title") : t("labels.add") + " " + t("educationGrade.title"),
-        desc: gradeData ? t("educationGrade.list.editDescription") : t("educationGrade.list.createDescription"),
+        title: gradeData ? t("labels.edit") + " " + t("education.grade.title") : t("labels.add") + " " + t("education.grade.title"),
+        desc: gradeData ? t("education.grade.editDescription") : t("education.grade.createDescription"),
         modal: true,
         textConfirm: (createMutation.isPending || updateMutation.isPending) ? t("labels.saving") : t("labels.save"),
         textCancel: t("labels.cancel"),
@@ -88,7 +88,7 @@ export const DialogGradeCreate = ({ open, onOpenChange, gradeData }: DialogGrade
 
                 await updateMutation.mutateAsync({ id: gradeData.id, ...payloadWithoutGrade } as UpdateEducationGradeRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t("educationGrade.list.notifications.updateSuccess") });
+                        showNotifSuccess({ message: res.message || t("education.grade.notifications.updateSuccess") });
                         queryClient.invalidateQueries({ queryKey: ["education-grade-list"] });
                         onOpenChange(false);
                     },
@@ -99,7 +99,7 @@ export const DialogGradeCreate = ({ open, onOpenChange, gradeData }: DialogGrade
             } else {
                 await createMutation.mutateAsync(values as CreateEducationGradeRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t("educationGrade.list.notifications.createSuccess") });
+                        showNotifSuccess({ message: res.message || t("education.grade.notifications.createSuccess") });
                         queryClient.invalidateQueries({ queryKey: ["education-grade-list"] });
                         onOpenChange(false);
                     },

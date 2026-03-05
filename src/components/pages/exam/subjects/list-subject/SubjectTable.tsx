@@ -1,4 +1,4 @@
-import { ExamSubject, ListSubjectResponse } from '@/api/exam/subjects';
+import { ExamSubject, ListSubjectResponse } from '@/api/exam-subjects';
 import {
     DataTable,
     useDataTable,
@@ -105,7 +105,7 @@ export function SubjectTable({
                 <DataTableColumnHeader column={column} title={t("exam.subjects.list.table.columns.updatedAt")} />
             ),
             cell: ({ row }) => (
-                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                <span className="text-sm text-muted-foreground">
                     {string_to_locale_date("id-ID", row.getValue("updatedAt"))}
                 </span>
             ),

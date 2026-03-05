@@ -93,21 +93,23 @@ export const AppApi = {
       },
       list: APP_URL_API + "/exam/tags/list",
     },
+  },
+  education: {
+    grade: {
+      admin: {
+        create: APP_URL_API + "/education/grades/admin/create",
+        update: APP_URL_API + "/education/grades/admin/update/:id",
+        delete: APP_URL_API + "/education/grades/admin/delete/:id",
+      },
+      list: APP_URL_API + "/education/grades/list",
+    },
     categories: {
       admin: {
-        create: APP_URL_API + "/exam/categories/admin/create",
-        update: APP_URL_API + "/exam/categories/admin/update/:id",
-        delete: APP_URL_API + "/exam/categories/admin/delete/:id",
+        create: APP_URL_API + "/education/categories/admin/create",
+        update: APP_URL_API + "/education/categories/admin/update/:id",
+        delete: APP_URL_API + "/education/categories/admin/delete/:id",
       },
-      list: APP_URL_API + "/exam/categories/list",
+      list: APP_URL_API + "/education/categories/list",
     },
-  },
-  educationGrade: {
-    admin: {
-      create: APP_URL_API + "/education-grade/admin/create",
-      update: APP_URL_API + "/education-grade/admin/update/:id",
-      delete: APP_URL_API + "/education-grade/admin/delete/:id",
-    },
-    list: APP_URL_API + "/education-grade/list",
   }
 }

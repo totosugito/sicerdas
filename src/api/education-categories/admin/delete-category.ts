@@ -5,11 +5,11 @@ import { ExamCategoryResponse } from "../types";
 
 export const useDeleteCategory = () => {
     return useMutation({
-        mutationKey: ["admin-exam-categories-delete"],
+        mutationKey: ["admin-education-categories-delete"],
         mutationFn: async (id: string) => {
             const response = await fetchApi({
                 method: "DELETE",
-                url: AppApi.exam.categories.admin.delete.replace(":id", id),
+                url: AppApi.education.categories.admin.delete.replace(":id", id),
                 withCredentials: true,
             });
             return response as ExamCategoryResponse;

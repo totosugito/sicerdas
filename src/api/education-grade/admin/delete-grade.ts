@@ -9,7 +9,7 @@ export const useDeleteEducationGrade = () => {
         mutationFn: async (id: number) => {
             const response = await fetchApi({
                 method: "DELETE",
-                url: AppApi.educationGrade.admin.delete.replace(":id", id.toString()),
+                url: AppApi.education.grade.admin.delete.replace(":id", id.toString()),
                 withCredentials: true,
             });
             return response as EducationGradeResponse;

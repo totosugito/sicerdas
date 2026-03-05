@@ -24,11 +24,11 @@ export interface ListCategoryResponse {
 
 export const useListCategory = (params: ListCategoryRequest) => {
     return useQuery({
-        queryKey: ["exam-categories-list", params],
+        queryKey: ["education-categories-list", params],
         queryFn: async () => {
             const response = await fetchApi({
                 method: "POST",
-                url: AppApi.exam.categories.list,
+                url: AppApi.education.categories.list,
                 body: params,
                 withCredentials: true,
             });

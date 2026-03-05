@@ -8,7 +8,7 @@ import {
     useUpdateCategory,
     CreateCategoryRequest,
     UpdateCategoryRequest
-} from "@/api/exam/categories";
+} from "@/api/education-categories";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 
@@ -35,7 +35,7 @@ export const DialogCategoryCreate = ({ open, onOpenChange, category }: DialogCat
     const updateMutation = useUpdateCategory();
 
     const formSchema = {
-        name: z.string().min(1, t("exam.categories.list.form.name.required")),
+        name: z.string().min(1, t("education.categories.form.name.required")),
         description: z.string().optional(),
         isActive: z.boolean().default(true),
     };
@@ -44,27 +44,27 @@ export const DialogCategoryCreate = ({ open, onOpenChange, category }: DialogCat
         name: {
             type: "text",
             name: "name",
-            label: t("exam.categories.list.form.name.label"),
-            placeholder: t("exam.categories.list.form.name.placeholder"),
+            label: t("education.categories.form.name.label"),
+            placeholder: t("education.categories.form.name.placeholder"),
         },
         description: {
             type: "textarea",
             name: "description",
-            label: t("exam.categories.list.form.description.label"),
-            placeholder: t("exam.categories.list.form.description.placeholder"),
+            label: t("education.categories.form.description.label"),
+            placeholder: t("education.categories.form.description.placeholder"),
             minRows: 3,
         },
         isActive: {
             type: "switch",
             name: "isActive",
-            label: t("exam.categories.list.form.isActive.label"),
-            description: t("exam.categories.list.form.isActive.description"),
+            label: t("education.categories.form.isActive.label"),
+            description: t("education.categories.form.isActive.description"),
         },
     };
 
     const modalProps: ModalFormProps = {
-        title: category ? t("labels.edit") + " " + t("exam.categories.list.title") : t("labels.add") + " " + t("exam.categories.list.title"),
-        desc: category ? t("exam.categories.list.editDescription") : t("exam.categories.list.createDescription"),
+        title: category ? t("labels.edit") + " " + t("education.categories.title") : t("labels.add") + " " + t("education.categories.title"),
+        desc: category ? t("education.categories.editDescription") : t("education.categories.createDescription"),
         modal: true,
         textConfirm: (createMutation.isPending || updateMutation.isPending) ? t("labels.saving") : t("labels.save"),
         textCancel: t("labels.cancel"),
@@ -81,8 +81,8 @@ export const DialogCategoryCreate = ({ open, onOpenChange, category }: DialogCat
             if (category) {
                 await updateMutation.mutateAsync({ id: category.id, ...values } as UpdateCategoryRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t("exam.categories.list.notifications.updateSuccess") });
-                        queryClient.invalidateQueries({ queryKey: ["exam-categories-list"] });
+                        showNotifSuccess({ message: res.message || t("education.categories.notifications.updateSuccess") });
+                        queryClient.invalidateQueries({ queryKey: ["education-categories-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
@@ -92,8 +92,8 @@ export const DialogCategoryCreate = ({ open, onOpenChange, category }: DialogCat
             } else {
                 await createMutation.mutateAsync(values as CreateCategoryRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t("exam.categories.list.notifications.createSuccess") });
-                        queryClient.invalidateQueries({ queryKey: ["exam-categories-list"] });
+                        showNotifSuccess({ message: res.message || t("education.categories.notifications.createSuccess") });
+                        queryClient.invalidateQueries({ queryKey: ["education-categories-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {

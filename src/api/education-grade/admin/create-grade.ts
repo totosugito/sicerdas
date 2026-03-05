@@ -16,7 +16,7 @@ export const useCreateEducationGrade = () => {
         mutationFn: async (body: CreateEducationGradeRequest) => {
             const response = await fetchApi({
                 method: "POST",
-                url: AppApi.educationGrade.admin.create,
+                url: AppApi.education.grade.admin.create,
                 body,
                 withCredentials: true,
             });

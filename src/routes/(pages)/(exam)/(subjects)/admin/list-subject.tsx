@@ -4,7 +4,7 @@ import {
   useDeleteSubject,
   ExamSubject,
   ListSubjectResponse
-} from '@/api/exam/subjects';
+} from '@/api/exam-subjects';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from 'react';

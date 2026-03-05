@@ -1,4 +1,4 @@
-import { ExamPackage, ListPackagesResponse } from '@/api/exam/packages';
+import { ExamPackage, ListPackagesResponse } from '@/api/exam-packages';
 import {
     DataTable,
     useDataTable,

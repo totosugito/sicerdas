@@ -98,11 +98,20 @@ export const AppRoute = {
         list: { url: "/admin/list-tag" },
       },
     },
+  },
+  education: {
     categories: {
       admin: {
-        list: { url: "/admin/list-category" },
+        list: { url: "/admin/categories" },
       },
     },
+    grade: {
+      admin: {
+        list: { url: "/admin/grades" },
+        create: { url: "/admin/create-grade" },
+        edit: { url: "/admin/edit-grade/$id" },
+      }
+    }
   },
   admin: {
     dashboard: { url: "/admin/dashboard" },

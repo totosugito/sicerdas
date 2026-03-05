@@ -1,4 +1,4 @@
-import { ExamTag, ListTagResponse } from '@/api/exam/tags';
+import { ExamTag, ListTagResponse } from '@/api/exam-tags';
 import {
     DataTable,
     useDataTable,
@@ -120,7 +120,7 @@ export function TagTable({
                 <DataTableColumnHeader column={column} title={t("exam.tags.list.table.columns.updatedAt")} />
             ),
             cell: ({ row }) => (
-                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                <span className="text-sm text-muted-foreground">
                     {string_to_locale_date("id-ID", row.getValue("updatedAt"))}
                 </span>
             ),

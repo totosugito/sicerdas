@@ -8,7 +8,7 @@ import {
     useUpdateTag,
     CreateTagRequest,
     UpdateTagRequest
-} from "@/api/exam/tags";
+} from "@/api/exam-tags";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 

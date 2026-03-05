@@ -12,11 +12,11 @@ export interface UpdateCategoryRequest {
 
 export const useUpdateCategory = () => {
     return useMutation({
-        mutationKey: ["admin-exam-categories-update"],
+        mutationKey: ["admin-education-categories-update"],
         mutationFn: async ({ id, ...body }: UpdateCategoryRequest) => {
             const response = await fetchApi({
                 method: "PUT",
-                url: AppApi.exam.categories.admin.update.replace(":id", id),
+                url: AppApi.education.categories.admin.update.replace(":id", id),
                 body,
                 withCredentials: true,
             });

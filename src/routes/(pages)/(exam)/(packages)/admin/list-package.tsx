@@ -4,7 +4,7 @@ import {
   useDeletePackage,
   ExamPackage,
   ListPackagesResponse
-} from '@/api/exam/packages';
+} from '@/api/exam-packages';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from 'react';
