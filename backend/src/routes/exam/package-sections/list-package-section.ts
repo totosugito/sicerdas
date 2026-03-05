@@ -61,6 +61,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
             response: {
                 200: ListSectionsResponse,
                 '4xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+                '5xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
             }
         },
         handler: withErrorHandler(async function handler(

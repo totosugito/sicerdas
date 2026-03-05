@@ -41,6 +41,9 @@ function DetailPackagePage() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [sectionToDelete, setSectionToDelete] = useState<{ id: string; title: string } | null>(null);
 
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [selectedSection, setSelectedSection] = useState<ExamPackageSection | null>(null);
+
   useEffect(() => {
     if (data?.data?.items) {
       const sorted = [...data.data.items].sort((a, b) => (a.order || 0) - (b.order || 0));
@@ -61,11 +64,13 @@ function DetailPackagePage() {
   };
 
   const handleEdit = (section: ExamPackageSection) => {
-    // TODO: show update modal
+    setSelectedSection(section);
+    setShowFormModal(true);
   };
 
   const handleAdd = () => {
-    // TODO: show create modal
+    setSelectedSection(null);
+    setShowFormModal(true);
   };
 
   const confirmDelete = () => {
@@ -196,6 +201,13 @@ function DetailPackagePage() {
             setSectionToDelete(null);
           },
         }}
+      />
+
+      <SectionFormModal
+        open={showFormModal}
+        onOpenChange={setShowFormModal}
+        section={selectedSection}
+        packageId={id}
       />
     </div>
   );
