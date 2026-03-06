@@ -34,8 +34,8 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
             ref={setNodeRef}
             style={style}
             className={`group relative rounded-xl border bg-card p-4 transition-all mb-4 ${isDragging
-                    ? "shadow-lg opacity-90 z-10 border-primary"
-                    : "hover:border-primary/30 hover:shadow-sm"
+                ? "shadow-lg opacity-90 z-10 border-primary"
+                : "hover:border-primary/30 hover:shadow-sm"
                 }`}
         >
             {/* Top row: drag handle, title, questions, status, actions */}
@@ -47,10 +47,6 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
                 >
                     <GripVertical className="w-5 h-5" />
                 </button>
-
-                <div className="flex-shrink-0 w-7 h-7 rounded-lg bg-secondary flex items-center justify-center">
-                    <span className="text-xs font-bold text-muted-foreground">#{section.order}</span>
-                </div>
 
                 <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2 flex-wrap">
@@ -64,12 +60,12 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
                     {section.durationMinutes ? (
                         <span className="flex items-center gap-1">
                             <Clock className="w-3.5 h-3.5" />
-                            {t('exam.packages.detail.sections.duration', { minutes: section.durationMinutes })}
+                            {t('exam.packageSection.list.sections.duration', { minutes: section.durationMinutes })}
                         </span>
                     ) : null}
                     <span className="flex items-center gap-1">
                         <FileQuestion className="w-3.5 h-3.5" />
-                        {t('exam.packages.detail.sections.questions', { count: section.totalQuestions })}
+                        {t('exam.packageSection.list.sections.questions', { count: section.totalQuestions })}
                     </span>
                 </div>
 
@@ -81,7 +77,7 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
                             : "flex-shrink-0 text-xs hidden md:flex"
                     }
                 >
-                    {section.isActive ? t('exam.packages.detail.sections.active') : t('exam.packages.detail.sections.inactive')}
+                    {section.isActive ? t('exam.packageSection.list.sections.active') : t('exam.packageSection.list.sections.inactive')}
                 </Badge>
 
                 <div className="flex-shrink-0 flex items-center gap-2">
@@ -109,7 +105,7 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
                             : "flex-shrink-0 text-xs"
                     }
                 >
-                    {section.isActive ? t('exam.packages.detail.sections.active') : t('exam.packages.detail.sections.inactive')}
+                    {section.isActive ? t('exam.packageSection.list.sections.active') : t('exam.packageSection.list.sections.inactive')}
                 </Badge>
             </div>
         </div>

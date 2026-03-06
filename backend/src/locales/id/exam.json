@@ -59,6 +59,10 @@
                 "success": "Tag/Topik ujian berhasil dihapus",
                 "notFound": "Tag tidak ditemukan",
                 "inUse": "Tag tidak dapat dihapus karena masih digunakan oleh soal ujian"
+            },
+            "detail": {
+                "success": "Berhasil mengambil detail tag/topik ujian",
+                "notFound": "Tag tidak ditemukan"
             }
         },
         "questions": {

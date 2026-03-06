@@ -35,16 +35,12 @@ const deleteSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
         ) {
             const { id } = request.params;
 
-            const [existing] = await db.select({ id: examPackageSections.id })
-                .from(examPackageSections)
-                .where(eq(examPackageSections.id, id))
-                .limit(1);
+            const existing = await db.query.examPackageSections.findFirst({
+                where: eq(examPackageSections.id, id)
+            });
 
             if (!existing) {
-                return reply.status(404).send({
-                    success: false,
-                    message: request.i18n.t('exam.package-sections.delete.notFound'),
-                });
+                return reply.notFound(request.i18n.t('exam.package-sections.delete.notFound'));
             }
 
             // Check if section is in use by any questions

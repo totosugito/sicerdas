@@ -6,19 +6,20 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { ControlForm } from '@/components/custom/forms';
-import { EnumExamType } from '@/constants/exam-enums';
+import { EnumExamType } from 'backend/src/db/schema/exam/enums';
 import { FormWithDetector } from '@/components/custom/components';
 
 // Hooks for dropdowns
 import { useListCategory } from '@/api/education-categories';
 import { useListTier } from '@/api/app-tier';
 import { useListEducationGrade } from '@/api/education-grade';
+import { durationOnMinutes } from '@/constants/app-enum';
 
 export type PackageFormValues = {
     title: string;
     categoryId: string;
     examType: string;
-    durationMinutes: number;
+    durationMinutes: string;
     educationGradeId?: string | number | null;
     requiredTier?: string;
     description?: string;
@@ -46,7 +47,7 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
         title: z.string().min(1, t("exam.packages.list.form.title.required")),
         categoryId: z.string().min(1, t("exam.packages.list.form.category.required")),
         examType: z.string().min(1, t("exam.packages.list.form.examType.required")),
-        durationMinutes: z.coerce.number().min(0, t("exam.packages.list.form.durationMinutes.min")),
+        durationMinutes: z.string().optional(),
         educationGradeId: z.coerce.number().optional().nullable(),
         requiredTier: z.string().optional(),
         description: z.string().optional(),
@@ -59,7 +60,7 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
             title: "",
             categoryId: "",
             examType: EnumExamType.OFFICIAL,
-            durationMinutes: 0,
+            durationMinutes: "0",
             requiredTier: "free",
             description: "",
             isActive: true,
@@ -102,12 +103,11 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
             options: examTypeOptions,
         },
         durationMinutes: {
-            type: "number",
+            type: "select",
             name: "durationMinutes",
             label: t("exam.packages.list.form.durationMinutes.label"),
             placeholder: t("exam.packages.list.form.durationMinutes.placeholder"),
-            min: 0,
-            max: 1440,
+            options: durationOnMinutes,
             description: t("exam.packages.list.form.durationMinutes.description"),
         },
         educationGradeId: {

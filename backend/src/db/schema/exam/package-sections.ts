@@ -19,7 +19,7 @@ export const examPackageSections = pgTable('exam_package_sections', {
     title: varchar('title', { length: 255 }).notNull(),
 
     // Individual timer for this section in minutes (if any). Omit to use package global duration.
-    durationMinutes: integer('duration_minutes'),
+    durationMinutes: integer('duration_minutes').default(0).notNull(),
 
     // Sorting order within the package
     order: integer('order').default(1).notNull(),

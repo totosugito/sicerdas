@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examPackageSections } from '../../../../db/schema/exam/package-sections.ts';
+import { examPackages } from '../../../../db/schema/exam/packages.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -11,8 +12,9 @@ const UpdateSectionParams = Type.Object({
 });
 
 const UpdateSectionBody = Type.Object({
+    packageId: Type.Optional(Type.String({ format: 'uuid' })),
     title: Type.Optional(Type.String({ minLength: 1, maxLength: 255 })),
-    durationMinutes: Type.Optional(Type.Number({ minimum: 1 })),
+    durationMinutes: Type.Optional(Type.Number({ minimum: 0 })),
     order: Type.Optional(Type.Number()),
     isActive: Type.Optional(Type.Boolean()),
 });
@@ -41,23 +43,33 @@ const updateSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
             reply: FastifyReply
         ) {
             const { id } = request.params;
-            const body = request.body;
+            const { packageId, title, durationMinutes, order, isActive } = request.body;
 
-            const [existing] = await db.select({ id: examPackageSections.id })
-                .from(examPackageSections)
-                .where(eq(examPackageSections.id, id))
-                .limit(1);
+            const existing = await db.query.examPackageSections.findFirst({
+                where: eq(examPackageSections.id, id)
+            });
 
             if (!existing) {
-                return reply.status(404).send({
-                    success: false,
-                    message: request.i18n.t('exam.package-sections.update.notFound'),
+                return reply.notFound(request.i18n.t('exam.package-sections.update.notFound'));
+            }
+
+            if (packageId) {
+                const existingPackage = await db.query.examPackages.findFirst({
+                    where: eq(examPackages.id, packageId)
                 });
+
+                if (!existingPackage) {
+                    return reply.notFound(request.i18n.t('exam.packages.update.notFound'));
+                }
             }
 
             await db.update(examPackageSections)
                 .set({
-                    ...body,
+                    packageId,
+                    title,
+                    durationMinutes,
+                    order,
+                    isActive,
                     updatedAt: new Date(),
                 })
                 .where(eq(examPackageSections.id, id));

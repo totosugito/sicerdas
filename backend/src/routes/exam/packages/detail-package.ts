@@ -65,10 +65,7 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
                 .limit(1);
 
             if (!result) {
-                return reply.status(404).send({
-                    success: false,
-                    message: request.i18n.t('exam.packages.detail.notFound'),
-                });
+                return reply.notFound(request.i18n.t('exam.packages.detail.notFound'));
             }
 
             const pkg = result.package;

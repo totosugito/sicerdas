@@ -21,6 +21,7 @@ function AdminExamPackagesCreatePage() {
   const onSubmit = async (values: PackageFormValues) => {
     const payload = {
       ...values,
+      durationMinutes: Number(values.durationMinutes) || 0,
       educationGradeId: values.educationGradeId ? Number(values.educationGradeId) : undefined,
       requiredTier: values.requiredTier || undefined,
       description: values.description || undefined,

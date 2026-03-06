@@ -90,10 +90,10 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
             const conditions: any[] = [];
 
             if (packageId) {
-                const [existingPackage] = await db.select({ id: examPackages.id, title: examPackages.title })
-                    .from(examPackages)
-                    .where(eq(examPackages.id, packageId))
-                    .limit(1);
+                const existingPackage = await db.query.examPackages.findFirst({
+                    where: eq(examPackages.id, packageId),
+                    columns: { id: true, title: true }
+                });
 
                 if (!existingPackage) {
                     return reply.notFound(request.i18n.t('exam.packages.detail.notFound'));

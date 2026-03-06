@@ -82,16 +82,13 @@ const updateEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
                 }
             }
 
-            const updatePayload: any = {
-                updatedAt: new Date()
-            };
-
-            if (name !== undefined) updatePayload.name = name;
-            if (desc !== undefined) updatePayload.desc = desc;
-            if (extra !== undefined) updatePayload.extra = extra;
-
             const [updatedGrade] = await db.update(educationGrades)
-                .set(updatePayload)
+                .set({
+                    name,
+                    desc,
+                    extra,
+                    updatedAt: new Date()
+                })
                 .where(eq(educationGrades.id, id))
                 .returning();
 

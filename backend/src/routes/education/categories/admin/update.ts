@@ -79,19 +79,13 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
                 return reply.badRequest(request.i18n.t('exam.categories.update.exists'));
             }
 
-            // Build dynamic update payload to prevent overriding isActive with undefined if not supplied
-            const updatePayload: any = {
-                name,
-                description,
-                updatedAt: new Date()
-            };
-
-            if (isActive !== undefined) {
-                updatePayload.isActive = isActive;
-            }
-
             const [updatedCategory] = await db.update(educationCategories)
-                .set(updatePayload)
+                .set({
+                    name,
+                    description,
+                    isActive,
+                    updatedAt: new Date()
+                })
                 .where(eq(educationCategories.id, id))
                 .returning();
 

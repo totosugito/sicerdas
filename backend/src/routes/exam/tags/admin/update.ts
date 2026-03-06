@@ -79,19 +79,13 @@ const updateTagRoute: FastifyPluginAsyncTypebox = async (app) => {
                 return reply.badRequest(request.i18n.t('exam.tags.update.exists'));
             }
 
-            // Build dynamic update payload
-            const updatePayload: any = {
-                name,
-                description,
-                updatedAt: new Date()
-            };
-
-            if (isActive !== undefined) {
-                updatePayload.isActive = isActive;
-            }
-
             const [updatedTag] = await db.update(examTags)
-                .set(updatePayload)
+                .set({
+                    name,
+                    description,
+                    isActive,
+                    updatedAt: new Date()
+                })
                 .where(eq(examTags.id, id))
                 .returning();
 

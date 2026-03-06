@@ -5,8 +5,9 @@ import { useTranslation } from "react-i18next";
 import { useCreatePackageSection, useUpdatePackageSection, ExamPackageSection } from "@/api/exam-package-sections";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
+import { durationOnMinutes } from "@/constants/app-enum";
 
-export type SectionFormModalProps = {
+export type SectionFormProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     section?: ExamPackageSection | null;
@@ -16,26 +17,22 @@ export type SectionFormModalProps = {
 const FormEntity = ({ values, form }: any) => {
     return (
         <div className="flex flex-col gap-4 w-full">
-            <ControlForm form={form} item={values.title} />
-            <ControlForm form={form} item={values.durationMinutes} />
-            <ControlForm form={form} item={values.isActive} />
+            <ControlForm form={form} item={values.title} showMessage={false} />
+            <ControlForm form={form} item={values.durationMinutes} showMessage={false} />
+            <ControlForm form={form} item={values.isActive} showMessage={false} />
         </div>
     );
 };
 
-export const SectionFormModal = ({ open, onOpenChange, section, packageId }: SectionFormModalProps) => {
+export const SectionForm = ({ open, onOpenChange, section, packageId }: SectionFormProps) => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const createMutation = useCreatePackageSection();
     const updateMutation = useUpdatePackageSection();
 
     const formSchema = {
-        title: z.string().min(1, t('exam.packages.detail.sections.formTitleRequired', "Title is required")),
-        durationMinutes: z.preprocess((val) => {
-            if (val === "" || val === null || val === undefined) return null;
-            const num = Number(val);
-            return isNaN(num) ? null : num;
-        }, z.number().nullable().optional()),
+        title: z.string().min(1, t('exam.packageSection.list.formTitleRequired')),
+        durationMinutes: z.coerce.number().min(0, t('exam.packageSection.list.formDurationRequired')),
         isActive: z.boolean().default(true),
     };
 
@@ -43,37 +40,38 @@ export const SectionFormModal = ({ open, onOpenChange, section, packageId }: Sec
         title: {
             type: "text",
             name: "title",
-            label: t('exam.packages.detail.sections.formTitle', "Title"),
-            placeholder: t('exam.packages.detail.sections.formTitlePlaceholder', "Enter section title"),
+            label: t('exam.packageSection.list.formTitle'),
+            placeholder: t('exam.packageSection.list.formTitlePlaceholder'),
         },
         durationMinutes: {
-            type: "number",
+            type: "select",
             name: "durationMinutes",
-            label: t('exam.packages.detail.sections.formDuration', "Duration (Minutes)"),
-            placeholder: t('exam.packages.detail.sections.formDurationPlaceholder', "Optional"),
-            description: t('exam.packages.detail.sections.formDurationHelp', "Leave empty if there is no time limit."),
+            label: t('exam.packageSection.list.formDuration'),
+            placeholder: t('exam.packageSection.list.formDurationPlaceholder'),
+            description: t('exam.packageSection.list.formDurationHelp'),
+            options: durationOnMinutes
         },
         isActive: {
             type: "switch",
             name: "isActive",
-            label: t('exam.packages.detail.sections.formActive', "Active"),
-            description: t('exam.packages.detail.sections.formActiveHelp', "Show this section to students."),
+            label: t('exam.packageSection.list.formActive'),
+            description: t('exam.packageSection.list.formActiveHelp'),
         },
     };
 
     const modalProps: ModalFormProps = {
         title: section
-            ? t('exam.packages.detail.sections.editTitle', "Edit Section")
-            : t('exam.packages.detail.sections.createTitle', "Create Section"),
+            ? t('exam.packageSection.list.editTitle')
+            : t('exam.packageSection.list.createTitle'),
         desc: section
-            ? t('exam.packages.detail.sections.editDesc', "Update the details of this section.")
-            : t('exam.packages.detail.sections.createDesc', "Add a new section to this exam package."),
+            ? t('exam.packageSection.list.editDesc')
+            : t('exam.packageSection.list.createDesc'),
         modal: true,
-        textConfirm: (createMutation.isPending || updateMutation.isPending) ? t("common.saving", "Saving...") : t("common.save", "Save"),
-        textCancel: t("common.cancel", "Cancel"),
+        textConfirm: (createMutation.isPending || updateMutation.isPending) ? t("labels.saving") : t("labels.save"),
+        textCancel: t("labels.cancel"),
         defaultValue: {
             title: section?.title || "",
-            durationMinutes: section?.durationMinutes ?? null,
+            durationMinutes: (section?.durationMinutes ?? 0).toString(),
             isActive: section?.isActive ?? true,
         },
         child: formConfig,
@@ -86,16 +84,16 @@ export const SectionFormModal = ({ open, onOpenChange, section, packageId }: Sec
                 await updateMutation.mutateAsync({
                     id: section.id,
                     title: values.title,
-                    durationMinutes: values.durationMinutes ?? undefined,
+                    durationMinutes: values.durationMinutes !== undefined && values.durationMinutes !== "" ? Number(values.durationMinutes) : 0,
                     isActive: values.isActive
                 }, {
                     onSuccess: () => {
-                        showNotifSuccess({ message: t('exam.packages.detail.sections.updateSuccess', "Section updated successfully") });
+                        showNotifSuccess({ message: t('exam.packageSection.list.updateSuccess') });
                         queryClient.invalidateQueries({ queryKey: ["exam-package-sections-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
-                        showNotifError({ message: err.message || t('exam.packages.detail.sections.updateError', "Failed to update section") });
+                        showNotifError({ message: err.message || t('exam.packageSection.list.updateError') });
                     }
                 });
             } else {
@@ -103,16 +101,16 @@ export const SectionFormModal = ({ open, onOpenChange, section, packageId }: Sec
                 await createMutation.mutateAsync({
                     packageId,
                     title: values.title,
-                    durationMinutes: values.durationMinutes ?? undefined,
+                    durationMinutes: values.durationMinutes !== undefined && values.durationMinutes !== "" ? Number(values.durationMinutes) : 0,
                     isActive: values.isActive
                 }, {
                     onSuccess: () => {
-                        showNotifSuccess({ message: t('exam.packages.detail.sections.createSuccess', "Section created successfully") });
+                        showNotifSuccess({ message: t('exam.packageSection.list.createSuccess') });
                         queryClient.invalidateQueries({ queryKey: ["exam-package-sections-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
-                        showNotifError({ message: err.message || t('exam.packages.detail.sections.createError', "Failed to create section") });
+                        showNotifError({ message: err.message || t('exam.packageSection.list.createError') });
                     }
                 });
             }

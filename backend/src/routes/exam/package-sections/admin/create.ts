@@ -3,13 +3,15 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examPackageSections } from '../../../../db/schema/exam/package-sections.ts';
+import { examPackages } from '../../../../db/schema/exam/packages.ts';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { eq, sql } from 'drizzle-orm';
 
 const CreateSectionBody = Type.Object({
     packageId: Type.String({ format: 'uuid' }),
     title: Type.String({ minLength: 1, maxLength: 255 }),
-    durationMinutes: Type.Optional(Type.Number({ minimum: 1 })),
-    order: Type.Optional(Type.Number({ default: 1 })),
+    durationMinutes: Type.Optional(Type.Number({ minimum: 0 })),
+    order: Type.Optional(Type.Number({ default: -1 })),
     isActive: Type.Optional(Type.Boolean({ default: true })),
 });
 
@@ -38,15 +40,37 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreateSectionBody.static }>,
             reply: FastifyReply
         ) {
-            const body = request.body;
+            const { packageId, title, durationMinutes, order, isActive } = request.body;
+            let orderToUse = order ?? -1;
+
+            // 1. Check if package exists
+            const existingPackage = await db.query.examPackages.findFirst({
+                where: eq(examPackages.id, packageId)
+            });
+
+            if (!existingPackage) {
+                return reply.notFound(request.i18n.t('exam.packages.update.notFound'));
+            }
+
+            // 2. Handle auto-order if order is < 0
+            if (orderToUse < 0) {
+                const [maxOrderResult] = await db.select({
+                    maxOrder: sql<number>`max(${examPackageSections.order})`
+                })
+                    .from(examPackageSections)
+                    .where(eq(examPackageSections.packageId, packageId));
+
+                const currentMaxOrder = maxOrderResult?.maxOrder ?? 0;
+                orderToUse = currentMaxOrder + 1;
+            }
 
             const [newSection] = await db.insert(examPackageSections)
                 .values({
-                    packageId: body.packageId,
-                    title: body.title,
-                    durationMinutes: body.durationMinutes,
-                    order: body.order,
-                    isActive: body.isActive,
+                    packageId,
+                    title,
+                    durationMinutes,
+                    order: orderToUse,
+                    isActive: isActive ?? true,
                 })
                 .returning({ id: examPackageSections.id });
 

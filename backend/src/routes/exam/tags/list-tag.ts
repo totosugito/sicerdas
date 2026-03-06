@@ -4,7 +4,7 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
 import { examTags } from '../../../db/schema/exam/tags.ts';
 import { examQuestionTags } from '../../../db/schema/exam/question-tags.ts';
-import { desc, ilike, or, and, sql, eq, count, getTableColumns } from 'drizzle-orm';
+import { desc, ilike, or, and, sql, eq, count, getTableColumns, asc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
@@ -114,30 +114,24 @@ const listTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             // Add Sorting
-            const order = sortOrder === 'asc' ? 'asc' : 'desc';
+            const orderDir = sortOrder === 'asc' ? 'asc' : 'desc';
             let queryWithSort;
 
             switch (sortBy) {
                 case 'name':
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examTags.name)
-                        : baseQuery.orderBy(desc(examTags.name));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examTags.name)) : baseQuery.orderBy(desc(examTags.name));
                     break;
                 case 'isActive':
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examTags.isActive)
-                        : baseQuery.orderBy(desc(examTags.isActive));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examTags.isActive)) : baseQuery.orderBy(desc(examTags.isActive));
                     break;
                 case 'updatedAt':
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examTags.updatedAt)
-                        : baseQuery.orderBy(desc(examTags.updatedAt));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examTags.updatedAt)) : baseQuery.orderBy(desc(examTags.updatedAt));
                     break;
                 case 'createdAt':
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examTags.createdAt)) : baseQuery.orderBy(desc(examTags.createdAt));
+                    break;
                 default:
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examTags.createdAt)
-                        : baseQuery.orderBy(desc(examTags.createdAt));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examTags.name)) : baseQuery.orderBy(desc(examTags.name));
                     break;
             }
 
@@ -159,11 +153,7 @@ const listTagRoute: FastifyPluginAsyncTypebox = async (app) => {
                 message: request.i18n.t('exam.tags.list.success'),
                 data: {
                     items: items.map(tag => ({
-                        id: tag.id,
-                        name: tag.name,
-                        description: tag.description,
-                        isActive: tag.isActive,
-                        totalQuestions: tag.totalQuestions,
+                        ...tag,
                         createdAt: tag.createdAt.toISOString(),
                         updatedAt: tag.updatedAt.toISOString(),
                     })),

@@ -3,7 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
 import { educationCategories } from '../../../db/schema/education/education-categories.ts';
-import { desc, ilike, or, and, sql, eq } from 'drizzle-orm';
+import { desc, ilike, or, and, sql, eq, asc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
@@ -105,30 +105,24 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             // Add Sorting
-            const order = sortOrder === 'asc' ? 'asc' : 'desc';
+            const orderDir = sortOrder === 'asc' ? 'asc' : 'desc';
             let queryWithSort;
 
             switch (sortBy) {
                 case 'name':
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(educationCategories.name)
-                        : baseQuery.orderBy(desc(educationCategories.name));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationCategories.name)) : baseQuery.orderBy(desc(educationCategories.name));
                     break;
                 case 'isActive':
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(educationCategories.isActive)
-                        : baseQuery.orderBy(desc(educationCategories.isActive));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationCategories.isActive)) : baseQuery.orderBy(desc(educationCategories.isActive));
                     break;
                 case 'updatedAt':
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(educationCategories.updatedAt)
-                        : baseQuery.orderBy(desc(educationCategories.updatedAt));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationCategories.updatedAt)) : baseQuery.orderBy(desc(educationCategories.updatedAt));
                     break;
                 case 'createdAt':
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationCategories.createdAt)) : baseQuery.orderBy(desc(educationCategories.createdAt));
+                    break;
                 default:
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(educationCategories.createdAt)
-                        : baseQuery.orderBy(desc(educationCategories.createdAt));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationCategories.name)) : baseQuery.orderBy(desc(educationCategories.name));
                     break;
             }
 

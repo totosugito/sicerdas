@@ -226,8 +226,8 @@ export function DialogModal({
                                     <div key={index} className="flex items-start gap-2 text-sm text-foreground/80">
                                         {item.icon || (
                                             <div className={cn(
-                                                "mt-1 h-1.5 w-1.5 rounded-full flex-shrink-0",
-                                                modal?.variant
+                                                "mt-2 h-1.5 w-1.5 rounded-full flex-shrink-0",
+                                                modal?.variant === "destructive" ? "bg-destructive" : "bg-primary"
                                             )} />
                                         )}
                                         {item.text}

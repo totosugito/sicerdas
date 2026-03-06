@@ -64,7 +64,7 @@ const createSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
             const [newSubject] = await db.insert(examSubjects).values({
                 name,
                 description,
-                isActive: isActive !== undefined ? isActive : true,
+                isActive: isActive ?? true,
             }).returning();
 
             return reply.status(201).send({

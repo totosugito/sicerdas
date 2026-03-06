@@ -57,3 +57,11 @@ export const EnumPeriodicViewMode = {
     label: 'Theme 4'
   },
 }
+
+export const durationOnMinutes = [
+  { label: "0", value: "0" },
+  { label: "15", value: "15" },
+  { label: "20", value: "20" },
+  { label: "30", value: "30" },
+  { label: "60", value: "60" },
+]

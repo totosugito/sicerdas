@@ -3,6 +3,8 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examPackages } from '../../../../db/schema/exam/packages.ts';
+import { educationCategories } from '../../../../db/schema/education/education-categories.ts';
+import { educationGrades } from '../../../../db/schema/education/education-grades.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { EnumExamType } from '../../../../db/schema/exam/enums.ts';
@@ -46,23 +48,51 @@ const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
             reply: FastifyReply
         ) {
             const { id } = request.params;
-            const body = request.body;
+            const {
+                categoryId, title, examType, durationMinutes,
+                description, requiredTier, educationGradeId, isActive
+            } = request.body;
 
-            const [existing] = await db.select({ id: examPackages.id })
-                .from(examPackages)
-                .where(eq(examPackages.id, id))
-                .limit(1);
+            const existing = await db.query.examPackages.findFirst({
+                where: eq(examPackages.id, id)
+            });
 
             if (!existing) {
-                return reply.status(404).send({
-                    success: false,
-                    message: request.i18n.t('exam.packages.update.notFound'),
+                return reply.notFound(request.i18n.t('exam.packages.update.notFound'));
+            }
+
+            // 1. Check if category exists if provided
+            if (categoryId) {
+                const existingCategory = await db.query.educationCategories.findFirst({
+                    where: eq(educationCategories.id, categoryId)
                 });
+
+                if (!existingCategory) {
+                    return reply.notFound(request.i18n.t('exam.categories.update.notFound'));
+                }
+            }
+
+            // 2. Check if education grade exists if provided
+            if (educationGradeId) {
+                const existingGrade = await db.query.educationGrades.findFirst({
+                    where: eq(educationGrades.id, educationGradeId)
+                });
+
+                if (!existingGrade) {
+                    return reply.notFound(request.i18n.t('educationGrade.update.notFound'));
+                }
             }
 
             await db.update(examPackages)
                 .set({
-                    ...body,
+                    categoryId,
+                    title,
+                    examType,
+                    durationMinutes,
+                    description,
+                    requiredTier,
+                    educationGradeId,
+                    isActive,
                     updatedAt: new Date(),
                 })
                 .where(eq(examPackages.id, id));

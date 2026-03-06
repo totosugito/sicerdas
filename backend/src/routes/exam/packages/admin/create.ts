@@ -3,10 +3,13 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examPackages } from '../../../../db/schema/exam/packages.ts';
+import { educationCategories } from '../../../../db/schema/education/education-categories.ts';
+import { educationGrades } from '../../../../db/schema/education/education-grades.ts';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { EnumExamType } from '../../../../db/schema/exam/enums.ts';
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
+import { eq } from 'drizzle-orm';
 
 const CreatePackageBody = Type.Object({
     categoryId: Type.String({ format: 'uuid' }),
@@ -50,7 +53,30 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreatePackageBody.static }>,
             reply: FastifyReply
         ) {
-            const body = request.body;
+            const {
+                categoryId, title, examType, durationMinutes,
+                description, requiredTier, educationGradeId, isActive
+            } = request.body;
+
+            // 1. Check if category exists
+            const existingCategory = await db.query.educationCategories.findFirst({
+                where: eq(educationCategories.id, categoryId)
+            });
+
+            if (!existingCategory) {
+                return reply.notFound(request.i18n.t('exam.categories.update.notFound'));
+            }
+
+            // 2. Check if education grade exists (if provided)
+            if (educationGradeId) {
+                const existingGrade = await db.query.educationGrades.findFirst({
+                    where: eq(educationGrades.id, educationGradeId)
+                });
+
+                if (!existingGrade) {
+                    return reply.notFound(request.i18n.t('education.grade.notFound'));
+                }
+            }
 
             const session = await getAuthInstance(app).api.getSession({
                 headers: fromNodeHeaders(request.headers),
@@ -59,14 +85,14 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             const [newPackage] = await db.insert(examPackages)
                 .values({
-                    categoryId: body.categoryId,
-                    title: body.title,
-                    examType: body.examType,
-                    durationMinutes: body.durationMinutes,
-                    description: body.description,
-                    requiredTier: body.requiredTier,
-                    educationGradeId: body.educationGradeId,
-                    isActive: body.isActive,
+                    categoryId,
+                    title,
+                    examType,
+                    durationMinutes,
+                    description,
+                    requiredTier,
+                    educationGradeId,
+                    isActive: isActive ?? true,
                     createdByUserId: user?.id,
                 })
                 .returning({ id: examPackages.id });

@@ -3,7 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
 import { educationGrades } from '../../../db/schema/education/education-grades.ts';
-import { desc, ilike, or, and, sql } from 'drizzle-orm';
+import { desc, ilike, or, and, sql, asc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 
 const EducationGradeListQuery = Type.Object({
@@ -85,30 +85,24 @@ const listEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             // Add Sorting
-            const order = sortOrder === 'asc' ? 'asc' : 'desc';
+            const orderDir = sortOrder === 'asc' ? 'asc' : 'desc';
             let queryWithSort;
 
             switch (sortBy) {
                 case 'name':
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(educationGrades.name)
-                        : baseQuery.orderBy(desc(educationGrades.name));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationGrades.name)) : baseQuery.orderBy(desc(educationGrades.name));
                     break;
                 case 'grade':
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(educationGrades.grade)
-                        : baseQuery.orderBy(desc(educationGrades.grade));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationGrades.grade)) : baseQuery.orderBy(desc(educationGrades.grade));
                     break;
                 case 'updatedAt':
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(educationGrades.updatedAt)
-                        : baseQuery.orderBy(desc(educationGrades.updatedAt));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationGrades.updatedAt)) : baseQuery.orderBy(desc(educationGrades.updatedAt));
                     break;
                 case 'createdAt':
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationGrades.createdAt)) : baseQuery.orderBy(desc(educationGrades.createdAt));
+                    break;
                 default:
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(educationGrades.createdAt)
-                        : baseQuery.orderBy(desc(educationGrades.createdAt));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationGrades.name)) : baseQuery.orderBy(desc(educationGrades.name));
                     break;
             }
 

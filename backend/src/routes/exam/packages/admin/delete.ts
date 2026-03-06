@@ -37,16 +37,12 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
         ) {
             const { id } = request.params;
 
-            const [existing] = await db.select({ id: examPackages.id })
-                .from(examPackages)
-                .where(eq(examPackages.id, id))
-                .limit(1);
+            const existing = await db.query.examPackages.findFirst({
+                where: eq(examPackages.id, id)
+            });
 
             if (!existing) {
-                return reply.status(404).send({
-                    success: false,
-                    message: request.i18n.t('exam.packages.delete.notFound'),
-                });
+                return reply.notFound(request.i18n.t('exam.packages.delete.notFound'));
             }
 
             // Check if package is in use by any sessions

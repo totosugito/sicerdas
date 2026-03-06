@@ -3,7 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
 import { examSubjects } from '../../../db/schema/exam/subjects.ts';
-import { desc, ilike, or, and, sql, eq } from 'drizzle-orm';
+import { desc, ilike, or, and, sql, eq, asc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
@@ -105,34 +105,24 @@ const listSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             // Add Sorting
-            const order = sortOrder === 'asc' ? 'asc' : 'desc';
+            const orderDir = sortOrder === 'asc' ? 'asc' : 'desc';
             let queryWithSort;
 
             switch (sortBy) {
                 case 'name':
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examSubjects.name)
-                        : baseQuery.orderBy(desc(examSubjects.name));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examSubjects.name)) : baseQuery.orderBy(desc(examSubjects.name));
                     break;
                 case 'isActive':
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examSubjects.isActive)
-                        : baseQuery.orderBy(desc(examSubjects.isActive));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examSubjects.isActive)) : baseQuery.orderBy(desc(examSubjects.isActive));
                     break;
                 case 'updatedAt':
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examSubjects.updatedAt)
-                        : baseQuery.orderBy(desc(examSubjects.updatedAt));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examSubjects.updatedAt)) : baseQuery.orderBy(desc(examSubjects.updatedAt));
                     break;
                 case 'createdAt':
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examSubjects.createdAt)
-                        : baseQuery.orderBy(desc(examSubjects.createdAt));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examSubjects.createdAt)) : baseQuery.orderBy(desc(examSubjects.createdAt));
                     break;
                 default:
-                    queryWithSort = order === 'asc'
-                        ? baseQuery.orderBy(examSubjects.name)
-                        : baseQuery.orderBy(desc(examSubjects.name));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examSubjects.name)) : baseQuery.orderBy(desc(examSubjects.name));
                     break;
             }
 

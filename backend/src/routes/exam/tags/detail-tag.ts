@@ -2,47 +2,49 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
-import { examSubjects } from '../../../db/schema/exam/subjects.ts';
-import { eq, and } from 'drizzle-orm';
+import { examTags } from '../../../db/schema/exam/tags.ts';
+import { examQuestionTags } from '../../../db/schema/exam/question-tags.ts';
+import { eq, and, count, getTableColumns } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from '../../../db/schema/index.ts';
 
-const DetailSubjectParams = Type.Object({
+const DetailTagParams = Type.Object({
     id: Type.String({ format: 'uuid' }),
 });
 
-const SubjectResponseItem = Type.Object({
+const TagResponseItem = Type.Object({
     id: Type.String({ format: 'uuid' }),
     name: Type.String(),
     description: Type.Union([Type.String(), Type.Null()]),
     isActive: Type.Boolean(),
+    totalQuestions: Type.Number(),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
 });
 
-const DetailSubjectResponse = Type.Object({
+const DetailTagResponse = Type.Object({
     success: Type.Boolean(),
     message: Type.String(),
-    data: SubjectResponseItem,
+    data: TagResponseItem,
 });
 
-const detailSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
+const detailTagRoute: FastifyPluginAsyncTypebox = async (app) => {
     app.route({
         url: '/detail/:id',
         method: 'GET',
         schema: {
-            tags: ['Exam Subjects'],
-            params: DetailSubjectParams,
+            tags: ['Exam Tags'],
+            params: DetailTagParams,
             response: {
-                200: DetailSubjectResponse,
+                200: DetailTagResponse,
                 '4xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
                 '5xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
             }
         },
         handler: withErrorHandler(async function handler(
-            request: FastifyRequest<{ Params: typeof DetailSubjectParams.static }>,
+            request: FastifyRequest<{ Params: typeof DetailTagParams.static }>,
             reply: FastifyReply
         ) {
             const { id } = request.params;
@@ -54,32 +56,38 @@ const detailSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
             const user = session?.user;
             const isAdmin = user?.role === EnumUserRole.ADMIN;
 
-            const conditions = [eq(examSubjects.id, id)];
+            const conditions = [eq(examTags.id, id)];
 
             if (!isAdmin) {
-                // Regular users can only see active subjects
-                conditions.push(eq(examSubjects.isActive, true));
+                // Regular users can only see active tags
+                conditions.push(eq(examTags.isActive, true));
             }
 
-            const subject = await db.query.examSubjects.findFirst({
-                where: and(...conditions)
-            });
+            const [result] = await db.select({
+                ...getTableColumns(examTags),
+                totalQuestions: count(examQuestionTags.questionId).mapWith(Number)
+            })
+                .from(examTags)
+                .leftJoin(examQuestionTags, eq(examTags.id, examQuestionTags.tagId))
+                .where(and(...conditions))
+                .groupBy(examTags.id)
+                .limit(1);
 
-            if (!subject) {
-                return reply.notFound(request.i18n.t('exam.subjects.detail.notFound'));
+            if (!result) {
+                return reply.notFound(request.i18n.t('exam.tags.detail.notFound'));
             }
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.subjects.detail.success'),
+                message: request.i18n.t('exam.tags.detail.success'),
                 data: {
-                    ...subject,
-                    createdAt: subject.createdAt.toISOString(),
-                    updatedAt: subject.updatedAt.toISOString(),
+                    ...result,
+                    createdAt: result.createdAt.toISOString(),
+                    updatedAt: result.updatedAt.toISOString(),
                 }
             });
         }),
     });
 };
 
-export default detailSubjectRoute;
+export default detailTagRoute;

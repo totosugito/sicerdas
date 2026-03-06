@@ -5,7 +5,7 @@ import { db } from '../../../db/db-pool.ts';
 import { examPackages } from '../../../db/schema/exam/packages.ts';
 import { educationCategories } from '../../../db/schema/education/education-categories.ts';
 import { educationGrades } from '../../../db/schema/education/education-grades.ts';
-import { desc, ilike, and, sql, eq } from 'drizzle-orm';
+import { desc, ilike, and, sql, eq, asc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
@@ -127,29 +127,29 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             switch (sortBy) {
                 case 'isActive':
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.isActive) : baseQuery.orderBy(desc(examPackages.isActive));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examPackages.isActive)) : baseQuery.orderBy(desc(examPackages.isActive));
                     break;
                 case 'updatedAt':
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.updatedAt) : baseQuery.orderBy(desc(examPackages.updatedAt));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examPackages.updatedAt)) : baseQuery.orderBy(desc(examPackages.updatedAt));
                     break;
                 case 'durationMinutes':
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.durationMinutes) : baseQuery.orderBy(desc(examPackages.durationMinutes));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examPackages.durationMinutes)) : baseQuery.orderBy(desc(examPackages.durationMinutes));
                     break;
                 case 'categoryId':
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.categoryId) : baseQuery.orderBy(desc(examPackages.categoryId));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examPackages.categoryId)) : baseQuery.orderBy(desc(examPackages.categoryId));
                     break;
                 case 'examType':
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.examType) : baseQuery.orderBy(desc(examPackages.examType));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examPackages.examType)) : baseQuery.orderBy(desc(examPackages.examType));
                     break;
                 case 'educationGradeId':
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.educationGradeId) : baseQuery.orderBy(desc(examPackages.educationGradeId));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examPackages.educationGradeId)) : baseQuery.orderBy(desc(examPackages.educationGradeId));
                     break;
                 case 'createdAt':
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.createdAt) : baseQuery.orderBy(desc(examPackages.createdAt));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examPackages.createdAt)) : baseQuery.orderBy(desc(examPackages.createdAt));
                     break;
                 case 'title':
                 default:
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(examPackages.title) : baseQuery.orderBy(desc(examPackages.title));
+                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(examPackages.title)) : baseQuery.orderBy(desc(examPackages.title));
                     break;
             }
 

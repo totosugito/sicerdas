@@ -64,7 +64,7 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             const [newCategory] = await db.insert(educationCategories).values({
                 name,
                 description,
-                isActive: isActive !== undefined ? isActive : true,
+                isActive: isActive ?? true,
             }).returning();
 
             return reply.status(201).send({

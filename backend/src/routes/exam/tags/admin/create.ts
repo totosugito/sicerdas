@@ -64,7 +64,7 @@ const createTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             const [newTag] = await db.insert(examTags).values({
                 name,
                 description,
-                isActive: isActive !== undefined ? isActive : true,
+                isActive: isActive ?? true,
             }).returning();
 
             return reply.status(201).send({
