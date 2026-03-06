@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -10,9 +10,9 @@ import { EnumExamType } from 'backend/src/db/schema/exam/enums';
 import { FormWithDetector } from '@/components/custom/components';
 
 // Hooks for dropdowns
-import { useListCategory } from '@/api/education-categories';
+import { useListCategorySimple } from '@/api/education-categories';
 import { useListTier } from '@/api/app-tier';
-import { useListEducationGrade } from '@/api/education-grade';
+import { useListGradeSimple } from '@/api/education-grade';
 import { durationOnMinutes } from '@/constants/app-enum';
 
 export type PackageFormValues = {
@@ -36,12 +36,12 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
     const { t } = useTranslation();
 
     // Data for dropdowns (Fetching all active options at once)
-    const { data: categoriesData, isFetching: isFetchingCategories } = useListCategory({ limit: 1000, isActive: true, page: 1 });
-    const { data: gradesData, isFetching: isFetchingGrades } = useListEducationGrade({ limit: 1000, page: 1 });
+    const { data: categoriesData, isFetching: isFetchingCategories } = useListCategorySimple({ limit: 1000 });
+    const { data: gradesData, isFetching: isFetchingGrades } = useListGradeSimple({ limit: 1000 });
     const { data: tierData, isLoading: isLoadingTier } = useListTier();
 
-    const categoryOptions = categoriesData?.data?.items?.map(cat => ({ label: cat.name, value: cat.id })) || [];
-    const educationGradeOptions = gradesData?.data?.items?.map(grade => ({ label: grade.name, value: String(grade.id) })) || [];
+    const categoryOptions = categoriesData?.data?.items || [];
+    const educationGradeOptions = gradesData?.data?.items || [];
 
     const formSchema = z.object({
         title: z.string().min(1, t("exam.packages.list.form.title.required")),
@@ -68,6 +68,23 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
             ...defaultValues,
         },
     });
+
+    // Reset the form whenever defaultValues from prop change
+    useEffect(() => {
+        if (defaultValues) {
+            form.reset({
+                title: "",
+                categoryId: "",
+                examType: EnumExamType.OFFICIAL,
+                durationMinutes: "0",
+                requiredTier: "free",
+                description: "",
+                isActive: true,
+                educationGradeId: "",
+                ...defaultValues,
+            });
+        }
+    }, [defaultValues, form]);
 
     const tierOptions = tierData?.data?.map((tier: any) => ({
         label: tier.name,

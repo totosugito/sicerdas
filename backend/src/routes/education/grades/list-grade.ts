@@ -8,8 +8,8 @@ import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 
 const EducationGradeListQuery = Type.Object({
     search: Type.Optional(Type.String({ description: 'Search term for grade name or desc' })),
-    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, updatedAt, name, grade', default: 'name' })),
-    sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'asc' })),
+    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, updatedAt, name, grade', default: 'updatedAt' })),
+    sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'desc' })),
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
     limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 1000 })),
 });
@@ -61,7 +61,7 @@ const listEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof EducationGradeListQuery.static }>,
             reply: FastifyReply
         ) {
-            const { search, sortBy = 'name', sortOrder = 'asc', page = 1, limit = 10 } = request.body;
+            const { search, sortBy = 'updatedAt', sortOrder = 'desc', page = 1, limit = 10 } = request.body;
             const offset = (page - 1) * limit;
 
             const conditions = [];

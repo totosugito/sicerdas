@@ -1,4 +1,4 @@
-import { GripVertical, Edit2, Trash2, Clock, Check, FileQuestion } from "lucide-react";
+import { GripVertical, Edit2, Trash2, Clock, FileQuestion } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
@@ -38,62 +38,69 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
                 : "hover:border-primary/30 hover:shadow-sm"
                 }`}
         >
-            {/* Top row: drag handle, title, badge, actions */}
-            <div className="flex items-center gap-3">
-                <button
-                    {...attributes}
-                    {...listeners}
-                    className="flex-shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground touch-none p-1 rounded hover:bg-secondary"
-                >
-                    <GripVertical className="w-5 h-5" />
-                </button>
-
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2 flex-wrap">
-                        <h3 className="font-semibold leading-tight inline-block">
-                            {section.title}
-                        </h3>
+            <div className="flex items-start gap-4">
+                {/* Left Column: Sequence Controls */}
+                <div className="flex flex-col items-center gap-2">
+                    <button
+                        {...attributes}
+                        {...listeners}
+                        className="flex-shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground touch-none p-1 rounded hover:bg-secondary"
+                    >
+                        <GripVertical className="w-5 h-5" />
+                    </button>
+                    <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-secondary/50 border border-border/50 text-[11px] font-black text-muted-foreground/80 shrink-0 group-hover:border-primary/30 group-hover:text-primary transition-colors shadow-sm">
+                        {section.order}
                     </div>
                 </div>
 
-                <Badge
-                    variant={section.isActive ? "default" : "secondary"}
-                    className={
-                        section.isActive
-                            ? "flex-shrink-0 bg-primary/15 text-primary border-0 hover:bg-primary/20 text-xs"
-                            : "flex-shrink-0 text-xs"
-                    }
-                >
-                    {section.isActive ? t('exam.packageSection.list.sections.active') : t('exam.packageSection.list.sections.inactive')}
-                </Badge>
+                {/* Main Content Column */}
+                <div className="flex-1 min-w-0 pt-0.5 space-y-2">
+                    <h3 className="font-bold text-base tracking-tight truncate">
+                        {section.title}
+                    </h3>
 
-                <div className="flex-shrink-0 flex items-center gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => onEdit(section)}>
-                        <Edit2 className="w-4 h-4" />
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="hover:text-destructive hover:bg-destructive/10"
-                        onClick={() => onDelete(section.id, section.title)}
-                    >
-                        <Trash2 className="w-4 h-4" />
-                    </Button>
+                    {/* Info row: duration and questions */}
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        {section.durationMinutes ? (
+                            <span className="flex items-center gap-1">
+                                <Clock className="w-3.5 h-3.5" />
+                                {t('exam.packageSection.list.sections.duration', { minutes: section.durationMinutes })}
+                            </span>
+                        ) : null}
+                        <span className="flex items-center gap-1">
+                            <FileQuestion className="w-3.5 h-3.5" />
+                            {t('exam.packageSection.list.sections.questions', { count: section.totalQuestions })}
+                        </span>
+                    </div>
                 </div>
-            </div>
 
-            {/* Info row: duration and questions */}
-            <div className="mt-2 ml-[42px] flex items-center gap-4 text-xs text-muted-foreground">
-                {section.durationMinutes ? (
-                    <span className="flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" />
-                        {t('exam.packageSection.list.sections.duration', { minutes: section.durationMinutes })}
-                    </span>
-                ) : null}
-                <span className="flex items-center gap-1">
-                    <FileQuestion className="w-3.5 h-3.5" />
-                    {t('exam.packageSection.list.sections.questions', { count: section.totalQuestions })}
-                </span>
+                {/* Status Badge and Actions */}
+                <div className="flex-shrink-0 flex items-center gap-3">
+                    <Badge
+                        variant={section.isActive ? "default" : "secondary"}
+                        className={
+                            section.isActive
+                                ? "bg-primary/10 text-primary border-0 hover:bg-primary/20 text-xs px-2"
+                                : "text-xs px-2"
+                        }
+                    >
+                        {section.isActive ? t('exam.packageSection.list.sections.active') : t('exam.packageSection.list.sections.inactive')}
+                    </Badge>
+
+                    <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => onEdit(section)}>
+                            <Edit2 className="w-4 h-4" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => onDelete(section.id, section.title)}
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </Button>
+                    </div>
+                </div>
             </div>
         </div>
     );

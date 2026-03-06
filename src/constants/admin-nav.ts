@@ -1,7 +1,7 @@
 import { HiOutlineUsers } from "react-icons/hi2";
 import { AppRoute } from "@/constants/app-route";
 import i18n from '@/i18n';
-import { Badge, Bookmark, BookTemplateIcon, CalendarCheck2, DollarSign, GraduationCap, LucideBadge, School, School2, TagsIcon } from "lucide-react";
+import { Badge, Bookmark, BookSearch, BookTemplateIcon, CalendarCheck2, DollarSign, GraduationCap, School, TagsIcon } from "lucide-react";
 
 const t = i18n.t;
 export const AdminNav = {
@@ -20,6 +20,11 @@ export const AdminNav = {
           url: "/base",
           icon: CalendarCheck2,
           items: [
+            {
+              title: t("exam.packageSection.list.menu"),
+              url: AppRoute.exam.packageSections.admin.list.url,
+              icon: BookSearch,
+            },
             {
               title: t("exam.packages.list.menu"),
               url: AppRoute.exam.packages.admin.list.url,

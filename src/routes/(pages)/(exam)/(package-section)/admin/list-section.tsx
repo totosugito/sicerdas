@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
 import {
-  useListSubject,
-  useDeleteSubject,
-  ExamSubject,
-  ListSubjectResponse
-} from '@/api/exam-subjects';
+  useListPackageSection,
+  useDeletePackageSection,
+  ExamPackageSection,
+  ListSectionsResponse,
+} from '@/api/exam-package-sections';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from 'react';
@@ -13,22 +13,25 @@ import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/app';
 import { Plus, Trash2 } from 'lucide-react';
 import { DialogModal } from '@/components/custom/components';
-import { SubjectTable, DialogSubjectCreate } from '@/components/pages/exam/subjects';
+import { SectionTable, SectionForm } from '@/components/pages/exam/package-section/section-list';
 import { PaginationData } from '@/components/custom/table';
 import { z } from 'zod';
 
-export const Route = createFileRoute('/(pages)/(exam)/(subjects)/admin/list-subject')({
+export const Route = createFileRoute(
+  '/(pages)/(exam)/(package-section)/admin/list-section',
+)({
   validateSearch: z.object({
     page: z.number().min(1).optional().catch(undefined),
     limit: z.number().min(5).optional().catch(undefined),
     search: z.string().optional().catch(undefined),
     sortBy: z.string().optional().catch(undefined),
     sortOrder: z.enum(['asc', 'desc']).optional().catch(undefined),
+    packageId: z.string().optional().catch(undefined),
   }),
-  component: AdminExamSubjectsPage,
+  component: AdminExamPackageSectionsPage,
 });
 
-function AdminExamSubjectsPage() {
+function AdminExamPackageSectionsPage() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = Route.useNavigate();
@@ -40,45 +43,47 @@ function AdminExamSubjectsPage() {
   const search = searchParams.search ?? "";
   const sortBy = searchParams.sortBy ?? "updatedAt";
   const sortOrder = searchParams.sortOrder ?? "desc";
+  const packageId = searchParams.packageId;
 
   // API Hooks
-  const { data, isLoading } = useListSubject({
+  const { data, isLoading } = useListPackageSection({
     page,
     limit,
-    search,
     sortBy,
     sortOrder,
+    search,
+    packageId,
   });
 
-  const deleteMutation = useDeleteSubject();
+  const deleteMutation = useDeletePackageSection();
 
   // Dialog & Modal States
-  const [showDialog, setShowDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState<ExamSubject | null>(null);
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [selectedSection, setSelectedSection] = useState<ExamPackageSection | null>(null);
 
   // Handlers
   const handleAdd = () => {
-    setSelectedSubject(null);
-    setShowDialog(true);
+    setSelectedSection(null);
+    setShowFormModal(true);
   };
 
-  const handleEdit = (subject: ExamSubject) => {
-    setSelectedSubject(subject);
-    setShowDialog(true);
+  const handleEdit = (section: ExamPackageSection) => {
+    setSelectedSection(section);
+    setShowFormModal(true);
   };
 
-  const handleDelete = (subject: ExamSubject) => {
-    setSelectedSubject(subject);
+  const handleDelete = (section: ExamPackageSection) => {
+    setSelectedSection(section);
     setShowDeleteDialog(true);
   };
 
   const confirmDelete = () => {
-    if (!selectedSubject) return;
-    deleteMutation.mutate(selectedSubject.id, {
+    if (!selectedSection) return;
+    deleteMutation.mutate(selectedSection.id, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t("exam.subjects.list.delete.success") });
-        queryClient.invalidateQueries({ queryKey: ["exam-subjects-list"] });
+        showNotifSuccess({ message: res.message || t("exam.packageSection.list.delete.success") });
+        queryClient.invalidateQueries({ queryKey: ["exam-package-sections-list"] });
         setShowDeleteDialog(false);
       },
       onError: (err: any) => {
@@ -91,8 +96,8 @@ function AdminExamSubjectsPage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={t("exam.subjects.list.title")}
-          description={<span>{t("exam.subjects.list.description")}</span>}
+          title={t("exam.packageSection.list.title")}
+          description={<span>{t("exam.packageSection.list.description")}</span>}
         />
         <Button onClick={handleAdd} className="flex-shrink-0 gap-1.5 shadow-sm">
           <Plus className="h-4 w-4" />
@@ -100,8 +105,8 @@ function AdminExamSubjectsPage() {
         </Button>
       </div>
 
-      <SubjectTable
-        data={data as ListSubjectResponse}
+      <SectionTable
+        data={data as ListSectionsResponse}
         isLoading={isLoading}
         paginationData={data?.data.meta as PaginationData}
         onPaginationChange={(pagination: { page: number; limit: number }) => {
@@ -137,23 +142,24 @@ function AdminExamSubjectsPage() {
             replace: true,
           });
         }}
-        onEdit={handleEdit}
         onDelete={handleDelete}
+        onEdit={handleEdit}
       />
 
-      <DialogSubjectCreate
-        open={showDialog}
-        onOpenChange={setShowDialog}
-        subject={selectedSubject}
+      <SectionForm
+        open={showFormModal}
+        onOpenChange={setShowFormModal}
+        section={selectedSection}
+        packageId={packageId || undefined}
       />
 
       <DialogModal
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
-          title: t("exam.subjects.list.delete.confirmTitle"),
-          desc: t("exam.subjects.list.delete.confirmDesc", { name: selectedSubject?.name }),
-          infoContainer: t("exam.subjects.list.delete.deleteInfo"),
+          title: t("exam.packageSection.list.delete.confirmTitle"),
+          desc: t("exam.packageSection.list.delete.confirmDesc", { title: selectedSection?.title }),
+          infoContainer: t("exam.packageSection.list.delete.deleteInfo"),
           infoContainerVariant: "error",
           variant: "destructive",
           iconType: "error",

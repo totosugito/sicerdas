@@ -5,6 +5,7 @@ import { ExamPackageSection } from "./types";
 import { PaginationData } from "@/components/custom/table";
 
 export interface ListSectionRequest {
+    search?: string;
     packageId?: string;
     isActive?: boolean;
     sortBy?: string;

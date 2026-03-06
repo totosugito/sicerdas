@@ -39,8 +39,8 @@ function AdminExamPackagesPage() {
   const page = searchParams.page ?? 1;
   const limit = searchParams.limit ?? 10;
   const search = searchParams.search ?? "";
-  const sortBy = searchParams.sortBy ?? "title";
-  const sortOrder = searchParams.sortOrder ?? "asc";
+  const sortBy = searchParams.sortBy ?? "updatedAt";
+  const sortOrder = searchParams.sortOrder ?? "desc";
 
   // API Hooks
   const { data, isLoading } = useListPackage({

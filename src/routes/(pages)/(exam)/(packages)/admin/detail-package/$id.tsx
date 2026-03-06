@@ -207,6 +207,7 @@ function DetailPackagePage() {
         onOpenChange={setShowFormModal}
         section={selectedSection}
         packageId={id}
+        packageIdDisabled={true}
       />
     </div>
   );

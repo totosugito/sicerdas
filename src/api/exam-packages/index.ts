@@ -12,6 +12,8 @@ export { useDeletePackage } from "./admin/delete-package";
 // public exports
 export { useListPackage } from "./list-package";
 export type { ListPackageRequest, ListPackagesResponse } from "./list-package";
+export { useListPackageSimple } from "./list-package-simple";
+export type { ListPackagesSimpleResponse, PackageSimpleItem } from "./list-package-simple";
 
 export { useDetailPackage } from "./detail-package";
 export type { DetailPackageRequest } from "./detail-package";

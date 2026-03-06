@@ -60,111 +60,124 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                     </Badge>
                 </div>
             )}
-            {/* Top row: drag handle, name, price, status, actions */}
-            <div className="flex items-center gap-3">
-                <button
-                    {...attributes}
-                    {...listeners}
-                    className="flex-shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground touch-none p-1 rounded hover:bg-secondary"
-                >
-                    <GripVertical className="w-5 h-5" />
-                </button>
 
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2 flex-wrap">
-                        <h3 className="font-semibold leading-tight inline-block">
-                            <Link to={AppRoute.appTier.adminEdit.url} params={{ slug: tier.slug }} className="text-foreground hover:text-primary transition-colors">
-                                {tier.name}
-                            </Link>
-                        </h3>
-                        <span className="text-xs text-muted-foreground">{tier.slug}</span>
-                    </div>
-                    <div className="flex items-baseline gap-1 mt-0.5">
-                        <span className="text-sm font-bold text-foreground">
-                            {tier.currency} {price === 0 ? "0" : price.toFixed(2)}
-                        </span>
-                        <span className="text-xs text-muted-foreground">/ {tier.billingCycle}</span>
-                    </div>
-                </div>
-
-                <Badge
-                    variant={tier.isActive ? "default" : "secondary"}
-                    className={
-                        tier.isActive
-                            ? "flex-shrink-0 bg-primary/15 text-primary border-0 hover:bg-primary/20 text-xs"
-                            : "flex-shrink-0 text-xs"
-                    }
-                >
-                    {tier.isActive ? t('appTier.list.active') : t('appTier.list.inactive')}
-                </Badge>
-
-                <div className="flex-shrink-0 flex items-center gap-2">
-                    <Button variant="ghost" size="icon" asChild>
-                        <Link to={AppRoute.appTier.adminEdit.url} params={{ slug: tier.slug }}>
-                            <Edit2 className="w-4 h-4" />
-                        </Link>
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="hover:text-destructive hover:bg-destructive/10"
-                        onClick={() => onDelete(tier.slug, tier.name)}
+            <div className="flex items-start gap-4">
+                {/* Left Column: Sequence Controls */}
+                <div className="flex flex-col items-center gap-2">
+                    <button
+                        {...attributes}
+                        {...listeners}
+                        className="flex-shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground touch-none p-1 rounded hover:bg-secondary"
                     >
-                        <Trash2 className="w-4 h-4" />
-                    </Button>
+                        <GripVertical className="w-5 h-5" />
+                    </button>
+                    <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-secondary/50 border border-border/50 text-[11px] font-black text-muted-foreground/80 shrink-0 group-hover:border-primary/30 group-hover:text-primary transition-colors shadow-sm">
+                        {tier.sortOrder}
+                    </div>
                 </div>
-            </div>
 
-            {/* Features */}
-            {tier.features && tier.features.length > 0 && (
-                <div className="mt-3 ml-[42px] flex flex-wrap gap-1.5">
-                    {visibleFeatures.map((f) => (
-                        <span
-                            key={f}
-                            className="inline-flex items-center gap-1 text-xs bg-accent text-accent-foreground rounded-full px-2.5 py-0.5"
-                        >
-                            <Check className="w-3 h-3" strokeWidth={3} />
-                            {f}
-                        </span>
-                    ))}
-                    {hasMoreFeatures && (
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <button className="inline-flex items-center gap-1 text-xs bg-muted text-muted-foreground hover:bg-muted/80 rounded-full px-2.5 py-0.5 transition-colors">
-                                    +{remainingFeatures.length} {t('appTier.list.moreFeatures')}
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-80" align="start">
-                                <div className="space-y-2">
-                                    <h4 className="font-semibold text-sm">{t('appTier.list.allFeatures')}</h4>
-                                    <div className="flex flex-wrap gap-1.5">
-                                        {tier.features.map((f) => (
-                                            <span
-                                                key={f}
-                                                className="inline-flex items-center gap-1 text-xs bg-accent text-accent-foreground rounded-full px-2.5 py-0.5"
-                                            >
-                                                <Check className="w-3 h-3" strokeWidth={3} />
-                                                {f}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            </PopoverContent>
-                        </Popover>
+                {/* Main Content Column */}
+                <div className="flex-1 min-w-0 pt-0.5 space-y-3">
+                    <div>
+                        <div className="flex items-baseline gap-2 flex-wrap">
+                            <h3 className="font-bold text-base tracking-tight truncate">
+                                <Link to={AppRoute.appTier.adminEdit.url} params={{ slug: tier.slug }} className="text-foreground hover:text-primary transition-colors">
+                                    {tier.name}
+                                </Link>
+                            </h3>
+                            <span className="text-xs text-muted-foreground font-medium bg-muted px-1.5 py-0.5 rounded uppercase tracking-wider">{tier.slug}</span>
+                        </div>
+                        <div className="flex items-baseline gap-1 mt-0.5">
+                            <span className="text-sm font-bold text-foreground">
+                                {tier.currency} {price === 0 ? "0" : price.toFixed(2)}
+                            </span>
+                            <span className="text-xs text-muted-foreground">/ {tier.billingCycle}</span>
+                        </div>
+                    </div>
+
+                    {/* Features List */}
+                    {tier.features && tier.features.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5">
+                            {visibleFeatures.map((f) => (
+                                <span
+                                    key={f}
+                                    className="inline-flex items-center gap-1 text-xs bg-accent text-accent-foreground rounded-full px-2.5 py-0.5 whitespace-nowrap"
+                                >
+                                    <Check className="w-3 h-3" strokeWidth={3} />
+                                    {f}
+                                </span>
+                            ))}
+                            {hasMoreFeatures && (
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <button className="inline-flex items-center gap-1 text-xs bg-muted text-muted-foreground hover:bg-muted/80 rounded-full px-2.5 py-0.5 transition-colors">
+                                            +{remainingFeatures.length} {t('appTier.list.moreFeatures')}
+                                        </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-80" align="start">
+                                        <div className="space-y-2">
+                                            <h4 className="font-semibold text-sm">{t('appTier.list.allFeatures')}</h4>
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {tier.features.map((f) => (
+                                                    <span
+                                                        key={f}
+                                                        className="inline-flex items-center gap-1 text-xs bg-accent text-accent-foreground rounded-full px-2.5 py-0.5"
+                                                    >
+                                                        <Check className="w-3 h-3" strokeWidth={3} />
+                                                        {f}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </PopoverContent>
+                                </Popover>
+                            )}
+                        </div>
                     )}
-                </div>
-            )}
 
-            {/* Limits */}
-            <div className="mt-2 ml-[42px] flex items-center gap-4 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                    <Zap className="w-3.5 h-3.5" />
-                    {tier.limits.chatAi.max_tokens ? tier.limits.chatAi.max_tokens.toLocaleString() : 'N/A'} {t('appTier.list.tokens')}
-                </span>
-                <span className="flex items-center gap-1">
-                    <MessageSquare className="w-3.5 h-3.5" />
-                    {isUnlimited ? t('appTier.list.unlimited') : `${tier.limits.chatAi.daily_messages ?? 'N/A'}${t('appTier.list.perDay')}`}
-                </span>
+                    {/* Limits Stats */}
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                            <Zap className="w-3.5 h-3.5" />
+                            {tier.limits.chatAi.max_tokens ? tier.limits.chatAi.max_tokens.toLocaleString() : 'N/A'} {t('appTier.list.tokens')}
+                        </span>
+                        <span className="flex items-center gap-1">
+                            <MessageSquare className="w-3.5 h-3.5" />
+                            {isUnlimited ? t('appTier.list.unlimited') : `${tier.limits.chatAi.daily_messages ?? 'N/A'}${t('appTier.list.perDay')}`}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Right Column: Status and Actions */}
+                <div className="flex flex-col items-end gap-3 shrink-0">
+                    <Badge
+                        variant={tier.isActive ? "default" : "secondary"}
+                        className={
+                            tier.isActive
+                                ? "bg-primary/10 text-primary border-0 hover:bg-primary/20 text-xs px-2"
+                                : "text-xs px-2"
+                        }
+                    >
+                        {tier.isActive ? t('appTier.list.active') : t('appTier.list.inactive')}
+                    </Badge>
+
+                    <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0" asChild title={t('labels.edit')}>
+                            <Link to={AppRoute.appTier.adminEdit.url} params={{ slug: tier.slug }}>
+                                <Edit2 className="w-4 h-4" />
+                            </Link>
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => onDelete(tier.slug, tier.name)}
+                            title={t('labels.delete')}
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </Button>
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -5,17 +5,18 @@ import { db } from '../../../db/db-pool.ts';
 import { examPackageSections } from '../../../db/schema/exam/package-sections.ts';
 import { examPackageQuestions } from '../../../db/schema/exam/package-questions.ts';
 import { examPackages } from '../../../db/schema/exam/packages.ts';
-import { and, eq, sql, desc } from 'drizzle-orm';
+import { and, eq, sql, desc, ilike } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from '../../../db/schema/index.ts';
 
 const SectionListQuery = Type.Object({
+    search: Type.Optional(Type.String({ description: 'Search term for section title' })),
     packageId: Type.Optional(Type.String({ format: 'uuid' })),
     isActive: Type.Optional(Type.Boolean()),
-    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, title, isActive, updatedAt, durationMinutes, order', default: 'order' })),
-    sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'asc' })),
+    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, title, isActive, updatedAt, durationMinutes, order', default: 'updatedAt' })),
+    sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'desc' })),
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
     limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
 });
@@ -76,11 +77,11 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
             const isAdmin = user?.role === EnumUserRole.ADMIN;
 
             const {
-                packageId, isActive,
-                sortOrder = 'asc', page = 1, limit = 10
+                search, packageId, isActive,
+                sortOrder = 'desc', page = 1, limit = 10
             } = request.body;
 
-            let { sortBy = 'order' } = request.body;
+            let { sortBy = 'updatedAt' } = request.body;
 
             const offset = (page - 1) * limit;
 
@@ -88,6 +89,10 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
             let returnPackageName = "";
 
             const conditions: any[] = [];
+
+            if (search) {
+                conditions.push(ilike(examPackageSections.title, `%${search}%`));
+            }
 
             if (packageId) {
                 const existingPackage = await db.query.examPackages.findFirst({

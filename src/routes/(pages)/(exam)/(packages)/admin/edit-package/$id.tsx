@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { PageTitle, ErrorContainer } from '@/components/app';
 import { useUpdatePackage, useDetailPackage } from '@/api/exam-packages';
 import { showNotifSuccess, showNotifError } from '@/lib/show-notif';
@@ -14,8 +16,24 @@ function AdminExamPackagesEditPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = Route.useParams();
+  const queryClient = useQueryClient();
   const updateMutation = useUpdatePackage();
   const { data: detailData, isLoading, isError, error } = useDetailPackage({ id });
+
+  const packageData = detailData?.data;
+
+  const initialData: Partial<PackageFormValues> = useMemo(() => {
+    return {
+      title: packageData?.title,
+      categoryId: packageData?.categoryId,
+      examType: packageData?.examType,
+      durationMinutes: (packageData?.durationMinutes || 0).toString(),
+      educationGradeId: packageData?.educationGradeId ? String(packageData.educationGradeId) : "",
+      requiredTier: packageData?.requiredTier || "free",
+      description: packageData?.description || "",
+      isActive: packageData?.isActive,
+    };
+  }, [packageData]);
 
   const onSubmit = async (values: PackageFormValues) => {
     const payload = {
@@ -30,6 +48,7 @@ function AdminExamPackagesEditPage() {
     updateMutation.mutate(payload, {
       onSuccess: (res) => {
         showNotifSuccess({ message: res.message || t("exam.packages.list.notifications.updateSuccess") });
+        queryClient.invalidateQueries({ queryKey: ["exam-packages-detail", id] });
       },
       onError: (err: any) => {
         showNotifError({ message: err.message || t("labels.error") });
@@ -63,18 +82,6 @@ function AdminExamPackagesEditPage() {
     );
   }
 
-  const packageData = detailData?.data;
-
-  const initialData: Partial<PackageFormValues> = {
-    title: packageData?.title,
-    categoryId: packageData?.categoryId,
-    examType: packageData?.examType,
-    durationMinutes: (packageData?.durationMinutes || 0).toString(),
-    educationGradeId: packageData?.educationGradeId ? String(packageData.educationGradeId) : "",
-    requiredTier: packageData?.requiredTier || "free",
-    description: packageData?.description || "",
-    isActive: packageData?.isActive,
-  };
 
   return (
     <div className="flex flex-col gap-6 w-full">

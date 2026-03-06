@@ -94,6 +94,14 @@ export const AppRoute = {
         detail: { url: "/admin/detail-package/$id" },
       },
     },
+    packageSections: {
+      admin: {
+        list: { url: "/admin/list-section" },
+        detail: { url: "/admin/detail-section/$id" },
+        edit: { url: "/admin/edit-section/$id" },
+        create: { url: "/admin/create-section" },
+      },
+    },
     tags: {
       admin: {
         list: { url: "/admin/list-tag" },

@@ -5,6 +5,7 @@ import { ExamPackageSectionResponse } from "../types";
 
 export interface UpdateSectionRequest {
     id: string;
+    packageId?: string;
     title?: string;
     durationMinutes?: number;
     order?: number;

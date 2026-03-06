@@ -83,6 +83,7 @@ export const AppApi = {
         delete: APP_URL_API + "/exam/packages/admin/delete/:id",
       },
       list: APP_URL_API + "/exam/packages/list",
+      listSimple: APP_URL_API + "/exam/packages/list-simple",
       detail: APP_URL_API + "/exam/packages/detail/:id",
     },
     packageSections: {
@@ -92,6 +93,7 @@ export const AppApi = {
         delete: APP_URL_API + "/exam/package-sections/admin/delete/:id",
       },
       list: APP_URL_API + "/exam/package-sections/list",
+      listSimple: APP_URL_API + "/exam/package-sections/list-simple",
     },
     tags: {
       admin: {
@@ -110,6 +112,7 @@ export const AppApi = {
         delete: APP_URL_API + "/education/grades/admin/delete/:id",
       },
       list: APP_URL_API + "/education/grades/list",
+      listSimple: APP_URL_API + "/education/grades/list-simple",
     },
     categories: {
       admin: {
@@ -118,6 +121,7 @@ export const AppApi = {
         delete: APP_URL_API + "/education/categories/admin/delete/:id",
       },
       list: APP_URL_API + "/education/categories/list",
+      listSimple: APP_URL_API + "/education/categories/list-simple",
     },
   }
 }

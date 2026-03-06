@@ -12,3 +12,6 @@ export { useDeleteEducationGrade } from "./admin/delete-grade";
 // public exports
 export { useListEducationGrade } from "./list-grade";
 export type { ListEducationGradeRequest, ListEducationGradeResponse } from "./list-grade";
+
+export { useListGradeSimple } from "./list-grade-simple";
+export type { ListGradeSimpleRequest, ListGradesSimpleResponse, GradeSimpleItem } from "./list-grade-simple";

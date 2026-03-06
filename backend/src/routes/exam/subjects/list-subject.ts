@@ -12,8 +12,8 @@ import { EnumUserRole } from '../../../db/schema/index.ts';
 const SubjectListQuery = Type.Object({
     search: Type.Optional(Type.String({ description: 'Search term for subject name or description' })),
     isActive: Type.Optional(Type.Boolean()),
-    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, name, isActive, updatedAt', default: 'name' })),
-    sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'asc' })),
+    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, name, isActive, updatedAt', default: 'updatedAt' })),
+    sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'desc' })),
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
     limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
 });
@@ -71,8 +71,8 @@ const listSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
             const user = session?.user;
             const isAdmin = user?.role === EnumUserRole.ADMIN;
 
-            const { search, isActive, sortOrder = 'asc', page = 1, limit = 10 } = request.body;
-            let { sortBy = 'name' } = request.body;
+            const { search, isActive, sortOrder = 'desc', page = 1, limit = 10 } = request.body;
+            let { sortBy = 'updatedAt' } = request.body;
             const offset = (page - 1) * limit;
 
             const conditions = [];

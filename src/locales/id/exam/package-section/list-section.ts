@@ -1,4 +1,7 @@
 export default {
+    menu: "Bagian Paket",
+    title: "Daftar Bagian Paket",
+    description: "Kelola daftar bagian-bagian untuk paket ujian.",
     formTitleRequired: "Judul wajib diisi",
     formTitle: "Judul",
     formTitlePlaceholder: "Masukkan judul bagian",
@@ -8,6 +11,9 @@ export default {
     formDurationRequired: "Durasi wajib diisi",
     formActive: "Aktif",
     formActiveHelp: "Tampilkan bagian ini kepada siswa.",
+    formPackage: "Paket Ujian",
+    formPackagePlaceholder: "Pilih paket ujian",
+    formPackageRequired: "Paket ujian wajib dipilih",
     editTitle: "Edit Bagian",
     createTitle: "Buat Bagian",
     editDesc: "Perbarui detail bagian ini.",
@@ -17,35 +23,69 @@ export default {
     createSuccess: "Bagian berhasil dibuat",
     createError: "Gagal membuat bagian",
     pageTitle: "Detail Paket Ujian",
-    description: "Kelola seksi dan soal yang ada di dalam paket ujian ini.",
-    createButton: "Tambah Seksi",
+    createButton: "Tambah Bagian",
+
+    // keys for list table
+    table: {
+        search: "Cari bagian...",
+        noResult: "Tidak ada data bagian.",
+        columns: {
+            title: "Judul",
+            package: "Paket Ujian",
+            questions: "Jumlah Soal",
+            duration: "Durasi",
+            status: "Status",
+            updatedAt: "Terakhir Diperbarui",
+            actions: "Aksi"
+        },
+        status: {
+            active: "Aktif",
+            inactive: "Tidak Aktif"
+        },
+        actions: {
+            openMenu: "Buka menu",
+            detail: "Detail",
+            edit: "Edit",
+            delete: "Hapus"
+        }
+    },
+
+    // keys for delete dialog
+    delete: {
+        confirmTitle: "Hapus Bagian",
+        confirmDesc: "Apakah Anda yakin ingin menghapus bagian '{{title}}'?",
+        deleteInfo: "Menghapus bagian akan menghapus semua data yang tersambung dengan bagian ini secara permanen.",
+        success: "Bagian berhasil dihapus",
+        error: "Gagal menghapus bagian"
+    },
+
     notFound: {
         title: "Paket Ujian Tidak Ditemukan",
         message: "Paket ujian yang Anda cari tidak ada atau mungkin sudah dihapus.",
         backButton: "Kembali ke Daftar Paket"
     },
     sections: {
-        title: "Seksi Paket",
-        description: "Daftar seksi pada paket ujian ini.",
-        orderSuccess: "Berhasil mengubah urutan seksi",
-        orderError: "Gagal mengubah urutan seksi",
+        title: "Bagian Paket",
+        description: "Daftar bagian pada paket ujian ini.",
+        orderSuccess: "Berhasil mengubah urutan bagian",
+        orderError: "Gagal mengubah urutan bagian",
         deleteConfirm: {
-            title: "Hapus Seksi {{name}}?",
-            description: "Apakah Anda yakin ingin menghapus seksi ini?",
-            infoTitle: "Menghapus seksi akan berakibat:",
-            consequence1: "Seksi ini tidak akan lagi tersedia di paket ujian.",
-            consequence2: "Menghapus referensi seksi pada soal yang terkait.",
+            title: "Hapus Bagian {{name}}?",
+            description: "Apakah Anda yakin ingin menghapus bagian ini?",
+            infoTitle: "Menghapus bagian akan berakibat:",
+            consequence1: "Bagian ini tidak akan lagi tersedia di paket ujian.",
+            consequence2: "Menghapus referensi bagian pada soal yang terkait.",
             consequence3: "Data tidak dapat dikembalikan.",
             cancel: "Batal",
-            confirm: "Hapus Seksi"
+            confirm: "Hapus Bagian"
         },
-        deleteSuccess: "Seksi berhasil dihapus",
-        deleteError: "Gagal menghapus seksi",
+        deleteSuccess: "Bagian berhasil dihapus",
+        deleteError: "Gagal menghapus bagian",
         active: "Aktif",
         inactive: "Tidak Aktif",
         duration: "{{minutes}} menit",
         questions: "{{count}} Soal",
-        noDataTitle: "Belum ada seksi",
-        noDataDescription: "Klik tombol Tambah Seksi untuk mulai menambahkan."
+        noDataTitle: "Belum ada bagian",
+        noDataDescription: "Klik tombol Tambah Bagian untuk mulai menambahkan."
     }
 }
