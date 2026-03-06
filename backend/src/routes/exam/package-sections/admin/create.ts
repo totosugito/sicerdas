@@ -54,14 +54,14 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             // 2. Handle auto-order if order is < 0
             if (orderToUse < 0) {
-                const [maxOrderResult] = await db.select({
-                    maxOrder: sql<number>`max(${examPackageSections.order})`
+                const [countResult] = await db.select({
+                    total: sql<number>`count(*)`
                 })
                     .from(examPackageSections)
                     .where(eq(examPackageSections.packageId, packageId));
 
-                const currentMaxOrder = maxOrderResult?.maxOrder ?? 0;
-                orderToUse = currentMaxOrder + 1;
+                const currentTotal = Number(countResult?.total || 0);
+                orderToUse = currentTotal + 1;
             }
 
             const [newSection] = await db.insert(examPackageSections)

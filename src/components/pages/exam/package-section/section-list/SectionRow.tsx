@@ -38,7 +38,7 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
                 : "hover:border-primary/30 hover:shadow-sm"
                 }`}
         >
-            {/* Top row: drag handle, title, questions, status, actions */}
+            {/* Top row: drag handle, title, badge, actions */}
             <div className="flex items-center gap-3">
                 <button
                     {...attributes}
@@ -56,25 +56,12 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
                     </div>
                 </div>
 
-                <div className="mt-2 ml-[52px] flex items-center gap-4 text-xs text-muted-foreground md:mt-0 md:ml-0">
-                    {section.durationMinutes ? (
-                        <span className="flex items-center gap-1">
-                            <Clock className="w-3.5 h-3.5" />
-                            {t('exam.packageSection.list.sections.duration', { minutes: section.durationMinutes })}
-                        </span>
-                    ) : null}
-                    <span className="flex items-center gap-1">
-                        <FileQuestion className="w-3.5 h-3.5" />
-                        {t('exam.packageSection.list.sections.questions', { count: section.totalQuestions })}
-                    </span>
-                </div>
-
                 <Badge
                     variant={section.isActive ? "default" : "secondary"}
                     className={
                         section.isActive
-                            ? "flex-shrink-0 bg-primary/15 text-primary border-0 hover:bg-primary/20 text-xs hidden md:flex"
-                            : "flex-shrink-0 text-xs hidden md:flex"
+                            ? "flex-shrink-0 bg-primary/15 text-primary border-0 hover:bg-primary/20 text-xs"
+                            : "flex-shrink-0 text-xs"
                     }
                 >
                     {section.isActive ? t('exam.packageSection.list.sections.active') : t('exam.packageSection.list.sections.inactive')}
@@ -95,18 +82,18 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
                 </div>
             </div>
 
-            {/* Mobile version Status badge rendering */}
-            <div className="md:hidden mt-2 ml-[52px]">
-                <Badge
-                    variant={section.isActive ? "default" : "secondary"}
-                    className={
-                        section.isActive
-                            ? "flex-shrink-0 bg-primary/15 text-primary border-0 hover:bg-primary/20 text-xs"
-                            : "flex-shrink-0 text-xs"
-                    }
-                >
-                    {section.isActive ? t('exam.packageSection.list.sections.active') : t('exam.packageSection.list.sections.inactive')}
-                </Badge>
+            {/* Info row: duration and questions */}
+            <div className="mt-2 ml-[42px] flex items-center gap-4 text-xs text-muted-foreground">
+                {section.durationMinutes ? (
+                    <span className="flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5" />
+                        {t('exam.packageSection.list.sections.duration', { minutes: section.durationMinutes })}
+                    </span>
+                ) : null}
+                <span className="flex items-center gap-1">
+                    <FileQuestion className="w-3.5 h-3.5" />
+                    {t('exam.packageSection.list.sections.questions', { count: section.totalQuestions })}
+                </span>
             </div>
         </div>
     );

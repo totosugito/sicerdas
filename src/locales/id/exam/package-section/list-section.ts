@@ -43,7 +43,7 @@ export default {
         deleteError: "Gagal menghapus seksi",
         active: "Aktif",
         inactive: "Tidak Aktif",
-        duration: "Durasi: {{minutes}} menit",
+        duration: "{{minutes}} menit",
         questions: "{{count}} Soal",
         noDataTitle: "Belum ada seksi",
         noDataDescription: "Klik tombol Tambah Seksi untuk mulai menambahkan."

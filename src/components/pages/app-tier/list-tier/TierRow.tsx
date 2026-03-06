@@ -70,10 +70,6 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                     <GripVertical className="w-5 h-5" />
                 </button>
 
-                <div className="flex-shrink-0 w-7 h-7 rounded-lg bg-secondary flex items-center justify-center">
-                    <span className="text-xs font-bold text-muted-foreground">#{tier.sortOrder}</span>
-                </div>
-
                 <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2 flex-wrap">
                         <h3 className="font-semibold leading-tight inline-block">
@@ -121,7 +117,7 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
 
             {/* Features */}
             {tier.features && tier.features.length > 0 && (
-                <div className="mt-3 ml-[52px] flex flex-wrap gap-1.5">
+                <div className="mt-3 ml-[42px] flex flex-wrap gap-1.5">
                     {visibleFeatures.map((f) => (
                         <span
                             key={f}
@@ -160,7 +156,7 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
             )}
 
             {/* Limits */}
-            <div className="mt-2 ml-[52px] flex items-center gap-4 text-xs text-muted-foreground">
+            <div className="mt-2 ml-[42px] flex items-center gap-4 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                     <Zap className="w-3.5 h-3.5" />
                     {tier.limits.chatAi.max_tokens ? tier.limits.chatAi.max_tokens.toLocaleString() : 'N/A'} {t('appTier.list.tokens')}
