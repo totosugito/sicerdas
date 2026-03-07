@@ -5,6 +5,7 @@ import { db } from '../../../db/db-pool.ts';
 import { examPackageSections } from '../../../db/schema/exam/package-sections.ts';
 import { and, eq, asc, sql } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const SectionSimpleQuery = Type.Object({
     packageId: Type.Optional(Type.String({ format: 'uuid' })),
@@ -48,6 +49,7 @@ const listSectionsSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof SectionSimpleQuery.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { packageId, page = 1, limit = 1000 } = request.body;
             const offset = (page - 1) * limit;
 
@@ -78,7 +80,7 @@ const listSectionsSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.package-sections.list.success'),
+                message: t($ => $.exam.package_sections.list.success),
                 data: {
                     items,
                     meta: {

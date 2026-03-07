@@ -6,6 +6,7 @@ import { educationCategories } from '../../../../db/schema/education/categories.
 import { examPackages } from '../../../../db/schema/exam/packages.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteCategoryParams = Type.Object({
     id: Type.String({ format: 'uuid' })
@@ -39,6 +40,7 @@ const deleteCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof DeleteCategoryParams.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
 
             // Ensure category exists
@@ -47,7 +49,7 @@ const deleteCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingCategory) {
-                return reply.notFound(request.i18n.t('education.categories.delete.notFound'));
+                return reply.notFound(t($ => $.education.categories.delete.notFound));
             }
 
             // Ensure category is not in use by any exam packages
@@ -56,7 +58,7 @@ const deleteCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (inUseCheck) {
-                return reply.badRequest(request.i18n.t('education.categories.delete.inUse'));
+                return reply.badRequest(t($ => $.education.categories.delete.inUse));
             }
 
             // Perform Hard Delete
@@ -64,7 +66,7 @@ const deleteCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('education.categories.delete.success'),
+                message: t($ => $.education.categories.delete.success),
             });
         }),
     });

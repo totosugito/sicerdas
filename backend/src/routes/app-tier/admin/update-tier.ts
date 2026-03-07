@@ -5,6 +5,7 @@ import { appTier } from '../../../db/schema/app/index.ts';
 import { db } from '../../../db/db-pool.ts';
 import { eq, ne, and, or } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from '../../../utils/i18n-typed.ts';
 
 const UpdateTierParams = Type.Object({
     slug: Type.String(),
@@ -67,6 +68,7 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof UpdateTierParams.static, Body: typeof UpdateTierBody.static }>,
             reply: FastifyReply
         ): Promise<typeof UpdateTierResponse.static> {
+            const { t } = getTypedI18n(request);
             const { slug } = request.params;
 
             // Check if tier exists
@@ -75,7 +77,7 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingTier) {
-                return reply.notFound(request.i18n.t('appTier.update.notFound'));
+                return reply.notFound(t($ => $.appTier.update.notFound));
             }
 
             // Prepare update data
@@ -105,7 +107,7 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
                 });
 
                 if (duplicateCheck) {
-                    return reply.badRequest(request.i18n.t('appTier.create.exists'));
+                    return reply.badRequest(t($ => $.appTier.create.exists));
                 }
             }
 
@@ -120,7 +122,7 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('appTier.update.success'),
+                message: t($ => $.appTier.update.success),
                 data: {
                     ...updatedTier,
                     features: updatedTier.features || [],

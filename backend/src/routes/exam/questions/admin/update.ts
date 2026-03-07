@@ -7,6 +7,7 @@ import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
 import { examPassages } from '../../../../db/schema/exam/passages.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumDifficultyLevel, EnumQuestionType } from '../../../../db/schema/exam/enums.ts';
 
 const UpdateQuestionParams = Type.Object({
@@ -68,6 +69,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof UpdateQuestionParams.static, Body: typeof UpdateQuestionBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
             const {
                 subjectId, passageId, content, difficulty,
@@ -80,7 +82,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingQuestion) {
-                return reply.notFound(request.i18n.t('exam.questions.update.notFound'));
+                return reply.notFound(t($ => $.exam.questions.update.notFound));
             }
 
             // Verify new subject exists if provided
@@ -89,7 +91,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                     where: eq(examSubjects.id, subjectId)
                 });
                 if (!existingSubject) {
-                    return reply.badRequest(request.i18n.t('exam.questions.update.invalidSubject'));
+                    return reply.badRequest(t($ => $.exam.questions.update.invalidSubject));
                 }
             }
 
@@ -99,7 +101,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                     where: eq(examPassages.id, passageId)
                 });
                 if (!existingPassage) {
-                    return reply.badRequest(request.i18n.t('exam.questions.update.invalidPassage'));
+                    return reply.badRequest(t($ => $.exam.questions.update.invalidPassage));
                 }
             }
 
@@ -124,7 +126,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.questions.update.success'),
+                message: t($ => $.exam.questions.update.success),
                 data: {
                     ...updatedQuestion,
                     createdAt: updatedQuestion.createdAt.toISOString(),

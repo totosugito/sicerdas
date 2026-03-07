@@ -13,6 +13,7 @@ import { examUserStatsTag } from '../../../../db/schema/exam/user-stats-tag.ts';
 import { EnumExamSessionStatus } from '../../../../db/schema/exam/enums.ts';
 import { eq, and, inArray, sql } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const SubmitSessionParams = Type.Object({
     id: Type.String({ format: 'uuid' }),
@@ -45,6 +46,7 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof SubmitSessionParams.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
             const userId = (request as any).session.user.id;
 
@@ -55,11 +57,11 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
                 .limit(1);
 
             if (!session) {
-                return reply.notFound(request.i18n.t('exam.sessions.submit.notFound'));
+                return reply.notFound(t($ => $.exam.sessions.submit.notFound));
             }
 
             if (session.status !== EnumExamSessionStatus.IN_PROGRESS) {
-                return reply.forbidden(request.i18n.t('exam.sessions.submit.alreadySubmitted'));
+                return reply.forbidden(t($ => $.exam.sessions.submit.alreadySubmitted));
             }
 
             // 2. Fetch all answers and corresponding correct options, subjects, and tags
@@ -220,7 +222,7 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.sessions.submit.success'),
+                message: t($ => $.exam.sessions.submit.success),
                 data: {
                     score: finalScore,
                     totalCorrect,

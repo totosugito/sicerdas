@@ -13,10 +13,12 @@ import { createUniqueFileName } from "../../utils/my-utils.ts";
 import { Type } from '@sinclair/typebox';
 import type { FastifyReply } from "fastify";
 import { getUserAvatarUrl } from "../../utils/app-utils.ts";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const uploadDir = join(process.cwd(), env.server.uploadsUserDir);
 
 export const processChangeAvatar = async (req: any, reply: FastifyReply, userId: string, file: UploadedFile) => {
+  const { t } = getTypedI18n(req);
   const { buffer, filename: originalName, mimetype } = file;
 
   // Validate file type
@@ -24,7 +26,7 @@ export const processChangeAvatar = async (req: any, reply: FastifyReply, userId:
   if (!allowedMimeTypes.includes(mimetype)) {
     return reply.status(400).send({
       success: false,
-      message: req.i18n.t('user.invalidFileType')
+      message: t($ => $.user.invalidFileType)
     });
   }
 
@@ -33,7 +35,7 @@ export const processChangeAvatar = async (req: any, reply: FastifyReply, userId:
   if (buffer.length > maxSize) {
     return reply.status(400).send({
       success: false,
-      message: req.i18n.t('user.fileSizeTooLarge')
+      message: t($ => $.user.fileSizeTooLarge)
     });
   }
 
@@ -88,7 +90,7 @@ export const processChangeAvatar = async (req: any, reply: FastifyReply, userId:
 
   return {
     success: true,
-    message: req.i18n.t('user.avatarUpdatedSuccessfully'),
+    message: t($ => $.user.avatarUpdatedSuccessfully),
     data: {
       id: updatedUser.id,
       name: updatedUser.name,
@@ -131,6 +133,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
     },
     handler: withErrorHandler(async (req, reply) => {
+      const { t } = getTypedI18n(req);
       // User ID is available from the session (handled by user.hook.ts)
       const userId = req.session.user.id;
 
@@ -152,7 +155,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         return reply.status(200).send({
           success: true,
-          message: req.i18n.t('user.avatarRemovedSuccessfully'),
+          message: t($ => $.user.avatarRemovedSuccessfully),
           data: {
             id: updatedUser.id,
             name: updatedUser.name,
@@ -165,7 +168,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       const data = await req.file();
 
       if (!data) {
-        return reply.badRequest(req.i18n.t('user.noFileUploaded'));
+        return reply.badRequest(t($ => $.user.noFileUploaded));
       }
 
       // Convert to our UploadedFile type

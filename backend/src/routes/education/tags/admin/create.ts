@@ -5,6 +5,7 @@ import { db } from '../../../../db/db-pool.ts';
 import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const CreateTagBody = Type.Object({
     name: Type.String({ minLength: 1 }),
@@ -50,6 +51,7 @@ const createTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreateTagBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { name, description, isActive } = request.body;
 
             // Check if name already exists
@@ -58,7 +60,7 @@ const createTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (existingTag) {
-                return reply.badRequest(request.i18n.t('education.tags.create.exists'));
+                return reply.badRequest(t($ => $.education.tags.create.exists));
             }
 
             const [newTag] = await db.insert(educationTags).values({
@@ -69,7 +71,7 @@ const createTagRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(201).send({
                 success: true,
-                message: request.i18n.t('education.tags.create.success'),
+                message: t($ => $.education.tags.create.success),
                 data: {
                     ...newTag,
                     createdAt: newTag.createdAt.toISOString(),

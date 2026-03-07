@@ -10,6 +10,7 @@ import { EnumExamType } from '../../../../db/schema/exam/enums.ts';
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
 import { eq } from 'drizzle-orm';
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const CreatePackageBody = Type.Object({
     categoryId: Type.String({ format: 'uuid' }),
@@ -53,6 +54,7 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreatePackageBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const {
                 categoryId, title, examType, durationMinutes,
                 description, requiredTier, educationGradeId, isActive
@@ -64,7 +66,7 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingCategory) {
-                return reply.notFound(request.i18n.t('exam.categories.update.notFound'));
+                return reply.notFound(t($ => $.education.categories.update.notFound));
             }
 
             // 2. Check if education grade exists (if provided)
@@ -74,7 +76,7 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
                 });
 
                 if (!existingGrade) {
-                    return reply.notFound(request.i18n.t('education.grade.notFound'));
+                    return reply.notFound(t($ => $.education.grades.update.notFound));
                 }
             }
 
@@ -99,7 +101,7 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(201).send({
                 success: true,
-                message: request.i18n.t('exam.packages.create.success'),
+                message: t($ => $.exam.packages.create.success),
                 data: {
                     id: newPackage.id,
                 },

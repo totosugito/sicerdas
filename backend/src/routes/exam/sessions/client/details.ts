@@ -9,6 +9,7 @@ import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { examQuestionOptions } from '../../../../db/schema/exam/question-options.ts';
 import { eq, and, inArray } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const SessionDetailsParams = Type.Object({
     id: Type.String({ format: 'uuid' }),
@@ -61,6 +62,7 @@ const sessionDetailsRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof SessionDetailsParams.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
             const userId = (request as any).session.user.id;
 
@@ -80,7 +82,7 @@ const sessionDetailsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 .limit(1);
 
             if (!session) {
-                return reply.notFound(request.i18n.t('exam.sessions.details.notFound'));
+                return reply.notFound(t($ => $.exam.sessions.details.notFound));
             }
 
             // 2. Get Answers, Questions, and Options

@@ -5,6 +5,7 @@ import { db } from "../../../db/db-pool.ts";
 import { bookGroup, bookGroupStats, books } from "../../../db/schema/book/index.ts";
 import { eq, count, and } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
 const UpdateGroupStatsParams = Type.Object({
@@ -38,6 +39,7 @@ const adminRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Params: typeof UpdateGroupStatsParams.static }>,
       reply: FastifyReply
     ): Promise<typeof UpdateGroupStatsResponse.static> {
+      const { t } = getTypedI18n(req);
       const { groupId } = req.params;
 
       // Verify the book group exists
@@ -50,7 +52,7 @@ const adminRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (existingGroup.length === 0) {
         return reply.status(404).send({
           success: false,
-          message: req.i18n.t('admin.book.groupStats.notFound'),
+          message: t($ => $.admin.book.groupStats.notFound),
           data: null
         });
       }
@@ -97,7 +99,7 @@ const adminRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.i18n.t('admin.book.groupStats.updateSuccess'),
+        message: t($ => $.admin.book.groupStats.updateSuccess),
         data: {
           groupId: updatedStats[0].bookGroupId,
           bookTotal: updatedStats[0].bookTotal,

@@ -6,6 +6,7 @@ import { examPassages } from '../../../../db/schema/exam/passages.ts';
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeletePassageParams = Type.Object({
     id: Type.String({ format: 'uuid' })
@@ -39,6 +40,7 @@ const deletePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof DeletePassageParams.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
 
             // Ensure passage exists
@@ -47,7 +49,7 @@ const deletePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingPassage) {
-                return reply.notFound(request.i18n.t('exam.passages.delete.notFound'));
+                return reply.notFound(t($ => $.exam.passages.delete.notFound));
             }
 
             // Prevent deletion if passage is still attached to any questions
@@ -56,7 +58,7 @@ const deletePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (attachedQuestions) {
-                return reply.badRequest(request.i18n.t('exam.passages.delete.hasChildren'));
+                return reply.badRequest(t($ => $.exam.passages.delete.hasChildren));
             }
 
             // Perform Hard Delete
@@ -64,7 +66,7 @@ const deletePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.passages.delete.success'),
+                message: t($ => $.exam.passages.delete.success),
             });
         }),
     });

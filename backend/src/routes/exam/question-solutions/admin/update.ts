@@ -6,6 +6,7 @@ import { examQuestionSolutions } from '../../../../db/schema/exam/question-solut
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumSolutionType } from '../../../../db/schema/exam/enums.ts';
 
 const UpdateQuestionSolutionParams = Type.Object({
@@ -63,6 +64,7 @@ const updateQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof UpdateQuestionSolutionParams.static, Body: typeof UpdateQuestionSolutionBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
             const { questionId, title, content, solutionType, order, requiredTier } = request.body;
 
@@ -72,7 +74,7 @@ const updateQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingSolution) {
-                return reply.notFound(request.i18n.t('exam.question-solutions.update.notFound'));
+                return reply.notFound(t($ => $.exam.question_solutions.update.notFound));
             }
 
             // Verify new question exists if provided
@@ -81,7 +83,7 @@ const updateQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
                     where: eq(examQuestions.id, questionId)
                 });
                 if (!existingQuestion) {
-                    return reply.badRequest(request.i18n.t('exam.question-solutions.update.invalidQuestion'));
+                    return reply.badRequest(t($ => $.exam.question_solutions.update.invalidQuestion));
                 }
             }
 
@@ -104,7 +106,7 @@ const updateQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.question-solutions.update.success'),
+                message: t($ => $.exam.question_solutions.update.success),
                 data: {
                     ...updatedSolution,
                     createdAt: updatedSolution.createdAt.toISOString(),

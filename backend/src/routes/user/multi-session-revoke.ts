@@ -4,6 +4,7 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { eq } from "drizzle-orm";
 import { sessions } from "../../db/schema/user/index.ts";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 // Request schema
 const RevokeSessionRequest = Type.Object({
@@ -43,6 +44,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: withErrorHandler(async (req, reply) => {
+      const { t } = getTypedI18n(req);
       // Get user ID from session (already verified by user.hook.ts)
       const userId = req.session.user.id;
 
@@ -51,7 +53,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Validate that sessionToken is provided
       if (!sessionToken) {
-        return reply.badRequest(req.i18n.t('user.sessions.tokenRequired'));
+        return reply.badRequest(t($ => $.user.sessions.tokenRequired));
       }
 
       // Check if the session exists and belongs to the user
@@ -62,12 +64,12 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (session.length === 0) {
-        return reply.notFound(req.i18n.t('user.sessions.sessionNotFound'));
+        return reply.notFound(t($ => $.user.sessions.sessionNotFound));
       }
 
       // Verify that the session belongs to the current user
       if (session[0].userId !== userId) {
-        return reply.forbidden(req.i18n.t('user.sessions.accessDenied'));
+        return reply.forbidden(t($ => $.user.sessions.accessDenied));
       }
 
       // Delete the session
@@ -77,7 +79,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.i18n.t('user.sessions.sessionRevoked')
+        message: t($ => $.user.sessions.sessionRevoked)
       });
     }),
   });

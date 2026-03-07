@@ -6,6 +6,7 @@ import { examPackageSections } from '../../../../db/schema/exam/package-sections
 import { examPackages } from '../../../../db/schema/exam/packages.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdateSectionParams = Type.Object({
     id: Type.String({ format: 'uuid' }),
@@ -42,6 +43,7 @@ const updateSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof UpdateSectionParams.static, Body: typeof UpdateSectionBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
             const { packageId, title, durationMinutes, order, isActive } = request.body;
 
@@ -50,7 +52,7 @@ const updateSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existing) {
-                return reply.notFound(request.i18n.t('exam.package-sections.update.notFound'));
+                return reply.notFound(t($ => $.exam.package_sections.update.notFound));
             }
 
             if (packageId) {
@@ -59,7 +61,7 @@ const updateSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
                 });
 
                 if (!existingPackage) {
-                    return reply.notFound(request.i18n.t('exam.packages.update.notFound'));
+                    return reply.notFound(t($ => $.exam.packages.update.notFound));
                 }
             }
 
@@ -76,7 +78,7 @@ const updateSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.package-sections.update.success'),
+                message: t($ => $.exam.package_sections.update.success),
             });
         }),
     });

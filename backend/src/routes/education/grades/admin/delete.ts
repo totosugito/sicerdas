@@ -8,6 +8,7 @@ import { examPackages } from '../../../../db/schema/exam/packages.ts';
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteEducationGradeParams = Type.Object({
     id: Type.Number()
@@ -41,6 +42,7 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof DeleteEducationGradeParams.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
 
             // Ensure grade exists
@@ -49,7 +51,7 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingGrade) {
-                return reply.notFound(request.i18n.t('education.grades.delete.notFound'));
+                return reply.notFound(t($ => $.education.grades.delete.notFound));
             }
 
             // Check if any books are associated with this grade
@@ -57,7 +59,7 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
                 where: eq(books.educationGradeId, id)
             });
             if (bookUsage) {
-                return reply.badRequest(request.i18n.t('education.grades.delete.inUseBook'));
+                return reply.badRequest(t($ => $.education.grades.delete.inUseBook));
             }
 
             // Check if any exam packages are associated with this grade
@@ -65,7 +67,7 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
                 where: eq(examPackages.educationGradeId, id)
             });
             if (packageUsage) {
-                return reply.badRequest(request.i18n.t('education.grades.delete.inUsePackage'));
+                return reply.badRequest(t($ => $.education.grades.delete.inUsePackage));
             }
 
             // Check if any exam questions are associated with this grade
@@ -73,7 +75,7 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
                 where: eq(examQuestions.educationGradeId, id)
             });
             if (questionUsage) {
-                return reply.badRequest(request.i18n.t('education.grades.delete.inUseQuestion'));
+                return reply.badRequest(t($ => $.education.grades.delete.inUseQuestion));
             }
 
             // Perform Hard Delete
@@ -81,7 +83,7 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('education.grades.delete.success'),
+                message: t($ => $.education.grades.delete.success),
             });
         }),
     });

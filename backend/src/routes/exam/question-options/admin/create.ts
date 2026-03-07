@@ -6,6 +6,7 @@ import { examQuestionOptions } from '../../../../db/schema/exam/question-options
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const CreateQuestionOptionBody = Type.Object({
     questionId: Type.String({ format: 'uuid' }),
@@ -51,6 +52,7 @@ const createQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreateQuestionOptionBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { questionId, content, isCorrect, order } = request.body;
 
             // Verify that the parent question exists
@@ -59,7 +61,7 @@ const createQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingQuestion) {
-                return reply.badRequest(request.i18n.t('exam.question-options.create.invalidQuestion'));
+                return reply.badRequest(t($ => $.exam.question_options.create.invalidQuestion));
             }
 
             const [newOption] = await db.insert(examQuestionOptions).values({
@@ -71,7 +73,7 @@ const createQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(201).send({
                 success: true,
-                message: request.i18n.t('exam.question-options.create.success'),
+                message: t($ => $.exam.question_options.create.success),
                 data: newOption
             });
         }),

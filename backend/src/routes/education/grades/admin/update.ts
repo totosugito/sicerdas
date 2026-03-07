@@ -5,6 +5,7 @@ import { db } from '../../../../db/db-pool.ts';
 import { educationGrades } from '../../../../db/schema/education/grades.ts';
 import { eq, and, ne } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdateEducationGradeParams = Type.Object({
     id: Type.Number()
@@ -56,6 +57,7 @@ const updateEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof UpdateEducationGradeParams.static, Body: typeof UpdateEducationGradeBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
             const { name, desc, extra } = request.body;
 
@@ -65,7 +67,7 @@ const updateEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingGradeDetail) {
-                return reply.notFound(request.i18n.t('education.grades.update.notFound'));
+                return reply.notFound(t($ => $.education.grades.update.notFound));
             }
 
             // Check if new name conflicts with another existing grade
@@ -78,7 +80,7 @@ const updateEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
                 });
 
                 if (nameConflict) {
-                    return reply.badRequest(request.i18n.t('education.grades.update.exists'));
+                    return reply.badRequest(t($ => $.education.grades.update.exists));
                 }
             }
 
@@ -94,7 +96,7 @@ const updateEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('education.grades.update.success'),
+                message: t($ => $.education.grades.update.success),
                 data: {
                     ...updatedGrade,
                     createdAt: updatedGrade.createdAt ? updatedGrade.createdAt.toISOString() : null,

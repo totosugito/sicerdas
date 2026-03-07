@@ -8,6 +8,7 @@ import { examPackageSections } from '../../../../db/schema/exam/package-sections
 import { examPackageQuestions } from '../../../../db/schema/exam/package-questions.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeletePackageParams = Type.Object({
     id: Type.String({ format: 'uuid' }),
@@ -35,6 +36,7 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof DeletePackageParams.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
 
             const existing = await db.query.examPackages.findFirst({
@@ -42,7 +44,7 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existing) {
-                return reply.notFound(request.i18n.t('exam.packages.delete.notFound'));
+                return reply.notFound(t($ => $.exam.packages.delete.notFound));
             }
 
             // Check if package is in use by any sessions
@@ -51,7 +53,7 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (inUseCheck) {
-                return reply.badRequest(request.i18n.t('exam.packages.delete.inUse'));
+                return reply.badRequest(t($ => $.exam.packages.delete.inUse));
             }
 
             // Check if package has sections or question assignments
@@ -61,7 +63,7 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
             ]);
 
             if (hasContent) {
-                return reply.badRequest(request.i18n.t('exam.packages.delete.hasContent'));
+                return reply.badRequest(t($ => $.exam.packages.delete.hasContent));
             }
 
             // Perform Hard Delete
@@ -69,7 +71,7 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.packages.delete.success'),
+                message: t($ => $.exam.packages.delete.success),
             });
         }),
     });

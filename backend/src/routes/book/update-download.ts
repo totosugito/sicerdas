@@ -10,6 +10,7 @@ import { CONFIG } from "../../config/app-constant.ts";
 import { and, eq, desc, sql } from "drizzle-orm";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const UpdateDownloadParams = Type.Object({
     id: Type.Optional(Type.String({ format: 'uuid', description: 'Reference ID (UUID) for history' })),
@@ -46,6 +47,7 @@ const updateDownloadRoute: FastifyPluginAsyncTypebox = async (app) => {
             req: FastifyRequest<{ Body: typeof UpdateDownloadParams.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(req);
             const { id, bookId } = req.body;
 
             // History Tracking Logic
@@ -59,7 +61,7 @@ const updateDownloadRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
 
             if (!referenceId) {
-                return reply.notFound(req.i18n.t('book.detail.notFound'));
+                return reply.notFound(t($ => $.book.detail.notFound));
             }
 
             const session = await getAuthInstance(app).api.getSession({
@@ -136,7 +138,7 @@ const updateDownloadRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
             const currentDownloadCount = stats?.downloadCount || 0;
 
-            return reply.send({ success: true, message: req.i18n.t('book.download.updated'), data: { downloadCount: currentDownloadCount } });
+            return reply.send({ success: true, message: t($ => $.book.download.updated), data: { downloadCount: currentDownloadCount } });
         }),
     });
 };

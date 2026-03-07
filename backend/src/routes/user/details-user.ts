@@ -5,6 +5,7 @@ import { db } from "../../db/db-pool.ts";
 import { eq } from "drizzle-orm";
 import { users, usersProfile, accounts } from "../../db/schema/user/index.ts";
 import { getUserAvatarUrl } from "../../utils/app-utils.ts";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -49,6 +50,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
     },
     handler: withErrorHandler(async (req, reply) => {
+      const { t } = getTypedI18n(req);
       // Get user ID from session (already verified by user.hook.ts)
       const userId = req.session.user.id;
 
@@ -82,7 +84,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       const userResult = userWithAllData[0];
 
       if (!userResult) {
-        return reply.notFound(req.i18n.t('userNotFound'));
+        return reply.notFound(t($ => $.user.userNotFound));
       }
 
       return reply.status(200).send({

@@ -8,6 +8,7 @@ import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from '../../../db/schema/index.ts';
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const SubjectListQuery = Type.Object({
     search: Type.Optional(Type.String({ description: 'Search term for subject name or description' })),
@@ -64,6 +65,7 @@ const listSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof SubjectListQuery.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             // Determine user role from session
             const session = await getAuthInstance(app).api.getSession({
                 headers: fromNodeHeaders(request.headers),
@@ -141,7 +143,7 @@ const listSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.subjects.list.success'),
+                message: t($ => $.exam.subjects.list.success),
                 data: {
                     items: items.map(sub => ({
                         ...sub,

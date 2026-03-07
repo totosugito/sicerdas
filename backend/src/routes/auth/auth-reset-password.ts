@@ -1,6 +1,7 @@
-import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
-import {withErrorHandler} from "../../utils/withErrorHandler.ts";
+import { withErrorHandler } from "../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 /**
  * Reset password
@@ -42,12 +43,13 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
     },
     handler: withErrorHandler(async (req, reply) => {
+      const { t } = getTypedI18n(req);
       // Extract data directly from request body for JSON input
       const { token, newPassword } = req.body as { token: string; newPassword: string };
 
       // Validate required fields using Fastify Sensible badRequest
       if (!token || !newPassword) {
-        return reply.badRequest(req.i18n.t('auth.tokenAndPasswordRequired'));
+        return reply.badRequest(t($ => $.auth.tokenAndPasswordRequired));
       }
 
       // Use Fastify's built-in inject method to call the better-auth API
@@ -60,7 +62,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
         headers: {
           'content-type': 'application/json',
-          'accept-language': req.headers['accept-language'] || 'id', 
+          'accept-language': req.headers['accept-language'] || 'id',
         }
       });
 
@@ -70,9 +72,9 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         .headers(response.headers)
         .send({
           success: response.statusCode >= 200 && response.statusCode < 300,
-          message: response.statusCode >= 200 && response.statusCode < 300 
-            ? req.i18n.t('auth.passwordResetSuccess')
-            : req.i18n.t('auth.passwordResetFailed')
+          message: response.statusCode >= 200 && response.statusCode < 300
+            ? t($ => $.auth.passwordResetSuccess)
+            : t($ => $.auth.passwordResetFailed)
         });
     }),
   });

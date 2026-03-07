@@ -5,6 +5,7 @@ import { db } from "../../db/db-pool.ts";
 import { bookCategory, bookGroup, bookGroupStats } from "../../db/schema/book/index.ts";
 import { eq, and, gt, isNotNull, or, isNull } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const FilterParamsResponseItem = Type.Object({
   id: Type.Number(),
@@ -54,6 +55,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest,
       reply: FastifyReply
     ): Promise<typeof FilterParamsResponse.static> {
+      const { t } = getTypedI18n(req);
       // Get all categories with their groups and stats, only for groups that have bookTotal > 0
       const result = await db
         .select({
@@ -117,7 +119,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.i18n.t('book.filterParams.success'),
+        message: t($ => $.book.filterParams.success),
         data: categoriesWithGroups,
       });
     }),

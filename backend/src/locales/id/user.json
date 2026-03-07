@@ -82,6 +82,9 @@
       "sessionRevoked": "Sesi berhasil dihapus",
       "allSessionsRevoked": "Semua sesi berhasil dihapus"
     },
+    "sessionsList": {
+      "success": "Daftar sesi berhasil diambil"
+    },
     "noValidUpdateData": "Tidak ada data pembaruan yang valid",
     "userNotFound": "Pengguna tidak ditemukan",
     "userUpdatedSuccessfully": "Data pengguna berhasil diperbarui",

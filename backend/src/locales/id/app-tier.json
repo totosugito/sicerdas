@@ -13,7 +13,9 @@
         "delete": {
             "success": "Tier berhasil dihapus",
             "notFound": "Tier tidak ditemukan",
-            "defaultData": "Tidak dapat menghapus data tier pricing default"
+            "defaultData": "Tidak dapat menghapus data tier pricing default",
+            "usedByUsers": "Tidak dapat menghapus tier. Tier ini sedang digunakan oleh {{count}} pengguna.",
+            "usedByModels": "Tidak dapat menghapus tier. Tier ini diperlukan oleh {{count}} model AI."
         },
         "details": {
             "found": "Detail tier berhasil diambil",

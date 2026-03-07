@@ -13,6 +13,7 @@ import { CONFIG } from "../../config/app-constant.ts";
 import { desc } from "drizzle-orm";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const BookDetailResponse = Type.Object({
   id: Type.String({ format: 'uuid' }),
@@ -97,6 +98,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Params: { bookId: number } }>,
       reply: FastifyReply
     ): Promise<typeof BookDetailResponseWrapper.static> {
+      const { t } = getTypedI18n(req);
       const { bookId } = req.params;
       const session = await getAuthInstance(app).api.getSession({
         headers: fromNodeHeaders(req.headers),
@@ -212,7 +214,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const result = await baseQuery;
 
       if (!result || result.length === 0) {
-        return reply.notFound(req.i18n.t('book.detail.notFound'));
+        return reply.notFound(t($ => $.book.detail.notFound));
       }
 
       const book = result[0];
@@ -338,7 +340,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (isLoggedIn && book.liked !== undefined) {
         return reply.status(200).send({
           success: true,
-          message: req.i18n.t('book.detail.success'),
+          message: t($ => $.book.detail.success),
           data: {
             ...processedBook,
             userInteraction: {
@@ -355,7 +357,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.i18n.t('book.detail.success'),
+        message: t($ => $.book.detail.success),
         data: processedBook
       });
     }),

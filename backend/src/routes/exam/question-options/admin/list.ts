@@ -5,6 +5,7 @@ import { db } from '../../../../db/db-pool.ts';
 import { examQuestionOptions } from '../../../../db/schema/exam/question-options.ts';
 import { desc, and, sql, eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const QuestionOptionListQuery = Type.Object({
     questionId: Type.Optional(Type.String({ format: 'uuid', description: 'Filter by parent Question ID' })),
@@ -61,6 +62,7 @@ const listQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof QuestionOptionListQuery.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const {
                 questionId, isCorrect,
                 sortBy = 'order', sortOrder = 'asc', page = 1, limit = 10
@@ -107,7 +109,7 @@ const listQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.question-options.list.success'),
+                message: t($ => $.exam.question_options.list.success),
                 data: {
                     items: items.map(opt => ({
                         id: opt.id,

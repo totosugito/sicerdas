@@ -5,6 +5,7 @@ import { db } from '../../../../db/db-pool.ts';
 import { educationCategories } from '../../../../db/schema/education/categories.ts';
 import { eq, and, ne } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdateCategoryParams = Type.Object({
     id: Type.String({ format: 'uuid' })
@@ -55,6 +56,7 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof UpdateCategoryParams.static, Body: typeof UpdateCategoryBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
             const { name, description, isActive } = request.body;
 
@@ -64,7 +66,7 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingCategory) {
-                return reply.notFound(request.i18n.t('education.categories.update.notFound'));
+                return reply.notFound(t($ => $.education.categories.update.notFound));
             }
 
             // Check if new name conflicts with another existing category
@@ -76,7 +78,7 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (nameConflict) {
-                return reply.badRequest(request.i18n.t('education.categories.update.exists'));
+                return reply.badRequest(t($ => $.education.categories.update.exists));
             }
 
             const [updatedCategory] = await db.update(educationCategories)
@@ -91,7 +93,7 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('education.categories.update.success'),
+                message: t($ => $.education.categories.update.success),
                 data: {
                     ...updatedCategory,
                     createdAt: updatedCategory.createdAt.toISOString(),

@@ -6,6 +6,7 @@ import { examPackageSections } from '../../../../db/schema/exam/package-sections
 import { examPackageQuestions } from '../../../../db/schema/exam/package-questions.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteSectionParams = Type.Object({
     id: Type.String({ format: 'uuid' }),
@@ -33,6 +34,7 @@ const deleteSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof DeleteSectionParams.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
 
             const existing = await db.query.examPackageSections.findFirst({
@@ -40,7 +42,7 @@ const deleteSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existing) {
-                return reply.notFound(request.i18n.t('exam.package-sections.delete.notFound'));
+                return reply.notFound(t($ => $.exam.package_sections.delete.notFound));
             }
 
             // Check if section is in use by any questions
@@ -49,14 +51,14 @@ const deleteSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (inUseCheck) {
-                return reply.badRequest(request.i18n.t('exam.package-sections.delete.inUse'));
+                return reply.badRequest(t($ => $.exam.package_sections.delete.inUse));
             }
 
             await db.delete(examPackageSections).where(eq(examPackageSections.id, id));
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.package-sections.delete.success'),
+                message: t($ => $.exam.package_sections.delete.success),
             });
         }),
     });

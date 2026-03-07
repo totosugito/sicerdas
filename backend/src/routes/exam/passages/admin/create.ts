@@ -6,6 +6,7 @@ import { examPassages } from '../../../../db/schema/exam/passages.ts';
 import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const CreatePassageBody = Type.Object({
     title: Type.Optional(Type.String({ maxLength: 255 })), // Optional internal title
@@ -53,6 +54,7 @@ const createPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreatePassageBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { title, content, isActive, subjectId } = request.body;
 
             // Ensure subject exists
@@ -61,7 +63,7 @@ const createPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingSubject) {
-                return reply.notFound(request.i18n.t('exam.subjects.detail.notFound'));
+                return reply.notFound(t($ => $.exam.subjects.detail.notFound));
             }
 
             const [newPassage] = await db.insert(examPassages).values({
@@ -73,7 +75,7 @@ const createPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(201).send({
                 success: true,
-                message: request.i18n.t('exam.passages.create.success'),
+                message: t($ => $.exam.passages.create.success),
                 data: {
                     ...newPassage,
                     createdAt: newPassage.createdAt.toISOString(),

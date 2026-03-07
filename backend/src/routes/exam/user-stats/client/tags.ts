@@ -6,6 +6,7 @@ import { examUserStatsTag } from '../../../../db/schema/exam/user-stats-tag.ts';
 import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { eq, desc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const TagStatsResponse = Type.Object({
     success: Type.Boolean(),
@@ -36,6 +37,7 @@ const getTagStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const userId = (request as any).session.user.id;
 
             const stats = await db.select({
@@ -55,7 +57,7 @@ const getTagStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.user-stats.tags.success'),
+                message: t($ => $.exam.user_stats.tags.success),
                 data: stats.map(s => ({
                     ...s,
                     updatedAt: s.updatedAt.toISOString(),

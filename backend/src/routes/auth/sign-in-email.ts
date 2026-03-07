@@ -5,6 +5,7 @@ import { db } from '../../db/db-pool.ts';
 import { users } from '../../db/schema/user/index.ts';
 import { eq } from 'drizzle-orm';
 import { getUserAvatarUrl } from '../../utils/app-utils.ts';
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 // Response schemas
 const UserResponse = Type.Object({
@@ -57,6 +58,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
     },
     handler: withErrorHandler(async (req, reply) => {
+      const { t } = getTypedI18n(req);
       // Parse form data into a key-value object
       const formData = new Map<string, string>();
       if (typeof req.parts === 'function') {
@@ -70,7 +72,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Validate required fields using Fastify Sensible badRequest
       if (!email || !password) {
-        return reply.badRequest(req.i18n.t('auth.emailAndPasswordRequired'));
+        return reply.badRequest(t($ => $.auth.emailAndPasswordRequired));
       }
 
       // Use Fastify's built-in inject method
@@ -91,7 +93,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const authData = response.json();
 
       if (!authData.user) {
-        return reply.badRequest(req.i18n.t('auth.invalidCredentials'));
+        return reply.badRequest(t($ => $.auth.invalidCredentials));
       }
 
       // Fetch the user with role from the database
@@ -110,7 +112,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!userWithRole) {
-        return reply.notFound(req.i18n.t('auth.userNotFound'));
+        return reply.notFound(t($ => $.auth.userNotFound));
       }
 
       // Forward the response

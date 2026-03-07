@@ -5,6 +5,7 @@ import { appTier } from '../../../db/schema/app/index.ts';
 import { db } from '../../../db/db-pool.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from '../../../utils/i18n-typed.ts';
 
 const TierResponseItem = Type.Object({
     slug: Type.String(),
@@ -52,6 +53,7 @@ const detailsTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: { slug: string } }>,
             reply: FastifyReply
         ): Promise<typeof GetTierResponse.static> {
+            const { t } = getTypedI18n(request);
             const { slug } = request.params;
 
             const tier = await db.query.appTier.findFirst({
@@ -59,12 +61,12 @@ const detailsTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!tier) {
-                return reply.notFound(request.i18n.t('appTier.details.notFound'));
+                return reply.notFound(t($ => $.appTier.details.notFound));
             }
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('appTier.details.found'),
+                message: t($ => $.appTier.details.found),
                 data: {
                     ...tier,
                     features: tier.features || [],

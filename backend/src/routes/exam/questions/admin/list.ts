@@ -8,6 +8,7 @@ import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
 import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { desc, and, sql, eq, count, getTableColumns } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const QuestionListQuery = Type.Object({
     // Since content is a JSONB BlockNote blob, search by text won't be a simple ILIKE on a varchar.
@@ -84,6 +85,7 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof QuestionListQuery.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const {
                 subjectId, difficulty, type, requiredTier, educationGradeId, isActive,
                 sortBy = 'createdAt', sortOrder = 'desc', page = 1, limit = 10
@@ -160,7 +162,7 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.questions.list.success'),
+                message: t($ => $.exam.questions.list.success),
                 data: {
                     items: items.map(q => ({
                         id: q.id,

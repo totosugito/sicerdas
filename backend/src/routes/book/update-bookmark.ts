@@ -7,6 +7,7 @@ import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const UpdateBookmarkRequest = Type.Object({
     bookId: Type.Number(),
@@ -47,6 +48,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
             req: FastifyRequest<{ Body: typeof UpdateBookmarkRequest.static }>,
             reply: FastifyReply
         ): Promise<typeof UpdateBookmarkResponse.static> {
+            const { t } = getTypedI18n(req);
             // Attempt to retrieve user ID (matching create-report.ts pattern)
             // Attempt to retrieve user ID (matching create-report.ts pattern)
             const session = await getAuthInstance(app).api.getSession({
@@ -56,7 +58,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             // Check if user is logged in
             if (!user) {
-                return reply.unauthorized(req.i18n.t('auth.unauthorized'));
+                return reply.unauthorized(t($ => $.auth.unauthorized));
             }
 
             const userId = user.id;
@@ -70,7 +72,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
                 .limit(1);
 
             if (bookList.length === 0) {
-                return reply.notFound(req.i18n.t('book.detail.notFound'));
+                return reply.notFound(t($ => $.book.detail.notFound));
             }
 
             const bookUUID = bookList[0].id;
@@ -94,7 +96,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
                 return reply.status(200).send({
                     success: true,
-                    message: req.i18n.t('book.bookmark.noChange'),
+                    message: t($ => $.book.bookmark.noChange),
                     data: {
                         bookmarked: currentlyBookmarked,
                         bookmarkCount: currentStats?.bookmarkCount ?? 0
@@ -147,7 +149,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: req.i18n.t('book.bookmark.updated'),
+                message: t($ => $.book.bookmark.updated),
                 data: {
                     bookmarked,
                     bookmarkCount: finalStats?.bookmarkCount ?? 0

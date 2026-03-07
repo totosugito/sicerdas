@@ -6,6 +6,7 @@ import { examPassages } from '../../../../db/schema/exam/passages.ts';
 import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdatePassageParams = Type.Object({
     id: Type.String({ format: 'uuid' })
@@ -58,6 +59,7 @@ const updatePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof UpdatePassageParams.static, Body: typeof UpdatePassageBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
             const { title, content, isActive, subjectId } = request.body;
 
@@ -67,7 +69,7 @@ const updatePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingPassage) {
-                return reply.notFound(request.i18n.t('exam.passages.update.notFound'));
+                return reply.notFound(t($ => $.exam.passages.update.notFound));
             }
 
             // Build dynamic update payload
@@ -86,7 +88,7 @@ const updatePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
                 });
 
                 if (!existingSubject) {
-                    return reply.notFound(request.i18n.t('exam.subjects.detail.notFound'));
+                    return reply.notFound(t($ => $.exam.subjects.detail.notFound));
                 }
 
                 updatePayload.subjectId = subjectId;
@@ -99,7 +101,7 @@ const updatePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.passages.update.success'),
+                message: t($ => $.exam.passages.update.success),
                 data: {
                     ...updatedPassage,
                     createdAt: updatedPassage.createdAt.toISOString(),

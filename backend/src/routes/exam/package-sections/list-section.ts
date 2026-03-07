@@ -10,6 +10,7 @@ import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from '../../../db/schema/index.ts';
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const SectionListQuery = Type.Object({
     search: Type.Optional(Type.String({ description: 'Search term for section title' })),
@@ -69,6 +70,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof SectionListQuery.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             // Determine user role from session
             const session = await getAuthInstance(app).api.getSession({
                 headers: fromNodeHeaders(request.headers),
@@ -101,7 +103,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 });
 
                 if (!existingPackage) {
-                    return reply.notFound(request.i18n.t('exam.packages.detail.notFound'));
+                    return reply.notFound(t($ => $.exam.packages.detail.notFound));
                 }
 
                 returnPackageId = existingPackage.id;
@@ -175,7 +177,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.package-sections.list.success'),
+                message: t($ => $.exam.package_sections.list.success),
                 data: {
                     package: {
                         packageId: returnPackageId,

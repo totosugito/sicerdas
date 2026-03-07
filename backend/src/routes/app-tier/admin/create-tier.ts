@@ -5,6 +5,7 @@ import { appTier } from '../../../db/schema/app/app-tier.ts';
 import { db } from '../../../db/db-pool.ts';
 import { eq, or, count } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from '../../../utils/i18n-typed.ts';
 
 const CreateTierBody = Type.Object({
     slug: Type.String({ minLength: 1 }),
@@ -63,6 +64,7 @@ const createTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreateTierBody.static }>,
             reply: FastifyReply
         ): Promise<typeof CreateTierResponse.static> {
+            const { t } = getTypedI18n(request);
             const { slug, name } = request.body;
 
             const existingTier = await db.query.appTier.findFirst({
@@ -73,7 +75,7 @@ const createTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (existingTier) {
-                return reply.badRequest(request.i18n.t('appTier.create.exists'));
+                return reply.badRequest(t($ => $.appTier.create.exists));
             }
 
             // If sortOrder is not defined or is -1, set it to the total count of existing tiers
@@ -92,7 +94,7 @@ const createTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('appTier.create.success'),
+                message: t($ => $.appTier.create.success),
                 data: {
                     ...newTier,
                     features: newTier.features || [],

@@ -7,6 +7,7 @@ import { aiModels } from '../../../db/schema/ai/index.ts';
 import { db } from '../../../db/db-pool.ts';
 import { eq, count } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from '../../../utils/i18n-typed.ts';
 
 const DeleteTierResponse = Type.Object({
     success: Type.Boolean(),
@@ -38,11 +39,11 @@ const deleteTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: { slug: string } }>,
             reply: FastifyReply
         ): Promise<typeof DeleteTierResponse.static> {
-
+            const { t } = getTypedI18n(request);
             const { slug } = request.params;
 
             if (['free', 'pro', 'enterprise'].includes(slug)) {
-                return reply.badRequest(request.i18n.t('appTier.delete.defaultData') ?? "Cannot delete default tier pricing data");
+                return reply.badRequest(t($ => $.appTier.delete.defaultData));
             }
 
             const existingTier = await db.query.appTier.findFirst({
@@ -50,7 +51,7 @@ const deleteTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingTier) {
-                return reply.notFound(request.i18n.t('appTier.delete.notFound'));
+                return reply.notFound(t($ => $.appTier.delete.notFound));
             }
 
             // Check if tier is being used by any user profiles
@@ -61,7 +62,7 @@ const deleteTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             if (userProfileCount.count > 0) {
                 return reply.badRequest(
-                    request.i18n.t('appTier.delete.usedByUsers') ??
+                    t($ => $.appTier.delete.usedByUsers, { count: userProfileCount.count }) ??
                     `Cannot delete tier. It is currently being used by ${userProfileCount.count} user(s).`
                 );
             }
@@ -74,7 +75,7 @@ const deleteTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             if (aiModelCount.count > 0) {
                 return reply.badRequest(
-                    request.i18n.t('appTier.delete.usedByModels') ??
+                    t($ => $.appTier.delete.usedByModels, { count: aiModelCount.count }) ??
                     `Cannot delete tier. It is currently required by ${aiModelCount.count} AI model(s).`
                 );
             }
@@ -83,7 +84,7 @@ const deleteTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('appTier.delete.success'),
+                message: t($ => $.appTier.delete.success),
             });
         }),
     });

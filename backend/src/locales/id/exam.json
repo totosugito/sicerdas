@@ -46,7 +46,7 @@
                 "hasChildren": "Soal ini tidak dapat dihapus karena masih memiliki Pilihan Ganda (Options) atau Kunci Jawaban (Solutions) yang terikat. Harap hapus terlebih dahulu child records-nya."
             }
         },
-        "question-options": {
+        "question_options": {
             "create": {
                 "success": "Pilihan jawaban berhasil dibuat",
                 "invalidQuestion": "Soal (Question ID) yang diberikan tidak valid atau tidak ditemukan."
@@ -65,7 +65,7 @@
                 "notFound": "Pilihan jawaban tidak ditemukan"
             }
         },
-        "question-solutions": {
+        "question_solutions": {
             "create": {
                 "success": "Solusi jawaban berhasil dibuat",
                 "invalidQuestion": "Soal (Question ID) yang diberikan tidak valid atau tidak ditemukan."
@@ -101,7 +101,7 @@
                 "hasChildren": "Bacaan ini tidak dapat dihapus karena masih digunakan oleh satu atau lebih soal ujian."
             }
         },
-        "question-tags": {
+        "question_tags": {
             "assign": {
                 "success": "Tag berhasil ditautkan ke soal"
             },
@@ -134,7 +134,7 @@
                 "notFound": "Paket ujian tidak ditemukan"
             }
         },
-        "package-sections": {
+        "package_sections": {
             "create": {
                 "success": "Seksi paket ujian berhasil dibuat"
             },
@@ -177,7 +177,7 @@
                 "alreadySubmitted": "Ujian sudah dikirim sebelumnya"
             }
         },
-        "user-stats": {
+        "user_stats": {
             "global": {
                 "success": "Berhasil mengambil statistik global",
                 "notFound": "Data statistik tidak ditemukan"

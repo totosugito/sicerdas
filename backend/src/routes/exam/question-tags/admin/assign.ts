@@ -4,6 +4,7 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const AssignQuestionTagsBody = Type.Object({
     questionId: Type.String({ format: 'uuid' }),
@@ -38,6 +39,7 @@ const assignQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof AssignQuestionTagsBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { questionId, tagIds } = request.body;
 
             // Use ON CONFLICT DO NOTHING to avoid duplicate key errors
@@ -52,7 +54,7 @@ const assignQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.question-tags.assign.success'),
+                message: t($ => $.exam.question_tags.assign.success),
             });
         }),
     });

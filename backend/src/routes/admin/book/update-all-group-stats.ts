@@ -5,6 +5,7 @@ import { db } from "../../../db/db-pool.ts";
 import { bookGroup, bookGroupStats, books } from "../../../db/schema/book/index.ts";
 import { eq, count, and } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
 const adminRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -31,6 +32,7 @@ const adminRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest,
       reply: FastifyReply
     ) {
+      const { t } = getTypedI18n(req);
       // Get all book groups that have published books
       const allGroups = await db
         .select({ id: bookGroup.id })
@@ -92,7 +94,7 @@ const adminRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.i18n.t('admin.book.groupStats.updateAllSuccess'),
+        message: t($ => $.admin.book.groupStats.updateAllSuccess),
         data: results
       });
     })

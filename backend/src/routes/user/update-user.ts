@@ -7,6 +7,7 @@ import { eq, sql } from "drizzle-orm";
 import { processChangeAvatar } from "./avatar-user.ts";
 import type { UploadedFile } from "../../types/file.ts";
 import { getUserAvatarUrl } from "../../utils/app-utils.ts";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 // Response schemas
 const UpdateUserResponse = Type.Object({
@@ -81,6 +82,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: withErrorHandler(async (req, reply) => {
+      const { t } = getTypedI18n(req);
       // Get user ID from session (verified by user.hook.ts)
       const userId = req.session.user.id;
 
@@ -156,7 +158,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // If no valid updates are provided and no image was uploaded, return early
       if (Object.keys(safeUpdateData).length === 0 && !imageFile) {
-        return reply.badRequest(req.i18n.t('user.noValidUpdateData'));
+        return reply.badRequest(t($ => $.user.noValidUpdateData));
       }
 
       // Separate user and profile data
@@ -184,7 +186,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         // Check if user was actually updated
         if (!updatedUserResult) {
-          return reply.notFound(req.i18n.t('user.userNotFound'));
+          return reply.notFound(t($ => $.user.userNotFound));
         }
       }
 
@@ -206,7 +208,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         // Check if profile was actually updated/inserted
         if (!updatedProfileResult) {
-          return reply.notFound(req.i18n.t('user.userNotFound'));
+          return reply.notFound(t($ => $.user.userNotFound));
         }
       }
 
@@ -240,12 +242,12 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       const userResult = userWithAllData[0];
 
       if (!userResult) {
-        return reply.notFound(req.i18n.t('user.userNotFound'));
+        return reply.notFound(t($ => $.user.userNotFound));
       }
 
       return reply.status(200).send({
         success: true,
-        message: req.i18n.t('user.userUpdatedSuccessfully'),
+        message: t($ => $.user.userUpdatedSuccessfully),
         data: {
           ...userResult,
           image: getUserAvatarUrl(userResult.image),

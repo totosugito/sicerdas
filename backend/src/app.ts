@@ -4,35 +4,18 @@ import AutoLoad from '@fastify/autoload';
 import Fastify, { type FastifyServerOptions } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import i18n from 'fastify-i18n';
-import fs from 'fs';
+import { defaultLocale } from './locales/locales.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-function loadLocaleMessages(locale: string) {
-  const localeDir = path.join(__dirname, 'locales', locale);
-  const messages = {};
-
-  // Read all JSON files in the locale folder
-  fs.readdirSync(localeDir).forEach(file => {
-    if (file.endsWith('.json')) {
-      const filePath = path.join(localeDir, file);
-      const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-      Object.assign(messages, jsonData);
-    }
-  });
-
-  return messages;
-}
 
 export async function buildApp(options?: FastifyServerOptions) {
   const server = Fastify(options);
 
   // Configure i18n with proper options for fastify-i18n v3
-  const idMessages = loadLocaleMessages('id');
   server.register(i18n, {
     fallbackLocale: 'id',
     messages: {
-      id: idMessages
+      id: defaultLocale
     },
   });
 

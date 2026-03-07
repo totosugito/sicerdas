@@ -2,6 +2,7 @@ import { fromNodeHeaders } from 'better-auth/node';
 import type { FastifyInstance } from 'fastify';
 import { getAuthInstance } from '../../../../decorators/auth.decorator.ts';
 import { EnumUserRole } from '../../../../db/schema/user/types.ts';
+import { getTypedI18n } from '../../../../utils/i18n-typed.ts';
 
 async function adminHook(fastify: FastifyInstance) {
   fastify.decorateRequest('session');
@@ -12,11 +13,13 @@ async function adminHook(fastify: FastifyInstance) {
     });
 
     if (!session?.user) {
-      return res.unauthorized(req.i18n.t('admin.hook.unauthorized'));
+      const { t } = getTypedI18n(req);
+      return res.unauthorized(t($ => $.admin.hook.unauthorized));
     }
 
     if (session?.user?.role !== EnumUserRole.ADMIN) {
-      return res.forbidden(req.i18n.t('admin.hook.forbidden'));
+      const { t } = getTypedI18n(req);
+      return res.forbidden(t($ => $.admin.hook.forbidden));
     }
 
     req.setDecorator('session', session);

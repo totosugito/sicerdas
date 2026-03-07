@@ -5,6 +5,7 @@ import { db } from '../../../../db/db-pool.ts';
 import { examPackageQuestions } from '../../../../db/schema/exam/package-questions.ts';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { and, eq, inArray } from 'drizzle-orm';
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const AssignPackageQuestionsBody = Type.Object({
     packageId: Type.String({ format: 'uuid' }),
@@ -37,6 +38,7 @@ const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof AssignPackageQuestionsBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { packageId, sectionId, questions } = request.body;
 
             // Simple bulk logic:
@@ -65,7 +67,7 @@ const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.package-questions.assign.success'),
+                message: t($ => $.exam['package-questions'].assign.success),
             });
         }),
     });

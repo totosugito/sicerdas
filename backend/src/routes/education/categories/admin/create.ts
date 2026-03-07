@@ -5,6 +5,7 @@ import { db } from '../../../../db/db-pool.ts';
 import { educationCategories } from '../../../../db/schema/education/categories.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const CreateCategoryBody = Type.Object({
     name: Type.String({ minLength: 1 }),
@@ -50,6 +51,7 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreateCategoryBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { name, description, isActive } = request.body;
 
             // Check if name already exists
@@ -58,7 +60,7 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (existingCategory) {
-                return reply.badRequest(request.i18n.t('education.categories.create.exists'));
+                return reply.badRequest(t($ => $.education.categories.create.exists));
             }
 
             const [newCategory] = await db.insert(educationCategories).values({
@@ -69,7 +71,7 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(201).send({
                 success: true,
-                message: request.i18n.t('education.categories.create.success'),
+                message: t($ => $.education.categories.create.success),
                 data: {
                     ...newCategory,
                     createdAt: newCategory.createdAt.toISOString(),

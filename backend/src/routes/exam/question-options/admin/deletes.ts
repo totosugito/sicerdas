@@ -5,6 +5,7 @@ import { db } from '../../../../db/db-pool.ts';
 import { examQuestionOptions } from '../../../../db/schema/exam/question-options.ts';
 import { inArray } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteMultipleQuestionOptionsBody = Type.Object({
     ids: Type.Array(Type.String({ format: 'uuid' }), { minItems: 1 })
@@ -38,6 +39,7 @@ const deleteMultipleQuestionOptionsRoute: FastifyPluginAsyncTypebox = async (app
             request: FastifyRequest<{ Body: typeof DeleteMultipleQuestionOptionsBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { ids } = request.body;
 
             // Perform Hard Delete for all provided IDs
@@ -45,7 +47,7 @@ const deleteMultipleQuestionOptionsRoute: FastifyPluginAsyncTypebox = async (app
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.question-options.delete.successMultiple'),
+                message: t($ => $.exam.question_options.delete.successMultiple),
             });
         }),
     });

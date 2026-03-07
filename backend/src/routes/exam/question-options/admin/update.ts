@@ -6,6 +6,7 @@ import { examQuestionOptions } from '../../../../db/schema/exam/question-options
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdateQuestionOptionParams = Type.Object({
     id: Type.String({ format: 'uuid' })
@@ -56,6 +57,7 @@ const updateQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof UpdateQuestionOptionParams.static, Body: typeof UpdateQuestionOptionBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
             const { questionId, content, isCorrect, order } = request.body;
 
@@ -65,7 +67,7 @@ const updateQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingOption) {
-                return reply.notFound(request.i18n.t('exam.question-options.update.notFound'));
+                return reply.notFound(t($ => $.exam.question_options.update.notFound));
             }
 
             // Verify new question exists if provided
@@ -74,7 +76,7 @@ const updateQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
                     where: eq(examQuestions.id, questionId)
                 });
                 if (!existingQuestion) {
-                    return reply.badRequest(request.i18n.t('exam.question-options.update.invalidQuestion'));
+                    return reply.badRequest(t($ => $.exam.question_options.update.invalidQuestion));
                 }
             }
 
@@ -93,7 +95,7 @@ const updateQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.question-options.update.success'),
+                message: t($ => $.exam.question_options.update.success),
                 data: updatedOption
             });
         }),

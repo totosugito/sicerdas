@@ -7,6 +7,7 @@ import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
 import { examPassages } from '../../../../db/schema/exam/passages.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumDifficultyLevel, EnumQuestionType } from '../../../../db/schema/exam/enums.ts';
 
 const CreateQuestionBody = Type.Object({
@@ -63,6 +64,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreateQuestionBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const {
                 subjectId, passageId, content, difficulty,
                 type, requiredTier, educationGradeId, isActive
@@ -74,7 +76,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingSubject) {
-                return reply.badRequest(request.i18n.t('exam.questions.create.invalidSubject'));
+                return reply.badRequest(t($ => $.exam.questions.create.invalidSubject));
             }
 
             // 2. Verify passage exists (if provided)
@@ -83,7 +85,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                     where: eq(examPassages.id, passageId)
                 });
                 if (!existingPassage) {
-                    return reply.badRequest(request.i18n.t('exam.questions.create.invalidPassage'));
+                    return reply.badRequest(t($ => $.exam.questions.create.invalidPassage));
                 }
             }
 
@@ -103,7 +105,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(201).send({
                 success: true,
-                message: request.i18n.t('exam.questions.create.success'),
+                message: t($ => $.exam.questions.create.success),
                 data: {
                     ...newQuestion,
                     createdAt: newQuestion.createdAt.toISOString(),

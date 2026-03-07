@@ -5,6 +5,7 @@ import { db } from '../../../db/db-pool.ts';
 import { examPackages } from '../../../db/schema/exam/packages.ts';
 import { and, eq, asc, sql } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const PackageSimpleQuery = Type.Object({
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
@@ -47,6 +48,7 @@ const listPackagesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof PackageSimpleQuery.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { page = 1, limit = 1000 } = request.body;
             const offset = (page - 1) * limit;
 
@@ -74,7 +76,7 @@ const listPackagesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.packages.list.success'),
+                message: t($ => $.exam.packages.list.success),
                 data: {
                     items,
                     meta: {

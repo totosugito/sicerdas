@@ -6,6 +6,7 @@ import { examQuestionSolutions } from '../../../../db/schema/exam/question-solut
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumSolutionType } from '../../../../db/schema/exam/enums.ts';
 
 const CreateQuestionSolutionBody = Type.Object({
@@ -58,6 +59,7 @@ const createQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreateQuestionSolutionBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { questionId, title, content, solutionType, order, requiredTier } = request.body;
 
             // Verify that the parent question exists
@@ -66,7 +68,7 @@ const createQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingQuestion) {
-                return reply.badRequest(request.i18n.t('exam.question-solutions.create.invalidQuestion'));
+                return reply.badRequest(t($ => $.exam.question_solutions.create.invalidQuestion));
             }
 
             const [newSolution] = await db.insert(examQuestionSolutions).values({
@@ -80,7 +82,7 @@ const createQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(201).send({
                 success: true,
-                message: request.i18n.t('exam.question-solutions.create.success'),
+                message: t($ => $.exam.question_solutions.create.success),
                 data: {
                     ...newSolution,
                     createdAt: newSolution.createdAt.toISOString(),

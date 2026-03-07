@@ -5,6 +5,7 @@ import { db } from '../../../../db/db-pool.ts';
 import { examQuestionOptions } from '../../../../db/schema/exam/question-options.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteQuestionOptionParams = Type.Object({
     id: Type.String({ format: 'uuid' })
@@ -38,6 +39,7 @@ const deleteQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof DeleteQuestionOptionParams.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
 
             // Ensure option exists
@@ -46,7 +48,7 @@ const deleteQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingOption) {
-                return reply.notFound(request.i18n.t('exam.question-options.delete.notFound'));
+                return reply.notFound(t($ => $.exam.question_options.delete.notFound));
             }
 
             // Perform Hard Delete
@@ -54,7 +56,7 @@ const deleteQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.question-options.delete.success'),
+                message: t($ => $.exam.question_options.delete.success),
             });
         }),
     });

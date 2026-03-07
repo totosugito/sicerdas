@@ -9,6 +9,7 @@ import { examSessionAnswers } from '../../../../db/schema/exam/session-answers.t
 import { EnumExamSessionStatus } from '../../../../db/schema/exam/enums.ts';
 import { eq, and } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const StartSessionBody = Type.Object({
     packageId: Type.String({ format: 'uuid' }),
@@ -38,6 +39,7 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof StartSessionBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { packageId } = request.body;
             const userId = (request as any).session.user.id;
 
@@ -48,7 +50,7 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
                 .limit(1);
 
             if (!pkg) {
-                return reply.notFound(request.i18n.t('exam.packages.update.notFound'));
+                return reply.notFound(t($ => $.exam.packages.update.notFound));
             }
 
             // 2. Create the session
@@ -81,7 +83,7 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(201).send({
                 success: true,
-                message: request.i18n.t('exam.sessions.start.success'),
+                message: t($ => $.exam.sessions.start.success),
                 data: {
                     sessionId: newSession.id,
                 },

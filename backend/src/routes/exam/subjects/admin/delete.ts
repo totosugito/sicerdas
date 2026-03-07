@@ -6,6 +6,7 @@ import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteSubjectParams = Type.Object({
     id: Type.String({ format: 'uuid' })
@@ -39,6 +40,7 @@ const deleteSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof DeleteSubjectParams.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
 
             // Ensure subject exists
@@ -47,7 +49,7 @@ const deleteSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingSubject) {
-                return reply.notFound(request.i18n.t('exam.subjects.delete.notFound'));
+                return reply.notFound(t($ => $.exam.subjects.delete.notFound));
             }
 
             // Optional Check: Is this subject in use by any exam questions?
@@ -58,7 +60,7 @@ const deleteSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             if (inUseCheck) {
                 // Return a friendly error using Sensible, instead of raw pg constraint error
-                return reply.badRequest(request.i18n.t('exam.subjects.delete.inUse'));
+                return reply.badRequest(t($ => $.exam.subjects.delete.inUse));
             }
 
             // Perform Hard Delete
@@ -66,7 +68,7 @@ const deleteSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.subjects.delete.success'),
+                message: t($ => $.exam.subjects.delete.success),
             });
         }),
     });

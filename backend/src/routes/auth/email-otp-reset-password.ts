@@ -4,6 +4,7 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { users, verifications } from "../../db/schema/user/index.ts";
 import { eq } from "drizzle-orm";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 /**
  * Reset password using email OTP
@@ -48,27 +49,28 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
     },
     handler: withErrorHandler(async (req, reply) => {
+      const { t } = getTypedI18n(req);
       // Extract data directly from request body for JSON input
       const { email, otp, password } = req.body as { email: string; otp: string; password: string };
 
       // Validate required fields using Fastify Sensible badRequest
       if (!email) {
-        return reply.badRequest(req.i18n.t('auth.emailRequired'));
+        return reply.badRequest(t($ => $.auth.emailRequired));
       }
 
       if (!otp) {
-        return reply.badRequest(req.i18n.t('auth.otpRequired'));
+        return reply.badRequest(t($ => $.auth.otpRequired));
       }
 
       if (!password) {
-        return reply.badRequest(req.i18n.t('auth.passwordRequired'));
+        return reply.badRequest(t($ => $.auth.passwordRequired));
       }
 
       // Check if email exists in users table and get user ID
       const existingUser = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.email, email));
 
       if (existingUser.length === 0) {
-        return reply.notFound(req.i18n.t('auth.userNotFound'));
+        return reply.notFound(t($ => $.auth.userNotFound));
       }
 
       // Use Fastify's built-in inject method to call the better-auth API
@@ -102,8 +104,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         .send({
           success: isSuccessful,
           message: isSuccessful
-            ? req.i18n.t('auth.passwordResetSuccess')
-            : req.i18n.t('auth.passwordResetFailed')
+            ? t($ => $.auth.passwordResetSuccess)
+            : t($ => $.auth.passwordResetFailed)
         });
     }),
   });

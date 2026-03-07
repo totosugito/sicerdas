@@ -9,6 +9,7 @@ import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from '../../../db/schema/index.ts';
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const DetailTagParams = Type.Object({
     id: Type.String({ format: 'uuid' }),
@@ -47,6 +48,7 @@ const detailTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof DetailTagParams.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
 
             // Determine user role from session
@@ -74,12 +76,12 @@ const detailTagRoute: FastifyPluginAsyncTypebox = async (app) => {
                 .limit(1);
 
             if (!result) {
-                return reply.notFound(request.i18n.t('education.tags.detail.notFound'));
+                return reply.notFound(t($ => $.education.tags.detail.notFound));
             }
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('education.tags.detail.success'),
+                message: t($ => $.education.tags.detail.success),
                 data: {
                     ...result,
                     createdAt: result.createdAt.toISOString(),

@@ -5,6 +5,7 @@ import { db } from '../../../db/db-pool.ts';
 import { educationGrades } from '../../../db/schema/education/grades.ts';
 import { desc, ilike, or, and, sql, asc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const EducationGradeListQuery = Type.Object({
     search: Type.Optional(Type.String({ description: 'Search term for grade name or desc' })),
@@ -61,6 +62,7 @@ const listEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof EducationGradeListQuery.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { search, sortBy = 'updatedAt', sortOrder = 'desc', page = 1, limit = 10 } = request.body;
             const offset = (page - 1) * limit;
 
@@ -121,7 +123,7 @@ const listEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('education.grades.list.success'),
+                message: t($ => $.education.grades.list.success),
                 data: {
                     items: items.map(grade => ({
                         ...grade,

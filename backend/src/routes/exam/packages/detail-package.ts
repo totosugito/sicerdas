@@ -7,6 +7,7 @@ import { educationCategories } from '../../../db/schema/education/categories.ts'
 import { educationGrades } from '../../../db/schema/education/grades.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const DetailPackageParams = Type.Object({
     id: Type.String({ format: 'uuid' }),
@@ -51,6 +52,7 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof DetailPackageParams.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
 
             const [result] = await db.select({
@@ -65,14 +67,14 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
                 .limit(1);
 
             if (!result) {
-                return reply.notFound(request.i18n.t('exam.packages.detail.notFound'));
+                return reply.notFound(t($ => $.exam.packages.detail.notFound));
             }
 
             const pkg = result.package;
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.packages.detail.success'),
+                message: t($ => $.exam.packages.detail.success),
                 data: {
                     ...pkg,
                     categoryName: result.categoryName,

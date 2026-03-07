@@ -5,6 +5,7 @@ import { db } from '../../../db/db-pool.ts';
 import { educationGrades } from '../../../db/schema/education/grades.ts';
 import { asc, sql } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const GradeSimpleQuery = Type.Object({
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
@@ -47,6 +48,7 @@ const listGradesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof GradeSimpleQuery.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { page = 1, limit = 1000 } = request.body;
             const offset = (page - 1) * limit;
 
@@ -70,7 +72,7 @@ const listGradesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('education.grades.list.success'),
+                message: t($ => $.education.grades.list.success),
                 data: {
                     items,
                     meta: {

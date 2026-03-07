@@ -4,10 +4,12 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { eq } from "drizzle-orm";
 import { sessions } from "../../db/schema/user/index.ts";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 // Response schemas
 const SessionListResponse = Type.Object({
   success: Type.Boolean(),
+  message: Type.String(),
   data: Type.Array(Type.Object({
     id: Type.String({ format: 'uuid' }),
     expiresAt: Type.String({ format: 'date-time' }),
@@ -46,6 +48,8 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: withErrorHandler(async (req, reply) => {
+      const { t } = getTypedI18n(req);
+
       // Get user ID from session (already verified by user.hook.ts)
       const userId = req.session.user.id;
 
@@ -65,6 +69,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
+        message: t($ => $.user.sessionsList.success),
         data: userSessions.map(session => ({
           ...session,
           expiresAt: session.expiresAt.toISOString(),

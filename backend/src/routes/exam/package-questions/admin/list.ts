@@ -7,6 +7,7 @@ import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { examPackageSections } from '../../../../db/schema/exam/package-sections.ts';
 import { eq, and, sql } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const PackageQuestionListQuery = Type.Object({
     packageId: Type.String({ format: 'uuid' }),
@@ -60,6 +61,7 @@ const listPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof PackageQuestionListQuery.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { packageId, sectionId, page = 1, limit = 10 } = request.body;
             const offset = (page - 1) * limit;
 
@@ -102,7 +104,7 @@ const listPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.package-questions.list.success'),
+                message: t($ => $.exam['package-questions'].list.success),
                 data: {
                     items: items.map(item => ({
                         ...item,

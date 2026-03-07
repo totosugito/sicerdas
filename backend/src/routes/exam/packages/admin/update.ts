@@ -7,6 +7,7 @@ import { educationCategories } from '../../../../db/schema/education/categories.
 import { educationGrades } from '../../../../db/schema/education/grades.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumExamType } from '../../../../db/schema/exam/enums.ts';
 
 const UpdatePackageParams = Type.Object({
@@ -47,6 +48,7 @@ const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof UpdatePackageParams.static, Body: typeof UpdatePackageBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
             const {
                 categoryId, title, examType, durationMinutes,
@@ -58,7 +60,7 @@ const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existing) {
-                return reply.notFound(request.i18n.t('exam.packages.update.notFound'));
+                return reply.notFound(t($ => $.exam.packages.update.notFound));
             }
 
             // 1. Check if category exists if provided
@@ -68,7 +70,7 @@ const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
                 });
 
                 if (!existingCategory) {
-                    return reply.notFound(request.i18n.t('exam.categories.update.notFound'));
+                    return reply.notFound(t($ => $.education.categories.update.notFound));
                 }
             }
 
@@ -79,7 +81,7 @@ const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
                 });
 
                 if (!existingGrade) {
-                    return reply.notFound(request.i18n.t('educationGrade.update.notFound'));
+                    return reply.notFound(t($ => $.education.grades.update.notFound));
                 }
             }
 
@@ -99,7 +101,7 @@ const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.packages.update.success'),
+                message: t($ => $.exam.packages.update.success),
             });
         }),
     });

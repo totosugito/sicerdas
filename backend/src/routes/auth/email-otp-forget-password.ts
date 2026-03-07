@@ -5,6 +5,7 @@ import { db } from "../../db/db-pool.ts";
 import { users, verifications, accounts } from "../../db/schema/user/index.ts";
 import { eq, and, gte, count } from "drizzle-orm";
 import { CONFIG } from "../../config/app-constant.ts";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 /**
  * Request forget password OTP via email
@@ -43,19 +44,20 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
     },
     handler: withErrorHandler(async (req, reply) => {
+      const { t } = getTypedI18n(req);
       // Extract data directly from request body for JSON input
       const { email } = req.body as { email: string };
 
       // Validate required fields using Fastify Sensible badRequest
       if (!email) {
-        return reply.badRequest(req.i18n.t('auth.emailRequired'));
+        return reply.badRequest(t($ => $.auth.emailRequired));
       }
 
       // Check if email exists in users table and get user ID
       const existingUser = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.email, email));
 
       if (existingUser.length === 0) {
-        return reply.notFound(req.i18n.t('auth.userNotFound'));
+        return reply.notFound(t($ => $.auth.userNotFound));
       }
 
       const userId = existingUser[0].id;
@@ -69,7 +71,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       );
 
       if (userAccounts.length === 0 || hasCredentialOrEmailProvider) {
-        return reply.notFound(req.i18n.t('auth.userNotFound'));
+        return reply.notFound(t($ => $.auth.userNotFound));
       }
 
       // Rate limiting: Check if user has made more than N requests in the last hour
@@ -90,7 +92,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const requestCount = requestCountResult[0]?.count || 0;
 
       if (requestCount >= CONFIG.PASSWORD_RESET_RATE_LIMIT) {
-        return reply.tooManyRequests(req.i18n.t('auth.passwordResetRateLimitExceeded'));
+        return reply.tooManyRequests(t($ => $.auth.passwordResetRateLimitExceeded));
       }
 
       // Use Fastify's built-in inject method to call the better-auth API
@@ -113,8 +115,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         .send({
           success: response.statusCode >= 200 && response.statusCode < 300,
           message: response.statusCode >= 200 && response.statusCode < 300
-            ? req.i18n.t('auth.passwordResetOTPSent')
-            : req.i18n.t('auth.passwordResetOTPFailed')
+            ? t($ => $.auth.passwordResetOTPSent)
+            : t($ => $.auth.passwordResetOTPFailed)
         });
     }),
   });

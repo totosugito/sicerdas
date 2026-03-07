@@ -5,6 +5,7 @@ import { appTier } from '../../../db/schema/app/index.ts';
 import { db } from '../../../db/db-pool.ts';
 import { asc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from '../../../utils/i18n-typed.ts';
 
 const TierResponseItem = Type.Object({
     slug: Type.String(),
@@ -49,13 +50,14 @@ const listTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest,
             reply: FastifyReply
         ): Promise<typeof ListTierResponse.static> {
+            const { t } = getTypedI18n(request);
             const tiers = await db.query.appTier.findMany({
                 orderBy: [asc(appTier.sortOrder)]
             });
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('appTier.listSuccess'),
+                message: t($ => $.appTier.listSuccess),
                 data: tiers.map(tier => ({
                     ...tier,
                     features: tier.features || [],

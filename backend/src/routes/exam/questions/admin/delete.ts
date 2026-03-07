@@ -5,6 +5,7 @@ import { db } from '../../../../db/db-pool.ts';
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteQuestionParams = Type.Object({
     id: Type.String({ format: 'uuid' })
@@ -38,6 +39,7 @@ const deleteQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof DeleteQuestionParams.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
 
             // Ensure question exists
@@ -46,7 +48,7 @@ const deleteQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingQuestion) {
-                return reply.notFound(request.i18n.t('exam.questions.delete.notFound'));
+                return reply.notFound(t($ => $.exam.questions.delete.notFound));
             }
 
             // Perform Hard Delete. The database schema has `onDelete: 'cascade'` for options 
@@ -55,7 +57,7 @@ const deleteQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.questions.delete.success'),
+                message: t($ => $.exam.questions.delete.success),
             });
         }),
     });

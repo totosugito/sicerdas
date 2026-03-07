@@ -11,6 +11,7 @@ import { appVersion } from "../../db/schema/app/app-version.ts";
 import { getBookCoverUrl } from "../../utils/book-utils.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const BookListQuery = Type.Object({
   category: Type.Optional(Type.Array(Type.Number())),
@@ -105,6 +106,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof BookListQuery.static }>,
       reply: FastifyReply
     ): Promise<typeof BookListResponse.static> {
+      const { t } = getTypedI18n(req);
       const { category, group, grade, search, sortBy = 'createdAt', sortOrder = 'desc', page = 1, limit = 10 } = req.body;
       const offset = (page - 1) * limit;
 
@@ -285,7 +287,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.i18n.t('book.list.success'),
+        message: t($ => $.book.list.success),
         data: {
           items: items.map((item: any) => {
             const processedItem = {

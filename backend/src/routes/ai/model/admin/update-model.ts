@@ -5,6 +5,7 @@ import { aiModels } from '../../../../db/schema/ai/index.ts';
 import { db } from '../../../../db/db-pool.ts';
 import { eq, ne, and, or } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 
 const UpdateModelParams = Type.Object({
@@ -84,6 +85,7 @@ const updateModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof UpdateModelParams.static, Body: typeof UpdateModelBody.static }>,
             reply: FastifyReply
         ): Promise<typeof UpdateModelResponse.static> {
+            const { t } = getTypedI18n(request);
             const { id } = request.params;
             const { name, provider, modelIdentifier } = request.body;
 
@@ -91,7 +93,7 @@ const updateModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
             const [existingModel] = await db.select().from(aiModels).where(eq(aiModels.id, id));
 
             if (!existingModel) {
-                return reply.notFound(request.i18n.t('chatAi.model.notFound'));
+                return reply.notFound(t($ => $.chatAi.model.update.notFound));
             }
 
             // Check for duplicates if name or details are being updated
@@ -114,7 +116,7 @@ const updateModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
                 });
 
                 if (duplicateCheck) {
-                    return reply.badRequest(request.i18n.t('chatAi.model.create.exists'));
+                    return reply.badRequest(t($ => $.chatAi.model.create.exists));
                 }
             }
 
@@ -129,7 +131,7 @@ const updateModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('chatAi.model.update.success'),
+                message: t($ => $.chatAi.model.update.success),
                 data: {
                     ...updatedModel,
                     description: updatedModel.description || undefined,

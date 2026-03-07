@@ -6,6 +6,7 @@ import { and, eq } from "drizzle-orm";
 import { periodicElements, periodicElementNotes } from "../../db/schema/table-periodic/index.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getAtomicImages } from "../../utils/table-periodic-utils.ts";
+import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const GetElementParams = Type.Object({
   atomicNumber: Type.Integer({ description: 'Atomic number of the element to retrieve' })
@@ -89,6 +90,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Params: typeof GetElementParams.static }>,
       reply: FastifyReply
     ) {
+      const { t } = getTypedI18n(req);
       const { atomicNumber } = req.params;
       const locale = req.headers['accept-language'] || 'id';
 
@@ -119,7 +121,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         .where(eq(periodicElements.atomicNumber, atomicNumber));
       // Check if element exists
       if (!result || result.length === 0) {
-        return reply.notFound(req.i18n.t('periodic.elementNotFound', { atomicNumber }));
+        return reply.notFound(t($ => $.periodic.elementNotFound, { atomicNumber }));
       }
       // Take the first result (there should only be one element)
       const elementData = result[0];
@@ -189,7 +191,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.i18n.t('periodic.success'),
+        message: t($ => $.periodic.success),
         data: {
           id: elementData.id,
           atomicNumber: elementData.atomicNumber,

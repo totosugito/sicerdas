@@ -10,6 +10,10 @@
                 "success": "Model AI berhasil diperbarui",
                 "notFound": "Model AI tidak ditemukan"
             },
+            "detail": {
+                "success": "Berhasil mengambil detail model AI",
+                "notFound": "Model AI tidak ditemukan"
+            },
             "updateBatch": {
                 "success": "Status model AI berhasil diperbarui",
                 "emptyIds": "Daftar ID model tidak boleh kosong",

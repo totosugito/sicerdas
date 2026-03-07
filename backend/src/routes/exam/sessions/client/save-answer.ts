@@ -7,6 +7,7 @@ import { examSessionAnswers } from '../../../../db/schema/exam/session-answers.t
 import { EnumExamSessionStatus } from '../../../../db/schema/exam/enums.ts';
 import { eq, and } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const SaveAnswerBody = Type.Object({
     sessionId: Type.String({ format: 'uuid' }),
@@ -38,6 +39,7 @@ const saveAnswerRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof SaveAnswerBody.static }>,
             reply: FastifyReply
         ) {
+            const { t } = getTypedI18n(request);
             const { sessionId, questionId, selectedOptionId, textAnswer, isDoubtful } = request.body;
             const userId = (request as any).session.user.id;
 
@@ -48,11 +50,11 @@ const saveAnswerRoute: FastifyPluginAsyncTypebox = async (app) => {
                 .limit(1);
 
             if (!session) {
-                return reply.notFound(request.i18n.t('exam.sessions.saveAnswer.notFound'));
+                return reply.notFound(t($ => $.exam.sessions.saveAnswer.notFound));
             }
 
             if (session.status !== EnumExamSessionStatus.IN_PROGRESS) {
-                return reply.forbidden(request.i18n.t('exam.sessions.saveAnswer.finished'));
+                return reply.forbidden(t($ => $.exam.sessions.saveAnswer.finished));
             }
 
             // 2. Update the answer
@@ -70,7 +72,7 @@ const saveAnswerRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.sessions.saveAnswer.success'),
+                message: t($ => $.exam.sessions.saveAnswer.success),
             });
         }),
     });
