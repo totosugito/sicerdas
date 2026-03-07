@@ -1,6 +1,6 @@
 import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { APP_CONFIG } from '@/constants/config'
 
 export const Route = createFileRoute('/(pages)/(web)/privacy')({
@@ -8,19 +8,19 @@ export const Route = createFileRoute('/(pages)/(web)/privacy')({
 })
 
 function RouteComponent() {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
 
   return (
     <div className="flex flex-col gap-6 w-full">
       <div className="flex flex-col gap-2">
         <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black leading-tight tracking-[-0.033em]">
-          {t("web.privacy.title")}
+          {t($ => $.web.privacy.title)}
         </h1>
         <p className="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">
-          {t("web.privacy.description")}
+          {t($ => $.web.privacy.description)}
         </p>
         <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">
-          {t("web.privacy.updated", { date: "25 November 2025" })}
+          {t($ => $.web.privacy.updated, { date: "25 November 2025" })}
         </p>
       </div>
 
@@ -28,86 +28,86 @@ function RouteComponent() {
         <div className="flex flex-col gap-6">
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("web.privacy.introduction.title")}
+              {t($ => $.web.privacy.introduction.title)}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("web.privacy.introduction.content")}
+              {t($ => $.web.privacy.introduction.content)}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("web.privacy.informationWeCollect.title")}
+              {t($ => $.web.privacy.informationWeCollect.title)}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("web.privacy.informationWeCollect.content")}
+              {t($ => $.web.privacy.informationWeCollect.content)}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("web.privacy.howWeUseInformation.title")}
+              {t($ => $.web.privacy.howWeUseInformation.title)}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("web.privacy.howWeUseInformation.content")}
+              {t($ => $.web.privacy.howWeUseInformation.content)}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("web.privacy.dataSharing.title")}
+              {t($ => $.web.privacy.dataSharing.title)}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("web.privacy.dataSharing.content")}
+              {t($ => $.web.privacy.dataSharing.content)}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("web.privacy.dataSecurity.title")}
+              {t($ => $.web.privacy.dataSecurity.title)}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("web.privacy.dataSecurity.content")}
+              {t($ => $.web.privacy.dataSecurity.content)}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("web.privacy.yourRights.title")}
+              {t($ => $.web.privacy.yourRights.title)}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("web.privacy.yourRights.content")}
+              {t($ => $.web.privacy.yourRights.content)}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("web.privacy.cookies.title")}
+              {t($ => $.web.privacy.cookies.title)}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("web.privacy.cookies.content")}
+              {t($ => $.web.privacy.cookies.content)}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("web.privacy.changesToPolicy.title")}
+              {t($ => $.web.privacy.changesToPolicy.title)}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("web.privacy.changesToPolicy.content")}
+              {t($ => $.web.privacy.changesToPolicy.content)}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("web.privacy.contactUs.title")}
+              {t($ => $.web.privacy.contactUs.title)}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("web.privacy.contactUs.content")}
+              {t($ => $.web.privacy.contactUs.content)}
             </p>
             <div className="mt-3 p-4 bg-slate-50 dark:bg-slate-700 rounded-md">
               <p className="text-slate-700 dark:text-slate-300">
-                {t("labels.email")}: <a href={`mailto:${APP_CONFIG.app.mailTo}`} className='hover:text-primary transition-colors'>{APP_CONFIG.app.mailTo}</a>
+                {t($ => $.labels.email)}: <a href={`mailto:${APP_CONFIG.app.mailTo}`} className='hover:text-primary transition-colors'>{APP_CONFIG.app.mailTo}</a>
               </p>
             </div>
           </section>

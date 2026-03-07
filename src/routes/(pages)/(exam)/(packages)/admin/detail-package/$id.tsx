@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import {
@@ -28,7 +28,7 @@ export const Route = createFileRoute('/(pages)/(exam)/(packages)/admin/detail-pa
 
 function DetailPackagePage() {
   const { id } = Route.useParams();
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -83,7 +83,7 @@ function DetailPackagePage() {
         setSectionToDelete(null);
       },
       onError: (error: any) => {
-        showNotifError({ message: error.message || t('exam.packageSection.sections.deleteError') });
+        showNotifError({ message: error.message || t($ => $.exam.packageSection.list.sections.deleteError) });
         setShowDeleteDialog(false);
         setSectionToDelete(null);
       }
@@ -111,10 +111,10 @@ function DetailPackagePage() {
             order: item.order
           })
         )).then(() => {
-          showNotifSuccess({ message: t('exam.packageSection.sections.orderSuccess') });
+          showNotifSuccess({ message: t($ => $.exam.packageSection.list.sections.orderSuccess) });
           queryClient.invalidateQueries({ queryKey: ['exam-package-sections-list'] });
         }).catch((error: any) => {
-          showNotifError({ message: error.message || t('exam.packageSection.sections.orderError') });
+          showNotifError({ message: error.message || t($ => $.exam.packageSection.list.sections.orderError) });
           queryClient.invalidateQueries({ queryKey: ['exam-package-sections-list'] });
         });
 
@@ -127,9 +127,9 @@ function DetailPackagePage() {
     return (
       <div className="flex flex-col w-full space-y-4">
         <ErrorContainer
-          title={t('exam.packageSection.list.notFound.title')}
-          message={error?.message || t('exam.packageSection.list.notFound.message')}
-          buttonText={t('exam.packageSection.list.notFound.backButton')}
+          title={t($ => $.exam.packageSection.list.notFound.title)}
+          message={error?.message || t($ => $.exam.packageSection.list.notFound.message)}
+          buttonText={t($ => $.exam.packageSection.list.notFound.backButton)}
           onButtonClick={() => navigate({ to: AppRoute.exam.packages.admin.list.url })}
         />
       </div>
@@ -140,8 +140,8 @@ function DetailPackagePage() {
     <div className="flex flex-col w-full space-y-4">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={data?.data?.package?.packageName || t('exam.packageSection.list.pageTitle')}
-          description={t('exam.packageSection.list.description')}
+          title={data?.data?.package?.packageName || t($ => $.exam.packageSection.list.pageTitle)}
+          description={t($ => $.exam.packageSection.list.description)}
           showBack={true}
           backTo={AppRoute.exam.packages.admin.list.url}
         />
@@ -150,13 +150,13 @@ function DetailPackagePage() {
       <div className="bg-card border rounded-xl p-4">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h3 className="font-semibold text-lg">{t('exam.packageSection.list.sections.title')}</h3>
-            <p className="text-sm text-muted-foreground">{t('exam.packageSection.list.sections.description')}</p>
+            <h3 className="font-semibold text-lg">{t($ => $.exam.packageSection.list.sections.title)}</h3>
+            <p className="text-sm text-muted-foreground">{t($ => $.exam.packageSection.list.sections.description)}</p>
           </div>
           {items.length > 0 && (
             <Button onClick={handleAdd} className="gap-2">
               <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">{t('exam.packageSection.list.createButton')}</span>
+              <span className="hidden sm:inline">{t($ => $.exam.packageSection.list.createButton)}</span>
             </Button>
           )}
         </div>
@@ -180,20 +180,20 @@ function DetailPackagePage() {
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
-          title: t('exam.packageSection.list.sections.deleteConfirm.title', { name: sectionToDelete?.title }),
-          desc: t('exam.packageSection.list.sections.deleteConfirm.description'),
+          title: t($ => $.exam.packageSection.list.sections.deleteConfirm.title, { name: sectionToDelete?.title }),
+          desc: t($ => $.exam.packageSection.list.sections.deleteConfirm.description),
           variant: "destructive",
           iconType: "error",
           headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
           showInfoSection: true,
-          infoTitle: t('exam.packageSection.list.sections.deleteConfirm.infoTitle'),
+          infoTitle: t($ => $.exam.packageSection.list.sections.deleteConfirm.infoTitle),
           infoItems: [
-            { text: t('exam.packageSection.list.sections.deleteConfirm.consequence1') },
-            { text: t('exam.packageSection.list.sections.deleteConfirm.consequence2') },
-            { text: t('exam.packageSection.list.sections.deleteConfirm.consequence3') },
+            { text: t($ => $.exam.packageSection.list.sections.deleteConfirm.consequence1) },
+            { text: t($ => $.exam.packageSection.list.sections.deleteConfirm.consequence2) },
+            { text: t($ => $.exam.packageSection.list.sections.deleteConfirm.consequence3) },
           ],
-          textCancel: t('exam.packageSection.list.sections.deleteConfirm.cancel'),
-          textConfirm: t('exam.packageSection.list.sections.deleteConfirm.confirm'),
+          textCancel: t($ => $.exam.packageSection.list.sections.deleteConfirm.cancel),
+          textConfirm: t($ => $.exam.packageSection.list.sections.deleteConfirm.confirm),
           onConfirmClick: confirmDelete,
           onCancelClick: () => {
             setShowDeleteDialog(false);

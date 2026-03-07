@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Search, FileSearch } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 
 // Import components from the element-comparison directory
 import {
@@ -24,7 +24,7 @@ export const Route = createFileRoute('/(pages)/(periodic-table)/periodic/element
 })
 
 function RouteComponent() {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   // Filter elements with atomicId in range 1-200 and with valid properties
   const validElements = useMemo(() => {
@@ -43,15 +43,15 @@ function RouteComponent() {
   const sortType = {
     asc: {
       value: 'asc',
-      label: t('periodicTable.elementComparison.sort.asc')
+      label: t($ => $.periodicTable.elementComparison.sort.asc)
     },
     desc: {
       value: 'desc',
-      label: t('periodicTable.elementComparison.sort.desc')
+      label: t($ => $.periodicTable.elementComparison.sort.desc)
     },
     none: {
       value: 'none',
-      label: t('periodicTable.elementComparison.sort.none')
+      label: t($ => $.periodicTable.elementComparison.sort.none)
     }
   } as const
 
@@ -155,15 +155,15 @@ function RouteComponent() {
         <SearchBar
           searchTerm={searchTerm}
           onSearchTermChange={setSearchTerm}
-          placeholder={t('periodicTable.elementComparison.searchBar.placeholder')}
+          placeholder={t($ => $.periodicTable.elementComparison.searchBar.placeholder)}
         />
 
         {/* Controls */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="text-sm text-muted-foreground">
             {searchTerm ?
-              t('periodicTable.elementComparison.elementsFoundMatching', { count: sortedElements.length, term: searchTerm }) :
-              t('periodicTable.elementComparison.elementsFound', { count: sortedElements.length })
+              t($ => $.periodicTable.elementComparison.elementsFoundMatching, { count: sortedElements.length, term: searchTerm }) :
+              t($ => $.periodicTable.elementComparison.elementsFound, { count: sortedElements.length })
             }
           </div>
 
@@ -208,12 +208,12 @@ function RouteComponent() {
             <div className="rounded-full bg-primary/10 p-4 mb-6">
               <FileSearch className="h-10 w-10 text-primary" />
             </div>            <h3 className="text-xl font-semibold text-foreground mb-2">
-              {t('periodicTable.elementComparison.noElementsFound')}
+              {t($ => $.periodicTable.elementComparison.noElementsFound)}
             </h3>
             <p className="text-muted-foreground max-w-md text-center px-4">
               {searchTerm ?
-                t('periodicTable.elementComparison.noElementsFoundMatching', { term: searchTerm }) :
-                t('periodicTable.elementComparison.noElementsFound')
+                t($ => $.periodicTable.elementComparison.noElementsFoundMatching, { term: searchTerm }) :
+                t($ => $.periodicTable.elementComparison.noElementsFound)
               }
             </p>
             {!searchTerm && (
@@ -228,7 +228,7 @@ function RouteComponent() {
                 }}
               >
                 <Search className="mr-2 h-4 w-4 transition-transform group-hover:scale-110" />
-                {t('periodicTable.elementComparison.searchBar.placeholder')}
+                {t($ => $.periodicTable.elementComparison.searchBar.placeholder)}
               </Button>
             )}
           </div>

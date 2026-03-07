@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { AlertCircle } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 
 interface FormWithDetectorProps {
@@ -19,7 +19,7 @@ export const FormWithDetector = ({
     className,
     schema
 }: FormWithDetectorProps) => {
-    const { t } = useTranslation();
+    const { t } = useAppTranslation();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     // Add a function to get detailed validation results
@@ -40,12 +40,12 @@ export const FormWithDetector = ({
                         return null;
                     }
                 } catch (zodError: any) {
-                    return { formErrors: [zodError.message || t('labels.formValidationErrorGeneric')] };
+                    return { formErrors: [zodError.message || t($ => $.labels.formValidationErrorGeneric)] };
                 }
             }
             return null;
         } catch (error) {
-            return { formErrors: [t('labels.formValidationError')] };
+            return { formErrors: [t($ => $.labels.formValidationError)] };
         }
     };
 
@@ -61,13 +61,13 @@ export const FormWithDetector = ({
             // If validation failed but we don't see errors, do manual validation
             if (!isValid && Object.keys(formErrors).length === 0) {
                 const zodErrors = await getDetailedValidationErrors();
-                return { isValid: false, errors: zodErrors || { formErrors: [t('labels.formValidationError')] } };
+                return { isValid: false, errors: zodErrors || { formErrors: [t($ => $.labels.formValidationError)] } };
             }
 
             // Return the validation result
             return { isValid, errors: isValid ? null : formErrors };
         } catch (error) {
-            return { isValid: false, errors: { formErrors: [t('labels.formValidationErrorUnknown')] } };
+            return { isValid: false, errors: { formErrors: [t($ => $.labels.formValidationErrorUnknown)] } };
         }
     };
 
@@ -82,7 +82,7 @@ export const FormWithDetector = ({
             if (!isValid) {
                 // Handle errors based on their type
                 if (errors) {
-                    let errorMsg = t('labels.formValidationError');
+                    let errorMsg = t($ => $.labels.formValidationError);
 
                     // Check if it's a Zod flattened error object
                     if ('fieldErrors' in errors && !('message' in errors)) { // check !message to distinguish from FieldError that might have message prop
@@ -134,7 +134,7 @@ export const FormWithDetector = ({
                         if (found) {
                             errorMsg = found;
                         } else {
-                            errorMsg = t('labels.formValidationErrorGeneric');
+                            errorMsg = t($ => $.labels.formValidationErrorGeneric);
                         }
                     }
 
@@ -143,7 +143,7 @@ export const FormWithDetector = ({
                     return;
                 } else {
                     // Fallback error message
-                    setErrorMessage(t('labels.formValidationError'));
+                    setErrorMessage(t($ => $.labels.formValidationError));
                     return;
                 }
             }
@@ -152,7 +152,7 @@ export const FormWithDetector = ({
             // We pass the data to the onSubmit handler
             await onSubmit(form.getValues());
         } catch (error: any) {
-            setErrorMessage(error?.message || t('labels.formValidationErrorUnknown'));
+            setErrorMessage(error?.message || t($ => $.labels.formValidationErrorUnknown));
         }
     };
 

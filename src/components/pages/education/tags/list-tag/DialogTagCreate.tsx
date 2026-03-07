@@ -1,5 +1,5 @@
 import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import { ControlForm } from "@/components/custom/forms";
 import {
@@ -29,13 +29,13 @@ const FormTag = ({ values, form }: any) => {
 };
 
 export const DialogTagCreate = ({ open, onOpenChange, tag }: DialogTagCreateProps) => {
-    const { t } = useTranslation();
+    const { t } = useAppTranslation();
     const queryClient = useQueryClient();
     const createMutation = useCreateTag();
     const updateMutation = useUpdateTag();
 
     const formSchema = {
-        name: z.string().min(1, t("education.tags.list.form.name.required")),
+        name: z.string().min(1, t($ => $.education.tags.list.form.name.required)),
         description: z.string().optional(),
         isActive: z.boolean().default(true),
     };
@@ -44,30 +44,30 @@ export const DialogTagCreate = ({ open, onOpenChange, tag }: DialogTagCreateProp
         name: {
             type: "text",
             name: "name",
-            label: t("education.tags.list.form.name.label"),
-            placeholder: t("education.tags.list.form.name.placeholder"),
+            label: t($ => $.education.tags.list.form.name.label),
+            placeholder: t($ => $.education.tags.list.form.name.placeholder),
         },
         description: {
             type: "textarea",
             name: "description",
-            label: t("education.tags.list.form.description.label"),
-            placeholder: t("education.tags.list.form.description.placeholder"),
+            label: t($ => $.education.tags.list.form.description.label),
+            placeholder: t($ => $.education.tags.list.form.description.placeholder),
             minRows: 3,
         },
         isActive: {
             type: "switch",
             name: "isActive",
-            label: t("education.tags.list.form.isActive.label"),
-            description: t("education.tags.list.form.isActive.description"),
+            label: t($ => $.education.tags.list.form.isActive.label),
+            description: t($ => $.education.tags.list.form.isActive.description),
         },
     };
 
     const modalProps: ModalFormProps = {
-        title: tag ? t("labels.edit") + " " + t("education.tags.list.title") : t("labels.add") + " " + t("education.tags.list.title"),
-        desc: tag ? t("education.tags.list.editDescription") : t("education.tags.list.createDescription"),
+        title: tag ? t($ => $.labels.edit) + " " + t($ => $.education.tags.list.title) : t($ => $.labels.add) + " " + t($ => $.education.tags.list.title),
+        desc: tag ? t($ => $.education.tags.list.editDescription) : t($ => $.education.tags.list.createDescription),
         modal: true,
-        textConfirm: (createMutation.isPending || updateMutation.isPending) ? t("labels.saving") : t("labels.save"),
-        textCancel: t("labels.cancel"),
+        textConfirm: (createMutation.isPending || updateMutation.isPending) ? t($ => $.labels.saving) : t($ => $.labels.save),
+        textCancel: t($ => $.labels.cancel),
         defaultValue: {
             name: tag?.name || "",
             description: tag?.description || "",
@@ -81,23 +81,23 @@ export const DialogTagCreate = ({ open, onOpenChange, tag }: DialogTagCreateProp
             if (tag) {
                 await updateMutation.mutateAsync({ id: tag.id, ...values } as UpdateTagRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t("education.tags.list.notifications.updateSuccess") });
+                        showNotifSuccess({ message: res.message || t($ => $.education.tags.list.notifications.updateSuccess) });
                         queryClient.invalidateQueries({ queryKey: ["education-tags-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
-                        showNotifError({ message: err.message || t("labels.error") });
+                        showNotifError({ message: err.message || t($ => $.labels.error) });
                     }
                 });
             } else {
                 await createMutation.mutateAsync(values as CreateTagRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t("education.tags.list.notifications.createSuccess") });
+                        showNotifSuccess({ message: res.message || t($ => $.education.tags.list.notifications.createSuccess) });
                         queryClient.invalidateQueries({ queryKey: ["education-tags-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
-                        showNotifError({ message: err.message || t("labels.error") });
+                        showNotifError({ message: err.message || t($ => $.labels.error) });
                     }
                 });
             }

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormInput, FormPassword } from "@/components/custom/forms";
 import { Loader2, Mail, Lock, User, UserPlus, AlertCircle } from "lucide-react";
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { z } from "zod";
 import { AppRoute } from "@/constants/app-route";
 
@@ -21,7 +21,7 @@ type Props = {
 }
 
 export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   // Define signUpFormData directly in this file
   const signUpFormData = {
@@ -29,20 +29,20 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
       name: {
         type: "text",
         name: "name",
-        label: t("labels.fullName"),
-        placeholder: t("auth.signUp.namePlaceholder"),
+        label: t($ => $.labels.fullName),
+        placeholder: t($ => $.auth.signUp.namePlaceholder),
       },
       email: {
         type: "text",
         name: "email",
-        label: t("labels.emailAddress"),
-        placeholder: t("auth.signUp.emailPlaceholder"),
+        label: t($ => $.labels.emailAddress),
+        placeholder: t($ => $.auth.signUp.emailPlaceholder),
       },
       password: {
         type: "password",
         name: "password",
-        label: t("labels.password"),
-        placeholder: t("auth.signUp.passwordPlaceholder"),
+        label: t($ => $.labels.password),
+        placeholder: t($ => $.auth.signUp.passwordPlaceholder),
       }
     },
     defaultValue: {
@@ -54,9 +54,9 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
 
   // Create schema with translated error messages directly in this file
   const schema = z.object({
-    name: z.string().min(1, { message: t("message.nameRequired") }),
-    email: z.email({ message: t("message.invalidEmail") }),
-    password: z.string().min(1, { message: t("message.passwordRequired") }),
+    name: z.string().min(1, { message: t($ => $.message.nameRequired) }),
+    email: z.email({ message: t($ => $.message.invalidEmail) }),
+    password: z.string().min(1, { message: t($ => $.message.passwordRequired) }),
   });
 
   const form = useForm<SignUpFormValues>({
@@ -119,21 +119,21 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
           {loading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t("labels.signingUp")}...
+              {t($ => $.labels.signingUp)}...
             </>
           ) : (
             <>
               <UserPlus className="mr-2 h-4 w-4" />
-              {t("labels.signUp")}
+              {t($ => $.labels.signUp)}
             </>
           )}
         </Button>
 
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
-            {t("auth.signUp.alreadyHaveAccount")}{" "}
+            {t($ => $.auth.signUp.alreadyHaveAccount)}{" "}
             <a href={AppRoute.auth.signIn.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
-              {t("auth.signUp.backToSignIn")}
+              {t($ => $.auth.signUp.backToSignIn)}
             </a>
           </p>
         </div>

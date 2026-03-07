@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { FileText } from 'lucide-react';
 import { ElementDetail } from '@/api/periodic-table/periodic-table';
 import { CardSection } from './CardSection';
@@ -15,30 +15,30 @@ export const ElementNotes: React.FC<ElementNotesProps> = ({
   expandedSections,
   toggleSection
 }) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   return (
     <CardSection
-      title={t('periodicTable.periodicTable.var.notes')}
+      title={t($ => $.periodicTable.periodicTable.var.notes)}
       icon={<FileText className="h-5 w-5" />}
       isExpanded={expandedSections.notes}
       onToggle={() => toggleSection('notes')}
     >
       <div className='flex flex-col gap-4'>
         <PropertyItemHtml
-          label={t('periodicTable.periodicTable.var.atomicOverview')}
+          label={t($ => $.periodicTable.periodicTable.var.atomicOverview)}
           value={element.notes?.atomicOverview}
         />
         <PropertyItemHtml
-          label={t('periodicTable.periodicTable.var.atomicHistory')}
+          label={t($ => $.periodicTable.periodicTable.var.atomicHistory)}
           value={element.notes?.atomicHistory}
         />
         <PropertyItemHtml
-          label={t('periodicTable.periodicTable.var.atomicApps')}
+          label={t($ => $.periodicTable.periodicTable.var.atomicApps)}
           value={element.notes?.atomicApps}
         />
         <PropertyItemHtml
-          label={t('periodicTable.periodicTable.var.atomicFacts')}
+          label={t($ => $.periodicTable.periodicTable.var.atomicFacts)}
           value={element.notes?.atomicFacts}
         />
       </div>

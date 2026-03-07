@@ -20,6 +20,7 @@ export default {
     viewCount: "Jumlah Dilihat",
     downloadCount: "Jumlah Diunduh"
   },
-  showingText: "Menampilkan <bold>{{count}}</bold> dari <bold>{{total}}</bold> buku"
+  showingText: "Menampilkan <bold>{{count}}</bold> dari <bold>{{total}}</bold> buku",
+  unknownAuthor: "Penulis Tidak Diketahui"
 
 }

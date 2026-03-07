@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { PeriodicCell } from "./PeriodicCell";
@@ -17,17 +17,17 @@ interface ElementDetailPopoverProps {
 }
 
 export function ElementDetailPopover({ element, children, theme = 'theme1' }: ElementDetailPopoverProps) {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useAppTranslation();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  
+
   // Use the element data passed as prop instead of fetching from API
   const data = element;
 
   const handleViewDetails = () => {
-    navigate({ 
-      to: AppRoute.periodicTable.elementDetail.url, 
-      params: { id: element.atomicNumber.toString() } 
+    navigate({
+      to: AppRoute.periodicTable.elementDetail.url,
+      params: { id: element.atomicNumber.toString() }
     });
   };
 
@@ -48,8 +48,8 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
           {children}
         </div>
       </PopoverTrigger>
-      <PopoverContent 
-        className="w-[400px] max-h-[80vh] overflow-y-auto p-0" 
+      <PopoverContent
+        className="w-[400px] max-h-[80vh] overflow-y-auto p-0"
         align="center"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
@@ -74,12 +74,12 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
                 </div>
                 <div>
                   <h3 className="text-xl font-bold">{data.atomicName}</h3>
-                  <p className="text-muted-foreground">{data.atomicSymbol} - {t('periodicTable.periodicTable.var.atomicNumber')} {data.atomicNumber}</p>
+                  <p className="text-muted-foreground">{data.atomicSymbol} - {t($ => $.periodicTable.periodicTable.var.atomicNumber)} {data.atomicNumber}</p>
                 </div>
               </div>
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setIsOpen(false)}
                 className="h-6 w-6"
               >
@@ -91,23 +91,23 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
             <div className="bg-muted/50 rounded-lg p-3 mb-4">
               <h4 className="font-semibold mb-2 flex items-center">
                 <Info className="h-4 w-4 mr-2" />
-                {t('periodicTable.elementDetail.overview')}
+                {t($ => $.periodicTable.elementDetail.overview)}
               </h4>
               <div className="space-y-1 text-sm">
-                {renderProperty(t('periodicTable.periodicTable.var.atomicWeight'), (data.prop?.atomicWeight as string) + " " + getPeriodictUnits("atomicWeight"))}
-                {renderProperty(t('periodicTable.periodicTable.var.phase'), data.prop?.phase as string)}
-                {renderProperty(t('periodicTable.periodicTable.var.group'), (data.prop?.group as string + getColumnGroup(data.prop?.group as string)))}
-                {renderProperty(t('periodicTable.periodicTable.var.period'), data.prop?.period as string)}
-                {renderProperty(t('periodicTable.periodicTable.var.block'), data.prop?.block as string)}
-                {renderProperty(t('periodicTable.periodicTable.var.series'), t('periodicTable.periodicTable.var.' + data.prop?.series) as string)}
-                {renderProperty(t('periodicTable.periodicTable.var.color'), data.prop?.color as string)}
+                {renderProperty(t($ => $.periodicTable.periodicTable.var.atomicWeight), (data.prop?.atomicWeight as string) + " " + getPeriodictUnits("atomicWeight"))}
+                {renderProperty(t($ => $.periodicTable.periodicTable.var.phase), data.prop?.phase as string)}
+                {renderProperty(t($ => $.periodicTable.periodicTable.var.group), (data.prop?.group as string + getColumnGroup(data.prop?.group as string)))}
+                {renderProperty(t($ => $.periodicTable.periodicTable.var.period), data.prop?.period as string)}
+                {renderProperty(t($ => $.periodicTable.periodicTable.var.block), data.prop?.block as string)}
+                {renderProperty(t('periodicTable.periodicTable.var.' + data.prop?.series) as string, t('periodicTable.periodicTable.var.' + data.prop?.series) as string)}
+                {renderProperty(t($ => $.periodicTable.periodicTable.var.color), data.prop?.color as string)}
               </div>
             </div>
 
             {/* Details Button */}
             <div className="flex justify-end">
               <Button onClick={handleViewDetails}>
-                {t('periodicTable.elementDetail.viewDetails')}
+                {t($ => $.periodicTable.elementDetail.viewDetails)}
               </Button>
             </div>
           </div>

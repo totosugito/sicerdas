@@ -1,5 +1,5 @@
 import { getPeriodictUnits } from '@/components/pages/periodic-table/utils/element-units';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { ElementDetail } from '@/api/periodic-table/periodic-table';
 import { cn } from '@/lib/utils';
 import { getElementStyle } from '../utils/element-styles';
@@ -12,7 +12,7 @@ interface ElementHeroIsotopeProps {
 }
 
 export function ElementHeroIsotope({ element, theme }: ElementHeroIsotopeProps) {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   // Calculate isotope counts
   const knownIsotopes = element.atomicProperties.knownIsotopes || [];
@@ -43,7 +43,7 @@ export function ElementHeroIsotope({ element, theme }: ElementHeroIsotopeProps) 
             <div>
               <h1 className="text-2xl md:text-3xl font-bold">{element.atomicName}</h1>
               <p className="text-muted-foreground text-sm md:text-base">
-                {t('periodicTable.periodicTable.var.' + element.atomicProperties.series)}
+                {t(`periodicTable.periodicTable.var.${element.atomicProperties.series}` as any)}
               </p>
               <p className="text-muted-foreground text-sm">
                 {element.atomicProperties?.atomicWeight} {getPeriodictUnits('atomicWeight')}
@@ -55,24 +55,24 @@ export function ElementHeroIsotope({ element, theme }: ElementHeroIsotopeProps) 
           <div className="grid grid-cols-3 gap-4">
             <div className="bg-card p-4 rounded-lg text-center border">
               <div className="text-3xl font-bold text-primary">{totalIsotopes}</div>
-              <div className="text-xs text-muted-foreground uppercase tracking-wider">{t('periodicTable.periodicTable.var.total')}</div>
+              <div className="text-xs text-muted-foreground uppercase tracking-wider">{t($ => $.periodicTable.periodicTable.var.total)}</div>
             </div>
             <div className="bg-card p-4 rounded-lg text-center border">
               <div className="text-3xl font-bold text-green-600">{stableCount}</div>
-              <div className="text-xs text-muted-foreground uppercase tracking-wider">{t('periodicTable.periodicTable.var.stable')}</div>
+              <div className="text-xs text-muted-foreground uppercase tracking-wider">{t($ => $.periodicTable.periodicTable.var.stable)}</div>
             </div>
             <div className="bg-card p-4 rounded-lg text-center border">
               <div className="text-3xl font-bold text-red-600">{unstableCount}</div>
-              <div className="text-xs text-muted-foreground uppercase tracking-wider">{t('periodicTable.periodicTable.var.unstable')}</div>
+              <div className="text-xs text-muted-foreground uppercase tracking-wider">{t($ => $.periodicTable.periodicTable.var.unstable)}</div>
             </div>
           </div>
         </div>
 
         {/* Isotope summary description */}
         <div className="mt-8 text-center max-w-2xl mx-auto">
-          <h2 className="text-xl font-semibold mb-2">{t('periodicTable.periodicTable.var.isotopeInformation')}</h2>
+          <h2 className="text-xl font-semibold mb-2">{t($ => $.periodicTable.periodicTable.var.isotopeInformation)}</h2>
           <p className="text-muted-foreground">
-            {t('periodicTable.periodicTable.var.isotopeDescription', {
+            {t($ => $.periodicTable.periodicTable.var.isotopeDescription, {
               name: element.atomicName,
               total: totalIsotopes,
               stable: stableCount,

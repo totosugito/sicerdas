@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import {embeddedLocales, languages} from "./locales";
+import { embeddedLocales, languages } from "./locales";
 
 i18n
   // pass the i18n instance to react-i18next.
@@ -16,6 +16,7 @@ i18n
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
-  }).then(r =>{});
+    parseMissingKeyHandler: (key) => `[MISSING: ${key}]`,
+  }).then(r => { });
 
 export default i18n;

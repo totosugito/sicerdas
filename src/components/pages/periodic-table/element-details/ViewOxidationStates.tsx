@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 
 interface ViewOxidationStatesProps {
   radius?: number;
@@ -15,7 +15,7 @@ const ViewOxidationStates: React.FC<ViewOxidationStatesProps> = ({
   textColor = 'white',
   oxs
 }) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   const createView = () => {
     const idxOs = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -60,7 +60,7 @@ const ViewOxidationStates: React.FC<ViewOxidationStatesProps> = ({
 
   return (
     <div className='flex flex-wrap'>
-        {createView()}
+      {createView()}
     </div>
   );
 };

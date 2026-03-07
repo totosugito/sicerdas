@@ -1,9 +1,9 @@
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 
 export function TabNavigation() {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
 
   return (
     <>
@@ -15,37 +15,37 @@ export function TabNavigation() {
                 value="profile"
                 className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300"
               >
-                {t("user.profile.tabs.editProfile")}
+                {t($ => $.user.profile.tabs.editProfile)}
               </TabsTrigger>
               <TabsTrigger
                 value="personal"
                 className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300"
               >
-                {t("user.profile.tabs.personalInfo")}
+                {t($ => $.user.profile.tabs.personalInfo)}
               </TabsTrigger>
               <TabsTrigger
                 value="security"
                 className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300"
               >
-                {t("user.profile.tabs.security")}
+                {t($ => $.user.profile.tabs.security)}
               </TabsTrigger>
               <TabsTrigger
                 value="privacy"
                 className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300"
               >
-                {t("user.profile.tabs.privacy")}
+                {t($ => $.user.profile.tabs.privacy)}
               </TabsTrigger>
               {/* <TabsTrigger 
                 value="billing" 
                 className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300"
               >
-                {t("user.profile.tabs.billing")}
+                {t($ => $.user.profile.tabs.billing)}
               </TabsTrigger>
               <TabsTrigger 
                 value="integrations" 
                 className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300"
               >
-                {t("user.profile.tabs.integrations")}
+                {t($ => $.user.profile.tabs.integrations)}
               </TabsTrigger> */}
             </TabsList>
           </div>
@@ -57,25 +57,25 @@ export function TabNavigation() {
           value="profile"
           className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:font-bold data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300 justify-start w-full"
         >
-          {t("user.profile.tabs.editProfile")}
+          {t($ => $.user.profile.tabs.editProfile)}
         </TabsTrigger>
         <TabsTrigger
           value="personal"
           className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:font-bold data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300 justify-start w-full"
         >
-          {t("user.profile.tabs.personalInfo")}
+          {t($ => $.user.profile.tabs.personalInfo)}
         </TabsTrigger>
         <TabsTrigger
           value="security"
           className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:font-bold data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300 justify-start w-full"
         >
-          {t("user.profile.tabs.security")}
+          {t($ => $.user.profile.tabs.security)}
         </TabsTrigger>
         <TabsTrigger
           value="privacy"
           className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:font-bold data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300 justify-start w-full"
         >
-          {t("user.profile.tabs.privacy")}
+          {t($ => $.user.profile.tabs.privacy)}
         </TabsTrigger>
       </TabsList>
     </>

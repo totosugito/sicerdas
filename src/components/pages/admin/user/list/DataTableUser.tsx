@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 import { IoMenu } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,16 +50,16 @@ const DataTableUser = ({
   onEditClicked, onPasswordChange, toolbarContent,
   onPaginationChange, paginationData = { page: 1, limit: 5, total: 0, totalPages: 0 }
 }: Props) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   const columns = useMemo<ColumnDef<User>[]>(() => [
-    createRowNumberColumn({ accessorKey: "rowNum", id: "rowNum", paginationData: paginationData }), 
+    createRowNumberColumn({ accessorKey: "rowNum", id: "rowNum", paginationData: paginationData }),
     {
       accessorKey: "name",
       enableSorting: true,
       enableColumnFilter: true,
       header: ({ column }) => {
-        return (<div className={"flex w-full justify-center"}><DataTableColumnHeader column={column} title={"Name"}
+        return (<div className={"flex w-full justify-center"}><DataTableColumnHeader column={column} title={t($ => $.labels.fullName)}
           className={"justify-center"} />
         </div>)
       },
@@ -80,7 +80,7 @@ const DataTableUser = ({
       enableSorting: true,
       enableColumnFilter: true,
       header: ({ column }) => {
-        return (<DataTableColumnHeader column={column} title={"Role"} />)
+        return (<DataTableColumnHeader column={column} title={t($ => $.labels.role)} />)
       },
       cell: ({ cell }) => {
         const role_ = cell.getValue();
@@ -112,14 +112,14 @@ const DataTableUser = ({
               <DropdownMenuContent className="w-56" side="bottom" align="start">
                 <DropdownMenuGroup>
                   <DropdownMenuItem onClick={() => onEditClicked(row.original)}>
-                    <CiEdit /> {t("shared.edit")}
+                    <CiEdit /> {t($ => $.labels.edit)}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => onPasswordChange(row.original)}>
-                    <CiLock /> {t("labels.changePassword")}
+                    <CiLock /> {t($ => $.labels.changePassword)}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => onDeleteClicked(row.original)} className={"text-destructive"}>
-                    <CiTrash className={"text-destructive"} /> {t("shared.delete")}
+                    <CiTrash className={"text-destructive"} /> {t($ => $.labels.delete)}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
@@ -143,7 +143,7 @@ const DataTableUser = ({
     manualPagination: true,
     onPaginationChange: (updater: any) => {
       const nextPagination = typeof updater === "function" ? updater(table.getState().pagination) : updater;
-      
+
       // Call parent pagination handler if provided
       if (onPaginationChange) {
         onPaginationChange({
@@ -162,14 +162,14 @@ const DataTableUser = ({
 
   return (
     <div className={""}>
-      <DataTable 
-        table={table} 
+      <DataTable
+        table={table}
         totalRowCount={paginationData.total}
         paginationData={paginationData}
       >
         <div className={"flex flex-row gap-2 justify-between"}>
           <div className={"flex flex-row gap-2"}>
-            <DataTableFilter table={table} searchColumnIds={["name", "role"]} searchPlaceholder="Search by name or role..." />
+            <DataTableFilter table={table} searchColumnIds={["name", "role"]} searchPlaceholder={t($ => $.labels.search)} />
             <DataTableViewOptions table={table} />
           </div>
           {toolbarContent}

@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import {
     BookOpen,
     Menu,
@@ -35,7 +35,7 @@ interface AppNavbarMobileProps {
 }
 
 export function AppNavbarMobile({ isOpen, setIsOpen }: AppNavbarMobileProps) {
-    const { t } = useTranslation()
+    const { t } = useAppTranslation()
     const { isAuthenticated } = useAuth()
     const { booksMenu, constitutionMenu, tablePeriodicMenu, quizMenu } =
         useAppMenu()
@@ -43,28 +43,28 @@ export function AppNavbarMobile({ isOpen, setIsOpen }: AppNavbarMobileProps) {
     const menuGroups = [
         {
             id: 'books',
-            title: t('landing.navbar.books.title'),
+            title: t($ => $.landing.navbar.books.title),
             Icon: BookOpen,
             items: booksMenu,
             variant: 'primary' as const,
         },
         {
             id: 'constitution',
-            title: t('landing.navbar.constitution.title'),
+            title: t($ => $.landing.navbar.constitution.title),
             Icon: Shield,
             items: constitutionMenu,
             variant: 'secondary' as const,
         },
         {
             id: 'periodicTable',
-            title: t('landing.navbar.periodicTable.title'),
+            title: t($ => $.landing.navbar.periodicTable.title),
             Icon: FlaskConical,
             items: tablePeriodicMenu,
             variant: 'primary' as const,
         },
         {
             id: 'quiz',
-            title: t('landing.navbar.quiz.title'),
+            title: t($ => $.landing.navbar.quiz.title),
             Icon: Trophy,
             items: quizMenu,
             variant: 'secondary' as const,
@@ -92,7 +92,7 @@ export function AppNavbarMobile({ isOpen, setIsOpen }: AppNavbarMobileProps) {
                             className="h-12 w-12"
                         />
                         <span className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                            {t('app.appName')}
+                            {t($ => $.app.appName)}
                         </span>
                     </SheetTitle>
                 </SheetHeader>
@@ -122,7 +122,7 @@ export function AppNavbarMobile({ isOpen, setIsOpen }: AppNavbarMobileProps) {
                             onClick={() => setIsOpen(false)}
                         >
                             <Button className="w-full bg-gradient-to-r from-primary to-primary/70 hover:opacity-90 text-primary-foreground rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 h-12 font-semibold">
-                                {t('labels.login')}
+                                {t($ => $.labels.login)}
                             </Button>
                         </Link>
                     </div>

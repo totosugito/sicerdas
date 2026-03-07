@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 import { EnumPeriodicGroup } from "backend/src/db/schema/table-periodic/types";
 import { getElementStyle } from "../utils/element-styles";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 
 interface PeriodicTableLegendProps {
   theme: string;
 }
 
 export const PeriodicTableLegend = ({ theme }: PeriodicTableLegendProps) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   // Define all possible element groups for the legend
   const elementGroups = useMemo(() => [

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormPassword } from "@/components/custom/forms";
 import { Loader2, Lock, Check, AlertCircle } from "lucide-react";
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { z } from "zod";
 
 type ResetPasswordFormValues = {
@@ -19,7 +19,7 @@ type Props = {
 }
 
 export const ResetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   // Define resetPasswordFormData directly in this file
   const resetPasswordFormData = {
@@ -27,14 +27,14 @@ export const ResetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props
       password: {
         type: "password",
         name: "password",
-        label: t("labels.newPassword"),
-        placeholder: t("auth.resetPassword.newPasswordPlaceholder"),
+        label: t($ => $.labels.newPassword),
+        placeholder: t($ => $.auth.resetPassword.newPasswordPlaceholder),
       },
       confirmPassword: {
         type: "password",
         name: "confirmPassword",
-        label: t("labels.confirmPassword"),
-        placeholder: t("auth.resetPassword.confirmPasswordPlaceholder"),
+        label: t($ => $.labels.confirmPassword),
+        placeholder: t($ => $.auth.resetPassword.confirmPasswordPlaceholder),
       }
     },
     defaultValue: {
@@ -45,10 +45,10 @@ export const ResetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props
 
   // Create schema with translated error messages directly in this file
   const schema = z.object({
-    password: z.string().min(1, { message: t("message.passwordRequired") }),
-    confirmPassword: z.string().min(1, { message: t("message.confirmPasswordRequired") })
+    password: z.string().min(1, { message: t($ => $.message.passwordRequired) }),
+    confirmPassword: z.string().min(1, { message: t($ => $.message.confirmPasswordRequired) })
   }).refine((data) => data.password === data.confirmPassword, {
-    message: t("message.passwordsDoNotMatch"),
+    message: t($ => $.message.passwordsDoNotMatch),
     path: ["confirmPassword"],
   });
 
@@ -101,12 +101,12 @@ export const ResetPasswordForm = ({ onFormSubmit, loading, errorMessage }: Props
           {loading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t("labels.resettingPassword")}...
+              {t($ => $.labels.resettingPassword)}...
             </>
           ) : (
             <>
               <Lock className="mr-2 h-4 w-4" />
-              {t("labels.resetPassword")}
+              {t($ => $.labels.resetPassword)}
             </>
           )}
         </Button>

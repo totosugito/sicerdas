@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { PageTitle, ErrorContainer } from '@/components/app';
@@ -13,7 +13,7 @@ export const Route = createFileRoute('/(pages)/(exam)/(packages)/admin/edit-pack
 });
 
 function AdminExamPackagesEditPage() {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const navigate = useNavigate();
   const { id } = Route.useParams();
   const queryClient = useQueryClient();
@@ -47,11 +47,11 @@ function AdminExamPackagesEditPage() {
 
     updateMutation.mutate(payload, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t("exam.packages.list.notifications.updateSuccess") });
+        showNotifSuccess({ message: res.message || t($ => $.exam.packages.list.notifications.updateSuccess) });
         queryClient.invalidateQueries({ queryKey: ["exam-packages-detail", id] });
       },
       onError: (err: any) => {
-        showNotifError({ message: err.message || t("labels.error") });
+        showNotifError({ message: err.message || t($ => $.labels.error) });
       }
     });
   };
@@ -65,17 +65,17 @@ function AdminExamPackagesEditPage() {
       <div className="flex flex-col gap-6 w-full">
         <div className="flex items-center gap-4">
           <PageTitle
-            title={t("exam.packages.list.edit.title")}
-            description={<span>{t("exam.packages.list.edit.description")}</span>}
+            title={t($ => $.exam.packages.list.edit.title)}
+            description={<span>{t($ => $.exam.packages.list.edit.description)}</span>}
             showBack
             backTo={AppRoute.exam.packages.admin.list.url}
           />
         </div>
 
         <ErrorContainer
-          title={t("labels.error")}
+          title={t($ => $.labels.error)}
           message={error?.message}
-          buttonText={t("exam.packages.list.backToPage")}
+          buttonText={t($ => $.exam.packages.list.backToPage)}
           onButtonClick={() => navigate({ to: AppRoute.exam.packages.admin.list.url, replace: true })}
         />
       </div>
@@ -87,8 +87,8 @@ function AdminExamPackagesEditPage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex items-center gap-4">
         <PageTitle
-          title={t("exam.packages.list.edit.title")}
-          description={<span>{t("exam.packages.list.edit.description")}</span>}
+          title={t($ => $.exam.packages.list.edit.title)}
+          description={<span>{t($ => $.exam.packages.list.edit.description)}</span>}
           showBack
           backTo={AppRoute.exam.packages.admin.list.url}
         />

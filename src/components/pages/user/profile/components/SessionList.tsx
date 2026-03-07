@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { Skeleton } from '@/components/ui/skeleton'
 import { AlertTriangle, Laptop, LucideIcon, Monitor, RefreshCw, Smartphone, Tablet, Globe } from 'lucide-react'
 import { formatDistanceToNow, parseISO } from 'date-fns'
@@ -89,16 +89,16 @@ interface SessionListProps {
 }
 
 export function SessionList({ sessions, isLoading, isError, currentToken, refetch, onRevokeSession, onRevokeAllSessions }: SessionListProps) {
-  const { t, i18n } = useTranslation()
+  const { t, i18n } = useAppTranslation()
   const [confirmationModal, setConfirmationModal] = useState<ModalProps | null>(null);
 
   const handleRevokeClick = (sessionToken: string) => {
     if (!sessionToken) return
     setConfirmationModal({
-      title: t("user.profile.sessions.confirmLogoutTitle"),
-      desc: t("user.profile.sessions.confirmLogoutDescription"),
-      textConfirm: t("user.profile.sessions.confirm"),
-      textCancel: t("user.profile.sessions.cancel"),
+      title: t($ => $.user.profile.sessions.confirmLogoutTitle),
+      desc: t($ => $.user.profile.sessions.confirmLogoutDescription),
+      textConfirm: t($ => $.user.profile.sessions.confirm),
+      textCancel: t($ => $.user.profile.sessions.cancel),
       iconType: "question",
       onConfirmClick: () => {
         if (onRevokeSession && sessionToken) {
@@ -114,10 +114,10 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
 
   const handleRevokeAllClick = () => {
     setConfirmationModal({
-      title: t("user.profile.sessions.confirmRevokeAllTitle"),
-      desc: t("user.profile.sessions.confirmRevokeAllDescription"),
-      textConfirm: t("user.profile.sessions.revokeAll"),
-      textCancel: t("user.profile.sessions.cancel"),
+      title: t($ => $.user.profile.sessions.confirmRevokeAllTitle),
+      desc: t($ => $.user.profile.sessions.confirmRevokeAllDescription),
+      textConfirm: t($ => $.user.profile.sessions.revokeAll),
+      textCancel: t($ => $.user.profile.sessions.cancel),
       iconType: "question",
       variant: "destructive",
       onConfirmClick: () => {
@@ -146,7 +146,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
       <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full">
         <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
           <CardTitle className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight">
-            {t("user.profile.sessions.title")}
+            {t($ => $.user.profile.sessions.title)}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-6 py-4 space-y-4">
@@ -172,7 +172,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
       <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full">
         <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
           <CardTitle className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight">
-            {t("user.profile.sessions.title")}
+            {t($ => $.user.profile.sessions.title)}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-6 py-0">
@@ -181,10 +181,10 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
               <AlertTriangle className="h-8 w-8 text-red-500" />
             </div>
             <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-2">
-              {t("user.profile.sessions.errorTitle") || "Gagal Memuat Sesi"}
+              {t($ => $.user.profile.sessions.errorTitle)}
             </h3>
             <p className="text-muted-foreground mb-6 max-w-md">
-              {t("user.profile.sessions.errorDescription") || "Terjadi kesalahan saat memuat sesi Anda. Silakan coba lagi."}
+              {t($ => $.user.profile.sessions.errorDescription)}
             </p>
             <Button
               variant="default"
@@ -192,7 +192,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
               className="flex items-center gap-2"
             >
               <RefreshCw className="h-4 w-4" />
-              {t("user.profile.sessions.retry") || "Coba Lagi"}
+              {t($ => $.user.profile.sessions.retry)}
             </Button>
           </div>
         </CardContent>
@@ -207,7 +207,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
       <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full">
         <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
           <CardTitle className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight">
-            {t("user.profile.sessions.title")}
+            {t($ => $.user.profile.sessions.title)}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-6 pb-0 space-y-6 w-full">
@@ -216,7 +216,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
             {currentSession && (
               <section>
                 <h3 className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight tracking-[-0.015em] px-1 pb-3">
-                  {t("user.profile.sessions.currentSession")}
+                  {t($ => $.user.profile.sessions.currentSession)}
                 </h3>
                 <div
                   className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 min-h-[72px] justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-green-500/30"
@@ -230,7 +230,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
                         {getDeviceName(currentSession.userAgent)} • {getBrowserName(currentSession.userAgent)}
                       </p>
                       <p className="text-[#6C757D] dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">
-                        {currentSession.ipAddress ? `${t("user.profile.sessions.ipAddress")}: ${currentSession.ipAddress}` : t("user.profile.sessions.unknownLocation")}
+                        {currentSession.ipAddress ? `${t($ => $.user.profile.sessions.ipAddress)}: ${currentSession.ipAddress}` : t($ => $.user.profile.sessions.unknownLocation)}
                         {formatDateDistance(currentSession.createdAt, i18n.language) && ` - ${formatDateDistance(currentSession.createdAt, i18n.language)}`}
                       </p>
                     </div>
@@ -238,7 +238,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
                   <div className="shrink-0 ml-auto sm:ml-0">
                     <div className="flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-700 dark:bg-green-500/20 dark:text-green-300 rounded-full text-xs font-medium">
                       <div className="size-2 rounded-full bg-green-500"></div>
-                      <span>{t("user.profile.sessions.thisDevice")}</span>
+                      <span>{t($ => $.user.profile.sessions.thisDevice)}</span>
                     </div>
                   </div>
                 </div>
@@ -249,14 +249,14 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
             {(otherSessions && otherSessions.length > 0) && (<section>
               <div className="flex flex-row justify-between items-center pb-3">
                 <h3 className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight tracking-[-0.015em] px-1">
-                  {t("user.profile.sessions.otherSessions")}
+                  {t($ => $.user.profile.sessions.otherSessions)}
                 </h3>
                 <Button
                   variant="destructive"
                   size="sm"
                   onClick={handleRevokeAllClick}
                 >
-                  {t("user.profile.sessions.revokeAll")}
+                  {t($ => $.user.profile.sessions.revokeAll)}
                 </Button>
               </div>
               <div className="space-y-4">
@@ -280,7 +280,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
                             {deviceName} • {browserName}
                           </p>
                           <p className="text-[#6C757D] dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">
-                            {session.ipAddress ? `${t("user.profile.sessions.ipAddress")}: ${session.ipAddress}` : t("user.profile.sessions.unknownLocation")}
+                            {session.ipAddress ? `${t($ => $.user.profile.sessions.ipAddress)}: ${session.ipAddress}` : t($ => $.user.profile.sessions.unknownLocation)}
                             {timeAgo && ` - ${timeAgo}`}
                           </p>
                         </div>
@@ -293,7 +293,7 @@ export function SessionList({ sessions, isLoading, isError, currentToken, refetc
                             handleRevokeClick(session.token)
                           }}
                         >
-                          {t("user.profile.sessions.logout")}
+                          {t($ => $.user.profile.sessions.logout)}
                         </Button>
                       </div>
                     </div>

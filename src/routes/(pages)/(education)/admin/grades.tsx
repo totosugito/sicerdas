@@ -8,7 +8,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/app';
 import { Plus, Trash2 } from 'lucide-react';
@@ -29,7 +29,7 @@ export const Route = createFileRoute('/(pages)/(education)/admin/grades')({
 });
 
 function AdminEducationGradesPage() {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const navigate = Route.useNavigate();
   const searchParams = Route.useSearch();
@@ -77,12 +77,12 @@ function AdminEducationGradesPage() {
     if (!selectedGrade) return;
     deleteMutation.mutate(selectedGrade.id, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t("education.grade.delete.success") });
+        showNotifSuccess({ message: res.message || t($ => $.education.grade.delete.success) });
         queryClient.invalidateQueries({ queryKey: ["education-grade-list"] });
         setShowDeleteDialog(false);
       },
       onError: (err: any) => {
-        showNotifError({ message: err.message || t("labels.error") });
+        showNotifError({ message: err.message || t($ => $.labels.error) });
       }
     });
   };
@@ -91,12 +91,12 @@ function AdminEducationGradesPage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={t("education.grade.title")}
-          description={<span>{t("education.grade.description")}</span>}
+          title={t($ => $.education.grade.title)}
+          description={<span>{t($ => $.education.grade.description)}</span>}
         />
         <Button onClick={handleAdd} className="flex-shrink-0 gap-1.5 shadow-sm">
           <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">{t("labels.add")}</span>
+          <span className="hidden sm:inline">{t($ => $.labels.add)}</span>
         </Button>
       </div>
 
@@ -151,15 +151,15 @@ function AdminEducationGradesPage() {
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
-          title: t("education.grade.delete.confirmTitle"),
-          desc: t("education.grade.delete.confirmDesc", { name: selectedGrade?.name }),
-          infoContainer: t("education.grade.delete.deleteInfo"),
+          title: t($ => $.education.grade.delete.confirmTitle),
+          desc: t($ => $.education.grade.delete.confirmDesc, { name: selectedGrade?.name }),
+          infoContainer: t($ => $.education.grade.delete.deleteInfo),
           infoContainerVariant: "error",
           variant: "destructive",
           iconType: "error",
           headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
-          textCancel: t("labels.cancel"),
-          textConfirm: t("labels.delete"),
+          textCancel: t($ => $.labels.cancel),
+          textConfirm: t($ => $.labels.delete),
           onConfirmClick: confirmDelete,
         }}
       />

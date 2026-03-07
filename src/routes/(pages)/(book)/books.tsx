@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { z } from 'zod'
-import { useTranslation, Trans } from 'react-i18next'
+import { Trans } from 'react-i18next'
 import { useBookList, useBookFilterParams, BookListItem, BookListResponse } from '@/api/book'
 import { BookOpen, LayoutGrid, ListIcon } from 'lucide-react'
 import { showNotifError } from '@/lib/show-notif'
@@ -10,6 +10,7 @@ import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from '@/components/custom/table';
 import { useAppStore } from '@/stores/useAppStore'
 import { Button } from '@/components/ui/button';
+import { useAppTranslation } from '@/lib/i18n-typed'
 
 export const Route = createFileRoute('/(pages)/(book)/books')({
   validateSearch: z.object({
@@ -26,7 +27,7 @@ export const Route = createFileRoute('/(pages)/(book)/books')({
 })
 
 function RouteComponent() {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
   const { page: urlPage, limit: urlLimit, search: urlSearch, category: urlCategory, group: urlGroup, grade: urlGrade, sortBy: urlSortBy, sortOrder: urlSortOrder } = Route.useSearch()
   const navigate = Route.useNavigate()
 
@@ -91,10 +92,10 @@ function RouteComponent() {
         setTotalBooks(response.data.meta.total)
         setCurrentPage(response.data.meta.page)
       } else {
-        showNotifError({ message: t('book.failedToLoadBooks') })
+        showNotifError({ message: t($ => $.book.failedToLoadBooks) })
       }
     } catch (error) {
-      showNotifError({ message: t('book.errorLoadingBooks') })
+      showNotifError({ message: t($ => $.book.errorLoadingBooks) })
     } finally {
       setIsLoading(false)
     }
@@ -243,11 +244,11 @@ function RouteComponent() {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
                 <BookOpen className="w-8 h-8 text-slate-400" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{t("book.noBooksFound")}</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{t($ => $.book.noBooksFound)}</h3>
               <p className="text-slate-500 dark:text-slate-400 mb-4 max-w-sm mx-auto">
                 {searchTerm
-                  ? `${t(`book.noSearchResults`)} "${searchTerm}"`
-                  : t('book.noBooksAvailable')
+                  ? `${t($ => $.book.noSearchResults)} "${searchTerm}"`
+                  : t($ => $.book.noBooksAvailable)
                 }
               </p>
               {searchTerm && (
@@ -255,7 +256,7 @@ function RouteComponent() {
                   setSearchTerm('')
                   updateUrlParams(1, '')
                 }}>
-                  {t('book.clearSearch')}
+                  {t($ => $.book.clearSearch)}
                 </Button>
               )}
             </div>

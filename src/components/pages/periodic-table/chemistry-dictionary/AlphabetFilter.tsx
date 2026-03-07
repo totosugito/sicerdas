@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 
 // Alphabet group ranges
 const ALPHABET_GROUPS = [
@@ -16,18 +16,19 @@ interface AlphabetFilterProps {
 }
 
 export function AlphabetFilter({ activeGroup, onGroupChange }: AlphabetFilterProps) {
-  const { t } = useTranslation()
-  
+  const { t } = useAppTranslation()
+
   return (
     <div className="flex justify-center flex-wrap gap-2 mb-6">
       {ALPHABET_GROUPS.map((group) => (
         <Button
           key={group.id}
+          size="icon"
           variant={activeGroup === group.id ? 'default' : 'outline'}
           onClick={() => onGroupChange(group.id)}
           className="px-4"
         >
-          {t(group.labelKey)}
+          {t(group.labelKey as any)}
         </Button>
       ))}
     </div>

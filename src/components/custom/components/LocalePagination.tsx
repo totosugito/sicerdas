@@ -1,5 +1,5 @@
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationEllipsis } from '@/components/ui/pagination'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
@@ -11,13 +11,13 @@ interface LocalePaginationProps {
   onPageChange: (page: number) => void
 }
 
-export function LocalePagination({ 
-  currentPage, 
-  totalPages, 
-  onPageChange 
+export function LocalePagination({
+  currentPage,
+  totalPages,
+  onPageChange
 }: LocalePaginationProps) {
-  const { t } = useTranslation()
-  
+  const { t } = useAppTranslation()
+
   const getPageNumbers = () => {
     const pages: (number | "ellipsis")[] = [];
     if (totalPages <= 7) {
@@ -34,17 +34,17 @@ export function LocalePagination({
     return pages;
   };
 
-  const PaginationPrevious = ({ 
+  const PaginationPrevious = ({
     className,
     onClick,
     disabled
-  }: { 
+  }: {
     className?: string;
     onClick: () => void;
     disabled?: boolean;
   }) => (
     <button
-      aria-label={t('labels.pagination.previousPage')}
+      aria-label={t($ => $.labels.pagination.previousPage)}
       className={cn(
         buttonVariants({ variant: "ghost" }),
         "gap-1 px-2.5 sm:pl-2.5",
@@ -55,21 +55,21 @@ export function LocalePagination({
       disabled={disabled}
     >
       <ChevronLeftIcon />
-      <span className="hidden sm:block">{t('labels.pagination.previous')}</span>
+      <span className="hidden sm:block">{t($ => $.labels.pagination.previous)}</span>
     </button>
   );
 
-  const PaginationNext = ({ 
+  const PaginationNext = ({
     className,
     onClick,
     disabled
-  }: { 
+  }: {
     className?: string;
     onClick: () => void;
     disabled?: boolean;
   }) => (
     <button
-      aria-label={t('labels.pagination.nextPage')}
+      aria-label={t($ => $.labels.pagination.nextPage)}
       className={cn(
         buttonVariants({ variant: "ghost" }),
         "gap-1 px-2.5 sm:pr-2.5",
@@ -79,7 +79,7 @@ export function LocalePagination({
       onClick={onClick}
       disabled={disabled}
     >
-      <span className="hidden sm:block">{t('labels.pagination.next')}</span>
+      <span className="hidden sm:block">{t($ => $.labels.pagination.next)}</span>
       <ChevronRightIcon />
     </button>
   );
@@ -94,12 +94,12 @@ export function LocalePagination({
               disabled={currentPage === 1}
             />
           </PaginationItem>
-          
+
           {getPageNumbers().map((page, idx) => (
             <PaginationItem key={idx}>
               {page === "ellipsis" ? (
                 <PaginationEllipsis>
-                  <span className="sr-only">{t('labels.pagination.morePages')}</span>
+                  <span className="sr-only">{t($ => $.labels.pagination.morePages)}</span>
                 </PaginationEllipsis>
               ) : (
                 <PaginationLink
@@ -112,7 +112,7 @@ export function LocalePagination({
               )}
             </PaginationItem>
           ))}
-          
+
           <PaginationItem>
             <PaginationNext
               onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}

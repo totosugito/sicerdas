@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { cn } from '@/lib/utils';
 import { PropertyItem } from './PropertyItem';
 import { toPhysics } from '@/lib/my-utils';
@@ -24,7 +24,7 @@ interface IsotopeCardProps {
 }
 
 export const IsotopeCard = ({ atomColor, isotope, atomicSymbol }: IsotopeCardProps) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const isStable = isotope.halfLife === "Stable";
   const hasAtomicWeight = isotope.atomicWeight !== "None" && isotope.atomicWeight !== "";
 
@@ -47,7 +47,7 @@ export const IsotopeCard = ({ atomColor, isotope, atomicSymbol }: IsotopeCardPro
         </div>
         {hasAtomicWeight && (
           <div className="text-right">
-            <div className="text-xs text-muted-foreground">{t('periodicTable.periodicTable.var.atomicWeight')}</div>
+            <div className="text-xs text-muted-foreground">{t($ => $.periodicTable.periodicTable.var.atomicWeight)}</div>
             <div className="text-sm font-bold text-foreground">{isotope.atomicWeight} <span className="text-sm font-normal text-muted-foreground">{getPeriodictUnits('atomicWeight')}</span></div>
           </div>
         )}
@@ -60,17 +60,17 @@ export const IsotopeCard = ({ atomColor, isotope, atomicSymbol }: IsotopeCardPro
           value={isotope.spinParity}
           isHtml={true}
         />
-        <PropertyItem label={t('periodicTable.periodicTable.var.halfLife')} value={isotope.halfLife} isHtml={true}/>
-        <PropertyItem label={t('periodicTable.periodicTable.var.massExcess')} value={isotope.massExcess} />
-        <PropertyItem label={t('periodicTable.periodicTable.var.bindingEnergy')} value={isotope.bindingEnergy} />
+        <PropertyItem label={t($ => $.periodicTable.periodicTable.var.halfLife)} value={isotope.halfLife} isHtml={true} />
+        <PropertyItem label={t($ => $.periodicTable.periodicTable.var.massExcess)} value={isotope.massExcess} />
+        <PropertyItem label={t($ => $.periodicTable.periodicTable.var.bindingEnergy)} value={isotope.bindingEnergy} />
         {isotope.magneticMoment && (
-          <PropertyItem label={t('periodicTable.periodicTable.var.magneticMoment')} value={isotope.magneticMoment} />
+          <PropertyItem label={t($ => $.periodicTable.periodicTable.var.magneticMoment)} value={isotope.magneticMoment} />
         )}
         {isotope.quadrupoleMoment && (
-          <PropertyItem label={t('periodicTable.periodicTable.var.quadrupoleMomentIsotope')} value={isotope.quadrupoleMoment} />
+          <PropertyItem label={t($ => $.periodicTable.periodicTable.var.quadrupoleMomentIsotope)} value={isotope.quadrupoleMoment} />
         )}
         {isotope.abundance && (
-          <PropertyItem label={t('periodicTable.periodicTable.var.abundance')} value={isotope.abundance} />
+          <PropertyItem label={t($ => $.periodicTable.periodicTable.var.abundance)} value={isotope.abundance} />
         )}
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
 import { ControlForm } from "@/components/custom/forms";
 import * as z from "zod";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 import { useCreatePackageSection, useUpdatePackageSection, ExamPackageSection } from "@/api/exam-package-sections";
 import { useListPackageSimple } from "@/api/exam-packages";
 import { useQueryClient } from "@tanstack/react-query";
@@ -35,7 +35,7 @@ const FormEntity = ({ values, form, packageIdDisabled }: any) => {
 };
 
 export const SectionForm = ({ open, onOpenChange, section, packageId, packageIdDisabled = false }: SectionFormProps) => {
-    const { t } = useTranslation();
+    const { t } = useAppTranslation();
     const queryClient = useQueryClient();
     const createMutation = useCreatePackageSection();
     const updateMutation = useUpdatePackageSection();
@@ -46,9 +46,9 @@ export const SectionForm = ({ open, onOpenChange, section, packageId, packageIdD
     const packageOptions = packagesData?.data.items || [];
 
     const formSchema: any = {
-        packageId: z.string().min(1, t('exam.packageSection.list.formPackageRequired')),
-        title: z.string().min(1, t('exam.packageSection.list.formTitleRequired')),
-        durationMinutes: z.coerce.number().min(0, t('exam.packageSection.list.formDurationRequired')),
+        packageId: z.string().min(1, t($ => $.exam.packageSection.list.formPackageRequired)),
+        title: z.string().min(1, t($ => $.exam.packageSection.list.formTitleRequired)),
+        durationMinutes: z.coerce.number().min(0, t($ => $.exam.packageSection.list.formDurationRequired)),
         isActive: z.boolean().default(true),
     };
 
@@ -56,42 +56,42 @@ export const SectionForm = ({ open, onOpenChange, section, packageId, packageIdD
         packageId: {
             type: "combobox",
             name: "packageId",
-            label: t('exam.packageSection.list.formPackage'),
-            placeholder: t('exam.packageSection.list.formPackagePlaceholder'),
+            label: t($ => $.exam.packageSection.list.formPackage),
+            placeholder: t($ => $.exam.packageSection.list.formPackagePlaceholder),
             options: packageOptions
         },
         title: {
             type: "text",
             name: "title",
-            label: t('exam.packageSection.list.formTitle'),
-            placeholder: t('exam.packageSection.list.formTitlePlaceholder'),
+            label: t($ => $.exam.packageSection.list.formTitle),
+            placeholder: t($ => $.exam.packageSection.list.formTitlePlaceholder),
         },
         durationMinutes: {
             type: "select",
             name: "durationMinutes",
-            label: t('exam.packageSection.list.formDuration'),
-            placeholder: t('exam.packageSection.list.formDurationPlaceholder'),
-            description: t('exam.packageSection.list.formDurationHelp'),
+            label: t($ => $.exam.packageSection.list.formDuration),
+            placeholder: t($ => $.exam.packageSection.list.formDurationPlaceholder),
+            description: t($ => $.exam.packageSection.list.formDurationHelp),
             options: durationOnMinutes
         },
         isActive: {
             type: "switch",
             name: "isActive",
-            label: t('exam.packageSection.list.formActive'),
-            description: t('exam.packageSection.list.formActiveHelp'),
+            label: t($ => $.exam.packageSection.list.formActive),
+            description: t($ => $.exam.packageSection.list.formActiveHelp),
         },
     };
 
     const modalProps: ModalFormProps = {
         title: section
-            ? t('exam.packageSection.list.editTitle')
-            : t('exam.packageSection.list.createTitle'),
+            ? t($ => $.exam.packageSection.list.editTitle)
+            : t($ => $.exam.packageSection.list.createTitle),
         desc: section
-            ? t('exam.packageSection.list.editDesc')
-            : t('exam.packageSection.list.createDesc'),
+            ? t($ => $.exam.packageSection.list.editDesc)
+            : t($ => $.exam.packageSection.list.createDesc),
         modal: true,
-        textConfirm: (createMutation.isPending || updateMutation.isPending) ? t("labels.saving") : t("labels.save"),
-        textCancel: t("labels.cancel"),
+        textConfirm: (createMutation.isPending || updateMutation.isPending) ? t($ => $.labels.saving) : t($ => $.labels.save),
+        textCancel: t($ => $.labels.cancel),
         defaultValue: {
             packageId: section?.packageId || packageId || "",
             title: section?.title || "",
@@ -113,12 +113,12 @@ export const SectionForm = ({ open, onOpenChange, section, packageId, packageIdD
                     isActive: values.isActive
                 }, {
                     onSuccess: () => {
-                        showNotifSuccess({ message: t('exam.packageSection.list.updateSuccess') });
+                        showNotifSuccess({ message: t($ => $.exam.packageSection.list.updateSuccess) });
                         queryClient.invalidateQueries({ queryKey: ["exam-package-sections-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
-                        showNotifError({ message: err.message || t('exam.packageSection.list.updateError') });
+                        showNotifError({ message: err.message || t($ => $.exam.packageSection.list.updateError) });
                     }
                 });
             } else {
@@ -130,12 +130,12 @@ export const SectionForm = ({ open, onOpenChange, section, packageId, packageIdD
                     isActive: values.isActive
                 }, {
                     onSuccess: () => {
-                        showNotifSuccess({ message: t('exam.packageSection.list.createSuccess') });
+                        showNotifSuccess({ message: t($ => $.exam.packageSection.list.createSuccess) });
                         queryClient.invalidateQueries({ queryKey: ["exam-package-sections-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
-                        showNotifError({ message: err.message || t('exam.packageSection.list.createError') });
+                        showNotifError({ message: err.message || t($ => $.exam.packageSection.list.createError) });
                     }
                 });
             }

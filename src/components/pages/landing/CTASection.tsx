@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { Link } from '@tanstack/react-router'
 import { ArrowRight, Heart, LogIn } from 'lucide-react'
 import { AppRoute } from '@/constants/app-route'
 
 export function CTASection() {
-    const { t } = useTranslation()
+    const { t } = useAppTranslation()
 
     return (
         <section className="py-10 px-6">
@@ -21,10 +21,10 @@ export function CTASection() {
                     {/* Content */}
                     <div className="relative z-10 max-w-3xl">
                         <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                            {t('landing.cta.title')}
+                            {t($ => $.landing.cta.title)}
                         </h2>
                         <p className="mb-6 text-muted-foreground">
-                            {t('landing.cta.subtitle')}
+                            {t($ => $.landing.cta.subtitle)}
                         </p>
 
                         {/* Buttons */}
@@ -32,7 +32,7 @@ export function CTASection() {
                             <Link to={AppRoute.book.books.url}>
                                 <Button>
                                     <div className='flex flex-row gap-4 items-center'>
-                                        <span>{t('landing.hero.exploreBooks')}</span>
+                                        <span>{t($ => $.landing.hero.exploreBooks)}</span>
                                         <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                                     </div>
                                 </Button>

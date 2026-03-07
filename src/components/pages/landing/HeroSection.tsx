@@ -3,7 +3,7 @@ import { Search, BookOpen, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Link } from '@tanstack/react-router'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { AppRoute } from '@/constants/app-route'
 
 interface HeroSectionProps {
@@ -13,7 +13,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroSectionProps) {
-    const { t } = useTranslation()
+    const { t } = useAppTranslation()
 
     return (
         <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10 py-10">
@@ -25,11 +25,11 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
                     className="max-w-4xl mx-auto text-center px-6"
                 >
                     <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
-                        {t('landing.hero.title')}
-                        <div className="bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent"> {t('landing.hero.highlight')}</div>
+                        {t($ => $.landing.hero.title)}
+                        <div className="bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent"> {t($ => $.landing.hero.highlight)}</div>
                     </h1>
                     <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-                        {t('landing.hero.subtitle')}
+                        {t($ => $.landing.hero.subtitle)}
                     </p>
 
                     {/* Search Bar */}
@@ -44,14 +44,14 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                             <Input
                                 type="text"
-                                placeholder={t('landing.hero.searchPlaceholder')}
+                                placeholder={t($ => $.landing.hero.searchPlaceholder)}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="pl-10 bg-card border-border"
                             />
                         </div>
                         <Button type="submit" className="px-8">
-                            {t('landing.hero.searchButton')}
+                            {t($ => $.landing.hero.searchButton)}
                         </Button>
                     </motion.form>
 
@@ -64,13 +64,13 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
                         <Link to={AppRoute.book.books.url}>
                             <Button className='gap-2'>
                                 <BookOpen className="h-5 w-5" />
-                                {t('landing.hero.exploreBooks')}
+                                {t($ => $.landing.hero.exploreBooks)}
                             </Button>
                         </Link>
                         <Link to={AppRoute.quiz.quiz.url}>
                             <Button variant="outline" className='gap-2'>
                                 <Trophy className="h-5 w-5" />
-                                {t('landing.hero.takeQuiz')}
+                                {t($ => $.landing.hero.takeQuiz)}
                             </Button>
                         </Link>
                     </motion.div>

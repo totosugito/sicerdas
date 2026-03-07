@@ -10,7 +10,7 @@ import { cloneElement, useEffect, useState } from "react";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 import { Form } from "@/components/ui/form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -63,7 +63,7 @@ export const DialogModalForm = ({
   variantSubmit = "default",
   ...props
 }: DialogModalFormProps) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const [isOpen, setIsOpen] = useState(true); // Keep the dialog open
 
   // First, define the expected props type for the content component
@@ -127,7 +127,7 @@ export const DialogModalForm = ({
             <DialogFooter className="flex-shrink-0">
               <div className="w-full flex sm:flex-row flex-col gap-2 justify-end pt-4">
                 <Button className="min-w-[80px]" type="submit">
-                  {modal?.textConfirm ?? t("shared.save")}
+                  {modal?.textConfirm ?? t($ => $.labels.save)}
                 </Button>
                 {modal.onCancelClick && (
                   <Button
@@ -139,7 +139,7 @@ export const DialogModalForm = ({
                       setIsOpen(false);
                     }}
                   >
-                    {modal?.textCancel ?? t("shared.cancel")}
+                    {modal?.textCancel ?? t($ => $.labels.cancel)}
                   </Button>
                 )}
               </div>

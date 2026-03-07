@@ -8,7 +8,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/app';
 import { Plus, Trash2 } from 'lucide-react';
@@ -30,7 +30,7 @@ export const Route = createFileRoute('/(pages)/(exam)/(packages)/admin/list-pack
 });
 
 function AdminExamPackagesPage() {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const navigate = Route.useNavigate();
   const searchParams = Route.useSearch();
@@ -67,12 +67,12 @@ function AdminExamPackagesPage() {
     if (!selectedPackage) return;
     deleteMutation.mutate(selectedPackage.id, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t("exam.packages.list.delete.success") });
+        showNotifSuccess({ message: res.message || t($ => $.exam.packages.list.delete.success) });
         queryClient.invalidateQueries({ queryKey: ["exam-packages-list"] });
         setShowDeleteDialog(false);
       },
       onError: (err: any) => {
-        showNotifError({ message: err.message || t("labels.error") });
+        showNotifError({ message: err.message || t($ => $.labels.error) });
       }
     });
   };
@@ -81,13 +81,13 @@ function AdminExamPackagesPage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={t("exam.packages.list.title")}
-          description={<span>{t("exam.packages.list.description")}</span>}
+          title={t($ => $.exam.packages.list.title)}
+          description={<span>{t($ => $.exam.packages.list.description)}</span>}
         />
         <Button asChild className="flex-shrink-0 gap-1.5 shadow-sm">
           <Link to={AppRoute.exam.packages.admin.create.url}>
             <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">{t("labels.add")}</span>
+            <span className="hidden sm:inline">{t($ => $.labels.add)}</span>
           </Link>
         </Button>
       </div>
@@ -136,15 +136,15 @@ function AdminExamPackagesPage() {
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
-          title: t("exam.packages.list.delete.confirmTitle"),
-          desc: t("exam.packages.list.delete.confirmDesc", { title: selectedPackage?.title }),
-          infoContainer: t("exam.packages.list.delete.deleteInfo"),
+          title: t($ => $.exam.packages.list.delete.confirmTitle),
+          desc: t($ => $.exam.packages.list.delete.confirmDesc, { title: selectedPackage?.title }),
+          infoContainer: t($ => $.exam.packages.list.delete.deleteInfo),
           infoContainerVariant: "error",
           variant: "destructive",
           iconType: "error",
           headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
-          textCancel: t("labels.cancel"),
-          textConfirm: t("labels.delete"),
+          textCancel: t($ => $.labels.cancel),
+          textConfirm: t($ => $.labels.delete),
           onConfirmClick: confirmDelete,
         }}
       />

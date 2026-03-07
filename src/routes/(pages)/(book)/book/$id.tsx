@@ -6,7 +6,7 @@ import { BookDetailSkeleton } from '@/components/pages/book/book/BookDetailSkele
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { AppRoute } from '@/constants/app-route'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import { CreateContentReport } from '@/components/pages/layout/CreateContentReport'
@@ -29,7 +29,7 @@ function RouteComponent() {
   const { data, isLoading, isError } = useBookDetail(bookId)
   const { mutate: updateBookmark } = useUpdateBookmark()
   const { mutate: updateDownload } = useUpdateDownload()
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
   const { user } = useAuth()
   const [showReportDialog, setShowReportDialog] = useState(false)
   const [showLoginDialog, setShowLoginDialog] = useState(false)
@@ -124,7 +124,7 @@ function RouteComponent() {
         },
         onError: () => {
           setIsFavorite(!newFavoriteStatus) // Revert
-          showNotifError({ title: null, message: t('common.error') })
+          showNotifError({ title: null, message: t($ => $.labels.error) })
         },
       }
     )
@@ -152,7 +152,7 @@ function RouteComponent() {
           onClick={handleBack}
         >
           <ArrowLeft className="w-5 h-5" />
-          <span className="text-base font-medium">{t('book.detail.backToBooks')}</span>
+          <span className="text-base font-medium">{t($ => $.book.detail.backToBooks)}</span>
         </Button>
       </div>
       <BookDetail
@@ -180,10 +180,10 @@ function RouteComponent() {
         open={showLoginDialog}
         onOpenChange={setShowLoginDialog}
         modal={{
-          title: t('book.detail.loginRequired'),
-          desc: t('book.detail.loginRequiredDesc'),
-          textConfirm: t('book.detail.login'),
-          textCancel: t('book.detail.cancel'),
+          title: t($ => $.book.detail.loginRequired),
+          desc: t($ => $.book.detail.loginRequiredDesc),
+          textConfirm: t($ => $.book.detail.login),
+          textCancel: t($ => $.book.detail.cancel),
           onConfirmClick: handleLogin,
           onCancelClick: () => setShowLoginDialog(false),
           iconType: "info",
@@ -194,7 +194,7 @@ function RouteComponent() {
         <DialogContent aria-describedby={undefined}
           showCloseButton={false}
           className="!overflow-hidden max-w-[90vw] h-[90vh] sm:max-w-[85vw] sm:h-[85vh] w-full p-0 flex flex-col border-none sm:rounded-2xl shadow-2xl">
-          <DialogTitle className="sr-only">{t('book.detail.pdfViewer')} - {book.title}</DialogTitle>
+          <DialogTitle className="sr-only">{t($ => $.book.detail.pdfViewer)} - {book.title}</DialogTitle>
           <div
             className="relative flex-1 min-h-0 bg-slate-100 dark:bg-slate-900 "
             onWheel={(e) => e.stopPropagation()}

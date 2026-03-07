@@ -8,7 +8,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/app';
 import { Plus, Trash2 } from 'lucide-react';
@@ -29,7 +29,7 @@ export const Route = createFileRoute('/(pages)/(education)/admin/tags')({
 });
 
 function AdminExamTagsPage() {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const navigate = Route.useNavigate();
   const searchParams = Route.useSearch();
@@ -77,12 +77,12 @@ function AdminExamTagsPage() {
     if (!selectedTag) return;
     deleteMutation.mutate(selectedTag.id, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t("education.tags.list.delete.success") });
+        showNotifSuccess({ message: res.message || t($ => $.education.tags.list.delete.success) });
         queryClient.invalidateQueries({ queryKey: ["education-tags-list"] });
         setShowDeleteDialog(false);
       },
       onError: (err: any) => {
-        showNotifError({ message: err.message || t("labels.error") });
+        showNotifError({ message: err.message || t($ => $.labels.error) });
       }
     });
   };
@@ -91,12 +91,12 @@ function AdminExamTagsPage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={t("education.tags.list.title")}
-          description={<span>{t("education.tags.list.description")}</span>}
+          title={t($ => $.education.tags.list.title)}
+          description={<span>{t($ => $.education.tags.list.description)}</span>}
         />
         <Button onClick={handleAdd} className="flex-shrink-0 gap-1.5 shadow-sm">
           <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">{t("labels.add")}</span>
+          <span className="hidden sm:inline">{t($ => $.labels.add)}</span>
         </Button>
       </div>
 
@@ -151,15 +151,15 @@ function AdminExamTagsPage() {
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
-          title: t("education.tags.list.delete.confirmTitle"),
-          desc: t("education.tags.list.delete.confirmDesc", { name: selectedTag?.name }),
-          infoContainer: t("education.tags.list.delete.deleteInfo"),
+          title: t($ => $.education.tags.list.delete.confirmTitle),
+          desc: t($ => $.education.tags.list.delete.confirmDesc, { name: selectedTag?.name }),
+          infoContainer: t($ => $.education.tags.list.delete.deleteInfo),
           infoContainerVariant: "error",
           variant: "destructive",
           iconType: "error",
           headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
-          textCancel: t("labels.cancel"),
-          textConfirm: t("labels.delete"),
+          textCancel: t($ => $.labels.cancel),
+          textConfirm: t($ => $.labels.delete),
           onConfirmClick: confirmDelete,
         }}
       />

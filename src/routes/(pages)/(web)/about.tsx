@@ -1,22 +1,22 @@
 import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 
 export const Route = createFileRoute('/(pages)/(web)/about')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
 
   return (
     <div className="flex flex-col gap-6 w-full">
       <div className="flex flex-col gap-2">
         <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black leading-tight tracking-[-0.033em]">
-          {t("web.about.title")}
+          {t($ => $.web.about.title)}
         </h1>
         <p className="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">
-          {t("web.about.description")}
+          {t($ => $.web.about.description)}
         </p>
       </div>
 
@@ -24,49 +24,49 @@ function RouteComponent() {
         <div className="flex flex-col gap-8">
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("web.about.mission.title")}
+              {t($ => $.web.about.mission.title)}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("web.about.mission.content")}
+              {t($ => $.web.about.mission.content)}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("web.about.vision.title")}
+              {t($ => $.web.about.vision.title)}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("web.about.vision.content")}
+              {t($ => $.web.about.vision.content)}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("web.about.values.title")}
+              {t($ => $.web.about.values.title)}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div className="p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
-                <h3 className="font-bold text-slate-900 dark:text-slate-100">{t("web.about.values.innovation")}</h3>
+                <h3 className="font-bold text-slate-900 dark:text-slate-100">{t($ => $.web.about.values.innovation)}</h3>
                 <p className="text-slate-700 dark:text-slate-300 mt-2">
-                  {t("web.about.values.innovationDesc")}
+                  {t($ => $.web.about.values.innovationDesc)}
                 </p>
               </div>
               <div className="p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
-                <h3 className="font-bold text-slate-900 dark:text-slate-100">{t("web.about.values.accessibility")}</h3>
+                <h3 className="font-bold text-slate-900 dark:text-slate-100">{t($ => $.web.about.values.accessibility)}</h3>
                 <p className="text-slate-700 dark:text-slate-300 mt-2">
-                  {t("web.about.values.accessibilityDesc")}
+                  {t($ => $.web.about.values.accessibilityDesc)}
                 </p>
               </div>
               <div className="p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
-                <h3 className="font-bold text-slate-900 dark:text-slate-100">{t("web.about.values.quality")}</h3>
+                <h3 className="font-bold text-slate-900 dark:text-slate-100">{t($ => $.web.about.values.quality)}</h3>
                 <p className="text-slate-700 dark:text-slate-300 mt-2">
-                  {t("web.about.values.qualityDesc")}
+                  {t($ => $.web.about.values.qualityDesc)}
                 </p>
               </div>
               <div className="p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
-                <h3 className="font-bold text-slate-900 dark:text-slate-100">{t("web.about.values.community")}</h3>
+                <h3 className="font-bold text-slate-900 dark:text-slate-100">{t($ => $.web.about.values.community)}</h3>
                 <p className="text-slate-700 dark:text-slate-300 mt-2">
-                  {t("web.about.values.communityDesc")}
+                  {t($ => $.web.about.values.communityDesc)}
                 </p>
               </div>
             </div>
@@ -74,19 +74,19 @@ function RouteComponent() {
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              {t("web.about.team.title")}
+              {t($ => $.web.about.team.title)}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("web.about.team.content")}
+              {t($ => $.web.about.team.content)}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-              {t("web.about.history.title")}
+              {t($ => $.web.about.history.title)}
             </h2>
             <p className="text-slate-700 dark:text-slate-300">
-              {t("web.about.history.content")}
+              {t($ => $.web.about.history.content)}
             </p>
           </section>
         </div>

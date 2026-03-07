@@ -4,7 +4,7 @@ import {
 } from '@tanstack/react-router'
 import { SubmitHandler } from 'react-hook-form'
 import { useEmailOtpVerifyForgetPasswordMutation, useEmailOtpForgetPasswordMutation, useEmailHasOtpQuery } from "@/api/auth";
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { ShieldCheck, Timer, Loader2 } from 'lucide-react';
 import { OtpVerificationForm } from '@/components/pages/auth/otp-verification';
 import { useState, useEffect } from 'react';
@@ -37,7 +37,7 @@ export const Route = createFileRoute('/(auth)/otp-verification')({
 })
 
 function OtpVerificationComponent() {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const navigate = Route.useNavigate()
   const search = Route.useSearch()
 
@@ -115,7 +115,7 @@ function OtpVerificationComponent() {
               }
             });
           } else {
-            setErrorMessage(response?.data?.message || t("auth.otpVerification.invalidOtp"));
+            setErrorMessage(response?.data?.message || t($ => $.auth.otpVerification.invalidOtp));
           }
         },
         onError: (error: Record<string, any>) => {
@@ -123,7 +123,7 @@ function OtpVerificationComponent() {
           const errorMsg = error?.response?.data?.message ||
             error?.response?.data?.error ||
             error?.message ||
-            t("auth.otpVerification.verificationError");
+            t($ => $.auth.otpVerification.verificationError);
           setErrorMessage(errorMsg);
         },
       }
@@ -154,7 +154,7 @@ function OtpVerificationComponent() {
           const errorMsg = error?.response?.data?.message ||
             error?.response?.data?.error ||
             error?.message ||
-            t("auth.otpVerification.resendOtpError");
+            t($ => $.auth.otpVerification.resendOtpError);
           setErrorMessage(errorMsg);
         },
         onSettled: () => {
@@ -176,9 +176,9 @@ function OtpVerificationComponent() {
     <AuthLayout>
       <AuthHeader
         icon={<ShieldCheck className="w-8 h-8 text-white" />}
-        appName={t("app.appName")}
-        title={t("auth.otpVerification.title")}
-        description={t("auth.otpVerification.instructions")}
+        appName={t($ => $.app.appName)}
+        title={t($ => $.auth.otpVerification.title)}
+        description={t($ => $.auth.otpVerification.instructions)}
       />
       {/* OTP verification form */}
       <OtpVerificationForm
@@ -196,7 +196,7 @@ function OtpVerificationComponent() {
               <div className="flex items-center space-x-2">
                 <Timer className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">
-                  {t("auth.otpVerification.timerText")}
+                  {t($ => $.auth.otpVerification.timerText)}
                 </span>
               </div>
               <div className="font-mono text-sm">
@@ -219,24 +219,24 @@ function OtpVerificationComponent() {
           )}
 
           {resendSuccess && (
-            <div className="mt-3 p-2 bg-green-500/10 border border-green-500/20 rounded text-green-700 dark:text-green-300 text-sm">
-              {t("auth.otpVerification.resendOtpSuccess")}
+            <div className="mt-3 p-4 bg-green-500/10 border border-green-500/20 rounded text-green-700 dark:text-green-300 text-sm">
+              {t($ => $.auth.otpVerification.resendOtpSuccess)}
             </div>
           )}
 
           {resendLoading && (
             <div className="mt-3 flex items-center text-sm text-muted-foreground">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t("labels.sending")} ...
+              {t($ => $.labels.sending)} ...
             </div>
           )}
         </div>
       )}
       <div className="mt-6 text-center">
         <p className="text-sm text-muted-foreground">
-          {t("auth.otpVerification.backToSignIn")}{" "}
+          {t($ => $.auth.otpVerification.backToSignIn)}{" "}
           <a href={AppRoute.auth.signIn.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
-            {t("labels.signIn")}
+            {t($ => $.labels.signIn)}
           </a>
         </p>
       </div>

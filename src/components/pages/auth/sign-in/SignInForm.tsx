@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { LoginFormValues } from "@/types/auth";
 import { FormInput, FormPassword } from "@/components/custom/forms";
 import { Loader2, Mail, Lock, LogIn, AlertCircle } from "lucide-react";
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { AppRoute } from "@/constants/app-route";
 import { z } from "zod";
 import { APP_CONFIG } from "@/constants/config";
@@ -18,7 +18,7 @@ type Props = {
 }
 
 export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn }: Props) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   // Define signInFormData directly in this file
   const signInFormData = {
@@ -26,14 +26,14 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
       email: {
         type: "text",
         name: "email",
-        label: t("labels.emailAddress"),
-        placeholder: t("auth.signIn.emailPlaceholder"),
+        label: t($ => $.labels.emailAddress),
+        placeholder: t($ => $.auth.signIn.emailPlaceholder),
       },
       password: {
         type: "password",
         name: "password",
-        label: t("labels.password"),
-        placeholder: t("auth.signIn.passwordPlaceholder"),
+        label: t($ => $.labels.password),
+        placeholder: t($ => $.auth.signIn.passwordPlaceholder),
       }
     },
     defaultValue: {
@@ -44,8 +44,8 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
 
   // Create schema with translated error messages directly in this file
   const schema = z.object({
-    email: z.email({ message: t("auth.signIn.invalidEmail") }),
-    password: z.string().min(1, { message: t("auth.signIn.passwordRequired") }),
+    email: z.email({ message: t($ => $.auth.signIn.invalidEmail) }),
+    password: z.string().min(1, { message: t($ => $.auth.signIn.passwordRequired) }),
   });
 
   const form = useForm<LoginFormValues>({
@@ -93,10 +93,10 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
         <div className="flex items-center justify-between text-sm">
           <label className="flex items-center space-x-2 text-muted-foreground cursor-pointer">
             <input type="checkbox" className="rounded border-border" />
-            <span>{t("labels.rememberMe")}</span>
+            <span>{t($ => $.labels.rememberMe)}</span>
           </label>
           <a href={AppRoute.auth.otpForgetPassword.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
-            {t("labels.forgetPassword")}
+            {t($ => $.labels.forgetPassword)}
           </a>
         </div>
 
@@ -108,12 +108,12 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
           {loading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t("labels.signIn")}...
+              {t($ => $.labels.signIn)}...
             </>
           ) : (
             <>
               <LogIn className="mr-2 h-4 w-4" />
-              {t("labels.signIn")}
+              {t($ => $.labels.signIn)}
             </>
           )}
         </Button>
@@ -127,7 +127,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-background px-2 text-muted-foreground">
-                  {t("auth.signIn.orContinueWith")}
+                  {t($ => $.auth.signIn.orContinueWith)}
                 </span>
               </div>
             </div>
@@ -156,16 +156,16 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
                   fill="#EA4335"
                 />
               </svg>
-              {t("auth.signIn.continueWithGoogle")}
+              {t($ => $.auth.signIn.continueWithGoogle)}
             </Button>
           </div>
         )}
 
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
-            {t("auth.signIn.newUser")}{" "}
+            {t($ => $.auth.signIn.newUser)}{" "}
             <a href={AppRoute.auth.signUp.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
-              {t("labels.signUp")}
+              {t($ => $.labels.signUp)}
             </a>
           </p>
         </div>

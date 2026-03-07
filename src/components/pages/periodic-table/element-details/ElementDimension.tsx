@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { Ruler } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
@@ -12,11 +12,11 @@ interface ElementDimensionProps {
 }
 
 export function ElementDimension({ element, expandedSections, toggleSection }: ElementDimensionProps) {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
 
   return (
     <CardSection
-      title={t('periodicTable.periodicTable.var.atomicDimensionsAndStructure')}
+      title={t($ => $.periodicTable.periodicTable.var.atomicDimensionsAndStructure)}
       icon={<Ruler className="h-5 w-5" />}
       isExpanded={expandedSections.atomicDimensions}
       onToggle={() => toggleSection('atomicDimensions')}
@@ -24,51 +24,51 @@ export function ElementDimension({ element, expandedSections, toggleSection }: E
       <div className='flex flex-col gap-2'>
         <div className="grid sm:grid-cols-2 grid-cols-1 gap-2">
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.atomicRadius')}
+            label={t($ => $.periodicTable.periodicTable.var.atomicRadius)}
             value={toPhysics({ value: parseFloat(element.atomicProperties?.atomicRadius || '') })}
             unit={getPeriodictUnits('atomRadius')}
             isHtml={true}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.covalentRadius')}
+            label={t($ => $.periodicTable.periodicTable.var.covalentRadius)}
             value={element.atomicProperties?.covalentRadius}
           // unit={getPeriodictUnits('atomRadius')}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.vanDerWaalsRadius')}
+            label={t($ => $.periodicTable.periodicTable.var.vanDerWaalsRadius)}
             value={toPhysics({ value: parseFloat(element.atomicProperties?.vanDerWaalsRadius || '') })}
             unit={getPeriodictUnits('vanDerWaalsRadius')}
             isHtml={true}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.crystalStructure')}
+            label={t($ => $.periodicTable.periodicTable.var.crystalStructure)}
             value={element.atomicProperties?.crystalStructure}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.latticeAngles')}
+            label={t($ => $.periodicTable.periodicTable.var.latticeAngles)}
             value={element.atomicProperties?.latticeAngles}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.latticeConstants')}
+            label={t($ => $.periodicTable.periodicTable.var.latticeConstants)}
             value={element.atomicProperties?.latticeConstants}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.spaceGroupName')}
+            label={t($ => $.periodicTable.periodicTable.var.spaceGroupName)}
             value={element.atomicProperties?.spaceGroupName}
             isHtml={true}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.spaceGroupNumber')}
+            label={t($ => $.periodicTable.periodicTable.var.spaceGroupNumber)}
             value={element.atomicProperties?.spaceGroupNumber}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.empiricalAtomicRadius')}
+            label={t($ => $.periodicTable.periodicTable.var.empiricalAtomicRadius)}
             value={toPhysics({ value: parseFloat(element.atomicProperties?.empiricalAtomicRadius || '') })}
             unit={getPeriodictUnits('empiricalAtomicRadius')}
             isHtml={true}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.atomicSpectra')}
+            label={t($ => $.periodicTable.periodicTable.var.atomicSpectra)}
             value={element.atomicProperties?.atomicSpectra}
           />
         </div>

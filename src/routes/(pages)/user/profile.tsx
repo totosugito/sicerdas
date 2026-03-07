@@ -1,7 +1,7 @@
 import React from 'react'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -30,7 +30,7 @@ export const Route = createFileRoute('/(pages)/user/profile')({
 })
 
 function RouteComponent() {
-    const { t } = useTranslation();
+    const { t } = useAppTranslation();
     const { user: authUser } = useAuth();
     const navigate = Route.useNavigate()
     const search = Route.useSearch()
@@ -153,11 +153,11 @@ function RouteComponent() {
                     populateForms(success.data);
 
                     // Show success message
-                    const successMessage = success?.message || t('user.profile.information.updateSuccess');
+                    const successMessage = success?.message || t($ => $.user.profile.information.updateSuccess);
                     showNotifSuccess({ message: successMessage });
                 },
                 onError: (error: Record<string, any>) => {
-                    const msg_ = error?.response?.data?.message || t('user.profile.information.updateError');
+                    const msg_ = error?.response?.data?.message || t($ => $.user.profile.information.updateError);
                     setProfileUpdateError(msg_);
                 }
             }
@@ -170,12 +170,12 @@ function RouteComponent() {
             { body: values },
             {
                 onSuccess: (success: Record<string, any>) => {
-                    const successMessage = success?.message || t('user.profile.personalInfo.updateSuccess');
+                    const successMessage = success?.message || t($ => $.user.profile.personalInfo.updateSuccess);
                     showNotifSuccess({ message: successMessage });
                     populateForms(success?.data);
                 },
                 onError: (error: Record<string, any>) => {
-                    const errorMessage = error?.response?.data?.message || t('user.profile.personalInfo.updateError');
+                    const errorMessage = error?.response?.data?.message || t($ => $.user.profile.personalInfo.updateError);
                     setPersonalInfoUpdateError(errorMessage);
                 }
             }
@@ -189,13 +189,13 @@ function RouteComponent() {
             { body: { currentPassword: values.currentPassword, newPassword: values.newPassword } },
             {
                 onSuccess: (success: Record<string, any>) => {
-                    const successMessage = success?.message || t('user.profile.security.updateSuccess');
+                    const successMessage = success?.message || t($ => $.user.profile.security.updateSuccess);
                     showNotifSuccess({ message: successMessage });
                     // Reset the form after successful submission
                     securityForm.reset(securityFormData.defaultValue);
                 },
                 onError: (error: Record<string, any>) => {
-                    const errorMessage = error?.response?.data?.message || t('user.profile.security.updateError');
+                    const errorMessage = error?.response?.data?.message || t($ => $.user.profile.security.updateError);
                     setSecurityUpdateError(errorMessage);
                 }
             }
@@ -211,12 +211,12 @@ function RouteComponent() {
             { body: extra },
             {
                 onSuccess: (success: Record<string, any>) => {
-                    const successMessage = success?.message || t('user.profile.privacy.updateSuccess');
+                    const successMessage = success?.message || t($ => $.user.profile.privacy.updateSuccess);
                     showNotifSuccess({ message: successMessage });
                     populateForms(success?.data);
                 },
                 onError: (error: Record<string, any>) => {
-                    const errorMessage = error?.response?.data?.message || t('user.profile.privacy.updateError');
+                    const errorMessage = error?.response?.data?.message || t($ => $.user.profile.privacy.updateError);
                     setPrivacyUpdateError(errorMessage);
                 }
             }
@@ -228,20 +228,20 @@ function RouteComponent() {
         await authClient.revokeSession({
             token: sessionToken
         }).then(() => {
-            showNotifSuccess({ message: t('user.profile.sessions.sessionRevoked') });
+            showNotifSuccess({ message: t($ => $.user.profile.sessions.sessionRevoked) });
             refetchSessions();
         }).catch((error: Record<string, any>) => {
-            const errorMessage = error?.response?.data?.message || t('user.profile.sessions.revokeError');
+            const errorMessage = error?.response?.data?.message || t($ => $.user.profile.sessions.revokeError);
             showNotifError({ message: error?.message || errorMessage });
         });
     };
 
     const handleRevokeAllSessions = async () => {
         await authClient.revokeOtherSessions().then(() => {
-            showNotifSuccess({ message: t('user.profile.sessions.allSessionsRevoked') });
+            showNotifSuccess({ message: t($ => $.user.profile.sessions.allSessionsRevoked) });
             refetchSessions();
         }).catch((error: Record<string, any>) => {
-            const errorMessage = error?.response?.data?.message || t('user.profile.sessions.revokeError');
+            const errorMessage = error?.response?.data?.message || t($ => $.user.profile.sessions.revokeError);
             showNotifError({ message: error?.message || errorMessage });
         });
     };
@@ -256,7 +256,7 @@ function RouteComponent() {
 
     return (
         <div className="flex flex-col gap-6 w-full">
-            <PageTitle title={t('user.profile.title')} description={<span>{t('user.profile.description')}</span>} />
+            <PageTitle title={t($ => $.user.profile.title)} description={<span>{t($ => $.user.profile.description)}</span>} />
             <Tabs value={currentTab} onValueChange={handleTabChange}>
                 <div className="grid md:grid-cols-[220px_minmax(0px,_1fr)] max-w-6xl gap-x-6 w-full ">
                     {/* Navigation Tabs */}
@@ -295,7 +295,7 @@ function RouteComponent() {
                                 ) : (
                                     <div className="p-4 text-center">
                                         <p className="text-muted-foreground">
-                                            {t("user.profile.security.notAvailable")}
+                                            {t($ => $.user.profile.security.notAvailable)}
                                         </p>
                                     </div>
                                 )}

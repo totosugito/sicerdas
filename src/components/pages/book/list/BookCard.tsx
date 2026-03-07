@@ -1,7 +1,7 @@
 import { getGrade, getGradeColor } from '@/components/pages/book/types/books';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { BookListItem } from '@/api/book';
 import { useAuthStore } from '@/stores/useAuthStore';
 
@@ -14,7 +14,7 @@ interface BookCardProps {
 }
 
 export const BookCard = ({ books, viewMode }: BookCardProps) => {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
 
   const { openSideMenu } = useAuthStore()
 
@@ -42,6 +42,7 @@ interface BookCardViewProps {
 }
 
 const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
+  const { t } = useAppTranslation();
   const isListView = viewMode === 'list';
 
   const navigate = useNavigate()
@@ -99,7 +100,7 @@ const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
           </Link>
         </h3>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-3 line-clamp-1">
-          {book.author || 'Unknown Author'}
+          {book.author || t($ => $.book.info.unknownAuthor)}
         </p>
 
         {/* Extra Description for List View */}

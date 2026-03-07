@@ -6,7 +6,7 @@ import { z } from 'zod'
 
 import { SubmitHandler } from 'react-hook-form'
 import { useLoginMutation } from "@/api/auth/login";
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { SignInForm } from '@/components/pages/auth/sign-in';
 import { useState } from 'react';
 import { authClient } from '@/lib/auth-client';
@@ -25,7 +25,7 @@ export const Route = createFileRoute('/(auth)/sign-in')({
 })
 
 function LoginComponent() {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const navigate = Route.useNavigate()
   const search = Route.useSearch()
 
@@ -67,17 +67,17 @@ function LoginComponent() {
           </div>
           <h1 className="text-4xl font-bold text-foreground mb-2">
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              {t("auth.signIn.title")}
+              {t($ => $.auth.signIn.title)}
             </span>
           </h1>
-          <p className="text-sm text-muted-foreground/80">{t("auth.signIn.tagline")}</p>
+          <p className="text-sm text-muted-foreground/80">{t($ => $.auth.signIn.tagline)}</p>
         </div>
 
         {/* Login card */}
         <div className="bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl p-8 shadow-2xl transition-all hover:shadow-3xl hover:border-blue-500/30">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-semibold text-foreground mb-2">{t("auth.signIn.welcomeBack")}</h2>
-            <p className="text-muted-foreground">{t("auth.signIn.signInDescription")}</p>
+            <h2 className="text-2xl font-semibold text-foreground mb-2">{t($ => $.auth.signIn.welcomeBack)}</h2>
+            <p className="text-muted-foreground">{t($ => $.auth.signIn.signInDescription)}</p>
           </div>
 
           <SignInForm onFormSubmit={onFormSubmit}
@@ -90,7 +90,7 @@ function LoginComponent() {
 
         {/* Footer */}
         <div className="text-center mt-8 text-xs text-muted-foreground/70">
-          <p>© {new Date().getFullYear()} {t("app.copyright")}</p>
+          <p>© {new Date().getFullYear()} {t($ => $.app.copyright)}</p>
         </div>
       </div>
     </div>

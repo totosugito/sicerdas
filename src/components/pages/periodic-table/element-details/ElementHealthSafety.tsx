@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { ShieldAlert } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { ElementDetail } from '@/api/periodic-table/periodic-table'
@@ -81,11 +81,11 @@ interface ElementHealthSafetyProps {
 }
 
 export function ElementHealthSafety({ element, expandedSections, toggleSection }: ElementHealthSafetyProps) {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
 
   return (
     <CardSection
-      title={t('periodicTable.periodicTable.var.healthAndSafety')}
+      title={t($ => $.periodicTable.periodicTable.var.healthAndSafety)}
       icon={<ShieldAlert className="h-5 w-5" />}
       isExpanded={expandedSections.healthSafety}
       onToggle={() => toggleSection('healthSafety')}
@@ -93,15 +93,15 @@ export function ElementHealthSafety({ element, expandedSections, toggleSection }
       <div className='flex flex-col gap-2'>
         <div className="grid sm:grid-cols-2 grid-cols-1 gap-2">
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.dOTHazardClass')}
+            label={t($ => $.periodicTable.periodicTable.var.dOTHazardClass)}
             value={element.atomicProperties?.dOTHazardClass || ''}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.dOTNumbers')}
+            label={t($ => $.periodicTable.periodicTable.var.dOTNumbers)}
             value={element.atomicProperties?.dOTNumbers || ''}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.rtecsNumber')}
+            label={t($ => $.periodicTable.periodicTable.var.rtecsNumber)}
             value={element.atomicProperties?.rtecsNumber || ''}
           />
         </div>
@@ -109,7 +109,7 @@ export function ElementHealthSafety({ element, expandedSections, toggleSection }
         {/* NFPA Label - displayed as a column if available */}
         <div className="flex flex-col gap-2">
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.nfpaLabel')}
+            label={t($ => $.periodicTable.periodicTable.var.nfpaLabel)}
             value={undefined}
           />
           {element.atomicProperties?.nfpaLabel && element.atomicProperties?.nfpaLabel.length > 0 &&

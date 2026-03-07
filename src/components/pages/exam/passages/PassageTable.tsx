@@ -7,7 +7,7 @@ import {
     DataTableColumnHeader,
     PaginationData
 } from '@/components/custom/table';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
@@ -47,7 +47,7 @@ export function PassageTable({
     onSortChange,
     onDelete,
 }: PassageTableProps) {
-    const { t } = useTranslation();
+    const { t } = useAppTranslation();
 
     const columns: ColumnDef<ExamPassage>[] = [
         createRowNumberColumn<ExamPassage>({
@@ -59,7 +59,7 @@ export function PassageTable({
             accessorKey: "title",
             enableSorting: true,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.passages.list.table.columns.title")} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.list.table.columns.title)} />
             ),
             cell: ({ row }) => {
                 const passage = row.original;
@@ -76,7 +76,7 @@ export function PassageTable({
             accessorKey: "subjectName",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.passages.list.table.columns.subject")} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.list.table.columns.subject)} />
             ),
             cell: ({ row }) => row.getValue("subjectName") || <span className="text-muted-foreground italic text-xs">-</span>
         },
@@ -87,7 +87,7 @@ export function PassageTable({
             minSize: 70,
             maxSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.passages.list.table.columns.questions")} className='justify-center text-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.list.table.columns.questions)} className='justify-center text-center' />
             ),
             cell: ({ row }) => {
                 const total = row.getValue("totalQuestions") as number;
@@ -105,14 +105,14 @@ export function PassageTable({
             minSize: 70,
             maxSize: 70,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.passages.list.table.columns.status")} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.list.table.columns.status)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const isActive = row.getValue("isActive") as boolean;
                 return (
                     <div className='flex justify-center'>
                         <Badge variant={isActive ? "success" : "secondary"}>
-                            {isActive ? t("labels.active") : t("labels.inactive")}
+                            {isActive ? t($ => $.labels.active) : t($ => $.labels.inactive)}
                         </Badge>
                     </div>
                 );
@@ -124,7 +124,7 @@ export function PassageTable({
             minSize: 100,
             maxSize: 150,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.passages.list.table.columns.updatedAt")} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.list.table.columns.updatedAt)} />
             ),
             cell: ({ row }) => (
                 <span className="text-sm text-muted-foreground lowercase">
@@ -137,7 +137,7 @@ export function PassageTable({
             minSize: 50,
             maxSize: 50,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("labels.actions")} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.labels.actions)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const passage = row.original;
@@ -147,17 +147,17 @@ export function PassageTable({
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <span className="sr-only">{t("labels.openMenu")}</span>
+                                    <span className="sr-only">{t($ => $.labels.openMenu)}</span>
                                     <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>{t("labels.actions")}</DropdownMenuLabel>
+                                <DropdownMenuLabel>{t($ => $.labels.actions)}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
                                     <Link to={AppRoute.exam.passages.admin.edit.url.replace("$id", passage.id)}>
                                         <Pencil className="mr-2 h-4 w-4" />
-                                        {t("labels.edit")}
+                                        {t($ => $.labels.edit)}
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
@@ -165,7 +165,7 @@ export function PassageTable({
                                     onClick={() => onDelete(passage)}
                                 >
                                     <Trash2 className="mr-2 h-4 w-4" />
-                                    {t("labels.delete")}
+                                    {t($ => $.labels.delete)}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -223,7 +223,7 @@ export function PassageTable({
                 <div className={"flex flex-row gap-2 w-full max-w-sm"}>
                     <DataTableFilter
                         table={table}
-                        searchPlaceholder={t("exam.passages.list.table.search")}
+                        searchPlaceholder={t($ => $.exam.passages.list.table.search)}
                         className='w-full'
                         searchOnEnter={true}
                     />
@@ -235,7 +235,7 @@ export function PassageTable({
                 totalRowCount={paginationData?.total || 0}
                 showSideBorders={false}
                 showZebraStriping={true}
-                defaultNoResultText={t("exam.passages.list.table.noResult")}
+                defaultNoResultText={t($ => $.exam.passages.list.table.noResult)}
             />
         </div>
     );

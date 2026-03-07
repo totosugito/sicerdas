@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Skeleton } from '@/components/ui/skeleton'
 import { AlertCircle, User } from 'lucide-react'
@@ -9,13 +9,13 @@ interface ProfileLoadingViewProps {
 }
 
 export function ProfileLoadingView({ isLoading = true }: ProfileLoadingViewProps) {
-    const { t } = useTranslation()
+    const { t } = useAppTranslation()
 
     if (!isLoading) return null
 
     return (
         <div className="flex flex-col gap-6 w-full">
-            <PageTitle title={t('user.profile.title')} description={<span>{t('user.profile.description')}</span>} />
+            <PageTitle title={t($ => $.user.profile.title)} description={<span>{t($ => $.user.profile.description)}</span>} />
 
             <div className="grid md:grid-cols-[220px_minmax(0px,_1fr)] max-w-6xl gap-x-6 w-full">
                 {/* Navigation Tabs Skeleton */}
@@ -60,13 +60,13 @@ interface ProfileErrorViewProps {
 }
 
 export function ProfileErrorView({ isError = true }: ProfileErrorViewProps) {
-    const { t } = useTranslation()
+    const { t } = useAppTranslation()
 
     if (!isError) return null
 
     return (
         <div className="flex flex-col gap-6 w-full">
-            <PageTitle title={t('user.profile.title')} description={<span>{t('user.profile.description')}</span>} />
+            <PageTitle title={t($ => $.user.profile.title)} description={<span>{t($ => $.user.profile.description)}</span>} />
 
             <div className="grid md:grid-cols-[220px_minmax(0px,_1fr)] max-w-6xl gap-x-6 w-full">
                 {/* Navigation Tabs Skeleton */}
@@ -86,10 +86,10 @@ export function ProfileErrorView({ isError = true }: ProfileErrorViewProps) {
                             <Alert variant="destructive" className="border-destructive/30 bg-destructive/5">
                                 <AlertCircle className="h-5 w-5" />
                                 <AlertTitle className="text-destructive">
-                                    {t("user.profile.errorTitle")}
+                                    {t($ => $.user.profile.errorTitle)}
                                 </AlertTitle>
                                 <AlertDescription className="text-destructive/80">
-                                    {t("user.profile.errorDescription")}
+                                    {t($ => $.user.profile.errorDescription)}
                                 </AlertDescription>
                             </Alert>
 
@@ -98,10 +98,10 @@ export function ProfileErrorView({ isError = true }: ProfileErrorViewProps) {
                                     <User className="h-12 w-12 text-muted-foreground" />
                                 </div>
                                 <h3 className="text-xl font-semibold mb-2">
-                                    {t("user.profile.unableToLoad")}
+                                    {t($ => $.user.profile.unableToLoad)}
                                 </h3>
                                 <p className="text-muted-foreground text-center mb-6">
-                                    {t("user.profile.tryAgainLater")}
+                                    {t($ => $.user.profile.tryAgainLater)}
                                 </p>
                             </div>
                         </div>

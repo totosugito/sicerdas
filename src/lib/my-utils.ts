@@ -1,4 +1,4 @@
-import { format as formatDateFns, parseISO } from "date-fns";
+import { format as formatDateFns } from "date-fns";
 
 export function to_decimal_formatted(value: number, precision = 2) {
   const formattedNumber = new Intl.NumberFormat('en', {
@@ -86,67 +86,6 @@ export function getShortName(fullName: string): string {
 export function isDateExpired(date: Date) {
   const now = new Date();
   return date < now;
-}
-
-interface DateDifferenceResult {
-  days: number;
-  labels: string;
-  style: string;
-  value: string
-}
-
-export function getDaysFromCurrentDate(t: (key: string) => string, date: Date | string | number): DateDifferenceResult {
-  // Ensure the input date is a valid Date object
-  const inputDate = date instanceof Date ? date : new Date(date);
-
-  if (isNaN(inputDate.getTime())) {
-    return ({
-      days: 0,
-      labels: "",
-      style: "",
-      value: ""
-    })
-  }
-
-  const currentDate = new Date();
-  const differenceInMilliseconds = currentDate.getTime() - inputDate.getTime();
-  const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
-
-  let labels = "";
-  if (days < 1) {
-    labels = t("labels.today"); // today
-  } else if (days < 7) {
-    labels = `${days} ${t("labels.dayAgo")}`; // X days ago
-  } else if (days < 30) {
-    const weeks = Math.floor(days / 7);
-    labels = `${weeks} ${t("labels.weekAgo")}`; // X weeks ago
-  } else if (days < 365) {
-    const months = Math.floor(days / 30);
-    labels = `${months} ${t("labels.monthAgo")}`; // X months ago
-  } else {
-    const years = Math.floor(days / 365);
-    labels = `${years} ${t("labels.yearAgo")}`; // X years ago
-  }
-
-  let style = 'text-foreground bg-green-100 border-green-500';
-  if (days < 3) {
-
-  }
-  else if (days < 7) {
-    style = 'text-foreground bg-yellow-100 border-yellow-500';
-  }
-  else if (days < 30) {
-    style = 'text-foreground bg-orange-100 border-orange-500';
-  }
-  else {
-    style = 'text-foreground bg-gray-100 border-gray-500';
-  }
-  return ({
-    days: days,
-    labels: labels,
-    style: style,
-    value: date_to_string(inputDate, "yyyy-MM-dd HH:mm"),
-  })
 }
 
 export const ObjToOptionList = (obj: Record<string, string>) => {

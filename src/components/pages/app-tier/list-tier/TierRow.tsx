@@ -6,7 +6,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { AppTier } from "@/api/app-tier";
 import { Link } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 import { AppRoute } from "@/constants/app-route";
 
 interface TierRowProps {
@@ -15,7 +15,7 @@ interface TierRowProps {
 }
 
 export const TierRow = ({ tier, onDelete }: TierRowProps) => {
-    const { t } = useTranslation();
+    const { t } = useAppTranslation();
     const price = parseFloat(tier.price);
     const isUnlimited = tier.limits.chatAi.daily_messages === -1;
 
@@ -56,7 +56,7 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                 <div className="absolute -top-2 -right-2 z-10">
                     <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 dark:from-amber-400 dark:to-yellow-400 text-white dark:text-gray-900 border-0 shadow-md dark:shadow-lg dark:shadow-amber-400/30 px-2 py-0.5 text-xs font-semibold flex items-center gap-1">
                         <Star className="w-3 h-3 fill-current" />
-                        {t('appTier.list.popular')}
+                        {t($ => $.appTier.list.popular)}
                     </Badge>
                 </div>
             )}
@@ -111,12 +111,12 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                                 <Popover>
                                     <PopoverTrigger asChild>
                                         <button className="inline-flex items-center gap-1 text-xs bg-muted text-muted-foreground hover:bg-muted/80 rounded-full px-2.5 py-0.5 transition-colors">
-                                            +{remainingFeatures.length} {t('appTier.list.moreFeatures')}
+                                            +{remainingFeatures.length} {t($ => $.appTier.list.moreFeatures)}
                                         </button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-80" align="start">
                                         <div className="space-y-2">
-                                            <h4 className="font-semibold text-sm">{t('appTier.list.allFeatures')}</h4>
+                                            <h4 className="font-semibold text-sm">{t($ => $.appTier.list.allFeatures)}</h4>
                                             <div className="flex flex-wrap gap-1.5">
                                                 {tier.features.map((f) => (
                                                     <span
@@ -139,11 +139,11 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
                             <Zap className="w-3.5 h-3.5" />
-                            {tier.limits.chatAi.max_tokens ? tier.limits.chatAi.max_tokens.toLocaleString() : 'N/A'} {t('appTier.list.tokens')}
+                            {tier.limits.chatAi.max_tokens ? tier.limits.chatAi.max_tokens.toLocaleString() : 'N/A'} {t($ => $.appTier.list.tokens)}
                         </span>
                         <span className="flex items-center gap-1">
                             <MessageSquare className="w-3.5 h-3.5" />
-                            {isUnlimited ? t('appTier.list.unlimited') : `${tier.limits.chatAi.daily_messages ?? 'N/A'}${t('appTier.list.perDay')}`}
+                            {isUnlimited ? t($ => $.appTier.list.unlimited) : `${tier.limits.chatAi.daily_messages ?? 'N/A'}${t($ => $.appTier.list.perDay)}`}
                         </span>
                     </div>
                 </div>
@@ -158,11 +158,11 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                                 : "text-xs px-2"
                         }
                     >
-                        {tier.isActive ? t('appTier.list.active') : t('appTier.list.inactive')}
+                        {tier.isActive ? t($ => $.appTier.list.active) : t($ => $.appTier.list.inactive)}
                     </Badge>
 
                     <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0" asChild title={t('labels.edit')}>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0" asChild title={t($ => $.labels.edit)}>
                             <Link to={AppRoute.appTier.adminEdit.url} params={{ slug: tier.slug }}>
                                 <Edit2 className="w-4 h-4" />
                             </Link>
@@ -172,7 +172,7 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                             size="sm"
                             className="h-8 w-8 p-0 hover:text-destructive hover:bg-destructive/10"
                             onClick={() => onDelete(tier.slug, tier.name)}
-                            title={t('labels.delete')}
+                            title={t($ => $.labels.delete)}
                         >
                             <Trash2 className="w-4 h-4" />
                         </Button>

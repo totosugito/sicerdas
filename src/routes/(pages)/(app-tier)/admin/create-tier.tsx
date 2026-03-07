@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { PageTitle } from '@/components/app';
 import { CreateTierForm } from '@/components/pages/app-tier/create-tier';
 import { useCreateTier, CreateTierRequest } from '@/api/app-tier/admin/create-tier';
@@ -12,7 +12,7 @@ export const Route = createFileRoute('/(pages)/(app-tier)/admin/create-tier')({
 });
 
 function CreateTierPage() {
-    const { t } = useTranslation();
+    const { t } = useAppTranslation();
     const navigate = useNavigate();
     const createMutation = useCreateTier();
     const [error, setError] = useState<string | null>(null);
@@ -21,11 +21,11 @@ function CreateTierPage() {
         setError(null);
         createMutation.mutate(data, {
             onSuccess: (response) => {
-                showNotifSuccess({ message: response.message || t('appTier.create.messages.success') });
+                showNotifSuccess({ message: response.message || t($ => $.appTier.create.messages.success) });
                 navigate({ to: AppRoute.appTier.adminList.url });
             },
             onError: (error: any) => {
-                setError(error.message || t('appTier.create.messages.error'));
+                setError(error.message || t($ => $.appTier.create.messages.error));
             }
         });
     };
@@ -37,8 +37,8 @@ function CreateTierPage() {
     return (
         <div className="flex flex-col w-full space-y-6">
             <PageTitle
-                title={t('appTier.create.pageTitle')}
-                description={<span>{t('appTier.create.description')}</span>}
+                title={t($ => $.appTier.create.pageTitle)}
+                description={<span>{t($ => $.appTier.create.description)}</span>}
                 showBack
                 backTo={AppRoute.appTier.adminList.url}
             />

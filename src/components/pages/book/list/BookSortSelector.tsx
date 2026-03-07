@@ -1,7 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ArrowUpAZ, ArrowDownAZ } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 
 interface BookSortSelectorProps {
   sortBy: string;
@@ -14,14 +14,14 @@ export const BookSortSelector = ({
   sortOrder,
   onSortChange
 }: BookSortSelectorProps) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   const sortOptions = [
-    { value: 'createdAt', label: t('book.info.sort.createdAt') },
-    { value: 'title', label: t('book.info.sort.title') },
-    // { value: 'rating', label: t('book.info.sort.rating') },
-    { value: 'viewCount', label: t('book.info.sort.viewCount') },
-    // { value: 'downloadCount', label: t('book.info.sort.downloadCount') },
+    { value: 'createdAt', label: t($ => $.book.info.sort.createdAt) },
+    { value: 'title', label: t($ => $.book.info.sort.title) },
+    // { value: 'rating', label: t($ => $.book.info.sort.rating) },
+    { value: 'viewCount', label: t($ => $.book.info.sort.viewCount) },
+    // { value: 'downloadCount', label: t($ => $.book.info.sort.downloadCount) },
   ];
 
   const handleSortFieldChange = (value: string) => {
@@ -37,7 +37,7 @@ export const BookSortSelector = ({
     <div className="flex items-center gap-2">
       <Select value={sortBy} onValueChange={handleSortFieldChange}>
         <SelectTrigger className="w-[160px]">
-          <SelectValue placeholder={t('book.info.sort.placeholder')} />
+          <SelectValue placeholder={t($ => $.book.info.sort.placeholder)} />
         </SelectTrigger>
         <SelectContent>
           {sortOptions.map((option) => (

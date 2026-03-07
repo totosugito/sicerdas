@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { Magnet } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
@@ -12,11 +12,11 @@ interface ElementMagneticProps {
 }
 
 export function ElementMagnetic({ element, expandedSections, toggleSection }: ElementMagneticProps) {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
 
   return (
     <CardSection
-      title={t('periodicTable.periodicTable.var.magneticProperties')}
+      title={t($ => $.periodicTable.periodicTable.var.magneticProperties)}
       icon={<Magnet className="h-5 w-5" />}
       isExpanded={expandedSections.magnetic}
       onToggle={() => toggleSection('magnetic')}
@@ -24,29 +24,29 @@ export function ElementMagnetic({ element, expandedSections, toggleSection }: El
       <div className='flex flex-col gap-2'>
         <div className="grid sm:grid-cols-2 grid-cols-1 gap-2">
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.magneticType')}
+            label={t($ => $.periodicTable.periodicTable.var.magneticType)}
             value={element.atomicProperties?.magneticType || ''}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.curiePoint')}
+            label={t($ => $.periodicTable.periodicTable.var.curiePoint)}
             value={toPhysics({ value: parseFloat(element.atomicProperties?.curiePoint || '') })}
             isHtml={true}
             unit={getPeriodictUnits('curiePoint')}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.massMagneticSusceptibility')}
+            label={t($ => $.periodicTable.periodicTable.var.massMagneticSusceptibility)}
             value={toPhysics({ value: parseFloat(element.atomicProperties?.massMagneticSusceptibility || '') })}
             isHtml={true}
             unit={getPeriodictUnits('massMagneticSusceptibility')}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.molarMagneticSusceptibility')}
+            label={t($ => $.periodicTable.periodicTable.var.molarMagneticSusceptibility)}
             value={toPhysics({ value: parseFloat(element.atomicProperties?.molarMagneticSusceptibility || '') })}
             isHtml={true}
             unit={getPeriodictUnits('molarMagneticSusceptibility')}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.volumeMagneticSusceptibility')}
+            label={t($ => $.periodicTable.periodicTable.var.volumeMagneticSusceptibility)}
             value={toPhysics({ value: parseFloat(element.atomicProperties?.volumeMagneticSusceptibility || '') })}
             isHtml={true}
           />

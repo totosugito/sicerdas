@@ -3,7 +3,7 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2, ShieldCheck } from "lucide-react";
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { AlertCircle } from "lucide-react";
 import * as z from "zod";
 import {
@@ -13,11 +13,7 @@ import {
 } from "@/components/ui/input-otp";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 
-// Create schema for OTP verification
-const createOtpVerificationSchema = (t: (key: string) => string) => z.object({
-  email: z.email({ message: t("message.invalidEmail") }).min(1, { message: t("message.emailRequired") }),
-  otp: z.string().min(6, { message: t("message.otpRequired") }),
-});
+// Removed createOtpVerificationSchema as it's now inside the component
 
 export type OtpVerificationFormValues = {
   email: string;
@@ -39,10 +35,13 @@ type Props = {
 }
 
 export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email }: Props) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   // Create schema with translated error messages
-  const schema = createOtpVerificationSchema(t);
+  const schema = z.object({
+    email: z.email({ message: t($ => $.message.invalidEmail) }).min(1, { message: t($ => $.message.emailRequired) }),
+    otp: z.string().min(6, { message: t($ => $.message.otpRequired) }),
+  });
 
   const form = useForm<OtpVerificationFormValues>({
     resolver: zodResolver(schema),
@@ -124,12 +123,12 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
           {loading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t("labels.verifyingOtp")}...
+              {t($ => $.labels.verifyingOtp)}...
             </>
           ) : (
             <>
               <ShieldCheck className="mr-2 h-4 w-4" />
-              {t("labels.verifyOtp")}
+              {t($ => $.labels.verifyOtp)}
             </>
           )}
         </Button>

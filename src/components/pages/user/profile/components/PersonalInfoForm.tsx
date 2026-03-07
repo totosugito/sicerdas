@@ -1,7 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation, AppTranslation } from '@/lib/i18n-typed'
 import { ControlForm } from '@/components/custom/forms'
 import { z } from 'zod'
 import { AlertCircle } from 'lucide-react'
@@ -19,72 +19,72 @@ export type PersonalInfoFormValues = {
 }
 
 // Define a function to create form data with translations
-const createPersonalInfoFormData = (t: (key: string) => string) => {
+const createPersonalInfoFormData = (t: AppTranslation) => {
   return {
     form: {
       phone: {
         type: "tel",
         name: "phone",
-        label: t("user.profile.personalInfo.phoneNumber"),
-        placeholder: t("user.profile.personalInfo.phoneNumberPlaceholder"),
+        label: t($ => $.user.profile.personalInfo.phoneNumber),
+        placeholder: t($ => $.user.profile.personalInfo.phoneNumberPlaceholder),
       },
       address: {
         type: "textarea",
         name: "address",
-        label: t("user.profile.personalInfo.address"),
-        placeholder: t("user.profile.personalInfo.addressPlaceholder"),
+        label: t($ => $.user.profile.personalInfo.address),
+        placeholder: t($ => $.user.profile.personalInfo.addressPlaceholder),
       },
       school: {
         type: "textarea",
         name: "school",
-        label: t("user.profile.personalInfo.school"),
-        placeholder: t("user.profile.personalInfo.schoolPlaceholder"),
+        label: t($ => $.user.profile.personalInfo.school),
+        placeholder: t($ => $.user.profile.personalInfo.schoolPlaceholder),
       },
       grade: {
         type: "select",
         name: "grade",
-        label: t("user.profile.personalInfo.grade"),
-        placeholder: t("user.profile.personalInfo.gradePlaceholder"),
+        label: t($ => $.user.profile.personalInfo.grade),
+        placeholder: t($ => $.user.profile.personalInfo.gradePlaceholder),
         options: [
-          { value: "0", label: t("user.profile.personalInfo.gradeOptions.grade0") },
-          { value: "1", label: t("user.profile.personalInfo.gradeOptions.grade1") },
-          { value: "2", label: t("user.profile.personalInfo.gradeOptions.grade2") },
-          { value: "3", label: t("user.profile.personalInfo.gradeOptions.grade3") },
-          { value: "4", label: t("user.profile.personalInfo.gradeOptions.grade4") },
-          { value: "5", label: t("user.profile.personalInfo.gradeOptions.grade5") },
-          { value: "6", label: t("user.profile.personalInfo.gradeOptions.grade6") },
-          { value: "7", label: t("user.profile.personalInfo.gradeOptions.grade7") },
-          { value: "8", label: t("user.profile.personalInfo.gradeOptions.grade8") },
-          { value: "9", label: t("user.profile.personalInfo.gradeOptions.grade9") },
-          { value: "10", label: t("user.profile.personalInfo.gradeOptions.grade10") },
-          { value: "11", label: t("user.profile.personalInfo.gradeOptions.grade11") },
-          { value: "12", label: t("user.profile.personalInfo.gradeOptions.grade12") },
-          { value: "other", label: t("user.profile.personalInfo.gradeOptions.other") }
+          { value: "0", label: t($ => $.user.profile.personalInfo.gradeOptions.grade0) },
+          { value: "1", label: t($ => $.user.profile.personalInfo.gradeOptions.grade1) },
+          { value: "2", label: t($ => $.user.profile.personalInfo.gradeOptions.grade2) },
+          { value: "3", label: t($ => $.user.profile.personalInfo.gradeOptions.grade3) },
+          { value: "4", label: t($ => $.user.profile.personalInfo.gradeOptions.grade4) },
+          { value: "5", label: t($ => $.user.profile.personalInfo.gradeOptions.grade5) },
+          { value: "6", label: t($ => $.user.profile.personalInfo.gradeOptions.grade6) },
+          { value: "7", label: t($ => $.user.profile.personalInfo.gradeOptions.grade7) },
+          { value: "8", label: t($ => $.user.profile.personalInfo.gradeOptions.grade8) },
+          { value: "9", label: t($ => $.user.profile.personalInfo.gradeOptions.grade9) },
+          { value: "10", label: t($ => $.user.profile.personalInfo.gradeOptions.grade10) },
+          { value: "11", label: t($ => $.user.profile.personalInfo.gradeOptions.grade11) },
+          { value: "12", label: t($ => $.user.profile.personalInfo.gradeOptions.grade12) },
+          { value: "other", label: t($ => $.user.profile.personalInfo.gradeOptions.other) }
         ],
       },
       dateOfBirth: {
         type: "date",
         name: "dateOfBirth",
-        label: t("user.profile.personalInfo.dateOfBirth"),
-        placeholder: t("user.profile.personalInfo.dateOfBirthPlaceholder"),
+        label: t($ => $.user.profile.personalInfo.dateOfBirth),
+        placeholder: t($ => $.user.profile.personalInfo.dateOfBirthPlaceholder),
       },
       educationLevel: {
         type: "select",
         name: "educationLevel",
-        label: t("user.profile.personalInfo.educationLevel"),
-        placeholder: t("user.profile.personalInfo.educationLevelPlaceholder"),
+        label: t($ => $.user.profile.personalInfo.educationLevel),
+        placeholder: t($ => $.user.profile.personalInfo.educationLevelPlaceholder),
         options: [
-          { value: EnumEducationLevel.PAUD, label: t("user.profile.personalInfo.educationLevelOptions.paud") },
-          { value: EnumEducationLevel.TK, label: t("user.profile.personalInfo.educationLevelOptions.tk") },
-          { value: EnumEducationLevel.SD, label: t("user.profile.personalInfo.educationLevelOptions.sd") },
-          { value: EnumEducationLevel.MI, label: t("user.profile.personalInfo.educationLevelOptions.mi") },
-          { value: EnumEducationLevel.SMP, label: t("user.profile.personalInfo.educationLevelOptions.smp") },
-          { value: EnumEducationLevel.MTS, label: t("user.profile.personalInfo.educationLevelOptions.mts") },
-          { value: EnumEducationLevel.SMA, label: t("user.profile.personalInfo.educationLevelOptions.sma") },
-          { value: EnumEducationLevel.SMK, label: t("user.profile.personalInfo.educationLevelOptions.smk") },
-          { value: EnumEducationLevel.STM, label: t("user.profile.personalInfo.educationLevelOptions.stm") },
-          { value: EnumEducationLevel.UNIVERSITY, label: t("user.profile.personalInfo.educationLevelOptions.university") },
-          { value: EnumEducationLevel.OTHER, label: t("user.profile.personalInfo.educationLevelOptions.other") },
+          { value: EnumEducationLevel.PAUD, label: t($ => $.user.profile.personalInfo.educationLevelOptions.paud) },
+          { value: EnumEducationLevel.TK, label: t($ => $.user.profile.personalInfo.educationLevelOptions.tk) },
+          { value: EnumEducationLevel.SD, label: t($ => $.user.profile.personalInfo.educationLevelOptions.sd) },
+          { value: EnumEducationLevel.MI, label: t($ => $.user.profile.personalInfo.educationLevelOptions.mi) },
+          { value: EnumEducationLevel.SMP, label: t($ => $.user.profile.personalInfo.educationLevelOptions.smp) },
+          { value: EnumEducationLevel.MTS, label: t($ => $.user.profile.personalInfo.educationLevelOptions.mts) },
+          { value: EnumEducationLevel.SMA, label: t($ => $.user.profile.personalInfo.educationLevelOptions.sma) },
+          { value: EnumEducationLevel.SMK, label: t($ => $.user.profile.personalInfo.educationLevelOptions.smk) },
+          { value: EnumEducationLevel.STM, label: t($ => $.user.profile.personalInfo.educationLevelOptions.stm) },
+          { value: EnumEducationLevel.UNIVERSITY, label: t($ => $.user.profile.personalInfo.educationLevelOptions.university) },
+          { value: EnumEducationLevel.OTHER, label: t($ => $.user.profile.personalInfo.educationLevelOptions.other) },
         ],
       },
     },
@@ -114,7 +114,7 @@ interface PersonalInfoFormProps {
 }
 
 export function PersonalInfoForm({ form, onSubmit, error }: PersonalInfoFormProps) {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
 
   // Create form data with translated labels and placeholders
   const formData = createPersonalInfoFormData(t)
@@ -138,7 +138,7 @@ export function PersonalInfoForm({ form, onSubmit, error }: PersonalInfoFormProp
     <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full pb-0">
       <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
         <CardTitle className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight">
-          {t("user.profile.personalInfo.title")}
+          {t($ => $.user.profile.personalInfo.title)}
         </CardTitle>
       </CardHeader>
       <Form {...form}>
@@ -190,13 +190,13 @@ export function PersonalInfoForm({ form, onSubmit, error }: PersonalInfoFormProp
               variant="outline"
               onClick={() => form.reset()}
             >
-              {t("labels.cancel")}
+              {t($ => $.labels.cancel)}
             </Button>
             <Button
               type="submit"
               variant="default"
             >
-              {t("labels.save")}
+              {t($ => $.labels.save)}
             </Button>
           </CardFooter>)}
         </form>

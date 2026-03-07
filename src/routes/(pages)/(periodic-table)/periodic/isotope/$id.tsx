@@ -6,7 +6,7 @@ import {
 import {
   ElementIsotope, ElementHeroIsotope,
 } from '@/components/pages/periodic-table/element-isotope'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { useAppStore } from '@/stores/useAppStore'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { getElementStyle } from '@/components/pages/periodic-table/utils/element-styles'
@@ -16,7 +16,7 @@ export const Route = createFileRoute('/(pages)/(periodic-table)/periodic/isotope
 })
 
 function RouteComponent() {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const { id } = Route.useParams()
   const store = useAppStore();
   const { viewMode } = store.periodicTable;

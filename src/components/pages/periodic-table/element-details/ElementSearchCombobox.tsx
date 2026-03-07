@@ -17,7 +17,7 @@ import {
 import { ChevronsUpDown, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getElementStyle } from '../utils/element-styles';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 
 // Define the element type
 interface PeriodicElement {
@@ -42,7 +42,7 @@ export function ElementSearchCombobox({ theme = 'theme1', elementPathSegment, na
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState<string>('');
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   // Set initial value based on current URL
   useEffect(() => {
@@ -60,7 +60,7 @@ export function ElementSearchCombobox({ theme = 'theme1', elementPathSegment, na
   const handleSelect = (atomicNumber: string) => {
     setValue(atomicNumber);
     setOpen(false);
-    
+
     // Navigate to the selected element's page
     navigate({
       to: navigationPath,
@@ -80,7 +80,7 @@ export function ElementSearchCombobox({ theme = 'theme1', elementPathSegment, na
           >
             {selectedElement ? (
               <div className="flex items-center">
-                <span 
+                <span
                   className="mr-2 font-bold"
                   style={{ color: getElementStyle(selectedElement.atomicGroup, theme).atomColor }}
                 >
@@ -89,16 +89,16 @@ export function ElementSearchCombobox({ theme = 'theme1', elementPathSegment, na
                 <span>{selectedElement.atomicName} (#{selectedElement.atomicNumber})</span>
               </div>
             ) : (
-              t('periodicTable.elementDetail.selectElement', 'Select element...')
+              t($ => $.periodicTable.elementDetail.selectElement)
             )}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0">
           <Command>
-            <CommandInput placeholder={t('periodicTable.elementDetail.searchElements', 'Search elements...')} />
+            <CommandInput placeholder={t($ => $.periodicTable.elementDetail.searchElements)} />
             <CommandList>
-              <CommandEmpty>{t('periodicTable.elementDetail.noElementFound', 'No element found.')}</CommandEmpty>
+              <CommandEmpty>{t($ => $.periodicTable.elementDetail.noElementFound)}</CommandEmpty>
               <CommandGroup>
                 {periodicElements.map((element) => {
                   const elementStyle = getElementStyle(element.atomicGroup, theme);
@@ -111,13 +111,13 @@ export function ElementSearchCombobox({ theme = 'theme1', elementPathSegment, na
                       <Check
                         className={cn(
                           'mr-2 h-4 w-4',
-                          value === element.atomicNumber.toString() 
-                            ? 'opacity-100' 
+                          value === element.atomicNumber.toString()
+                            ? 'opacity-100'
                             : 'opacity-0'
                         )}
                       />
                       <div className="flex items-center">
-                        <span 
+                        <span
                           className="mr-2 font-bold"
                           style={{ color: elementStyle.atomColor }}
                         >

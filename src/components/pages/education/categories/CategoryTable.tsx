@@ -8,7 +8,7 @@ import {
     PaginationData
 } from '@/components/custom/table';
 import { LongText } from '@/components/custom/components';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
@@ -48,7 +48,7 @@ export function CategoryTable({
     onEdit,
     onDelete,
 }: CategoryTableProps) {
-    const { t } = useTranslation();
+    const { t } = useAppTranslation();
 
     const columns: ColumnDef<ExamCategory>[] = [
         createRowNumberColumn<ExamCategory>({
@@ -60,14 +60,14 @@ export function CategoryTable({
             accessorKey: "name",
             enableSorting: true,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("education.categories.table.columns.name")} />
+                <DataTableColumnHeader column={column} title={t($ => $.education.categories.table.columns.name)} />
             ),
         },
         {
             accessorKey: "description",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("education.categories.table.columns.description")} />
+                <DataTableColumnHeader column={column} title={t($ => $.education.categories.table.columns.description)} />
             ),
             cell: ({ row }) => (
                 <LongText
@@ -83,14 +83,14 @@ export function CategoryTable({
             minSize: 70,
             maxSize: 70,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("education.categories.table.columns.status")} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.education.categories.table.columns.status)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const isActive = row.getValue("isActive") as boolean;
                 return (
                     <div className='flex justify-center'>
                         <Badge variant={isActive ? "success" : "secondary"}>
-                            {isActive ? t("education.categories.table.status.active") : t("education.categories.table.status.inactive")}
+                            {isActive ? t($ => $.education.categories.table.status.active) : t($ => $.education.categories.table.status.inactive)}
                         </Badge>
                     </div>
                 );
@@ -102,7 +102,7 @@ export function CategoryTable({
             minSize: 100,
             maxSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("education.categories.table.columns.updatedAt")} />
+                <DataTableColumnHeader column={column} title={t($ => $.education.categories.table.columns.updatedAt)} />
             ),
             cell: ({ row }) => (
                 <span className="text-sm text-muted-foreground">
@@ -115,7 +115,7 @@ export function CategoryTable({
             minSize: 50,
             maxSize: 50,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("education.categories.table.columns.actions")} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.education.categories.table.columns.actions)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const category = row.original;
@@ -125,23 +125,23 @@ export function CategoryTable({
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <span className="sr-only">{t("education.categories.table.actions.openMenu")}</span>
+                                    <span className="sr-only">{t($ => $.education.categories.table.actions.openMenu)}</span>
                                     <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>{t("education.categories.table.columns.actions")}</DropdownMenuLabel>
+                                <DropdownMenuLabel>{t($ => $.education.categories.table.columns.actions)}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => onEdit(category)}>
                                     <Pencil className="mr-2 h-4 w-4" />
-                                    {t("education.categories.table.actions.edit")}
+                                    {t($ => $.education.categories.table.actions.edit)}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                     className="text-destructive focus:text-destructive"
                                     onClick={() => onDelete(category)}
                                 >
                                     <Trash2 className="mr-2 h-4 w-4" />
-                                    {t("education.categories.table.actions.delete")}
+                                    {t($ => $.education.categories.table.actions.delete)}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -199,7 +199,7 @@ export function CategoryTable({
                 <div className={"flex flex-row gap-2 max-w-sm"}>
                     <DataTableFilter
                         table={table}
-                        searchPlaceholder={t("education.categories.table.search")}
+                        searchPlaceholder={t($ => $.education.categories.table.search)}
                         className='min-w-sm'
                         searchOnEnter={true}
                     >
@@ -212,7 +212,7 @@ export function CategoryTable({
                 totalRowCount={paginationData?.total || 0}
                 showSideBorders={false}
                 showZebraStriping={true}
-                defaultNoResultText={t("education.categories.table.noResult")}
+                defaultNoResultText={t($ => $.education.categories.table.noResult)}
             />
         </div>
     );

@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
+import { Trans } from 'react-i18next';
 import { createFileRoute } from '@tanstack/react-router';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -50,7 +51,7 @@ const PancasilaCard: React.FC<{
   iconMap: Record<number, React.ReactNode>;
   highlightText: (text: string, query: string) => React.ReactNode;
 }> = ({ sila, searchTerm, isExpanded, iconMap, highlightText }) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   // Filter butir based on search term for display
   const filteredButir = useMemo(() => {
@@ -78,7 +79,7 @@ const PancasilaCard: React.FC<{
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <Badge className={'bg-red-600 text-white hover:bg-red-700 dark:bg-red-400 dark:hover:bg-red-600 dark:text-gray-900'}>
-                {t('constitution.butirPancasila.sila')} {sila.id}
+                {t($ => $.constitution.butirPancasila.sila)} {sila.id}
               </Badge>
             </div>
             <CardTitle className="sm:text-lg text-gray-900 leading-tight dark:text-white">
@@ -86,8 +87,8 @@ const PancasilaCard: React.FC<{
             </CardTitle>
             <CardDescription className="text-gray-600 mt-2 dark:text-gray-300">
               {searchTerm
-                ? t('constitution.butirPancasila.matchingButir', { matchingCount: matchingButirCount, totalCount: silaCount })
-                : t('constitution.butirPancasila.butirPengamalanCount', { count: silaCount })}
+                ? t($ => $.constitution.butirPancasila.matchingButir, { matchingCount: matchingButirCount, totalCount: silaCount })
+                : t($ => $.constitution.butirPancasila.butirPengamalanCount, { count: silaCount })}
             </CardDescription>
           </div>
         </div>
@@ -97,7 +98,7 @@ const PancasilaCard: React.FC<{
           <AccordionItem value={`butir-${sila.id}`} className="border-none">
             <AccordionTrigger className="text-red-700 hover:text-red-800 font-semibold hover:no-underline py-0 dark:text-red-400 dark:hover:text-red-300">
               <span className="flex items-center gap-2">
-                {t('constitution.butirPancasila.viewButir')}
+                {t($ => $.constitution.butirPancasila.viewButir)}
               </span>
             </AccordionTrigger>
             <AccordionContent>
@@ -128,7 +129,7 @@ const PancasilaCard: React.FC<{
 
 // Sub-component for the hero section
 const HeroSection: React.FC = () => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   return (
     <section className="relative">
       <div className="flex flex-col gap-2 mx-auto text-center">
@@ -138,17 +139,17 @@ const HeroSection: React.FC = () => {
           </div>
         </div>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-          {t('constitution.butirPancasila.title')}
+          {t($ => $.constitution.butirPancasila.title)}
         </h1>
         <p className="text-lg text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
-          {t('constitution.butirPancasila.description')}
+          {t($ => $.constitution.butirPancasila.description)}
         </p>
         <div className="flex items-center justify-center gap-4">
           <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
-            {t('constitution.butirPancasila.fiveSila')}
+            {t($ => $.constitution.butirPancasila.fiveSila)}
           </Badge>
           <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
-            {t('constitution.butirPancasila.fortyFiveButir')}
+            {t($ => $.constitution.butirPancasila.fortyFiveButir)}
           </Badge>
         </div>
       </div>
@@ -165,7 +166,7 @@ const SearchSection: React.FC<{
   clearSearch: () => void;
   searchSummary?: { butirCount: number; silaCount: number };
 }> = ({ searchTerm, setSearchTerm, expandedAll, toggleExpandAll, clearSearch, searchSummary }) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   return (
     <section className="py-0">
       <div className="mx-auto">
@@ -174,7 +175,7 @@ const SearchSection: React.FC<{
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
               type="text"
-              placeholder={t('constitution.butirPancasila.searchPlaceholder')}
+              placeholder={t($ => $.constitution.butirPancasila.searchPlaceholder)}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="px-12 h-10 text-lg border-2 border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 dark:border-gray-700 dark:focus:border-red-500 dark:focus:ring-red-900/30 dark:bg-gray-800 dark:text-white"
@@ -199,12 +200,12 @@ const SearchSection: React.FC<{
               {expandedAll ? (
                 <>
                   <ChevronUp className="w-4 h-4" />
-                  {t('constitution.butirPancasila.closeAll')}
+                  {t($ => $.constitution.butirPancasila.closeAll)}
                 </>
               ) : (
                 <>
                   <ChevronDown className="w-4 h-4" />
-                  {t('constitution.butirPancasila.openAll')}
+                  {t($ => $.constitution.butirPancasila.openAll)}
                 </>
               )}
             </Button>
@@ -212,9 +213,11 @@ const SearchSection: React.FC<{
         </div>
         {searchTerm && searchSummary && (
           <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
-            {t('constitution.butirPancasila.found')} <span className="font-semibold text-red-600 dark:text-red-400">
-              {searchSummary.butirCount}
-            </span> {t('constitution.butirPancasila.butirFrom')} <span className="font-semibold text-red-600 dark:text-red-400">{searchSummary.silaCount}</span> {t('constitution.butirPancasila.silaLower')}
+            <Trans
+              i18nKey="constitution.butirPancasila.foundResult"
+              values={{ butirCount: searchSummary.butirCount, silaCount: searchSummary.silaCount }}
+              components={{ 1: <span className="font-semibold text-red-600 dark:text-red-400" />, 3: <span className="font-semibold text-red-600 dark:text-red-400" /> }}
+            />
           </p>
         )}
       </div>
@@ -224,7 +227,7 @@ const SearchSection: React.FC<{
 
 // Sub-component for the empty state
 const EmptyState: React.FC<{ searchTerm: string; clearSearch: () => void }> = ({ searchTerm, clearSearch }) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   return (
     <div className="text-center py-10">
       <div className="mb-4 flex justify-center">
@@ -233,16 +236,16 @@ const EmptyState: React.FC<{ searchTerm: string; clearSearch: () => void }> = ({
         </div>
       </div>
       <h3 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white">
-        {t('constitution.butirPancasila.noResultTitle')}
+        {t($ => $.constitution.butirPancasila.noResultTitle)}
       </h3>
       <p className="text-gray-600 mb-4 dark:text-gray-400">
-        {t('constitution.butirPancasila.noResultDesc', { query: searchTerm })}
+        {t($ => $.constitution.butirPancasila.noResultDesc, { query: searchTerm })}
       </p>
       <Button
         onClick={clearSearch}
         className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 dark:bg-red-700 dark:hover:bg-red-800"
       >
-        {t('constitution.butirPancasila.clearSearch')}
+        {t($ => $.constitution.butirPancasila.clearSearch)}
       </Button>
     </div>
   );
@@ -253,7 +256,7 @@ export const Route = createFileRoute('/(pages)/constitution/butir-pancasila')({
 });
 
 function RouteComponent() {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   // Search state
   const [searchTerm, setSearchTerm] = useState('');
   // Expand/collapse all state
@@ -273,7 +276,7 @@ function RouteComponent() {
   const iconMap = useMemo(() => {
     const map: Record<number, React.ReactNode> = {};
     butirPancasilaData.forEach((item: PancasilaItem) => {
-      map[item.id] = <img src={item.image} alt={`${t('constitution.butirPancasila.sila')} ${item.id}`} className="w-8 h-8" />;
+      map[item.id] = <img src={item.image} alt={`${t($ => $.constitution.butirPancasila.sila)} ${item.id}`} className="w-8 h-8" />;
     });
     return map;
   }, [t]);

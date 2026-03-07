@@ -1,7 +1,7 @@
 import { PeriodicCell } from '@/components/pages/periodic-table/periodic-table';
 import { ProgressElement } from "./ProgressElement";
 import { PeriodicElement, PropertyDefinition } from "../types/types";
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { toPhysics } from "@/lib/my-utils";
 import { getPeriodictUnits } from "../utils/element-units";
 import { useNavigate } from "@tanstack/react-router";
@@ -29,19 +29,18 @@ export function ElementComparisonItem({
   propertyLabel,
   propertyDefinitions
 }: ElementComparisonItemProps) {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const navigate = useNavigate();
 
   return (
     <div
-      className={`border rounded-lg p-4 cursor-pointer transition-all bg-card ${
-        isSelected ? 'ring-2 ring-primary' : 'hover:bg-muted/30'
-      }`}
+      className={`border rounded-lg p-4 cursor-pointer transition-all bg-card ${isSelected ? 'ring-2 ring-primary' : 'hover:bg-muted/30'
+        }`}
       onClick={() => onSelect(isSelected ? null : element.id)}
     >
       <div className="flex items-center space-x-4">
         <div className="w-16 h-16">
-          <PeriodicCell 
+          <PeriodicCell
             element={element}
             cellSize={64}
           />
@@ -62,30 +61,30 @@ export function ElementComparisonItem({
       {isSelected && (
         <div className="mt-4 pt-4 border-t">
           <div className="grid sm:grid-cols-2 grid-cols-1 gap-2 mb-4">
-            <PropertyItem label={t('periodicTable.periodicTable.var.atomicNumber')} value={element.atomicNumber} />
-            <PropertyItem label={t('periodicTable.periodicTable.var.symbol')} value={element.atomicSymbol} />
-            <PropertyItem label={t('periodicTable.periodicTable.var.atomicName')} value={element.atomicName} />
+            <PropertyItem label={t($ => $.periodicTable.periodicTable.var.atomicNumber)} value={element.atomicNumber} />
+            <PropertyItem label={t($ => $.periodicTable.periodicTable.var.symbol)} value={element.atomicSymbol} />
+            <PropertyItem label={t($ => $.periodicTable.periodicTable.var.atomicName)} value={element.atomicName} />
 
             {propertyDefinitions.map(property => {
               const key_ = property.key as keyof typeof element.prop;
-              const value = toPhysics({ value: parseFloat(element.prop?.[key_] || '') });       
+              const value = toPhysics({ value: parseFloat(element.prop?.[key_] || '') });
               return (
-                <PropertyItem key={property.key} label={t('periodicTable.periodicTable.var.' + property.key)} value={value} unit={getPeriodictUnits(key_)} />
+                <PropertyItem key={property.key} label={t(`periodicTable.periodicTable.var.${property.key}` as any)} value={value} unit={getPeriodictUnits(key_)} />
               );
             })}
           </div>
           <div className="flex justify-end">
-            <button 
+            <button
               onClick={(e) => {
                 e.stopPropagation();
-                navigate({ 
-                  to: AppRoute.periodicTable.elementDetail.url, 
-                  params: { id: element.atomicNumber.toString() } 
+                navigate({
+                  to: AppRoute.periodicTable.elementDetail.url,
+                  params: { id: element.atomicNumber.toString() }
                 });
               }}
               className="text-sm px-3 py-1.5 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
             >
-              {t('periodicTable.elementComparison.viewDetails')}
+              {t($ => $.periodicTable.elementComparison.viewDetails)}
             </button>
           </div>
         </div>

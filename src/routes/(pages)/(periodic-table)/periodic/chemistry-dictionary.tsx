@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { useAuthStore } from '@/stores/useAuthStore'
 import dictionaryDataEn from '@/data/table-periodic/periodic_dictionary_en.json'
 import dictionaryDataId from '@/data/table-periodic/periodic_dictionary_id.json'
@@ -15,7 +15,7 @@ interface ChemistryTerm {
 }
 
 function ChemistryDictionary() {
-  const { t, i18n } = useTranslation()
+  const { t } = useAppTranslation()
   const authLanguage = useAuthStore((state) => state.language)
   const [activeGroup, setActiveGroup] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
@@ -86,7 +86,7 @@ function ChemistryDictionary() {
 
       {/* Results Info */}
       <div className="mb-4 text-sm text-muted-foreground text-center">
-        {t('periodicTable.chemistryDictionary.resultsInfo', {
+        {t($ => $.periodicTable.chemistryDictionary.resultsInfo, {
           start: startIndex + 1,
           end: Math.min(startIndex + itemsPerPage, filteredTerms.length),
           total: filteredTerms.length
@@ -114,10 +114,10 @@ function ChemistryDictionary() {
       ) : (
         <div className="text-center py-12">
           <div className="text-lg font-medium text-foreground mb-2">
-            {t('periodicTable.chemistryDictionary.noEntriesFound.title')}
+            {t($ => $.periodicTable.chemistryDictionary.noEntriesFound.title)}
           </div>
           <p className="text-muted-foreground">
-            {t('periodicTable.chemistryDictionary.noEntriesFound.description')}
+            {t($ => $.periodicTable.chemistryDictionary.noEntriesFound.description)}
           </p>
         </div>
       )}

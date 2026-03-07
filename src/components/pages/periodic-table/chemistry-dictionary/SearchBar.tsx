@@ -1,7 +1,7 @@
 import { Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 
 interface SearchBarProps {
   searchTerm: string
@@ -9,14 +9,14 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ searchTerm, onSearchChange }: SearchBarProps) {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
 
   return (
     <div className="flex justify-center mb-6">
       <div className="max-w-md w-full relative">
         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder={t('periodicTable.chemistryDictionary.searchBar.placeholder')}
+          placeholder={t($ => $.periodicTable.chemistryDictionary.searchBar.placeholder)}
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
           className="pl-10 pr-10 bg-card"

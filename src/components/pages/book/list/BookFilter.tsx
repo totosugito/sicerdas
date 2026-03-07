@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { FilterParamCategory } from '@/api/book';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -26,7 +26,7 @@ interface BookFilterProps {
 }
 
 export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSubmit = true, idPrefix = 'filter' }: BookFilterProps) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const categories = filterData?.data || [];
 
   const [localFilters, setLocalFilters] = useState(selectedFilters);
@@ -129,7 +129,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
           onClick={onReset}
           className="text-xs text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary-foreground transition-colors"
         >
-          {t('book.info.reset')}
+          {t($ => $.book.info.reset)}
         </button>
       )}
     </div>
@@ -141,21 +141,21 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
         {/* Categories */}
         <div className=''>
           <h3 className="text-slate-900 dark:text-white text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2">
-            {t('book.info.categories')}
+            {t($ => $.book.info.categories)}
           </h3>
           <RadioGroup
             value={activeCategoryId?.toString() || ""}
             onValueChange={handleCategoryChange}
             className="space-y-1"
           >
-            <CategoryOption value="-1" id={`${idPrefix}-cat--1`} label={t('book.info.allBooks')} />
+            <CategoryOption value="-1" id={`${idPrefix}-cat--1`} label={t($ => $.book.info.allBooks)} />
             <CategoryOption
               value="0"
               id={`${idPrefix}-cat-0`}
-              label={t('book.info.latest')}
+              label={t($ => $.book.info.latest)}
               subLabel={
                 <span className={"new-badge"}>
-                  {t('book.info.new')}
+                  {t($ => $.book.info.new)}
                 </span>
               }
             />
@@ -180,7 +180,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
         {displayedGroups.length > 0 ? (
           <div>
             {renderSectionHeader(
-              t('book.info.groups'),
+              t($ => $.book.info.groups),
               localFilters.groups.length > 0,
               () => clearSection('groups')
             )}
@@ -200,7 +200,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
           </div>
         ) : (
           <div className="text-sm text-slate-400 italic px-2 py-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg text-center border border-dashed border-slate-200 dark:border-slate-700">
-            {t('book.info.select_category_to_view_groups')}
+            {t($ => $.book.info.select_category_to_view_groups)}
           </div>
         )}
 
@@ -209,7 +209,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
           <div>
             <div className="h-px bg-slate-100 dark:bg-slate-800 w-full mb-4" />
             {renderSectionHeader(
-              t('book.info.grades'),
+              t($ => $.book.info.grades),
               (localFilters.grades?.length || 0) > 0,
               () => clearSection('grades')
             )}
@@ -235,7 +235,7 @@ export const BookFilter = ({ selectedFilters, onFilterChange, filterData, autoSu
             className="w-full"
             onClick={() => onFilterChange(localFilters)}
           >
-            {t('book.applyFilters')}
+            {t($ => $.book.applyFilters)}
           </Button>
         </div>
       )}

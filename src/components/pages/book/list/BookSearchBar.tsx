@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Search, X, Filter } from 'lucide-react';  // Added X icon for clear button and Filter icon
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { useState, useEffect } from 'react';
 import { BookFilter } from './BookFilter';
 
@@ -28,7 +28,7 @@ export const BookSearchBar = ({
   selectedFilters = { categories: [], groups: [] },
   onFilterChange
 }: BookSearchBarProps) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   // Local state for input value to avoid updating parent on every keystroke
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm || '');
@@ -73,7 +73,7 @@ export const BookSearchBar = ({
             }`}
         />
         <Input
-          placeholder={t('book.searchPlaceholder')}
+          placeholder={t($ => $.book.searchPlaceholder)}
           value={localSearchTerm}
           onChange={(e) => setLocalSearchTerm(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -104,7 +104,7 @@ export const BookSearchBar = ({
                 className="flex-1 visible lg:hidden "
               >
                 <Filter className="w-4 h-4 mr-2" />
-                {t('book.filters')}
+                {t($ => $.book.filters)}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[300px] px-4">
@@ -123,7 +123,7 @@ export const BookSearchBar = ({
         )}
 
         <Button variant={'outline'} size={'sm'} onClick={handleSearchClick} disabled={isSearchDisabled} className="flex-1">
-          {t('book.search')}
+          {t($ => $.book.search)}
         </Button>
       </div>
     </div>

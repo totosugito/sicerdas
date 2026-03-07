@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { getPeriodictUnits } from '@/components/pages/periodic-table/utils/element-units'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { ElementDetail } from '@/api/periodic-table/periodic-table';
 import { cn } from '@/lib/utils';
 import { getElementStyle } from '../utils/element-styles';
@@ -14,7 +14,7 @@ interface ElementHeroProps {
 }
 
 export function ElementHero({ element, theme }: ElementHeroProps) {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   return (
@@ -55,7 +55,7 @@ export function ElementHero({ element, theme }: ElementHeroProps) {
           <div className='flex py-1 px-4 items-center'>
             <span className="text-sm font-medium">{element.atomicNumber}</span>
             <span className="mx-2 w-[1px] bg-muted h-4"></span>
-            <span className="text-sm font-medium">{t('periodicTable.periodicTable.var.' + element.atomicProperties.series)}</span>
+            <span className="text-sm font-medium">{t($ => $.periodicTable.periodicTable.var[element.atomicProperties.series as keyof typeof $.periodicTable.periodicTable.var])}</span>
           </div>
         </div>
 

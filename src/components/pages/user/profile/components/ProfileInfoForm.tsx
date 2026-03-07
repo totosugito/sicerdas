@@ -1,7 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation, AppTranslation } from '@/lib/i18n-typed'
 import { ControlForm } from '@/components/custom/forms'
 import { z } from 'zod'
 import { AlertCircle } from 'lucide-react'
@@ -24,32 +24,32 @@ const accept = {
 }
 
 // Define a function to create form data with translations
-const createProfileInfoFormData = (t: (key: string) => string) => {
+const createProfileInfoFormData = (t: AppTranslation) => {
     return {
         form: {
             name: {
                 type: "text",
                 name: "name",
-                label: t("user.profile.information.fullName"),
-                placeholder: t("user.profile.information.fullNamePlaceholder"),
+                label: t($ => $.user.profile.information.fullName),
+                placeholder: t($ => $.user.profile.information.fullNamePlaceholder),
             },
             email: {
                 type: "email",
                 name: "email",
-                label: t("user.profile.information.emailAddress"),
-                placeholder: t("user.profile.information.emailPlaceholder"),
+                label: t($ => $.user.profile.information.emailAddress),
+                placeholder: t($ => $.user.profile.information.emailPlaceholder),
             },
             bio: {
                 type: "textarea",
                 name: "bio",
-                label: t("user.profile.information.bio"),
-                placeholder: t("user.profile.information.bioPlaceholder"),
+                label: t($ => $.user.profile.information.bio),
+                placeholder: t($ => $.user.profile.information.bioPlaceholder),
                 minRows: 5
             }
         },
         schema: z.object({
-            name: z.string().min(2, { message: t("user.profile.information.fullNameError") }),
-            email: z.email({ message: t("user.profile.information.emailError") }),
+            name: z.string().min(2, { message: t($ => $.user.profile.information.fullNameError) }),
+            email: z.string().email({ message: t($ => $.user.profile.information.emailError) }),
             bio: z.string().optional(),
             image: z.string().nullable().optional(),
         }),
@@ -74,7 +74,7 @@ export interface ProfileInfoFormRef {
 }
 
 export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormProps>(({ form, onSubmit, error }, ref) => {
-    const { t } = useTranslation()
+    const { t } = useAppTranslation()
 
     // Create form data with translated labels and placeholders
     const formData = createProfileInfoFormData(t)
@@ -84,7 +84,7 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
 
     // Handle form submission
     const handleSubmit = (values: Record<string, any>) => {
-        const {image, ...rest} = values;
+        const { image, ...rest } = values;
         onSubmit(rest, croppedImageFile);
     }
 
@@ -145,7 +145,7 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
         <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full pb-0">
             <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
                 <CardTitle className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight">
-                    {t("user.profile.information.title")}
+                    {t($ => $.user.profile.information.title)}
                 </CardTitle>
             </CardHeader>
             <Form {...form}>
@@ -172,7 +172,7 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
                                             }}
                                             selectedFile={selectedFile}
                                             setSelectedFile={setSelectedFile}
-                                            title={t("user.profile.information.changeAvatar")}
+                                            title={t($ => $.user.profile.information.changeAvatar)}
                                             onCropComplete={(file: File) => setCroppedImageFile(file)}
                                         />
                                     ) : (
@@ -218,13 +218,13 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
                                 setCroppedImageFile(null);
                             }}
                         >
-                            {t("labels.cancel")}
+                            {t($ => $.labels.cancel)}
                         </Button>
                         <Button
                             type="submit"
                             variant="default"
                         >
-                            {t("labels.save")}
+                            {t($ => $.labels.save)}
                         </Button>
                     </CardFooter>)}
                 </form>

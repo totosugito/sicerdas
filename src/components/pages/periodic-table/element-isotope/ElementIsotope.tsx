@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { IsotopeCard } from './IsotopeCard';
 
 interface IsotopeData {
@@ -29,7 +29,7 @@ const parseIsotopeData = (
   if (!knownIsotopes || !Array.isArray(knownIsotopes)) {
     return [];
   }
-  
+
   const result: IsotopeData[] = [];
   for (let i = 0; i < knownIsotopes.length; i++) {
     const id = knownIsotopes[i];
@@ -66,7 +66,7 @@ const parseIsotopeData = (
 };
 
 export function ElementIsotope({ atomColor, atomicSymbol, knownIsotopes, isotopes }: ElementIsotopeProps) {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   const atomicIsotopes = parseIsotopeData(knownIsotopes, isotopes);
 

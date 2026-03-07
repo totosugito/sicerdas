@@ -1,7 +1,7 @@
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from '@/lib/i18n-typed';
 
 export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
-    const { t } = useTranslation();
+    const { t } = useAppTranslation();
     return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-muted">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--accent)/0.1),transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.1),transparent_50%)]" />
@@ -14,7 +14,7 @@ export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                     {children}
                 </div>
                 <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-                    <p>© {new Date().getFullYear()} {t('app.copyright')}</p>
+                    <p>© {new Date().getFullYear()} {t($ => $.app.copyright)}</p>
                 </div>
             </div>
         </div>

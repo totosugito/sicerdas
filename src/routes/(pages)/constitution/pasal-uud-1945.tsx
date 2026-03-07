@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
+import { Trans } from 'react-i18next';
 import { createFileRoute } from '@tanstack/react-router';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -32,7 +33,7 @@ export const Route = createFileRoute('/(pages)/constitution/pasal-uud-1945')({
 });
 
 function RouteComponent() {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   // Search state
   const [searchTerm, setSearchTerm] = useState('');
   // Expand/collapse all state
@@ -142,20 +143,20 @@ function RouteComponent() {
             </div>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-            {t('constitution.uud1945.title')}
+            {t($ => $.constitution.uud1945.title)}
           </h1>
           <p className="text-lg text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
-            {t('constitution.uud1945.description')}
+            {t($ => $.constitution.uud1945.description)}
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
-              {t('constitution.uud1945.articleCount', { count: counts.pasal })}
+              {t($ => $.constitution.uud1945.articleCount, { count: counts.pasal })}
             </Badge>
             <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
-              {t('constitution.uud1945.transitionalProvisionCount', { count: counts.aturanPeralihan })}
+              {t($ => $.constitution.uud1945.transitionalProvisionCount, { count: counts.aturanPeralihan })}
             </Badge>
             <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
-              {t('constitution.uud1945.additionalProvisionCount', { count: counts.aturanTambahan })}
+              {t($ => $.constitution.uud1945.additionalProvisionCount, { count: counts.aturanTambahan })}
             </Badge>
           </div>
         </div>
@@ -172,7 +173,7 @@ function RouteComponent() {
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <Input
                   type="text"
-                  placeholder={t('constitution.uud1945.searchPlaceholder')}
+                  placeholder={t($ => $.constitution.uud1945.searchPlaceholder)}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="px-12 h-10 text-lg border-2 border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 dark:border-gray-700 dark:focus:border-red-500 dark:focus:ring-red-900/30 dark:bg-gray-800 dark:text-white"
@@ -197,12 +198,12 @@ function RouteComponent() {
                   {expandedAll ? (
                     <>
                       <ChevronUp className="w-4 h-4" />
-                      {t('constitution.uud1945.closeAll')}
+                      {t($ => $.constitution.uud1945.closeAll)}
                     </>
                   ) : (
                     <>
                       <ChevronDown className="w-4 h-4" />
-                      {t('constitution.uud1945.openAll')}
+                      {t($ => $.constitution.uud1945.openAll)}
                     </>
                   )}
                 </Button>
@@ -231,16 +232,16 @@ function RouteComponent() {
                   </div>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white">
-                  {t('constitution.uud1945.noResultTitle')}
+                  {t($ => $.constitution.uud1945.noResultTitle)}
                 </h3>
                 <p className="text-gray-600 mb-4 dark:text-gray-400">
-                  {t('constitution.uud1945.noResultDesc', { query: searchTerm })}
+                  {t($ => $.constitution.uud1945.noResultDesc, { query: searchTerm })}
                 </p>
                 <Button
                   onClick={clearSearch}
                   className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 dark:bg-red-700 dark:hover:bg-red-800"
                 >
-                  {t('constitution.uud1945.clearSearch')}
+                  {t($ => $.constitution.uud1945.clearSearch)}
                 </Button>
               </div>
             ) : (
@@ -266,8 +267,8 @@ function RouteComponent() {
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
                               <Badge className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-400 dark:hover:bg-red-600 dark:text-gray-900">
-                                {pasal.title.includes("(Aturan Peralihan)") ? t('constitution.uud1945.transitionalProvision') :
-                                  pasal.title.includes("(Aturan Tambahan)") ? t('constitution.uud1945.additionalProvision') : t('constitution.uud1945.article')}
+                                {pasal.title.includes("(Aturan Peralihan)") ? t($ => $.constitution.uud1945.transitionalProvision) :
+                                  pasal.title.includes("(Aturan Tambahan)") ? t($ => $.constitution.uud1945.additionalProvision) : t($ => $.constitution.uud1945.article)}
                               </Badge>
                             </div>
                             <CardTitle className="sm:text-lg text-gray-900 leading-tight dark:text-white">
@@ -275,8 +276,8 @@ function RouteComponent() {
                             </CardTitle>
                             <CardDescription className="text-gray-600 mt-2 dark:text-gray-300">
                               {searchTerm
-                                ? t('constitution.uud1945.matchingAyat', { matchCount: matchingAyatCount, totalCount: pasal.data.length })
-                                : t('constitution.uud1945.ayatCount', { totalCount: pasal.data.length })}
+                                ? t($ => $.constitution.uud1945.matchingAyat, { matchCount: matchingAyatCount, totalCount: pasal.data.length })
+                                : t($ => $.constitution.uud1945.ayatCount, { totalCount: pasal.data.length })}
                             </CardDescription>
                           </div>
                         </div>
@@ -286,7 +287,7 @@ function RouteComponent() {
                           <AccordionItem value={`ayat-${pasal.title}`} className="border-none">
                             <AccordionTrigger className="text-red-700 hover:text-red-800 font-semibold hover:no-underline py-0 dark:text-red-400 dark:hover:text-red-300">
                               <span className="flex items-center gap-2">
-                                {t('constitution.uud1945.viewAyat')}
+                                {t($ => $.constitution.uud1945.viewAyat)}
                               </span>
                             </AccordionTrigger>
                             <AccordionContent>

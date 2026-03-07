@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,7 +33,7 @@ type PackageFormProps = {
 };
 
 export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormProps) {
-    const { t } = useTranslation();
+    const { t } = useAppTranslation();
 
     // Data for dropdowns (Fetching all active options at once)
     const { data: categoriesData, isFetching: isFetchingCategories } = useListCategorySimple({ limit: 1000 });
@@ -44,9 +44,9 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
     const educationGradeOptions = gradesData?.data?.items || [];
 
     const formSchema = z.object({
-        title: z.string().min(1, t("exam.packages.list.form.title.required")),
-        categoryId: z.string().min(1, t("exam.packages.list.form.category.required")),
-        examType: z.string().min(1, t("exam.packages.list.form.examType.required")),
+        title: z.string().min(1, t($ => $.exam.packages.list.form.title.required)),
+        categoryId: z.string().min(1, t($ => $.exam.packages.list.form.category.required)),
+        examType: z.string().min(1, t($ => $.exam.packages.list.form.examType.required)),
         durationMinutes: z.string().optional(),
         educationGradeId: z.coerce.number().optional().nullable(),
         requiredTier: z.string().optional(),
@@ -92,22 +92,22 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
     })) || [];
 
     const examTypeOptions = [
-        { label: t("exam.packages.list.form.examType.options.official"), value: EnumExamType.OFFICIAL },
-        { label: t("exam.packages.list.form.examType.options.custom_practice"), value: EnumExamType.CUSTOM_PRACTICE },
+        { label: t($ => $.exam.packages.list.form.examType.options.official), value: EnumExamType.OFFICIAL },
+        { label: t($ => $.exam.packages.list.form.examType.options.custom_practice), value: EnumExamType.CUSTOM_PRACTICE },
     ];
 
     const formConfig = {
         title: {
             type: "text",
             name: "title",
-            label: t("exam.packages.list.form.title.label"),
-            placeholder: t("exam.packages.list.form.title.placeholder"),
+            label: t($ => $.exam.packages.list.form.title.label),
+            placeholder: t($ => $.exam.packages.list.form.title.placeholder),
         },
         categoryId: {
             type: "combobox",
             name: "categoryId",
-            label: t("exam.packages.list.form.category.label"),
-            placeholder: t("exam.packages.list.form.category.placeholder"),
+            label: t($ => $.exam.packages.list.form.category.label),
+            placeholder: t($ => $.exam.packages.list.form.category.placeholder),
             options: categoryOptions,
             disabled: isFetchingCategories,
             isLoading: isFetchingCategories,
@@ -115,23 +115,23 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
         examType: {
             type: "select",
             name: "examType",
-            label: t("exam.packages.list.form.examType.label"),
-            placeholder: t("exam.packages.list.form.examType.placeholder"),
+            label: t($ => $.exam.packages.list.form.examType.label),
+            placeholder: t($ => $.exam.packages.list.form.examType.placeholder),
             options: examTypeOptions,
         },
         durationMinutes: {
             type: "select",
             name: "durationMinutes",
-            label: t("exam.packages.list.form.durationMinutes.label"),
-            placeholder: t("exam.packages.list.form.durationMinutes.placeholder"),
+            label: t($ => $.exam.packages.list.form.durationMinutes.label),
+            placeholder: t($ => $.exam.packages.list.form.durationMinutes.placeholder),
             options: durationOnMinutes,
-            description: t("exam.packages.list.form.durationMinutes.description"),
+            description: t($ => $.exam.packages.list.form.durationMinutes.description),
         },
         educationGradeId: {
             type: "combobox",
             name: "educationGradeId",
-            label: t("exam.packages.list.form.educationGradeId.label"),
-            placeholder: t("exam.packages.list.form.educationGradeId.placeholder"),
+            label: t($ => $.exam.packages.list.form.educationGradeId.label),
+            placeholder: t($ => $.exam.packages.list.form.educationGradeId.placeholder),
             options: educationGradeOptions,
             disabled: isFetchingGrades,
             isLoading: isFetchingGrades,
@@ -139,23 +139,23 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
         requiredTier: {
             type: "select",
             name: "requiredTier",
-            label: t("exam.packages.list.form.requiredTier.label"),
-            placeholder: t("exam.packages.list.form.requiredTier.placeholder"),
+            label: t($ => $.exam.packages.list.form.requiredTier.label),
+            placeholder: t($ => $.exam.packages.list.form.requiredTier.placeholder),
             options: tierOptions,
             disabled: isLoadingTier,
         },
         description: {
             type: "textarea",
             name: "description",
-            label: t("exam.packages.list.form.description.label"),
-            placeholder: t("exam.packages.list.form.description.placeholder"),
+            label: t($ => $.exam.packages.list.form.description.label),
+            placeholder: t($ => $.exam.packages.list.form.description.placeholder),
             minRows: 3,
         },
         isActive: {
             type: "switch",
             name: "isActive",
-            label: t("exam.packages.list.form.isActive.label"),
-            description: t("exam.packages.list.form.isActive.description"),
+            label: t($ => $.exam.packages.list.form.isActive.label),
+            description: t($ => $.exam.packages.list.form.isActive.description),
         },
     };
 
@@ -188,10 +188,10 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
                             variant="outline"
                             onClick={() => form.reset()}
                         >
-                            {t("labels.cancel")}
+                            {t($ => $.labels.cancel)}
                         </Button>
                         <Button type="submit" disabled={isPending}>
-                            {isPending ? t("labels.saving") : t("labels.save")}
+                            {isPending ? t($ => $.labels.saving) : t($ => $.labels.save)}
                         </Button>
                     </div>
                 </div>

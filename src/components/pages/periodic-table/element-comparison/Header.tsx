@@ -1,8 +1,8 @@
 import { Atom } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 
 export const ElementComparisonHeader = () => {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
 
   return (
     <header className="text-center mb-8">
@@ -11,11 +11,11 @@ export const ElementComparisonHeader = () => {
           <Atom className="h-7 w-7" />
         </div>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-          {t('periodicTable.elementComparison.pageTitle')}
+          {t($ => $.periodicTable.elementComparison.pageTitle)}
         </h1>
       </div>
       <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-        {t('periodicTable.elementComparison.pageSubtitle')}
+        {t($ => $.periodicTable.elementComparison.pageSubtitle)}
       </p>
     </header>
   )

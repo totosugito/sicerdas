@@ -7,7 +7,7 @@ import {
     DataTableColumnHeader,
     PaginationData
 } from '@/components/custom/table';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
@@ -49,7 +49,7 @@ export function SectionTable({
     onDelete,
     onEdit,
 }: SectionTableProps) {
-    const { t } = useTranslation();
+    const { t } = useAppTranslation();
 
     const columns: ColumnDef<ExamPackageSection>[] = [
         createRowNumberColumn<ExamPackageSection>({
@@ -61,7 +61,7 @@ export function SectionTable({
             accessorKey: "title",
             enableSorting: true,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.title")} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packageSection.list.table.columns.title)} />
             ),
             cell: ({ row }) => {
                 const section = row.original;
@@ -78,7 +78,7 @@ export function SectionTable({
             accessorKey: "packageName",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.package")} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packageSection.list.table.columns.package)} />
             ),
             cell: ({ row }) => {
                 const section = row.original;
@@ -96,7 +96,7 @@ export function SectionTable({
             enableSorting: true,
             size: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.questions")} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packageSection.list.table.columns.questions)} className='justify-center' />
             ),
             cell: ({ row }) => (
                 <div className='flex justify-center'>
@@ -110,7 +110,7 @@ export function SectionTable({
             minSize: 70,
             maxSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.duration")} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packageSection.list.table.columns.duration)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const duration = row.getValue("durationMinutes") as number;
@@ -128,14 +128,14 @@ export function SectionTable({
             minSize: 70,
             maxSize: 70,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.status")} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packageSection.list.table.columns.status)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const isActive = row.getValue("isActive") as boolean;
                 return (
                     <div className='flex justify-center'>
                         <Badge variant={isActive ? "success" : "secondary"}>
-                            {isActive ? t("exam.packageSection.list.table.status.active") : t("exam.packageSection.list.table.status.inactive")}
+                            {isActive ? t($ => $.exam.packageSection.list.table.status.active) : t($ => $.exam.packageSection.list.table.status.inactive)}
                         </Badge>
                     </div>
                 );
@@ -147,7 +147,7 @@ export function SectionTable({
             minSize: 70,
             maxSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.updatedAt")} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packageSection.list.table.columns.updatedAt)} />
             ),
             cell: ({ row }) => (
                 <span className="text-sm text-muted-foreground">
@@ -160,7 +160,7 @@ export function SectionTable({
             minSize: 50,
             maxSize: 50,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.actions")} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packageSection.list.table.columns.actions)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const section = row.original;
@@ -170,31 +170,31 @@ export function SectionTable({
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <span className="sr-only">{t("exam.packageSection.list.table.actions.openMenu")}</span>
+                                    <span className="sr-only">{t($ => $.exam.packageSection.list.table.actions.openMenu)}</span>
                                     <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>{t("exam.packageSection.list.table.columns.actions")}</DropdownMenuLabel>
+                                <DropdownMenuLabel>{t($ => $.exam.packageSection.list.table.columns.actions)}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
                                     <Link to={AppRoute.exam.packageSections.admin.detail.url.replace("$id", section.id)}>
                                         <Eye className="mr-2 h-4 w-4" />
-                                        {t("exam.packageSection.list.table.actions.detail")}
+                                        {t($ => $.exam.packageSection.list.table.actions.detail)}
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                     onClick={() => onEdit(section)}
                                 >
                                     <Pencil className="mr-2 h-4 w-4" />
-                                    {t("exam.packageSection.list.table.actions.edit")}
+                                    {t($ => $.exam.packageSection.list.table.actions.edit)}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                     className="text-destructive focus:text-destructive"
                                     onClick={() => onDelete(section)}
                                 >
                                     <Trash2 className="mr-2 h-4 w-4" />
-                                    {t("exam.packageSection.list.table.actions.delete")}
+                                    {t($ => $.exam.packageSection.list.table.actions.delete)}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -252,7 +252,7 @@ export function SectionTable({
                 <div className={"flex flex-row gap-2 max-w-sm"}>
                     <DataTableFilter
                         table={table}
-                        searchPlaceholder={t("exam.packageSection.list.table.search")}
+                        searchPlaceholder={t($ => $.exam.packageSection.list.table.search)}
                         className='min-w-sm'
                         searchOnEnter={true}
                     >
@@ -265,7 +265,7 @@ export function SectionTable({
                 totalRowCount={paginationData?.total || 0}
                 showSideBorders={false}
                 showZebraStriping={true}
-                defaultNoResultText={t("exam.packageSection.list.table.noResult")}
+                defaultNoResultText={t($ => $.exam.packageSection.list.table.noResult)}
             />
         </div>
     );

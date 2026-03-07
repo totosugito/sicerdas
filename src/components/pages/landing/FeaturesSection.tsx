@@ -1,43 +1,43 @@
 import { motion } from 'framer-motion'
 import { BookOpen, GraduationCap, Trophy, Users, Clock, Shield, Zap } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 
 const featureIcons = [BookOpen, GraduationCap, Trophy, Users, Clock, Shield, Zap]
 
 export function FeaturesSection() {
-    const { t } = useTranslation()
+    const { t } = useAppTranslation()
 
     const features = [
         {
             icon: featureIcons[0],
-            title: t('landing.features.items.library.title'),
-            description: t('landing.features.items.library.description'),
+            title: t($ => $.landing.features.items.library.title),
+            description: t($ => $.landing.features.items.library.description),
         },
         {
             icon: featureIcons[1],
-            title: t('landing.features.items.interactive.title'),
-            description: t('landing.features.items.interactive.description'),
+            title: t($ => $.landing.features.items.interactive.title),
+            description: t($ => $.landing.features.items.interactive.description),
         },
         {
             icon: featureIcons[2],
-            title: t('landing.features.items.exam.title'),
-            description: t('landing.features.items.exam.description'),
+            title: t($ => $.landing.features.items.exam.title),
+            description: t($ => $.landing.features.items.exam.description),
         },
         {
             icon: featureIcons[3],
-            title: t('landing.features.items.collaborative.title'),
-            description: t('landing.features.items.collaborative.description'),
+            title: t($ => $.landing.features.items.collaborative.title),
+            description: t($ => $.landing.features.items.collaborative.description),
         },
         {
             icon: featureIcons[6],
-            title: t('landing.features.items.fast.title'),
-            description: t('landing.features.items.fast.description'),
+            title: t($ => $.landing.features.items.fast.title),
+            description: t($ => $.landing.features.items.fast.description),
         },
         {
             icon: featureIcons[5],
-            title: t('landing.features.items.quality.title'),
-            description: t('landing.features.items.quality.description'),
+            title: t($ => $.landing.features.items.quality.title),
+            description: t($ => $.landing.features.items.quality.description),
         }
     ]
 
@@ -52,10 +52,10 @@ export function FeaturesSection() {
                     className="text-center mb-12"
                 >
                     <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                        {t('landing.features.title')}
+                        {t($ => $.landing.features.title)}
                     </h2>
                     <p className="text-muted-foreground max-w-2xl mx-auto">
-                        {t('landing.features.subtitle')}
+                        {t($ => $.landing.features.subtitle)}
                     </p>
                 </motion.div>
 

@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { Flame } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
@@ -12,11 +12,11 @@ interface ElementReactivityProps {
 }
 
 export function ElementReactivity({ element, expandedSections, toggleSection }: ElementReactivityProps) {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
 
   return (
     <CardSection
-      title={t('periodicTable.periodicTable.var.reactivity')}
+      title={t($ => $.periodicTable.periodicTable.var.reactivity)}
       icon={<Flame className="h-5 w-5" />}
       isExpanded={expandedSections.reactivity}
       onToggle={() => toggleSection('reactivity')}
@@ -24,27 +24,27 @@ export function ElementReactivity({ element, expandedSections, toggleSection }: 
       <div className='flex flex-col gap-2'>
         <div className="grid sm:grid-cols-2 grid-cols-1 gap-2">
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.valence')}
+            label={t($ => $.periodicTable.periodicTable.var.valence)}
             value={element.atomicProperties?.valence || ''}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.electronegativity')}
+            label={t($ => $.periodicTable.periodicTable.var.electronegativity)}
             value={toPhysics({ value: parseFloat(element.atomicProperties?.electronegativity || '') })}
             isHtml={true}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.electronAffinity')}
+            label={t($ => $.periodicTable.periodicTable.var.electronAffinity)}
             value={toPhysics({ value: parseFloat(element.atomicProperties?.electronAffinity || '') })}
             isHtml={true}
             unit={getPeriodictUnits('electronAffinity')}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.electronegativityPaulingScale')}
+            label={t($ => $.periodicTable.periodicTable.var.electronegativityPaulingScale)}
             value={toPhysics({ value: parseFloat(element.atomicProperties?.electronegativityPaulingScale || '') })}
             isHtml={true}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.electronegativityAllenScale')}
+            label={t($ => $.periodicTable.periodicTable.var.electronegativityAllenScale)}
             value={toPhysics({ value: parseFloat(element.atomicProperties?.electronegativityAllenScale || '') })}
             isHtml={true}
           />
@@ -52,7 +52,7 @@ export function ElementReactivity({ element, expandedSections, toggleSection }: 
 
         {/* Ionization Energies - displayed as a column if available */}
         <PropertyItem
-          label={t('periodicTable.periodicTable.var.ionizationEnergies')}
+          label={t($ => $.periodicTable.periodicTable.var.ionizationEnergies)}
           value={element.atomicProperties?.ionizationEnergies?.replaceAll(' kJ/mol', '')}
           unit={getPeriodictUnits('ionizationEnergies')}
         />

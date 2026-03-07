@@ -1,12 +1,12 @@
 import { FlaskConical } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 
 interface ChemistryHeaderProps {
   totalTerms: number;
 }
 
 export function ChemistryHeader({ totalTerms }: ChemistryHeaderProps) {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   return (
     <header className="text-center mb-8">
@@ -15,11 +15,11 @@ export function ChemistryHeader({ totalTerms }: ChemistryHeaderProps) {
           <FlaskConical className="h-7 w-7" />
         </div>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-          {t('periodicTable.chemistryDictionary.header.title')}
+          {t($ => $.periodicTable.chemistryDictionary.header.title)}
         </h1>
       </div>
       <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-        {t('periodicTable.chemistryDictionary.header.description', { totalTerms: totalTerms.toLocaleString() })}
+        {t($ => $.periodicTable.chemistryDictionary.header.description, { totalTerms: totalTerms.toLocaleString() })}
       </p>
     </header>
   );

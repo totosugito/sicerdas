@@ -1,13 +1,13 @@
 import { motion } from 'framer-motion'
 import { Smartphone, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { useEffect, useState } from 'react'
 import { IoLogoGooglePlaystore, IoLogoYoutube } from 'react-icons/io5'
 import { APP_CONFIG } from '@/constants/config'
 
 export function AndroidAppSection() {
-    const { t } = useTranslation()
+    const { t } = useAppTranslation()
 
     // Sample images for the carousel (in a real app, these would be actual image URLs)
     const mockupImages = APP_CONFIG.app.androidImages || []
@@ -15,11 +15,11 @@ export function AndroidAppSection() {
     const [currentIndex, setCurrentIndex] = useState(0)
 
     const appFeatures = [
-        t('landing.androidApp.benefits.offline'),
-        t('landing.androidApp.benefits.notifications'),
-        t('landing.androidApp.benefits.performance'),
-        t('landing.androidApp.benefits.sync'),
-        t('landing.androidApp.benefits.exclusive')
+        t($ => $.landing.androidApp.benefits.offline),
+        t($ => $.landing.androidApp.benefits.notifications),
+        t($ => $.landing.androidApp.benefits.performance),
+        t($ => $.landing.androidApp.benefits.sync),
+        t($ => $.landing.androidApp.benefits.exclusive)
     ]
 
     // Change image every 3 seconds
@@ -46,13 +46,13 @@ export function AndroidAppSection() {
                         <div>
                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
                                 <Smartphone className="h-4 w-4" />
-                                {t('landing.androidApp.badge')}
+                                {t($ => $.landing.androidApp.badge)}
                             </div>
                             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                                {t('landing.androidApp.title')}
+                                {t($ => $.landing.androidApp.title)}
                             </h2>
                             <p className="text-muted-foreground mb-6">
-                                {t('landing.androidApp.description')}
+                                {t($ => $.landing.androidApp.description)}
                             </p>
 
                             <ul className="space-y-3 mb-8">
@@ -78,13 +78,13 @@ export function AndroidAppSection() {
                                     window.open(APP_CONFIG.app.playStore, '_blank')
                                 }}>
                                     <IoLogoGooglePlaystore className="h-5 w-5" />
-                                    {t('landing.androidApp.downloadButton')}
+                                    {t($ => $.landing.androidApp.downloadButton)}
                                 </Button>
                                 <Button variant="outline" className="gap-2" onClick={() => {
                                     window.open(APP_CONFIG.app.youtubeDemo, '_blank')
                                 }}>
                                     <IoLogoYoutube className="h-5 w-5" />
-                                    {t('landing.androidApp.watchDemo')}
+                                    {t($ => $.landing.androidApp.watchDemo)}
                                 </Button>
                             </div>
                         </div>

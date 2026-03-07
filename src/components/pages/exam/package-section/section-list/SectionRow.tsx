@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { ExamPackageSection } from "@/api/exam-package-sections";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 
 interface SectionRowProps {
     section: ExamPackageSection;
@@ -13,7 +13,7 @@ interface SectionRowProps {
 }
 
 export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
-    const { t } = useTranslation();
+    const { t } = useAppTranslation();
 
     const {
         attributes,
@@ -64,12 +64,12 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
                         {section.durationMinutes ? (
                             <span className="flex items-center gap-1">
                                 <Clock className="w-3.5 h-3.5" />
-                                {t('exam.packageSection.list.sections.duration', { minutes: section.durationMinutes })}
+                                {t($ => $.exam.packageSection.list.sections.duration, { minutes: section.durationMinutes })}
                             </span>
                         ) : null}
                         <span className="flex items-center gap-1">
                             <FileQuestion className="w-3.5 h-3.5" />
-                            {t('exam.packageSection.list.sections.questions', { count: section.totalQuestions })}
+                            {t($ => $.exam.packageSection.list.sections.questions, { count: section.totalQuestions })}
                         </span>
                     </div>
                 </div>
@@ -84,7 +84,7 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
                                 : "text-xs px-2"
                         }
                     >
-                        {section.isActive ? t('exam.packageSection.list.sections.active') : t('exam.packageSection.list.sections.inactive')}
+                        {section.isActive ? t($ => $.exam.packageSection.list.sections.active) : t($ => $.exam.packageSection.list.sections.inactive)}
                     </Badge>
 
                     <div className="flex items-center gap-1">

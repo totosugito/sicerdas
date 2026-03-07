@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PropertyDefinition, SortDirection } from '../types/types';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 
 interface SortingControlsProps {
   propertyDefinitions: PropertyDefinition[];
@@ -29,18 +29,18 @@ export function SortingControls({
   onSortDirectionChange,
   sortType
 }: SortingControlsProps) {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   return (
     <div className="flex flex-wrap items-center gap-4">
       <div className="flex items-center gap-1.5">
-        <span className="text-sm font-medium text-muted-foreground">{t('periodicTable.elementComparison.sortBy')}</span>
+        <span className="text-sm font-medium text-muted-foreground">{t($ => $.periodicTable.elementComparison.sortBy)}</span>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="font-normal">
-              {sortBy === 'atomicId' 
-                ? t('periodicTable.periodicTable.var.atomicNumber') 
-                : t('periodicTable.periodicTable.var.' + sortBy)}
+              {sortBy === 'atomicId'
+                ? t($ => $.periodicTable.periodicTable.var.atomicNumber)
+                : t(`periodicTable.periodicTable.var.${sortBy}` as any)}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="max-h-150 overflow-y-auto">
@@ -50,7 +50,7 @@ export function SortingControls({
                 onClick={() => onSortByChange(property.key)}
                 className={sortBy === property.key ? "bg-accent" : "my-0.5"}
               >
-                {t('periodicTable.periodicTable.var.' + property.key)}
+                {t(`periodicTable.periodicTable.var.${property.key}` as any)}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -58,7 +58,7 @@ export function SortingControls({
       </div>
 
       <div className="flex items-center gap-1.5">
-        <span className="text-sm font-medium text-muted-foreground">{t('periodicTable.elementComparison.sortDirection')}</span>
+        <span className="text-sm font-medium text-muted-foreground">{t($ => $.periodicTable.elementComparison.sortDirection)}</span>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button

@@ -46,11 +46,17 @@ export default {
     actions: "Aksi",
     openMenu: "Buka menu",
     formValidationError: "Terjadi kesalahan pada form",
+    formValidationErrorGeneric: "Terjadi kesalahan validasi pada formulir",
+    formValidationErrorUnknown: "Terjadi kesalahan yang tidak diketahui",
+    role: "Peran",
+    search: "Cari...",
+    changePassword: "Ubah Kata Sandi",
     pagination: {
         previous: "Sebelumnya",
-        next: "Berikutnya",
-        morePages: "Halaman lainnya",
+        nextPage: "Halaman Berikutnya",
+        morePages: "Lebih banyak halaman",
+        rowsPerPage: "per halaman",
         previousPage: "Ke halaman sebelumnya",
-        nextPage: "Ke halaman berikutnya"
+        next: "Berikutnya"
     }
 }

@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import {
     BookOpen,
     FlaskConical,
@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils'
 import { useAppMenu, MenuItem } from '@/components/app/hooks/use-app-menu'
 
 export function AppNavbarDesktop() {
-    const { t } = useTranslation()
+    const { t } = useAppTranslation()
     const { booksMenu, constitutionMenu, tablePeriodicMenu, quizMenu } = useAppMenu()
 
     return (
@@ -29,7 +29,7 @@ export function AppNavbarDesktop() {
                     <NavigationMenuItem>
                         <NavigationMenuTrigger className="text-base bg-transparent">
                             <BookOpen className="w-4 h-4 mr-2" />
-                            {t('landing.navbar.books.title')}
+                            {t($ => $.landing.navbar.books.title)}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
                             <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
@@ -51,7 +51,7 @@ export function AppNavbarDesktop() {
                     <NavigationMenuItem>
                         <NavigationMenuTrigger className="text-base bg-transparent">
                             <Shield className="w-4 h-4 mr-2" />
-                            {t('landing.navbar.constitution.title')}
+                            {t($ => $.landing.navbar.constitution.title)}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
                             <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
@@ -72,7 +72,7 @@ export function AppNavbarDesktop() {
                     <NavigationMenuItem>
                         <NavigationMenuTrigger className="text-base bg-transparent">
                             <FlaskConical className="w-4 h-4 mr-2" />
-                            {t('landing.navbar.periodicTable.title')}
+                            {t($ => $.landing.navbar.periodicTable.title)}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
                             <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
@@ -94,7 +94,7 @@ export function AppNavbarDesktop() {
                     <NavigationMenuItem>
                         <NavigationMenuTrigger className="text-base bg-transparent">
                             <Trophy className="h-4 w-4 mr-2" />
-                            {t('landing.navbar.quiz.title')}
+                            {t($ => $.landing.navbar.quiz.title)}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
                             <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">

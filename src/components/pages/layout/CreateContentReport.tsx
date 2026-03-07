@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useCreateReportMutation } from "@/api/content-report/create-report";
 import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
 import { EnumReportReason } from "backend/src/db/schema/enum/enum-general";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import { ControlForm } from "@/components/custom/forms";
 
@@ -38,15 +38,15 @@ const FormCreateContentReport = ({ values, form, isLoggedIn }: any) => {
 };
 
 export const CreateContentReport = ({ isOpen, onOpenChange, data }: CreateContentReportProps) => {
-    const { t } = useTranslation();
+    const { t } = useAppTranslation();
     const mutation = useCreateReportMutation();
     const [showSuccess, setShowSuccess] = useState(false);
     const isLoggedIn = !!data.name && !!data.email;
 
     const formSchema = {
-        name: z.string().min(1, t("contentReport.validation.name_required")),
-        email: z.email(t("contentReport.validation.email_invalid")).min(1, t("contentReport.validation.email_required")),
-        reason: z.string().min(1, t("contentReport.validation.reason_required")),
+        name: z.string().min(1, t($ => $.contentReport.validation.name_required)),
+        email: z.string().email(t($ => $.contentReport.validation.email_invalid)).min(1, t($ => $.contentReport.validation.email_required)),
+        reason: z.string().min(1, t($ => $.contentReport.validation.reason_required)),
         title: z.string(),
         description: z.string().optional(),
     };
@@ -55,47 +55,47 @@ export const CreateContentReport = ({ isOpen, onOpenChange, data }: CreateConten
         name: {
             type: "text",
             name: "name",
-            label: t("contentReport.field.name"),
-            placeholder: t("contentReport.field.name_placeholder"),
+            label: t($ => $.contentReport.field.name),
+            placeholder: t($ => $.contentReport.field.name_placeholder),
         },
         email: {
             type: "email",
             name: "email",
-            label: t("contentReport.field.email"),
-            placeholder: t("contentReport.field.email_placeholder"),
+            label: t($ => $.contentReport.field.email),
+            placeholder: t($ => $.contentReport.field.email_placeholder),
         },
         reason: {
             type: "select",
             name: "reason",
-            label: t("contentReport.field.reason"),
-            placeholder: t("contentReport.field.reason_placeholder"),
+            label: t($ => $.contentReport.field.reason),
+            placeholder: t($ => $.contentReport.field.reason_placeholder),
             options: Object.values(EnumReportReason).map((reason) => ({
                 value: reason,
-                label: t(`contentReport.reportReason.${reason}`),
+                label: t($ => $.contentReport.reportReason[reason as keyof typeof $.contentReport.reportReason]),
             })),
         },
         title: {
             type: "text",
             name: "title",
-            label: t("contentReport.field.title"),
-            placeholder: t("contentReport.field.title_placeholder"),
+            label: t($ => $.contentReport.field.title),
+            placeholder: t($ => $.contentReport.field.title_placeholder),
         },
         description: {
             type: "textarea",
             name: "description",
-            label: t("contentReport.field.description"),
-            placeholder: t("contentReport.field.description_placeholder"),
+            label: t($ => $.contentReport.field.description),
+            placeholder: t($ => $.contentReport.field.description_placeholder),
             minRows: 4,
             maxRows: 7
         },
     };
 
     const modalProps: ModalFormProps = {
-        title: t("contentReport.create.title", { title: data.title }) || `Report: ${data.title}`,
-        desc: t("contentReport.create.desc"),
+        title: t($ => $.contentReport.create.title, { title: data.title }) || `Report: ${data.title}`,
+        desc: t($ => $.contentReport.create.desc),
         modal: true,
-        textConfirm: t("labels.submit"),
-        textCancel: t("labels.cancel"),
+        textConfirm: t($ => $.labels.submit),
+        textCancel: t($ => $.labels.cancel),
         defaultValue: {
             name: data.name || "",
             email: data.email || "",
@@ -133,10 +133,10 @@ export const CreateContentReport = ({ isOpen, onOpenChange, data }: CreateConten
         return (
             <DialogModal
                 modal={{
-                    title: t("contentReport.create.success_title"),
-                    desc: t("contentReport.create.success_desc"),
+                    title: t($ => $.contentReport.create.success_title),
+                    desc: t($ => $.contentReport.create.success_desc),
                     iconType: "success",
-                    textConfirm: t("labels.close"),
+                    textConfirm: t($ => $.labels.close),
                     onConfirmClick: () => {
                         setShowSuccess(false);
                         onOpenChange(false);

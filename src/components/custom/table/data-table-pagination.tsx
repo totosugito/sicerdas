@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink } from "@/components/ui/pagination";
 
 interface DataTablePaginationProps extends React.ComponentProps<"div"> {
@@ -41,7 +41,7 @@ export function DataTablePagination({
   className,
 }: DataTablePaginationProps) {
 
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const maxDisplayedPages = 1; // Number of pages to show before and after the current page
 
   // Use pagination object data when available (for manual pagination)
@@ -144,8 +144,8 @@ export function DataTablePagination({
     )}>
       <div>
         {showPageLabel && <div className="flex items-center justify-center text-sm text-foreground">
-          {t("labels.row")} {totalRowsCount > 0 ? startIndex : 0}<span className={"text-foreground px-[2px]"}>-</span>
-          {endIndex}<span className={"text-foreground px-[2px]"}>{t("labels.of")}</span>
+          {t($ => $.labels.row)} {totalRowsCount > 0 ? startIndex : 0}<span className={"text-foreground px-[2px]"}>-</span>
+          {endIndex}<span className={"text-foreground px-[2px]"}>{t($ => $.labels.of)}</span>
           {totalRowsCount}
         </div>}
       </div>
@@ -165,7 +165,7 @@ export function DataTablePagination({
               <SelectContent side="top">
                 {pageSizeOptions.map((pageSize) => (
                   <SelectItem key={pageSize} value={`${pageSize}`}>
-                    {pageSize} / page
+                    {pageSize} {t($ => $.labels.pagination.rowsPerPage)}
                   </SelectItem>
                 ))}
               </SelectContent>

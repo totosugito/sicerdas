@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/lib/i18n-typed';
 import { ElementDetail } from '@/api/periodic-table/periodic-table';
 
 interface ElectronViewProps {
@@ -6,7 +6,7 @@ interface ElectronViewProps {
 }
 
 export const ElectronView = ({ element }: ElectronViewProps) => {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   const numberOfElectrons = element.atomicProperties.numberOfElectron;
   const numberOfNeutrons = element.atomicProperties.numberOfNeutron;
@@ -19,7 +19,7 @@ export const ElectronView = ({ element }: ElectronViewProps) => {
           <div className="w-20 rounded-lg bg-gradient-to-br from-red-500 to-red-700 dark:from-red-600 dark:to-red-800 flex flex-col items-center justify-center shadow-md transform transition-transform hover:scale-[1.03] border border-red-400/30 dark:border-red-500/30 p-2">
             <div className="text-center">
               <div className="text-white text-xs font-semibold mb-1 opacity-90">
-                {t('periodicTable.elementDetail.electrons', 'Electrons')}
+                {t($ => $.periodicTable.elementDetail.electrons)}
               </div>
               <div className="text-white text-xl font-bold">
                 {numberOfElectrons}
@@ -33,7 +33,7 @@ export const ElectronView = ({ element }: ElectronViewProps) => {
           <div className="w-20 rounded-lg bg-gradient-to-br from-green-500 to-green-700 dark:from-green-600 dark:to-green-800 flex flex-col items-center justify-center shadow-md transform transition-transform hover:scale-[1.03] border border-green-400/30 dark:border-green-500/30 p-2">
             <div className="text-center">
               <div className="text-white text-xs font-semibold mb-1 opacity-90">
-                {t('periodicTable.elementDetail.protons', 'Protons')}
+                {t($ => $.periodicTable.elementDetail.protons)}
               </div>
               <div className="text-white text-xl font-bold">
                 {numberOfElectrons}
@@ -47,7 +47,7 @@ export const ElectronView = ({ element }: ElectronViewProps) => {
           <div className="w-20 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 dark:from-blue-600 dark:to-blue-800 flex flex-col items-center justify-center shadow-md transform transition-transform hover:scale-[1.03] border border-blue-400/30 dark:border-blue-500/30 p-2">
             <div className="text-center">
               <div className="text-white text-xs font-semibold mb-1 opacity-90">
-                {t('periodicTable.elementDetail.neutrons', 'Neutrons')}
+                {t($ => $.periodicTable.elementDetail.neutrons)}
               </div>
               <div className="text-white text-xl font-bold">
                 {numberOfNeutrons}

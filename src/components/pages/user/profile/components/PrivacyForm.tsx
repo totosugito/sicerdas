@@ -2,7 +2,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Switch } from '@/components/ui/switch'
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation, AppTranslation } from '@/lib/i18n-typed'
 import { z } from 'zod'
 import { AlertCircle } from 'lucide-react'
 
@@ -14,7 +14,7 @@ export type PrivacyFormValues = {
 }
 
 // Define a function to create form data with translations
-const createPrivacyFormData = (t: (key: string) => string) => {
+const createPrivacyFormData = (t: AppTranslation) => {
   return {
     schema: z.object({
       profileVisibility: z.boolean(),
@@ -36,9 +36,9 @@ interface PrivacyFormProps {
 }
 
 export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
-  const { t } = useTranslation()
-  
-    // Handle form submission
+  const { t } = useAppTranslation()
+
+  // Handle form submission
   const handleSubmit = (values: Record<string, any>) => {
     onSubmit({
       privacy: {
@@ -53,7 +53,7 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
     <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full pb-0">
       <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
         <CardTitle className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight">
-          {t("user.profile.privacy.title")}
+          {t($ => $.user.profile.privacy.title)}
         </CardTitle>
       </CardHeader>
       <Form {...form}>
@@ -71,9 +71,9 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">{t("user.profile.privacy.profileVisibility")}</FormLabel>
+                    <FormLabel className="text-base">{t($ => $.user.profile.privacy.profileVisibility)}</FormLabel>
                     <FormDescription>
-                      {t("user.profile.privacy.profileVisibilityDescription")}
+                      {t($ => $.user.profile.privacy.profileVisibilityDescription)}
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -92,9 +92,9 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">{t("user.profile.privacy.emailNotifications")}</FormLabel>
+                    <FormLabel className="text-base">{t($ => $.user.profile.privacy.emailNotifications)}</FormLabel>
                     <FormDescription>
-                      {t("user.profile.privacy.emailNotificationsDescription")}
+                      {t($ => $.user.profile.privacy.emailNotificationsDescription)}
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -113,9 +113,9 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">{t("user.profile.privacy.twoFactorAuth")}</FormLabel>
+                    <FormLabel className="text-base">{t($ => $.user.profile.privacy.twoFactorAuth)}</FormLabel>
                     <FormDescription>
-                      {t("user.profile.privacy.twoFactorAuthDescription")}
+                      {t($ => $.user.profile.privacy.twoFactorAuthDescription)}
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -136,13 +136,13 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
                   variant="outline"
                   onClick={() => form.reset()}
                 >
-                  {t("labels.cancel")}
+                  {t($ => $.labels.cancel)}
                 </Button>
                 <Button
                   type="submit"
                   variant="default"
                 >
-                  {t("user.profile.privacy.savePreferences")}
+                  {t($ => $.user.profile.privacy.savePreferences)}
                 </Button>
               </>
             </CardFooter>)}

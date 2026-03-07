@@ -4,7 +4,7 @@ import { PeriodicCell } from "./PeriodicCell";
 import { EnumPeriodicViewMode } from "@/constants/app-enum";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useTranslation } from "react-i18next";
+import { useAppTranslation } from "@/lib/i18n-typed";
 import { ChevronDown } from "lucide-react";
 
 interface ThemeSelectorProps {
@@ -13,7 +13,7 @@ interface ThemeSelectorProps {
 }
 
 export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProps) {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   // Sample element for theme preview
@@ -39,7 +39,7 @@ export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProp
           <Button variant="outline" className="w-[180px] justify-between">
             <span>
               {Object.values(EnumPeriodicViewMode).find(t => t.value === currentTheme)?.label ||
-                t('periodicTable.searchBar.placeholder')}
+                t($ => $.periodicTable.periodicTable.searchBar.placeholder)}
             </span>
             <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
           </Button>
@@ -47,9 +47,9 @@ export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProp
         <PopoverContent className="w-[300px] p-4" align="end">
           <div className="space-y-4">
             <div className="text-center">
-              <h4 className="font-medium">{t('periodicTable.periodicTable.themeSelector.previewTitle')}</h4>
+              <h4 className="font-medium">{t($ => $.periodicTable.periodicTable.themeSelector.previewTitle)}</h4>
               <p className="text-sm text-muted-foreground">
-                {t('periodicTable.periodicTable.themeSelector.currentSelection')}: {
+                {t($ => $.periodicTable.periodicTable.themeSelector.currentSelection)}: {
                   Object.values(EnumPeriodicViewMode).find(t => t.value === currentTheme)?.label
                 }
               </p>

@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useAppTranslation } from '@/lib/i18n-typed'
 import { Atom, ChevronRight } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
@@ -16,7 +16,7 @@ interface ElementNuclearProps {
 }
 
 export function ElementNuclear({ element, expandedSections, toggleSection }: ElementNuclearProps) {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
   const navigate = useNavigate()
 
   const handleNavigateToIsotope = () => {
@@ -28,7 +28,7 @@ export function ElementNuclear({ element, expandedSections, toggleSection }: Ele
 
   return (
     <CardSection
-      title={t('periodicTable.periodicTable.var.nuclearProperties')}
+      title={t($ => $.periodicTable.periodicTable.var.nuclearProperties)}
       icon={<Atom className="h-5 w-5" />}
       isExpanded={expandedSections.nuclear}
       onToggle={() => toggleSection('nuclear')}
@@ -36,29 +36,29 @@ export function ElementNuclear({ element, expandedSections, toggleSection }: Ele
       <div className='flex flex-col gap-2'>
         <div className="grid sm:grid-cols-2 grid-cols-1 gap-2">
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.halfLife')}
+            label={t($ => $.periodicTable.periodicTable.var.halfLife)}
             value={element.atomicProperties?.halfLife || ''}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.lifetime')}
+            label={t($ => $.periodicTable.periodicTable.var.lifetime)}
             value={element.atomicProperties?.lifetime || ''}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.decayMode')}
+            label={t($ => $.periodicTable.periodicTable.var.decayMode)}
             value={element.atomicProperties?.decayMode || ''}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.quantumNumbers')}
+            label={t($ => $.periodicTable.periodicTable.var.quantumNumbers)}
             value={element.atomicProperties?.quantumNumbers || ''}
             isHtml={true}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.neutronCrossSection')}
+            label={t($ => $.periodicTable.periodicTable.var.neutronCrossSection)}
             value={toPhysics({ value: parseFloat(element.atomicProperties?.neutronCrossSection || '') })}
             isHtml={true}
           />
           <PropertyItem
-            label={t('periodicTable.periodicTable.var.neutronMassAbsorption')}
+            label={t($ => $.periodicTable.periodicTable.var.neutronMassAbsorption)}
             value={toPhysics({ value: parseFloat(element.atomicProperties?.neutronMassAbsorption || '') })}
             isHtml={true}
           />
@@ -66,17 +66,17 @@ export function ElementNuclear({ element, expandedSections, toggleSection }: Ele
 
         {/* Isotope information - displayed as a column if available */}
         <PropertyItem
-          label={t('periodicTable.periodicTable.var.knownIsotopes')}
+          label={t($ => $.periodicTable.periodicTable.var.knownIsotopes)}
           value={createAtomIsotopeTag(element.atomicProperties?.symbol || '', element.atomicProperties?.knownIsotopes)}
           isHtml={true}
         />
         <PropertyItem
-          label={t('periodicTable.periodicTable.var.stableIsotopes')}
+          label={t($ => $.periodicTable.periodicTable.var.stableIsotopes)}
           value={createAtomIsotopeTag(element.atomicProperties?.symbol || '', element.atomicProperties?.stableIsotopes)}
           isHtml={true}
         />
         <PropertyItem
-          label={t('periodicTable.periodicTable.var.isotopicAbundances')}
+          label={t($ => $.periodicTable.periodicTable.var.isotopicAbundances)}
           value={getIsotopeAbundance(element.atomicProperties?.symbol || '', element.atomicProperties?.isotopicAbundances)}
           isHtml={true}
         />
@@ -89,7 +89,7 @@ export function ElementNuclear({ element, expandedSections, toggleSection }: Ele
             onClick={handleNavigateToIsotope}
             className="flex items-center gap-2"
           >
-            {t('periodicTable.periodicTable.var.viewIsotopeDetails')}
+            {t($ => $.periodicTable.periodicTable.var.viewIsotopeDetails)}
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>

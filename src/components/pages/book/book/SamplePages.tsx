@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useTranslation } from "react-i18next"
+import { useAppTranslation } from "@/lib/i18n-typed"
 import { BookDetil } from "@/api/book/book-detail"
 import { Image, ImageOff, X, ChevronLeft, ChevronRight } from "lucide-react"
 import { useState, useMemo } from "react"
@@ -11,7 +11,7 @@ import {
 import { APP_CONFIG } from "@/constants/config"
 
 export const SamplePages = ({ book }: { book: BookDetil }) => {
-  const { t } = useTranslation()
+  const { t } = useAppTranslation()
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [invalidIndices, setInvalidIndices] = useState<Set<number>>(new Set())
 
@@ -79,7 +79,7 @@ export const SamplePages = ({ book }: { book: BookDetil }) => {
         <CardHeader>
           <CardTitle className="text-xl flex items-center">
             <Image className="w-5 h-5 mr-2" />
-            {t('book.detail.samplePages')}
+            {t($ => $.book.detail.samplePages)}
           </CardTitle>
         </CardHeader>
         <CardContent>
