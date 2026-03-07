@@ -23,10 +23,10 @@ export function AlphabetFilter({ activeGroup, onGroupChange }: AlphabetFilterPro
       {ALPHABET_GROUPS.map((group) => (
         <Button
           key={group.id}
-          size="icon"
+          size="sm"
           variant={activeGroup === group.id ? 'default' : 'outline'}
           onClick={() => onGroupChange(group.id)}
-          className="px-4"
+          className="px-2 min-w-12"
         >
           {t(group.labelKey as any)}
         </Button>
