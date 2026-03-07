@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ExamPassage } from "./types";
+import { ExamPassage } from "../types";
 import { PaginationData } from "@/components/custom/table";
 
 export interface ListPassageRequest {

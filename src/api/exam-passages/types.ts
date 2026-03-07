@@ -18,3 +18,10 @@ export interface ExamPassageResponse {
 export interface ExamPassageDetailResponse extends ExamPassageResponse {
     data: ExamPassage;
 }
+
+export type PassageFormValues = {
+    title: string;
+    subjectId: string;
+    content: any[];
+    isActive: boolean;
+};

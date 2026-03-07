@@ -3,16 +3,12 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examPassages } from '../../../../db/schema/exam/passages.ts';
-import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
-const CreatePassageBody = Type.Object({
-    title: Type.Optional(Type.String({ maxLength: 255 })), // Optional internal title
-    content: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))), // BlockNote JSON format
-    isActive: Type.Optional(Type.Boolean({ default: true })),
-    subjectId: Type.String({ format: 'uuid' }),
+const DetailPassageParams = Type.Object({
+    id: Type.String({ format: 'uuid' }),
 });
 
 const PassageResponseItem = Type.Object({
@@ -25,21 +21,21 @@ const PassageResponseItem = Type.Object({
     subjectId: Type.String({ format: 'uuid' }),
 });
 
-const CreatePassageResponse = Type.Object({
+const DetailPassageResponse = Type.Object({
     success: Type.Boolean(),
     message: Type.String(),
     data: PassageResponseItem,
 });
 
-const createPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
+const detailPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
     app.route({
-        url: '/create',
-        method: 'POST',
+        url: '/detail/:id',
+        method: 'GET',
         schema: {
             tags: ['Admin Exam Passages'],
-            body: CreatePassageBody,
+            params: DetailPassageParams,
             response: {
-                201: CreatePassageResponse,
+                200: DetailPassageResponse,
                 '4xx': Type.Object({
                     success: Type.Boolean({ default: false }),
                     message: Type.String()
@@ -51,39 +47,31 @@ const createPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
         },
         handler: withErrorHandler(async function handler(
-            request: FastifyRequest<{ Body: typeof CreatePassageBody.static }>,
+            request: FastifyRequest<{ Params: typeof DetailPassageParams.static }>,
             reply: FastifyReply
         ) {
             const { t } = getTypedI18n(request);
-            const { title, content = [], isActive, subjectId } = request.body;
+            const { id } = request.params;
 
-            // Ensure subject exists
-            const existingSubject = await db.query.examSubjects.findFirst({
-                where: eq(examSubjects.id, subjectId)
+            const passage = await db.query.examPassages.findFirst({
+                where: eq(examPassages.id, id)
             });
 
-            if (!existingSubject) {
-                return reply.notFound(t($ => $.exam.subjects.detail.notFound));
+            if (!passage) {
+                return reply.notFound(t($ => $.exam.passages.update.notFound));
             }
 
-            const [newPassage] = await db.insert(examPassages).values({
-                title: title || null,
-                content,
-                isActive: isActive !== undefined ? isActive : true,
-                subjectId,
-            }).returning();
-
-            return reply.status(201).send({
+            return reply.status(200).send({
                 success: true,
-                message: t($ => $.exam.passages.create.success),
+                message: t($ => $.exam.passages.list.success),
                 data: {
-                    ...newPassage,
-                    createdAt: newPassage.createdAt.toISOString(),
-                    updatedAt: newPassage.updatedAt.toISOString(),
+                    ...passage,
+                    createdAt: passage.createdAt.toISOString(),
+                    updatedAt: passage.updatedAt.toISOString(),
                 }
             });
         }),
     });
 };
 
-export default createPassageRoute;
+export default detailPassageRoute;

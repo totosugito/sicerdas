@@ -74,6 +74,7 @@ export const AppApi = {
         delete: APP_URL_API + "/exam/subjects/admin/delete/:id",
       },
       list: APP_URL_API + "/exam/subjects/list",
+      listSimple: APP_URL_API + "/exam/subjects/list-simple",
       detail: APP_URL_API + "/exam/subjects/detail/:id",
     },
     packages: {
@@ -98,6 +99,7 @@ export const AppApi = {
     passages: {
       admin: {
         create: APP_URL_API + "/exam/passages/admin/create",
+        detail: APP_URL_API + "/exam/passages/admin/detail/:id",
         update: APP_URL_API + "/exam/passages/admin/update/:id",
         delete: APP_URL_API + "/exam/passages/admin/delete/:id",
         list: APP_URL_API + "/exam/passages/admin/list",

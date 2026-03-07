@@ -35,9 +35,9 @@ export default {
             required: "Judul bacaan wajib diisi"
         },
         subject: {
-            label: "Mata Pelajaran",
-            placeholder: "Pilih mata pelajaran",
-            required: "Mata pelajaran wajib dipilih"
+            label: "Subyek",
+            placeholder: "Pilih Subyek",
+            required: "Subyek wajib dipilih"
         },
         content: {
             label: "Isi Bacaan",

@@ -1,6 +1,12 @@
-export * from "./types";
-export * from "./list-passage";
-export * from "./list-passage-simple";
-export * from "./admin/create-passage";
-export * from "./admin/update-passage";
-export * from "./admin/delete-passage";
+export {
+    type ExamPassage,
+    type ExamPassageResponse,
+    type ExamPassageDetailResponse,
+    type PassageFormValues
+} from "./types";
+export { useListPassage, type ListPassageRequest, type ListPassagesResponse } from "./admin/list-passage";
+export { useListPassageSimple, type ListPassageSimpleRequest, type ListPassageSimpleResponse } from "./admin/list-passage-simple";
+export { useCreatePassage, type CreatePassageRequest } from "./admin/create-passage";
+export { useGetPassage } from "./admin/get-passage";
+export { useUpdatePassage, type UpdatePassageRequest } from "./admin/update-passage";
+export { useDeletePassage } from "./admin/delete-passage";

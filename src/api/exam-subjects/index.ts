@@ -17,4 +17,9 @@ export {
     type UpdateSubjectRequest,
     useUpdateSubject,
 } from "./admin/update-subject";
+export {
+    type ListSubjectSimpleRequest,
+    type ListSubjectsSimpleResponse,
+    useListSubjectSimple,
+} from "./list-subject-simple";
 export { useDeleteSubject } from "./admin/delete-subject";
