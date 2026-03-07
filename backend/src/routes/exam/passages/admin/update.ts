@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examPassages } from '../../../../db/schema/exam/passages.ts';
+import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -13,7 +14,8 @@ const UpdatePassageParams = Type.Object({
 const UpdatePassageBody = Type.Object({
     title: Type.Optional(Type.Union([Type.String({ maxLength: 255 }), Type.Null()])),
     content: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))),
-    isActive: Type.Optional(Type.Boolean())
+    isActive: Type.Optional(Type.Boolean()),
+    subjectId: Type.Optional(Type.String({ format: 'uuid' })),
 });
 
 const PassageResponseItem = Type.Object({
@@ -23,6 +25,7 @@ const PassageResponseItem = Type.Object({
     isActive: Type.Boolean(),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
+    subjectId: Type.String({ format: 'uuid' }),
 });
 
 const UpdatePassageResponse = Type.Object({
@@ -56,7 +59,7 @@ const updatePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             reply: FastifyReply
         ) {
             const { id } = request.params;
-            const { title, content, isActive } = request.body;
+            const { title, content, isActive, subjectId } = request.body;
 
             // Ensure passage exists
             const existingPassage = await db.query.examPassages.findFirst({
@@ -75,6 +78,19 @@ const updatePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             if (title !== undefined) updatePayload.title = title;
             if (content !== undefined) updatePayload.content = content;
             if (isActive !== undefined) updatePayload.isActive = isActive;
+
+            if (subjectId !== undefined) {
+                // Ensure subject exists
+                const existingSubject = await db.query.examSubjects.findFirst({
+                    where: eq(examSubjects.id, subjectId)
+                });
+
+                if (!existingSubject) {
+                    return reply.notFound(request.i18n.t('exam.subjects.detail.notFound'));
+                }
+
+                updatePayload.subjectId = subjectId;
+            }
 
             const [updatedPassage] = await db.update(examPassages)
                 .set(updatePayload)

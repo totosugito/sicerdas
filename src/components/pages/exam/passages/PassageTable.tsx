@@ -1,4 +1,4 @@
-import { ExamPackageSection, ListSectionsResponse } from '@/api/exam-package-sections';
+import { ExamPassage, ListPassagesResponse } from '@/api/exam-passages';
 import {
     DataTable,
     useDataTable,
@@ -10,7 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -24,20 +24,19 @@ import { string_to_locale_date } from '@/lib/my-utils';
 import { Link } from '@tanstack/react-router';
 import { AppRoute } from '@/constants/app-route';
 
-interface SectionTableProps {
-    data: ListSectionsResponse;
+interface PassageTableProps {
+    data: ListPassagesResponse | undefined;
     isLoading: boolean;
-    paginationData: PaginationData;
+    paginationData: PaginationData | undefined;
     onPaginationChange?: (pagination: { page: number; limit: number }) => void;
     setSearch: (search: string) => void;
     sortBy: string;
     sortOrder: "asc" | "desc";
     onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
-    onDelete: (section: ExamPackageSection) => void;
-    onEdit: (section: ExamPackageSection) => void;
+    onDelete: (passage: ExamPassage) => void;
 }
 
-export function SectionTable({
+export function PassageTable({
     data,
     isLoading,
     paginationData,
@@ -47,12 +46,11 @@ export function SectionTable({
     sortOrder,
     onSortChange,
     onDelete,
-    onEdit,
-}: SectionTableProps) {
+}: PassageTableProps) {
     const { t } = useTranslation();
 
-    const columns: ColumnDef<ExamPackageSection>[] = [
-        createRowNumberColumn<ExamPackageSection>({
+    const columns: ColumnDef<ExamPassage>[] = [
+        createRowNumberColumn<ExamPassage>({
             id: "no",
             size: 50,
             paginationData: paginationData
@@ -61,62 +59,41 @@ export function SectionTable({
             accessorKey: "title",
             enableSorting: true,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.title")} />
+                <DataTableColumnHeader column={column} title={t("exam.passages.list.table.columns.title")} />
             ),
             cell: ({ row }) => {
-                const section = row.original;
+                const passage = row.original;
                 return (
-                    <div className="font-medium text-primary font-semibold">
-                        <Link to={AppRoute.exam.packageSections.admin.detail.url.replace("$id", section.id)} className="hover:underline">
-                            {row.getValue("title")}
+                    <div className="font-medium text-primary">
+                        <Link to={AppRoute.exam.passages.admin.edit.url.replace("$id", passage.id)} className="hover:underline">
+                            {row.getValue("title") || <span className="text-muted-foreground italic text-xs">No Title</span>}
                         </Link>
                     </div>
                 );
             }
         },
         {
-            accessorKey: "packageName",
+            accessorKey: "subjectName",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.package")} />
+                <DataTableColumnHeader column={column} title={t("exam.passages.list.table.columns.subject")} />
             ),
-            cell: ({ row }) => {
-                const section = row.original;
-                return (
-                    <div className="font-medium text-primary">
-                        <Link to={AppRoute.exam.packages.admin.detail.url.replace("$id", section.packageId)} className="hover:underline">
-                            {row.getValue("packageName")}
-                        </Link>
-                    </div>
-                );
-            }
+            cell: ({ row }) => row.getValue("subjectName") || <span className="text-muted-foreground italic text-xs">-</span>
         },
         {
             accessorKey: "totalQuestions",
-            enableSorting: true,
-            size: 100,
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.questions")} className='justify-center' />
-            ),
-            cell: ({ row }) => (
-                <div className='flex justify-center'>
-                    <span className="text-sm">{row.getValue("totalQuestions")}</span>
-                </div>
-            )
-        },
-        {
-            accessorKey: "durationMinutes",
-            enableSorting: true,
+            enableSorting: false,
+            size: 70,
             minSize: 70,
             maxSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.duration")} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t("exam.passages.list.table.columns.questions")} className='justify-center text-center' />
             ),
             cell: ({ row }) => {
-                const duration = row.getValue("durationMinutes") as number;
+                const total = row.getValue("totalQuestions") as number;
                 return (
                     <div className='flex justify-center'>
-                        <span className="text-sm">{duration || "-"}</span>
+                        <Badge variant="secondary">{total}</Badge>
                     </div>
                 );
             },
@@ -128,14 +105,14 @@ export function SectionTable({
             minSize: 70,
             maxSize: 70,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.status")} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t("exam.passages.list.table.columns.status")} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const isActive = row.getValue("isActive") as boolean;
                 return (
                     <div className='flex justify-center'>
                         <Badge variant={isActive ? "success" : "secondary"}>
-                            {isActive ? t("exam.packageSection.list.table.status.active") : t("exam.packageSection.list.table.status.inactive")}
+                            {isActive ? t("labels.active") : t("labels.inactive")}
                         </Badge>
                     </div>
                 );
@@ -144,13 +121,13 @@ export function SectionTable({
         {
             accessorKey: "updatedAt",
             enableSorting: true,
-            minSize: 70,
-            maxSize: 100,
+            minSize: 100,
+            maxSize: 150,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.updatedAt")} />
+                <DataTableColumnHeader column={column} title={t("exam.passages.list.table.columns.updatedAt")} />
             ),
             cell: ({ row }) => (
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-muted-foreground lowercase">
                     {string_to_locale_date("id-ID", row.getValue("updatedAt"))}
                 </span>
             ),
@@ -160,41 +137,35 @@ export function SectionTable({
             minSize: 50,
             maxSize: 50,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t("exam.packageSection.list.table.columns.actions")} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t("labels.actions")} className='justify-center' />
             ),
             cell: ({ row }) => {
-                const section = row.original;
+                const passage = row.original;
 
                 return (
                     <div className='flex justify-center'>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <span className="sr-only">{t("exam.packageSection.list.table.actions.openMenu")}</span>
+                                    <span className="sr-only">{t("labels.openMenu")}</span>
                                     <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>{t("exam.packageSection.list.table.columns.actions")}</DropdownMenuLabel>
+                                <DropdownMenuLabel>{t("labels.actions")}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
-                                    <Link to={AppRoute.exam.packageSections.admin.detail.url.replace("$id", section.id)}>
-                                        <Eye className="mr-2 h-4 w-4" />
-                                        {t("exam.packageSection.list.table.actions.detail")}
+                                    <Link to={AppRoute.exam.passages.admin.edit.url.replace("$id", passage.id)}>
+                                        <Pencil className="mr-2 h-4 w-4" />
+                                        {t("labels.edit")}
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                    onClick={() => onEdit(section)}
-                                >
-                                    <Pencil className="mr-2 h-4 w-4" />
-                                    {t("exam.packageSection.list.table.actions.edit")}
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
                                     className="text-destructive focus:text-destructive"
-                                    onClick={() => onDelete(section)}
+                                    onClick={() => onDelete(passage)}
                                 >
                                     <Trash2 className="mr-2 h-4 w-4" />
-                                    {t("exam.packageSection.list.table.actions.delete")}
+                                    {t("labels.delete")}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -246,17 +217,16 @@ export function SectionTable({
     });
 
     return (
-        <div className="flex flex-col gap-4 border border-border rounded-lg bg-card">
+        <div className="flex flex-col gap-4 border border-border rounded-lg bg-card shadow-sm overflow-hidden">
             <div className={"flex flex-row gap-2 justify-between px-4 pt-4"}>
-                <div></div>
-                <div className={"flex flex-row gap-2 max-w-sm"}>
+                <div />
+                <div className={"flex flex-row gap-2 w-full max-w-sm"}>
                     <DataTableFilter
                         table={table}
-                        searchPlaceholder={t("exam.packageSection.list.table.search")}
-                        className='min-w-sm'
+                        searchPlaceholder={t("exam.passages.list.table.search")}
+                        className='w-full'
                         searchOnEnter={true}
-                    >
-                    </DataTableFilter>
+                    />
                 </div>
             </div>
             <DataTable
@@ -265,7 +235,7 @@ export function SectionTable({
                 totalRowCount={paginationData?.total || 0}
                 showSideBorders={false}
                 showZebraStriping={true}
-                defaultNoResultText={t("exam.packageSection.list.table.noResult")}
+                defaultNoResultText={t("exam.passages.list.table.noResult")}
             />
         </div>
     );

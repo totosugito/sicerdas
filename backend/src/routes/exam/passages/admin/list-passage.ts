@@ -4,6 +4,7 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examPassages } from '../../../../db/schema/exam/passages.ts';
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
+import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
 import { desc, ilike, and, sql, eq, count, getTableColumns } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -11,10 +12,11 @@ const PassageListQuery = Type.Object({
     search: Type.Optional(Type.String({ description: 'Search term for passage title' })),
     isActive: Type.Optional(Type.Boolean({ description: 'Filter by active status' })),
 
-    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, title', default: 'createdAt' })),
-    sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'desc' })),
+    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, title, updatedAt', default: 'updatedAt' })),
+    sortOrder: Type.Optional(Type.String({ description: "Sort order: 'asc' or 'desc'", default: 'desc' })),
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
     limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
+    subjectId: Type.Optional(Type.String({ format: 'uuid', description: 'Filter by subject ID' })),
 });
 
 const PassageResponseItem = Type.Object({
@@ -25,6 +27,8 @@ const PassageResponseItem = Type.Object({
     totalQuestions: Type.Number(),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
+    subjectId: Type.String({ format: 'uuid' }),
+    subjectName: Type.String(),
 });
 
 const ListPassagesResponse = Type.Object({
@@ -66,7 +70,8 @@ const listPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
         ) {
             const {
                 search, isActive,
-                sortBy = 'createdAt', sortOrder = 'desc', page = 1, limit = 10
+                sortBy = 'updatedAt', sortOrder = 'desc', page = 1, limit = 10,
+                subjectId
             } = request.body;
 
             const offset = (page - 1) * limit;
@@ -74,6 +79,7 @@ const listPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             const conditions = [];
 
             if (isActive !== undefined) conditions.push(eq(examPassages.isActive, isActive));
+            if (subjectId !== undefined) conditions.push(eq(examPassages.subjectId, subjectId));
 
             if (search && search.trim() !== '') {
                 const searchTerm = `%${search.trim().toLowerCase()}%`;
@@ -83,11 +89,13 @@ const listPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
             // Build Query
             let baseQuery = db.select({
                 ...getTableColumns(examPassages),
-                totalQuestions: count(examQuestions.id).mapWith(Number)
+                totalQuestions: count(examQuestions.id).mapWith(Number),
+                subjectName: examSubjects.name
             })
                 .from(examPassages)
                 .leftJoin(examQuestions, eq(examPassages.id, examQuestions.passageId))
-                .groupBy(examPassages.id);
+                .leftJoin(examSubjects, eq(examPassages.subjectId, examSubjects.id))
+                .groupBy(examPassages.id, examSubjects.name);
 
             if (conditions.length > 0) {
                 baseQuery = baseQuery.where(and(...conditions)) as any;
@@ -102,6 +110,11 @@ const listPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
                     queryWithSort = orderDir === 'asc'
                         ? baseQuery.orderBy(examPassages.title)
                         : baseQuery.orderBy(desc(examPassages.title));
+                    break;
+                case 'updatedAt':
+                    queryWithSort = orderDir === 'asc'
+                        ? baseQuery.orderBy(examPassages.updatedAt)
+                        : baseQuery.orderBy(desc(examPassages.updatedAt));
                     break;
                 case 'createdAt':
                 default:
@@ -136,6 +149,8 @@ const listPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
                         totalQuestions: p.totalQuestions,
                         createdAt: p.createdAt.toISOString(),
                         updatedAt: p.updatedAt.toISOString(),
+                        subjectId: p.subjectId,
+                        subjectName: p.subjectName || '',
                     })),
                     meta: {
                         total,

@@ -79,6 +79,13 @@ export const AppRoute = {
     }
   },
   exam: {
+    passages: {
+      admin: {
+        list: { url: "/admin/list-passage" },
+        create: { url: "/admin/create-passage" },
+        edit: { url: "/admin/edit-passage/$id" },
+      },
+    },
     subjects: {
       admin: {
         list: { url: "/admin/list-subject" },

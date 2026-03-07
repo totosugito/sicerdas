@@ -41,6 +41,10 @@ export default {
     login: "Masuk",
     error: "Terjadi Kesalahan",
     management: "Manajemen",
+    active: "Aktif",
+    inactive: "Tidak Aktif",
+    actions: "Aksi",
+    openMenu: "Buka menu",
     formValidationError: "Terjadi kesalahan pada form",
     pagination: {
         previous: "Sebelumnya",
