@@ -3,7 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
-import { examTags } from '../../../../db/schema/exam/tags.ts';
+import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -55,12 +55,12 @@ const listQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 questionId: examQuestionTags.questionId,
                 tagId: examQuestionTags.tagId,
                 tag: {
-                    id: examTags.id,
-                    name: examTags.name
+                    id: educationTags.id,
+                    name: educationTags.name
                 }
             })
                 .from(examQuestionTags)
-                .leftJoin(examTags, eq(examQuestionTags.tagId, examTags.id));
+                .leftJoin(educationTags, eq(examQuestionTags.tagId, educationTags.id));
 
             if (questionId) {
                 query = query.where(eq(examQuestionTags.questionId, questionId)) as any;

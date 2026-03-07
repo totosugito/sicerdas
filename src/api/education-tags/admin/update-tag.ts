@@ -12,11 +12,11 @@ export interface UpdateTagRequest {
 
 export const useUpdateTag = () => {
     return useMutation({
-        mutationKey: ["admin-exam-tags-update"],
+        mutationKey: ["admin-education-tags-update"],
         mutationFn: async ({ id, ...body }: UpdateTagRequest) => {
             const response = await fetchApi({
                 method: "PUT",
-                url: AppApi.exam.tags.admin.update.replace(":id", id),
+                url: AppApi.education.tags.admin.update.replace(":id", id),
                 body,
                 withCredentials: true,
             });

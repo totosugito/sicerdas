@@ -1,23 +1,67 @@
 {
-    "educationGrade": {
-        "create": {
-            "exists": "Grade sudah ada",
-            "success": "Grade berhasil dibuat"
+    "education": {
+        "categories": {
+            "create": {
+                "success": "Kategori ujian berhasil dibuat",
+                "exists": "Kategori dengan nama tersebut sudah ada"
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar kategori ujian"
+            },
+            "update": {
+                "success": "Kategori ujian berhasil diperbarui",
+                "notFound": "Kategori ujian tidak ditemukan",
+                "exists": "Sudah ada kategori lain dengan nama tersebut"
+            },
+            "delete": {
+                "success": "Kategori ujian berhasil dihapus",
+                "notFound": "Kategori ujian tidak ditemukan",
+                "inUse": "Kategori tidak dapat dihapus karena masih digunakan oleh paket ujian"
+            }
         },
-        "update": {
-            "notFound": "Grade tidak ditemukan",
-            "exists": "Grade sudah ada",
-            "success": "Grade berhasil diupdate"
+        "grades": {
+            "create": {
+                "exists": "Grade sudah ada",
+                "success": "Grade berhasil dibuat"
+            },
+            "update": {
+                "notFound": "Grade tidak ditemukan",
+                "exists": "Grade sudah ada",
+                "success": "Grade berhasil diupdate"
+            },
+            "delete": {
+                "notFound": "Grade tidak ditemukan",
+                "success": "Grade berhasil dihapus",
+                "inUseBook": "Tidak dapat menghapus tingkat pendidikan ini karena sedang digunakan oleh Modul Buku.",
+                "inUsePackage": "Tidak dapat menghapus tingkat pendidikan ini karena sedang digunakan oleh Modul Paket Soal.",
+                "inUseQuestion": "Tidak dapat menghapus tingkat pendidikan ini karena sedang digunakan oleh Modul Bank Soal."
+            },
+            "list": {
+                "success": "Grades berhasil diambil"
+            }
         },
-        "delete": {
-            "notFound": "Grade tidak ditemukan",
-            "success": "Grade berhasil dihapus",
-            "inUseBook": "Tidak dapat menghapus tingkat pendidikan ini karena sedang digunakan oleh Modul Buku.",
-            "inUsePackage": "Tidak dapat menghapus tingkat pendidikan ini karena sedang digunakan oleh Modul Paket Soal.",
-            "inUseQuestion": "Tidak dapat menghapus tingkat pendidikan ini karena sedang digunakan oleh Modul Bank Soal."
-        },
-        "list": {
-            "success": "Grades berhasil diambil"
+        "tags": {
+            "create": {
+                "success": "Tag/Topik ujian berhasil dibuat",
+                "exists": "Tag/Topik dengan nama tersebut sudah ada"
+            },
+            "list": {
+                "success": "Berhasil mengambil daftar tag/topik ujian"
+            },
+            "update": {
+                "success": "Tag/Topik ujian berhasil diperbarui",
+                "notFound": "Tag tidak ditemukan",
+                "exists": "Sudah ada tag lain dengan nama tersebut"
+            },
+            "delete": {
+                "success": "Tag/Topik ujian berhasil dihapus",
+                "notFound": "Tag tidak ditemukan",
+                "inUse": "Tag tidak dapat dihapus karena masih digunakan oleh soal ujian"
+            },
+            "detail": {
+                "success": "Berhasil mengambil detail tag/topik ujian",
+                "notFound": "Tag tidak ditemukan"
+            }
         }
     }
 }

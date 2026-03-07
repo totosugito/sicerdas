@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
-import { educationCategories } from '../../../db/schema/education/education-categories.ts';
+import { educationCategories } from '../../../db/schema/education/categories.ts';
 import { desc, ilike, or, and, sql, eq, asc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
@@ -141,7 +141,7 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.categories.list.success'),
+                message: request.i18n.t('education.categories.list.success'),
                 data: {
                     items: items.map(cat => ({
                         ...cat,

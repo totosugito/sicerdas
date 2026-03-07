@@ -8,7 +8,7 @@ import {
     useUpdateTag,
     CreateTagRequest,
     UpdateTagRequest
-} from "@/api/exam-tags";
+} from "@/api/education-tags";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 
@@ -35,7 +35,7 @@ export const DialogTagCreate = ({ open, onOpenChange, tag }: DialogTagCreateProp
     const updateMutation = useUpdateTag();
 
     const formSchema = {
-        name: z.string().min(1, t("exam.tags.list.form.name.required")),
+        name: z.string().min(1, t("education.tags.list.form.name.required")),
         description: z.string().optional(),
         isActive: z.boolean().default(true),
     };
@@ -44,27 +44,27 @@ export const DialogTagCreate = ({ open, onOpenChange, tag }: DialogTagCreateProp
         name: {
             type: "text",
             name: "name",
-            label: t("exam.tags.list.form.name.label"),
-            placeholder: t("exam.tags.list.form.name.placeholder"),
+            label: t("education.tags.list.form.name.label"),
+            placeholder: t("education.tags.list.form.name.placeholder"),
         },
         description: {
             type: "textarea",
             name: "description",
-            label: t("exam.tags.list.form.description.label"),
-            placeholder: t("exam.tags.list.form.description.placeholder"),
+            label: t("education.tags.list.form.description.label"),
+            placeholder: t("education.tags.list.form.description.placeholder"),
             minRows: 3,
         },
         isActive: {
             type: "switch",
             name: "isActive",
-            label: t("exam.tags.list.form.isActive.label"),
-            description: t("exam.tags.list.form.isActive.description"),
+            label: t("education.tags.list.form.isActive.label"),
+            description: t("education.tags.list.form.isActive.description"),
         },
     };
 
     const modalProps: ModalFormProps = {
-        title: tag ? t("labels.edit") + " " + t("exam.tags.list.title") : t("labels.add") + " " + t("exam.tags.list.title"),
-        desc: tag ? t("exam.tags.list.editDescription") : t("exam.tags.list.createDescription"),
+        title: tag ? t("labels.edit") + " " + t("education.tags.list.title") : t("labels.add") + " " + t("education.tags.list.title"),
+        desc: tag ? t("education.tags.list.editDescription") : t("education.tags.list.createDescription"),
         modal: true,
         textConfirm: (createMutation.isPending || updateMutation.isPending) ? t("labels.saving") : t("labels.save"),
         textCancel: t("labels.cancel"),
@@ -81,8 +81,8 @@ export const DialogTagCreate = ({ open, onOpenChange, tag }: DialogTagCreateProp
             if (tag) {
                 await updateMutation.mutateAsync({ id: tag.id, ...values } as UpdateTagRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t("exam.tags.list.notifications.updateSuccess") });
-                        queryClient.invalidateQueries({ queryKey: ["exam-tags-list"] });
+                        showNotifSuccess({ message: res.message || t("education.tags.list.notifications.updateSuccess") });
+                        queryClient.invalidateQueries({ queryKey: ["education-tags-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
@@ -92,8 +92,8 @@ export const DialogTagCreate = ({ open, onOpenChange, tag }: DialogTagCreateProp
             } else {
                 await createMutation.mutateAsync(values as CreateTagRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t("exam.tags.list.notifications.createSuccess") });
-                        queryClient.invalidateQueries({ queryKey: ["exam-tags-list"] });
+                        showNotifSuccess({ message: res.message || t("education.tags.list.notifications.createSuccess") });
+                        queryClient.invalidateQueries({ queryKey: ["education-tags-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {

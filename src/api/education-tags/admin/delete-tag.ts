@@ -5,11 +5,11 @@ import { ExamTagResponse } from "../types";
 
 export const useDeleteTag = () => {
     return useMutation({
-        mutationKey: ["admin-exam-tags-delete"],
+        mutationKey: ["admin-education-tags-delete"],
         mutationFn: async (id: string) => {
             const response = await fetchApi({
                 method: "DELETE",
-                url: AppApi.exam.tags.admin.delete.replace(":id", id),
+                url: AppApi.education.tags.admin.delete.replace(":id", id),
                 withCredentials: true,
             });
             return response as ExamTagResponse;

@@ -2,7 +2,7 @@ import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { boolean, index, integer, jsonb, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { users } from '../user/users.ts';
 import { EnumCourseStatus, PgEnumCourseStatus, EnumPublishDateType, PgEnumPublishDateType } from './enums.ts';
-import { educationCategories } from '../education/education-categories.ts';
+import { educationCategories } from '../education/categories.ts';
 
 /**
  * Table: courses

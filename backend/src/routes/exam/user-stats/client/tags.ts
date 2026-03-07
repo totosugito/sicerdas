@@ -3,7 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examUserStatsTag } from '../../../../db/schema/exam/user-stats-tag.ts';
-import { examTags } from '../../../../db/schema/exam/tags.ts';
+import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { eq, desc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -41,7 +41,7 @@ const getTagStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
             const stats = await db.select({
                 id: examUserStatsTag.id,
                 tagId: examUserStatsTag.tagId,
-                tagName: examTags.name,
+                tagName: educationTags.name,
                 totalQuestionsAnswered: examUserStatsTag.totalQuestionsAnswered,
                 totalCorrect: examUserStatsTag.totalCorrect,
                 totalWrong: examUserStatsTag.totalWrong,
@@ -49,7 +49,7 @@ const getTagStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 updatedAt: examUserStatsTag.updatedAt,
             })
                 .from(examUserStatsTag)
-                .innerJoin(examTags, eq(examUserStatsTag.tagId, examTags.id))
+                .innerJoin(educationTags, eq(examUserStatsTag.tagId, educationTags.id))
                 .where(eq(examUserStatsTag.userId, userId))
                 .orderBy(desc(examUserStatsTag.accuracyRate));
 

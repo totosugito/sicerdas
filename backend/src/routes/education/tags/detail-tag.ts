@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
-import { examTags } from '../../../db/schema/exam/tags.ts';
+import { educationTags } from '../../../db/schema/education/tags.ts';
 import { examQuestionTags } from '../../../db/schema/exam/question-tags.ts';
 import { eq, and, count, getTableColumns } from 'drizzle-orm';
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
@@ -56,30 +56,30 @@ const detailTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             const user = session?.user;
             const isAdmin = user?.role === EnumUserRole.ADMIN;
 
-            const conditions = [eq(examTags.id, id)];
+            const conditions = [eq(educationTags.id, id)];
 
             if (!isAdmin) {
                 // Regular users can only see active tags
-                conditions.push(eq(examTags.isActive, true));
+                conditions.push(eq(educationTags.isActive, true));
             }
 
             const [result] = await db.select({
-                ...getTableColumns(examTags),
+                ...getTableColumns(educationTags),
                 totalQuestions: count(examQuestionTags.questionId).mapWith(Number)
             })
-                .from(examTags)
-                .leftJoin(examQuestionTags, eq(examTags.id, examQuestionTags.tagId))
+                .from(educationTags)
+                .leftJoin(examQuestionTags, eq(educationTags.id, examQuestionTags.tagId))
                 .where(and(...conditions))
-                .groupBy(examTags.id)
+                .groupBy(educationTags.id)
                 .limit(1);
 
             if (!result) {
-                return reply.notFound(request.i18n.t('exam.tags.detail.notFound'));
+                return reply.notFound(request.i18n.t('education.tags.detail.notFound'));
             }
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.tags.detail.success'),
+                message: request.i18n.t('education.tags.detail.success'),
                 data: {
                     ...result,
                     createdAt: result.createdAt.toISOString(),

@@ -40,11 +40,6 @@ export const AdminNav = {
               url: AppRoute.exam.subjects.admin.list.url,
               icon: TagsIcon,
             },
-            {
-              title: t("exam.tags.list.menu"),
-              url: AppRoute.exam.tags.admin.list.url,
-              icon: Badge,
-            },
           ]
         },
         {
@@ -52,6 +47,11 @@ export const AdminNav = {
           url: "/base",
           icon: School,
           items: [
+            {
+              title: t("education.tags.list.menu"),
+              url: AppRoute.education.tags.admin.list.url,
+              icon: Badge,
+            },
             {
               title: t("education.categories.menu"),
               url: AppRoute.education.categories.admin.list.url,

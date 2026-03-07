@@ -95,14 +95,6 @@ export const AppApi = {
       list: APP_URL_API + "/exam/package-sections/list",
       listSimple: APP_URL_API + "/exam/package-sections/list-simple",
     },
-    tags: {
-      admin: {
-        create: APP_URL_API + "/exam/tags/admin/create",
-        update: APP_URL_API + "/exam/tags/admin/update/:id",
-        delete: APP_URL_API + "/exam/tags/admin/delete/:id",
-      },
-      list: APP_URL_API + "/exam/tags/list",
-    },
     passages: {
       admin: {
         create: APP_URL_API + "/exam/passages/admin/create",
@@ -114,6 +106,14 @@ export const AppApi = {
     },
   },
   education: {
+    tags: {
+      admin: {
+        create: APP_URL_API + "/education/tags/admin/create",
+        update: APP_URL_API + "/education/tags/admin/update/:id",
+        delete: APP_URL_API + "/education/tags/admin/delete/:id",
+      },
+      list: APP_URL_API + "/education/tags/list",
+    },
     grade: {
       admin: {
         create: APP_URL_API + "/education/grades/admin/create",

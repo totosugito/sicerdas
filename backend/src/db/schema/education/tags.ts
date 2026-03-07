@@ -2,12 +2,12 @@ import { pgTable, uuid, varchar, text, timestamp, boolean } from 'drizzle-orm/pg
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 /**
- * Table: exam_tags
+ * Table: education_tags
  * 
- * A dictionary/catalog of topics or tags used to classify questions for 
- * targeted learning (e.g., 'Algebra', 'HOTS', 'Syllogisms').
+ * A dictionary/catalog of topics or tags used to classify educational content
+ * for targeted learning (e.g., 'Algebra', 'HOTS', 'Syllogisms').
  */
-export const examTags = pgTable('exam_tags', {
+export const educationTags = pgTable('education_tags', {
     // Unique identifier for the tag
     id: uuid('id').primaryKey().defaultRandom(),
 
@@ -27,5 +27,5 @@ export const examTags = pgTable('exam_tags', {
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-export type SchemaExamTagSelect = InferSelectModel<typeof examTags>;
-export type SchemaExamTagInsert = InferInsertModel<typeof examTags>;
+export type SchemaEducationTagSelect = InferSelectModel<typeof educationTags>;
+export type SchemaEducationTagInsert = InferInsertModel<typeof educationTags>;

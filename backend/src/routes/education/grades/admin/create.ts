@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
-import { educationGrades } from '../../../../db/schema/education/education-grades.ts';
+import { educationGrades } from '../../../../db/schema/education/grades.ts';
 import { eq, or } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -63,7 +63,7 @@ const createEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (existingGrade) {
-                return reply.badRequest(request.i18n.t('educationGrade.create.exists'));
+                return reply.badRequest(request.i18n.t('education.grades.create.exists'));
             }
 
             const [newGrade] = await db.insert(educationGrades).values({
@@ -75,7 +75,7 @@ const createEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(201).send({
                 success: true,
-                message: request.i18n.t('educationGrade.create.success'),
+                message: request.i18n.t('education.grades.create.success'),
                 data: {
                     ...newGrade,
                     createdAt: newGrade.createdAt ? newGrade.createdAt.toISOString() : null,

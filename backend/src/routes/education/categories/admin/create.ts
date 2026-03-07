@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
-import { educationCategories } from '../../../../db/schema/education/education-categories.ts';
+import { educationCategories } from '../../../../db/schema/education/categories.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -58,7 +58,7 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (existingCategory) {
-                return reply.badRequest(request.i18n.t('exam.categories.create.exists'));
+                return reply.badRequest(request.i18n.t('education.categories.create.exists'));
             }
 
             const [newCategory] = await db.insert(educationCategories).values({
@@ -69,7 +69,7 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(201).send({
                 success: true,
-                message: request.i18n.t('exam.categories.create.success'),
+                message: request.i18n.t('education.categories.create.success'),
                 data: {
                     ...newCategory,
                     createdAt: newCategory.createdAt.toISOString(),

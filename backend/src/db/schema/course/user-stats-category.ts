@@ -1,7 +1,7 @@
 import { index, integer, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { users } from '../user/users.ts';
-import { educationCategories } from '../education/education-categories.ts';
+import { educationCategories } from '../education/categories.ts';
 
 /**
  * Table: course_user_stats_category

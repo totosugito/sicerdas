@@ -24,11 +24,11 @@ export interface ListTagResponse {
 
 export const useListTag = (params: ListTagRequest) => {
     return useQuery({
-        queryKey: ["exam-tags-list", params],
+        queryKey: ["education-tags-list", params],
         queryFn: async () => {
             const response = await fetchApi({
                 method: "POST",
-                url: AppApi.exam.tags.list,
+                url: AppApi.education.tags.list,
                 body: params,
                 withCredentials: true,
             });

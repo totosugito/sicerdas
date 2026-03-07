@@ -11,11 +11,11 @@ export interface CreateTagRequest {
 
 export const useCreateTag = () => {
     return useMutation({
-        mutationKey: ["admin-exam-tags-create"],
+        mutationKey: ["admin-education-tags-create"],
         mutationFn: async (body: CreateTagRequest) => {
             const response = await fetchApi({
                 method: "POST",
-                url: AppApi.exam.tags.admin.create,
+                url: AppApi.education.tags.admin.create,
                 body,
                 withCredentials: true,
             });

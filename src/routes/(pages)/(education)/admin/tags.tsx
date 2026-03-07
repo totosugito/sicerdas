@@ -4,7 +4,7 @@ import {
   useDeleteTag,
   ExamTag,
   ListTagResponse
-} from '@/api/exam-tags';
+} from '@/api/education-tags';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from 'react';
@@ -13,11 +13,11 @@ import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/app';
 import { Plus, Trash2 } from 'lucide-react';
 import { DialogModal } from '@/components/custom/components';
-import { TagTable, DialogTagCreate } from '@/components/pages/exam/tags';
+import { TagTable, DialogTagCreate } from '@/components/pages/education/tags';
 import { PaginationData } from '@/components/custom/table';
 import { z } from 'zod';
 
-export const Route = createFileRoute('/(pages)/(exam)/(tags)/admin/list-tag')({
+export const Route = createFileRoute('/(pages)/(education)/admin/tags')({
   validateSearch: z.object({
     page: z.number().min(1).optional().catch(undefined),
     limit: z.number().min(5).optional().catch(undefined),
@@ -77,8 +77,8 @@ function AdminExamTagsPage() {
     if (!selectedTag) return;
     deleteMutation.mutate(selectedTag.id, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t("exam.tags.list.delete.success") });
-        queryClient.invalidateQueries({ queryKey: ["exam-tags-list"] });
+        showNotifSuccess({ message: res.message || t("education.tags.list.delete.success") });
+        queryClient.invalidateQueries({ queryKey: ["education-tags-list"] });
         setShowDeleteDialog(false);
       },
       onError: (err: any) => {
@@ -91,8 +91,8 @@ function AdminExamTagsPage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={t("exam.tags.list.title")}
-          description={<span>{t("exam.tags.list.description")}</span>}
+          title={t("education.tags.list.title")}
+          description={<span>{t("education.tags.list.description")}</span>}
         />
         <Button onClick={handleAdd} className="flex-shrink-0 gap-1.5 shadow-sm">
           <Plus className="h-4 w-4" />
@@ -151,9 +151,9 @@ function AdminExamTagsPage() {
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
-          title: t("exam.tags.list.delete.confirmTitle"),
-          desc: t("exam.tags.list.delete.confirmDesc", { name: selectedTag?.name }),
-          infoContainer: t("exam.tags.list.delete.deleteInfo"),
+          title: t("education.tags.list.delete.confirmTitle"),
+          desc: t("education.tags.list.delete.confirmDesc", { name: selectedTag?.name }),
+          infoContainer: t("education.tags.list.delete.deleteInfo"),
           infoContainerVariant: "error",
           variant: "destructive",
           iconType: "error",

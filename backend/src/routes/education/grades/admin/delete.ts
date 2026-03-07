@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
-import { educationGrades } from '../../../../db/schema/education/education-grades.ts';
+import { educationGrades } from '../../../../db/schema/education/grades.ts';
 import { books } from '../../../../db/schema/book/books.ts';
 import { examPackages } from '../../../../db/schema/exam/packages.ts';
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
@@ -49,7 +49,7 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingGrade) {
-                return reply.notFound(request.i18n.t('educationGrade.delete.notFound'));
+                return reply.notFound(request.i18n.t('education.grades.delete.notFound'));
             }
 
             // Check if any books are associated with this grade
@@ -57,7 +57,7 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
                 where: eq(books.educationGradeId, id)
             });
             if (bookUsage) {
-                return reply.badRequest(request.i18n.t('educationGrade.delete.inUseBook'));
+                return reply.badRequest(request.i18n.t('education.grades.delete.inUseBook'));
             }
 
             // Check if any exam packages are associated with this grade
@@ -65,7 +65,7 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
                 where: eq(examPackages.educationGradeId, id)
             });
             if (packageUsage) {
-                return reply.badRequest(request.i18n.t('educationGrade.delete.inUsePackage'));
+                return reply.badRequest(request.i18n.t('education.grades.delete.inUsePackage'));
             }
 
             // Check if any exam questions are associated with this grade
@@ -73,7 +73,7 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
                 where: eq(examQuestions.educationGradeId, id)
             });
             if (questionUsage) {
-                return reply.badRequest(request.i18n.t('educationGrade.delete.inUseQuestion'));
+                return reply.badRequest(request.i18n.t('education.grades.delete.inUseQuestion'));
             }
 
             // Perform Hard Delete
@@ -81,7 +81,7 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('educationGrade.delete.success'),
+                message: request.i18n.t('education.grades.delete.success'),
             });
         }),
     });

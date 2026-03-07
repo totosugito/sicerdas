@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
-import { examTags } from '../../../../db/schema/exam/tags.ts';
+import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
 import { eq } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
@@ -42,12 +42,12 @@ const deleteTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             const { id } = request.params;
 
             // Ensure tag exists
-            const existingTag = await db.query.examTags.findFirst({
-                where: eq(examTags.id, id)
+            const existingTag = await db.query.educationTags.findFirst({
+                where: eq(educationTags.id, id)
             });
 
             if (!existingTag) {
-                return reply.notFound(request.i18n.t('exam.tags.delete.notFound'));
+                return reply.notFound(request.i18n.t('education.tags.delete.notFound'));
             }
 
             // Optional Check: Is this tag in use by any exam questions?
@@ -58,15 +58,15 @@ const deleteTagRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             if (inUseCheck) {
                 // Return a friendly error using Sensible, instead of raw pg constraint error
-                return reply.badRequest(request.i18n.t('exam.tags.delete.inUse'));
+                return reply.badRequest(request.i18n.t('education.tags.delete.inUse'));
             }
 
             // Perform Hard Delete
-            await db.delete(examTags).where(eq(examTags.id, id));
+            await db.delete(educationTags).where(eq(educationTags.id, id));
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.tags.delete.success'),
+                message: request.i18n.t('education.tags.delete.success'),
             });
         }),
     });

@@ -1,7 +1,7 @@
 import { pgTable, uuid, timestamp, integer, decimal, index } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { users } from '../user/users.ts';
-import { examTags } from './tags.ts';
+import { educationTags } from '../education/tags.ts';
 
 /**
  * Table: exam_user_stats_tag
@@ -16,7 +16,7 @@ export const examUserStatsTag = pgTable('exam_user_stats_tag', {
 
     // Metric mapping between the user and a specific tag/topic
     userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
-    tagId: uuid('tag_id').references(() => examTags.id, { onDelete: 'cascade' }).notNull(),
+    tagId: uuid('tag_id').references(() => educationTags.id, { onDelete: 'cascade' }).notNull(),
 
     // Counter metrics mapped only against this tag
     totalQuestionsAnswered: integer('total_questions_answered').default(0).notNull(),

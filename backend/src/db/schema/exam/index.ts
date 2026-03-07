@@ -17,7 +17,6 @@ export { examQuestionOptions, type SchemaExamQuestionOptionSelect, type SchemaEx
 export { examQuestionSolutions, type SchemaExamQuestionSolutionSelect, type SchemaExamQuestionSolutionInsert } from './question-solutions.ts';
 
 // Tags
-export { examTags, type SchemaExamTagSelect, type SchemaExamTagInsert } from './tags.ts';
 export { examQuestionTags, type SchemaExamQuestionTagSelect, type SchemaExamQuestionTagInsert } from './question-tags.ts';
 
 // Packages

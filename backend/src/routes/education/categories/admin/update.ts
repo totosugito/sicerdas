@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
-import { educationCategories } from '../../../../db/schema/education/education-categories.ts';
+import { educationCategories } from '../../../../db/schema/education/categories.ts';
 import { eq, and, ne } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -64,7 +64,7 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingCategory) {
-                return reply.notFound(request.i18n.t('exam.categories.update.notFound'));
+                return reply.notFound(request.i18n.t('education.categories.update.notFound'));
             }
 
             // Check if new name conflicts with another existing category
@@ -76,7 +76,7 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (nameConflict) {
-                return reply.badRequest(request.i18n.t('exam.categories.update.exists'));
+                return reply.badRequest(request.i18n.t('education.categories.update.exists'));
             }
 
             const [updatedCategory] = await db.update(educationCategories)
@@ -91,7 +91,7 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.categories.update.success'),
+                message: request.i18n.t('education.categories.update.success'),
                 data: {
                     ...updatedCategory,
                     createdAt: updatedCategory.createdAt.toISOString(),

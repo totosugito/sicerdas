@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
-import { examTags } from '../../../../db/schema/exam/tags.ts';
+import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { eq, and, ne } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -59,39 +59,39 @@ const updateTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             const { name, description, isActive } = request.body;
 
             // Ensure tag exists
-            const existingTag = await db.query.examTags.findFirst({
-                where: eq(examTags.id, id)
+            const existingTag = await db.query.educationTags.findFirst({
+                where: eq(educationTags.id, id)
             });
 
             if (!existingTag) {
-                return reply.notFound(request.i18n.t('exam.tags.update.notFound'));
+                return reply.notFound(request.i18n.t('education.tags.update.notFound'));
             }
 
             // Check if new name conflicts with another existing tag
-            const nameConflict = await db.query.examTags.findFirst({
+            const nameConflict = await db.query.educationTags.findFirst({
                 where: and(
-                    eq(examTags.name, name),
-                    ne(examTags.id, id)
+                    eq(educationTags.name, name),
+                    ne(educationTags.id, id)
                 )
             });
 
             if (nameConflict) {
-                return reply.badRequest(request.i18n.t('exam.tags.update.exists'));
+                return reply.badRequest(request.i18n.t('education.tags.update.exists'));
             }
 
-            const [updatedTag] = await db.update(examTags)
+            const [updatedTag] = await db.update(educationTags)
                 .set({
                     name,
                     description,
                     isActive,
                     updatedAt: new Date()
                 })
-                .where(eq(examTags.id, id))
+                .where(eq(educationTags.id, id))
                 .returning();
 
             return reply.status(200).send({
                 success: true,
-                message: request.i18n.t('exam.tags.update.success'),
+                message: request.i18n.t('education.tags.update.success'),
                 data: {
                     ...updatedTag,
                     createdAt: updatedTag.createdAt.toISOString(),

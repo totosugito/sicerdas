@@ -108,12 +108,7 @@ export const AppRoute = {
         edit: { url: "/admin/edit-section/$id" },
         create: { url: "/admin/create-section" },
       },
-    },
-    tags: {
-      admin: {
-        list: { url: "/admin/list-tag" },
-      },
-    },
+    }
   },
   education: {
     categories: {
@@ -127,7 +122,12 @@ export const AppRoute = {
         create: { url: "/admin/create-grade" },
         edit: { url: "/admin/edit-grade/$id" },
       }
-    }
+    },
+    tags: {
+      admin: {
+        list: { url: "/admin/tags" },
+      },
+    },
   },
   admin: {
     dashboard: { url: "/admin/dashboard" },

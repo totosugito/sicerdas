@@ -4,8 +4,8 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { eq } from "drizzle-orm";
 import * as schema from '../../../db/schema/index.ts';
 import dotenv from 'dotenv';
-import { educationCategories } from "../../../db/schema/education/index.ts";
-import { examTags, examSubjects } from "../../../db/schema/exam/index.ts";
+import { educationCategories, educationTags } from "../../../db/schema/education/index.ts";
+import { examSubjects } from "../../../db/schema/exam/index.ts";
 
 dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env' });
 
@@ -57,18 +57,18 @@ export default async function seed() {
 
         for (const tag of tagsData) {
             const existingTag = await db
-                .select({ id: examTags.id })
-                .from(examTags)
-                .where(eq(examTags.name, tag.name))
+                .select({ id: educationTags.id })
+                .from(educationTags)
+                .where(eq(educationTags.name, tag.name))
                 .then((result) => !!result[0]?.id);
 
             if (!existingTag) {
-                await db.insert(examTags).values(tag);
+                await db.insert(educationTags).values(tag);
             } else {
                 await db
-                    .update(examTags)
+                    .update(educationTags)
                     .set({ description: tag.description })
-                    .where(eq(examTags.name, tag.name));
+                    .where(eq(educationTags.name, tag.name));
             }
         }
         console.log("✓ Tag ujian berhasil diinisialisasi.");

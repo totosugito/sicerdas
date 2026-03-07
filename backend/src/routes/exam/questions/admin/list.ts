@@ -5,7 +5,7 @@ import { db } from '../../../../db/db-pool.ts';
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { examQuestionOptions } from '../../../../db/schema/exam/question-options.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
-import { examTags } from '../../../../db/schema/exam/tags.ts';
+import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { desc, and, sql, eq, count, getTableColumns } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 
@@ -117,15 +117,15 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                 totalOptions: count(examQuestionOptions.id).mapWith(Number),
                 tags: sql`coalesce(
                     json_agg(
-                        json_build_object('id', ${examTags.id}, 'name', ${examTags.name})
-                    ) filter (where ${examTags.id} is not null), 
+                        json_build_object('id', ${educationTags.id}, 'name', ${educationTags.name})
+                    ) filter (where ${educationTags.id} is not null), 
                     '[]'
                 )`.as('tags')
             })
                 .from(examQuestions)
                 .leftJoin(examQuestionOptions, eq(examQuestions.id, examQuestionOptions.questionId))
                 .leftJoin(examQuestionTags, eq(examQuestions.id, examQuestionTags.questionId))
-                .leftJoin(examTags, eq(examQuestionTags.tagId, examTags.id))
+                .leftJoin(educationTags, eq(examQuestionTags.tagId, educationTags.id))
                 .groupBy(examQuestions.id);
 
             if (conditions.length > 0) {
