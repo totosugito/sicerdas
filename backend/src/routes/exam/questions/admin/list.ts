@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
+import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
 import { examQuestionOptions } from '../../../../db/schema/exam/question-options.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
 import { educationTags } from '../../../../db/schema/education/tags.ts';
@@ -34,6 +35,7 @@ const QuestionListQuery = Type.Object({
 const QuestionResponseItem = Type.Object({
     id: Type.String({ format: 'uuid' }),
     subjectId: Type.String({ format: 'uuid' }),
+    subjectName: Type.Optional(Type.String()),
     passageId: Type.Union([Type.String({ format: 'uuid' }), Type.Null()]),
     content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
     difficulty: Type.Enum(EnumDifficultyLevel),
@@ -113,6 +115,7 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             let baseQuery = db.select({
                 ...getTableColumns(examQuestions),
                 totalOptions: count(examQuestionOptions.id).mapWith(Number),
+                subjectName: examSubjects.name,
                 tags: sql`coalesce(
                     json_agg(
                         json_build_object('id', ${educationTags.id}, 'name', ${educationTags.name})
@@ -121,10 +124,11 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                 )`.as('tags')
             })
                 .from(examQuestions)
+                .leftJoin(examSubjects, eq(examQuestions.subjectId, examSubjects.id))
                 .leftJoin(examQuestionOptions, eq(examQuestions.id, examQuestionOptions.questionId))
                 .leftJoin(examQuestionTags, eq(examQuestions.id, examQuestionTags.questionId))
                 .leftJoin(educationTags, eq(examQuestionTags.tagId, educationTags.id))
-                .groupBy(examQuestions.id);
+                .groupBy(examQuestions.id, examSubjects.name);
 
             if (conditions.length > 0) {
                 baseQuery = baseQuery.where(and(...conditions)) as any;
@@ -188,6 +192,7 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                     items: items.map(q => ({
                         id: q.id,
                         subjectId: q.subjectId,
+                        subjectName: (q as any).subjectName,
                         passageId: q.passageId,
                         content: q.content as Record<string, unknown>[],
                         difficulty: q.difficulty,

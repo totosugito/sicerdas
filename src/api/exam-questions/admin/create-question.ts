@@ -15,8 +15,8 @@ export interface CreateQuestionRequest {
     content: Record<string, unknown>[];
     difficulty: DifficultyLevel;
     type: QuestionType;
-    requiredTier?: string;
-    educationGradeId?: number;
+    requiredTier?: string | null;
+    educationGradeId?: number | null;
     isActive?: boolean;
 }
 

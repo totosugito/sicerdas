@@ -4,7 +4,9 @@ export {
     type ExamQuestionDetailResponse,
     type QuestionFormValues,
     type DifficultyLevel,
-    type QuestionType
+    type QuestionType,
+    EnumDifficultyLevel,
+    EnumQuestionType
 } from "./types";
 export { useListQuestion, type ListQuestionRequest, type ListQuestionsResponse } from "./admin/list-question";
 export { useCreateQuestion, type CreateQuestionRequest } from "./admin/create-question";

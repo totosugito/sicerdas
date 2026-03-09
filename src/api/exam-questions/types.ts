@@ -1,10 +1,16 @@
-export type DifficultyLevel = 'easy' | 'medium' | 'hard';
-export type QuestionType = 'multiple_choice' | 'essay';
+import { EnumDifficultyLevel, EnumQuestionType } from 'backend/src/db/schema/exam/enums';
+
+export { EnumDifficultyLevel, EnumQuestionType };
+
+export type DifficultyLevel = typeof EnumDifficultyLevel[keyof typeof EnumDifficultyLevel];
+export type QuestionType = typeof EnumQuestionType[keyof typeof EnumQuestionType];
 
 export interface ExamQuestion {
     id: string;
     subjectId: string;
+    subjectName?: string;
     passageId: string | null;
+    passageTitle?: string | null;
     content: Record<string, unknown>[];
     difficulty: DifficultyLevel;
     type: QuestionType;

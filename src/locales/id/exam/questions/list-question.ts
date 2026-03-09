@@ -47,12 +47,21 @@ export default {
         difficulty: {
             label: "Tingkat Kesulitan",
             placeholder: "Pilih Kesulitan",
-            required: "Tingkat kesulitan wajib dipilih"
+            required: "Tingkat kesulitan wajib dipilih",
+            options: {
+                easy: "Mudah",
+                medium: "Sedang",
+                hard: "Sulit"
+            }
         },
         type: {
             label: "Jenis Soal",
             placeholder: "Pilih Jenis",
-            required: "Jenis soal wajib dipilih"
+            required: "Jenis soal wajib dipilih",
+            options: {
+                multiple_choice: "Pilihan Ganda",
+                essay: "Esai"
+            }
         },
         requiredTier: {
             label: "Tier Minimal",

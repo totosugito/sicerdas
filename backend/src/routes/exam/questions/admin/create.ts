@@ -12,12 +12,12 @@ import { EnumDifficultyLevel, EnumQuestionType } from '../../../../db/schema/exa
 
 const CreateQuestionBody = Type.Object({
     subjectId: Type.String({ format: 'uuid' }),
-    passageId: Type.Optional(Type.String({ format: 'uuid' })), // Nullable for questions without passages
+    passageId: Type.Optional(Type.Union([Type.String({ format: 'uuid' }), Type.Null()])), // Nullable for questions without passages
     content: Type.Array(Type.Record(Type.String(), Type.Unknown())), // BlockNote JSON format
     difficulty: Type.Enum(EnumDifficultyLevel, { default: EnumDifficultyLevel.MEDIUM }),
     type: Type.Enum(EnumQuestionType, { default: EnumQuestionType.MULTIPLE_CHOICE }),
-    requiredTier: Type.Optional(Type.String({ default: 'free' })),
-    educationGradeId: Type.Optional(Type.Number()),
+    requiredTier: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+    educationGradeId: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
     isActive: Type.Optional(Type.Boolean({ default: true })),
 });
 
@@ -98,8 +98,8 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                 content,
                 difficulty,
                 type,
-                requiredTier: requiredTier || 'free',
-                educationGradeId,
+                requiredTier: requiredTier !== undefined ? requiredTier : 'free',
+                educationGradeId: educationGradeId !== undefined ? educationGradeId : null,
                 isActive: isActive !== undefined ? isActive : true,
             }).returning();
 
