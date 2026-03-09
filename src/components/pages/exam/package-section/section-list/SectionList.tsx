@@ -13,7 +13,7 @@ interface SectionListProps {
 
 export const SectionList = ({ items, sensors, onDragEnd, onDelete, onEdit }: SectionListProps) => {
     return (
-        <div className="">
+        <div className="flex flex-col gap-4">
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}

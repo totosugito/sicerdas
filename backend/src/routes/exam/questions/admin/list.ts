@@ -9,6 +9,8 @@ import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { desc, and, sql, eq, count, getTableColumns } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
+import { EnumDifficultyLevel, EnumQuestionType } from '../../../../db/schema/exam/enums.ts';
+
 
 const QuestionListQuery = Type.Object({
     // Since content is a JSONB BlockNote blob, search by text won't be a simple ILIKE on a varchar.
@@ -17,13 +19,13 @@ const QuestionListQuery = Type.Object({
 
     // Filters specific to questions
     subjectId: Type.Optional(Type.String({ format: 'uuid' })),
-    difficulty: Type.Optional(Type.String()),
-    type: Type.Optional(Type.String()),
+    difficulty: Type.Optional(Type.Enum(EnumDifficultyLevel)),
+    type: Type.Optional(Type.Enum(EnumQuestionType)),
     requiredTier: Type.Optional(Type.String()),
     educationGradeId: Type.Optional(Type.Number()),
 
     isActive: Type.Optional(Type.Boolean({ description: 'Filter by active status. Omit to fetch all.' })),
-    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt', default: 'createdAt' })),
+    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, updatedAt, difficulty, type, requiredTier, educationGradeId', default: 'updatedAt' })),
     sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'desc' })),
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
     limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
@@ -34,8 +36,8 @@ const QuestionResponseItem = Type.Object({
     subjectId: Type.String({ format: 'uuid' }),
     passageId: Type.Union([Type.String({ format: 'uuid' }), Type.Null()]),
     content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
-    difficulty: Type.String(),
-    type: Type.String(),
+    difficulty: Type.Enum(EnumDifficultyLevel),
+    type: Type.Enum(EnumQuestionType),
     requiredTier: Type.Union([Type.String(), Type.Null()]),
     educationGradeId: Type.Union([Type.Number(), Type.Null()]),
     isActive: Type.Boolean(),
@@ -88,7 +90,7 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             const { t } = getTypedI18n(request);
             const {
                 subjectId, difficulty, type, requiredTier, educationGradeId, isActive,
-                sortBy = 'createdAt', sortOrder = 'desc', page = 1, limit = 10
+                sortBy = 'updatedAt', sortOrder = 'desc', page = 1, limit = 10
             } = request.body;
 
             const offset = (page - 1) * limit;
@@ -102,16 +104,10 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             // Direct match filters
             if (subjectId) conditions.push(eq(examQuestions.subjectId, subjectId));
-            if (difficulty) conditions.push(eq(examQuestions.difficulty, difficulty as any));
-            if (type) conditions.push(eq(examQuestions.type, type as any));
+            if (difficulty) conditions.push(eq(examQuestions.difficulty, difficulty));
+            if (type) conditions.push(eq(examQuestions.type, type));
             if (requiredTier) conditions.push(eq(examQuestions.requiredTier, requiredTier));
             if (educationGradeId) conditions.push(eq(examQuestions.educationGradeId, educationGradeId));
-
-            // Optional: Search inside JSONB (requires casting JSONB text, omitted here for performance unless strictly necessary)
-            // if (search && search.trim() !== '') {
-            //     const searchTerm = `%${search.trim().toLowerCase()}%`;
-            //     conditions.push(ilike(sql`${examQuestions.content}::text`, searchTerm));
-            // }
 
             // Build Query
             let baseQuery = db.select({
@@ -139,6 +135,31 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             let queryWithSort;
 
             switch (sortBy) {
+                case 'updatedAt':
+                    queryWithSort = order === 'asc'
+                        ? baseQuery.orderBy(examQuestions.updatedAt)
+                        : baseQuery.orderBy(desc(examQuestions.updatedAt));
+                    break;
+                case 'difficulty':
+                    queryWithSort = order === 'asc'
+                        ? baseQuery.orderBy(examQuestions.difficulty)
+                        : baseQuery.orderBy(desc(examQuestions.difficulty));
+                    break;
+                case 'type':
+                    queryWithSort = order === 'asc'
+                        ? baseQuery.orderBy(examQuestions.type)
+                        : baseQuery.orderBy(desc(examQuestions.type));
+                    break;
+                case 'requiredTier':
+                    queryWithSort = order === 'asc'
+                        ? baseQuery.orderBy(examQuestions.requiredTier)
+                        : baseQuery.orderBy(desc(examQuestions.requiredTier));
+                    break;
+                case 'educationGradeId':
+                    queryWithSort = order === 'asc'
+                        ? baseQuery.orderBy(examQuestions.educationGradeId)
+                        : baseQuery.orderBy(desc(examQuestions.educationGradeId));
+                    break;
                 case 'createdAt':
                 default:
                     queryWithSort = order === 'asc'

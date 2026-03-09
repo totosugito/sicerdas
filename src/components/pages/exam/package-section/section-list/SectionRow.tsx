@@ -5,6 +5,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { ExamPackageSection } from "@/api/exam-package-sections";
 import { useAppTranslation } from "@/lib/i18n-typed";
+import { Link } from "@tanstack/react-router";
+import { AppRoute } from "@/constants/app-route";
 
 interface SectionRowProps {
     section: ExamPackageSection;
@@ -33,7 +35,7 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
         <div
             ref={setNodeRef}
             style={style}
-            className={`group relative rounded-xl border bg-card p-4 transition-all mb-4 ${isDragging
+            className={`group relative rounded-xl border bg-card p-4 transition-all ${isDragging
                 ? "shadow-lg opacity-90 z-10 border-primary"
                 : "hover:border-primary/30 hover:shadow-sm"
                 }`}
@@ -56,7 +58,9 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
                 {/* Main Content Column */}
                 <div className="flex-1 min-w-0 pt-0.5 space-y-2">
                     <h3 className="font-bold text-base tracking-tight truncate">
-                        {section.title}
+                        <Link to={AppRoute.exam.packageSections.admin.detail.url.replace("$id", section.id)} className="hover:underline">
+                            {section.title}
+                        </Link>
                     </h3>
 
                     {/* Info row: duration and questions */}

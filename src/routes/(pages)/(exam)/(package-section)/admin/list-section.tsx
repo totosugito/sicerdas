@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/app';
 import { Plus, Trash2 } from 'lucide-react';
 import { DialogModal } from '@/components/custom/components';
-import { SectionTable, SectionForm } from '@/components/pages/exam/package-section/section-list';
+import { SectionTable, DialogSectionForm } from '@/components/pages/exam/package-section/section-list';
 import { PaginationData } from '@/components/custom/table';
 import { z } from 'zod';
 
@@ -146,7 +146,7 @@ function AdminExamPackageSectionsPage() {
         onEdit={handleEdit}
       />
 
-      <SectionForm
+      <DialogSectionForm
         open={showFormModal}
         onOpenChange={setShowFormModal}
         section={selectedSection}

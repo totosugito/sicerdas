@@ -4,6 +4,8 @@ import { detailPackage } from "./packages/detail-package";
 import subjects from "./subjects/list-subject";
 import packageSection from "./package-section/list-section";
 import passageList from "./passages/passage-list";
+import questions from "./questions/list-question";
+
 const obj = {
     ...exam,
     subjects: {
@@ -18,6 +20,9 @@ const obj = {
     },
     passages: {
         list: passageList
+    },
+    questions: {
+        list: questions
     }
 }
 export default obj

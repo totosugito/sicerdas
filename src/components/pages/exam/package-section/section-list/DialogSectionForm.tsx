@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { durationOnMinutes } from "@/constants/app-enum";
 
-export type SectionFormProps = {
+export type DialogSectionFormProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     section?: ExamPackageSection | null;
@@ -34,7 +34,7 @@ const FormEntity = ({ values, form, packageIdDisabled }: any) => {
     );
 };
 
-export const SectionForm = ({ open, onOpenChange, section, packageId, packageIdDisabled = false }: SectionFormProps) => {
+export const DialogSectionForm = ({ open, onOpenChange, section, packageId, packageIdDisabled = false }: DialogSectionFormProps) => {
     const { t } = useAppTranslation();
     const queryClient = useQueryClient();
     const createMutation = useCreatePackageSection();

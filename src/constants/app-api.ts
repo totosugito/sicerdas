@@ -106,6 +106,14 @@ export const AppApi = {
         listSimple: APP_URL_API + "/exam/passages/admin/list-simple",
       },
     },
+    questions: {
+      admin: {
+        create: APP_URL_API + "/exam/questions/admin/create",
+        update: APP_URL_API + "/exam/questions/admin/update/:id",
+        delete: APP_URL_API + "/exam/questions/admin/delete/:id",
+        list: APP_URL_API + "/exam/questions/admin/list",
+      },
+    },
   },
   education: {
     tags: {

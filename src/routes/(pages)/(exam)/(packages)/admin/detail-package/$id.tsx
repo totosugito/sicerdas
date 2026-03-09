@@ -20,7 +20,7 @@ import { PageTitle, ErrorContainer } from '@/components/app';
 import { AppRoute } from '@/constants/app-route';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useListPackageSection, useDeletePackageSection, useUpdatePackageSection, ExamPackageSection } from '@/api/exam-package-sections';
-import { SectionList, SectionListSkeleton, SectionEmptyState, SectionForm } from '@/components/pages/exam/package-section/section-list';
+import { SectionList, SectionListSkeleton, SectionEmptyState, DialogSectionForm } from '@/components/pages/exam/package-section/section-list';
 
 export const Route = createFileRoute('/(pages)/(exam)/(packages)/admin/detail-package/$id')({
   component: DetailPackagePage,
@@ -147,7 +147,7 @@ function DetailPackagePage() {
         />
       </div>
 
-      <div className="bg-card border rounded-xl p-4">
+      <div className="bg-card border rounded-xl p-6">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h3 className="font-semibold text-lg">{t($ => $.exam.packageSection.list.sections.title)}</h3>
@@ -202,7 +202,7 @@ function DetailPackagePage() {
         }}
       />
 
-      <SectionForm
+      <DialogSectionForm
         open={showFormModal}
         onOpenChange={setShowFormModal}
         section={selectedSection}

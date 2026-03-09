@@ -8,7 +8,7 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { isShowSidebar } from '@/types/auth'
 import AppSidebar from '@/components/app/sidebar/AppSidebar'
-import { AdminNav } from '@/constants/admin-nav'
+import { useAdminNav } from '@/constants/admin-nav'
 import { SidebarData } from '@/components/app/sidebar/types'
 
 export const Route = createFileRoute('/(pages)')({
@@ -18,6 +18,7 @@ export const Route = createFileRoute('/(pages)')({
 function RouteComponent() {
     const [showGoToTop, setShowGoToTop] = useState(false)
     const { user, openSideMenu, setOpenSideMenu } = useAuthStore()
+    const adminNav = useAdminNav()
 
     useEffect(() => {
         const handleScroll = () => {
@@ -43,7 +44,7 @@ function RouteComponent() {
 
     let webNav: Record<string, any> = {};
     if (isShowSidebar(user)) {
-        webNav = AdminNav;
+        webNav = adminNav;
     }
 
     return (
