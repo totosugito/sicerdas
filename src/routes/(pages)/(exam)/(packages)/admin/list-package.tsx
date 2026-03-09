@@ -67,7 +67,7 @@ function AdminExamPackagesPage() {
     if (!selectedPackage) return;
     deleteMutation.mutate(selectedPackage.id, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t($ => $.exam.packages.list.delete.success) });
+        showNotifSuccess({ message: res.message || t($ => $.exam.packages.delete.success) });
         queryClient.invalidateQueries({ queryKey: ["exam-packages-list"] });
         setShowDeleteDialog(false);
       },
@@ -81,8 +81,8 @@ function AdminExamPackagesPage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={t($ => $.exam.packages.list.title)}
-          description={<span>{t($ => $.exam.packages.list.description)}</span>}
+          title={t($ => $.exam.packages.title)}
+          description={<span>{t($ => $.exam.packages.description)}</span>}
         />
         <Button asChild className="flex-shrink-0 gap-1.5 shadow-sm">
           <Link to={AppRoute.exam.packages.admin.create.url}>
@@ -136,9 +136,9 @@ function AdminExamPackagesPage() {
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
-          title: t($ => $.exam.packages.list.delete.confirmTitle),
-          desc: t($ => $.exam.packages.list.delete.confirmDesc, { title: selectedPackage?.title }),
-          infoContainer: t($ => $.exam.packages.list.delete.deleteInfo),
+          title: t($ => $.exam.packages.delete.confirmTitle),
+          desc: t($ => $.exam.packages.delete.confirmDesc, { title: selectedPackage?.title }),
+          infoContainer: t($ => $.exam.packages.delete.deleteInfo),
           infoContainerVariant: "error",
           variant: "destructive",
           iconType: "error",

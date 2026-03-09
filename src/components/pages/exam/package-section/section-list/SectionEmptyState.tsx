@@ -15,14 +15,14 @@ export const SectionEmptyState = ({ onAdd }: SectionEmptyStateProps) => {
                 <Inbox className="h-8 w-8 text-muted-foreground/50" />
             </div>
             <h3 className="text-lg font-semibold mb-2 tracking-tight">
-                {t($ => $.exam.packageSection.list.sections.noDataTitle)}
+                {t($ => $.exam.sections.noDataTitle)}
             </h3>
             <p className="text-muted-foreground max-w-sm mx-auto mb-6 text-sm">
-                {t($ => $.exam.packageSection.list.sections.noDataDescription)}
+                {t($ => $.exam.sections.noDataDescription)}
             </p>
             <Button onClick={onAdd} className="gap-2">
                 <Plus className="h-4 w-4" />
-                {t($ => $.exam.packageSection.list.createButton)}
+                {t($ => $.exam.sections.createButton)}
             </Button>
         </div>
     );

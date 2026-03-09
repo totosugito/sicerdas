@@ -42,8 +42,8 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
     });
 
     const formSchema = z.object({
-        title: z.string().min(1, t($ => $.exam.passages.list.form.title.required)),
-        subjectId: z.string().min(1, t($ => $.exam.passages.list.form.subject.required)),
+        title: z.string().min(1, t($ => $.exam.passages.form.title.required)),
+        subjectId: z.string().min(1, t($ => $.exam.passages.form.subject.required)),
         content: z.array(z.any()).optional(),
         isActive: z.boolean().default(true),
     });
@@ -95,14 +95,14 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
         title: {
             type: "text",
             name: "title",
-            label: t($ => $.exam.passages.list.form.title.label),
-            placeholder: t($ => $.exam.passages.list.form.title.placeholder),
+            label: t($ => $.exam.passages.form.title.label),
+            placeholder: t($ => $.exam.passages.form.title.placeholder),
         },
         subjectId: {
             type: "combobox",
             name: "subjectId",
-            label: t($ => $.exam.passages.list.form.subject.label),
-            placeholder: t($ => $.exam.passages.list.form.subject.placeholder),
+            label: t($ => $.exam.passages.form.subject.label),
+            placeholder: t($ => $.exam.passages.form.subject.placeholder),
             options: subjectOptions,
             disabled: isFetchingSubjects,
             isLoading: isFetchingSubjects,
@@ -112,8 +112,8 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
         isActive: {
             type: "switch",
             name: "isActive",
-            label: t($ => $.exam.passages.list.form.isActive.label),
-            description: t($ => $.exam.passages.list.form.isActive.description),
+            label: t($ => $.exam.passages.form.isActive.label),
+            description: t($ => $.exam.passages.form.isActive.description),
         },
     };
 
@@ -134,7 +134,7 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
 
                     <div className="space-y-2">
                         <FormLabel className="text-foreground font-medium">
-                            {t($ => $.exam.passages.list.form.content.label)}
+                            {t($ => $.exam.passages.form.content.label)}
                         </FormLabel>
                         <div className="min-h-[300px] border rounded-md bg-background">
                             <BlockNoteView editor={editor} theme={resolvedTheme} />

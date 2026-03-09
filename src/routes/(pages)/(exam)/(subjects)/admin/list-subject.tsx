@@ -77,7 +77,7 @@ function AdminExamSubjectsPage() {
     if (!selectedSubject) return;
     deleteMutation.mutate(selectedSubject.id, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t($ => $.exam.subjects.list.delete.success) });
+        showNotifSuccess({ message: res.message || t($ => $.exam.subjects.delete.success) });
         queryClient.invalidateQueries({ queryKey: ["exam-subjects-list"] });
         setShowDeleteDialog(false);
       },
@@ -91,8 +91,8 @@ function AdminExamSubjectsPage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={t($ => $.exam.subjects.list.title)}
-          description={<span>{t($ => $.exam.subjects.list.description)}</span>}
+          title={t($ => $.exam.subjects.title)}
+          description={<span>{t($ => $.exam.subjects.description)}</span>}
         />
         <Button onClick={handleAdd} className="flex-shrink-0 gap-1.5 shadow-sm">
           <Plus className="h-4 w-4" />
@@ -151,9 +151,9 @@ function AdminExamSubjectsPage() {
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
-          title: t($ => $.exam.subjects.list.delete.confirmTitle),
-          desc: t($ => $.exam.subjects.list.delete.confirmDesc, { name: selectedSubject?.name }),
-          infoContainer: t($ => $.exam.subjects.list.delete.deleteInfo),
+          title: t($ => $.exam.subjects.delete.confirmTitle),
+          desc: t($ => $.exam.subjects.delete.confirmDesc, { name: selectedSubject?.name }),
+          infoContainer: t($ => $.exam.subjects.delete.deleteInfo),
           infoContainerVariant: "error",
           variant: "destructive",
           iconType: "error",

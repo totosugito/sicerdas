@@ -25,6 +25,27 @@ export default {
     pageTitle: "Detail Paket Ujian",
     createButton: "Tambah Bagian",
 
+    orderSuccess: "Berhasil mengubah urutan bagian",
+    orderError: "Gagal mengubah urutan bagian",
+    deleteConfirm: {
+        title: "Hapus Bagian {{name}}?",
+        description: "Apakah Anda yakin ingin menghapus bagian ini?",
+        infoTitle: "Menghapus bagian akan berakibat:",
+        consequence1: "Bagian ini tidak akan lagi tersedia di paket ujian.",
+        consequence2: "Menghapus referensi bagian pada soal yang terkait.",
+        consequence3: "Data tidak dapat dikembalikan.",
+        cancel: "Batal",
+        confirm: "Hapus Bagian"
+    },
+    deleteSuccess: "Bagian berhasil dihapus",
+    deleteError: "Gagal menghapus bagian",
+    active: "Aktif",
+    inactive: "Tidak Aktif",
+    duration: "{{minutes}} menit",
+    questions: "{{count}} Soal",
+    noDataTitle: "Belum ada bagian",
+    noDataDescription: "Klik tombol Tambah Bagian untuk mulai menambahkan.",
+
     // keys for list table
     table: {
         search: "Cari bagian...",
@@ -64,28 +85,4 @@ export default {
         message: "Paket ujian yang Anda cari tidak ada atau mungkin sudah dihapus.",
         backButton: "Kembali ke Daftar Paket"
     },
-    sections: {
-        title: "Bagian Paket",
-        description: "Daftar bagian pada paket ujian ini.",
-        orderSuccess: "Berhasil mengubah urutan bagian",
-        orderError: "Gagal mengubah urutan bagian",
-        deleteConfirm: {
-            title: "Hapus Bagian {{name}}?",
-            description: "Apakah Anda yakin ingin menghapus bagian ini?",
-            infoTitle: "Menghapus bagian akan berakibat:",
-            consequence1: "Bagian ini tidak akan lagi tersedia di paket ujian.",
-            consequence2: "Menghapus referensi bagian pada soal yang terkait.",
-            consequence3: "Data tidak dapat dikembalikan.",
-            cancel: "Batal",
-            confirm: "Hapus Bagian"
-        },
-        deleteSuccess: "Bagian berhasil dihapus",
-        deleteError: "Gagal menghapus bagian",
-        active: "Aktif",
-        inactive: "Tidak Aktif",
-        duration: "{{minutes}} menit",
-        questions: "{{count}} Soal",
-        noDataTitle: "Belum ada bagian",
-        noDataDescription: "Klik tombol Tambah Bagian untuk mulai menambahkan."
-    }
 }

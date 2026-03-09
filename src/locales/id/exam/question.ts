@@ -85,6 +85,21 @@ export default {
     edit: {
         title: "Ubah Soal",
         description: "Perbarui konten atau pengaturan soal.",
-        success: "Soal berhasil diperbarui."
+        success: "Soal berhasil diperbarui.",
+        tabs: {
+            settings: "Pengaturan",
+            content: "Isi Soal",
+            options: "Pilihan",
+            solutions: "Solusi",
+            tags: "Tag"
+        },
+        settings: {
+            title: "Pengaturan Umum",
+            description: "Konfigurasi subyek, tingkat kesulitan, tier, dan jenjang pendidikan untuk soal ini."
+        },
+        content: {
+            title: "Isi Pertanyaan",
+            description: "Masukkan teks pertanyaan menggunakan editor rich-text di bawah ini."
+        }
     }
 }

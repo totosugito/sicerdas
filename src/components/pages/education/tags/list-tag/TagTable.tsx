@@ -60,14 +60,14 @@ export function TagTable({
             accessorKey: "name",
             enableSorting: true,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.education.tags.list.table.columns.name)} />
+                <DataTableColumnHeader column={column} title={t($ => $.education.tags.table.columns.name)} />
             ),
         },
         {
             accessorKey: "description",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.education.tags.list.table.columns.description)} />
+                <DataTableColumnHeader column={column} title={t($ => $.education.tags.table.columns.description)} />
             ),
             cell: ({ row }) => (
                 <LongText
@@ -81,7 +81,7 @@ export function TagTable({
             accessorKey: "totalQuestions",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.education.tags.list.table.columns.totalQuestions)} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.education.tags.table.columns.totalQuestions)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const total = row.getValue("totalQuestions") as number;
@@ -98,14 +98,14 @@ export function TagTable({
             minSize: 70,
             maxSize: 70,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.education.tags.list.table.columns.status)} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.education.tags.table.columns.status)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const isActive = row.getValue("isActive") as boolean;
                 return (
                     <div className='flex justify-center'>
                         <Badge variant={isActive ? "success" : "secondary"}>
-                            {isActive ? t($ => $.education.tags.list.table.status.active) : t($ => $.education.tags.list.table.status.inactive)}
+                            {isActive ? t($ => $.education.tags.table.status.active) : t($ => $.education.tags.table.status.inactive)}
                         </Badge>
                     </div>
                 );
@@ -117,7 +117,7 @@ export function TagTable({
             minSize: 100,
             maxSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.education.tags.list.table.columns.updatedAt)} />
+                <DataTableColumnHeader column={column} title={t($ => $.education.tags.table.columns.updatedAt)} />
             ),
             cell: ({ row }) => (
                 <span className="text-sm text-muted-foreground">
@@ -130,7 +130,7 @@ export function TagTable({
             minSize: 50,
             maxSize: 50,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.education.tags.list.table.columns.actions)} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.education.tags.table.columns.actions)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const tag = row.original;
@@ -140,23 +140,23 @@ export function TagTable({
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <span className="sr-only">{t($ => $.education.tags.list.table.actions.openMenu)}</span>
+                                    <span className="sr-only">{t($ => $.education.tags.table.actions.openMenu)}</span>
                                     <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>{t($ => $.education.tags.list.table.columns.actions)}</DropdownMenuLabel>
+                                <DropdownMenuLabel>{t($ => $.education.tags.table.columns.actions)}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => onEdit(tag)}>
                                     <Pencil className="mr-2 h-4 w-4" />
-                                    {t($ => $.education.tags.list.table.actions.edit)}
+                                    {t($ => $.education.tags.table.actions.edit)}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                     className="text-destructive focus:text-destructive"
                                     onClick={() => onDelete(tag)}
                                 >
                                     <Trash2 className="mr-2 h-4 w-4" />
-                                    {t($ => $.education.tags.list.table.actions.delete)}
+                                    {t($ => $.education.tags.table.actions.delete)}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -214,7 +214,7 @@ export function TagTable({
                 <div className={"flex flex-row gap-2 max-w-sm"}>
                     <DataTableFilter
                         table={table}
-                        searchPlaceholder={t($ => $.education.tags.list.table.search)}
+                        searchPlaceholder={t($ => $.education.tags.table.search)}
                         className='min-w-sm'
                         searchOnEnter={true}
                     >
@@ -227,7 +227,7 @@ export function TagTable({
                 totalRowCount={paginationData?.total || 0}
                 showSideBorders={false}
                 showZebraStriping={true}
-                defaultNoResultText={t($ => $.education.tags.list.table.noResult)}
+                defaultNoResultText={t($ => $.education.tags.table.noResult)}
             />
         </div>
     );

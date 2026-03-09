@@ -59,7 +59,7 @@ export function PackageTable({
             accessorKey: "title",
             enableSorting: true,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.list.table.columns.title)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.table.columns.title)} />
             ),
             cell: ({ row }) => {
                 const pkg = row.original;
@@ -76,7 +76,7 @@ export function PackageTable({
             accessorKey: "categoryName",
             enableSorting: false, // Sorting by joined column names might need more complex backend logic
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.list.table.columns.category)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.table.columns.category)} />
             ),
             cell: ({ row }) => row.getValue("categoryName") || <span className="text-muted-foreground italic text-xs">-</span>
         },
@@ -84,7 +84,7 @@ export function PackageTable({
             accessorKey: "educationGradeName",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.list.table.columns.educationGrade)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.table.columns.educationGrade)} />
             ),
             cell: ({ row }) => row.getValue("educationGradeName") || <span className="text-muted-foreground italic text-xs">-</span>
         },
@@ -92,14 +92,14 @@ export function PackageTable({
             accessorKey: "examType",
             enableSorting: true,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.list.table.columns.examType)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.table.columns.examType)} />
             ),
             cell: ({ row }) => {
                 const examType = row.getValue("examType") as string;
                 return (
                     <Badge variant="outline" className="capitalize">
-                        {examType === "official" ? t($ => $.exam.packages.list.form.examType.options.official) :
-                            examType === "custom_practice" ? t($ => $.exam.packages.list.form.examType.options.custom_practice) :
+                        {examType === "official" ? t($ => $.exam.packages.form.examType.options.official) :
+                            examType === "custom_practice" ? t($ => $.exam.packages.form.examType.options.custom_practice) :
                                 examType?.toString().replaceAll("_", " ")}
                     </Badge>
                 );
@@ -111,7 +111,7 @@ export function PackageTable({
             minSize: 70,
             maxSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.list.table.columns.duration)} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.table.columns.duration)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const duration = row.getValue("durationMinutes") as number;
@@ -129,14 +129,14 @@ export function PackageTable({
             minSize: 70,
             maxSize: 70,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.list.table.columns.status)} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.table.columns.status)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const isActive = row.getValue("isActive") as boolean;
                 return (
                     <div className='flex justify-center'>
                         <Badge variant={isActive ? "success" : "secondary"}>
-                            {isActive ? t($ => $.exam.packages.list.table.status.active) : t($ => $.exam.packages.list.table.status.inactive)}
+                            {isActive ? t($ => $.exam.packages.table.status.active) : t($ => $.exam.packages.table.status.inactive)}
                         </Badge>
                     </div>
                 );
@@ -148,7 +148,7 @@ export function PackageTable({
             minSize: 70,
             maxSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.list.table.columns.updatedAt)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.table.columns.updatedAt)} />
             ),
             cell: ({ row }) => (
                 <span className="text-sm text-muted-foreground">
@@ -161,7 +161,7 @@ export function PackageTable({
             minSize: 50,
             maxSize: 50,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.list.table.columns.actions)} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.packages.table.columns.actions)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const pkg = row.original;
@@ -171,23 +171,23 @@ export function PackageTable({
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <span className="sr-only">{t($ => $.exam.packages.list.table.actions.openMenu)}</span>
+                                    <span className="sr-only">{t($ => $.exam.packages.table.actions.openMenu)}</span>
                                     <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>{t($ => $.exam.packages.list.table.columns.actions)}</DropdownMenuLabel>
+                                <DropdownMenuLabel>{t($ => $.exam.packages.table.columns.actions)}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
                                     <Link to={AppRoute.exam.packages.admin.detail.url.replace("$id", pkg.id)}>
                                         <Eye className="mr-2 h-4 w-4" />
-                                        {t($ => $.exam.packages.list.table.actions.detail)}
+                                        {t($ => $.exam.packages.table.actions.detail)}
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
                                     <Link to={AppRoute.exam.packages.admin.edit.url.replace("$id", pkg.id)}>
                                         <Pencil className="mr-2 h-4 w-4" />
-                                        {t($ => $.exam.packages.list.table.actions.edit)}
+                                        {t($ => $.exam.packages.table.actions.edit)}
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
@@ -195,7 +195,7 @@ export function PackageTable({
                                     onClick={() => onDelete(pkg)}
                                 >
                                     <Trash2 className="mr-2 h-4 w-4" />
-                                    {t($ => $.exam.packages.list.table.actions.delete)}
+                                    {t($ => $.exam.packages.table.actions.delete)}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -253,7 +253,7 @@ export function PackageTable({
                 <div className={"flex flex-row gap-2 max-w-sm"}>
                     <DataTableFilter
                         table={table}
-                        searchPlaceholder={t($ => $.exam.packages.list.table.search)}
+                        searchPlaceholder={t($ => $.exam.packages.table.search)}
                         className='min-w-sm'
                         searchOnEnter={true}
                     >
@@ -266,7 +266,7 @@ export function PackageTable({
                 totalRowCount={paginationData?.total || 0}
                 showSideBorders={false}
                 showZebraStriping={true}
-                defaultNoResultText={t($ => $.exam.packages.list.table.noResult)}
+                defaultNoResultText={t($ => $.exam.packages.table.noResult)}
             />
         </div>
     );

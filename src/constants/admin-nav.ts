@@ -24,27 +24,27 @@ export const useAdminNav = () => {
             icon: CalendarCheck2,
             items: [
               {
-                title: t($ => $.exam.questions.list.menu),
+                title: t($ => $.exam.questions.menu),
                 url: AppRoute.exam.questions.admin.list.url,
                 icon: BookPlus,
               },
               {
-                title: t($ => $.exam.passages.list.menu),
+                title: t($ => $.exam.passages.menu),
                 url: AppRoute.exam.passages.admin.list.url,
                 icon: BookA,
               },
               {
-                title: t($ => $.exam.packageSection.list.menu),
+                title: t($ => $.exam.sections.menu),
                 url: AppRoute.exam.packageSections.admin.list.url,
                 icon: BookSearch,
               },
               {
-                title: t($ => $.exam.packages.list.menu),
+                title: t($ => $.exam.packages.menu),
                 url: AppRoute.exam.packages.admin.list.url,
                 icon: BookTemplateIcon,
               },
               {
-                title: t($ => $.exam.subjects.list.menu),
+                title: t($ => $.exam.subjects.menu),
                 url: AppRoute.exam.subjects.admin.list.url,
                 icon: TagsIcon,
               },
@@ -56,7 +56,7 @@ export const useAdminNav = () => {
             icon: School,
             items: [
               {
-                title: t($ => $.education.tags.list.menu),
+                title: t($ => $.education.tags.menu),
                 url: AppRoute.education.tags.admin.list.url,
                 icon: Badge,
               },

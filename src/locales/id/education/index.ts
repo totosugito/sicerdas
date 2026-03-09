@@ -1,15 +1,13 @@
 import education from "./education";
-import gradeList from "./grade/grade-list";
-import categories from "./categories/list-category";
-import tags from "./tags/list-tags";
+import grade from "./grade";
+import categories from "./category";
+import tags from "./tags";
 
 const obj = {
     ...education,
-    grade: gradeList,
-    categories: categories,
-    tags: {
-        list: tags
-    },
+    grade,
+    categories,
+    tags,
 }
 
 export default obj

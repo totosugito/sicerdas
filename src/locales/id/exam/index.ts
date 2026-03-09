@@ -1,28 +1,16 @@
 import exam from "./exam";
-import packages from "./packages/list-package";
-import { detailPackage } from "./packages/detail-package";
-import subjects from "./subjects/list-subject";
-import packageSection from "./package-section/list-section";
-import passageList from "./passages/passage-list";
-import questions from "./questions/list-question";
+import packages from "./packages";
+import subjects from "./subject";
+import sections from "./sections";
+import passages from "./passages";
+import questions from "./question";
 
 const obj = {
     ...exam,
-    subjects: {
-        list: subjects
-    },
-    packages: {
-        list: packages,
-        detail: detailPackage
-    },
-    packageSection: {
-        list: packageSection
-    },
-    passages: {
-        list: passageList
-    },
-    questions: {
-        list: questions
-    }
+    subjects,
+    packages,
+    sections,
+    passages,
+    questions
 }
 export default obj

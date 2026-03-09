@@ -61,7 +61,7 @@ export function QuestionTable({
             accessorKey: "content",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.questions.list.table.columns.content)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.questions.table.columns.content)} />
             ),
             cell: ({ row }) => {
                 const question = row.original;
@@ -79,7 +79,7 @@ export function QuestionTable({
             accessorKey: "subjectName",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.questions.list.table.columns.subject)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.questions.table.columns.subject)} />
             ),
             cell: ({ row }) => row.getValue("subjectName") || <span className="text-muted-foreground italic text-xs">-</span>
         },
@@ -109,7 +109,7 @@ export function QuestionTable({
             accessorKey: "type",
             enableSorting: true,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.questions.list.table.columns.type)} className='justify-center text-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.questions.table.columns.type)} className='justify-center text-center' />
             ),
             cell: ({ row }) => {
                 const type = row.getValue("type") as string;
@@ -127,7 +127,7 @@ export function QuestionTable({
             enableSorting: true,
             size: 70,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.questions.list.table.columns.status)} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.questions.table.columns.status)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const isActive = row.getValue("isActive") as boolean;
@@ -145,7 +145,7 @@ export function QuestionTable({
             enableSorting: true,
             minSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.questions.list.table.columns.updatedAt)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.questions.table.columns.updatedAt)} />
             ),
             cell: ({ row }) => (
                 <span className="text-sm text-muted-foreground lowercase">
@@ -244,7 +244,7 @@ export function QuestionTable({
                 <div className={"flex flex-row gap-2 w-full max-w-sm"}>
                     <DataTableFilter
                         table={table}
-                        searchPlaceholder={t($ => $.exam.questions.list.table.search)}
+                        searchPlaceholder={t($ => $.exam.questions.table.search)}
                         className='w-full'
                         searchOnEnter={true}
                     />
@@ -256,7 +256,7 @@ export function QuestionTable({
                 totalRowCount={paginationData?.total || 0}
                 showSideBorders={false}
                 showZebraStriping={true}
-                defaultNoResultText={t($ => $.exam.questions.list.table.noResult)}
+                defaultNoResultText={t($ => $.exam.questions.table.noResult)}
             />
         </div>
     );

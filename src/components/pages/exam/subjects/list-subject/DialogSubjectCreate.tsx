@@ -35,7 +35,7 @@ export const DialogSubjectCreate = ({ open, onOpenChange, subject }: DialogSubje
     const updateMutation = useUpdateSubject();
 
     const formSchema = {
-        name: z.string().min(1, t($ => $.exam.subjects.list.form.name.required)),
+        name: z.string().min(1, t($ => $.exam.subjects.form.name.required)),
         description: z.string().optional(),
         isActive: z.boolean().default(true),
     };
@@ -44,27 +44,27 @@ export const DialogSubjectCreate = ({ open, onOpenChange, subject }: DialogSubje
         name: {
             type: "text",
             name: "name",
-            label: t($ => $.exam.subjects.list.form.name.label),
-            placeholder: t($ => $.exam.subjects.list.form.name.placeholder),
+            label: t($ => $.exam.subjects.form.name.label),
+            placeholder: t($ => $.exam.subjects.form.name.placeholder),
         },
         description: {
             type: "textarea",
             name: "description",
-            label: t($ => $.exam.subjects.list.form.description.label),
-            placeholder: t($ => $.exam.subjects.list.form.description.placeholder),
+            label: t($ => $.exam.subjects.form.description.label),
+            placeholder: t($ => $.exam.subjects.form.description.placeholder),
             minRows: 3,
         },
         isActive: {
             type: "switch",
             name: "isActive",
-            label: t($ => $.exam.subjects.list.form.isActive.label),
-            description: t($ => $.exam.subjects.list.form.isActive.description),
+            label: t($ => $.exam.subjects.form.isActive.label),
+            description: t($ => $.exam.subjects.form.isActive.description),
         },
     };
 
     const modalProps: ModalFormProps = {
-        title: subject ? t($ => $.exam.subjects.list.dialog.editTitle) : t($ => $.exam.subjects.list.dialog.addTitle),
-        desc: subject ? t($ => $.exam.subjects.list.editDescription) : t($ => $.exam.subjects.list.createDescription),
+        title: subject ? t($ => $.exam.subjects.dialog.editTitle) : t($ => $.exam.subjects.dialog.addTitle),
+        desc: subject ? t($ => $.exam.subjects.editDescription) : t($ => $.exam.subjects.createDescription),
         modal: true,
         textConfirm: (createMutation.isPending || updateMutation.isPending) ? t($ => $.labels.saving) : t($ => $.labels.save),
         textCancel: t($ => $.labels.cancel),
@@ -81,7 +81,7 @@ export const DialogSubjectCreate = ({ open, onOpenChange, subject }: DialogSubje
             if (subject) {
                 await updateMutation.mutateAsync({ id: subject.id, ...(values as any) } as UpdateSubjectRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t($ => $.exam.subjects.list.notifications.updateSuccess) });
+                        showNotifSuccess({ message: res.message || t($ => $.exam.subjects.notifications.updateSuccess) });
                         queryClient.invalidateQueries({ queryKey: ["exam-subjects-list"] });
                         onOpenChange(false);
                     },
@@ -92,7 +92,7 @@ export const DialogSubjectCreate = ({ open, onOpenChange, subject }: DialogSubje
             } else {
                 await createMutation.mutateAsync(values as CreateSubjectRequest, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t($ => $.exam.subjects.list.notifications.createSuccess) });
+                        showNotifSuccess({ message: res.message || t($ => $.exam.subjects.notifications.createSuccess) });
                         queryClient.invalidateQueries({ queryKey: ["exam-subjects-list"] });
                         onOpenChange(false);
                     },

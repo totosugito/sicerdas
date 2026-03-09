@@ -6,7 +6,8 @@ import { useCreatePassage } from '@/api/exam-passages';
 import { showNotifSuccess, showNotifError } from '@/lib/show-notif';
 import { useQueryClient } from '@tanstack/react-query';
 import { AppRoute } from '@/constants/app-route';
-import { PassageForm, PassageFormValues } from '@/components/pages/exam/passages/create-passage/PassageForm';
+import { PassageForm } from '@/components/pages/exam/passages/create-passage/PassageForm';
+import { PassageFormValues } from '@/api/exam-passages/types';
 
 export const Route = createFileRoute('/(pages)/(exam)/(passages)/admin/create-passage')({
   component: AdminExamPassagesCreatePage,
@@ -21,7 +22,7 @@ function AdminExamPassagesCreatePage() {
   const onSubmit = async (values: PassageFormValues) => {
     createMutation.mutate(values, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t($ => $.exam.passages.list.notifications.createSuccess) });
+        showNotifSuccess({ message: res.message || t($ => $.exam.passages.notifications.createSuccess) });
       },
       onError: (err: any) => {
         showNotifError({ message: err.message || t($ => $.labels.error) });
@@ -33,8 +34,8 @@ function AdminExamPassagesCreatePage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex items-center gap-4">
         <PageTitle
-          title={t($ => $.exam.passages.list.create.title)}
-          description={<span>{t($ => $.exam.passages.list.create.description)}</span>}
+          title={t($ => $.exam.passages.create.title)}
+          description={<span>{t($ => $.exam.passages.create.description)}</span>}
           showBack
           backTo={AppRoute.exam.passages.admin.list.url}
         />

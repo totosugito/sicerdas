@@ -26,7 +26,7 @@ function EditPassagePage() {
   const onSubmit = async (values: PassageFormValues) => {
     updateMutation.mutate({ id, ...values }, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t($ => $.exam.passages.list.notifications.updateSuccess) });
+        showNotifSuccess({ message: res.message || t($ => $.exam.passages.notifications.updateSuccess) });
       },
       onError: (err: any) => {
         showNotifError({ message: err.message || t($ => $.labels.error) });
@@ -46,9 +46,9 @@ function EditPassagePage() {
   if (isError) {
     return (
       <ErrorContainer
-        title={t($ => $.exam.passages.list.delete.error)}
-        message={error?.message || t($ => $.exam.passages.list.delete.error)}
-        buttonText={t($ => $.exam.passages.list.backToPage)}
+        title={t($ => $.exam.passages.delete.error)}
+        message={error?.message || t($ => $.exam.passages.delete.error)}
+        buttonText={t($ => $.exam.passages.backToPage)}
         onButtonClick={() => navigate({ to: AppRoute.exam.passages.admin.list.url })}
       />
     );
@@ -65,8 +65,8 @@ function EditPassagePage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex items-center gap-4">
         <PageTitle
-          title={t($ => $.exam.passages.list.edit.title)}
-          description={<span>{t($ => $.exam.passages.list.edit.description)}</span>}
+          title={t($ => $.exam.passages.edit.title)}
+          description={<span>{t($ => $.exam.passages.edit.description)}</span>}
           showBack
           backTo={AppRoute.exam.passages.admin.list.url}
         />

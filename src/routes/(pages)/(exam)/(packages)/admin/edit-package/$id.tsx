@@ -47,7 +47,7 @@ function AdminExamPackagesEditPage() {
 
     updateMutation.mutate(payload, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t($ => $.exam.packages.list.notifications.updateSuccess) });
+        showNotifSuccess({ message: res.message || t($ => $.exam.packages.notifications.updateSuccess) });
         queryClient.invalidateQueries({ queryKey: ["exam-packages-detail", id] });
       },
       onError: (err: any) => {
@@ -65,8 +65,8 @@ function AdminExamPackagesEditPage() {
       <div className="flex flex-col gap-6 w-full">
         <div className="flex items-center gap-4">
           <PageTitle
-            title={t($ => $.exam.packages.list.edit.title)}
-            description={<span>{t($ => $.exam.packages.list.edit.description)}</span>}
+            title={t($ => $.exam.packages.edit.title)}
+            description={<span>{t($ => $.exam.packages.edit.description)}</span>}
             showBack
             backTo={AppRoute.exam.packages.admin.list.url}
           />
@@ -75,7 +75,7 @@ function AdminExamPackagesEditPage() {
         <ErrorContainer
           title={t($ => $.labels.error)}
           message={error?.message}
-          buttonText={t($ => $.exam.packages.list.backToPage)}
+          buttonText={t($ => $.exam.packages.backToPage)}
           onButtonClick={() => navigate({ to: AppRoute.exam.packages.admin.list.url, replace: true })}
         />
       </div>
@@ -87,8 +87,8 @@ function AdminExamPackagesEditPage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex items-center gap-4">
         <PageTitle
-          title={t($ => $.exam.packages.list.edit.title)}
-          description={<span>{t($ => $.exam.packages.list.edit.description)}</span>}
+          title={t($ => $.exam.packages.edit.title)}
+          description={<span>{t($ => $.exam.packages.edit.description)}</span>}
           showBack
           backTo={AppRoute.exam.packages.admin.list.url}
         />

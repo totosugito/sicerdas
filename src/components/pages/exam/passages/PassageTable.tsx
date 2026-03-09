@@ -59,7 +59,7 @@ export function PassageTable({
             accessorKey: "title",
             enableSorting: true,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.list.table.columns.title)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.table.columns.title)} />
             ),
             cell: ({ row }) => {
                 const passage = row.original;
@@ -76,7 +76,7 @@ export function PassageTable({
             accessorKey: "subjectName",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.list.table.columns.subject)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.table.columns.subject)} />
             ),
             cell: ({ row }) => row.getValue("subjectName") || <span className="text-muted-foreground italic text-xs">-</span>
         },
@@ -87,7 +87,7 @@ export function PassageTable({
             minSize: 70,
             maxSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.list.table.columns.questions)} className='justify-center text-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.table.columns.questions)} className='justify-center text-center' />
             ),
             cell: ({ row }) => {
                 const total = row.getValue("totalQuestions") as number;
@@ -105,7 +105,7 @@ export function PassageTable({
             minSize: 70,
             maxSize: 70,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.list.table.columns.status)} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.table.columns.status)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const isActive = row.getValue("isActive") as boolean;
@@ -124,7 +124,7 @@ export function PassageTable({
             minSize: 100,
             maxSize: 150,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.list.table.columns.updatedAt)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.passages.table.columns.updatedAt)} />
             ),
             cell: ({ row }) => (
                 <span className="text-sm text-muted-foreground lowercase">
@@ -223,7 +223,7 @@ export function PassageTable({
                 <div className={"flex flex-row gap-2 w-full max-w-sm"}>
                     <DataTableFilter
                         table={table}
-                        searchPlaceholder={t($ => $.exam.passages.list.table.search)}
+                        searchPlaceholder={t($ => $.exam.passages.table.search)}
                         className='w-full'
                         searchOnEnter={true}
                     />
@@ -235,7 +235,7 @@ export function PassageTable({
                 totalRowCount={paginationData?.total || 0}
                 showSideBorders={false}
                 showZebraStriping={true}
-                defaultNoResultText={t($ => $.exam.passages.list.table.noResult)}
+                defaultNoResultText={t($ => $.exam.passages.table.noResult)}
             />
         </div>
     );

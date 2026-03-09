@@ -110,6 +110,7 @@ export const AppApi = {
       admin: {
         create: APP_URL_API + "/exam/questions/admin/create",
         update: APP_URL_API + "/exam/questions/admin/update/:id",
+        detail: APP_URL_API + "/exam/questions/admin/detail/:id",
         delete: APP_URL_API + "/exam/questions/admin/delete/:id",
         list: APP_URL_API + "/exam/questions/admin/list",
       },

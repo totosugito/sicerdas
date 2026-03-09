@@ -77,7 +77,7 @@ function AdminExamTagsPage() {
     if (!selectedTag) return;
     deleteMutation.mutate(selectedTag.id, {
       onSuccess: (res) => {
-        showNotifSuccess({ message: res.message || t($ => $.education.tags.list.delete.success) });
+        showNotifSuccess({ message: res.message || t($ => $.education.tags.delete.success) });
         queryClient.invalidateQueries({ queryKey: ["education-tags-list"] });
         setShowDeleteDialog(false);
       },
@@ -91,8 +91,8 @@ function AdminExamTagsPage() {
     <div className="flex flex-col gap-6 w-full">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={t($ => $.education.tags.list.title)}
-          description={<span>{t($ => $.education.tags.list.description)}</span>}
+          title={t($ => $.education.tags.title)}
+          description={<span>{t($ => $.education.tags.description)}</span>}
         />
         <Button onClick={handleAdd} className="flex-shrink-0 gap-1.5 shadow-sm">
           <Plus className="h-4 w-4" />
@@ -151,9 +151,9 @@ function AdminExamTagsPage() {
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
-          title: t($ => $.education.tags.list.delete.confirmTitle),
-          desc: t($ => $.education.tags.list.delete.confirmDesc, { name: selectedTag?.name }),
-          infoContainer: t($ => $.education.tags.list.delete.deleteInfo),
+          title: t($ => $.education.tags.delete.confirmTitle),
+          desc: t($ => $.education.tags.delete.confirmDesc, { name: selectedTag?.name }),
+          infoContainer: t($ => $.education.tags.delete.deleteInfo),
           infoContainerVariant: "error",
           variant: "destructive",
           iconType: "error",

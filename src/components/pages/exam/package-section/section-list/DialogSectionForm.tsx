@@ -46,9 +46,9 @@ export const DialogSectionForm = ({ open, onOpenChange, section, packageId, pack
     const packageOptions = packagesData?.data.items || [];
 
     const formSchema: any = {
-        packageId: z.string().min(1, t($ => $.exam.packageSection.list.formPackageRequired)),
-        title: z.string().min(1, t($ => $.exam.packageSection.list.formTitleRequired)),
-        durationMinutes: z.coerce.number().min(0, t($ => $.exam.packageSection.list.formDurationRequired)),
+        packageId: z.string().min(1, t($ => $.exam.sections.formPackageRequired)),
+        title: z.string().min(1, t($ => $.exam.sections.formTitleRequired)),
+        durationMinutes: z.coerce.number().min(0, t($ => $.exam.sections.formDurationRequired)),
         isActive: z.boolean().default(true),
     };
 
@@ -56,39 +56,39 @@ export const DialogSectionForm = ({ open, onOpenChange, section, packageId, pack
         packageId: {
             type: "combobox",
             name: "packageId",
-            label: t($ => $.exam.packageSection.list.formPackage),
-            placeholder: t($ => $.exam.packageSection.list.formPackagePlaceholder),
+            label: t($ => $.exam.sections.formPackage),
+            placeholder: t($ => $.exam.sections.formPackagePlaceholder),
             options: packageOptions
         },
         title: {
             type: "text",
             name: "title",
-            label: t($ => $.exam.packageSection.list.formTitle),
-            placeholder: t($ => $.exam.packageSection.list.formTitlePlaceholder),
+            label: t($ => $.exam.sections.formTitle),
+            placeholder: t($ => $.exam.sections.formTitlePlaceholder),
         },
         durationMinutes: {
             type: "select",
             name: "durationMinutes",
-            label: t($ => $.exam.packageSection.list.formDuration),
-            placeholder: t($ => $.exam.packageSection.list.formDurationPlaceholder),
-            description: t($ => $.exam.packageSection.list.formDurationHelp),
+            label: t($ => $.exam.sections.formDuration),
+            placeholder: t($ => $.exam.sections.formDurationPlaceholder),
+            description: t($ => $.exam.sections.formDurationHelp),
             options: durationOnMinutes
         },
         isActive: {
             type: "switch",
             name: "isActive",
-            label: t($ => $.exam.packageSection.list.formActive),
-            description: t($ => $.exam.packageSection.list.formActiveHelp),
+            label: t($ => $.exam.sections.formActive),
+            description: t($ => $.exam.sections.formActiveHelp),
         },
     };
 
     const modalProps: ModalFormProps = {
         title: section
-            ? t($ => $.exam.packageSection.list.editTitle)
-            : t($ => $.exam.packageSection.list.createTitle),
+            ? t($ => $.exam.sections.editTitle)
+            : t($ => $.exam.sections.createTitle),
         desc: section
-            ? t($ => $.exam.packageSection.list.editDesc)
-            : t($ => $.exam.packageSection.list.createDesc),
+            ? t($ => $.exam.sections.editDesc)
+            : t($ => $.exam.sections.createDesc),
         modal: true,
         textConfirm: (createMutation.isPending || updateMutation.isPending) ? t($ => $.labels.saving) : t($ => $.labels.save),
         textCancel: t($ => $.labels.cancel),
@@ -113,12 +113,12 @@ export const DialogSectionForm = ({ open, onOpenChange, section, packageId, pack
                     isActive: values.isActive
                 }, {
                     onSuccess: () => {
-                        showNotifSuccess({ message: t($ => $.exam.packageSection.list.updateSuccess) });
+                        showNotifSuccess({ message: t($ => $.exam.sections.updateSuccess) });
                         queryClient.invalidateQueries({ queryKey: ["exam-package-sections-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
-                        showNotifError({ message: err.message || t($ => $.exam.packageSection.list.updateError) });
+                        showNotifError({ message: err.message || t($ => $.exam.sections.updateError) });
                     }
                 });
             } else {
@@ -130,12 +130,12 @@ export const DialogSectionForm = ({ open, onOpenChange, section, packageId, pack
                     isActive: values.isActive
                 }, {
                     onSuccess: () => {
-                        showNotifSuccess({ message: t($ => $.exam.packageSection.list.createSuccess) });
+                        showNotifSuccess({ message: t($ => $.exam.sections.createSuccess) });
                         queryClient.invalidateQueries({ queryKey: ["exam-package-sections-list"] });
                         onOpenChange(false);
                     },
                     onError: (err: any) => {
-                        showNotifError({ message: err.message || t($ => $.exam.packageSection.list.createError) });
+                        showNotifError({ message: err.message || t($ => $.exam.sections.createError) });
                     }
                 });
             }

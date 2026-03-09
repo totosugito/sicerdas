@@ -51,7 +51,7 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
 
 
     const formSchema = z.object({
-        subjectId: z.string().min(1, t($ => $.exam.questions.list.form.subject.required)),
+        subjectId: z.string().min(1, t($ => $.exam.questions.form.subject.required)),
         passageId: z.string().nullable().optional(),
         content: z.array(z.any()).optional(),
         difficulty: z.enum(Object.values(EnumDifficultyLevel) as [string, ...string[]]),
@@ -114,22 +114,22 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
     })) || [];
 
     const difficultyOptions = [
-        { label: t($ => $.exam.questions.list.form.difficulty.options.easy), value: EnumDifficultyLevel.EASY },
-        { label: t($ => $.exam.questions.list.form.difficulty.options.medium), value: EnumDifficultyLevel.MEDIUM },
-        { label: t($ => $.exam.questions.list.form.difficulty.options.hard), value: EnumDifficultyLevel.HARD },
+        { label: t($ => $.exam.questions.form.difficulty.options.easy), value: EnumDifficultyLevel.EASY },
+        { label: t($ => $.exam.questions.form.difficulty.options.medium), value: EnumDifficultyLevel.MEDIUM },
+        { label: t($ => $.exam.questions.form.difficulty.options.hard), value: EnumDifficultyLevel.HARD },
     ];
 
     const typeOptions = [
-        { label: t($ => $.exam.questions.list.form.type.options.multiple_choice), value: EnumQuestionType.MULTIPLE_CHOICE },
-        { label: t($ => $.exam.questions.list.form.type.options.essay), value: EnumQuestionType.ESSAY },
+        { label: t($ => $.exam.questions.form.type.options.multiple_choice), value: EnumQuestionType.MULTIPLE_CHOICE },
+        { label: t($ => $.exam.questions.form.type.options.essay), value: EnumQuestionType.ESSAY },
     ];
 
     const formConfig = {
         subjectId: {
             type: "combobox",
             name: "subjectId",
-            label: t($ => $.exam.questions.list.form.subject.label),
-            placeholder: t($ => $.exam.questions.list.form.subject.placeholder),
+            label: t($ => $.exam.questions.form.subject.label),
+            placeholder: t($ => $.exam.questions.form.subject.placeholder),
             options: subjectOptions,
             disabled: isFetchingSubjects,
             isLoading: isFetchingSubjects,
@@ -137,8 +137,8 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
         passageId: {
             type: "combobox",
             name: "passageId",
-            label: t($ => $.exam.questions.list.form.passage.label),
-            placeholder: t($ => $.exam.questions.list.form.passage.placeholder),
+            label: t($ => $.exam.questions.form.passage.label),
+            placeholder: t($ => $.exam.questions.form.passage.placeholder),
             options: passageOptions,
             disabled: isFetchingPassages,
             isLoading: isFetchingPassages,
@@ -146,30 +146,30 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
         difficulty: {
             type: "select",
             name: "difficulty",
-            label: t($ => $.exam.questions.list.form.difficulty.label),
-            placeholder: t($ => $.exam.questions.list.form.difficulty.placeholder),
+            label: t($ => $.exam.questions.form.difficulty.label),
+            placeholder: t($ => $.exam.questions.form.difficulty.placeholder),
             options: difficultyOptions,
         },
         type: {
             type: "select",
             name: "type",
-            label: t($ => $.exam.questions.list.form.type.label),
-            placeholder: t($ => $.exam.questions.list.form.type.placeholder),
+            label: t($ => $.exam.questions.form.type.label),
+            placeholder: t($ => $.exam.questions.form.type.placeholder),
             options: typeOptions,
         },
         requiredTier: {
             type: "select",
             name: "requiredTier",
-            label: t($ => $.exam.questions.list.form.requiredTier.label),
-            placeholder: t($ => $.exam.questions.list.form.requiredTier.placeholder),
+            label: t($ => $.exam.questions.form.requiredTier.label),
+            placeholder: t($ => $.exam.questions.form.requiredTier.placeholder),
             options: tierOptions,
             disabled: isLoadingTier,
         },
         educationGradeId: {
             type: "combobox",
             name: "educationGradeId",
-            label: t($ => $.exam.questions.list.form.educationGrade.label),
-            placeholder: t($ => $.exam.questions.list.form.educationGrade.placeholder),
+            label: t($ => $.exam.questions.form.educationGrade.label),
+            placeholder: t($ => $.exam.questions.form.educationGrade.placeholder),
             options: gradeOptions,
             disabled: isFetchingGrades,
             isLoading: isFetchingGrades,
@@ -177,8 +177,8 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
         isActive: {
             type: "switch",
             name: "isActive",
-            label: t($ => $.exam.questions.list.form.isActive.label),
-            description: t($ => $.exam.questions.list.form.isActive.description),
+            label: t($ => $.exam.questions.form.isActive.label),
+            description: t($ => $.exam.questions.form.isActive.description),
         },
     };
 
@@ -211,7 +211,7 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
                     <div className="border border-border rounded-lg bg-card p-6 space-y-6 flex flex-col">
                         <div className="space-y-2 flex-1 flex flex-col">
                             <FormLabel className="text-foreground font-medium">
-                                {t($ => $.exam.questions.list.form.content.label)}
+                                {t($ => $.exam.questions.form.content.label)}
                             </FormLabel>
                             <div className="min-h-[400px] border rounded-md bg-background flex-1 overflow-hidden">
                                 <BlockNoteView editor={editor} theme={resolvedTheme} />

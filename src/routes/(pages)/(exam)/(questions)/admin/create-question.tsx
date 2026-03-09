@@ -29,7 +29,7 @@ function AdminExamQuestionsCreatePage() {
 
         createMutation.mutate(payload as any, {
             onSuccess: (res) => {
-                showNotifSuccess({ message: res.message || t($ => $.exam.questions.list.create.success) });
+                showNotifSuccess({ message: res.message || t($ => $.exam.questions.create.success) });
                 queryClient.invalidateQueries({ queryKey: ["admin-exam-questions-list"] });
                 navigate({ to: AppRoute.exam.questions.admin.edit.url.replace("$id", res.data.id) });
             },
@@ -43,8 +43,8 @@ function AdminExamQuestionsCreatePage() {
         <div className="flex flex-col gap-6 w-full">
             <div className="flex items-center gap-4">
                 <PageTitle
-                    title={t($ => $.exam.questions.list.create.title)}
-                    description={<span>{t($ => $.exam.questions.list.create.description)}</span>}
+                    title={t($ => $.exam.questions.create.title)}
+                    description={<span>{t($ => $.exam.questions.create.description)}</span>}
                     showBack
                     backTo={AppRoute.exam.questions.admin.list.url}
                 />

@@ -68,12 +68,12 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
                         {section.durationMinutes ? (
                             <span className="flex items-center gap-1">
                                 <Clock className="w-3.5 h-3.5" />
-                                {t($ => $.exam.packageSection.list.sections.duration, { minutes: section.durationMinutes })}
+                                {t($ => $.exam.sections.duration, { minutes: section.durationMinutes })}
                             </span>
                         ) : null}
                         <span className="flex items-center gap-1">
                             <FileQuestion className="w-3.5 h-3.5" />
-                            {t($ => $.exam.packageSection.list.sections.questions, { count: section.totalQuestions })}
+                            {t($ => $.exam.sections.questions, { count: section.totalQuestions })}
                         </span>
                     </div>
                 </div>
@@ -88,7 +88,7 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
                                 : "text-xs px-2"
                         }
                     >
-                        {section.isActive ? t($ => $.exam.packageSection.list.sections.active) : t($ => $.exam.packageSection.list.sections.inactive)}
+                        {section.isActive ? t($ => $.exam.sections.active) : t($ => $.exam.sections.inactive)}
                     </Badge>
 
                     <div className="flex items-center gap-1">

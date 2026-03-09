@@ -60,14 +60,14 @@ export function SubjectTable({
             accessorKey: "name",
             enableSorting: true,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.subjects.list.table.columns.name)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.subjects.table.columns.name)} />
             ),
         },
         {
             accessorKey: "description",
             enableSorting: false,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.subjects.list.table.columns.description)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.subjects.table.columns.description)} />
             ),
             cell: ({ row }) => (
                 <LongText
@@ -83,14 +83,14 @@ export function SubjectTable({
             minSize: 70,
             maxSize: 70,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.subjects.list.table.columns.status)} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.subjects.table.columns.status)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const isActive = row.getValue("isActive") as boolean;
                 return (
                     <div className='flex justify-center'>
                         <Badge variant={isActive ? "success" : "secondary"}>
-                            {isActive ? t($ => $.exam.subjects.list.table.status.active) : t($ => $.exam.subjects.list.table.status.inactive)}
+                            {isActive ? t($ => $.exam.subjects.table.status.active) : t($ => $.exam.subjects.table.status.inactive)}
                         </Badge>
                     </div>
                 );
@@ -102,7 +102,7 @@ export function SubjectTable({
             minSize: 100,
             maxSize: 100,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.subjects.list.table.columns.updatedAt)} />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.subjects.table.columns.updatedAt)} />
             ),
             cell: ({ row }) => (
                 <span className="text-sm text-muted-foreground">
@@ -115,7 +115,7 @@ export function SubjectTable({
             minSize: 50,
             maxSize: 50,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title={t($ => $.exam.subjects.list.table.columns.actions)} className='justify-center' />
+                <DataTableColumnHeader column={column} title={t($ => $.exam.subjects.table.columns.actions)} className='justify-center' />
             ),
             cell: ({ row }) => {
                 const subject = row.original;
@@ -125,23 +125,23 @@ export function SubjectTable({
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-8 w-8 p-0" disabled={isLoading}>
-                                    <span className="sr-only">{t($ => $.exam.subjects.list.table.actions.openMenu)}</span>
+                                    <span className="sr-only">{t($ => $.exam.subjects.table.actions.openMenu)}</span>
                                     <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>{t($ => $.exam.subjects.list.table.columns.actions)}</DropdownMenuLabel>
+                                <DropdownMenuLabel>{t($ => $.exam.subjects.table.columns.actions)}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => onEdit(subject)}>
                                     <Pencil className="mr-2 h-4 w-4" />
-                                    {t($ => $.exam.subjects.list.table.actions.edit)}
+                                    {t($ => $.exam.subjects.table.actions.edit)}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                     className="text-destructive focus:text-destructive"
                                     onClick={() => onDelete(subject)}
                                 >
                                     <Trash2 className="mr-2 h-4 w-4" />
-                                    {t($ => $.exam.subjects.list.table.actions.delete)}
+                                    {t($ => $.exam.subjects.table.actions.delete)}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -199,7 +199,7 @@ export function SubjectTable({
                 <div className={"flex flex-row gap-2 max-w-sm"}>
                     <DataTableFilter
                         table={table}
-                        searchPlaceholder={t($ => $.exam.subjects.list.table.search)}
+                        searchPlaceholder={t($ => $.exam.subjects.table.search)}
                         className='min-w-sm'
                         searchOnEnter={true}
                     >
@@ -212,7 +212,7 @@ export function SubjectTable({
                 totalRowCount={paginationData?.total || 0}
                 showSideBorders={false}
                 showZebraStriping={true}
-                defaultNoResultText={t($ => $.exam.subjects.list.table.noResult)}
+                defaultNoResultText={t($ => $.exam.subjects.table.noResult)}
             />
         </div>
     );
