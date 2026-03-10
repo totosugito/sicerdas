@@ -115,6 +115,15 @@ export const AppApi = {
         list: APP_URL_API + "/exam/questions/admin/list",
       },
     },
+    questionOptions: {
+      admin: {
+        create: APP_URL_API + "/exam/question-options/admin/create",
+        update: APP_URL_API + "/exam/question-options/admin/update/:id",
+        delete: APP_URL_API + "/exam/question-options/admin/delete/:id",
+        deletes: APP_URL_API + "/exam/question-options/admin/deletes",
+        list: APP_URL_API + "/exam/question-options/admin/list",
+      },
+    },
   },
   education: {
     tags: {

@@ -1,9 +1,10 @@
-import { EnumDifficultyLevel, EnumQuestionType } from 'backend/src/db/schema/exam/enums';
+import { EnumDifficultyLevel, EnumQuestionType, EnumSolutionType } from 'backend/src/db/schema/exam/enums';
 
-export { EnumDifficultyLevel, EnumQuestionType };
+export { EnumDifficultyLevel, EnumQuestionType, EnumSolutionType };
 
 export type DifficultyLevel = typeof EnumDifficultyLevel[keyof typeof EnumDifficultyLevel];
 export type QuestionType = typeof EnumQuestionType[keyof typeof EnumQuestionType];
+export type SolutionType = typeof EnumSolutionType[keyof typeof EnumSolutionType];
 
 export interface ExamQuestion {
     id: string;
@@ -19,6 +20,20 @@ export interface ExamQuestion {
     educationGradeName?: string;
     isActive: boolean;
     totalOptions?: number;
+    options?: {
+        id: string;
+        content: Record<string, unknown>[];
+        isCorrect: boolean;
+        order: number;
+    }[];
+    solutions?: {
+        id: string;
+        title: string;
+        content: Record<string, unknown>[];
+        solutionType: SolutionType;
+        order: number;
+        requiredTier: string | null;
+    }[];
     tags?: { id: string; name: string }[];
     createdAt: string;
     updatedAt: string;

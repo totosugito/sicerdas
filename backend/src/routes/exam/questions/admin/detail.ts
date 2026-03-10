@@ -3,10 +3,14 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
-import { eq } from 'drizzle-orm';
+import { eq, asc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import { EnumDifficultyLevel, EnumQuestionType } from '../../../../db/schema/exam/enums.ts';
+import { EnumDifficultyLevel, EnumQuestionType, EnumSolutionType } from '../../../../db/schema/exam/enums.ts';
+import { examQuestionOptions } from '../../../../db/schema/exam/question-options.ts';
+import { examQuestionSolutions } from '../../../../db/schema/exam/question-solutions.ts';
+import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
+import { educationTags } from '../../../../db/schema/education/tags.ts';
 
 const GetQuestionParams = Type.Object({
     id: Type.String({ format: 'uuid' })
@@ -24,6 +28,24 @@ const QuestionResponseItem = Type.Object({
     isActive: Type.Boolean(),
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
+    options: Type.Array(Type.Object({
+        id: Type.String({ format: 'uuid' }),
+        content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
+        isCorrect: Type.Boolean(),
+        order: Type.Number(),
+    })),
+    solutions: Type.Array(Type.Object({
+        id: Type.String({ format: 'uuid' }),
+        title: Type.String(),
+        content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
+        solutionType: Type.Enum(EnumSolutionType),
+        order: Type.Number(),
+        requiredTier: Type.Union([Type.String(), Type.Null()]),
+    })),
+    tags: Type.Array(Type.Object({
+        id: Type.String({ format: 'uuid' }),
+        name: Type.String(),
+    })),
 });
 
 const GetQuestionResponse = Type.Object({
@@ -66,6 +88,39 @@ const getQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                 return reply.notFound(t($ => $.exam.questions.update.notFound));
             }
 
+            // Fetch Options
+            const options = await db.select({
+                id: examQuestionOptions.id,
+                content: examQuestionOptions.content,
+                isCorrect: examQuestionOptions.isCorrect,
+                order: examQuestionOptions.order,
+            })
+                .from(examQuestionOptions)
+                .where(eq(examQuestionOptions.questionId, id))
+                .orderBy(asc(examQuestionOptions.order));
+
+            // Fetch Solutions
+            const solutions = await db.select({
+                id: examQuestionSolutions.id,
+                title: examQuestionSolutions.title,
+                content: examQuestionSolutions.content,
+                solutionType: examQuestionSolutions.solutionType,
+                order: examQuestionSolutions.order,
+                requiredTier: examQuestionSolutions.requiredTier,
+            })
+                .from(examQuestionSolutions)
+                .where(eq(examQuestionSolutions.questionId, id))
+                .orderBy(asc(examQuestionSolutions.order));
+
+            // Fetch Tags
+            const tags = await db.select({
+                id: educationTags.id,
+                name: educationTags.name,
+            })
+                .from(examQuestionTags)
+                .innerJoin(educationTags, eq(examQuestionTags.tagId, educationTags.id))
+                .where(eq(examQuestionTags.questionId, id));
+
             return reply.status(200).send({
                 success: true,
                 message: t($ => $.exam.questions.list.success),
@@ -73,6 +128,9 @@ const getQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                     ...question,
                     createdAt: question.createdAt.toISOString(),
                     updatedAt: question.updatedAt.toISOString(),
+                    options,
+                    solutions,
+                    tags,
                 }
             });
         }),

@@ -6,15 +6,15 @@ import { z } from 'zod';
 import { PageTitle, ErrorContainer, LoadingView } from '@/components/app';
 import { AppRoute } from '@/constants/app-route';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Settings, ListChecks, Lightbulb, Tag as TagIcon, Plus, Pencil, Trash2, FileText } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useGetQuestion, useUpdateQuestion } from '@/api/exam-questions';
-import { QuestionSettingsForm } from '@/components/pages/exam/questions/edit-question/QuestionSettingsForm';
-import { QuestionContentForm } from '@/components/pages/exam/questions/edit-question/QuestionContentForm';
-import { QuestionOptionsTab } from '@/components/pages/exam/questions/edit-question/QuestionOptionsTab';
-import { QuestionSolutionsTab } from '@/components/pages/exam/questions/edit-question/QuestionSolutionsTab';
-import { QuestionTagsTab } from '@/components/pages/exam/questions/edit-question/QuestionTagsTab';
+import { Settings, ListChecks, Lightbulb, Tag as TagIcon, FileText } from 'lucide-react';
+import { useDetailQuestion, useUpdateQuestion } from '@/api/exam-questions';
+import {
+    QuestionSettingsTab,
+    QuestionContentTab,
+    QuestionOptionsTab,
+    QuestionSolutionsTab,
+    QuestionTagsTab
+} from '@/components/pages/exam/questions/edit-question';
 import { showNotifError, showNotifSuccess } from '@/lib/show-notif';
 
 export const Route = createFileRoute('/(pages)/(exam)/(questions)/admin/edit-question/$id')({
@@ -28,7 +28,7 @@ function AdminExamQuestionsEditPage() {
     const { t } = useAppTranslation();
     const { id } = Route.useParams();
 
-    const { data: questionData, isLoading, isError, error, refetch } = useGetQuestion(id);
+    const { data: questionData, isLoading, isError, error, refetch } = useDetailQuestion(id);
     const updateMutation = useUpdateQuestion(id);
     const searchParams = Route.useSearch();
     const navigate = Route.useNavigate();
@@ -145,55 +145,38 @@ function AdminExamQuestionsEditPage() {
 
                 {/* Settings Tab */}
                 <TabsContent value="settings" className="mt-0">
-                    <Card className="border-t-0 rounded-t-none">
-                        <CardHeader>
-                            <CardTitle className="text-xl">{t($ => $.exam.questions.edit.settings.title)}</CardTitle>
-                            <CardDescription>
-                                {t($ => $.exam.questions.edit.settings.description)}
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                            <QuestionSettingsForm
-                                defaultValues={initialData}
-                                onSubmit={handleUpdate}
-                                isPending={updateMutation.isPending}
-                            />
-                        </CardContent>
-                    </Card>
+                    <QuestionSettingsTab
+                        defaultValues={initialData}
+                        onSubmit={handleUpdate}
+                        isPending={updateMutation.isPending}
+                    />
                 </TabsContent>
 
                 {/* Content Tab */}
                 <TabsContent value="content" className="mt-0">
-                    <Card className="border-t-0 rounded-t-none">
-                        <CardHeader>
-                            <CardTitle className="text-xl">{t($ => $.exam.questions.edit.content.title)}</CardTitle>
-                            <CardDescription>
-                                {t($ => $.exam.questions.edit.content.description)}
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                            <QuestionContentForm
-                                defaultValues={initialData}
-                                onSubmit={(content) => handleUpdate({ content })}
-                                isPending={updateMutation.isPending}
-                            />
-                        </CardContent>
-                    </Card>
+                    <QuestionContentTab
+                        defaultValues={initialData}
+                        onSubmit={(content) => handleUpdate({ content })}
+                        isPending={updateMutation.isPending}
+                    />
                 </TabsContent>
 
                 {/* Options Tab */}
                 <TabsContent value="options" className="mt-0">
-                    <QuestionOptionsTab />
+                    <QuestionOptionsTab
+                        questionId={id}
+                        options={question.options}
+                    />
                 </TabsContent>
 
                 {/* Solutions Tab */}
                 <TabsContent value="solutions" className="mt-0">
-                    <QuestionSolutionsTab />
+                    <QuestionSolutionsTab solutions={question.solutions} />
                 </TabsContent>
 
                 {/* Tags Tab */}
                 <TabsContent value="tags" className="mt-0">
-                    <QuestionTagsTab />
+                    <QuestionTagsTab tags={question.tags} />
                 </TabsContent>
             </Tabs>
         </div>
