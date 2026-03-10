@@ -1,14 +1,10 @@
 import React, { useEffect } from 'react';
-import "@blocknote/core/fonts/inter.css";
-import "@blocknote/shadcn/style.css";
-import { useCreateBlockNote } from "@blocknote/react";
-import { BlockNoteView } from "@blocknote/shadcn";
 import { useAppTranslation } from '@/lib/i18n-typed';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
-import { Form, FormLabel } from '@/components/ui/form';
+import { Form } from '@/components/ui/form';
 import { ControlForm } from '@/components/custom/forms';
 import { FormWithDetector } from '@/components/custom/components';
 import { useListSubjectSimple } from '@/api/exam-subjects';
@@ -16,7 +12,6 @@ import { useListPassageSimple } from '@/api/exam-passages';
 import { useListTier } from '@/api/app-tier';
 import { useListGradeSimple } from '@/api/education-grade';
 import { QuestionFormValues, EnumDifficultyLevel, EnumQuestionType } from '@/api/exam-questions/types';
-import { useTheme } from '@/lib/theme-provider';
 
 type InternalQuestionFormValues = Omit<QuestionFormValues, 'educationGradeId'> & {
     educationGradeId?: string | number | null;
@@ -30,7 +25,6 @@ type QuestionFormProps = {
 
 export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFormProps) {
     const { t } = useAppTranslation();
-    const { theme: appTheme } = useTheme();
 
     // Data for dropdowns (Fetching all active options at once)
     const { data: subjectsData, isFetching: isFetchingSubjects } = useListSubjectSimple({ limit: 1000 });
@@ -42,12 +36,6 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
     const passageOptions = passagesData?.data?.items || [];
     const gradeOptions = gradesData?.data?.items || [];
 
-    // Initialize BlockNote editor
-    const editor = useCreateBlockNote({
-        initialContent: defaultValues?.content && defaultValues.content.length > 0
-            ? defaultValues.content as any
-            : undefined,
-    });
 
 
     const formSchema = z.object({
@@ -89,23 +77,12 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
                 isActive: true,
                 ...defaultValues,
             });
-
-            if (editor) {
-                const originalContent = defaultValues.content && defaultValues.content.length > 0
-                    ? defaultValues.content as any
-                    : [{ type: "paragraph", content: [] }];
-                editor.replaceBlocks(editor.document, originalContent);
-            }
         }
-    }, [defaultValues, form, editor]);
+    }, [defaultValues, form]);
 
-    const resolvedTheme = appTheme === "system"
-        ? (typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-        : appTheme;
 
     const onFormSubmit = (values: any) => {
-        const content = editor.document;
-        onSubmit({ ...values, content });
+        onSubmit(values);
     };
 
     const tierOptions = tierData?.data?.map((tier: any) => ({
@@ -181,6 +158,11 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
             label: t($ => $.exam.questions.form.isActive.label),
             description: t($ => $.exam.questions.form.isActive.description),
         },
+        content: {
+            type: "blocknote",
+            name: "content",
+            label: t($ => $.exam.questions.form.content.label),
+        },
     };
 
     return (
@@ -210,19 +192,13 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
                     </div>
 
                     <div className="border border-border rounded-lg bg-card p-6 space-y-6 flex flex-col">
-                        <div className="space-y-2 flex-1 flex flex-col">
-                            <FormLabel className="text-foreground font-medium">
-                                {t($ => $.exam.questions.form.content.label)}
-                            </FormLabel>
-                            <div className="min-h-[400px] border rounded-md bg-background flex-1 overflow-hidden">
-                                <BlockNoteView editor={editor} theme={resolvedTheme} />
-                            </div>
-                            {form.formState.errors.content && (
-                                <p className="text-destructive text-sm font-medium">
-                                    {form.formState.errors.content.message}
-                                </p>
-                            )}
-                        </div>
+                        <ControlForm
+                            form={form}
+                            item={formConfig.content}
+                            showMessage={false}
+                            className="flex-1"
+                            wrapperClassName="flex-1 flex flex-col"
+                        />
 
                         <div className="flex justify-end gap-2 pt-4 border-t">
                             <Button
@@ -230,12 +206,6 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
                                 variant="outline"
                                 onClick={() => {
                                     form.reset();
-                                    if (editor) {
-                                        const originalContent = defaultValues?.content && defaultValues.content.length > 0
-                                            ? defaultValues.content as any
-                                            : [{ type: "paragraph", content: [] }];
-                                        editor.replaceBlocks(editor.document, originalContent);
-                                    }
                                 }}
                             >
                                 {t($ => $.labels.cancel)}

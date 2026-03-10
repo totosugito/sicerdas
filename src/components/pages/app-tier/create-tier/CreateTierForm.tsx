@@ -73,6 +73,7 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error }:
             placeholder: t($ => $.appTier.create.form.slugPlaceholder),
             description: t($ => $.appTier.create.form.slugDescription),
             type: "text",
+            required: true,
         },
         {
             name: "name",
@@ -80,6 +81,7 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error }:
             placeholder: t($ => $.appTier.create.form.namePlaceholder),
             description: t($ => $.appTier.create.form.nameDescription),
             type: "text",
+            required: true,
         },
         {
             name: "price",
@@ -149,30 +151,28 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error }:
                         </div>
                     </CardContent>
 
-                    {form.formState.isDirty && (
-                        <CardFooter className="flex justify-end items-center gap-3 bg-muted/30 border-t [.border-t]:pb-6">
-                            {onCancel && (
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={onCancel}
-                                    disabled={isLoading}
-                                >
-                                    {t($ => $.appTier.create.buttons.cancel)}
-                                </Button>
-                            )}
-                            <Button type="submit" disabled={isLoading}>
-                                {isLoading ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        {t($ => $.appTier.create.buttons.creating)}
-                                    </>
-                                ) : (
-                                    t($ => $.appTier.create.buttons.create)
-                                )}
+                    <CardFooter className="flex justify-end items-center gap-3 bg-muted/30 border-t [.border-t]:pb-6">
+                        {onCancel && (
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={onCancel}
+                                disabled={isLoading}
+                            >
+                                {t($ => $.appTier.create.buttons.cancel)}
                             </Button>
-                        </CardFooter>
-                    )}
+                        )}
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    {t($ => $.appTier.create.buttons.creating)}
+                                </>
+                            ) : (
+                                t($ => $.appTier.create.buttons.create)
+                            )}
+                        </Button>
+                    </CardFooter>
                 </Card>
             </FormWithDetector>
         </Form>

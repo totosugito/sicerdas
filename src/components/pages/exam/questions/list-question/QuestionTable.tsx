@@ -83,28 +83,44 @@ export function QuestionTable({
             ),
             cell: ({ row }) => row.getValue("subjectName") || <span className="text-muted-foreground italic text-xs">-</span>
         },
-        // {
-        //     accessorKey: "difficulty",
-        //     enableSorting: true,
-        //     header: ({ column }) => (
-        //         <DataTableColumnHeader column={column} title={t($ => $.exam.questions.list.table.columns.difficulty)} className='justify-center' />
-        //     ),
-        //     cell: ({ row }) => {
-        //         const difficulty = row.getValue("difficulty") as string;
-        //         const variants: Record<string, string> = {
-        //             easy: "success",
-        //             medium: "warning",
-        //             hard: "destructive",
-        //         };
-        //         return (
-        //             <div className='flex justify-center'>
-        //                 <Badge variant={variants[difficulty] as any} className="capitalize">
-        //                     {difficulty}
-        //                 </Badge>
-        //             </div>
-        //         );
-        //     }
-        // },
+        {
+            accessorKey: "educationGradeName",
+            enableSorting: false,
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title={t($ => $.exam.questions.table.columns.educationGrade)} />
+            ),
+            cell: ({ row }) => row.getValue("educationGradeName") || <span className="text-muted-foreground italic text-xs">-</span>
+        },
+        {
+            accessorKey: "requiredTier",
+            enableSorting: true,
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title={t($ => $.exam.questions.table.columns.requiredTier)} />
+            ),
+            cell: ({ row }) => {
+                const tier = row.getValue("requiredTier") as string;
+                return (
+                    <Badge variant="secondary" className="capitalize">
+                        {tier || 'Free'}
+                    </Badge>
+                );
+            }
+        },
+        {
+            accessorKey: "totalOptions",
+            enableSorting: false,
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title={t($ => $.exam.questions.table.columns.totalOptions)} className='justify-center text-center' />
+            ),
+            cell: ({ row }) => {
+                const total = row.getValue("totalOptions") as number;
+                return (
+                    <div className='flex justify-center font-medium'>
+                        {total || 0}
+                    </div>
+                );
+            }
+        },
         {
             accessorKey: "type",
             enableSorting: true,

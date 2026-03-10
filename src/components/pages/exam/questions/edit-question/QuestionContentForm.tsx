@@ -1,83 +1,82 @@
 import React, { useEffect } from 'react';
-import "@blocknote/core/fonts/inter.css";
-import "@blocknote/shadcn/style.css";
-import { useCreateBlockNote } from "@blocknote/react";
-import { BlockNoteView } from "@blocknote/shadcn";
 import { useAppTranslation } from '@/lib/i18n-typed';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { useTheme } from '@/lib/theme-provider';
-import { ExamQuestion } from '@/api/exam-questions/types';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Form } from '@/components/ui/form';
+import { ControlForm } from '@/components/custom/forms';
+import { FormWithDetector } from '@/components/custom/components';
 
 type QuestionContentFormProps = {
-    question: ExamQuestion;
+    defaultValues: any;
     onSubmit: (content: any[]) => void;
     isPending?: boolean;
 };
 
-export function QuestionContentForm({ question, onSubmit, isPending }: QuestionContentFormProps) {
-    const { t } = useAppTranslation();
-    const { theme: appTheme } = useTheme();
+const formSchema = z.object({
+    content: z.array(z.record(z.string(), z.unknown())).min(1),
+});
 
-    const editor = useCreateBlockNote({
-        initialContent: question.content && question.content.length > 0
-            ? question.content as any
-            : undefined,
+type FormValues = z.infer<typeof formSchema>;
+
+export function QuestionContentForm({ defaultValues, onSubmit, isPending }: QuestionContentFormProps) {
+    const { t } = useAppTranslation();
+
+    const form = useForm<FormValues>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            content: defaultValues.content || [],
+        },
     });
 
     useEffect(() => {
-        if (question && editor) {
-            const originalContent = question.content && question.content.length > 0
-                ? question.content as any
-                : [{ type: "paragraph", content: [] }];
-            editor.replaceBlocks(editor.document, originalContent);
+        if (defaultValues.content) {
+            form.reset({ content: defaultValues.content });
         }
-    }, [question, editor]);
+    }, [defaultValues.content, form]);
 
-    const resolvedTheme = appTheme === "system"
-        ? (typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-        : appTheme;
+    const onFormSubmit = (values: FormValues) => {
+        onSubmit(values.content);
+    };
 
-    const handleSave = () => {
-        const content = editor.document;
-        onSubmit(content);
+    const formConfig = {
+        content: {
+            type: "blocknote",
+            name: "content",
+            label: t($ => $.exam.questions.form.content.label),
+            placeholder: t($ => $.exam.questions.form.content.placeholder),
+            wrapperClassName: "min-h-[500px]",
+        }
     };
 
     return (
-        <div className="space-y-6">
-            <div className="space-y-3 flex flex-col">
-                <Label className="text-xl font-semibold flex items-center gap-2">
-                    {t($ => $.exam.questions.form.content.label)}
-                </Label>
-                <div className="min-h-[500px] border-2 border-dashed rounded-xl bg-background overflow-hidden shadow-inner">
-                    <BlockNoteView editor={editor} theme={resolvedTheme} />
-                </div>
-            </div>
+        <Form {...form}>
+            <FormWithDetector
+                form={form}
+                onSubmit={onFormSubmit}
+                schema={formSchema}
+                className="space-y-6"
+            >
+                <ControlForm form={form} item={formConfig.content} />
 
-            <div className="flex justify-end gap-3 pt-6 border-t font-semibold">
-                <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                        if (editor) {
-                            const originalContent = question.content && question.content.length > 0
-                                ? question.content as any
-                                : [{ type: "paragraph", content: [] }];
-                            editor.replaceBlocks(editor.document, originalContent);
-                        }
-                    }}
-                    disabled={isPending}
-                >
-                    {t($ => $.labels.cancel)}
-                </Button>
-                <Button
-                    type="button"
-                    onClick={handleSave}
-                    disabled={isPending}
-                >
-                    {isPending ? t($ => $.labels.saving) : t($ => $.labels.save)}
-                </Button>
-            </div>
-        </div>
+                <div className="flex justify-end gap-3 pt-6 border-t">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => form.reset()}
+                        disabled={isPending}
+                    >
+                        {t($ => $.labels.cancel)}
+                    </Button>
+                    <Button
+                        type="submit"
+                        disabled={isPending}
+                    >
+                        {isPending ? t($ => $.labels.saving) : t($ => $.labels.save)}
+                    </Button>
+                </div>
+            </FormWithDetector>
+        </Form>
     );
 }

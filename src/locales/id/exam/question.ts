@@ -11,6 +11,9 @@ export default {
             subject: "Subyek",
             difficulty: "Kesulitan",
             type: "Jenis",
+            educationGrade: "Jenjang / Kelas",
+            requiredTier: "Tier",
+            totalOptions: "Opsi",
             status: "Status",
             updatedAt: "Diperbarui Pada",
             actions: "Aksi"
@@ -100,6 +103,13 @@ export default {
         content: {
             title: "Isi Pertanyaan",
             description: "Masukkan teks pertanyaan menggunakan editor rich-text di bawah ini."
-        }
+        },
+        notFound: {
+            title: "Pertanyaan Tidak Ditemukan",
+            message: "Data pertanyaan tidak ditemukan atau terjadi kesalahan saat mengambil data dari server.",
+            retryButton: "Coba Lagi"
+        },
+        loading: "Memuat data pertanyaan...",
+        loadingTitle: "Sedang Memuat"
     }
 }

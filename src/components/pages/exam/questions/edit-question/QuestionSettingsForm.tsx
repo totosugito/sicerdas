@@ -14,12 +14,12 @@ import { useListGradeSimple } from '@/api/education-grade';
 import { ExamQuestion, EnumDifficultyLevel, EnumQuestionType } from '@/api/exam-questions/types';
 
 type QuestionSettingsFormProps = {
-    question: ExamQuestion;
+    defaultValues: any;
     onSubmit: (values: Partial<ExamQuestion>) => void;
     isPending?: boolean;
 };
 
-export function QuestionSettingsForm({ question, onSubmit, isPending }: QuestionSettingsFormProps) {
+export function QuestionSettingsForm({ defaultValues, onSubmit, isPending }: QuestionSettingsFormProps) {
     const { t } = useAppTranslation();
 
     const { data: subjectsData, isFetching: isFetchingSubjects } = useListSubjectSimple({ limit: 1000 });
@@ -44,13 +44,13 @@ export function QuestionSettingsForm({ question, onSubmit, isPending }: Question
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            subjectId: question.subjectId,
-            passageId: question.passageId,
-            difficulty: question.difficulty,
-            type: question.type,
-            requiredTier: question.requiredTier,
-            educationGradeId: question.educationGradeId ?? "",
-            isActive: question.isActive,
+            subjectId: defaultValues.subjectId || "",
+            passageId: defaultValues.passageId || null,
+            difficulty: defaultValues.difficulty,
+            type: defaultValues.type,
+            requiredTier: defaultValues.requiredTier || "free",
+            educationGradeId: defaultValues.educationGradeId ?? "",
+            isActive: defaultValues.isActive ?? true,
         },
     });
 
@@ -168,11 +168,11 @@ export function QuestionSettingsForm({ question, onSubmit, isPending }: Question
                         type="button"
                         variant="outline"
                         onClick={() => form.reset()}
-                        disabled={isPending || !form.formState.isDirty}
+                        disabled={isPending}
                     >
                         {t($ => $.labels.cancel)}
                     </Button>
-                    <Button type="submit" disabled={isPending || !form.formState.isDirty}>
+                    <Button type="submit" disabled={isPending}>
                         {isPending ? t($ => $.labels.saving) : t($ => $.labels.save)}
                     </Button>
                 </div>

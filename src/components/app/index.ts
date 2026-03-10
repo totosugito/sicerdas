@@ -2,3 +2,4 @@ export { default as AppLogo } from "./AppLogo";
 export { default as PageTitle } from "./PageTitle";
 export { AppNavbar } from "./navbar/AppNavbar";
 export { ErrorContainer } from "./ErrorContainer";
+export { LoadingView } from "./LoadingView";

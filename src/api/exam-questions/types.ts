@@ -16,6 +16,7 @@ export interface ExamQuestion {
     type: QuestionType;
     requiredTier: string | null;
     educationGradeId: number | null;
+    educationGradeName?: string;
     isActive: boolean;
     totalOptions?: number;
     tags?: { id: string; name: string }[];

@@ -7,6 +7,7 @@ import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
 import { examQuestionOptions } from '../../../../db/schema/exam/question-options.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
 import { educationTags } from '../../../../db/schema/education/tags.ts';
+import { educationGrades } from '../../../../db/schema/education/grades.ts';
 import { desc, and, sql, eq, count, getTableColumns } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
@@ -42,6 +43,7 @@ const QuestionResponseItem = Type.Object({
     type: Type.Enum(EnumQuestionType),
     requiredTier: Type.Union([Type.String(), Type.Null()]),
     educationGradeId: Type.Union([Type.Number(), Type.Null()]),
+    educationGradeName: Type.Optional(Type.String()),
     isActive: Type.Boolean(),
     totalOptions: Type.Number(),
     tags: Type.Array(Type.Object({
@@ -116,6 +118,7 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                 ...getTableColumns(examQuestions),
                 totalOptions: count(examQuestionOptions.id).mapWith(Number),
                 subjectName: examSubjects.name,
+                educationGradeName: educationGrades.name,
                 tags: sql`coalesce(
                     json_agg(
                         json_build_object('id', ${educationTags.id}, 'name', ${educationTags.name})
@@ -125,10 +128,11 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             })
                 .from(examQuestions)
                 .leftJoin(examSubjects, eq(examQuestions.subjectId, examSubjects.id))
+                .leftJoin(educationGrades, eq(examQuestions.educationGradeId, educationGrades.id))
                 .leftJoin(examQuestionOptions, eq(examQuestions.id, examQuestionOptions.questionId))
                 .leftJoin(examQuestionTags, eq(examQuestions.id, examQuestionTags.questionId))
                 .leftJoin(educationTags, eq(examQuestionTags.tagId, educationTags.id))
-                .groupBy(examQuestions.id, examSubjects.name);
+                .groupBy(examQuestions.id, examSubjects.name, educationGrades.name);
 
             if (conditions.length > 0) {
                 baseQuery = baseQuery.where(and(...conditions)) as any;
@@ -199,6 +203,7 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                         type: q.type,
                         requiredTier: q.requiredTier,
                         educationGradeId: q.educationGradeId,
+                        educationGradeName: (q as any).educationGradeName,
                         isActive: q.isActive,
                         totalOptions: q.totalOptions,
                         tags: (q as any).tags as { id: string, name: string }[],
