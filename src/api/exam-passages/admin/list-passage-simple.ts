@@ -22,6 +22,7 @@ export interface ListPassageSimpleResponse {
 export const useListPassageSimple = (params: ListPassageSimpleRequest) => {
     return useQuery({
         queryKey: ["admin-exam-passages-list-simple", params],
+        staleTime: 5 * 60 * 1000,
         queryFn: async () => {
             const response = await fetchApi({
                 method: "POST",

@@ -11,3 +11,5 @@ export { useUpdateTag } from "./admin/update-tag";
 export type { UpdateTagRequest } from "./admin/update-tag";
 
 export { useDeleteTag } from "./admin/delete-tag";
+export { useListTagSimple } from "./list-tag-simple";
+export type { TagSimpleItem, ListTagsSimpleResponse, ListTagSimpleRequest } from "./list-tag-simple";

@@ -1,66 +1,186 @@
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Plus, Lightbulb, Pencil } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { ExamQuestion } from '@/api/exam-questions';
 import { useAppTranslation } from '@/lib/i18n-typed';
+import {
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent,
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    sortableKeyboardCoordinates,
+} from '@dnd-kit/sortable';
+import { SolutionList, DialogQuestionSolutionForm } from '@/components/pages/exam/question-solutions/list-solution';
+import { DialogModal } from '@/components/custom/components';
+import { useDeleteQuestionSolution, useUpdateQuestionSolution, ExamQuestionSolution } from '@/api/exam-question-solutions';
+import { showNotifSuccess, showNotifError } from '@/lib/show-notif';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface QuestionSolutionsTabProps {
+    questionId: string;
     solutions?: ExamQuestion['solutions'];
 }
 
-export function QuestionSolutionsTab({ solutions }: QuestionSolutionsTabProps) {
+export function QuestionSolutionsTab({ questionId, solutions: initialSolutions }: QuestionSolutionsTabProps) {
     const { t } = useAppTranslation();
+    const queryClient = useQueryClient();
+    const updateMutation = useUpdateQuestionSolution();
+    const [items, setItems] = useState<ExamQuestionSolution[]>([]);
+
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [solutionToDelete, setSolutionToDelete] = useState<string | null>(null);
+
+    const [showFormModal, setShowFormModal] = useState(false);
+    const [selectedSolution, setSelectedSolution] = useState<ExamQuestionSolution | null>(null);
+
+    const deleteMutation = useDeleteQuestionSolution();
+
+    useEffect(() => {
+        if (initialSolutions) {
+            const sorted = [...initialSolutions].sort((a, b) => (a.order || 0) - (b.order || 0));
+            setItems(sorted as ExamQuestionSolution[]);
+        }
+    }, [initialSolutions]);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        if (active.id !== over?.id) {
+            const oldIndex = items.findIndex((item) => item.id === active.id);
+            const newIndex = items.findIndex((item) => item.id === over?.id);
+
+            const newItems = arrayMove(items, oldIndex, newIndex);
+
+            // Assign new orders
+            const updatedItemsWithOrder = newItems.map((item, index) => ({
+                ...item,
+                order: index + 1,
+            }));
+
+            // Optimistic update
+            setItems(updatedItemsWithOrder);
+
+            // Persist to backend
+            Promise.all(updatedItemsWithOrder.map(item =>
+                updateMutation.mutateAsync({
+                    id: item.id,
+                    order: item.order
+                })
+            )).then(() => {
+                showNotifSuccess({ message: t($ => $.labels.success) });
+                queryClient.invalidateQueries({ queryKey: ['admin-exam-question-detail'] });
+            }).catch((error: any) => {
+                showNotifError({ message: error.message || t($ => $.labels.error) });
+                queryClient.invalidateQueries({ queryKey: ['admin-exam-question-detail'] });
+            });
+        }
+    };
+
+    const handleDelete = (id: string) => {
+        setSolutionToDelete(id);
+        setShowDeleteDialog(true);
+    };
+
+    const confirmDelete = () => {
+        if (!solutionToDelete) return;
+
+        deleteMutation.mutate(solutionToDelete, {
+            onSuccess: (res) => {
+                showNotifSuccess({ message: res.message || t($ => $.labels.delete) + " " + t($ => $.labels.active) });
+                queryClient.invalidateQueries({ queryKey: ['admin-exam-question-detail'] });
+                setShowDeleteDialog(false);
+                setSolutionToDelete(null);
+            },
+            onError: (error: any) => {
+                showNotifError({ message: error.message || t($ => $.labels.error) });
+                setShowDeleteDialog(false);
+                setSolutionToDelete(null);
+            }
+        });
+    };
+
+    const handleEdit = (id: string) => {
+        const solution = items.find(item => item.id === id);
+        if (solution) {
+            setSelectedSolution(solution);
+            setShowFormModal(true);
+        }
+    };
+
+    const handleAdd = () => {
+        setSelectedSolution(null);
+        setShowFormModal(true);
+    };
+
     return (
         <Card className="border-t-0 rounded-t-none">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 text-center sm:text-left">
-                <div>
+                <div className='flex flex-col gap-1.5 '>
                     <CardTitle className="text-xl">
-                        {t($ => $.exam.questions.edit.solutions.title)}
+                        {t($ => $.exam.solutions.title)}
                     </CardTitle>
                     <CardDescription>
-                        {t($ => $.exam.questions.edit.solutions.description)}
+                        {t($ => $.exam.solutions.description)}
                     </CardDescription>
                 </div>
-                <Button size="sm" variant="outline" className="gap-1.5 border-primary text-primary hover:bg-primary/5 shadow-sm">
-                    <Plus className="h-4 w-4" /> {t($ => $.exam.questions.edit.solutions.addButton)}
+                <Button
+                    size="sm"
+                    className="gap-1.5 shadow-md hover:scale-105 transition-transform"
+                    onClick={handleAdd}
+                >
+                    <Plus className="h-4 w-4" /> {t($ => $.exam.solutions.addButton)}
                 </Button>
             </CardHeader>
-            <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 gap-6">
-                    {solutions && solutions.length > 0 ? (
-                        solutions.map((solution) => (
-                            <div key={solution.id} className="border border-border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
-                                <div className="bg-primary/5 px-5 py-3 border-b border-border flex justify-between items-center group-hover:bg-primary/10 transition-colors">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-1.5 bg-primary/10 rounded-lg text-primary">
-                                            <Lightbulb className="h-4 w-4" />
-                                        </div>
-                                        <span className="font-semibold text-primary">{solution.title}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Badge variant="secondary" className="font-normal capitalize">
-                                            {solution.requiredTier || 'Free Tier'}
-                                        </Badge>
-                                        <Button size="icon" variant="ghost" className="h-7 w-7"><Pencil className="h-3.5 w-3.5" /></Button>
-                                    </div>
-                                </div>
-                                <div className="p-5">
-                                    <div className="text-sm text-foreground/80">
-                                        {/* Simplified preview for now */}
-                                        Penjelasan solusi tersedia...
-                                    </div>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="pt-4 flex justify-center">
-                            <div className="text-muted-foreground text-sm italic py-8 px-12 border-2 border-dashed rounded-2xl w-full max-w-lg text-center bg-muted/5">
-                                {t($ => $.exam.questions.edit.solutions.empty)}
-                            </div>
-                        </div>
-                    )}
-                </div>
+            <CardContent className="space-y-0">
+                {items.length > 0 ? (
+                    <SolutionList
+                        items={items}
+                        sensors={sensors}
+                        onDragEnd={handleDragEnd}
+                        onDelete={handleDelete}
+                        onEdit={handleEdit}
+                    />
+                ) : (
+                    <div className="text-center py-12 border-2 border-dashed rounded-2xl bg-muted/5">
+                        <p className="text-muted-foreground italic">
+                            {t($ => $.exam.solutions.empty)}
+                        </p>
+                    </div>
+                )}
+
+                <DialogQuestionSolutionForm
+                    open={showFormModal}
+                    onOpenChange={setShowFormModal}
+                    questionId={questionId}
+                    solution={selectedSolution}
+                    nextOrder={items.length + 1}
+                />
+
+                <DialogModal
+                    open={showDeleteDialog}
+                    onOpenChange={setShowDeleteDialog}
+                    modal={{
+                        title: "Hapus Pembahasan",
+                        desc: "Apakah Anda yakin ingin menghapus pembahasan ini?",
+                        variant: "destructive",
+                        iconType: "error",
+                        textConfirm: deleteMutation.isPending ? t($ => $.labels.saving) : t($ => $.labels.delete),
+                        textCancel: t($ => $.labels.cancel),
+                        onConfirmClick: confirmDelete,
+                    }}
+                />
             </CardContent>
         </Card>
     );

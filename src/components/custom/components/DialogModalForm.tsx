@@ -94,7 +94,7 @@ export const DialogModalForm = ({
       }
     }} modal={modal?.modal}>
       <DialogContent
-        className="flex flex-col max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-4rem)]"
+        className="flex flex-col max-h-[80vh] sm:max-w-[80vw] lg:max-w-5xl"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
         onOpenAutoFocus={(e) => e.preventDefault()}

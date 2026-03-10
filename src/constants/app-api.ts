@@ -124,6 +124,22 @@ export const AppApi = {
         list: APP_URL_API + "/exam/question-options/admin/list",
       },
     },
+    questionSolutions: {
+      admin: {
+        create: APP_URL_API + "/exam/question-solutions/admin/create",
+        update: APP_URL_API + "/exam/question-solutions/admin/update/:id",
+        delete: APP_URL_API + "/exam/question-solutions/admin/delete/:id",
+        deletes: APP_URL_API + "/exam/question-solutions/admin/deletes",
+        list: APP_URL_API + "/exam/question-solutions/admin/list",
+      },
+    },
+    questionTags: {
+      admin: {
+        assign: APP_URL_API + "/exam/question-tags/admin/assign",
+        unassign: APP_URL_API + "/exam/question-tags/admin/unassign",
+        list: APP_URL_API + "/exam/question-tags/admin/list",
+      },
+    },
   },
   education: {
     tags: {
@@ -133,6 +149,7 @@ export const AppApi = {
         delete: APP_URL_API + "/education/tags/admin/delete/:id",
       },
       list: APP_URL_API + "/education/tags/list",
+      listSimple: APP_URL_API + "/education/tags/list-simple",
     },
     grade: {
       admin: {

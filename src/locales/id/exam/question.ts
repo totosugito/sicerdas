@@ -104,52 +104,6 @@ export default {
             title: "Isi Pertanyaan",
             description: "Masukkan teks pertanyaan menggunakan editor rich-text di bawah ini."
         },
-        options: {
-            title: "Pilihan Jawaban",
-            description: "Tambahkan dan tentukan pilihan jawaban untuk soal pilihan ganda.",
-            addButton: "Tambah Pilihan",
-            empty: "Belum ada pilihan jawaban yang ditambahkan.",
-            correct: "Benar",
-            incorrect: "Salah",
-            contentPlaceholder: "Pilihan dengan konten teks/gambar...",
-            noContent: "Tidak ada konten",
-            orderSuccess: "Urutan pilihan berhasil diperbarui.",
-            orderError: "Gagal memperbarui urutan pilihan.",
-            notifications: {
-                createSuccess: "Pilihan jawaban berhasil ditambahkan.",
-                updateSuccess: "Pilihan jawaban berhasil diperbarui.",
-            },
-            form: {
-                content: {
-                    label: "Konten Pilihan",
-                    placeholder: "Tulis konten pilihan di sini...",
-                    required: "Konten pilihan tidak boleh kosong"
-                },
-                isCorrect: {
-                    label: "Pilihan Benar",
-                    description: "Tandai jika ini adalah jawaban yang benar"
-                }
-            },
-            dialog: {
-                addTitle: "Tambah Pilihan Jawaban",
-                editTitle: "Ubah Pilihan Jawaban",
-                createDescription: "Tambahkan pilihan jawaban baru untuk soal ini.",
-                editDescription: "Perbarui konten atau status kebenaran dari pilihan jawaban ini."
-            }
-        },
-        solutions: {
-            title: "Pembahasan & Solusi",
-            description: "Berikan penjelasan langkah demi langkah dan tips untuk menjawab soal.",
-            addButton: "Solusi Baru",
-            empty: "Klik tombol \"Solusi Baru\" untuk menambahkan pembahasan tambahan seperti trik cepat atau tips khusus."
-        },
-        tags: {
-            title: "Tagging Materi",
-            description: "Hubungkan soal dengan kategori materi atau konsep tertentu untuk keperluan analisis & adaptif learning.",
-            label: "Pilih Tag Materi",
-            placeholder: "Ketik untuk mencari materi (e.g. Aljabar, Trigonometri)...",
-            currentTags: "Tag Saat Ini"
-        },
         notFound: {
             title: "Pertanyaan Tidak Ditemukan",
             message: "Data pertanyaan tidak ditemukan atau terjadi kesalahan saat mengambil data dari server.",

@@ -5,12 +5,13 @@ import { ControlForm } from "@/components/custom/forms";
 import {
     useCreateQuestionOption,
     useUpdateQuestionOption,
-    QuestionOptionFormValues
 } from "@/api/exam-question-options";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 
 import { ExamQuestion } from "@/api/exam-questions";
+
+import { blocknote_to_text } from "@/lib/blocknote-utils";
 
 export type DialogQuestionOptionFormProps = {
     open: boolean;
@@ -36,7 +37,11 @@ export const DialogQuestionOptionForm = ({ open, onOpenChange, questionId, optio
     const updateMutation = useUpdateQuestionOption();
 
     const formSchema = {
-        content: z.array(z.record(z.string(), z.unknown())).min(1, t($ => $.exam.questions.edit.options.form.content.required)),
+        content: z.array(z.record(z.string(), z.unknown()))
+            .min(1, t($ => $.exam.options.form.content.required))
+            .refine(val => blocknote_to_text(val).trim().length > 0, {
+                message: t($ => $.exam.options.form.content.required)
+            }),
         isCorrect: z.boolean().default(false),
     };
 
@@ -44,27 +49,27 @@ export const DialogQuestionOptionForm = ({ open, onOpenChange, questionId, optio
         content: {
             type: "blocknote",
             name: "content",
-            label: t($ => $.exam.questions.edit.options.form.content.label),
-            placeholder: t($ => $.exam.questions.edit.options.form.content.placeholder),
+            label: t($ => $.exam.options.form.content.label),
+            placeholder: t($ => $.exam.options.form.content.placeholder),
             wrapperClassName: "min-h-[300px]",
             required: true,
         },
         isCorrect: {
             type: "switch",
             name: "isCorrect",
-            label: t($ => $.exam.questions.edit.options.form.isCorrect.label),
-            description: t($ => $.exam.questions.edit.options.form.isCorrect.description),
+            label: t($ => $.exam.options.form.isCorrect.label),
+            description: t($ => $.exam.options.form.isCorrect.description),
         },
     };
 
     const modalProps: ModalFormProps = {
-        title: option ? t($ => $.exam.questions.edit.options.dialog.editTitle) : t($ => $.exam.questions.edit.options.dialog.addTitle),
-        desc: option ? t($ => $.exam.questions.edit.options.dialog.editDescription) : t($ => $.exam.questions.edit.options.dialog.createDescription),
+        title: option ? t($ => $.exam.options.dialog.editTitle) : t($ => $.exam.options.dialog.addTitle),
+        desc: option ? t($ => $.exam.options.dialog.editDescription) : t($ => $.exam.options.dialog.addDescription),
         modal: true,
         textConfirm: (createMutation.isPending || updateMutation.isPending) ? t($ => $.labels.saving) : t($ => $.labels.save),
         textCancel: t($ => $.labels.cancel),
         defaultValue: {
-            content: option?.content || [],
+            content: option?.content && option.content.length > 0 ? option.content : [{ type: "paragraph", content: [] }],
             isCorrect: option?.isCorrect ?? false,
         },
         child: formConfig,
@@ -80,7 +85,7 @@ export const DialogQuestionOptionForm = ({ open, onOpenChange, questionId, optio
                     isCorrect: values.isCorrect
                 }, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t($ => $.exam.questions.edit.options.notifications.updateSuccess) });
+                        showNotifSuccess({ message: res.message || t($ => $.exam.options.notifications.updateSuccess) });
                         queryClient.invalidateQueries({ queryKey: ["admin-exam-question-detail"] });
                         onOpenChange(false);
                     },
@@ -97,7 +102,7 @@ export const DialogQuestionOptionForm = ({ open, onOpenChange, questionId, optio
                     order: nextOrder || 1
                 }, {
                     onSuccess: (res) => {
-                        showNotifSuccess({ message: res.message || t($ => $.exam.questions.edit.options.notifications.createSuccess) });
+                        showNotifSuccess({ message: res.message || t($ => $.exam.options.notifications.createSuccess) });
                         queryClient.invalidateQueries({ queryKey: ["admin-exam-question-detail"] });
                         onOpenChange(false);
                     },

@@ -58,7 +58,7 @@ export const FormBlockNote = ({
             form.setValue(item.name, editor.document, {
                 shouldDirty: true,
                 shouldTouch: true,
-                shouldValidate: true
+                shouldValidate: false
             });
         });
 

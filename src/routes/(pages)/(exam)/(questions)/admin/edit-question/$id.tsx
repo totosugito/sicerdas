@@ -119,7 +119,7 @@ function AdminExamQuestionsEditPage() {
                 backTo={AppRoute.exam.questions.admin.list.url}
             />
 
-            <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full">
+            <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full gap-0">
                 <TabsList className="grid w-full grid-cols-5 lg:w-[750px] mb-4">
                     <TabsTrigger value="settings" className="flex items-center gap-2">
                         <Settings className="h-4 w-4" />
@@ -171,12 +171,15 @@ function AdminExamQuestionsEditPage() {
 
                 {/* Solutions Tab */}
                 <TabsContent value="solutions" className="mt-0">
-                    <QuestionSolutionsTab solutions={question.solutions} />
+                    <QuestionSolutionsTab
+                        questionId={id}
+                        solutions={question.solutions}
+                    />
                 </TabsContent>
 
                 {/* Tags Tab */}
                 <TabsContent value="tags" className="mt-0">
-                    <QuestionTagsTab tags={question.tags} />
+                    <QuestionTagsTab questionId={id} tags={question.tags} />
                 </TabsContent>
             </Tabs>
         </div>

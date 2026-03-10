@@ -58,5 +58,9 @@ export default {
         rowsPerPage: "per halaman",
         previousPage: "Ke halaman sebelumnya",
         next: "Berikutnya"
-    }
+    },
+    success: "Berhasil",
+    required: "Wajib diisi",
+    title: "Judul",
+    content: "Konten"
 }

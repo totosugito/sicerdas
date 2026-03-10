@@ -2,16 +2,16 @@ import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
 
-export interface GradeSimpleItem {
+export interface TagSimpleItem {
     value: string;
     label: string;
 }
 
-export interface ListGradesSimpleResponse {
+export interface ListTagsSimpleResponse {
     success: boolean;
     message: string;
     data: {
-        items: GradeSimpleItem[];
+        items: TagSimpleItem[];
         meta: {
             total: number;
             page: number;
@@ -21,23 +21,23 @@ export interface ListGradesSimpleResponse {
     };
 }
 
-export interface ListGradeSimpleRequest {
+export interface ListTagSimpleRequest {
     page?: number;
     limit?: number;
 }
 
-export const useListGradeSimple = (params: ListGradeSimpleRequest = {}) => {
+export const useListTagSimple = (params: ListTagSimpleRequest = {}) => {
     return useQuery({
-        queryKey: ["education-grades-list-simple", params],
+        queryKey: ["education-tags-list-simple", params],
         staleTime: 5 * 60 * 1000,
         queryFn: async () => {
             const response = await fetchApi({
                 method: "POST",
-                url: AppApi.education.grade.listSimple,
+                url: AppApi.education.tags.listSimple,
                 body: params,
                 withCredentials: true,
             });
-            return response as ListGradesSimpleResponse;
+            return response as ListTagsSimpleResponse;
         },
     });
 };

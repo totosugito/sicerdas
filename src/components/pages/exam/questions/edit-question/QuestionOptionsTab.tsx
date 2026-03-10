@@ -5,8 +5,6 @@ import { Plus } from 'lucide-react';
 import { ExamQuestion } from '@/api/exam-questions';
 import { useAppTranslation } from '@/lib/i18n-typed';
 import {
-    DndContext,
-    closestCenter,
     KeyboardSensor,
     PointerSensor,
     useSensor,
@@ -15,14 +13,11 @@ import {
 } from '@dnd-kit/core';
 import {
     arrayMove,
-    SortableContext,
     sortableKeyboardCoordinates,
-    verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { DialogQuestionOptionForm } from './option-list/DialogQuestionOptionForm';
+import { DialogQuestionOptionForm, OptionList } from '@/components/pages/exam/question-options/list-option';
 import { DialogModal } from '@/components/custom/components';
 import { useDeleteQuestionOption, useUpdateQuestionOption } from '@/api/exam-question-options';
-import { OptionList } from './option-list/OptionList';
 import { showNotifSuccess, showNotifError } from '@/lib/show-notif';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -84,10 +79,10 @@ export function QuestionOptionsTab({ questionId, options: initialOptions }: Ques
                     order: item.order
                 })
             )).then(() => {
-                showNotifSuccess({ message: t($ => $.exam.questions.edit.options.orderSuccess) });
+                showNotifSuccess({ message: t($ => $.exam.options.orderSuccess) });
                 queryClient.invalidateQueries({ queryKey: ['admin-exam-question-detail'] });
             }).catch((error: any) => {
-                showNotifError({ message: error.message || t($ => $.exam.questions.edit.options.orderError) });
+                showNotifError({ message: error.message || t($ => $.exam.options.orderError) });
                 queryClient.invalidateQueries({ queryKey: ['admin-exam-question-detail'] });
             });
         }
@@ -134,10 +129,10 @@ export function QuestionOptionsTab({ questionId, options: initialOptions }: Ques
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <div className='flex flex-col gap-1.5 '>
                     <CardTitle className="text-xl">
-                        {t($ => $.exam.questions.edit.options.title)}
+                        {t($ => $.exam.options.title)}
                     </CardTitle>
                     <CardDescription>
-                        {t($ => $.exam.questions.edit.options.description)}
+                        {t($ => $.exam.options.description)}
                     </CardDescription>
                 </div>
                 <Button
@@ -145,7 +140,7 @@ export function QuestionOptionsTab({ questionId, options: initialOptions }: Ques
                     className="gap-1.5 shadow-md hover:scale-105 transition-transform"
                     onClick={handleAdd}
                 >
-                    <Plus className="h-4 w-4" /> {t($ => $.exam.questions.edit.options.addButton)}
+                    <Plus className="h-4 w-4" /> {t($ => $.exam.options.addButton)}
                 </Button>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -160,7 +155,7 @@ export function QuestionOptionsTab({ questionId, options: initialOptions }: Ques
                 ) : (
                     <div className="text-center py-12 border-2 border-dashed rounded-2xl bg-muted/5">
                         <p className="text-muted-foreground italic">
-                            {t($ => $.exam.questions.edit.options.empty)}
+                            {t($ => $.exam.options.empty)}
                         </p>
                     </div>
                 )}
@@ -177,8 +172,8 @@ export function QuestionOptionsTab({ questionId, options: initialOptions }: Ques
                     open={showDeleteDialog}
                     onOpenChange={setShowDeleteDialog}
                     modal={{
-                        title: t($ => $.exam.questions.delete.confirmTitle),
-                        desc: t($ => $.exam.questions.delete.confirmDesc),
+                        title: t($ => $.exam.options.delete.confirmTitle),
+                        desc: t($ => $.exam.options.delete.confirmDesc),
                         variant: "destructive",
                         iconType: "error",
                         textConfirm: deleteMutation.isPending ? t($ => $.labels.saving) : t($ => $.labels.delete),
