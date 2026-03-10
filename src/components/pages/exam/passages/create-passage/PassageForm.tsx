@@ -25,12 +25,9 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
     const { t } = useAppTranslation();
     const { theme: appTheme } = useTheme();
 
-    const [subjectSearch, setSubjectSearch] = React.useState("");
-
     // Fetch searchable subjects
     const { data: subjectsData, isFetching: isFetchingSubjects } = useListSubjectSimple({
-        limit: 10, // Smaller limit for search
-        search: subjectSearch
+        limit: 1000,
     });
     const subjectOptions = subjectsData?.data?.items || [];
 
@@ -97,6 +94,7 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
             name: "title",
             label: t($ => $.exam.passages.form.title.label),
             placeholder: t($ => $.exam.passages.form.title.placeholder),
+            required: true,
         },
         subjectId: {
             type: "combobox",
@@ -106,8 +104,7 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
             options: subjectOptions,
             disabled: isFetchingSubjects,
             isLoading: isFetchingSubjects,
-            serverSideSearch: true,
-            onSearchChange: (val: string) => setSubjectSearch(val),
+            required: true,
         },
         isActive: {
             type: "switch",

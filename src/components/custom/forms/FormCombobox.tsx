@@ -25,6 +25,7 @@ export type FormComboboxProps = {
     onScrollEnd?: () => void
     isLoading?: boolean
     serverSideSearch?: boolean
+    required?: boolean;
   };
   disabled?: boolean
   className?: string
@@ -69,7 +70,7 @@ export const FormCombobox = ({ form, item, labelClassName = "", showMessage = tr
       name={item.name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
+          <FormLabel className={cn("", labelClassName)}>{item.label}{item.required && <span className="text-red-500">*</span>}</FormLabel>
           <Popover open={open} onOpenChange={
             setOpen
             //   (v) => {

@@ -1,7 +1,7 @@
-import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {Checkbox} from "@/components/ui/checkbox";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
 import React from "react";
-import {UseFormReturn} from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { cn } from "@/lib/utils";
 
 export type FormCheckboxProps = {
@@ -10,6 +10,7 @@ export type FormCheckboxProps = {
     name: string;
     label: string;
     description?: string;
+    required?: boolean;
   };
   disabled?: boolean;
   className?: string;
@@ -18,12 +19,12 @@ export type FormCheckboxProps = {
 }
 
 export const FormCheckbox = ({
-                       form,
-                       item,
-                       labelClassName = "",  // Added labelClassName prop
-                       showMessage = true,  // Added showMessage prop
-                       ...props
-                     }: FormCheckboxProps) => {
+  form,
+  item,
+  labelClassName = "",  // Added labelClassName prop
+  showMessage = true,  // Added showMessage prop
+  ...props
+}: FormCheckboxProps) => {
   return (
     <FormField
       control={form.control}
@@ -38,7 +39,7 @@ export const FormCheckbox = ({
             />
           </FormControl>
           <div className="space-y-1 leading-none">
-            <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
+            <FormLabel className={cn("", labelClassName)}>{item.label}{item.required && <span className="text-red-500">*</span>}</FormLabel>
             {item.description && <FormDescription>{item.description}</FormDescription>}
           </div>
           {showMessage && <FormMessage />}

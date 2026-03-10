@@ -46,6 +46,7 @@ export const DialogSubjectCreate = ({ open, onOpenChange, subject }: DialogSubje
             name: "name",
             label: t($ => $.exam.subjects.form.name.label),
             placeholder: t($ => $.exam.subjects.form.name.placeholder),
+            required: true,
         },
         description: {
             type: "textarea",

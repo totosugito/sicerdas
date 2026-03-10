@@ -1,11 +1,11 @@
-import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {Button} from "@/components/ui/button";
-import {Card} from "@/components/ui/card";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import React, { useEffect } from "react";
-import {useFileUpload, formatBytes, type FileWithPreview} from "@/hooks/use-file-upload";
-import {Upload, X, File, Image} from "lucide-react";
-import {cn} from "@/lib/utils";
-import {UseFormReturn} from "react-hook-form";
+import { useFileUpload, formatBytes, type FileWithPreview } from "@/hooks/use-file-upload";
+import { Upload, X, File, Image } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { UseFormReturn } from "react-hook-form";
 
 export type FormInputFileProps = {
   form: UseFormReturn<any>;
@@ -20,9 +20,11 @@ export type FormInputFileProps = {
     accept?: string;
     multiple?: boolean;
     compact?: boolean;
+    required?: boolean;
   };
   disabled?: boolean;
   className?: string;
+  labelClassName?: string;
   showMessage?: boolean;  // Added showMessage prop
 }
 
@@ -158,7 +160,7 @@ export const FormInputFile = ({
       name={item.name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="">{item.label}</FormLabel>
+          <FormLabel className="">{item.label}{item.required && <span className="text-red-500">*</span>}</FormLabel>
           <FormControl>
             {compact ? (
               // Compact View - Single Input with Drag & Drop

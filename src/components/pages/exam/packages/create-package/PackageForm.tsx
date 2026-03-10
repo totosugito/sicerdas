@@ -102,6 +102,7 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
             name: "title",
             label: t($ => $.exam.packages.form.title.label),
             placeholder: t($ => $.exam.packages.form.title.placeholder),
+            required: true,
         },
         categoryId: {
             type: "combobox",
@@ -111,6 +112,7 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
             options: categoryOptions,
             disabled: isFetchingCategories,
             isLoading: isFetchingCategories,
+            required: true,
         },
         examType: {
             type: "select",

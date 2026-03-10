@@ -58,13 +58,15 @@ export const DialogSectionForm = ({ open, onOpenChange, section, packageId, pack
             name: "packageId",
             label: t($ => $.exam.sections.formPackage),
             placeholder: t($ => $.exam.sections.formPackagePlaceholder),
-            options: packageOptions
+            options: packageOptions,
+            required: true,
         },
         title: {
             type: "text",
             name: "title",
             label: t($ => $.exam.sections.formTitle),
             placeholder: t($ => $.exam.sections.formTitlePlaceholder),
+            required: true,
         },
         durationMinutes: {
             type: "select",

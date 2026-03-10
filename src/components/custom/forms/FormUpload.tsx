@@ -1,6 +1,6 @@
 import * as React from "react";
-import {Button} from "@/components/ui/button";
-import {formatBytes, useFileUpload} from "@/hooks/use-file-upload";
+import { Button } from "@/components/ui/button";
+import { formatBytes, useFileUpload } from "@/hooks/use-file-upload";
 import {
   AlertCircleIcon,
   DownloadIcon,
@@ -11,9 +11,9 @@ import {
   UploadCloudIcon,
   UploadIcon, VideoIcon
 } from "lucide-react";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
-import {useEffect} from "react";
-import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useEffect } from "react";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { UseFormReturn } from "react-hook-form";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +27,7 @@ export type FormUploadProps = {
     readonly?: boolean,
     maxFiles: number,
     maxSize: number
+    required?: boolean;
   };
   disabled?: boolean
   className?: string
@@ -45,33 +46,33 @@ const getFileIcon = (file: { file: File | { type: string; name: string } }) => {
     fileName.endsWith(".doc") ||
     fileName.endsWith(".docx")
   ) {
-    return <FileTextIcon className="size-4 opacity-60"/>
+    return <FileTextIcon className="size-4 opacity-60" />
   } else if (
     fileType.includes("zip") ||
     fileType.includes("archive") ||
     fileName.endsWith(".zip") ||
     fileName.endsWith(".rar")
   ) {
-    return <FileArchiveIcon className="size-4 opacity-60"/>
+    return <FileArchiveIcon className="size-4 opacity-60" />
   } else if (
     fileType.includes("excel") ||
     fileName.endsWith(".xls") ||
     fileName.endsWith(".xlsx")
   ) {
-    return <FileSpreadsheetIcon className="size-4 opacity-60"/>
+    return <FileSpreadsheetIcon className="size-4 opacity-60" />
   } else if (fileType.includes("video/")) {
-    return <VideoIcon className="size-4 opacity-60"/>
+    return <VideoIcon className="size-4 opacity-60" />
   } else if (fileType.includes("audio/")) {
-    return <HeadphonesIcon className="size-4 opacity-60"/>
+    return <HeadphonesIcon className="size-4 opacity-60" />
   } else if (fileType.startsWith("image/")) {
-    return <ImageIcon className="size-4 opacity-60"/>
+    return <ImageIcon className="size-4 opacity-60" />
   }
-  return <FileIcon className="size-4 opacity-60"/>
+  return <FileIcon className="size-4 opacity-60" />
 }
 
-export const FormUpload = ({form, item, labelClassName = "", showMessage = true}: FormUploadProps) => {
+export const FormUpload = ({ form, item, labelClassName = "", showMessage = true }: FormUploadProps) => {
   const [
-    {files, isDragging, errors},
+    { files, isDragging, errors },
     {
       handleDragEnter,
       handleDragLeave,
@@ -98,16 +99,16 @@ export const FormUpload = ({form, item, labelClassName = "", showMessage = true}
   }, [files]);
 
 
-  const FileRow = ({file, removeFile}: any) => {
+  const FileRow = ({ file, removeFile }: any) => {
     return (
       <TableRow key={file.id}>
         <TableCell className="max-w-48 py-2 font-medium">
-                      <span className="flex items-center gap-2">
-                        <span className="shrink-0">{getFileIcon(file)}</span>{" "}
-                        <div className={"flex flex-col gap-0 truncate"}>
-                          <span className="truncate">{file.file.name}</span>
-                        </div>
-                      </span>
+          <span className="flex items-center gap-2">
+            <span className="shrink-0">{getFileIcon(file)}</span>{" "}
+            <div className={"flex flex-col gap-0 truncate"}>
+              <span className="truncate">{file.file.name}</span>
+            </div>
+          </span>
         </TableCell>
         <TableCell className="text-muted-foreground py-2">
           <div
@@ -127,7 +128,7 @@ export const FormUpload = ({form, item, labelClassName = "", showMessage = true}
               window.open(file.preview, "_blank");
             }}
           >
-            <DownloadIcon className="size-4"/>
+            <DownloadIcon className="size-4" />
           </Button>
           <Button
             size="icon"
@@ -139,7 +140,7 @@ export const FormUpload = ({form, item, labelClassName = "", showMessage = true}
               removeFile(file.id)
             }}
           >
-            <Trash2Icon className="size-4"/>
+            <Trash2Icon className="size-4" />
           </Button>
         </TableCell>
       </TableRow>
@@ -149,9 +150,9 @@ export const FormUpload = ({form, item, labelClassName = "", showMessage = true}
     <FormField
       control={form.control}
       name={item.name}
-      render={({field}) => (
+      render={({ field }) => (
         <FormItem>
-          <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
+          <FormLabel className={cn("", labelClassName)}>{item.label}{item.required && <span className="text-red-500">*</span>}</FormLabel>
           <FormControl>
 
             <div className="flex flex-col gap-2">
@@ -175,7 +176,7 @@ export const FormUpload = ({form, item, labelClassName = "", showMessage = true}
                     className="bg-background mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border"
                     aria-hidden="true"
                   >
-                    <FileIcon className="size-4 opacity-60"/>
+                    <FileIcon className="size-4 opacity-60" />
                   </div>
                   <p className="mb-1.5 text-sm font-medium">Drag and drop or click to Upload files</p>
                   <p className="text-muted-foreground text-xs">
@@ -185,7 +186,7 @@ export const FormUpload = ({form, item, labelClassName = "", showMessage = true}
                     event.preventDefault();
                     openFileDialog();
                   }}>
-                    <UploadIcon className="-ms-1 opacity-60" aria-hidden="true"/>
+                    <UploadIcon className="-ms-1 opacity-60" aria-hidden="true" />
                     Select files
                   </Button>
                 </div>
@@ -231,7 +232,7 @@ export const FormUpload = ({form, item, labelClassName = "", showMessage = true}
                         </TableRow>
                       </TableHeader>
                       <TableBody className="text-[13px]">
-                        {files.map((file) => <FileRow key={file.id} file={file} removeFile={removeFile}/>)}
+                        {files.map((file) => <FileRow key={file.id} file={file} removeFile={removeFile} />)}
                       </TableBody>
                     </Table>
                   </div>
@@ -243,14 +244,14 @@ export const FormUpload = ({form, item, labelClassName = "", showMessage = true}
                   className="text-destructive flex items-center gap-1 text-xs"
                   role="alert"
                 >
-                  <AlertCircleIcon className="size-3 shrink-0"/>
+                  <AlertCircleIcon className="size-3 shrink-0" />
                   <span>{errors[0]}</span>
                 </div>
               )}
             </div>
           </FormControl>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
-          {showMessage && <FormMessage/>}
+          {showMessage && <FormMessage />}
         </FormItem>
       )}
     />

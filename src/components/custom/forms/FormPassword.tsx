@@ -1,10 +1,10 @@
-import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {Input} from "@/components/ui/input";
-import React, {useState} from "react";
-import {Eye, EyeOff} from "lucide-react";
-import {Button} from "@/components/ui/button";
-import {UseFormReturn} from "react-hook-form";
-import {cn} from "@/lib/utils";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { UseFormReturn } from "react-hook-form";
+import { cn } from "@/lib/utils";
 
 export type FormPasswordProps = {
   form: UseFormReturn<any>;
@@ -14,6 +14,7 @@ export type FormPasswordProps = {
     placeholder?: string
     description?: string
     readonly?: boolean
+    required?: boolean;
   };
   disabled?: boolean
   className?: string
@@ -21,7 +22,7 @@ export type FormPasswordProps = {
   showMessage?: boolean  // Added showMessage prop
 }
 
-export const FormPassword = ({form, item, labelClassName = "", showMessage = true, ...props}: FormPasswordProps) => {
+export const FormPassword = ({ form, item, labelClassName = "", showMessage = true, ...props }: FormPasswordProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -31,9 +32,9 @@ export const FormPassword = ({form, item, labelClassName = "", showMessage = tru
     <FormField
       control={form.control}
       name={item.name}
-      render={({field}) => (
+      render={({ field }) => (
         <FormItem>
-          <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
+          <FormLabel className={cn("", labelClassName)}>{item.label}{item.required && <span className="text-red-500">*</span>}</FormLabel>
           <FormControl>
             <div className="relative">
               <Input
@@ -55,7 +56,7 @@ export const FormPassword = ({form, item, labelClassName = "", showMessage = tru
             </div>
           </FormControl>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
-          {showMessage && <FormMessage/>}
+          {showMessage && <FormMessage />}
         </FormItem>
       )}
     />

@@ -36,7 +36,7 @@ export default {
             required: "Subyek wajib dipilih"
         },
         passage: {
-            label: "Bacaan (Opsional)",
+            label: "Bacaan / Passage",
             placeholder: "Pilih Bacaan",
         },
         content: {

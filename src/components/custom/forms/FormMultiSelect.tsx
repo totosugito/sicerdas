@@ -1,5 +1,5 @@
-import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {MultiSelect} from "@/components/custom/components";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { MultiSelect } from "@/components/custom/components";
 import { UseFormReturn } from "react-hook-form";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,7 @@ export type FormMultiSelectProps = {
     searchPlaceholder?: string
     maxCount?: number
     options: Array<{ label: string, value: string }>
+    required?: boolean;
   };
   disabled?: boolean
   className?: string
@@ -21,14 +22,14 @@ export type FormMultiSelectProps = {
   showMessage?: boolean;  // Added showMessage prop
 }
 
-export const FormMultiSelect = ({form, item, labelClassName = "", showMessage = true, ...props} : FormMultiSelectProps) => {
-  return(
+export const FormMultiSelect = ({ form, item, labelClassName = "", showMessage = true, ...props }: FormMultiSelectProps) => {
+  return (
     <FormField
       control={form.control}
       name={item.name}
-      render={({field}) => (
+      render={({ field }) => (
         <FormItem>
-          <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
+          <FormLabel className={cn("", labelClassName)}>{item.label}{item.required && <span className="text-red-500">*</span>}</FormLabel>
           <FormControl>
             <MultiSelect
               {...props}
@@ -36,10 +37,10 @@ export const FormMultiSelect = ({form, item, labelClassName = "", showMessage = 
               value={field.value}
               onValueChange={field.onChange}
               placeholder={item?.placeholder}
-              maxCount={item?.maxCount ?? 3}/>
+              maxCount={item?.maxCount ?? 3} />
           </FormControl>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
-          {showMessage && <FormMessage/>}
+          {showMessage && <FormMessage />}
         </FormItem>
       )}
     />

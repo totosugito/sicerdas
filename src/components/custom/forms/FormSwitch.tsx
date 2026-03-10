@@ -1,6 +1,6 @@
-import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import React from "react";
-import {UseFormReturn} from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +10,7 @@ export type FormSwitchProps = {
     name: string;
     label: string;
     description?: string;
+    required?: boolean;
   };
   disabled?: boolean;
   className?: string;
@@ -18,12 +19,12 @@ export type FormSwitchProps = {
 }
 
 export const FormSwitch = ({
-                       form,
-                       item,
-                       labelClassName = "",  // Added labelClassName prop
-                       showMessage = true,  // Added showMessage prop
-                       ...props
-                     }: FormSwitchProps) => {
+  form,
+  item,
+  labelClassName = "",  // Added labelClassName prop
+  showMessage = true,  // Added showMessage prop
+  ...props
+}: FormSwitchProps) => {
   return (
     <FormField
       control={form.control}
@@ -38,7 +39,7 @@ export const FormSwitch = ({
             />
           </FormControl>
           <div className="space-y-1 leading-none">
-            <FormLabel className={cn("", labelClassName)}>{item.label}</FormLabel>
+            <FormLabel className={cn("", labelClassName)}>{item.label}{item.required && <span className="text-red-500">*</span>}</FormLabel>
             {item.description && <FormDescription>{item.description}</FormDescription>}
           </div>
           {showMessage && <FormMessage />}
