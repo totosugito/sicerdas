@@ -6,6 +6,12 @@ export type DifficultyLevel = typeof EnumDifficultyLevel[keyof typeof EnumDiffic
 export type QuestionType = typeof EnumQuestionType[keyof typeof EnumQuestionType];
 export type SolutionType = typeof EnumSolutionType[keyof typeof EnumSolutionType];
 
+export interface VariableFormulas {
+    variables: Record<string, string | number>[];
+    options?: Record<string, string>;
+    solutions?: Record<string, string>;
+}
+
 export interface ExamQuestion {
     id: string;
     subjectId: string;
@@ -19,6 +25,7 @@ export interface ExamQuestion {
     educationGradeId: number | null;
     educationGradeName?: string;
     isActive: boolean;
+    variableFormulas?: VariableFormulas | null;
     totalOptions?: number;
     options?: {
         id: string;
@@ -57,4 +64,5 @@ export type QuestionFormValues = {
     requiredTier?: string | null;
     educationGradeId?: number | null;
     isActive: boolean;
+    variableFormulas?: VariableFormulas | null;
 };

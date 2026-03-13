@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { ExamQuestion, DifficultyLevel, QuestionType } from "../types";
+import { ExamQuestion, DifficultyLevel, QuestionType, VariableFormulas } from "../types";
 
 interface UpdateQuestionResponse {
     success: boolean;
@@ -18,6 +18,7 @@ export interface UpdateQuestionRequest {
     requiredTier?: string | null;
     educationGradeId?: number | null;
     isActive?: boolean;
+    variableFormulas?: VariableFormulas | null;
 }
 
 export const useUpdateQuestion = (id: string) => {

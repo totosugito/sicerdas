@@ -13,6 +13,12 @@ import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumDifficultyLevel, EnumQuestionType } from '../../../../db/schema/exam/enums.ts';
 
+const VariableFormulasType = Type.Optional(Type.Object({
+    variables: Type.Array(Type.Record(Type.String(), Type.Union([Type.String(), Type.Number()]))),
+    options: Type.Optional(Type.Record(Type.String(), Type.String())),
+    solutions: Type.Optional(Type.Record(Type.String(), Type.String())),
+}));
+
 
 const QuestionListQuery = Type.Object({
     // Since content is a JSONB BlockNote blob, search by text won't be a simple ILIKE on a varchar.
@@ -45,6 +51,7 @@ const QuestionResponseItem = Type.Object({
     educationGradeId: Type.Union([Type.Number(), Type.Null()]),
     educationGradeName: Type.Optional(Type.String()),
     isActive: Type.Boolean(),
+    variableFormulas: VariableFormulasType,
     totalOptions: Type.Number(),
     tags: Type.Array(Type.Object({
         id: Type.String({ format: 'uuid' }),
@@ -205,6 +212,7 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                         educationGradeId: q.educationGradeId,
                         educationGradeName: (q as any).educationGradeName,
                         isActive: q.isActive,
+                        variableFormulas: q.variableFormulas as any,
                         totalOptions: q.totalOptions,
                         tags: (q as any).tags as { id: string, name: string }[],
                         createdAt: q.createdAt.toISOString(),

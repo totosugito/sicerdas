@@ -25,6 +25,14 @@ export const examQuestions = pgTable('exam_questions', {
     // Rich text content of the question stored in BlockNote JSON format
     content: jsonb('content').$type<Record<string, unknown>[]>().notNull(),
 
+    // Holds the dynamic template configuration for parametrized questions
+    // Structure: { variables: [{a: 1}], options: {opt1: "a*2"}, solutions: {step1: "a+1"} }
+    variableFormulas: jsonb('variable_formulas').$type<{
+        variables: Record<string, string | number>[];
+        options?: Record<string, string>;
+        solutions?: Record<string, string>;
+    }>(),
+
     // Difficulty level of the question (easy, medium, hard)
     difficulty: PgEnumDifficultyLevel('difficulty').default(EnumDifficultyLevel.MEDIUM).notNull(),
 

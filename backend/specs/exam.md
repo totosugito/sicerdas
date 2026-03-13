@@ -10,6 +10,25 @@ The database is built using PostgreSQL and Drizzle ORM. The schema logic is thor
 3.  **Targeted Educational Delivery:** Questions and Exam Packages hold links to the `education_grades` table, meaning tests can dynamically target specific school levels (e.g., separating Grade 6 Math from High School Calculus).
 4.  **Incremental Aggregation (Performance Optimization):** High-load dashboard statistics rely on "Incremental Aggregation" `user_stats` tables which are updated via simple increments (`total + x`) rather than expensive time-consuming `SUM/JOIN` queries on the entire user's history log.
 5.  **Multi-Method Solutions:** Solving a single question can be documented using multiple methodologies (e.g., General method, Fast Trick/King Method), with the advanced fast tricks being easily locked behind the Premium tier wall.
+6.  **Template Questions & Parameterization (Anti-Cheat & Replayability):** Questions support dynamic templates (e.g., `{{a}} + {{b}} = ?`) powered by a predefined `variableFormulas` JSON config. 
+    *   **Structure:** This separates inputs from calculated formulas via a `{ variables: [], options: {}, solutions: {} }` structure. 
+    *   **Backend Evaluation:** The Node.js backend securely calculates the formulas from `options` and `solutions` during runtime and replaces variables directly into the BlockNote JSON before sending the final string to the frontend UI.
+    *   **Options Trick:** Distractor options are built via formulas (e.g., `opt2: "a - b"`). One option text is always `{{opt1}}` (flagged `isCorrect = true` in DB). The CBT engine randomizes display order (A, B, C, D) so the db static correct-answer state never changes.
+    *   **Tracking:** `exam_session_answers` stores `variationIndex` to guarantee that a user reviewing their history will see the exact same numeric variation they were tested on.
+
+### Admin Authoring UI: Variable Formulas
+To ensure a high-end authoring experience, the `variableFormulas` editor in the Admin Dashboard utilizes a **Dual-View Hybrid Editor**:
+
+1.  **Structured Table View (Default):**
+    *   **Spreadsheet Interface:** A dynamic grid for the `variables` array where columns are auto-detected from object keys.
+    *   **Row Management:** Admins can easily add/remove "Variations" (rows).
+    *   **Formula List:** Dedicated key-value inputs for `options` and `solutions` formulas with syntax highlighting.
+2.  **Raw JSON View:**
+    *   **Power-User Mode:** A lightweight text editor for direct JSON manipulation.
+    *   **Bulk Support:** Ideal for copy-pasting extensive variation sets generated from external tools (Python/Excel).
+3.  **Synchronization & Live Feedback:**
+    *   **Dynamic Parsing:** Real-time sync between Table and JSON views with automatic syntax validation. Switching is blocked if the JSON is malformed.
+    *   **Instant Result Preview:** A preview sidebar that calculates formulas using the first variation row in real-time, allowing admins to verify math logic instantly.
 
 ---
 
@@ -31,7 +50,7 @@ All tables are prefixed with `exam_` within PostgreSQL but are stripped off the 
 
 ### 📦 3. Assembly & Exam Definition
 *   9. **`exam_packages`**: The actual bundle that users "start". Represents either a pre-determined Official Tryout or a `custom_practice` generated on the fly by users. Includes a strict `required_tier` and `education_grade_id`.
-*   10. **`exam_package_questions`**: Junction table that glues questions to an `exam_package`. It enforces the default sequence ordering of the questions.
+*   10. **`exam_package_questions`**: Junction table that glues questions to an `exam_package`. It mandates a link to a `sectionId` (to enforce standardized package structures and prevent mixed-state bugs) and enforces the default sequence ordering of the questions.
 
 ### ⏱️ 4. Active CBT Sessions
 *   11. **`exam_sessions`**: The historical ledger marking a single User Attempt upon a specific Package. Tracks start times, statuses (`in_progress`, `completed`), and the ultimate numeric Score calculation.

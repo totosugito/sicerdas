@@ -6,6 +6,7 @@ import { examSessions } from '../../../../db/schema/exam/sessions.ts';
 import { examPackages } from '../../../../db/schema/exam/packages.ts';
 import { examPackageQuestions } from '../../../../db/schema/exam/package-questions.ts';
 import { examSessionAnswers } from '../../../../db/schema/exam/session-answers.ts';
+import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { EnumExamSessionStatus } from '../../../../db/schema/exam/enums.ts';
 import { eq, and } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
@@ -64,19 +65,29 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
             const questions = await db.select({
                 questionId: examPackageQuestions.questionId,
                 order: examPackageQuestions.order,
+                variableFormulas: examQuestions.variableFormulas,
             })
                 .from(examPackageQuestions)
+                .innerJoin(examQuestions, eq(examPackageQuestions.questionId, examQuestions.id))
                 .where(eq(examPackageQuestions.packageId, packageId))
                 .orderBy(examPackageQuestions.order);
 
             // 4. Pre-populate exam_session_answers
             if (questions.length > 0) {
-                const answerValues = questions.map(q => ({
-                    sessionId: newSession.id,
-                    questionId: q.questionId,
-                    questionOrder: q.order,
-                    isDoubtful: false,
-                }));
+                const answerValues = questions.map(q => {
+                    let variationIndex = 0;
+                    if (q.variableFormulas && q.variableFormulas.variables && q.variableFormulas.variables.length > 0) {
+                        variationIndex = Math.floor(Math.random() * q.variableFormulas.variables.length);
+                    }
+
+                    return {
+                        sessionId: newSession.id,
+                        questionId: q.questionId,
+                        questionOrder: q.order,
+                        variationIndex,
+                        isDoubtful: false,
+                    };
+                });
 
                 await db.insert(examSessionAnswers).values(answerValues);
             }

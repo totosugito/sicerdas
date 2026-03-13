@@ -17,8 +17,8 @@ export const examPackageQuestions = pgTable('exam_package_questions', {
     // Question identifier
     questionId: uuid('question_id').references(() => examQuestions.id, { onDelete: 'cascade' }).notNull(),
 
-    // Optional link to a section within the package
-    sectionId: uuid('section_id').references(() => examPackageSections.id, { onDelete: 'set null' }),
+    // Mandatory link to a section within the package to enforce standard CBT structure
+    sectionId: uuid('section_id').references(() => examPackageSections.id, { onDelete: 'restrict' }).notNull(),
 
     // Default numerical order of appearance in the exam
     order: integer('order').notNull(),

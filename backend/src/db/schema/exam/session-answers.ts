@@ -23,6 +23,9 @@ export const examSessionAnswers = pgTable('exam_session_answers', {
     // The localized, randomized sequence order this question was presented to this specific user
     questionOrder: integer('question_order').notNull(),
 
+    // The index of the parameter variation from exam_questions.variableVariations that was presented to this user
+    variationIndex: integer('variation_index').default(0).notNull(),
+
     // The multiple-choice option selected by the user (autosave)
     selectedOptionId: uuid('selected_option_id').references(() => examQuestionOptions.id, { onDelete: 'set null' }),
 

@@ -140,6 +140,19 @@ export const AppApi = {
         list: APP_URL_API + "/exam/question-tags/admin/list",
       },
     },
+    packageQuestions: {
+      admin: {
+        assign: APP_URL_API + "/exam/package-questions/admin/assign",
+      },
+    },
+    sessions: {
+      client: {
+        start: APP_URL_API + "/exam/sessions/client/start",
+        details: APP_URL_API + "/exam/sessions/client/details/:id",
+        saveAnswer: APP_URL_API + "/exam/sessions/client/save-answer",
+        submit: APP_URL_API + "/exam/sessions/client/submit/:id",
+      },
+    },
   },
   education: {
     tags: {

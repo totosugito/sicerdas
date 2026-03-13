@@ -10,6 +10,12 @@ import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumDifficultyLevel, EnumQuestionType } from '../../../../db/schema/exam/enums.ts';
 
+const VariableFormulasType = Type.Optional(Type.Object({
+    variables: Type.Array(Type.Record(Type.String(), Type.Union([Type.String(), Type.Number()]))),
+    options: Type.Optional(Type.Record(Type.String(), Type.String())),
+    solutions: Type.Optional(Type.Record(Type.String(), Type.String())),
+}));
+
 const UpdateQuestionParams = Type.Object({
     id: Type.String({ format: 'uuid' })
 });
@@ -23,6 +29,7 @@ const UpdateQuestionBody = Type.Object({
     requiredTier: Type.Optional(Type.Union([Type.String(), Type.Null()])),
     educationGradeId: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
     isActive: Type.Optional(Type.Boolean()),
+    variableFormulas: VariableFormulasType,
 });
 
 const QuestionResponseItem = Type.Object({
@@ -35,6 +42,7 @@ const QuestionResponseItem = Type.Object({
     requiredTier: Type.Union([Type.String(), Type.Null()]),
     educationGradeId: Type.Union([Type.Number(), Type.Null()]),
     isActive: Type.Boolean(),
+    variableFormulas: VariableFormulasType,
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
 });
@@ -73,7 +81,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             const { id } = request.params;
             const {
                 subjectId, passageId, content, difficulty,
-                type, requiredTier, educationGradeId, isActive
+                type, requiredTier, educationGradeId, isActive, variableFormulas
             } = request.body;
 
             // Ensure question exists
@@ -118,6 +126,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             if (requiredTier !== undefined) updatePayload.requiredTier = requiredTier;
             if (educationGradeId !== undefined) updatePayload.educationGradeId = educationGradeId;
             if (isActive !== undefined) updatePayload.isActive = isActive;
+            if (variableFormulas !== undefined) updatePayload.variableFormulas = variableFormulas;
 
             const [updatedQuestion] = await db.update(examQuestions)
                 .set(updatePayload)

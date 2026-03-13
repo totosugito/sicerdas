@@ -9,7 +9,7 @@ import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const AssignPackageQuestionsBody = Type.Object({
     packageId: Type.String({ format: 'uuid' }),
-    sectionId: Type.Optional(Type.String({ format: 'uuid' })),
+    sectionId: Type.String({ format: 'uuid' }),
     questions: Type.Array(Type.Object({
         questionId: Type.String({ format: 'uuid' }),
         order: Type.Number(),

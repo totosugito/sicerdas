@@ -7,6 +7,12 @@ import { eq, asc } from 'drizzle-orm';
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumDifficultyLevel, EnumQuestionType, EnumSolutionType } from '../../../../db/schema/exam/enums.ts';
+
+const VariableFormulasType = Type.Optional(Type.Object({
+    variables: Type.Array(Type.Record(Type.String(), Type.Union([Type.String(), Type.Number()]))),
+    options: Type.Optional(Type.Record(Type.String(), Type.String())),
+    solutions: Type.Optional(Type.Record(Type.String(), Type.String())),
+}));
 import { examQuestionOptions } from '../../../../db/schema/exam/question-options.ts';
 import { examQuestionSolutions } from '../../../../db/schema/exam/question-solutions.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
@@ -26,6 +32,7 @@ const QuestionResponseItem = Type.Object({
     requiredTier: Type.Union([Type.String(), Type.Null()]),
     educationGradeId: Type.Union([Type.Number(), Type.Null()]),
     isActive: Type.Boolean(),
+    variableFormulas: VariableFormulasType,
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
     options: Type.Array(Type.Object({

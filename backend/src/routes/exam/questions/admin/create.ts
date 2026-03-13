@@ -10,6 +10,12 @@ import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumDifficultyLevel, EnumQuestionType } from '../../../../db/schema/exam/enums.ts';
 
+const VariableFormulasType = Type.Optional(Type.Object({
+    variables: Type.Array(Type.Record(Type.String(), Type.Union([Type.String(), Type.Number()]))),
+    options: Type.Optional(Type.Record(Type.String(), Type.String())),
+    solutions: Type.Optional(Type.Record(Type.String(), Type.String())),
+}));
+
 const CreateQuestionBody = Type.Object({
     subjectId: Type.String({ format: 'uuid' }),
     passageId: Type.Optional(Type.Union([Type.String({ format: 'uuid' }), Type.Null()])), // Nullable for questions without passages
@@ -19,6 +25,7 @@ const CreateQuestionBody = Type.Object({
     requiredTier: Type.Optional(Type.Union([Type.String(), Type.Null()])),
     educationGradeId: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
     isActive: Type.Optional(Type.Boolean({ default: true })),
+    variableFormulas: VariableFormulasType,
 });
 
 const QuestionResponseItem = Type.Object({
@@ -31,6 +38,7 @@ const QuestionResponseItem = Type.Object({
     requiredTier: Type.Union([Type.String(), Type.Null()]),
     educationGradeId: Type.Union([Type.Number(), Type.Null()]),
     isActive: Type.Boolean(),
+    variableFormulas: VariableFormulasType,
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
 });
@@ -67,7 +75,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             const { t } = getTypedI18n(request);
             const {
                 subjectId, passageId, content, difficulty,
-                type, requiredTier, educationGradeId, isActive
+                type, requiredTier, educationGradeId, isActive, variableFormulas
             } = request.body;
 
             // 1. Verify that the subject exists
@@ -101,6 +109,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
                 requiredTier: requiredTier !== undefined ? requiredTier : 'free',
                 educationGradeId: educationGradeId !== undefined ? educationGradeId : null,
                 isActive: isActive !== undefined ? isActive : true,
+                variableFormulas,
             }).returning();
 
             return reply.status(201).send({
