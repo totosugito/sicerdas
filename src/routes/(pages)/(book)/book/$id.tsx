@@ -1,106 +1,124 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { useBookDetail } from '@/api/book/book-detail'
-import { BookDetail } from '@/components/pages/book/book/BookDetail'
-import { BookDetailError } from '@/components/pages/book/book/BookDetailError'
-import { BookDetailSkeleton } from '@/components/pages/book/book/BookDetailSkeleton'
-import { Button } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-react'
-import { AppRoute } from '@/constants/app-route'
-import { useAppTranslation } from '@/lib/i18n-typed'
-import { useState, useEffect } from 'react'
-import { useAuth } from '@/hooks/use-auth'
-import { CreateContentReport } from '@/components/pages/layout/CreateContentReport'
-import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog'
-import { EnumContentType } from 'backend/src/db/schema/enum/enum-app'
-import { PDFViewer, ScrollStrategy } from '@embedpdf/react-pdf-viewer'
-import { useUpdateBookmark } from '@/api/book/book-bookmark'
-import { useUpdateDownload, UpdateDownloadResponse } from '@/api/book/update-download'
-import { showNotifError, showNotifSuccess } from '@/lib/show-notif'
-import { DialogModal } from '@/components/custom/components'
+import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useBookDetail } from "@/api/book/book-detail";
+import { BookDetail } from "@/components/pages/book/book/BookDetail";
+import { BookDetailError } from "@/components/pages/book/book/BookDetailError";
+import { BookDetailSkeleton } from "@/components/pages/book/book/BookDetailSkeleton";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { AppRoute } from "@/constants/app-route";
+import { useAppTranslation } from "@/lib/i18n-typed";
+import { useState, useEffect, Suspense, lazy, ComponentType } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import { CreateContentReport } from "@/components/pages/layout/CreateContentReport";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
+import { useUpdateBookmark } from "@/api/book/book-bookmark";
+import { useUpdateDownload, UpdateDownloadResponse } from "@/api/book/update-download";
+import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
+import { DialogModal } from "@/components/custom/components";
 
-export const Route = createFileRoute('/(pages)/(book)/book/$id')({
+type PDFViewerProps = ComponentType<{
+  key?: React.Key;
+  config: {
+    src: string;
+    disabledCategories?: string[];
+    scroll?: { defaultStrategy: any; defaultPageGap?: number };
+    theme?: { preference: "dark" | "light" };
+  };
+  style?: React.CSSProperties;
+}>;
+
+let ScrollStrategyVertical: any = 1;
+const LazyPDFViewer = lazy(() =>
+  import("@embedpdf/react-pdf-viewer").then((m) => {
+    ScrollStrategyVertical = m.ScrollStrategy.Vertical;
+    return { default: m.PDFViewer as unknown as PDFViewerProps };
+  }),
+);
+
+export const Route = createFileRoute("/(pages)/(book)/book/$id")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  const router = useRouter()
-  const { id } = Route.useParams()
-  const bookId = id.split('-')[0]
-  const { data, isLoading, isError } = useBookDetail(bookId)
-  const { mutate: updateBookmark } = useUpdateBookmark()
-  const { mutate: updateDownload } = useUpdateDownload()
-  const { t } = useAppTranslation()
-  const { user } = useAuth()
-  const [showReportDialog, setShowReportDialog] = useState(false)
-  const [showLoginDialog, setShowLoginDialog] = useState(false)
-  const [showViewer, setShowViewer] = useState(false)
-  const [isFavorite, setIsFavorite] = useState(false)
+  const router = useRouter();
+  const { id } = Route.useParams();
+  const bookId = id.split("-")[0];
+  const { data, isLoading, isError } = useBookDetail(bookId);
+  const { mutate: updateBookmark } = useUpdateBookmark();
+  const { mutate: updateDownload } = useUpdateDownload();
+  const { t } = useAppTranslation();
+  const { user } = useAuth();
+  const [showReportDialog, setShowReportDialog] = useState(false);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [showViewer, setShowViewer] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     if (data?.data?.userInteraction?.bookmarked !== undefined) {
-      setIsFavorite(data.data.userInteraction.bookmarked)
+      setIsFavorite(data.data.userInteraction.bookmarked);
     }
-  }, [data?.data?.userInteraction?.bookmarked])
+  }, [data?.data?.userInteraction?.bookmarked]);
 
-  const book = data?.data
+  const book = data?.data;
 
   if (isLoading) {
-    return <BookDetailSkeleton />
+    return <BookDetailSkeleton />;
   }
 
   if (isError || !data?.success || !book) {
-    return <BookDetailError message={data?.message} />
+    return <BookDetailError message={data?.message} />;
   }
 
   const handleRead = () => {
-    setShowViewer(true)
+    setShowViewer(true);
 
     updateDownload(
       { bookId: book.bookId },
       {
         onSuccess: (response) => {
           if (response.success && response.data) {
-            book.downloadCount = response.data!.downloadCount
+            book.downloadCount = response.data!.downloadCount;
           }
-        }
-      }
-    )
-  }
+        },
+      },
+    );
+  };
 
   const slug = book.title
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)+/g, '');
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "");
 
   const handleDownload = () => {
-    const link = document.createElement('a')
-    link.href = book.pdf
-    link.target = '_blank'
-    link.download = `${book.bookId}-${slug}.pdf`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    const link = document.createElement("a");
+    link.href = book.pdf;
+    link.target = "_blank";
+    link.download = `${book.bookId}-${slug}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
     updateDownload(
       { bookId: book.bookId },
       {
         onSuccess: (response: UpdateDownloadResponse) => {
           if (response.success && response.data) {
-            book.downloadCount = response.data!.downloadCount
+            book.downloadCount = response.data!.downloadCount;
           }
-        }
-      }
-    )
-  }
+        },
+      },
+    );
+  };
 
   const handleToggleFavorite = () => {
     if (!user) {
-      setShowLoginDialog(true)
-      return
+      setShowLoginDialog(true);
+      return;
     }
 
-    const newFavoriteStatus = !isFavorite
-    setIsFavorite(newFavoriteStatus)
+    const newFavoriteStatus = !isFavorite;
+    setIsFavorite(newFavoriteStatus);
 
     updateBookmark(
       {
@@ -110,37 +128,37 @@ function RouteComponent() {
       {
         onSuccess: (response) => {
           if (!response.success) {
-            setIsFavorite(!newFavoriteStatus) // Revert
-            showNotifError({ title: null, message: response.message })
+            setIsFavorite(!newFavoriteStatus); // Revert
+            showNotifError({ title: null, message: response.message });
           } else {
-            showNotifSuccess({ title: null, message: response.message })
+            showNotifSuccess({ title: null, message: response.message });
 
             // Update the cache with new data
             if (book.userInteraction) {
-              book.userInteraction.bookmarked = response.data.bookmarked
+              book.userInteraction.bookmarked = response.data.bookmarked;
             }
-            book.bookmarkCount = response.data.bookmarkCount
+            book.bookmarkCount = response.data.bookmarkCount;
           }
         },
         onError: () => {
-          setIsFavorite(!newFavoriteStatus) // Revert
-          showNotifError({ title: null, message: t($ => $.labels.error) })
+          setIsFavorite(!newFavoriteStatus); // Revert
+          showNotifError({ title: null, message: t(($) => $.labels.error) });
         },
-      }
-    )
-  }
+      },
+    );
+  };
 
   const handleReport = () => {
-    setShowReportDialog(true)
-  }
+    setShowReportDialog(true);
+  };
 
   const handleBack = () => {
-    router.navigate({ to: AppRoute.book.books.url })
-  }
+    router.navigate({ to: AppRoute.book.books.url });
+  };
 
   const handleLogin = () => {
-    router.navigate({ to: AppRoute.auth.signIn.url })
-  }
+    router.navigate({ to: AppRoute.auth.signIn.url });
+  };
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -152,7 +170,7 @@ function RouteComponent() {
           onClick={handleBack}
         >
           <ArrowLeft className="w-5 h-5" />
-          <span className="text-base font-medium">{t($ => $.book.detail.backToBooks)}</span>
+          <span className="text-base font-medium">{t(($) => $.book.detail.backToBooks)}</span>
         </Button>
       </div>
       <BookDetail
@@ -180,10 +198,10 @@ function RouteComponent() {
         open={showLoginDialog}
         onOpenChange={setShowLoginDialog}
         modal={{
-          title: t($ => $.book.detail.loginRequired),
-          desc: t($ => $.book.detail.loginRequiredDesc),
-          textConfirm: t($ => $.book.detail.login),
-          textCancel: t($ => $.book.detail.cancel),
+          title: t(($) => $.book.detail.loginRequired),
+          desc: t(($) => $.book.detail.loginRequiredDesc),
+          textConfirm: t(($) => $.book.detail.login),
+          textCancel: t(($) => $.book.detail.cancel),
           onConfirmClick: handleLogin,
           onCancelClick: () => setShowLoginDialog(false),
           iconType: "info",
@@ -191,35 +209,52 @@ function RouteComponent() {
       />
 
       <Dialog open={showViewer} onOpenChange={setShowViewer}>
-        <DialogContent aria-describedby={undefined}
+        <DialogContent
+          aria-describedby={undefined}
           showCloseButton={false}
-          className="!overflow-hidden max-w-[90vw] h-[90vh] sm:max-w-[85vw] sm:h-[85vh] w-full p-0 flex flex-col border-none sm:rounded-2xl shadow-2xl">
-          <DialogTitle className="sr-only">{t($ => $.book.detail.pdfViewer)} - {book.title}</DialogTitle>
+          className="!overflow-hidden max-w-[90vw] h-[90vh] sm:max-w-[85vw] sm:h-[85vh] w-full p-0 flex flex-col border-none sm:rounded-2xl shadow-2xl"
+        >
+          <DialogTitle className="sr-only">
+            {t(($) => $.book.detail.pdfViewer)} - {book.title}
+          </DialogTitle>
           <div
             className="relative flex-1 min-h-0 bg-slate-100 dark:bg-slate-900 "
             onWheel={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}
             onPointerDown={(e) => e.stopPropagation()}
           >
-            <PDFViewer
-              key={showViewer ? `visible-${book.bookId}` : 'hidden'}
-              config={{
-                // src: `${AppApi.book.proxyPdf}/${encodeURIComponent(`${book.bookId}-${book.title}.pdf`)}?url=${encodeURIComponent(book.pdf)}&id=${book.id}`,
-                src: book.pdf,
-                disabledCategories: ['panel-comment', 'shapes', 'redaction', 'security'],
-                scroll: {
-                  defaultStrategy: ScrollStrategy.Vertical,
-                  defaultPageGap: 16
-                },
-                theme: {
-                  preference: (document.documentElement.classList.contains('dark') ? 'dark' : 'light') as 'dark' | 'light'
-                }
-              }}
-              style={{ width: '100%', height: '100%', position: 'absolute', inset: 0, display: 'block' }}
-            />
+            <Suspense
+              fallback={
+                <div className="w-full h-full bg-slate-100 dark:bg-slate-900 animate-pulse" />
+              }
+            >
+              <LazyPDFViewer
+                key={showViewer ? `visible-${book.bookId}` : "hidden"}
+                config={{
+                  src: book.pdf,
+                  disabledCategories: ["panel-comment", "shapes", "redaction", "security"],
+                  scroll: {
+                    defaultStrategy: ScrollStrategyVertical,
+                    defaultPageGap: 16,
+                  },
+                  theme: {
+                    preference: (document.documentElement.classList.contains("dark")
+                      ? "dark"
+                      : "light") as "dark" | "light",
+                  },
+                }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  position: "absolute",
+                  inset: 0,
+                  display: "block",
+                }}
+              />
+            </Suspense>
           </div>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

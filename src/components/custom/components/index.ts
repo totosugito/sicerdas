@@ -1,4 +1,9 @@
-export { type DialogInfoItem, type ModalProps, type DialogModalProps, DialogModal } from "./DialogModal";
+export {
+  type DialogInfoItem,
+  type ModalProps,
+  type DialogModalProps,
+  DialogModal,
+} from "./DialogModal";
 export { type ModalFormProps, type DialogModalFormProps, DialogModalForm } from "./DialogModalForm";
 export { default as DatePicker } from "./DatePicker";
 export { DatePickerWithRange } from "./DatePickerWithRange";
@@ -9,3 +14,4 @@ export { ImageCropper } from "./image-cropper";
 export { LocalePagination } from "./LocalePagination";
 export { FormWithDetector } from "./FormWithDetector";
 export { LongText } from "./LongText";
+export { BlockNoteEditor } from "./BlockNoteEditor";
