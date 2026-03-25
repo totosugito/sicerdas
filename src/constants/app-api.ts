@@ -1,5 +1,5 @@
-const APP_BASE_URL = import.meta.env.VITE_APP_BASE_URL
-const APP_URL_API = APP_BASE_URL + "/api"
+const APP_BASE_URL = import.meta.env.VITE_APP_BASE_URL;
+const APP_URL_API = APP_BASE_URL + "/api";
 export const AppApi = {
   auth: {
     signIn: APP_URL_API + "/auth/sign-in-email",
@@ -48,7 +48,7 @@ export const AppApi = {
       crud: APP_URL_API + "/admin/chat-ai/models", // for GET, PATCH, DELETE single
       deleteBatch: APP_URL_API + "/admin/chat-ai/models/delete-batch",
       updateBatch: APP_URL_API + "/admin/chat-ai/models/update-batch",
-    }
+    },
   },
   book: {
     list: APP_URL_API + "/book/list",
@@ -95,6 +95,7 @@ export const AppApi = {
       },
       list: APP_URL_API + "/exam/package-sections/list",
       listSimple: APP_URL_API + "/exam/package-sections/list-simple",
+      detail: APP_URL_API + "/exam/package-sections/detail/:id",
     },
     passages: {
       admin: {
@@ -182,5 +183,5 @@ export const AppApi = {
       list: APP_URL_API + "/education/categories/list",
       listSimple: APP_URL_API + "/education/categories/list-simple",
     },
-  }
-}
+  },
+};

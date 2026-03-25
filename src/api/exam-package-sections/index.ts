@@ -1,4 +1,8 @@
-export type { ExamPackageSection, ExamPackageSectionResponse, ExamPackageSectionDetailResponse } from "./types";
+export type {
+  ExamPackageSection,
+  ExamPackageSectionResponse,
+  ExamPackageSectionDetailResponse,
+} from "./types";
 
 // Admin exports
 export { useCreatePackageSection } from "./admin/create-section";
@@ -14,4 +18,10 @@ export { useListPackageSection } from "./list-section";
 export type { ListSectionRequest, ListSectionsResponse } from "./list-section";
 
 export { useListPackageSectionSimple } from "./list-section-simple";
-export type { ListSectionSimpleRequest, ListSectionsSimpleResponse, SectionSimpleItem } from "./list-section-simple";
+export type {
+  ListSectionSimpleRequest,
+  ListSectionsSimpleResponse,
+  SectionSimpleItem,
+} from "./list-section-simple";
+
+export { useDetailPackageSection } from "./detail-section";

@@ -150,6 +150,10 @@
         "success": "Seksi paket ujian berhasil dihapus",
         "notFound": "Seksi tidak ditemukan",
         "inUse": "Seksi paket ujian ini tidak dapat dihapus karena masih tertaut dengan soal ujian."
+      },
+      "detail": {
+        "success": "Berhasil mengambil detail seksi",
+        "notFound": "Seksi tidak ditemukan"
       }
     },
     "package-questions": {
