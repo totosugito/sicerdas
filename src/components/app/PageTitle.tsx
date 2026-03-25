@@ -15,6 +15,7 @@ type PageTitleProps = {
   showBack?: boolean;
   backTo?: string;
   onBack?: () => void;
+  extra?: React.ReactNode;
 };
 
 const PageTitle = ({
@@ -26,7 +27,8 @@ const PageTitle = ({
   classNameDescription = "",
   showBack,
   backTo,
-  onBack
+  onBack,
+  extra,
 }: PageTitleProps) => {
   const navigate = useNavigate();
   const router = useRouter();
@@ -48,26 +50,37 @@ const PageTitle = ({
       <div className={cn("flex flex-row gap-2 items-start justify-between", className)}>
         <div className="flex flex-row gap-4 items-start">
           {showBack && (
-            <Button
-              variant="outline"
-              size="icon"
-              className="mt-2"
-              onClick={handleBack}
-            >
+            <Button variant="outline" size="icon" className="mt-2" onClick={handleBack}>
               <ArrowLeft className="h-4 w-4" />
             </Button>
           )}
-          {(title || description) &&
+          {(title || description) && (
             <div className={"flex flex-col"}>
               <div className={"flex flex-row flex-wrap gap-y-0 gap-x-4 items-center"}>
-                {title && <div className={cn("flex items-start", "text-xl font-bold tracking-tight md:text-2xl", classNameTitle)}>{title}</div>}
+                {title && (
+                  <div
+                    className={cn(
+                      "flex items-start",
+                      "text-xl font-bold tracking-tight md:text-2xl",
+                      classNameTitle,
+                    )}
+                  >
+                    {title}
+                  </div>
+                )}
               </div>
-              {description && <div className={cn("text-muted-foreground", classNameDescription)}>{description}</div>}
-            </div>}
+              {description && (
+                <div className={cn("text-muted-foreground", classNameDescription)}>
+                  {description}
+                </div>
+              )}
+            </div>
+          )}
         </div>
+        {extra && <div className="flex items-center gap-2">{extra}</div>}
       </div>
       {showSeparator && <Separator className={"mt-2"} />}
     </div>
-  )
-}
-export default PageTitle
+  );
+};
+export default PageTitle;

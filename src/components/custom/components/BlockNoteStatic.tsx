@@ -1,0 +1,42 @@
+import React, { useMemo } from "react";
+import "@blocknote/core/fonts/inter.css";
+import "@blocknote/shadcn/style.css";
+import { useCreateBlockNote } from "@blocknote/react";
+import { BlockNoteView } from "@blocknote/shadcn";
+import { cn } from "@/lib/utils";
+import { useTheme } from "@/lib/theme-provider";
+
+export type BlockNoteStaticProps = {
+  content: any[];
+  className?: string;
+  minHeight?: string;
+};
+
+export const BlockNoteStatic = ({
+  content,
+  className,
+  minHeight = "auto",
+}: BlockNoteStaticProps) => {
+  const { theme: appTheme } = useTheme();
+
+  const resolvedTheme = useMemo(() => {
+    return appTheme === "system"
+      ? typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light"
+      : appTheme;
+  }, [appTheme]);
+
+  const editor = useCreateBlockNote({
+    initialContent: content && content.length > 0 ? content : undefined,
+  });
+
+  return (
+    <div
+      className={cn("border rounded-md bg-background overflow-hidden transition-all", className)}
+      style={{ minHeight }}
+    >
+      <BlockNoteView editor={editor} theme={resolvedTheme} editable={false} />
+    </div>
+  );
+};

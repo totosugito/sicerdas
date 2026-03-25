@@ -2,31 +2,31 @@ export const AppRoute = {
   auth: {
     signUp: {
       url: "/sign-up",
-      breadcrumb: []
+      breadcrumb: [],
     },
     signIn: {
       url: "/sign-in",
-      breadcrumb: []
+      breadcrumb: [],
     },
     resetPassword: {
       url: "/reset-password",
-      breadcrumb: []
+      breadcrumb: [],
     },
     resetPasswordEmail: {
       url: "/reset-password-email",
-      breadcrumb: []
+      breadcrumb: [],
     },
     otpForgetPassword: {
       url: "/otp-forget-password",
-      breadcrumb: []
+      breadcrumb: [],
     },
     otpVerification: {
       url: "/otp-verification",
-      breadcrumb: []
+      breadcrumb: [],
     },
     otpResetPassword: {
       url: "/otp-reset-password",
-      breadcrumb: []
+      breadcrumb: [],
     },
   },
   user: {
@@ -76,7 +76,7 @@ export const AppRoute = {
       list: { url: "/admin/list-grade" },
       create: { url: "/admin/create-grade" },
       edit: { url: "/admin/edit-grade/$id" },
-    }
+    },
   },
   exam: {
     questions: {
@@ -84,6 +84,7 @@ export const AppRoute = {
         list: { url: "/admin/list-question" },
         create: { url: "/admin/create-question" },
         edit: { url: "/admin/edit-question/$id" },
+        detail: { url: "/admin/detail-question/$id" },
       },
     },
     passages: {
@@ -115,7 +116,7 @@ export const AppRoute = {
         edit: { url: "/admin/edit-section/$id" },
         create: { url: "/admin/create-section" },
       },
-    }
+    },
   },
   education: {
     categories: {
@@ -128,7 +129,7 @@ export const AppRoute = {
         list: { url: "/admin/grades" },
         create: { url: "/admin/create-grade" },
         edit: { url: "/admin/edit-grade/$id" },
-      }
+      },
     },
     tags: {
       admin: {
@@ -143,6 +144,6 @@ export const AppRoute = {
     },
     user: {
       list: { url: "/admin/users" },
-    }
-  }
-}
+    },
+  },
+};
