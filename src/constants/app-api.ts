@@ -114,6 +114,7 @@ export const AppApi = {
         detail: APP_URL_API + "/exam/questions/admin/detail/:id",
         delete: APP_URL_API + "/exam/questions/admin/delete/:id",
         list: APP_URL_API + "/exam/questions/admin/list",
+        listSimple: APP_URL_API + "/exam/questions/admin/list-simple",
       },
     },
     questionOptions: {
@@ -143,7 +144,10 @@ export const AppApi = {
     },
     packageQuestions: {
       admin: {
+        list: APP_URL_API + "/exam/package-questions/admin/list",
         assign: APP_URL_API + "/exam/package-questions/admin/assign",
+        unassign: APP_URL_API + "/exam/package-questions/admin/unassign",
+        syncOrder: APP_URL_API + "/exam/package-questions/admin/sync-order",
       },
     },
     sessions: {

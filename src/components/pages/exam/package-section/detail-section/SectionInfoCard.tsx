@@ -13,7 +13,7 @@ export function SectionInfoCard({ section }: SectionInfoCardProps) {
 
   return (
     <Card className="shadow-sm border-primary/10 overflow-hidden">
-      <CardContent className="p-0">
+      <CardContent className="py-0 pl-0">
         <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x">
           {/* Package Info */}
           <div className="p-5 flex items-start gap-4">
@@ -40,13 +40,13 @@ export function SectionInfoCard({ section }: SectionInfoCardProps) {
                 {t(($) => $.exam.sections.detail.infoCard.statusAndOrder)}
               </p>
               <div className="flex items-center gap-2">
+                <Badge variant="outline" className="h-6 border-primary/30 text-primary">
+                  #{section.order}
+                </Badge>
                 <Badge variant={section.isActive ? "success" : "secondary"} className="h-6">
                   {section.isActive
                     ? t(($) => $.exam.sections.active)
                     : t(($) => $.exam.sections.inactive)}
-                </Badge>
-                <Badge variant="outline" className="h-6 border-primary/30 text-primary">
-                  #{section.order}
                 </Badge>
               </div>
             </div>

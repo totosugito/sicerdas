@@ -156,9 +156,12 @@
         "notFound": "Seksi tidak ditemukan"
       }
     },
-    "package-questions": {
+    "package_questions": {
       "assign": {
         "success": "Soal berhasil ditautkan ke paket ujian"
+      },
+      "unassign": {
+        "success": "Soal berhasil dilepas dari paket ujian"
       },
       "list": {
         "success": "Berhasil mengambil daftar soal dalam paket"

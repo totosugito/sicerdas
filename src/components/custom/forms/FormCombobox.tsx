@@ -1,12 +1,22 @@
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import React from "react";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Check, ChevronsUpDown } from "lucide-react"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import React from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
@@ -14,27 +24,35 @@ import { UseFormReturn } from "react-hook-form";
 export type FormComboboxProps = {
   form: UseFormReturn<any>;
   item: {
-    name: string
-    label: string
-    placeholder?: string
-    description?: string
-    selectLabel?: string
-    searchPlaceholder?: string
-    options: Array<{ label: string, value: string }>
-    onSearchChange?: (search: string) => void
-    onScrollEnd?: () => void
-    isLoading?: boolean
-    serverSideSearch?: boolean
+    name: string;
+    label: string;
+    placeholder?: string;
+    description?: string;
+    selectLabel?: string;
+    searchPlaceholder?: string;
+    options: Array<{ label: string; value: string }>;
+    onSearchChange?: (search: string) => void;
+    onScrollEnd?: () => void;
+    isLoading?: boolean;
+    serverSideSearch?: boolean;
     required?: boolean;
+    popoverClassName?: string;
   };
-  disabled?: boolean
-  className?: string
+  disabled?: boolean;
+  className?: string;
   labelClassName?: string;
   showMessage?: boolean;
-}
+};
 
-export const FormCombobox = ({ form, item, labelClassName = "", showMessage = true, ...props }: FormComboboxProps) => {
-  const [open, setOpen] = React.useState(false)
+export const FormCombobox = ({
+  form,
+  item,
+  labelClassName = "",
+  showMessage = true,
+  ...props
+}: FormComboboxProps) => {
+  const popoverClassName = item.popoverClassName ?? "min-w-[250px]";
+  const [open, setOpen] = React.useState(false);
 
   const selectedRef = React.useRef<HTMLDivElement>(null);
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -45,14 +63,17 @@ export const FormCombobox = ({ form, item, labelClassName = "", showMessage = tr
     };
   }, []);
 
-  const handleSearchChange = React.useCallback((value: string) => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      if (item?.onSearchChange) {
-        item.onSearchChange(value);
-      }
-    }, 300);
-  }, [item]);
+  const handleSearchChange = React.useCallback(
+    (value: string) => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        if (item?.onSearchChange) {
+          item.onSearchChange(value);
+        }
+      }, 300);
+    },
+    [item],
+  );
 
   React.useEffect(() => {
     if (open) {
@@ -70,32 +91,50 @@ export const FormCombobox = ({ form, item, labelClassName = "", showMessage = tr
       name={item.name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className={cn("", labelClassName)}>{item.label}{item.required && <span className="text-red-500">*</span>}</FormLabel>
-          <Popover open={open} onOpenChange={
-            setOpen
-            //   (v) => {
-            //   if(!item?.readonly) {
-            //     setOpen(v);
-            //   }
-            // }
-          } {...props} modal={true}>
+          <FormLabel className={cn("", labelClassName)}>
+            {item.label}
+            {item.required && <span className="text-red-500">*</span>}
+          </FormLabel>
+          <Popover
+            open={open}
+            onOpenChange={
+              setOpen
+              //   (v) => {
+              //   if(!item?.readonly) {
+              //     setOpen(v);
+              //   }
+              // }
+            }
+            {...props}
+            modal={true}
+          >
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
                   variant="outline"
                   role="combobox"
                   aria-expanded={open}
-                  className={cn(`w-full justify-between font-normal ${field.value ? "" : "text-muted-foreground"}`)}
+                  className={cn(
+                    "w-full justify-between font-normal min-w-0",
+                    field.value ? "" : "text-muted-foreground",
+                  )}
                   disabled={props?.disabled}
                 >
-                  {field.value
-                    ? item?.options.find((it: any) => it.value === field.value)?.label
-                    : (item?.placeholder ?? "Search...")}
-                  <ChevronsUpDown className="opacity-50" />
+                  <span className="truncate overflow-hidden text-left flex-1 mr-2">
+                    {field.value
+                      ? item?.options.find((it: any) => it.value === field.value)?.label
+                      : (item?.placeholder ?? "Search...")}
+                  </span>
+                  <ChevronsUpDown className="opacity-50 flex-shrink-0" />
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 overflow-y-auto">
+            <PopoverContent
+              className={cn(
+                "w-[var(--radix-popover-trigger-width)] p-0 overflow-y-auto z-50",
+                popoverClassName,
+              )}
+            >
               <Command
                 shouldFilter={!item?.serverSideSearch}
                 filter={(value, search) => {
@@ -132,13 +171,13 @@ export const FormCombobox = ({ form, item, labelClassName = "", showMessage = tr
                           form.setValue(field.name, newValue);
                           setOpen(false);
                         }}
-                      // className={cn(`${field.value === it.value ? "bg-chart-2 text-background" : ""}`)}
+                        // className={cn(`${field.value === it.value ? "bg-chart-2 text-background" : ""}`)}
                       >
                         {it.label}
                         <Check
                           className={cn(
                             "ml-auto",
-                            field.value === it.value ? "opacity-100" : "opacity-0"
+                            field.value === it.value ? "opacity-100" : "opacity-0",
                           )}
                         />
                       </CommandItem>
@@ -153,5 +192,5 @@ export const FormCombobox = ({ form, item, labelClassName = "", showMessage = tr
         </FormItem>
       )}
     />
-  )
-}
+  );
+};

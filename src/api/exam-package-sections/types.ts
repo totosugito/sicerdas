@@ -22,12 +22,7 @@ export interface SectionQuestionItem {
 
 import { PaginationData } from "@/components/custom/table";
 
-export interface SectionDetailItem extends Omit<ExamPackageSection, "totalQuestions"> {
-  questions: {
-    items: SectionQuestionItem[];
-    meta: PaginationData;
-  };
-}
+export interface SectionDetailItem extends Omit<ExamPackageSection, "totalQuestions"> {}
 
 export interface ExamPackageSectionResponse {
   success: boolean;

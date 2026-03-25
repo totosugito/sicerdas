@@ -1,24 +1,49 @@
 import { SectionQuestionItem } from "@/api/exam-package-sections/types";
-import {
-  DataTable,
-  useDataTable,
-  DataTableColumnHeader,
-  createRowNumberColumn,
-} from "@/components/custom/table";
+import { DataTableColumnHeader, DataTablePagination } from "@/components/custom/table";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { ColumnDef } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  PaginationState,
+} from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { LongText } from "@/components/custom/components";
-
+import { DialogModal } from "@/components/custom/components";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 import { PaginationData } from "@/components/custom/table";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { SortableRow } from "./SortableRow";
+import { useState } from "react";
 
 interface SectionQuestionTableProps {
   questions: SectionQuestionItem[];
   meta: PaginationData | undefined;
   onPaginationChange: (pagination: { page: number; limit: number }) => void;
+  onReorder: (questionIds: string[]) => void;
+  onRemove: (questionId: string) => void;
   isLoading?: boolean;
 }
 
@@ -26,19 +51,38 @@ export function SectionQuestionTable({
   questions,
   meta,
   onPaginationChange,
+  onReorder,
+  onRemove,
   isLoading = false,
 }: SectionQuestionTableProps) {
   const { t } = useAppTranslation();
+  const [questionIdToRemove, setQuestionIdToRemove] = useState<string | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+  );
 
   const columns: ColumnDef<SectionQuestionItem>[] = [
-    createRowNumberColumn<SectionQuestionItem>({
+    {
+      id: "drag-handle",
+      size: 40,
+      header: () => null,
+    },
+    {
       id: "no",
+      header: () => <div className="text-center w-full">No</div>,
       size: 50,
-      paginationData: meta,
-    }),
+      cell: ({ row }) => {
+        const index = meta ? (meta.page - 1) * meta.limit + row.index + 1 : row.index + 1;
+        return <div className="text-center">{index}</div>;
+      },
+    },
     {
       accessorKey: "content",
-      enableSorting: false,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -62,7 +106,6 @@ export function SectionQuestionTable({
     },
     {
       accessorKey: "subjectName",
-      enableSorting: false,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -76,7 +119,9 @@ export function SectionQuestionTable({
     },
     {
       accessorKey: "difficulty",
-      enableSorting: false,
+      size: 80,
+      minSize: 80,
+      maxSize: 80,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -92,72 +137,157 @@ export function SectionQuestionTable({
         );
       },
     },
+    // {
+    //   accessorKey: "type",
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader
+    //       column={column}
+    //       title={t(($) => $.exam.questions.table.columns.type)}
+    //     />
+    //   ),
+    //   cell: ({ row }) => {
+    //     const type = row.getValue("type") as string;
+    //     return (
+    //       <Badge variant="secondary" className="capitalize">
+    //         {type.replace("_", " ")}
+    //       </Badge>
+    //     );
+    //   },
+    // },
     {
-      accessorKey: "type",
-      enableSorting: false,
-      header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title={t(($) => $.exam.questions.table.columns.type)}
-        />
-      ),
-      cell: ({ row }) => {
-        const type = row.getValue("type") as string;
-        return (
-          <Badge variant="secondary" className="capitalize">
-            {type.replace("_", " ")}
-          </Badge>
-        );
-      },
-    },
-    {
-      accessorKey: "order",
-      size: 80,
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Sort" className="justify-center" />
-      ),
+      id: "actions",
+      size: 50,
+      header: () => <div className="text-center w-full">{t(($) => $.labels.action)}</div>,
       cell: ({ row }) => (
         <div className="flex justify-center">
-          <Badge variant="outline" className="font-bold border-primary/30 text-primary">
-            #{row.original.order}
-          </Badge>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={() => setQuestionIdToRemove(row.original.id)}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
         </div>
       ),
     },
   ];
 
-  const { table } = useDataTable({
+  const paginationState: PaginationState = {
+    pageIndex: (meta?.page || 1) - 1,
+    pageSize: meta?.limit || 10,
+  };
+
+  const table = useReactTable({
     data: questions,
     columns,
-    pageCount: meta?.totalPages || -1,
-    initialState: {
-      pagination: {
-        pageIndex: (meta?.page || 1) - 1,
-        pageSize: meta?.limit || 10,
-      },
-    },
+    getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
-    onPaginationChange: (updater: any) => {
-      const nextPagination =
-        typeof updater === "function" ? updater(table.getState().pagination) : updater;
-      if (onPaginationChange) {
-        onPaginationChange({
-          page: nextPagination.pageIndex + 1,
-          limit: nextPagination.pageSize,
-        });
-      }
+    pageCount: meta?.totalPages || -1,
+    state: {
+      pagination: paginationState,
+    },
+    onPaginationChange: (updater) => {
+      const next = typeof updater === "function" ? updater(paginationState) : updater;
+      onPaginationChange({ page: next.pageIndex + 1, limit: next.pageSize });
     },
   });
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      const oldIndex = questions.findIndex((q) => q.id === active.id);
+      const newIndex = questions.findIndex((q) => q.id === over?.id);
+
+      const newOrder = [...questions];
+      const [movedItem] = newOrder.splice(oldIndex, 1);
+      newOrder.splice(newIndex, 0, movedItem);
+
+      onReorder(newOrder.map((q) => q.id));
+    }
+  };
+
   return (
     <div className="border rounded-lg bg-card shadow-sm overflow-hidden text-sm">
-      <DataTable
-        table={table}
-        paginationData={meta}
-        totalRowCount={meta?.total || 0}
-        showSideBorders={false}
-        showZebraStriping={true}
-        defaultNoResultText={t(($) => $.exam.questions.table.noResult)}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+        modifiers={[restrictToVerticalAxis]}
+      >
+        <Table className="border-separate border-spacing-0">
+          <TableHeader className="bg-muted/50">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="h-10 border-b border-r last:border-r-0 font-semibold"
+                    style={{ width: header.getSize() }}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            <SortableContext
+              items={questions.map((q) => q.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {table.getRowModel().rows.length > 0 ? (
+                table
+                  .getRowModel()
+                  .rows.map((row) => <SortableRow key={row.original.id} row={row} />)
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center text-muted-foreground italic"
+                  >
+                    {isLoading
+                      ? t(($) => $.labels.loading)
+                      : t(($) => $.exam.questions.table.noResult)}
+                  </TableCell>
+                </TableRow>
+              )}
+            </SortableContext>
+          </TableBody>
+        </Table>
+      </DndContext>
+
+      <div className="p-4 border-t">
+        <DataTablePagination
+          pageIndex={table.getState().pagination.pageIndex}
+          setPageIndex={table.setPageIndex}
+          pageSize={table.getState().pagination.pageSize}
+          setPageSize={table.setPageSize}
+          rowsCount={meta?.total || 0}
+          paginationData={meta}
+        />
+      </div>
+
+      <DialogModal
+        open={!!questionIdToRemove}
+        onOpenChange={(open) => !open && setQuestionIdToRemove(null)}
+        modal={{
+          title: t(($) => $.exam.packageQuestions.removeModal.title),
+          desc: t(($) => $.exam.packageQuestions.removeModal.description),
+          textConfirm: t(($) => $.exam.packageQuestions.removeModal.confirm),
+          textCancel: t(($) => $.exam.packageQuestions.removeModal.cancel),
+          onConfirmClick: () => {
+            if (questionIdToRemove) {
+              onRemove(questionIdToRemove);
+              setQuestionIdToRemove(null);
+            }
+          },
+          variant: "destructive",
+          iconType: "error",
+          headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
+        }}
       />
     </div>
   );

@@ -4,45 +4,44 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
-const AssignPackageQuestionsBody = Type.Object({
+const SyncPackageQuestionsOrderBody = Type.Object({
   packageId: Type.String({ format: "uuid" }),
   sectionId: Type.String({ format: "uuid" }),
-  questionIds: Type.Array(Type.String({ format: "uuid" }), { minItems: 1 }),
+  questionIds: Type.Array(Type.String({ format: "uuid" })),
 });
 
-const AssignPackageQuestionsResponse = Type.Object({
+const SyncPackageQuestionsOrderResponse = Type.Object({
   success: Type.Boolean(),
   message: Type.String(),
 });
 
-const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
+const syncPackageQuestionsOrderRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
-    url: "/assign",
+    url: "/sync-order",
     method: "POST",
     schema: {
       tags: ["Admin Exam Package Questions"],
-      body: AssignPackageQuestionsBody,
+      body: SyncPackageQuestionsOrderBody,
       response: {
-        200: AssignPackageQuestionsResponse,
+        200: SyncPackageQuestionsOrderResponse,
         "4xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
         "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
       },
     },
     handler: withErrorHandler(async function handler(
-      request: FastifyRequest<{ Body: typeof AssignPackageQuestionsBody.static }>,
+      request: FastifyRequest<{ Body: typeof SyncPackageQuestionsOrderBody.static }>,
       reply: FastifyReply,
     ) {
       const { t } = getTypedI18n(request);
       const { packageId, sectionId, questionIds } = request.body;
 
       await db.transaction(async (tx) => {
-        // 1. Get the current maximum order in this section
-        const currentMax = await tx
-          .select({ maxOrder: sql<number>`MAX(${examPackageQuestions.order})` })
-          .from(examPackageQuestions)
+        // 1. Delete all current questions in this section
+        await tx
+          .delete(examPackageQuestions)
           .where(
             and(
               eq(examPackageQuestions.packageId, packageId),
@@ -50,27 +49,17 @@ const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
             ),
           );
 
-        let nextOrder = (currentMax[0]?.maxOrder ?? 0) + 1;
+        // 2. Insert with the new order if there are questions
+        if (questionIds.length > 0) {
+          const values = questionIds.map((questionId, index) => ({
+            packageId,
+            sectionId,
+            questionId,
+            order: index + 1,
+          }));
 
-        // 2. Clear these questions from this package if they exist (to handle move between sections)
-        await tx
-          .delete(examPackageQuestions)
-          .where(
-            and(
-              eq(examPackageQuestions.packageId, packageId),
-              inArray(examPackageQuestions.questionId, questionIds),
-            ),
-          );
-
-        // 3. Insert new assignments
-        const values = questionIds.map((questionId) => ({
-          packageId,
-          sectionId,
-          questionId,
-          order: nextOrder++,
-        }));
-
-        await tx.insert(examPackageQuestions).values(values);
+          await tx.insert(examPackageQuestions).values(values);
+        }
       });
 
       return reply.status(200).send({
@@ -81,4 +70,4 @@ const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
   });
 };
 
-export default assignPackageQuestionsRoute;
+export default syncPackageQuestionsOrderRoute;

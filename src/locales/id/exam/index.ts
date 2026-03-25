@@ -7,16 +7,18 @@ import questions from "./question";
 import options from "./options";
 import solutions from "./solutions";
 import tags from "./tags";
+import packageQuestions from "./package-questions";
 
 const obj = {
-    ...exam,
-    subjects,
-    packages,
-    sections,
-    passages,
-    questions,
-    options,
-    solutions,
-    tags
-}
-export default obj
+  ...exam,
+  subjects,
+  packages,
+  sections,
+  passages,
+  questions,
+  options,
+  solutions,
+  tags,
+  packageQuestions,
+};
+export default obj;

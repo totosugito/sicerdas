@@ -65,7 +65,7 @@ export default {
     },
     actions: {
       openMenu: "Buka menu",
-      detail: "Detail",
+      detail: "Detail Bagian Paket",
       edit: "Edit",
       delete: "Hapus",
     },
