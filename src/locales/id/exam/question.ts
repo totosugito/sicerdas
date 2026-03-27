@@ -3,6 +3,7 @@ export default {
   title: "Manajemen Soal Ujian",
   description: "Kelola bank soal ujian, tingkat kesulitan, dan kategori soal.",
   backToPage: "Kembali ke Daftar",
+  importJson: "Impor dari JSON",
   table: {
     search: "Cari soal...",
     noData: "Tidak ada data soal.",

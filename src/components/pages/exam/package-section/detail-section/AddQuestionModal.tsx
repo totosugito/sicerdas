@@ -34,6 +34,8 @@ import { useListTier } from "@/api/app-tier";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
+import { string_to_locale_date } from "@/lib/my-utils";
+import i18n from "@/i18n";
 
 interface AddQuestionModalProps {
   open: boolean;
@@ -150,22 +152,35 @@ export function AddQuestionModal({
       ),
       cell: ({ row }) => row.original.subjectName || "-",
     },
+    // {
+    //   accessorKey: "difficulty",
+    //   enableSorting: true,
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader
+    //       column={column}
+    //       title={t(($) => $.exam.questions.table.columns.difficulty)}
+    //     />
+    //   ),
+    //   cell: ({ row }) => {
+    //     const diff = row.original.difficulty;
+    //     return (
+    //       <Badge variant="outline" className="capitalize">
+    //         {t(($) => $.exam.questions.form.difficulty.options[diff as "easy" | "medium" | "hard"])}
+    //       </Badge>
+    //     );
+    //   },
+    // },
     {
-      accessorKey: "difficulty",
+      accessorKey: "updatedAt",
       enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={t(($) => $.exam.questions.table.columns.difficulty)}
+          title={t(($) => $.exam.questions.table.columns.updatedAt)}
         />
       ),
       cell: ({ row }) => {
-        const diff = row.original.difficulty;
-        return (
-          <Badge variant="outline" className="capitalize">
-            {t(($) => $.exam.questions.form.difficulty.options[diff as "easy" | "medium" | "hard"])}
-          </Badge>
-        );
+        return string_to_locale_date(i18n.language, row.original.updatedAt);
       },
     },
   ];

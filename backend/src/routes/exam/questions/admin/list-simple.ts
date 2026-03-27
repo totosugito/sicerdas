@@ -35,6 +35,7 @@ const SimpleQuestionResponseItem = Type.Object({
   subjectName: Type.Optional(Type.String()),
   content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
   difficulty: Type.Enum(EnumDifficultyLevel),
+  updatedAt: Type.String({ format: "date-time" }),
 });
 
 const ListSimpleQuestionsResponse = Type.Object({
@@ -183,6 +184,7 @@ const listSimpleQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             subjectName: (q as any).subjectName,
             content: q.content as Record<string, unknown>[],
             difficulty: q.difficulty,
+            updatedAt: q.updatedAt.toISOString(),
           })),
           meta: {
             total,
