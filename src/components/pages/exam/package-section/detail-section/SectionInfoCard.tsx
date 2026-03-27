@@ -95,6 +95,20 @@ export function SectionInfoCard({ section }: SectionInfoCardProps) {
             </div>
           </div>
         </div>
+
+        {section.description && (
+          <div className="p-5 border-t bg-muted/10">
+            <div className="flex flex-col gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 flex items-center gap-2">
+                <Layers className="h-4 w-4" />
+                {t(($) => $.exam.sections.formDescription)}
+              </span>
+              <p className="text-sm whitespace-pre-wrap leading-relaxed text-muted-foreground">
+                {section.description}
+              </p>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

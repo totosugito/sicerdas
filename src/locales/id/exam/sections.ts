@@ -5,6 +5,8 @@ export default {
   formTitleRequired: "Judul wajib diisi",
   formTitle: "Judul",
   formTitlePlaceholder: "Masukkan judul bagian",
+  formDescription: "Deskripsi",
+  formDescriptionPlaceholder: "Masukkan deskripsi bagian...",
   formDuration: "Durasi (Menit)",
   formDurationPlaceholder: "Opsional",
   formDurationHelp: "Masukkan 0 jika tidak ada batas waktu.",
@@ -58,6 +60,7 @@ export default {
       status: "Status",
       updatedAt: "Terakhir Diperbarui",
       actions: "Aksi",
+      description: "Deskripsi",
     },
     status: {
       active: "Aktif",
@@ -65,7 +68,7 @@ export default {
     },
     actions: {
       openMenu: "Buka menu",
-      detail: "Detail Bagian Paket",
+      detail: "Detail",
       edit: "Edit",
       delete: "Hapus",
     },
