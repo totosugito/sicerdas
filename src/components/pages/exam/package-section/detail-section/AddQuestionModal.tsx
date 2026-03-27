@@ -40,6 +40,7 @@ interface AddQuestionModalProps {
   onOpenChange: (open: boolean) => void;
   onConfirm: (questionIds: string[]) => void;
   isAssigning?: boolean;
+  packageId?: string;
 }
 
 type FilterValues = {
@@ -55,6 +56,7 @@ export function AddQuestionModal({
   onOpenChange,
   onConfirm,
   isAssigning = false,
+  packageId,
 }: AddQuestionModalProps) {
   const { t } = useAppTranslation();
   const [pagination, setPagination] = useState({ page: 1, limit: 10 });
@@ -96,18 +98,24 @@ export function AddQuestionModal({
   });
   const { data: tiersData, isLoading: isLoadingTiers } = useListTier();
 
-  const { data, isLoading } = useListQuestionSimple({
-    page: pagination.page,
-    limit: pagination.limit,
-    subjectId: filterValues.subjectId === "all" ? undefined : filterValues.subjectId,
-    educationGradeId: filterValues.gradeId === "all" ? undefined : Number(filterValues.gradeId),
-    requiredTier: filterValues.tier === "all" ? undefined : filterValues.tier,
-    difficulty: filterValues.difficulty === "all" ? undefined : (filterValues.difficulty as any),
-    type: filterValues.type === "all" ? undefined : (filterValues.type as any),
-    isActive: true,
-    sortBy,
-    sortOrder,
-  });
+  const { data, isLoading, isFetching } = useListQuestionSimple(
+    {
+      page: pagination.page,
+      limit: pagination.limit,
+      subjectId: filterValues.subjectId === "all" ? undefined : filterValues.subjectId,
+      educationGradeId: filterValues.gradeId === "all" ? undefined : Number(filterValues.gradeId),
+      requiredTier: filterValues.tier === "all" ? undefined : filterValues.tier,
+      difficulty: filterValues.difficulty === "all" ? undefined : (filterValues.difficulty as any),
+      // type: filterValues.type === "all" ? undefined : (filterValues.type as any),
+      excludePackageId: packageId,
+      isActive: true,
+      sortBy,
+      sortOrder,
+    },
+    open,
+  );
+
+  const isTableLoading = isLoading || isFetching;
 
   const columns: ColumnDef<ExamQuestion>[] = [
     createRowSelectColumn<ExamQuestion>({

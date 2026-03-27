@@ -4,7 +4,8 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
-import { and, desc, sql, eq } from "drizzle-orm";
+import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
+import { and, desc, sql, eq, notExists } from "drizzle-orm";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumDifficultyLevel, EnumQuestionType } from "../../../../db/schema/exam/enums.ts";
@@ -16,6 +17,7 @@ const QuestionListQuery = Type.Object({
   type: Type.Optional(Type.Enum(EnumQuestionType)),
   requiredTier: Type.Optional(Type.String()),
   educationGradeId: Type.Optional(Type.Number()),
+  excludePackageId: Type.Optional(Type.String({ format: "uuid" })),
   isActive: Type.Optional(
     Type.Boolean({ description: "Filter by active status. Omit to fetch all." }),
   ),
@@ -79,6 +81,7 @@ const listSimpleQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         type,
         requiredTier,
         educationGradeId,
+        excludePackageId,
         isActive,
         sortBy = "updatedAt",
         sortOrder = "desc",
@@ -99,6 +102,21 @@ const listSimpleQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (type) conditions.push(eq(examQuestions.type, type));
       if (requiredTier) conditions.push(eq(examQuestions.requiredTier, requiredTier));
       if (educationGradeId) conditions.push(eq(examQuestions.educationGradeId, educationGradeId));
+      if (excludePackageId) {
+        conditions.push(
+          notExists(
+            db
+              .select({ questionId: examPackageQuestions.questionId })
+              .from(examPackageQuestions)
+              .where(
+                and(
+                  eq(examPackageQuestions.packageId, excludePackageId),
+                  eq(examPackageQuestions.questionId, examQuestions.id),
+                ),
+              ),
+          ),
+        );
+      }
 
       // Simplified select
       let baseQuery = db

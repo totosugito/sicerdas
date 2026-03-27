@@ -42,7 +42,7 @@ interface SectionQuestionTableProps {
   questions: SectionQuestionItem[];
   meta: PaginationData | undefined;
   onPaginationChange: (pagination: { page: number; limit: number }) => void;
-  onReorder: (questionIds: string[]) => void;
+  onReorder: (updates: { questionId: string; order: number }[]) => void;
   onRemove: (questionId: string) => void;
   isLoading?: boolean;
 }
@@ -199,11 +199,17 @@ export function SectionQuestionTable({
       const oldIndex = questions.findIndex((q) => q.id === active.id);
       const newIndex = questions.findIndex((q) => q.id === over?.id);
 
-      const newOrder = [...questions];
-      const [movedItem] = newOrder.splice(oldIndex, 1);
-      newOrder.splice(newIndex, 0, movedItem);
+      const itemA = questions[oldIndex];
+      const itemB = questions[newIndex];
 
-      onReorder(newOrder.map((q) => q.id));
+      // Pure swap: only exchange the order values of the dragged item and the target item.
+      // This means items in between them will NOT change their position.
+      const updates = [
+        { questionId: itemA.id, order: itemB.order },
+        { questionId: itemB.id, order: itemA.order },
+      ];
+
+      onReorder(updates);
     }
   };
 

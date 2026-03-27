@@ -10,7 +10,13 @@ import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 const SyncPackageQuestionsOrderBody = Type.Object({
   packageId: Type.String({ format: "uuid" }),
   sectionId: Type.String({ format: "uuid" }),
-  questionIds: Type.Array(Type.String({ format: "uuid" })),
+  updates: Type.Array(
+    Type.Object({
+      questionId: Type.String({ format: "uuid" }),
+      order: Type.Number(),
+    }),
+    { minItems: 1 },
+  ),
 });
 
 const SyncPackageQuestionsOrderResponse = Type.Object({
@@ -36,29 +42,20 @@ const syncPackageQuestionsOrderRoute: FastifyPluginAsyncTypebox = async (app) =>
       reply: FastifyReply,
     ) {
       const { t } = getTypedI18n(request);
-      const { packageId, sectionId, questionIds } = request.body;
+      const { packageId, sectionId, updates } = request.body;
 
       await db.transaction(async (tx) => {
-        // 1. Delete all current questions in this section
-        await tx
-          .delete(examPackageQuestions)
-          .where(
-            and(
-              eq(examPackageQuestions.packageId, packageId),
-              eq(examPackageQuestions.sectionId, sectionId),
-            ),
-          );
-
-        // 2. Insert with the new order if there are questions
-        if (questionIds.length > 0) {
-          const values = questionIds.map((questionId, index) => ({
-            packageId,
-            sectionId,
-            questionId,
-            order: index + 1,
-          }));
-
-          await tx.insert(examPackageQuestions).values(values);
+        for (const update of updates) {
+          await tx
+            .update(examPackageQuestions)
+            .set({ order: update.order })
+            .where(
+              and(
+                eq(examPackageQuestions.packageId, packageId),
+                eq(examPackageQuestions.sectionId, sectionId),
+                eq(examPackageQuestions.questionId, update.questionId),
+              ),
+            );
         }
       });
 

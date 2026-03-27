@@ -4,6 +4,13 @@ export interface AssignPackageQuestionsRequest {
   questionIds: string[];
 }
 
+export interface AssignPackageQuestionsResponse extends CommonResponse {
+  data?: {
+    totalAssigned: number;
+    totalSkipped: number;
+  };
+}
+
 export interface UnassignPackageQuestionsRequest {
   packageId: string;
   questionIds: string[];
@@ -12,7 +19,7 @@ export interface UnassignPackageQuestionsRequest {
 export interface SyncPackageQuestionsOrderRequest {
   packageId: string;
   sectionId: string;
-  questionIds: string[];
+  updates: { questionId: string; order: number }[];
 }
 
 export interface CommonResponse {

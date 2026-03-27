@@ -4,6 +4,7 @@ export default {
   },
   assign: {
     success: "Soal berhasil ditautkan ke paket ujian",
+    details: "(Berhasil: {{assigned}}, Gagal/Dilewati: {{skipped}})",
   },
   unassign: {
     success: "Soal berhasil dihapus dari paket ujian",

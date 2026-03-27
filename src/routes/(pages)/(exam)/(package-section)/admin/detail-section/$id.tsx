@@ -17,6 +17,7 @@ import {
 } from "@/components/pages/exam/package-section/detail-section";
 import { AddQuestionModal } from "@/components/pages/exam/package-section/detail-section/AddQuestionModal";
 import { useState, useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 
@@ -29,6 +30,7 @@ function AdminPackageSectionDetailPage() {
   const { t } = useAppTranslation();
   const [pagination, setPagination] = useState({ page: 1, limit: 10 });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   // 1. Fetch Section Detail
   const {
@@ -69,10 +71,17 @@ function AdminPackageSectionDetailPage() {
         questionIds,
       },
       {
-        onSuccess: () => {
-          showNotifSuccess({ message: t(($) => $.exam.packageQuestions.assign.success) });
+        onSuccess: (res) => {
+          const assigned = res.data?.totalAssigned ?? 0;
+          const skipped = res.data?.totalSkipped ?? 0;
+
+          const title = t(($) => $.exam.packageQuestions.assign.success);
+          const details = t(($) => $.exam.packageQuestions.assign.details, { assigned, skipped });
+
+          showNotifSuccess({ message: `${title} ${details}` });
           setIsModalOpen(false);
           refetchQuestions();
+          queryClient.invalidateQueries({ queryKey: ["admin-exam-questions-list-simple"] });
         },
         onError: (err: any) => {
           showNotifError({
@@ -94,6 +103,7 @@ function AdminPackageSectionDetailPage() {
         onSuccess: () => {
           showNotifSuccess({ message: t(($) => $.exam.packageQuestions.unassign.success) });
           refetchQuestions();
+          queryClient.invalidateQueries({ queryKey: ["admin-exam-questions-list-simple"] });
         },
         onError: (err: any) => {
           showNotifError({
@@ -104,13 +114,13 @@ function AdminPackageSectionDetailPage() {
     );
   };
 
-  const handleReorder = (questionIds: string[]) => {
+  const handleReorder = (updates: { questionId: string; order: number }[]) => {
     if (!section) return;
     syncOrder(
       {
         packageId: section.packageId,
         sectionId: id,
-        questionIds,
+        updates,
       },
       {
         onSuccess: () => {
@@ -218,6 +228,7 @@ function AdminPackageSectionDetailPage() {
         onOpenChange={setIsModalOpen}
         onConfirm={handleAssign}
         isAssigning={isAssigning}
+        packageId={section.packageId}
       />
     </div>
   );

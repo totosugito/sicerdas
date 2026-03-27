@@ -16,6 +16,12 @@ const AssignPackageQuestionsBody = Type.Object({
 const AssignPackageQuestionsResponse = Type.Object({
   success: Type.Boolean(),
   message: Type.String(),
+  data: Type.Optional(
+    Type.Object({
+      totalAssigned: Type.Number(),
+      totalSkipped: Type.Number(),
+    }),
+  ),
 });
 
 const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -38,8 +44,32 @@ const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
       const { t } = getTypedI18n(request);
       const { packageId, sectionId, questionIds } = request.body;
 
+      let totalAssigned = 0;
+      let totalSkipped = 0;
+
       await db.transaction(async (tx) => {
-        // 1. Get the current maximum order in this section
+        // 1. Check which questions are already assigned to this package
+        const existingAssignments = await tx
+          .select({ questionId: examPackageQuestions.questionId })
+          .from(examPackageQuestions)
+          .where(
+            and(
+              eq(examPackageQuestions.packageId, packageId),
+              inArray(examPackageQuestions.questionId, questionIds),
+            ),
+          );
+
+        const existingIds = new Set(existingAssignments.map((a) => a.questionId));
+        const newQuestionIds = questionIds.filter((id) => !existingIds.has(id));
+
+        totalSkipped = existingIds.size;
+        totalAssigned = newQuestionIds.length;
+
+        if (newQuestionIds.length === 0) {
+          return; // All requested questions are already assigned
+        }
+
+        // 2. Get the current maximum order in this section
         const currentMax = await tx
           .select({ maxOrder: sql<number>`MAX(${examPackageQuestions.order})` })
           .from(examPackageQuestions)
@@ -52,18 +82,8 @@ const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         let nextOrder = (currentMax[0]?.maxOrder ?? 0) + 1;
 
-        // 2. Clear these questions from this package if they exist (to handle move between sections)
-        await tx
-          .delete(examPackageQuestions)
-          .where(
-            and(
-              eq(examPackageQuestions.packageId, packageId),
-              inArray(examPackageQuestions.questionId, questionIds),
-            ),
-          );
-
-        // 3. Insert new assignments
-        const values = questionIds.map((questionId) => ({
+        // 3. Insert only new assignments
+        const values = newQuestionIds.map((questionId) => ({
           packageId,
           sectionId,
           questionId,
@@ -76,6 +96,10 @@ const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
       return reply.status(200).send({
         success: true,
         message: t(($) => $.exam.package_questions.assign.success),
+        data: {
+          totalAssigned,
+          totalSkipped,
+        },
       });
     }),
   });
