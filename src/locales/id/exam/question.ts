@@ -141,4 +141,32 @@ export default {
       empty: "Belum ada pembahasan untuk soal ini.",
     },
   },
+  jsonQuestions: {
+    title: "Pratinjau JSON Soal",
+    description:
+      "Pratinjau soal ujian dari berkas JSON secara lokal tanpa menyimpannya ke database.",
+    importButton: "Impor JSON",
+    pasteButton: "Tempel JSON",
+    clearButton: "Bersihkan",
+    questionNumber: "Soal",
+    selectQuestion: "Pilih soal untuk melihat detailnya.",
+    noJsonImported: "Belum ada soal JSON yang diimpor.",
+    noJsonImportedDesc: 'Klik tombol "Impor JSON" atau "Tempel JSON" untuk memuat soal.',
+    pasteModalTitle: "Tempel Data JSON",
+    pasteModalPlaceholder: "Tempel konten JSON Anda di sini...",
+    cancel: "Batal",
+    submit: "Kirim",
+    invalidFormat: "Format JSON tidak valid: Diharapkan objek soal atau array.",
+    parseError: "Gagal mem-parsing JSON.",
+    exportSelected: "Ekspor Terpilih",
+    exportSuccess: "Berhasil mengekspor {count} soal.",
+    exportError: "Gagal mengekspor soal: {error}",
+    exporting: "Mengekspor...",
+    globalParameters: {
+      title: "Parameter Global",
+      overrideNote:
+        "Catatan: Parameter di atas akan menggantikan (override) nilai yang ada di berkas JSON saat melakukan ekspor ke bank soal.",
+      selectAll: "Pilih Semua ({selected}/{total})",
+    },
+  },
 };

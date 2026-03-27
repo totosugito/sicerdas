@@ -17,12 +17,12 @@ type Store = {
     grade: number[];
     sortBy: string;
     sortOrder: "asc" | "desc";
-  },
+  };
   setBooks: (books: any) => void;
 
   periodicTable: {
     viewMode: PeriodicViewMode;
-  },
+  };
   setPeriodicTable: (periodicTable: any) => void;
 
   elementExpandedSections: Record<string, boolean>;
@@ -32,20 +32,23 @@ type Store = {
   mobileMenu: Record<string, boolean>;
   setMobileMenuExpanded: (id: string, expanded: boolean) => void;
 
+  jsonQuestions: any[];
+  setJsonQuestions: (questions: any[]) => void;
+
   resetAll: () => void;
-}
+};
 
 export const defaultStore = {
   books: {
     viewMode: EnumViewMode.grid.value,
     limit: 12,
     page: 1,
-    search: '',
+    search: "",
     category: [0],
     group: [] as number[],
     grade: [] as number[],
-    sortBy: 'createdAt',
-    sortOrder: 'desc' as 'asc' | 'desc',
+    sortBy: "createdAt",
+    sortOrder: "desc" as "asc" | "desc",
   },
   periodicTable: {
     viewMode: EnumPeriodicViewMode.theme1.value,
@@ -62,52 +65,63 @@ export const defaultStore = {
     abundances: true,
     reactivity: true,
     healthSafety: true,
-    nuclear: true
+    nuclear: true,
   },
   mobileMenu: {} as Record<string, boolean>,
-}
+  jsonQuestions: [] as any[],
+};
 
 export const useAppStore = create<Store>()(
   persist(
     (set) => ({
       books: defaultStore.books,
-      setBooks: (books: any) => set({
-        books
-      }),
+      setBooks: (books: any) =>
+        set({
+          books,
+        }),
 
       periodicTable: defaultStore.periodicTable,
-      setPeriodicTable: (periodicTable: any) => set({
-        periodicTable
-      }),
+      setPeriodicTable: (periodicTable: any) =>
+        set({
+          periodicTable,
+        }),
 
       elementExpandedSections: defaultStore.elementExpandedSections,
-      setElementExpandedSection: (section: string, expanded: boolean) => set((state) => ({
-        elementExpandedSections: {
-          ...state.elementExpandedSections,
-          [section]: expanded
-        }
-      })),
-      resetElementExpandedSections: () => set({
-        elementExpandedSections: defaultStore.elementExpandedSections
-      }),
+      setElementExpandedSection: (section: string, expanded: boolean) =>
+        set((state) => ({
+          elementExpandedSections: {
+            ...state.elementExpandedSections,
+            [section]: expanded,
+          },
+        })),
+      resetElementExpandedSections: () =>
+        set({
+          elementExpandedSections: defaultStore.elementExpandedSections,
+        }),
 
       mobileMenu: defaultStore.mobileMenu,
-      setMobileMenuExpanded: (id: string, expanded: boolean) => set((state) => ({
-        mobileMenu: {
-          ...state.mobileMenu,
-          [id]: expanded
-        }
-      })),
+      setMobileMenuExpanded: (id: string, expanded: boolean) =>
+        set((state) => ({
+          mobileMenu: {
+            ...state.mobileMenu,
+            [id]: expanded,
+          },
+        })),
 
-      resetAll: () => set({
-        books: defaultStore.books,
-        periodicTable: defaultStore.periodicTable,
-        elementExpandedSections: defaultStore.elementExpandedSections,
-        mobileMenu: defaultStore.mobileMenu
-      }),
+      jsonQuestions: defaultStore.jsonQuestions,
+      setJsonQuestions: (questions: any[]) => set({ jsonQuestions: questions }),
+
+      resetAll: () =>
+        set({
+          books: defaultStore.books,
+          periodicTable: defaultStore.periodicTable,
+          elementExpandedSections: defaultStore.elementExpandedSections,
+          mobileMenu: defaultStore.mobileMenu,
+          jsonQuestions: defaultStore.jsonQuestions,
+        }),
     }),
     {
       name: `${APP_CONFIG.prefixStore}-app`, // single storage key
-    }
-  )
+    },
+  ),
 );

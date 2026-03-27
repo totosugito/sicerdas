@@ -31,6 +31,13 @@ export const BlockNoteStatic = ({
     initialContent: content && content.length > 0 ? content : undefined,
   });
 
+  // Update content whenever it changes without remounting the entire view
+  React.useEffect(() => {
+    if (editor && content) {
+      editor.replaceBlocks(editor.document, content);
+    }
+  }, [editor, content]);
+
   return (
     <div
       className={cn("border rounded-md bg-background overflow-hidden transition-all", className)}
