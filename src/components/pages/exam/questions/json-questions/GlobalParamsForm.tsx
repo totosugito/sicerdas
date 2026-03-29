@@ -129,9 +129,9 @@ export function GlobalParamsForm({ form, isOpen = true, onOpenChange }: GlobalPa
             <ChevronDown className={cn("h-5 w-5 transition-transform", isOpen && "rotate-180")} />
           </div>
         </CollapsibleTrigger>
-        <CollapsibleContent className="p-4">
+        <CollapsibleContent className="p-6">
           <Form {...form}>
-            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <ControlForm form={form} item={config.subjectId} showMessage={true} />
               <ControlForm form={form} item={config.passageId} showMessage={true} />
               <ControlForm form={form} item={config.difficulty} showMessage={true} />

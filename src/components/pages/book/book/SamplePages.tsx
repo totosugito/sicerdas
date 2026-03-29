@@ -1,112 +1,113 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useAppTranslation } from "@/lib/i18n-typed"
-import { BookDetil } from "@/api/book/book-detail"
-import { Image, ImageOff, X, ChevronLeft, ChevronRight } from "lucide-react"
-import { useState, useMemo } from "react"
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { APP_CONFIG } from "@/constants/config"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAppTranslation } from "@/lib/i18n-typed";
+import { BookDetil } from "@/api/book/book-detail";
+import { Image, ImageOff, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { APP_CONFIG } from "@/constants/config";
 
 export const SamplePages = ({ book }: { book: BookDetil }) => {
-  const { t } = useAppTranslation()
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
-  const [invalidIndices, setInvalidIndices] = useState<Set<number>>(new Set())
+  const { t } = useAppTranslation();
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [invalidIndices, setInvalidIndices] = useState<Set<number>>(new Set());
 
   const samplePages = useMemo(() => {
-    const pages = []
+    const pages = [];
     for (let i = 1; i <= APP_CONFIG.book.samplePages; i++) {
-      const paddedIndex = String(i).padStart(4, '0')
+      const paddedIndex = String(i).padStart(4, "0");
       pages.push({
         lg: `${book.samples.lg}${paddedIndex}_lg.jpg`,
         xs: `${book.samples.xs}${paddedIndex}_xs.jpg`,
-      })
+      });
     }
-    return pages
-  }, [book])
+    return pages;
+  }, [book]);
 
   const handleImageError = (index: number) => {
     setInvalidIndices((prev) => {
-      const newSet = new Set(prev)
-      newSet.add(index)
-      return newSet
-    })
-  }
+      const newSet = new Set(prev);
+      newSet.add(index);
+      return newSet;
+    });
+  };
 
   const handleNext = () => {
-    if (selectedIndex === null) return
-    let next = selectedIndex + 1
+    if (selectedIndex === null) return;
+    let next = selectedIndex + 1;
     while (next < samplePages.length && invalidIndices.has(next)) {
-      next++
+      next++;
     }
-    if (next < samplePages.length) setSelectedIndex(next)
-  }
+    if (next < samplePages.length) setSelectedIndex(next);
+  };
 
   const handlePrev = () => {
-    if (selectedIndex === null) return
-    let prev = selectedIndex - 1
+    if (selectedIndex === null) return;
+    let prev = selectedIndex - 1;
     while (prev >= 0 && invalidIndices.has(prev)) {
-      prev--
+      prev--;
     }
-    if (prev >= 0) setSelectedIndex(prev)
-  }
+    if (prev >= 0) setSelectedIndex(prev);
+  };
 
   const hasNext = () => {
-    if (selectedIndex === null) return false
-    let next = selectedIndex + 1
+    if (selectedIndex === null) return false;
+    let next = selectedIndex + 1;
     while (next < samplePages.length) {
-      if (!invalidIndices.has(next)) return true
-      next++
+      if (!invalidIndices.has(next)) return true;
+      next++;
     }
-    return false
-  }
+    return false;
+  };
 
   const hasPrev = () => {
-    if (selectedIndex === null) return false
-    let prev = selectedIndex - 1
+    if (selectedIndex === null) return false;
+    let prev = selectedIndex - 1;
     while (prev >= 0) {
-      if (!invalidIndices.has(prev)) return true
-      prev--
+      if (!invalidIndices.has(prev)) return true;
+      prev--;
     }
-    return false
-  }
+    return false;
+  };
 
   return (
     <>
-      <Card>
-        <CardHeader>
+      <Card className="w-full p-6 gap-4">
+        <CardHeader className="p-0">
           <CardTitle className="text-xl flex items-center">
             <Image className="w-5 h-5 mr-2" />
-            {t($ => $.book.detail.samplePages)}
+            {t(($) => $.book.detail.samplePages)}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           <div className="flex flex-row flex-wrap gap-4">
-            {samplePages.map((pageUrl: { xs: string, lg: string }, index: number) => (
-              !invalidIndices.has(index) && (
-                <div
-                  key={index}
-                  className="group"
-                >
-                  <div className="w-36 h-42 overflow-hidden rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
-                    <SamplePageThumbnail
-                      src={pageUrl.xs}
-                      alt={`Page ${index + 1} of ${book.title}`}
-                      onClick={() => setSelectedIndex(index)}
-                      onLoadError={() => handleImageError(index)}
-                    />
+            {samplePages.map(
+              (pageUrl: { xs: string; lg: string }, index: number) =>
+                !invalidIndices.has(index) && (
+                  <div key={index} className="group">
+                    <div className="w-36 h-42 overflow-hidden rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+                      <SamplePageThumbnail
+                        src={pageUrl.xs}
+                        alt={`Page ${index + 1} of ${book.title}`}
+                        onClick={() => setSelectedIndex(index)}
+                        onLoadError={() => handleImageError(index)}
+                      />
+                    </div>
                   </div>
-                </div>
-              )
-            ))}
+                ),
+            )}
           </div>
         </CardContent>
       </Card>
 
-      <Dialog open={selectedIndex !== null} onOpenChange={(open) => !open && setSelectedIndex(null)}>
-        <DialogContent showCloseButton={false} aria-describedby={undefined} className="w-full p-0 border-none shadow-none sm:max-w-[80vh] bg-transparent">
+      <Dialog
+        open={selectedIndex !== null}
+        onOpenChange={(open) => !open && setSelectedIndex(null)}
+      >
+        <DialogContent
+          showCloseButton={false}
+          aria-describedby={undefined}
+          className="w-full p-0 border-none shadow-none sm:max-w-[80vh] bg-transparent"
+        >
           <DialogTitle className="sr-only"></DialogTitle>
           <div className="flex items-center justify-center w-full gap-4 w-full px-8">
             {selectedIndex !== null && samplePages[selectedIndex] && (
@@ -145,20 +146,29 @@ export const SamplePages = ({ book }: { book: BookDetil }) => {
           </div>
         </DialogContent>
       </Dialog>
-
     </>
-  )
-}
+  );
+};
 
-function SamplePageThumbnail({ src, alt, onClick, onLoadError }: { src: string, alt: string, onClick: () => void, onLoadError?: () => void }) {
-  const [error, setError] = useState(false)
+function SamplePageThumbnail({
+  src,
+  alt,
+  onClick,
+  onLoadError,
+}: {
+  src: string;
+  alt: string;
+  onClick: () => void;
+  onLoadError?: () => void;
+}) {
+  const [error, setError] = useState(false);
 
   if (error) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800/50 cursor-default">
         <ImageOff className="w-8 h-8 text-slate-400 dark:text-slate-600" />
       </div>
-    )
+    );
   }
 
   return (
@@ -167,10 +177,10 @@ function SamplePageThumbnail({ src, alt, onClick, onLoadError }: { src: string, 
       alt={alt}
       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
       onError={() => {
-        setError(true)
-        onLoadError?.()
+        setError(true);
+        onLoadError?.();
       }}
       onClick={onClick}
     />
-  )
+  );
 }

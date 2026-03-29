@@ -4,8 +4,8 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
-} from "@/components/ui/dialog"
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { cloneElement, useEffect, useState } from "react";
 import * as React from "react";
 import { useForm } from "react-hook-form";
@@ -15,6 +15,7 @@ import { Form } from "@/components/ui/form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormWithDetector } from "./FormWithDetector";
+import { cn } from "@/lib/utils";
 
 export type ModalFormProps = {
   title: string;
@@ -47,15 +48,13 @@ export const DialogModalForm = ({
     content: <div />,
     textConfirm: "Yes",
     textCancel: "No",
-    onConfirmClick: () => {
-    },
-    onCancelClick: () => {
-    },
+    onConfirmClick: () => {},
+    onCancelClick: () => {},
     modal: true,
     defaultValue: {},
     child: null,
     schema: null,
-    info: null
+    info: null,
   },
   onDismissOutside = false,
   classNameConfirm = "",
@@ -68,16 +67,14 @@ export const DialogModalForm = ({
 
   // First, define the expected props type for the content component
   interface DialogContentProps {
-    values?: any;  // Replace 'any' with a more specific type if possible
-    form: ReturnType<typeof useForm>;  // Or a more specific form type
+    values?: any; // Replace 'any' with a more specific type if possible
+    form: ReturnType<typeof useForm>; // Or a more specific form type
   }
 
   const form = useForm({
     resolver: modal.schema ? zodResolver(z.object(modal.schema)) : undefined,
     defaultValues: modal.defaultValue,
   });
-
-
 
   // Reset form when defaultValues change
   useEffect(() => {
@@ -87,14 +84,18 @@ export const DialogModalForm = ({
   }, [JSON.stringify(modal?.defaultValue)]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      setIsOpen(open);
-      if (!open) {
-        modal?.onCancelClick && modal.onCancelClick()
-      }
-    }} modal={modal?.modal}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open) {
+          modal?.onCancelClick && modal.onCancelClick();
+        }
+      }}
+      modal={modal?.modal}
+    >
       <DialogContent
-        className="flex flex-col max-h-[80vh] sm:max-w-[80vw] lg:max-w-5xl"
+        className={cn("flex flex-col max-h-[80vh] sm:max-w-[80vw] lg:max-w-xl", props.className)}
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
         onOpenAutoFocus={(e) => e.preventDefault()}
@@ -112,22 +113,23 @@ export const DialogModalForm = ({
             schema={modal?.schema}
           >
             <div className={"flex flex-col h-full flex-1 overflow-y-auto"}>
-              {(modal?.child && modal?.content) &&
-                cloneElement<DialogContentProps>(modal.content as React.ReactElement<DialogContentProps>, {
-                  values: modal.child,
-                  form
-                })
-              }
+              {modal?.child &&
+                modal?.content &&
+                cloneElement<DialogContentProps>(
+                  modal.content as React.ReactElement<DialogContentProps>,
+                  {
+                    values: modal.child,
+                    form,
+                  },
+                )}
             </div>
 
-            {modal?.info && <div className="flex-shrink-0">
-              {modal.info}
-            </div>}
+            {modal?.info && <div className="flex-shrink-0">{modal.info}</div>}
 
             <DialogFooter className="flex-shrink-0">
               <div className="w-full flex sm:flex-row flex-col gap-2 justify-end pt-4">
                 <Button className="min-w-[80px]" type="submit">
-                  {modal?.textConfirm ?? t($ => $.labels.save)}
+                  {modal?.textConfirm ?? t(($) => $.labels.save)}
                 </Button>
                 {modal.onCancelClick && (
                   <Button
@@ -139,7 +141,7 @@ export const DialogModalForm = ({
                       setIsOpen(false);
                     }}
                   >
-                    {modal?.textCancel ?? t($ => $.labels.cancel)}
+                    {modal?.textCancel ?? t(($) => $.labels.cancel)}
                   </Button>
                 )}
               </div>
@@ -148,5 +150,5 @@ export const DialogModalForm = ({
         </Form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};

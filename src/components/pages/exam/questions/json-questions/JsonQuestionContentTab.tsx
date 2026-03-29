@@ -25,7 +25,7 @@ export function JsonQuestionContentTab({
   const [showContentDialog, setShowContentDialog] = useState(false);
 
   return (
-    <Card className="shadow-sm overflow-hidden border-border/50 p-4">
+    <Card className="shadow-sm overflow-hidden border-border/50 p-6">
       <Collapsible open={isOpen} onOpenChange={onOpenChange}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 px-0 pt-0 pb-4 bg-muted/5">
           <CollapsibleTrigger asChild>

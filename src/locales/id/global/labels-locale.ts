@@ -55,7 +55,7 @@ export default {
     previous: "Sebelumnya",
     nextPage: "Halaman Berikutnya",
     morePages: "Lebih banyak halaman",
-    rowsPerPage: "per halaman",
+    rowsPerPage: "/ halaman",
     previousPage: "Ke halaman sebelumnya",
     next: "Berikutnya",
   },

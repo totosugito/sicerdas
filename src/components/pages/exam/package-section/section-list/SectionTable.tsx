@@ -302,7 +302,7 @@ export function SectionTable({
 
   return (
     <div className="flex flex-col gap-4 border border-border rounded-lg bg-card">
-      <div className={"flex flex-row gap-2 justify-between px-4 pt-4"}>
+      <div className={"flex flex-row gap-2 justify-between px-4 pt-6"}>
         <div></div>
         <div className={"flex flex-row gap-2 max-w-sm"}>
           <DataTableFilter

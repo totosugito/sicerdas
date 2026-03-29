@@ -30,8 +30,8 @@ export function QuestionNumberGrid({
   const { t } = useAppTranslation();
 
   return (
-    <div className="sticky top-16 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4 border rounded-lg shadow-sm">
-      <div className="flex items-center justify-between mb-4">
+    <div className="sticky top-16 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-6 border rounded-lg shadow-sm">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Checkbox
             id="select-all"
@@ -48,7 +48,8 @@ export function QuestionNumberGrid({
           size="sm"
           onClick={onExport}
           disabled={!canExport || isExporting || selectedIndices.length === 0}
-          className="gap-2 shadow-sm font-semibold"
+          variant="outline"
+          className="gap-2 shadow-sm hover:bg-primary hover:text-primary-foreground transition-all ml-4 px-4"
         >
           {isExporting ? (
             <span className="animate-spin rounded-full h-4 w-4 border-2 border-primary-foreground border-t-transparent" />

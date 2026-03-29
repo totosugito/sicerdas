@@ -293,7 +293,7 @@ export function QuestionTable({
 
   return (
     <div className="flex flex-col gap-4 border border-border rounded-lg bg-card shadow-sm overflow-hidden text-sm">
-      <div className={"flex flex-row gap-2 justify-between px-4 pt-4"}>
+      <div className={"flex flex-row gap-2 justify-between px-4 pt-6"}>
         <div />
         <div className={"flex flex-row gap-2 w-full max-w-sm"}>
           <DataTableFilter
