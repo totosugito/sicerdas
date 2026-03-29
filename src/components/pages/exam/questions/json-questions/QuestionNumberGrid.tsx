@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAppTranslation } from "@/lib/i18n-typed";
+import { LuUpload } from "react-icons/lu";
 
 interface QuestionNumberGridProps {
   jsonQuestions: any[];
@@ -10,6 +11,9 @@ interface QuestionNumberGridProps {
   onSelect: (index: number) => void;
   onToggleSelect: (index: number) => void;
   onToggleSelectAll: () => void;
+  onExport: () => void;
+  isExporting: boolean;
+  canExport: boolean;
 }
 
 export function QuestionNumberGrid({
@@ -19,12 +23,15 @@ export function QuestionNumberGrid({
   onSelect,
   onToggleSelect,
   onToggleSelectAll,
+  onExport,
+  isExporting,
+  canExport,
 }: QuestionNumberGridProps) {
   const { t } = useAppTranslation();
 
   return (
     <div className="sticky top-16 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4 border rounded-lg shadow-sm">
-      <div className="flex items-center justify-between mb-4 px-2">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Checkbox
             id="select-all"
@@ -37,6 +44,19 @@ export function QuestionNumberGrid({
               .replace("{total}", jsonQuestions.length.toString())}
           </label>
         </div>
+        <Button
+          size="sm"
+          onClick={onExport}
+          disabled={!canExport || isExporting || selectedIndices.length === 0}
+          className="gap-2 shadow-sm font-semibold"
+        >
+          {isExporting ? (
+            <span className="animate-spin rounded-full h-4 w-4 border-2 border-primary-foreground border-t-transparent" />
+          ) : (
+            <LuUpload className="h-4 w-4" />
+          )}
+          {t(($) => $.exam.questions.jsonQuestions.exportSelected)}
+        </Button>
       </div>
       <div className="flex flex-wrap gap-2">
         {jsonQuestions.map((_, index) => (

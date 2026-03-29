@@ -14,11 +14,12 @@ import { EnumDifficultyLevel, EnumQuestionType } from "@/api/exam-questions/type
 
 interface GlobalParamsFormProps {
   form: UseFormReturn<any>;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function GlobalParamsForm({ form }: GlobalParamsFormProps) {
+export function GlobalParamsForm({ form, isOpen = true, onOpenChange }: GlobalParamsFormProps) {
   const { t } = useAppTranslation();
-  const [isOpen, setIsOpen] = useState(true);
 
   const { data: subjectsData, isFetching: isFetchingSubjects } = useListSubjectSimple({
     limit: 1000,
@@ -116,7 +117,7 @@ export function GlobalParamsForm({ form }: GlobalParamsFormProps) {
 
   return (
     <div className="border rounded-lg bg-card shadow-sm overflow-hidden">
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Collapsible open={isOpen} onOpenChange={onOpenChange}>
         <CollapsibleTrigger asChild>
           <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted/50 transition-colors border-b">
             <div className="flex items-center gap-2">
@@ -128,9 +129,9 @@ export function GlobalParamsForm({ form }: GlobalParamsFormProps) {
             <ChevronDown className={cn("h-5 w-5 transition-transform", isOpen && "rotate-180")} />
           </div>
         </CollapsibleTrigger>
-        <CollapsibleContent className="p-6">
+        <CollapsibleContent className="p-4">
           <Form {...form}>
-            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <ControlForm form={form} item={config.subjectId} showMessage={true} />
               <ControlForm form={form} item={config.passageId} showMessage={true} />
               <ControlForm form={form} item={config.difficulty} showMessage={true} />

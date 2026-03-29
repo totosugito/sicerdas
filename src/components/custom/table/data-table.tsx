@@ -1,4 +1,9 @@
-import { ColumnDef, flexRender, type Table as TanstackTable, type Header } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  flexRender,
+  type Table as TanstackTable,
+  type Header,
+} from "@tanstack/react-table";
 import type * as React from "react";
 import { DataTablePagination } from "./data-table-pagination";
 import {
@@ -18,33 +23,37 @@ interface DataTableProps<TData> extends React.ComponentProps<"div"> {
   table: TanstackTable<TData>;
   actionBar?: React.ReactNode;
   totalRowCount?: number; // Total row count for manual pagination (overrides table.getRowCount())
-  paginationData?: { // Optional pagination object for manual pagination
+  paginationData?: {
+    // Optional pagination object for manual pagination
     page: number;
     limit: number;
     total: number;
     totalPages: number;
   };
   pinned?: {
-    withBorder?: boolean
-  },
+    withBorder?: boolean;
+  };
   isStickyHeader?: boolean; // Show/hide sticky header
   showSideBorders?: boolean; // Show/hide table side borders
   showZebraStriping?: boolean; // Show/hide zebra striping
   zebraStripingClassName?: string; // Custom class for zebra striping
   styles?: {
     container?: {
-      default?: string,
-    }
+      default?: string;
+    };
     TableHeader?: {
-      default?: string,
-    }
+      default?: string;
+    };
     TableHead?: {
-      default?: string,
-    }
+      default?: string;
+    };
     TableCell?: {
-      default?: string,
-    }
-  },
+      default?: string;
+    };
+    pagination?: {
+      default?: string;
+    };
+  };
   defaultNoResultText?: string;
 }
 
@@ -56,7 +65,8 @@ type RowNumberColumnDef<T> = ColumnDef<T> & {
   enableResizing?: boolean;
   enableSorting?: boolean;
   enableColumnFilter?: boolean;
-  paginationData?: { // Optional pagination object for manual pagination
+  paginationData?: {
+    // Optional pagination object for manual pagination
     page: number;
     limit: number;
     total: number;
@@ -65,16 +75,24 @@ type RowNumberColumnDef<T> = ColumnDef<T> & {
   styles?: {
     header?: {
       default?: string;
-    },
+    };
     cell?: {
       default?: string;
-    }
-  }
+    };
+  };
 };
 
-export function createRowNumberColumn<T>({ id = "__row_number__", accessorKey = "__row_number__", header = "No", size = 60,
-  enableResizing = false, enableSorting = false,
-  enableColumnFilter = false, paginationData, styles }: RowNumberColumnDef<T>): ColumnDef<T> {
+export function createRowNumberColumn<T>({
+  id = "__row_number__",
+  accessorKey = "__row_number__",
+  header = "No",
+  size = 60,
+  enableResizing = false,
+  enableSorting = false,
+  enableColumnFilter = false,
+  paginationData,
+  styles,
+}: RowNumberColumnDef<T>): ColumnDef<T> {
   return {
     id: id,
     accessorKey: accessorKey,
@@ -94,15 +112,16 @@ export function createRowNumberColumn<T>({ id = "__row_number__", accessorKey = 
         <div className={cn("flex justify-center", styles?.cell?.default)}>
           {paginationData
             ? (paginationData.page - 1) * paginationData.limit + row.index + 1
-            : table.getState().pagination.pageIndex * table.getState().pagination.pageSize + row.index + 1
-          }
+            : table.getState().pagination.pageIndex * table.getState().pagination.pageSize +
+              row.index +
+              1}
         </div>
-      )
+      );
     },
     meta: {
       label: "No",
-    }
-  }
+    },
+  };
 }
 
 type RowSelectColumnDef = {
@@ -113,11 +132,11 @@ type RowSelectColumnDef = {
   styles?: {
     header?: {
       default?: string;
-    },
+    };
     cell?: {
       default?: string;
-    }
-  }
+    };
+  };
 };
 
 export function createRowSelectColumn<T>({
@@ -125,7 +144,7 @@ export function createRowSelectColumn<T>({
   size = 40,
   enableSorting = false,
   enableHiding = false,
-  styles
+  styles,
 }: RowSelectColumnDef = {}): ColumnDef<T> {
   return {
     id: id,
@@ -157,8 +176,8 @@ export function createRowSelectColumn<T>({
     ),
     meta: {
       label: "Select",
-    }
-  }
+    },
+  };
 }
 
 export function DataTable<TData>({
@@ -186,14 +205,22 @@ export function DataTable<TData>({
       {...props}
     >
       {children}
-      <div className={cn(
-        "w-full overflow-hidden",
-        isStickyHeader ? "[&>div]:max-h-[80vh]" : "",
-        !showSideBorders && "[&>div]:overflow-x-hidden",
-        styles?.container?.default
-      )}>
+      <div
+        className={cn(
+          "w-full overflow-hidden",
+          isStickyHeader ? "[&>div]:max-h-[80vh]" : "",
+          !showSideBorders && "[&>div]:overflow-x-hidden",
+          styles?.container?.default,
+        )}
+      >
         <Table className="border-separate border-spacing-0 border-none w-full">
-          <TableHeader className={cn("w-full", isStickyHeader ? "sticky top-0 z-10 backdrop-blur-xs" : "", styles?.TableHeader?.default)}>
+          <TableHeader
+            className={cn(
+              "w-full",
+              isStickyHeader ? "sticky top-0 z-10 backdrop-blur-xs" : "",
+              styles?.TableHeader?.default,
+            )}
+          >
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="">
                 {headerGroup.headers.map((header: Header<TData, any>) => {
@@ -204,12 +231,15 @@ export function DataTable<TData>({
                         "border-b border-r border-t",
                         showSideBorders ? "first:border-l" : "first:border-l-0",
                         !showSideBorders && "last:border-r-0",
-                        styles?.TableHead?.default
+                        styles?.TableHead?.default,
                       )}
                       key={header.id}
                       colSpan={header.colSpan}
                       style={{
-                        ...getCommonPinningStyles({ column: header.column, withBorder: pinned?.withBorder ?? true }),
+                        ...getCommonPinningStyles({
+                          column: header.column,
+                          withBorder: pinned?.withBorder ?? true,
+                        }),
                         width: header.column.columnDef.size,
                         minWidth: header.column.columnDef.minSize,
                         maxWidth: header.column.columnDef.maxSize,
@@ -217,10 +247,7 @@ export function DataTable<TData>({
                     >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        : flexRender(header.column.columnDef.header, header.getContext())}
 
                       {header.column.getCanResize() && (
                         <div
@@ -234,7 +261,7 @@ export function DataTable<TData>({
                         />
                       )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -252,22 +279,26 @@ export function DataTable<TData>({
                       key={cell.id}
                       className={cn(
                         "border-b border-r py-1 px-2",
-                        showZebraStriping ? (index % 2 === 0 ? "" : (zebraStripingClassName || "bg-muted/30")) : "",
+                        showZebraStriping
+                          ? index % 2 === 0
+                            ? ""
+                            : zebraStripingClassName || "bg-muted/30"
+                          : "",
                         showSideBorders ? "first:border-l" : "first:border-l-0",
                         !showSideBorders && "last:border-r-0",
-                        styles?.TableCell?.default
+                        styles?.TableCell?.default,
                       )}
                       style={{
-                        ...getCommonPinningStyles({ column: cell.column, withBorder: pinned?.withBorder ?? true }),
+                        ...getCommonPinningStyles({
+                          column: cell.column,
+                          withBorder: pinned?.withBorder ?? true,
+                        }),
                         width: cell.column.columnDef.size,
                         minWidth: cell.column.columnDef.minSize,
                         maxWidth: cell.column.columnDef.maxSize,
                       }}
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -285,7 +316,7 @@ export function DataTable<TData>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex flex-col gap-2 px-4 pb-4">
+      <div className={cn("flex flex-col gap-2 px-4 pb-6", styles?.pagination?.default)}>
         <DataTablePagination
           pageIndex={table.getState().pagination.pageIndex}
           setPageIndex={table.setPageIndex}
@@ -296,7 +327,7 @@ export function DataTable<TData>({
           paginationData={paginationData} // Pass pagination object for manual pagination
         />
 
-        {(actionBar && (rowLength > 0)) && actionBar}
+        {actionBar && rowLength > 0 && actionBar}
       </div>
     </div>
   );

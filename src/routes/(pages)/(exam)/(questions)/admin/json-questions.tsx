@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, Save } from "lucide-react";
-import { useCreateQuestion } from "@/api/exam-questions";
+import { CreateQuestionRequest, useCreateQuestion } from "@/api/exam-questions";
 import { useCreateQuestionOption } from "@/api/exam-question-options";
 import { useCreateQuestionSolution } from "@/api/exam-question-solutions";
 import { useAssignQuestionTag } from "@/api/exam-question-tags";
@@ -32,17 +32,53 @@ import {
   JsonQuestionEditView,
 } from "@/components/pages/exam/questions/json-questions";
 
+const jsonQuestionsSearchSchema = z.object({
+  index: z.coerce.number().default(0).catch(0),
+  expanded: z.coerce.boolean().default(true).catch(true),
+  contentExpanded: z.coerce.boolean().default(true).catch(true),
+  optionsExpanded: z.coerce.boolean().default(true).catch(true),
+  solutionsExpanded: z.coerce.boolean().default(true).catch(true),
+});
+
 export const Route = createFileRoute("/(pages)/(exam)/(questions)/admin/json-questions")({
+  validateSearch: (search) => jsonQuestionsSearchSchema.parse(search),
   component: JsonQuestionsPage,
 });
 
 function JsonQuestionsPage() {
   const { t } = useAppTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const {
+    index: selectedIndex,
+    expanded: isExpanded,
+    contentExpanded,
+    optionsExpanded,
+    solutionsExpanded,
+  } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
   const [isPasteModalOpen, setIsPasteModalOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+
+  const setSelectedIndex = (index: number) => {
+    navigate({ search: (prev: any) => ({ ...prev, index }), replace: true });
+  };
+
+  const setIsExpanded = (expanded: boolean) => {
+    navigate({ search: (prev: any) => ({ ...prev, expanded }), replace: true });
+  };
+
+  const setContentExpanded = (contentExpanded: boolean) => {
+    navigate({ search: (prev: any) => ({ ...prev, contentExpanded }), replace: true });
+  };
+
+  const setOptionsExpanded = (optionsExpanded: boolean) => {
+    navigate({ search: (prev: any) => ({ ...prev, optionsExpanded }), replace: true });
+  };
+
+  const setSolutionsExpanded = (solutionsExpanded: boolean) => {
+    navigate({ search: (prev: any) => ({ ...prev, solutionsExpanded }), replace: true });
+  };
 
   const queryClient = useQueryClient();
   const createQuestionMutation = useCreateQuestion();
@@ -210,8 +246,8 @@ function JsonQuestionsPage() {
               ? Number(q.educationGradeId)
               : undefined,
           isActive: q.isActive ?? true,
-          variableFormulas: q.variableFormulas,
-        } as any);
+          // variableFormulas: q.variableFormulas,
+        } as CreateQuestionRequest);
 
         const newQuestionId = qRes.data.id;
 
@@ -330,17 +366,6 @@ function JsonQuestionsPage() {
                 {jsonQuestions.length > 0 && (
                   <>
                     <DropdownMenuItem
-                      className="gap-2"
-                      onClick={handleExportSelected}
-                      disabled={selectedIndices.length === 0 || isExporting}
-                    >
-                      <Save className="h-4 w-4" />
-                      {isExporting
-                        ? t(($) => $.exam.questions.jsonQuestions.exporting)
-                        : t(($) => $.exam.questions.jsonQuestions.exportSelected)}{" "}
-                      ({selectedIndices.length})
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
                       variant="destructive"
                       className="gap-2"
                       onClick={clearQuestions}
@@ -359,7 +384,7 @@ function JsonQuestionsPage() {
 
       {jsonQuestions.length > 0 ? (
         <div className="flex flex-col gap-6">
-          <GlobalParamsForm form={globalForm} />
+          <GlobalParamsForm form={globalForm} isOpen={isExpanded} onOpenChange={setIsExpanded} />
 
           <QuestionNumberGrid
             jsonQuestions={jsonQuestions}
@@ -368,6 +393,9 @@ function JsonQuestionsPage() {
             onSelect={setSelectedIndex}
             onToggleSelect={toggleSelect}
             onToggleSelectAll={toggleSelectAll}
+            onExport={handleExportSelected}
+            isExporting={isExporting}
+            canExport={!!globalForm.watch("subjectId")}
           />
 
           {/* Main Content Area */}
@@ -376,6 +404,12 @@ function JsonQuestionsPage() {
               key={currentQuestion.id || `temp-${selectedIndex}`}
               question={{ ...currentQuestion, id: currentQuestion.id || `temp-${selectedIndex}` }}
               onUpdate={handleUpdateQuestion}
+              contentExpanded={contentExpanded}
+              onToggleContent={setContentExpanded}
+              optionsExpanded={optionsExpanded}
+              onToggleOptions={setOptionsExpanded}
+              solutionsExpanded={solutionsExpanded}
+              onToggleSolutions={setSolutionsExpanded}
             />
           ) : (
             <div className="flex items-center justify-center p-12 border rounded-lg bg-card text-muted-foreground">

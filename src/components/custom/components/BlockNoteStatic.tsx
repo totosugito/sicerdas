@@ -19,6 +19,20 @@ export const BlockNoteStatic = ({
 }: BlockNoteStaticProps) => {
   const { theme: appTheme } = useTheme();
 
+  // Custom CSS to remove BlockNote's default large side padding in readonly mode
+  const styleTag = (
+    <style>
+      {`
+        .bn-editor {
+          padding-inline: 12px !important;
+        }
+        .bn-block-content {
+          margin-inline-start: 0 !important;
+        }
+      `}
+    </style>
+  );
+
   const resolvedTheme = useMemo(() => {
     return appTheme === "system"
       ? typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -40,10 +54,17 @@ export const BlockNoteStatic = ({
 
   return (
     <div
-      className={cn("border rounded-md bg-background overflow-hidden transition-all", className)}
+      className={cn("border bg-card overflow-hidden transition-all", className)}
       style={{ minHeight }}
     >
-      <BlockNoteView editor={editor} theme={resolvedTheme} editable={false} />
+      {styleTag}
+      <BlockNoteView
+        editor={editor}
+        theme={resolvedTheme}
+        editable={false}
+        sideMenu={false}
+        slashMenu={false}
+      />
     </div>
   );
 };

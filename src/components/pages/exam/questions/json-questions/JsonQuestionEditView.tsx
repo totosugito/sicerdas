@@ -4,18 +4,32 @@ import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { BlockNoteStatic } from "@/components/custom/components/BlockNoteStatic";
+import { JsonQuestionContentTab } from "./JsonQuestionContentTab";
 import { JsonQuestionOptionsTab } from "./JsonQuestionOptionsTab";
 import { JsonQuestionSolutionsTab } from "./JsonQuestionSolutionsTab";
-import { DialogLocalContentForm } from "./DialogLocalContentForm";
 
 interface JsonQuestionEditViewProps {
   question: any;
   onUpdate: (updatedQuestion: any) => void;
+  contentExpanded?: boolean;
+  onToggleContent?: (expanded: boolean) => void;
+  optionsExpanded?: boolean;
+  onToggleOptions?: (expanded: boolean) => void;
+  solutionsExpanded?: boolean;
+  onToggleSolutions?: (expanded: boolean) => void;
 }
 
-export function JsonQuestionEditView({ question, onUpdate }: JsonQuestionEditViewProps) {
+export function JsonQuestionEditView({
+  question,
+  onUpdate,
+  contentExpanded = true,
+  onToggleContent,
+  optionsExpanded = true,
+  onToggleOptions,
+  solutionsExpanded = true,
+  onToggleSolutions,
+}: JsonQuestionEditViewProps) {
   const { t } = useAppTranslation();
-  const [showContentDialog, setShowContentDialog] = useState(false);
 
   const handleUpdateOptions = (newOptions: any[]) => {
     onUpdate({ ...question, options: newOptions });
@@ -31,47 +45,28 @@ export function JsonQuestionEditView({ question, onUpdate }: JsonQuestionEditVie
 
   return (
     <div className="flex flex-col gap-6 w-full pb-10">
-      {/* Question Content Section */}
-      <Card className="shadow-sm overflow-hidden border-border/50 py-4">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 py-0 bg-muted/5">
-          <div className="flex flex-col gap-1">
-            <CardTitle className="text-xl">
-              {t(($) => $.exam.questions.edit.content.title)}
-            </CardTitle>
-            <CardDescription>{t(($) => $.exam.questions.edit.content.description)}</CardDescription>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2 shadow-sm hover:bg-primary hover:text-primary-foreground transition-all h-9 px-4"
-            onClick={() => setShowContentDialog(true)}
-          >
-            <Pencil className="h-4 w-4" />
-            {t(($) => $.labels.edit)}
-          </Button>
-        </CardHeader>
-        <CardContent className="bg-card pb-2">
-          <div className="rounded-xl border bg-background/50 backdrop-blur-sm p-1">
-            <BlockNoteStatic
-              content={question.content}
-              className="border-0 shadow-none"
-              minHeight="150px"
-            />
-          </div>
-        </CardContent>
-      </Card>
+      {/* Content Section */}
+      <JsonQuestionContentTab
+        content={question.content}
+        onUpdate={handleUpdateContent}
+        isOpen={contentExpanded}
+        onOpenChange={onToggleContent}
+      />
 
       {/* Options Section */}
-      <JsonQuestionOptionsTab options={question.options} onUpdate={handleUpdateOptions} />
+      <JsonQuestionOptionsTab
+        options={question.options}
+        onUpdate={handleUpdateOptions}
+        isOpen={optionsExpanded}
+        onOpenChange={onToggleOptions}
+      />
 
       {/* Solutions Section */}
-      <JsonQuestionSolutionsTab solutions={question.solutions} onUpdate={handleUpdateSolutions} />
-
-      <DialogLocalContentForm
-        open={showContentDialog}
-        onOpenChange={setShowContentDialog}
-        content={question.content}
-        onConfirm={handleUpdateContent}
+      <JsonQuestionSolutionsTab
+        solutions={question.solutions}
+        onUpdate={handleUpdateSolutions}
+        isOpen={solutionsExpanded}
+        onOpenChange={onToggleSolutions}
       />
     </div>
   );
