@@ -99,20 +99,22 @@ function JsonQuestionsPage() {
     educationGradeId: z.union([z.number(), z.string(), z.null()]).optional(),
   });
 
-  const globalForm = useForm<z.infer<typeof globalFormSchema>>({
-    resolver: zodResolver(globalFormSchema),
-    defaultValues: {
-      subjectId: "",
-      passageId: null,
-      difficulty: EnumDifficultyLevel.MEDIUM,
-      type: EnumQuestionType.MULTIPLE_CHOICE,
-      requiredTier: "free",
-      educationGradeId: "",
-    },
-  });
-
   const jsonQuestions = useAppStore((state) => state.jsonQuestions);
   const setJsonQuestions = useAppStore((state) => state.setJsonQuestions);
+  const setJsonQuestionsGlobalParams = useAppStore((state) => state.setJsonQuestionsGlobalParams);
+
+  const globalForm = useForm<z.infer<typeof globalFormSchema>>({
+    resolver: zodResolver(globalFormSchema),
+    defaultValues: useAppStore.getState().jsonQuestionsGlobalParams,
+  });
+
+  // Watch for changes and sync to store without re-rendering local component reactively
+  React.useEffect(() => {
+    const subscription = globalForm.watch((values) => {
+      setJsonQuestionsGlobalParams(values);
+    });
+    return () => subscription.unsubscribe();
+  }, [globalForm, setJsonQuestionsGlobalParams]);
 
   const processJsonContent = (content: string) => {
     try {

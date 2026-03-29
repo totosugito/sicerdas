@@ -35,6 +35,16 @@ type Store = {
   jsonQuestions: any[];
   setJsonQuestions: (questions: any[]) => void;
 
+  jsonQuestionsGlobalParams: {
+    subjectId: string;
+    passageId: string | null;
+    difficulty: string;
+    type: string;
+    requiredTier: string;
+    educationGradeId: string | number | null;
+  };
+  setJsonQuestionsGlobalParams: (params: any) => void;
+
   resetAll: () => void;
 };
 
@@ -69,6 +79,14 @@ export const defaultStore = {
   },
   mobileMenu: {} as Record<string, boolean>,
   jsonQuestions: [] as any[],
+  jsonQuestionsGlobalParams: {
+    subjectId: "",
+    passageId: null,
+    difficulty: "medium",
+    type: "multiple_choice",
+    requiredTier: "free",
+    educationGradeId: "",
+  },
 };
 
 export const useAppStore = create<Store>()(
@@ -111,6 +129,12 @@ export const useAppStore = create<Store>()(
       jsonQuestions: defaultStore.jsonQuestions,
       setJsonQuestions: (questions: any[]) => set({ jsonQuestions: questions }),
 
+      jsonQuestionsGlobalParams: defaultStore.jsonQuestionsGlobalParams,
+      setJsonQuestionsGlobalParams: (params: any) =>
+        set({
+          jsonQuestionsGlobalParams: params,
+        }),
+
       resetAll: () =>
         set({
           books: defaultStore.books,
@@ -118,6 +142,7 @@ export const useAppStore = create<Store>()(
           elementExpandedSections: defaultStore.elementExpandedSections,
           mobileMenu: defaultStore.mobileMenu,
           jsonQuestions: defaultStore.jsonQuestions,
+          jsonQuestionsGlobalParams: defaultStore.jsonQuestionsGlobalParams,
         }),
     }),
     {
