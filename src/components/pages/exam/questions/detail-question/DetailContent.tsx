@@ -20,20 +20,25 @@ export function DetailContent({ question }: DetailContentProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-xl flex items-center gap-2">
-          <BookOpen className="h-5 w-5 text-primary" />
-          {t(($) => $.exam.questions.detail.content.title)}
-        </CardTitle>
-        {question.passageTitle && (
-          <CardDescription className="flex items-center gap-2 mt-1">
-            <Layers className="h-4 w-4" />
-            {question.passageTitle}
-          </CardDescription>
+      <CardContent className="space-y-6">
+        {question.passage && (
+          <div className="flex flex-col gap-4 border-b pb-6">
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Layers className="h-5 w-5 text-primary" />
+              {t(($) => $.exam.questions.form.passage.label)} : {question.passage.title || "-"}
+            </h3>
+            <BlockNoteStatic
+              content={question.passage.content}
+              className="border-none bg-transparent px-0"
+            />
+          </div>
         )}
-      </CardHeader>
-      <CardContent className="space-y-8">
-        <div className="prose dark:prose-invert max-w-none">
+
+        <div className="prose dark:prose-invert max-w-none space-y-4">
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            <BookOpen className="h-5 w-5 text-primary" />
+            {t(($) => $.exam.questions.detail.content.title)}
+          </h3>
           <BlockNoteStatic content={question.content} />
         </div>
 

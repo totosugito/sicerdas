@@ -29,6 +29,9 @@ export const BlockNoteStatic = ({
         .bn-block-content {
           margin-inline-start: 0 !important;
         }
+        .ProseMirror-trailingBreak {
+          display: none !important;
+        }
       `}
     </style>
   );
