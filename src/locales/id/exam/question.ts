@@ -43,6 +43,14 @@ export default {
       label: "Bacaan / Passage",
       placeholder: "Pilih Bacaan",
     },
+    package: {
+      label: "Paket Ujian",
+      placeholder: "Pilih Paket...",
+    },
+    section: {
+      label: "Sesi Ujian / Bagian",
+      placeholder: "Pilih Sesi...",
+    },
     content: {
       label: "Konten Soal",
       placeholder: "Tulis or tempel konten soal di sini...",
@@ -132,7 +140,7 @@ export default {
     tabs: {
       info: "Informasi Umum",
       content: "Konten & Jawaban",
-      solutions: "Solusi & Tag",
+      solutions: "Solusi",
     },
     info: {
       title: "Informasi Umum",
@@ -177,6 +185,12 @@ export default {
       overrideNote:
         "Catatan: Parameter di atas akan menggantikan (override) nilai yang ada di berkas JSON saat melakukan ekspor ke bank soal.",
       selectAll: "Pilih Semua ({selected}/{total})",
+    },
+    packageParameters: {
+      title: "Parameter Paket Ujian",
+      description: "Pilih paket dan sesi ujian untuk menugaskan soal yang diekspor.",
+      overrideNote:
+        "Catatan: Jika dipilih, soal yang diekspor akan secara otomatis ditugaskan ke paket dan sesi ujian ini.",
     },
   },
 };

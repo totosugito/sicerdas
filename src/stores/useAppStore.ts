@@ -45,6 +45,11 @@ type Store = {
     educationGradeId: string | number | null;
   };
   setJsonQuestionsGlobalParams: (params: any) => void;
+  jsonQuestionsPackageParams: {
+    packageId: string | null;
+    sectionId: string | null;
+  };
+  setJsonQuestionsPackageParams: (params: any) => void;
 
   resetAll: () => void;
 };
@@ -87,6 +92,10 @@ export const defaultStore = {
     type: "multiple_choice",
     requiredTier: "free",
     educationGradeId: "",
+  },
+  jsonQuestionsPackageParams: {
+    packageId: null,
+    sectionId: null,
   },
 };
 
@@ -135,6 +144,11 @@ export const useAppStore = create<Store>()(
         set({
           jsonQuestionsGlobalParams: params,
         }),
+      jsonQuestionsPackageParams: defaultStore.jsonQuestionsPackageParams,
+      setJsonQuestionsPackageParams: (params: any) =>
+        set({
+          jsonQuestionsPackageParams: params,
+        }),
 
       resetAll: () =>
         set({
@@ -144,6 +158,7 @@ export const useAppStore = create<Store>()(
           mobileMenu: defaultStore.mobileMenu,
           jsonQuestions: defaultStore.jsonQuestions,
           jsonQuestionsGlobalParams: defaultStore.jsonQuestionsGlobalParams,
+          jsonQuestionsPackageParams: defaultStore.jsonQuestionsPackageParams,
         }),
     }),
     {

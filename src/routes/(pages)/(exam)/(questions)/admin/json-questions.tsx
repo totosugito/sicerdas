@@ -13,11 +13,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, Save } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { CreateQuestionRequest, useCreateQuestion } from "@/api/exam-questions";
 import { useCreateQuestionOption } from "@/api/exam-question-options";
 import { useCreateQuestionSolution } from "@/api/exam-question-solutions";
-import { useAssignQuestionTag, useAssignQuestionTagByName } from "@/api/exam-question-tags";
+import { useAssignQuestionTagByName } from "@/api/exam-question-tags";
 import { useListTagSimple } from "@/api/education-tags";
 import { showNotifSuccess } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";
@@ -27,10 +27,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EnumDifficultyLevel, EnumQuestionType } from "@/api/exam-questions/types";
 import {
   GlobalParamsForm,
+  PackageParamsForm,
   PasteJsonDialog,
   QuestionNumberGrid,
   JsonQuestionEditView,
 } from "@/components/pages/exam/questions/json-questions";
+import { useAssignPackageQuestions } from "@/api/exam-package-questions";
 import { JsonQuestionImport } from "@/api/exam-questions/types";
 
 const jsonQuestionsSearchSchema = z.object({
@@ -40,6 +42,7 @@ const jsonQuestionsSearchSchema = z.object({
   optionsExpanded: z.coerce.boolean().default(true).catch(true),
   solutionsExpanded: z.coerce.boolean().default(true).catch(true),
   tagsExpanded: z.coerce.boolean().default(true).catch(true),
+  packageExpanded: z.coerce.boolean().default(true).catch(true),
 });
 
 export const Route = createFileRoute("/(pages)/(exam)/(questions)/admin/json-questions")({
@@ -57,6 +60,7 @@ function JsonQuestionsPage() {
     optionsExpanded,
     solutionsExpanded,
     tagsExpanded,
+    packageExpanded,
   } = Route.useSearch();
   const navigate = Route.useNavigate();
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
@@ -92,6 +96,7 @@ function JsonQuestionsPage() {
   const createOptionMutation = useCreateQuestionOption();
   const createSolutionMutation = useCreateQuestionSolution();
   const assignTagByNameMutation = useAssignQuestionTagByName();
+  const assignPackageQuestionMutation = useAssignPackageQuestions();
   const { data: tagsData } = useListTagSimple({ limit: 1000 });
 
   const globalFormSchema = z.object({
@@ -106,13 +111,25 @@ function JsonQuestionsPage() {
     educationGradeId: z.union([z.number(), z.string(), z.null()]).optional(),
   });
 
+  const packageFormSchema = z.object({
+    packageId: z.string().uuid().nullish(),
+    sectionId: z.string().uuid().nullish(),
+  });
+
   const jsonQuestions = useAppStore((state) => state.jsonQuestions);
   const setJsonQuestions = useAppStore((state) => state.setJsonQuestions);
   const setJsonQuestionsGlobalParams = useAppStore((state) => state.setJsonQuestionsGlobalParams);
+  const jsonQuestionsPackageParams = useAppStore((state) => state.jsonQuestionsPackageParams);
+  const setJsonQuestionsPackageParams = useAppStore((state) => state.setJsonQuestionsPackageParams);
 
   const globalForm = useForm<z.infer<typeof globalFormSchema>>({
     resolver: zodResolver(globalFormSchema),
     defaultValues: useAppStore.getState().jsonQuestionsGlobalParams,
+  });
+
+  const packageForm = useForm<z.infer<typeof packageFormSchema>>({
+    resolver: zodResolver(packageFormSchema),
+    defaultValues: jsonQuestionsPackageParams,
   });
 
   // Watch for changes and sync to store without re-rendering local component reactively
@@ -122,6 +139,13 @@ function JsonQuestionsPage() {
     });
     return () => subscription.unsubscribe();
   }, [globalForm, setJsonQuestionsGlobalParams]);
+
+  React.useEffect(() => {
+    const subscription = packageForm.watch((values) => {
+      setJsonQuestionsPackageParams(values);
+    });
+    return () => subscription.unsubscribe();
+  }, [packageForm, setJsonQuestionsPackageParams]);
 
   const processJsonContent = (content: string) => {
     try {
@@ -183,6 +207,9 @@ function JsonQuestionsPage() {
       fileInputRef.current.value = "";
     }
   };
+  const setPackageExpanded = (expanded: boolean) => {
+    navigate({ search: (prev: any) => ({ ...prev, packageExpanded: expanded }) });
+  };
 
   const onPasteSubmit = (json: string) => {
     const success = processJsonContent(json);
@@ -223,6 +250,8 @@ function JsonQuestionsPage() {
 
     setIsExporting(true);
     const globalParams = globalForm.getValues();
+    const packageParams = packageForm.getValues();
+    const exportedQuestionIds: string[] = [];
 
     // Prepare tag mapping
     const tagMap =
@@ -294,9 +323,20 @@ function JsonQuestionsPage() {
           });
         }
 
+        exportedQuestionIds.push(newQuestionId);
+
         successCount++;
         // Keep track of which one to remove
         remainingIndices.splice(remainingIndices.indexOf(index), 1);
+      }
+
+      // 5. Assign to Package if selected
+      if (packageParams.packageId && packageParams.sectionId && exportedQuestionIds.length > 0) {
+        await assignPackageQuestionMutation.mutateAsync({
+          packageId: packageParams.packageId,
+          sectionId: packageParams.sectionId,
+          questionIds: exportedQuestionIds,
+        });
       }
 
       showNotifSuccess({
@@ -388,6 +428,12 @@ function JsonQuestionsPage() {
       {jsonQuestions.length > 0 ? (
         <div className="flex flex-col gap-6">
           <GlobalParamsForm form={globalForm} isOpen={isExpanded} onOpenChange={setIsExpanded} />
+
+          <PackageParamsForm
+            form={packageForm}
+            isOpen={packageExpanded}
+            onOpenChange={setPackageExpanded}
+          />
 
           <QuestionNumberGrid
             jsonQuestions={jsonQuestions}
