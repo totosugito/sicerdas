@@ -189,4 +189,14 @@ export const AppApi = {
       listSimple: APP_URL_API + "/education/categories/list-simple",
     },
   },
+  version: {
+    admin: {
+      create: APP_URL_API + "/version/admin/create",
+      update: APP_URL_API + "/version/admin/update/:id",
+      delete: APP_URL_API + "/version/admin/delete/:id",
+      detail: APP_URL_API + "/version/admin/detail/:id",
+    },
+    list: APP_URL_API + "/version/list",
+    listSimple: APP_URL_API + "/version/list-simple",
+  },
 };
