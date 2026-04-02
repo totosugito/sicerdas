@@ -1,0 +1,18 @@
+{
+  "version": {
+    "listSuccess": "Daftar versi berhasil diambil.",
+    "detailSuccess": "Detail versi berhasil diambil.",
+    "notFound": "Versi tidak ditemukan.",
+    "create": {
+      "success": "Versi berhasil dibuat.",
+      "exists": "Versi ini sudah ada."
+    },
+    "update": {
+      "success": "Versi berhasil diperbarui."
+    },
+    "delete": {
+      "success": "Versi berhasil dihapus.",
+      "inUse": "Versi ini tidak bisa dihapus karena sedang digunakan oleh data lain."
+    }
+  }
+}

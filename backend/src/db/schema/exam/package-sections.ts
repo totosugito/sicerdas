@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import { examPackages } from "./packages.ts";
+import { appVersion } from "../app/app-version.ts";
 
 /**
  * Table: exam_package_sections
@@ -43,13 +44,19 @@ export const examPackageSections = pgTable(
     // Soft delete / hide flag
     isActive: boolean("is_active").default(true).notNull(),
 
+    // References the version of this section
+    versionId: integer("version_id").references(() => appVersion.id, { onDelete: "set null" }),
+
     // Timestamp when this section was created
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 
     // Timestamp when this section was last updated
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => [index("exam_package_sections_package_id_idx").on(table.packageId)],
+  (table) => [
+    index("exam_package_sections_version_id_idx").on(table.versionId),
+    index("exam_package_sections_package_id_idx").on(table.packageId),
+  ],
 );
 
 export type SchemaExamPackageSectionSelect = InferSelectModel<typeof examPackageSections>;
