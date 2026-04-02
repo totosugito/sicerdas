@@ -40,6 +40,8 @@ export const ControlForm = forwardRef(
     ref,
   ) => {
     const defaultClassName = "focus-visible:ring-[0px]";
+    const isDisabled = props.disabled !== undefined ? props.disabled : item.disabled;
+
     return (
       <div className={cn("flex flex-col gap-y-1", wrapperClassName)}>
         <Controller
@@ -57,6 +59,7 @@ export const ControlForm = forwardRef(
                   labelClassName={labelClassName}
                   showMessage={showMessage}
                   {...props}
+                  disabled={isDisabled}
                 />
               );
             } else if (item.type === "number") {
@@ -69,6 +72,7 @@ export const ControlForm = forwardRef(
                   labelClassName={labelClassName}
                   showMessage={showMessage}
                   {...props}
+                  disabled={isDisabled}
                 />
               );
             } else if (itemType === "select") {
@@ -81,6 +85,7 @@ export const ControlForm = forwardRef(
                   className={cn(defaultClassName, className)}
                   labelClassName={labelClassName}
                   showMessage={showMessage}
+                  disabled={isDisabled}
                 />
               );
             } else if (itemType === "combobox") {
@@ -93,6 +98,7 @@ export const ControlForm = forwardRef(
                   labelClassName={labelClassName}
                   showMessage={showMessage}
                   {...props}
+                  disabled={isDisabled}
                 />
               );
             } else if (itemType === "multiselect") {
@@ -105,6 +111,7 @@ export const ControlForm = forwardRef(
                   labelClassName={labelClassName}
                   showMessage={showMessage}
                   {...props}
+                  disabled={isDisabled}
                 />
               );
             } else if (itemType === "date") {
@@ -117,6 +124,7 @@ export const ControlForm = forwardRef(
                   labelClassName={labelClassName}
                   showMessage={showMessage}
                   {...props}
+                  disabled={isDisabled}
                 />
               );
             } else if (itemType === "textarea") {
@@ -129,6 +137,7 @@ export const ControlForm = forwardRef(
                   labelClassName={labelClassName}
                   showMessage={showMessage}
                   {...props}
+                  disabled={isDisabled}
                 />
               );
             } else if (itemType === "upload") {
@@ -141,6 +150,7 @@ export const ControlForm = forwardRef(
                   className={cn(defaultClassName, className)}
                   labelClassName={labelClassName}
                   showMessage={showMessage}
+                  disabled={isDisabled}
                 />
               );
             } else if (itemType === "checkbox") {
@@ -152,6 +162,7 @@ export const ControlForm = forwardRef(
                   labelClassName={labelClassName}
                   showMessage={showMessage}
                   {...props}
+                  disabled={isDisabled}
                 />
               );
             } else if (itemType === "switch") {
@@ -163,6 +174,7 @@ export const ControlForm = forwardRef(
                   labelClassName={labelClassName}
                   showMessage={showMessage}
                   {...props}
+                  disabled={isDisabled}
                 />
               );
             } else if (itemType === "blocknote") {
@@ -177,6 +189,7 @@ export const ControlForm = forwardRef(
                     labelClassName={labelClassName}
                     showMessage={showMessage}
                     {...props}
+                    disabled={isDisabled}
                   />
                 </React.Suspense>
               );
@@ -190,6 +203,7 @@ export const ControlForm = forwardRef(
                   labelClassName={labelClassName}
                   showMessage={showMessage}
                   {...props}
+                  disabled={isDisabled}
                 />
               );
             }

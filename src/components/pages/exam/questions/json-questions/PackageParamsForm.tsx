@@ -20,6 +20,14 @@ export function PackageParamsForm({ form, isOpen = true, onOpenChange }: Package
 
   // Watch package selection to filter sections
   const packageId = form.watch("packageId");
+  const prevPackageIdRef = React.useRef(packageId);
+
+  React.useEffect(() => {
+    if (prevPackageIdRef.current !== packageId) {
+      form.setValue("sectionId", "");
+      prevPackageIdRef.current = packageId;
+    }
+  }, [packageId, form]);
 
   const { data: packagesData, isFetching: isFetchingPackages } = useListPackageSimple({
     limit: 1000,

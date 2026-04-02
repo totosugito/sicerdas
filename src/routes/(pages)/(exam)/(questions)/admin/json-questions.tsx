@@ -181,7 +181,6 @@ function JsonQuestionsPage() {
         return false;
       }
     } catch (err) {
-      console.error("Error parsing JSON:", err);
       showNotifError({ message: t(($) => $.exam.questions.jsonQuestions.parseError) });
       return false;
     }
@@ -248,9 +247,15 @@ function JsonQuestionsPage() {
     const isValid = await globalForm.trigger();
     if (!isValid || selectedIndices.length === 0) return;
 
-    setIsExporting(true);
     const globalParams = globalForm.getValues();
     const packageParams = packageForm.getValues();
+
+    if (packageParams.packageId && !packageParams.sectionId) {
+      showNotifError({ message: t(($) => $.exam.questions.form.section.required) });
+      return;
+    }
+
+    setIsExporting(true);
     const exportedQuestionIds: string[] = [];
 
     // Prepare tag mapping

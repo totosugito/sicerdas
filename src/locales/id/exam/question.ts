@@ -50,6 +50,7 @@ export default {
     section: {
       label: "Sesi Ujian / Bagian",
       placeholder: "Pilih Sesi...",
+      required: "Sesi ujian wajib dipilih jika paket ditentukan",
     },
     content: {
       label: "Konten Soal",
