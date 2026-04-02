@@ -4,10 +4,10 @@ import { useMutation } from "@tanstack/react-query";
 
 import { AppVersionResponse } from "../types";
 
-export const useDeleteVersion = (id: string | number) => {
+export const useDeleteVersion = () => {
   return useMutation({
-    mutationKey: ["version-delete", id],
-    mutationFn: async () => {
+    mutationKey: ["version-delete"],
+    mutationFn: async (id: string | number) => {
       const response = await fetchApi({
         method: "DELETE",
         url: AppApi.version.admin.delete.replace(":id", id.toString()),

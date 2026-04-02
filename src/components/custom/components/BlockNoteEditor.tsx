@@ -3,26 +3,29 @@ import "@blocknote/shadcn/style.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
 import { useEffect } from "react";
-import { UseFormReturn } from "react-hook-form";
+import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 import { useTheme } from "@/lib/theme-provider";
 import { FormLabel } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { PassageFormValues } from "@/api/exam-passages/types";
 
-type BlockNoteEditorProps = {
-  form: UseFormReturn<PassageFormValues>;
-  defaultValues?: Partial<PassageFormValues>;
+export type BlockNoteEditorProps<T extends FieldValues> = {
+  form: UseFormReturn<T>;
+  fieldName: Path<T>;
+  label?: string;
+  defaultValues?: Partial<T>;
   isPending?: boolean;
   onContentChange: (content: any[]) => void;
 };
 
-export function BlockNoteEditor({
+export function BlockNoteEditor<T extends FieldValues>({
   form,
+  fieldName,
+  label,
   defaultValues,
   isPending,
   onContentChange,
-}: BlockNoteEditorProps) {
+}: BlockNoteEditorProps<T>) {
   const { t } = useAppTranslation();
   const { theme: appTheme } = useTheme();
 
@@ -33,10 +36,12 @@ export function BlockNoteEditor({
         : "light"
       : appTheme;
 
+  const initialContent = defaultValues?.[fieldName as string];
+
   const editor = useCreateBlockNote({
     initialContent:
-      defaultValues?.content && defaultValues.content.length > 0
-        ? (defaultValues.content as any)
+      initialContent && Array.isArray(initialContent) && initialContent.length > 0
+        ? (initialContent as any)
         : undefined,
   });
 
@@ -52,53 +57,55 @@ export function BlockNoteEditor({
   // Handle external reset (form reset clears isDirty)
   useEffect(() => {
     if (!editor || form.formState.isDirty) return;
-    const currentVal = form.getValues("content");
-    const blocks = currentVal && currentVal.length > 0 ? currentVal : [];
+    const currentVal = form.getValues(fieldName);
+    const blocks =
+      currentVal && Array.isArray(currentVal) && currentVal.length > 0 ? currentVal : [];
     if (JSON.stringify(editor.document) !== JSON.stringify(blocks)) {
       editor.replaceBlocks(
         editor.document,
         blocks.length > 0 ? blocks : [{ type: "paragraph", content: [] }],
       );
     }
-  }, [form.formState.isDirty, editor, form]);
+  }, [form.formState.isDirty, editor, form, fieldName]);
 
-  // Handle reset-button click from cancel
+  // Handle external change of defaultValues
   useEffect(() => {
     if (!editor || !defaultValues) return;
-    // Re-populate when defaultValues changes (edit mode)
+    const originalValue = defaultValues[fieldName as string];
     const originalContent =
-      defaultValues.content && defaultValues.content.length > 0
-        ? (defaultValues.content as any)
+      originalValue && Array.isArray(originalValue) && originalValue.length > 0
+        ? (originalValue as any)
         : [{ type: "paragraph", content: [] }];
-    editor.replaceBlocks(editor.document, originalContent);
+
+    // Only replace if genuinely different to avoid cursor jumps
+    if (JSON.stringify(editor.document) !== JSON.stringify(originalContent)) {
+      editor.replaceBlocks(editor.document, originalContent);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValues]);
 
   const handleCancel = () => {
     form.reset();
     if (editor) {
+      const originalValue = defaultValues?.[fieldName as string];
       const originalContent =
-        defaultValues?.content && defaultValues.content.length > 0
-          ? (defaultValues.content as any)
+        originalValue && Array.isArray(originalValue) && originalValue.length > 0
+          ? (originalValue as any)
           : [{ type: "paragraph", content: [] }];
       editor.replaceBlocks(editor.document, originalContent);
     }
   };
 
+  const error = form.formState.errors[fieldName];
+
   return (
     <>
       <div className="space-y-2">
-        <FormLabel className="text-foreground font-medium">
-          {t(($) => $.exam.passages.form.content.label)}
-        </FormLabel>
+        {label && <FormLabel className="text-foreground font-medium">{label}</FormLabel>}
         <div className="min-h-[300px] border rounded-md bg-background">
           <BlockNoteView editor={editor} theme={resolvedTheme} />
         </div>
-        {form.formState.errors.content && (
-          <p className="text-destructive text-sm font-medium">
-            {form.formState.errors.content.message}
-          </p>
-        )}
+        {error && <p className="text-destructive text-sm font-medium">{error.message as string}</p>}
       </div>
 
       <div className="flex justify-end gap-2 pt-4 border-t">

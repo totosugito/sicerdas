@@ -146,5 +146,10 @@ export const AppRoute = {
     user: {
       list: { url: "/admin/users" },
     },
+    version: {
+      list: { url: "/admin/versions" },
+      create: { url: "/admin/create-version" },
+      edit: { url: "/admin/edit-version/$id" },
+    },
   },
 };

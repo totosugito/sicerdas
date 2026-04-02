@@ -2,13 +2,13 @@ import pg from "pg";
 import envConfig from "../../../config/env.config.ts";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { eq, and, sql } from "drizzle-orm";
-import * as schema from '../../../db/schema/index.ts';
-import dotenv from 'dotenv';
+import * as schema from "../../../db/schema/index.ts";
+import dotenv from "dotenv";
 import { bookCategory, bookGroup } from "../../../db/schema/book/index.ts";
 import { educationGrades } from "../../../db/schema/education/index.ts";
 import { EnumContentType, EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
-dotenv.config({ path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env' });
+dotenv.config({ path: process.env.NODE_ENV === "development" ? ".env.devel" : ".env" });
 
 export default async function seed() {
   const pool = new pg.Pool({
@@ -28,9 +28,30 @@ export default async function seed() {
         dataType: EnumContentType.BOOK,
         status: EnumContentStatus.PUBLISHED,
         name: "",
-        note: "Initial Data"
+        note: [],
+        extra: {},
       },
-    ]
+      {
+        id: 2,
+        appVersion: 2,
+        dbVersion: 260207,
+        dataType: EnumContentType.BOOK,
+        status: EnumContentStatus.PUBLISHED,
+        name: "New Book Version",
+        note: [],
+        extra: {},
+      },
+      {
+        id: 3,
+        appVersion: 3,
+        dbVersion: 260403,
+        dataType: EnumContentType.EXAM,
+        status: EnumContentStatus.PUBLISHED,
+        name: "New Exam Version",
+        note: [],
+        extra: {},
+      },
+    ];
 
     // default data for education grade
     const educationGrades_ = [
@@ -60,7 +81,7 @@ export default async function seed() {
       { id: 24, versionId: versionId, grade: "sd_smp", name: "SD/SMP" },
       { id: 25, versionId: versionId, grade: "sd_123", name: "SD 1-3" },
       { id: 26, versionId: versionId, grade: "sd_456", name: "SD 4-6" },
-    ]
+    ];
 
     // default data for books category
     const bookCategories_ = [
@@ -71,50 +92,217 @@ export default async function seed() {
       { id: 5, versionId: versionId, code: "cerita_terjemahan", name: "Cerita Terjemahan" },
       { id: 6, versionId: versionId, code: "buku_komputer", name: "Buku Komputer" },
       { id: 7, versionId: versionId, code: "sastra", name: "Sastra" },
-    ]
+    ];
 
     // default data for books group
     const bookGroups_ = [
-      { id: 1, versionId: versionId, categoryCode: "k06", name: "Kurikulum 2006", shortName: "KTSP" },
+      {
+        id: 1,
+        versionId: versionId,
+        categoryCode: "k06",
+        name: "Kurikulum 2006",
+        shortName: "KTSP",
+      },
       { id: 2, versionId: versionId, categoryCode: "k06", name: "SMK", shortName: "SMK" },
-      { id: 3, versionId: versionId, categoryCode: "k13", name: "Kurikulum 2013 Siswa", shortName: "K13 Siswa" },
-      { id: 4, versionId: versionId, categoryCode: "k13", name: "Kurikulum 2013 Guru", shortName: "K13 Guru" },
-      { id: 5, versionId: versionId, categoryCode: "k13", name: "SMK Kita BISA!", shortName: "SMK Kita BISA!" },
+      {
+        id: 3,
+        versionId: versionId,
+        categoryCode: "k13",
+        name: "Kurikulum 2013 Siswa",
+        shortName: "K13 Siswa",
+      },
+      {
+        id: 4,
+        versionId: versionId,
+        categoryCode: "k13",
+        name: "Kurikulum 2013 Guru",
+        shortName: "K13 Guru",
+      },
+      {
+        id: 5,
+        versionId: versionId,
+        categoryCode: "k13",
+        name: "SMK Kita BISA!",
+        shortName: "SMK Kita BISA!",
+      },
       { id: 6, versionId: versionId, categoryCode: "k13", name: "SMK K13", shortName: "SMK K13" },
-      { id: 7, versionId: versionId, categoryCode: "merdeka", name: "Kurikulum Merdeka Siswa", shortName: "Merdeka Siswa" },
-      { id: 8, versionId: versionId, categoryCode: "merdeka", name: "Kurikulum Merdeka Guru", shortName: "Merdeka Guru" },
+      {
+        id: 7,
+        versionId: versionId,
+        categoryCode: "merdeka",
+        name: "Kurikulum Merdeka Siswa",
+        shortName: "Merdeka Siswa",
+      },
+      {
+        id: 8,
+        versionId: versionId,
+        categoryCode: "merdeka",
+        name: "Kurikulum Merdeka Guru",
+        shortName: "Merdeka Guru",
+      },
       { id: 9, versionId: versionId, categoryCode: "pendidikan", name: "KPK", shortName: "KPK" },
-      { id: 10, versionId: versionId, categoryCode: "pendidikan", name: "KAMUS", shortName: "KAMUS" },
-      { id: 11, versionId: versionId, categoryCode: "pendidikan", name: "Agama Islam", shortName: "Agama Islam" },
-      { id: 12, versionId: versionId, categoryCode: "pendidikan", name: "Pengetahuan Umum", shortName: "Pengetahuan Umum" },
-      { id: 13, versionId: versionId, categoryCode: "pendidikan", name: "IslamHouse.com", shortName: "IslamHouse.com" },
-      { id: 14, versionId: versionId, categoryCode: "pendidikan", name: "RumahFiqih.com", shortName: "RumahFiqih.com" },
-      { id: 15, versionId: versionId, categoryCode: "cerita_terjemahan", name: "English", shortName: "English" },
-      { id: 16, versionId: versionId, categoryCode: "cerita_terjemahan", name: "Bahasa Indonesia", shortName: "Bahasa Indonesia" },
-      { id: 17, versionId: versionId, categoryCode: "cerita_terjemahan", name: "Basa Jawa", shortName: "Basa Jawa" },
-      { id: 18, versionId: versionId, categoryCode: "cerita_terjemahan", name: "Basa Sunda", shortName: "Basa Sunda" },
-      { id: 19, versionId: versionId, categoryCode: "buku_komputer", name: "Pengetahuan Komputer", shortName: "Ilmu Komputer" },
-      { id: 20, versionId: versionId, categoryCode: "buku_komputer", name: "Pemprograman", shortName: "Pemprograman" },
-      { id: 21, versionId: versionId, categoryCode: "buku_komputer", name: "Syncfusion.com", shortName: "Syncfusion.com" },
-      { id: 22, versionId: versionId, categoryCode: "sastra", name: "Komik Pendidikan", shortName: "Komik Pendidikan" },
-      { id: 23, versionId: versionId, categoryCode: "sastra", name: "Pra Sekolah", shortName: "Pra Sekolah" },
-      { id: 24, versionId: versionId, categoryCode: "sastra", name: "Antologi Puisi", shortName: "Antologi Puisi" },
-      { id: 25, versionId: versionId, categoryCode: "sastra", name: "Bacaan PAUD", shortName: "Bacaan PAUD" },
-      { id: 26, versionId: versionId, categoryCode: "sastra", name: "Bacaan SD", shortName: "Bacaan SD" },
-      { id: 27, versionId: versionId, categoryCode: "sastra", name: "Bacaan SMP", shortName: "Bacaan SMP" },
-      { id: 28, versionId: versionId, categoryCode: "sastra", name: "Bacaan SMA", shortName: "Bacaan SMA" },
-      { id: 29, versionId: versionId, categoryCode: "sastra", name: "Bacaan SD Kelas 1-3", shortName: "Bacaan SD 1-3" },
-      { id: 30, versionId: versionId, categoryCode: "sastra", name: "Bacaan SD Kelas 4-6", shortName: "Bacaan SD 4-6" },
+      {
+        id: 10,
+        versionId: versionId,
+        categoryCode: "pendidikan",
+        name: "KAMUS",
+        shortName: "KAMUS",
+      },
+      {
+        id: 11,
+        versionId: versionId,
+        categoryCode: "pendidikan",
+        name: "Agama Islam",
+        shortName: "Agama Islam",
+      },
+      {
+        id: 12,
+        versionId: versionId,
+        categoryCode: "pendidikan",
+        name: "Pengetahuan Umum",
+        shortName: "Pengetahuan Umum",
+      },
+      {
+        id: 13,
+        versionId: versionId,
+        categoryCode: "pendidikan",
+        name: "IslamHouse.com",
+        shortName: "IslamHouse.com",
+      },
+      {
+        id: 14,
+        versionId: versionId,
+        categoryCode: "pendidikan",
+        name: "RumahFiqih.com",
+        shortName: "RumahFiqih.com",
+      },
+      {
+        id: 15,
+        versionId: versionId,
+        categoryCode: "cerita_terjemahan",
+        name: "English",
+        shortName: "English",
+      },
+      {
+        id: 16,
+        versionId: versionId,
+        categoryCode: "cerita_terjemahan",
+        name: "Bahasa Indonesia",
+        shortName: "Bahasa Indonesia",
+      },
+      {
+        id: 17,
+        versionId: versionId,
+        categoryCode: "cerita_terjemahan",
+        name: "Basa Jawa",
+        shortName: "Basa Jawa",
+      },
+      {
+        id: 18,
+        versionId: versionId,
+        categoryCode: "cerita_terjemahan",
+        name: "Basa Sunda",
+        shortName: "Basa Sunda",
+      },
+      {
+        id: 19,
+        versionId: versionId,
+        categoryCode: "buku_komputer",
+        name: "Pengetahuan Komputer",
+        shortName: "Ilmu Komputer",
+      },
+      {
+        id: 20,
+        versionId: versionId,
+        categoryCode: "buku_komputer",
+        name: "Pemprograman",
+        shortName: "Pemprograman",
+      },
+      {
+        id: 21,
+        versionId: versionId,
+        categoryCode: "buku_komputer",
+        name: "Syncfusion.com",
+        shortName: "Syncfusion.com",
+      },
+      {
+        id: 22,
+        versionId: versionId,
+        categoryCode: "sastra",
+        name: "Komik Pendidikan",
+        shortName: "Komik Pendidikan",
+      },
+      {
+        id: 23,
+        versionId: versionId,
+        categoryCode: "sastra",
+        name: "Pra Sekolah",
+        shortName: "Pra Sekolah",
+      },
+      {
+        id: 24,
+        versionId: versionId,
+        categoryCode: "sastra",
+        name: "Antologi Puisi",
+        shortName: "Antologi Puisi",
+      },
+      {
+        id: 25,
+        versionId: versionId,
+        categoryCode: "sastra",
+        name: "Bacaan PAUD",
+        shortName: "Bacaan PAUD",
+      },
+      {
+        id: 26,
+        versionId: versionId,
+        categoryCode: "sastra",
+        name: "Bacaan SD",
+        shortName: "Bacaan SD",
+      },
+      {
+        id: 27,
+        versionId: versionId,
+        categoryCode: "sastra",
+        name: "Bacaan SMP",
+        shortName: "Bacaan SMP",
+      },
+      {
+        id: 28,
+        versionId: versionId,
+        categoryCode: "sastra",
+        name: "Bacaan SMA",
+        shortName: "Bacaan SMA",
+      },
+      {
+        id: 29,
+        versionId: versionId,
+        categoryCode: "sastra",
+        name: "Bacaan SD Kelas 1-3",
+        shortName: "Bacaan SD 1-3",
+      },
+      {
+        id: 30,
+        versionId: versionId,
+        categoryCode: "sastra",
+        name: "Bacaan SD Kelas 4-6",
+        shortName: "Bacaan SD 4-6",
+      },
     ];
 
     // fill default version data
     for (const version of versionData_) {
       // Check if version exists
-      const existingVersion = await db.select({ id: schema.appVersion.id }).from(schema.appVersion).where(eq(schema.appVersion.id, version.id)).then((result: { id: number }[]) => !!result[0]?.id);
+      const existingVersion = await db
+        .select({ id: schema.appVersion.id })
+        .from(schema.appVersion)
+        .where(eq(schema.appVersion.id, version.id))
+        .then((result: { id: number }[]) => !!result[0]?.id);
 
       if (existingVersion) {
         // Update existing version
-        await db.update(schema.appVersion)
+        await db
+          .update(schema.appVersion)
           .set({
             appVersion: version.appVersion,
             dbVersion: version.dbVersion,
@@ -122,7 +310,8 @@ export default async function seed() {
             status: version.status,
             name: version.name,
             note: version.note,
-            updatedAt: new Date()
+            extra: version.extra,
+            updatedAt: new Date(),
           })
           .where(eq(schema.appVersion.id, version.id));
       } else {
@@ -141,14 +330,9 @@ export default async function seed() {
         .then((result: { id: number }[]) => !!result[0]?.id);
 
       if (!gradeExists) {
-        await db
-          .insert(educationGrades)
-          .values(grade);
+        await db.insert(educationGrades).values(grade);
       } else {
-        await db
-          .update(educationGrades)
-          .set(grade)
-          .where(eq(educationGrades.id, grade.id));
+        await db.update(educationGrades).set(grade).where(eq(educationGrades.id, grade.id));
       }
     }
 
@@ -161,14 +345,9 @@ export default async function seed() {
         .then((result: { code: string }[]) => !!result[0]?.code);
 
       if (!categoryExists) {
-        await db
-          .insert(bookCategory)
-          .values(category);
+        await db.insert(bookCategory).values(category);
       } else {
-        await db
-          .update(bookCategory)
-          .set(category)
-          .where(eq(bookCategory.id, category.id));
+        await db.update(bookCategory).set(category).where(eq(bookCategory.id, category.id));
       }
     }
 
@@ -184,7 +363,9 @@ export default async function seed() {
           .limit(1);
 
         if (!category) {
-          console.warn(`Category not found for code: ${group.categoryCode}, skipping group: ${group.name}`);
+          console.warn(
+            `Category not found for code: ${group.categoryCode}, skipping group: ${group.name}`,
+          );
           continue;
         }
 
@@ -192,12 +373,7 @@ export default async function seed() {
         const [existingGroup] = await db
           .select()
           .from(bookGroup)
-          .where(
-            and(
-              eq(bookGroup.name, group.name),
-              eq(bookGroup.categoryId, category.id)
-            )
-          )
+          .where(and(eq(bookGroup.name, group.name), eq(bookGroup.categoryId, category.id)))
           .limit(1);
 
         const groupData = {
@@ -209,14 +385,9 @@ export default async function seed() {
         };
 
         if (!existingGroup) {
-          await db
-            .insert(bookGroup)
-            .values(groupData);
+          await db.insert(bookGroup).values(groupData);
         } else {
-          await db
-            .update(bookGroup)
-            .set(groupData)
-            .where(eq(bookGroup.id, existingGroup.id));
+          await db.update(bookGroup).set(groupData).where(eq(bookGroup.id, existingGroup.id));
         }
       } catch (error) {
         console.error(`Error processing group: ${group.name}`, error);
@@ -225,16 +396,21 @@ export default async function seed() {
 
     // Fix sequences to prevent duplicate key errors on future inserts
     console.log("Fixing sequences for tables with hardcoded IDs...");
-    await db.execute(sql`SELECT setval(pg_get_serial_sequence('education_grades', 'id'), COALESCE((SELECT MAX(id) FROM education_grades), 1));`);
-    await db.execute(sql`SELECT setval('book_category_id_seq', COALESCE((SELECT MAX(id) FROM book_category), 1));`);
-    await db.execute(sql`SELECT setval('book_group_id_seq', COALESCE((SELECT MAX(id) FROM book_group), 1));`);
-    await db.execute(sql`SELECT setval('app_version_id_seq', COALESCE((SELECT MAX(id) FROM app_version), 1));`);
-
-  }
-  catch (error) {
+    await db.execute(
+      sql`SELECT setval(pg_get_serial_sequence('education_grades', 'id'), COALESCE((SELECT MAX(id) FROM education_grades), 1));`,
+    );
+    await db.execute(
+      sql`SELECT setval('book_category_id_seq', COALESCE((SELECT MAX(id) FROM book_category), 1));`,
+    );
+    await db.execute(
+      sql`SELECT setval('book_group_id_seq', COALESCE((SELECT MAX(id) FROM book_group), 1));`,
+    );
+    await db.execute(
+      sql`SELECT setval('app_version_id_seq', COALESCE((SELECT MAX(id) FROM app_version), 1));`,
+    );
+  } catch (error) {
     console.error(error);
-  }
-  finally {
+  } finally {
     await pool.end();
   }
 }
@@ -245,11 +421,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   seed()
     .then(() => {
       // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-      console.log('Database initialization completed successfully!');
+      console.log("Database initialization completed successfully!");
       process.exit(0);
     })
     .catch((error) => {
-      console.error('Database initialization failed:', error);
+      console.error("Database initialization failed:", error);
       process.exit(1);
     });
 }

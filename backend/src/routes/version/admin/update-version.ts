@@ -103,10 +103,10 @@ const updateVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
         message: t(($) => $.version.update.success),
         data: {
           ...updatedVersion,
-          note: updatedVersion.note || "",
+          note: updatedVersion.note as Record<string, unknown>[],
           extra: (updatedVersion.extra as Record<string, unknown>) || {},
-          createdAt: updatedVersion.createdAt?.toISOString() || "",
-          updatedAt: updatedVersion.updatedAt?.toISOString() || "",
+          createdAt: updatedVersion.createdAt?.toISOString(),
+          updatedAt: updatedVersion.updatedAt?.toISOString(),
         },
       });
     }),

@@ -25,7 +25,7 @@ const VersionResponseItem = Type.Object({
   dataType: Type.String(),
   status: Type.String(),
   name: Type.String(),
-  note: Type.Optional(Type.String()),
+  note: Type.Array(Type.Record(Type.String(), Type.Unknown())),
   extra: Type.Record(Type.String(), Type.Unknown()),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
@@ -140,10 +140,10 @@ const listVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
         data: {
           items: items.map((item) => ({
             ...item,
-            note: item.note || "",
+            note: item.note as Record<string, unknown>[],
             extra: (item.extra as Record<string, unknown>) || {},
-            createdAt: item.createdAt?.toISOString() || "",
-            updatedAt: item.updatedAt?.toISOString() || "",
+            createdAt: item.createdAt?.toISOString(),
+            updatedAt: item.updatedAt?.toISOString(),
           })),
           meta: {
             total,

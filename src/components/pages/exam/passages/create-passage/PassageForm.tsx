@@ -8,17 +8,11 @@ import { ControlForm } from "@/components/custom/forms";
 import { FormWithDetector } from "@/components/custom/components";
 import { useListSubjectSimple } from "@/api/exam-subjects";
 import { PassageFormValues } from "@/api/exam-passages/types";
-
-type BlockNoteEditorProps = {
-  form: UseFormReturn<PassageFormValues>;
-  defaultValues?: Partial<PassageFormValues>;
-  isPending?: boolean;
-  onContentChange: (content: any[]) => void;
-};
+import { BlockNoteEditorProps } from "@/components/custom/components/BlockNoteEditor";
 
 const LazyBlockNoteEditor = lazy(() =>
   import("@/components/custom/components/BlockNoteEditor").then((m) => ({
-    default: m.BlockNoteEditor as ComponentType<BlockNoteEditorProps>,
+    default: m.BlockNoteEditor as ComponentType<BlockNoteEditorProps<PassageFormValues>>,
   })),
 );
 
@@ -126,6 +120,8 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
           >
             <LazyBlockNoteEditor
               form={form}
+              fieldName="content"
+              label={t(($) => $.exam.passages.form.content.label)}
               defaultValues={defaultValues}
               isPending={isPending}
               onContentChange={handleContentChange}

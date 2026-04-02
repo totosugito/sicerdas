@@ -13,4 +13,5 @@ export { useListVersionSimple } from "./list-version-simple";
 export { useCreateVersion } from "./admin/create-version";
 export { useUpdateVersion } from "./admin/update-version";
 export { useDetailVersion } from "./admin/detail-version";
+export { useGetVersion } from "./admin/get-version";
 export { useDeleteVersion } from "./admin/delete-version";

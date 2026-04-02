@@ -1,17 +1,18 @@
-import app from './app/app-locale';
-import labels from './global/labels-locale';
-import auth from './auth';
-import message from './global/message-locale';
-import landing from './app/landing-locale';
-import web from './web';
-import periodicTable from './periodic-table';
-import book from './book';
-import report from './layout/content-report';
-import constitution from './constitution';
-import exam from './exam';
-import appTier from './app-tier';
-import user from './user';
-import education from './education';
+import app from "./app/app-locale";
+import labels from "./global/labels-locale";
+import auth from "./auth";
+import message from "./global/message-locale";
+import landing from "./app/landing-locale";
+import web from "./web";
+import periodicTable from "./periodic-table";
+import book from "./book";
+import report from "./layout/content-report";
+import constitution from "./constitution";
+import exam from "./exam";
+import appTier from "./app-tier";
+import user from "./user";
+import education from "./education";
+import version from "./version";
 
 const localeId = {
   translation: {
@@ -29,12 +30,13 @@ const localeId = {
     exam: exam,
     user: user,
     education: education,
-  }
-}
+    version: version,
+  },
+};
 
 export default {
-  language: 'id',
-  country: 'id',
-  name: 'Indonesia',
-  embeddedLocale: localeId
-}
+  language: "id",
+  country: "id",
+  name: "Indonesia",
+  embeddedLocale: localeId,
+};
