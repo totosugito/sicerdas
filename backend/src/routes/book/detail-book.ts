@@ -1,8 +1,14 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from '@sinclair/typebox';
+import { Type } from "@sinclair/typebox";
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
-import { books, bookCategory, bookGroup, bookEventStats, bookInteractions } from "../../db/schema/book/index.ts";
+import {
+  books,
+  bookCategory,
+  bookGroup,
+  bookEventStats,
+  bookInteractions,
+} from "../../db/schema/book/index.ts";
 import { educationGrades } from "../../db/schema/education/grades.ts";
 import { appEventHistory } from "../../db/schema/app/app-event-history.ts";
 import { and, eq, sql } from "drizzle-orm";
@@ -11,12 +17,12 @@ import { getBookCoverUrl, getBookPdfUrl, getBookSamplePagesUrl } from "../../uti
 import { EnumContentType, EnumEventStatus } from "../../db/schema/enum/enum-app.ts";
 import { CONFIG } from "../../config/app-constant.ts";
 import { desc } from "drizzle-orm";
-import { fromNodeHeaders } from 'better-auth/node';
+import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const BookDetailResponse = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  id: Type.String({ format: "uuid" }),
   bookId: Type.Number(),
   title: Type.String(),
   description: Type.Optional(Type.String()),
@@ -53,16 +59,19 @@ const BookDetailResponse = Type.Object({
     grade: Type.String(),
   }),
   // User interaction data (only present when user is logged in)
-  userInteraction: Type.Optional(Type.Object({
-    liked: Type.Boolean(),
-    disliked: Type.Boolean(),
-    rating: Type.Number(),
-    bookmarked: Type.Boolean(),
-    viewCount: Type.Number(),
-    downloadCount: Type.Number(),
-  })),
-  createdAt: Type.String({ format: 'date-time' }),
-  updatedAt: Type.String({ format: 'date-time' }),
+  userInteraction: Type.Optional(
+    Type.Object({
+      liked: Type.Boolean(),
+      disliked: Type.Boolean(),
+      rating: Type.Number(),
+      bookmarked: Type.Boolean(),
+      viewCount: Type.Number(),
+      downloadCount: Type.Number(),
+    }),
+  ),
+  isNew: Type.Boolean(),
+  createdAt: Type.String({ format: "date-time" }),
+  updatedAt: Type.String({ format: "date-time" }),
 });
 
 const BookDetailResponseWrapper = Type.Object({
@@ -73,30 +82,30 @@ const BookDetailResponseWrapper = Type.Object({
 
 const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
-    url: '/detail/:bookId',
-    method: 'GET',
+    url: "/detail/:bookId",
+    method: "GET",
     schema: {
-      tags: ['V1/Book'],
-      summary: 'Get book detail',
-      description: 'Get detailed information about a specific book by its ID',
+      tags: ["V1/Book"],
+      summary: "Get book detail",
+      description: "Get detailed information about a specific book by its ID",
       params: Type.Object({
         bookId: Type.Number(),
       }),
       response: {
         200: BookDetailResponseWrapper,
-        '4xx': Type.Object({
+        "4xx": Type.Object({
           success: Type.Boolean({ default: false }),
-          message: Type.String()
+          message: Type.String(),
         }),
-        '5xx': Type.Object({
+        "5xx": Type.Object({
           success: Type.Boolean({ default: false }),
-          message: Type.String()
-        })
+          message: Type.String(),
+        }),
       },
     },
     handler: withErrorHandler(async function handler(
       req: FastifyRequest<{ Params: { bookId: number } }>,
-      reply: FastifyReply
+      reply: FastifyReply,
     ): Promise<typeof BookDetailResponseWrapper.static> {
       const { t } = getTypedI18n(req);
       const { bookId } = req.params;
@@ -105,7 +114,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       // Check if user is logged in
-      const isLoggedIn = !!(session?.user);
+      const isLoggedIn = !!session?.user;
       const userId = isLoggedIn ? session?.user?.id : null;
 
       // Build the base query with joins
@@ -128,6 +137,11 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             viewCount: bookEventStats.viewCount,
             downloadCount: bookEventStats.downloadCount,
             bookmarkCount: bookEventStats.bookmarkCount,
+            isNew: app.versionCache.get(EnumContentType.BOOK)
+              ? sql<boolean>`${books.versionId} = ${app.versionCache.get(EnumContentType.BOOK)}`.as(
+                  "isNew",
+                )
+              : sql<boolean>`false`.as("isNew"),
             createdAt: books.createdAt,
             updatedAt: books.updatedAt,
             category: {
@@ -157,10 +171,10 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           .leftJoin(bookCategory, eq(bookGroup.categoryId, bookCategory.id))
           .leftJoin(educationGrades, eq(books.educationGradeId, educationGrades.id))
           .leftJoin(bookEventStats, eq(books.id, bookEventStats.bookId))
-          .leftJoin(bookInteractions, and(
-            eq(books.id, bookInteractions.bookId),
-            eq(bookInteractions.userId, userId)
-          ))
+          .leftJoin(
+            bookInteractions,
+            and(eq(books.id, bookInteractions.bookId), eq(bookInteractions.userId, userId)),
+          )
           .where(eq(books.bookId, bookId)); // Filter by the specific book ID
       } else {
         // Query without user interactions
@@ -179,6 +193,11 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             viewCount: bookEventStats.viewCount,
             downloadCount: bookEventStats.downloadCount,
             bookmarkCount: bookEventStats.bookmarkCount,
+            isNew: app.versionCache.get(EnumContentType.BOOK)
+              ? sql<boolean>`${books.versionId} = ${app.versionCache.get(EnumContentType.BOOK)}`.as(
+                  "isNew",
+                )
+              : sql<boolean>`false`.as("isNew"),
             createdAt: books.createdAt,
             updatedAt: books.updatedAt,
             category: {
@@ -196,12 +215,12 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
               grade: educationGrades.grade,
             },
             // Placeholder values for user interactions when not logged in
-            liked: sql<boolean | null>`NULL`.as('liked'),
-            disliked: sql<boolean | null>`NULL`.as('disliked'),
-            userRating: sql<string | null>`NULL`.as('userRating'),
-            bookmarked: sql<boolean | null>`NULL`.as('bookmarked'),
-            userViewCount: sql<number | null>`NULL`.as('userViewCount'),
-            userDownloadCount: sql<number | null>`NULL`.as('userDownloadCount'),
+            liked: sql<boolean | null>`NULL`.as("liked"),
+            disliked: sql<boolean | null>`NULL`.as("disliked"),
+            userRating: sql<string | null>`NULL`.as("userRating"),
+            bookmarked: sql<boolean | null>`NULL`.as("bookmarked"),
+            userViewCount: sql<number | null>`NULL`.as("userViewCount"),
+            userDownloadCount: sql<number | null>`NULL`.as("userDownloadCount"),
           })
           .from(books)
           .leftJoin(bookGroup, eq(books.bookGroupId, bookGroup.id))
@@ -214,7 +233,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const result = await baseQuery;
 
       if (!result || result.length === 0) {
-        return reply.notFound(t($ => $.book.detail.notFound));
+        return reply.notFound(t(($) => $.book.detail.notFound));
       }
 
       const book = result[0];
@@ -236,30 +255,37 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         cover: getBookCoverUrl({ bookId: book.bookId }),
         pdf: getBookPdfUrl({ bookId: book.bookId }),
         samples: getBookSamplePagesUrl({ bookId: book.bookId }),
-        category: book.category ? {
-          id: book.category.id,
-          name: book.category.name,
-        } : {
-          id: 0,
-          name: '',
-        },
-        group: book.group ? {
-          id: book.group.id,
-          name: book.group.name,
-          shortName: book.group.shortName
-        } : {
-          id: 0,
-          name: '',
-        },
-        grade: book.grade ? {
-          id: book.grade.id,
-          name: book.grade.name,
-          grade: book.grade.grade,
-        } : {
-          id: 0,
-          name: '',
-          grade: '',
-        },
+        category: book.category
+          ? {
+              id: book.category.id,
+              name: book.category.name,
+            }
+          : {
+              id: 0,
+              name: "",
+            },
+        group: book.group
+          ? {
+              id: book.group.id,
+              name: book.group.name,
+              shortName: book.group.shortName,
+            }
+          : {
+              id: 0,
+              name: "",
+            },
+        grade: book.grade
+          ? {
+              id: book.grade.id,
+              name: book.grade.name,
+              grade: book.grade.grade,
+            }
+          : {
+              id: 0,
+              name: "",
+              grade: "",
+            },
+        isNew: !!book.isNew,
         createdAt: book.createdAt ? book.createdAt.toISOString() : new Date().toISOString(),
         updatedAt: book.updatedAt ? book.updatedAt.toISOString() : new Date().toISOString(),
       };
@@ -271,13 +297,20 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           where: and(
             eq(appEventHistory.referenceId, book.id),
             eq(appEventHistory.action, EnumEventStatus.VIEW),
-            targetUserId ? eq(appEventHistory.userId, targetUserId) : (targetSessionId ? eq(appEventHistory.sessionId, targetSessionId) : eq(appEventHistory.ipAddress, req.ip))
+            targetUserId
+              ? eq(appEventHistory.userId, targetUserId)
+              : targetSessionId
+                ? eq(appEventHistory.sessionId, targetSessionId)
+                : eq(appEventHistory.ipAddress, req.ip),
           ),
-          orderBy: desc(appEventHistory.createdAt)
+          orderBy: desc(appEventHistory.createdAt),
         });
 
         const now = new Date();
-        if (!lastEvent || (now.getTime() - lastEvent.createdAt.getTime() > CONFIG.CONTENT_COUNTER_WINDOW_MS)) {
+        if (
+          !lastEvent ||
+          now.getTime() - lastEvent.createdAt.getTime() > CONFIG.CONTENT_COUNTER_WINDOW_MS
+        ) {
           // Log history
           await db.insert(appEventHistory).values({
             userId: targetUserId,
@@ -286,21 +319,22 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             action: EnumEventStatus.VIEW,
             sessionId: targetSessionId,
             ipAddress: req.ip,
-            userAgent: req.headers['user-agent']
+            userAgent: req.headers["user-agent"],
           });
 
           // Update Global Stats
-          await db.insert(bookEventStats)
+          await db
+            .insert(bookEventStats)
             .values({
               bookId: book.id,
-              viewCount: 1
+              viewCount: 1,
             })
             .onConflictDoUpdate({
               target: bookEventStats.bookId,
               set: {
                 viewCount: sql`${bookEventStats.viewCount} + 1`,
-                updatedAt: new Date()
-              }
+                updatedAt: new Date(),
+              },
             });
 
           return true; // Indicates new view monitored
@@ -312,7 +346,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         const isNewView = await shouldTrack(userId, null);
         if (isNewView) {
           // Update User Personal Stats
-          await db.insert(bookInteractions)
+          await db
+            .insert(bookInteractions)
             .values({
               userId,
               bookId: book.id,
@@ -320,15 +355,15 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
               liked: false,
               disliked: false,
               bookmarked: false,
-              rating: '0.00',
-              downloadCount: 0
+              rating: "0.00",
+              downloadCount: 0,
             })
             .onConflictDoUpdate({
               target: [bookInteractions.userId, bookInteractions.bookId],
               set: {
                 viewCount: sql`${bookInteractions.viewCount} + 1`,
-                updatedAt: new Date()
-              }
+                updatedAt: new Date(),
+              },
             });
         }
       } else {
@@ -340,25 +375,36 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (isLoggedIn && book.liked !== undefined) {
         return reply.status(200).send({
           success: true,
-          message: t($ => $.book.detail.success),
+          message: t(($) => $.book.detail.success),
           data: {
             ...processedBook,
             userInteraction: {
               liked: book.liked !== undefined && book.liked !== null ? book.liked : false,
-              disliked: book.disliked !== undefined && book.disliked !== null ? book.disliked : false,
-              rating: book.userRating !== undefined && book.userRating !== null ? parseFloat(book.userRating.toString()) : 0,
-              bookmarked: book.bookmarked !== undefined && book.bookmarked !== null ? book.bookmarked : false,
-              viewCount: book.userViewCount !== undefined && book.userViewCount !== null ? book.userViewCount : 0,
-              downloadCount: book.userDownloadCount !== undefined && book.userDownloadCount !== null ? book.userDownloadCount : 0,
-            }
-          }
+              disliked:
+                book.disliked !== undefined && book.disliked !== null ? book.disliked : false,
+              rating:
+                book.userRating !== undefined && book.userRating !== null
+                  ? parseFloat(book.userRating.toString())
+                  : 0,
+              bookmarked:
+                book.bookmarked !== undefined && book.bookmarked !== null ? book.bookmarked : false,
+              viewCount:
+                book.userViewCount !== undefined && book.userViewCount !== null
+                  ? book.userViewCount
+                  : 0,
+              downloadCount:
+                book.userDownloadCount !== undefined && book.userDownloadCount !== null
+                  ? book.userDownloadCount
+                  : 0,
+            },
+          },
         });
       }
 
       return reply.status(200).send({
         success: true,
-        message: t($ => $.book.detail.success),
-        data: processedBook
+        message: t(($) => $.book.detail.success),
+        data: processedBook,
       });
     }),
   });

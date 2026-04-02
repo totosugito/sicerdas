@@ -65,4 +65,5 @@ export default {
   content: "Konten",
   loading: "Memuat...",
   action: "Aksi",
+  new: "Baru",
 };

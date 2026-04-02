@@ -96,6 +96,9 @@ export const BookDetail = ({
             {/* Header Info */}
             <div>
               <div className="flex flex-wrap gap-2 mb-4">
+                {book.isNew && (
+                  <span className="new-badge animate-pulse">{t(($) => $.labels.new)}</span>
+                )}
                 <Badge
                   variant="secondary"
                   className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 border-transparent px-3 py-1"
