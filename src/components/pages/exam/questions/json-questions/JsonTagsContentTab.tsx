@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Plus, X, Check, ChevronsUpDown } from "lucide-react";
+import { ChevronDown, Plus, X, Check, ChevronsUpDown, Tag as TagIcon } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
@@ -146,30 +146,33 @@ export function JsonTagsContentTab({
               </Popover>
             </div>
 
-            <div className="flex flex-wrap gap-2 min-h-[40px]">
+            <div className="flex flex-wrap gap-2.5">
               {tags.length > 0 ? (
                 tags.map((tag) => (
                   <Badge
                     key={tag}
                     variant="secondary"
-                    className="pl-3 pr-1.5 py-1.5 gap-2 text-sm bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-all font-medium"
+                    className="pl-2 pr-1.5 py-1 rounded-2xl bg-primary/5 hover:bg-primary/10 text-primary border-primary/10 gap-3 group/badge transition-all hover:scale-[1.02] active:scale-95 cursor-default shadow-sm"
                   >
-                    {tag}
+                    <p className="text-sm">{tag}</p>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleTag(tag);
                       }}
-                      className="hover:bg-destructive hover:text-white rounded-full p-0.5 transition-all text-primary/60 hover:scale-110"
+                      className="h-4 w-4 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-red-500 hover:text-white transition-all transform group-hover/badge:scale-110 active:scale-90"
                     >
-                      <X className="h-3 w-3" />
+                      <X className="h-3 w-3" strokeWidth={3} />
                     </button>
                   </Badge>
                 ))
               ) : (
-                <p className="text-muted-foreground text-sm italic py-2 px-1">
-                  {t(($) => $.exam.questions.edit.tags.empty)}
-                </p>
+                <div className="flex flex-col items-center justify-center w-full py-4 text-muted-foreground/40 border-2 border-dashed border-muted/50 rounded-2xl bg-muted/5">
+                  <TagIcon className="h-8 w-8 mb-2 opacity-20" />
+                  <span className="text-xs italic font-medium">
+                    {t(($) => $.exam.questions.edit.tags.empty)}
+                  </span>
+                </div>
               )}
             </div>
           </CardContent>

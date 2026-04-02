@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { Tag as TagIcon, Search, X, Loader2 } from "lucide-react";
+import { Tag as TagIcon, Search, X, Loader2, Plus } from "lucide-react";
 import { ExamQuestion } from "@/api/exam-questions";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { useListTagSimple } from "@/api/education-tags";
+import { useListTagSimple, useCreateTag } from "@/api/education-tags";
 import { useAssignQuestionTag, useUnassignQuestionTag } from "@/api/exam-question-tags";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -34,6 +35,9 @@ export function QuestionTagsTab({ questionId, tags = [] }: QuestionTagsTabProps)
   const { data: allTagsData, isLoading: isLoadingTags } = useListTagSimple({ limit: 1000 });
   const assignMutation = useAssignQuestionTag();
   const unassignMutation = useUnassignQuestionTag();
+  const createTagMutation = useCreateTag();
+
+  const [searchValue, setSearchValue] = useState("");
 
   const allTags = allTagsData?.data.items || [];
 
@@ -64,6 +68,23 @@ export function QuestionTagsTab({ questionId, tags = [] }: QuestionTagsTabProps)
       });
       showNotifSuccess({ message: t(($) => $.labels.success) });
       queryClient.invalidateQueries({ queryKey: ["admin-exam-question-detail"] });
+    } catch (error: any) {
+      showNotifError({ message: error.message || t(($) => $.labels.error) });
+    }
+  };
+
+  const handleCreateAndAssignTag = async () => {
+    if (!searchValue.trim()) return;
+    try {
+      const newTag = await createTagMutation.mutateAsync({
+        name: searchValue.trim(),
+        isActive: true,
+      });
+
+      if (newTag.data?.id) {
+        await handleAssign(newTag.data.id);
+        setSearchValue("");
+      }
     } catch (error: any) {
       showNotifError({ message: error.message || t(($) => $.labels.error) });
     }
@@ -114,16 +135,34 @@ export function QuestionTagsTab({ questionId, tags = [] }: QuestionTagsTabProps)
                 sideOffset={8}
               >
                 <Command className="rounded-none">
-                  <CommandInput placeholder={t(($) => $.labels.search) + "..."} className="h-12" />
+                  <CommandInput
+                    placeholder={t(($) => $.labels.search) + "..."}
+                    className="h-12"
+                    value={searchValue}
+                    onValueChange={setSearchValue}
+                  />
                   <CommandList className="max-h-[300px]">
-                    <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
+                    <CommandEmpty className="py-6 text-center text-sm text-muted-foreground flex flex-col gap-3 px-4">
                       {isLoadingTags ? (
                         <div className="flex items-center justify-center gap-2">
                           <Loader2 className="h-4 w-4 animate-spin" />
-                          Memuat data...
+                          {t(($) => $.labels.loading)}
                         </div>
                       ) : (
-                        "Tag tidak ditemukan."
+                        <>
+                          {searchValue.trim() && (
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              className="w-full justify-start gap-2 hover:bg-primary hover:text-white transition-colors"
+                              onClick={handleCreateAndAssignTag}
+                              disabled={createTagMutation.isPending}
+                            >
+                              <Plus className="h-4 w-4" />
+                              {t(($) => $.exam.questions.edit.tags.addAsNew, { name: searchValue })}
+                            </Button>
+                          )}
+                        </>
                       )}
                     </CommandEmpty>
                     <CommandGroup heading="Rekomendasi Tag Materi" className="p-2">
@@ -159,7 +198,7 @@ export function QuestionTagsTab({ questionId, tags = [] }: QuestionTagsTabProps)
                     variant="secondary"
                     className="pl-2 pr-1.5 py-1 rounded-2xl bg-primary/5 hover:bg-primary/10 text-primary border-primary/10 gap-3 group/badge transition-all hover:scale-[1.02] active:scale-95 cursor-default shadow-sm"
                   >
-                    <span className="text-xs">{tag.name}</span>
+                    <p className="text-sm">{tag.name}</p>
                     <button
                       onClick={() => handleUnassign(tag.id)}
                       disabled={unassignMutation.isPending}
@@ -172,9 +211,7 @@ export function QuestionTagsTab({ questionId, tags = [] }: QuestionTagsTabProps)
               ) : (
                 <div className="flex flex-col items-center justify-center w-full py-4 text-muted-foreground/40 border-2 border-dashed border-muted/50 rounded-2xl bg-muted/5">
                   <TagIcon className="h-8 w-8 mb-2 opacity-20" />
-                  <span className="text-xs italic font-medium">
-                    {t(($) => $.exam.tags.empty || "Belum ada tag terpilih")}
-                  </span>
+                  <span className="text-xs italic font-medium">{t(($) => $.exam.tags.empty)}</span>
                 </div>
               )}
             </div>
