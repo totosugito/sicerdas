@@ -97,7 +97,12 @@ export const BookDetail = ({
             <div>
               <div className="flex flex-wrap gap-2 mb-4">
                 {book.isNew && (
-                  <span className="new-badge animate-pulse">{t(($) => $.labels.new)}</span>
+                  <Badge
+                    variant="secondary"
+                    className="bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 hover:bg-amber-200 border-transparent px-3 py-1 animate-pulse"
+                  >
+                    {t(($) => $.labels.new)}
+                  </Badge>
                 )}
                 <Badge
                   variant="secondary"

@@ -1,34 +1,39 @@
 export interface QuestionTag {
-    questionId: string;
-    tagId: string;
-    tag?: {
-        id: string;
-        name: string;
-    };
+  questionId: string;
+  tagId: string;
+  tag?: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface AssignQuestionTagsRequest {
-    questionId: string;
-    tagIds: string[];
+  questionId: string;
+  tagIds: string[];
+}
+
+export interface AssignQuestionTagsByNameRequest {
+  questionId: string;
+  tags: string[];
 }
 
 export interface UnassignQuestionTagsRequest {
-    questionId: string;
-    tagIds: string[];
+  questionId: string;
+  tagIds: string[];
 }
 
 export interface QuestionTagListRequest {
-    questionId?: string;
-    tagId?: string;
+  questionId?: string;
+  tagId?: string;
 }
 
 export interface QuestionTagListResponse {
-    success: boolean;
-    message: string;
-    data: QuestionTag[];
+  success: boolean;
+  message: string;
+  data: QuestionTag[];
 }
 
 export interface CommonResponse {
-    success: boolean;
-    message: string;
+  success: boolean;
+  message: string;
 }

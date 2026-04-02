@@ -1,26 +1,27 @@
-import React, { useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { Pencil } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { BlockNoteStatic } from "@/components/custom/components/BlockNoteStatic";
 import { JsonQuestionContentTab } from "./JsonQuestionContentTab";
 import { JsonQuestionOptionsTab } from "./JsonQuestionOptionsTab";
 import { JsonQuestionSolutionsTab } from "./JsonQuestionSolutionsTab";
+import { JsonTagsContentTab } from "./JsonTagsContentTab";
+import { JsonQuestionImport } from "@/api/exam-questions/types";
 
 interface JsonQuestionEditViewProps {
-  question: any;
-  onUpdate: (updatedQuestion: any) => void;
+  question: JsonQuestionImport;
+  availableTags?: string[];
+  onUpdate: (updatedQuestion: JsonQuestionImport) => void;
   contentExpanded?: boolean;
   onToggleContent?: (expanded: boolean) => void;
   optionsExpanded?: boolean;
   onToggleOptions?: (expanded: boolean) => void;
   solutionsExpanded?: boolean;
   onToggleSolutions?: (expanded: boolean) => void;
+  tagsExpanded?: boolean;
+  onToggleTags?: (expanded: boolean) => void;
 }
 
 export function JsonQuestionEditView({
   question,
+  availableTags = [],
   onUpdate,
   contentExpanded = true,
   onToggleContent,
@@ -28,6 +29,8 @@ export function JsonQuestionEditView({
   onToggleOptions,
   solutionsExpanded = true,
   onToggleSolutions,
+  tagsExpanded = true,
+  onToggleTags,
 }: JsonQuestionEditViewProps) {
   const { t } = useAppTranslation();
 
@@ -43,8 +46,21 @@ export function JsonQuestionEditView({
     onUpdate({ ...question, content: newContent });
   };
 
+  const handleUpdateTags = (newTags: string[]) => {
+    onUpdate({ ...question, tags: newTags });
+  };
+
   return (
     <div className="flex flex-col gap-6 w-full pb-10">
+      {/* Tags Section */}
+      <JsonTagsContentTab
+        tags={question.tags}
+        availableTags={availableTags}
+        onUpdate={handleUpdateTags}
+        isOpen={tagsExpanded}
+        onOpenChange={onToggleTags}
+      />
+
       {/* Content Section */}
       <JsonQuestionContentTab
         content={question.content}

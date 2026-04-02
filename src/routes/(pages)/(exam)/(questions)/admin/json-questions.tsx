@@ -17,7 +17,7 @@ import { ChevronDown, Save } from "lucide-react";
 import { CreateQuestionRequest, useCreateQuestion } from "@/api/exam-questions";
 import { useCreateQuestionOption } from "@/api/exam-question-options";
 import { useCreateQuestionSolution } from "@/api/exam-question-solutions";
-import { useAssignQuestionTag } from "@/api/exam-question-tags";
+import { useAssignQuestionTag, useAssignQuestionTagByName } from "@/api/exam-question-tags";
 import { useListTagSimple } from "@/api/education-tags";
 import { showNotifSuccess } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";
@@ -31,6 +31,7 @@ import {
   QuestionNumberGrid,
   JsonQuestionEditView,
 } from "@/components/pages/exam/questions/json-questions";
+import { JsonQuestionImport } from "@/api/exam-questions/types";
 
 const jsonQuestionsSearchSchema = z.object({
   index: z.coerce.number().default(0).catch(0),
@@ -38,6 +39,7 @@ const jsonQuestionsSearchSchema = z.object({
   contentExpanded: z.coerce.boolean().default(true).catch(true),
   optionsExpanded: z.coerce.boolean().default(true).catch(true),
   solutionsExpanded: z.coerce.boolean().default(true).catch(true),
+  tagsExpanded: z.coerce.boolean().default(true).catch(true),
 });
 
 export const Route = createFileRoute("/(pages)/(exam)/(questions)/admin/json-questions")({
@@ -54,6 +56,7 @@ function JsonQuestionsPage() {
     contentExpanded,
     optionsExpanded,
     solutionsExpanded,
+    tagsExpanded,
   } = Route.useSearch();
   const navigate = Route.useNavigate();
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
@@ -80,11 +83,15 @@ function JsonQuestionsPage() {
     navigate({ search: (prev: any) => ({ ...prev, solutionsExpanded }), replace: true });
   };
 
+  const setTagsExpanded = (tagsExpanded: boolean) => {
+    navigate({ search: (prev: any) => ({ ...prev, tagsExpanded }), replace: true });
+  };
+
   const queryClient = useQueryClient();
   const createQuestionMutation = useCreateQuestion();
   const createOptionMutation = useCreateQuestionOption();
   const createSolutionMutation = useCreateQuestionSolution();
-  const assignTagMutation = useAssignQuestionTag();
+  const assignTagByNameMutation = useAssignQuestionTagByName();
   const { data: tagsData } = useListTagSimple({ limit: 1000 });
 
   const globalFormSchema = z.object({
@@ -126,7 +133,7 @@ function JsonQuestionsPage() {
           : [];
 
       if (rawArray.length > 0) {
-        const processed = rawArray.map((q, index) => {
+        const processed: JsonQuestionImport[] = rawArray.map((q: any, index: number) => {
           const rawData = q;
           return {
             ...rawData,
@@ -184,7 +191,7 @@ function JsonQuestionsPage() {
     }
   };
 
-  const handleUpdateQuestion = (updatedQuestion: any) => {
+  const handleUpdateQuestion = (updatedQuestion: JsonQuestionImport) => {
     const newJsonQuestions = [...jsonQuestions];
     newJsonQuestions[selectedIndex] = updatedQuestion;
     setJsonQuestions(newJsonQuestions);
@@ -281,16 +288,10 @@ function JsonQuestionsPage() {
 
         // 4. Assign Tags
         if (q.tags?.length) {
-          const tagIds = q.tags
-            .map((tagName: string) => tagMap[tagName.toLowerCase()])
-            .filter(Boolean);
-
-          if (tagIds.length > 0) {
-            await assignTagMutation.mutateAsync({
-              questionId: newQuestionId,
-              tagIds: tagIds,
-            });
-          }
+          await assignTagByNameMutation.mutateAsync({
+            questionId: newQuestionId,
+            tags: q.tags,
+          });
         }
 
         successCount++;
@@ -406,12 +407,15 @@ function JsonQuestionsPage() {
               key={currentQuestion.id || `temp-${selectedIndex}`}
               question={{ ...currentQuestion, id: currentQuestion.id || `temp-${selectedIndex}` }}
               onUpdate={handleUpdateQuestion}
+              availableTags={tagsData?.data?.items?.map((t) => t.label) || []}
               contentExpanded={contentExpanded}
               onToggleContent={setContentExpanded}
               optionsExpanded={optionsExpanded}
               onToggleOptions={setOptionsExpanded}
               solutionsExpanded={solutionsExpanded}
               onToggleSolutions={setSolutionsExpanded}
+              tagsExpanded={tagsExpanded}
+              onToggleTags={setTagsExpanded}
             />
           ) : (
             <div className="flex items-center justify-center p-12 border rounded-lg bg-card text-muted-foreground">

@@ -138,6 +138,7 @@ export const AppApi = {
     questionTags: {
       admin: {
         assign: APP_URL_API + "/exam/question-tags/admin/assign",
+        assignByNames: APP_URL_API + "/exam/question-tags/admin/assign-by-names",
         unassign: APP_URL_API + "/exam/question-tags/admin/unassign",
         list: APP_URL_API + "/exam/question-tags/admin/list",
       },

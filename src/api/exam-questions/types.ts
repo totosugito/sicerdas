@@ -74,3 +74,30 @@ export type QuestionFormValues = {
   isActive: boolean;
   variableFormulas?: VariableFormulas | null;
 };
+
+export interface JsonQuestionImport {
+  id: string;
+  passageId?: string | null;
+  content: Record<string, unknown>[];
+  difficulty: DifficultyLevel;
+  type: QuestionType;
+  requiredTier: string;
+  isActive: boolean;
+  educationGradeId?: number | null;
+  options: {
+    id: string;
+    content: Record<string, unknown>[];
+    isCorrect: boolean;
+    order: number;
+  }[];
+  solutions: {
+    id: string;
+    title: string;
+    content: Record<string, unknown>[];
+    solutionType: SolutionType;
+    order: number;
+    requiredTier: string | null;
+  }[];
+  tags?: string[];
+  variableFormulas?: VariableFormulas | null;
+}

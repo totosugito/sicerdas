@@ -114,6 +114,16 @@ export default {
     },
     loading: "Memuat data pertanyaan...",
     loadingTitle: "Sedang Memuat",
+    tags: {
+      title: "Tag Topik",
+      description: "Kelola daftar tag untuk klasifikasi soal ini.",
+      placeholder: "Tambah tag...",
+      addButton: "Tambah",
+      empty: "Belum ada tag yang ditambahkan.",
+      noResult: "Tidak ada tag yang ditemukan.",
+      addAsNew: 'Tambah "{{name}}" sebagai tag baru',
+      existingTags: "Tag yang Sudah Ada",
+    },
   },
   detail: {
     title: "Detail Soal",

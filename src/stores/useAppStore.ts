@@ -2,6 +2,7 @@ import { create } from "zustand/index";
 import { APP_CONFIG } from "@/constants/config";
 import { persist } from "zustand/middleware";
 import { EnumPeriodicViewMode, EnumViewMode } from "@/constants/app-enum";
+import { JsonQuestionImport } from "@/api/exam-questions/types";
 
 type ViewMode = (typeof EnumViewMode)[keyof typeof EnumViewMode]["value"];
 type PeriodicViewMode = (typeof EnumPeriodicViewMode)[keyof typeof EnumPeriodicViewMode]["value"];
@@ -32,8 +33,8 @@ type Store = {
   mobileMenu: Record<string, boolean>;
   setMobileMenuExpanded: (id: string, expanded: boolean) => void;
 
-  jsonQuestions: any[];
-  setJsonQuestions: (questions: any[]) => void;
+  jsonQuestions: JsonQuestionImport[];
+  setJsonQuestions: (questions: JsonQuestionImport[]) => void;
 
   jsonQuestionsGlobalParams: {
     subjectId: string;
@@ -78,7 +79,7 @@ export const defaultStore = {
     nuclear: true,
   },
   mobileMenu: {} as Record<string, boolean>,
-  jsonQuestions: [] as any[],
+  jsonQuestions: [] as JsonQuestionImport[],
   jsonQuestionsGlobalParams: {
     subjectId: "",
     passageId: null,
@@ -127,7 +128,7 @@ export const useAppStore = create<Store>()(
         })),
 
       jsonQuestions: defaultStore.jsonQuestions,
-      setJsonQuestions: (questions: any[]) => set({ jsonQuestions: questions }),
+      setJsonQuestions: (questions: JsonQuestionImport[]) => set({ jsonQuestions: questions }),
 
       jsonQuestionsGlobalParams: defaultStore.jsonQuestionsGlobalParams,
       setJsonQuestionsGlobalParams: (params: any) =>
