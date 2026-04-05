@@ -9,7 +9,6 @@ export { default as DatePicker } from "./DatePicker";
 export { DatePickerWithRange } from "./DatePickerWithRange";
 export { MultiSelect } from "./MultiSelect";
 export { ThemeToggle } from "./ThemeToggle";
-export { BlockNoteEditor } from "./BlockNoteEditor";
 export { BlockNoteStatic, type BlockNoteStaticProps } from "./BlockNoteStatic";
 export { Breadcrumbs } from "./Breadcrumbs";
 export { ImageCropper } from "./image-cropper";

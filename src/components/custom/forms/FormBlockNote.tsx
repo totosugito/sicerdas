@@ -1,8 +1,14 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/shadcn/style.css";
-import { useCreateBlockNote } from "@blocknote/react";
+import {
+  useCreateBlockNote,
+  SuggestionMenuController,
+  getDefaultReactSlashMenuItems,
+} from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
+import { BlockNoteSchema, defaultBlockSpecs } from "@blocknote/core";
+import { MathBlock } from "../components/MathBlock";
 import {
   FormControl,
   FormDescription,
@@ -31,6 +37,27 @@ export type FormBlockNoteProps = {
   showMessage?: boolean;
 };
 
+const schema = BlockNoteSchema.create({
+  blockSpecs: {
+    ...defaultBlockSpecs,
+    math: MathBlock(),
+  },
+});
+
+const insertMath = (editor: typeof schema.BlockNoteEditor) => ({
+  title: "Equation",
+  onItemClick: () => {
+    editor.insertBlocks(
+      [{ type: "math", props: { equation: "E=mc^2" } }],
+      editor.getTextCursorPosition().block,
+      "after",
+    );
+  },
+  aliases: ["math", "equation", "latex", "katex"],
+  group: "Other",
+  icon: <span className="font-bold font-serif text-lg leading-none select-none">∑</span>,
+});
+
 export const FormBlockNote = ({
   form,
   item,
@@ -54,6 +81,7 @@ export const FormBlockNote = ({
   const initialValueRef = useRef(form.getValues(item.name));
 
   const editor = useCreateBlockNote({
+    schema,
     initialContent:
       initialValueRef.current && initialValueRef.current.length > 0
         ? initialValueRef.current
@@ -119,8 +147,35 @@ export const FormBlockNote = ({
                 className,
               )}
               style={{ minHeight: item.minHeight || "400px" }}
+              onClick={(e) => {
+                // Prevent any buttons inside BlockNote (like the '+' add item button) from triggering a form submit
+                const target = e.target as HTMLElement;
+                const button = target.closest("button");
+                if (button && button.type === "submit") {
+                  e.preventDefault();
+                }
+              }}
             >
-              <BlockNoteView editor={editor} theme={resolvedTheme} editable={!disabled} />
+              <BlockNoteView
+                editor={editor}
+                theme={resolvedTheme}
+                editable={!disabled}
+                slashMenu={false}
+              >
+                <SuggestionMenuController
+                  triggerCharacter={"/"}
+                  getItems={async (query) => {
+                    const allItems = [...getDefaultReactSlashMenuItems(editor), insertMath(editor)];
+                    const lowerQuery = query.toLowerCase();
+                    return allItems.filter(
+                      (item) =>
+                        item.title.toLowerCase().includes(lowerQuery) ||
+                        (item.aliases &&
+                          item.aliases.some((alias) => alias.toLowerCase().includes(lowerQuery))),
+                    );
+                  }}
+                />
+              </BlockNoteView>
             </div>
           </FormControl>
           {item.description && <FormDescription>{item.description}</FormDescription>}
