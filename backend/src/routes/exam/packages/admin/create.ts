@@ -21,7 +21,7 @@ const CreatePackageBody = Type.Object({
   requiredTier: Type.Optional(Type.String({ default: "free" })),
   educationGradeId: Type.Optional(Type.Number()),
   isActive: Type.Optional(Type.Boolean({ default: true })),
-  versionId: Type.Optional(Type.Number()),
+  versionId: Type.Number(),
 });
 
 const CreatePackageResponse = Type.Object({

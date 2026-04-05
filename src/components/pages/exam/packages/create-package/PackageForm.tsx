@@ -70,7 +70,10 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
     requiredTier: z.string().optional(),
     description: z.string().optional(),
     isActive: z.boolean().default(true),
-    versionId: z.coerce.number().optional().nullable(),
+    versionId: z.coerce.number().min(
+      1,
+      t(($) => $.exam.packages.form.versionId.required),
+    ),
   });
 
   const form = useForm<PackageFormValues>({
@@ -126,7 +129,7 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
 
   const versionOptions =
     versionData?.data?.items?.map((v) => ({
-      label: v.published ? `${v.name} [${t(($) => $.labels.published)}]` : v.name,
+      label: `${v.id} - ${v.name}${v.published ? ` [${t(($) => $.labels.published)}]` : ""}`,
       value: v.id.toString(),
     })) || [];
 
@@ -183,11 +186,12 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
     versionId: {
       type: "combobox",
       name: "versionId",
-      label: t(($) => $.labels.version),
-      placeholder: t(($) => $.labels.version),
+      label: t(($) => $.exam.packages.form.versionId.label),
+      placeholder: t(($) => $.exam.packages.form.versionId.placeholder),
       options: versionOptions,
       disabled: isFetchingVersions,
       isLoading: isFetchingVersions,
+      required: true,
     },
     description: {
       type: "textarea",

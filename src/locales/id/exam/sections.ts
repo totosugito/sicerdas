@@ -16,6 +16,9 @@ export default {
   formPackage: "Paket Ujian",
   formPackagePlaceholder: "Pilih paket ujian",
   formPackageRequired: "Paket ujian wajib dipilih",
+  formVersion: "Versi",
+  formVersionPlaceholder: "Pilih versi",
+  formVersionRequired: "Versi wajib dipilih",
   editTitle: "Edit Bagian",
   createTitle: "Buat Bagian",
   editDesc: "Perbarui detail bagian ini.",
@@ -61,6 +64,7 @@ export default {
       updatedAt: "Terakhir Diperbarui",
       actions: "Aksi",
       description: "Deskripsi",
+      version: "Versi",
     },
     status: {
       active: "Aktif",

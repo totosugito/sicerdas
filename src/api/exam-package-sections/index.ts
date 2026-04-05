@@ -14,14 +14,14 @@ export type { UpdateSectionRequest } from "./admin/update-section";
 export { useDeletePackageSection } from "./admin/delete-section";
 
 // public exports
-export { useListPackageSection } from "./list-section";
-export type { ListSectionRequest, ListSectionsResponse } from "./list-section";
+export { useListPackageSection } from "./admin/list-section";
+export type { ListSectionRequest, ListSectionsResponse } from "./admin/list-section";
 
-export { useListPackageSectionSimple } from "./list-section-simple";
+export { useListPackageSectionSimple } from "./admin/list-section-simple";
 export type {
   ListSectionSimpleRequest,
   ListSectionsSimpleResponse,
   SectionSimpleItem,
-} from "./list-section-simple";
+} from "./admin/list-section-simple";
 
-export { useDetailPackageSection } from "./detail-section";
+export { useDetailPackageSection } from "./admin/detail-section";

@@ -11,6 +11,7 @@ export interface UpdateSectionRequest {
   durationMinutes?: number;
   order?: number;
   isActive?: boolean;
+  versionId?: number;
 }
 
 export const useUpdatePackageSection = () => {

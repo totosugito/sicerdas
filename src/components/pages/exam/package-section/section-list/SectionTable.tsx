@@ -184,6 +184,21 @@ export function SectionTable({
       },
     },
     {
+      accessorKey: "versionId",
+      enableSorting: true,
+      minSize: 70,
+      maxSize: 100,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.exam.sections.table.columns.version)}
+        />
+      ),
+      cell: ({ row }) => (
+        <span className="text-sm text-muted-foreground">{row.getValue("versionId")}</span>
+      ),
+    },
+    {
       accessorKey: "updatedAt",
       enableSorting: true,
       minSize: 70,

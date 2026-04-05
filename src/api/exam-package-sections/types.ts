@@ -7,6 +7,8 @@ export interface ExamPackageSection {
   durationMinutes: number | null;
   order: number;
   isActive: boolean;
+  versionId: number | null;
+  isNew: boolean;
   createdAt: string;
   updatedAt: string;
   totalQuestions: number;

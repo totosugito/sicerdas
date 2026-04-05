@@ -8,9 +8,11 @@ import {
   ExamPackageSection,
 } from "@/api/exam-package-sections";
 import { useListPackageSimple } from "@/api/exam-packages";
+import { useListVersionSimple } from "@/api/version";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { durationOnMinutes } from "@/constants/app-enum";
+import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
 
 export type DialogSectionFormProps = {
   open: boolean;
@@ -34,6 +36,7 @@ const FormEntity = ({ values, form, packageIdDisabled }: any) => {
       <ControlForm form={form} item={values.title} showMessage={false} />
       <ControlForm form={form} item={values.description} showMessage={false} />
       <ControlForm form={form} item={values.durationMinutes} showMessage={false} />
+      <ControlForm form={form} item={values.versionId} showMessage={false} />
       <ControlForm form={form} item={values.isActive} showMessage={false} />
     </div>
   );
@@ -56,6 +59,16 @@ export const DialogSectionForm = ({
 
   const packageOptions = packagesData?.data.items || [];
 
+  // Fetch version list
+  const { data: versionsData } = useListVersionSimple({
+    dataType: EnumContentType.EXAM,
+    limit: 1000,
+  });
+  const versionOptions = (versionsData?.data.items || []).map((v: any) => ({
+    value: v.id.toString(),
+    label: `${v.id} - ${v.name}${v.published ? ` [${t(($) => $.labels.published)}]` : ""}`,
+  }));
+
   const formSchema: any = {
     packageId: z.string().min(
       1,
@@ -71,6 +84,10 @@ export const DialogSectionForm = ({
       t(($) => $.exam.sections.formDurationRequired),
     ),
     isActive: z.boolean().default(true),
+    versionId: z.coerce.number().min(
+      1,
+      t(($) => $.exam.sections.formVersionRequired),
+    ),
   };
 
   const formConfig: any = {
@@ -109,6 +126,14 @@ export const DialogSectionForm = ({
       label: t(($) => $.exam.sections.formActive),
       description: t(($) => $.exam.sections.formActiveHelp),
     },
+    versionId: {
+      type: "combobox",
+      name: "versionId",
+      label: t(($) => $.exam.sections.formVersion),
+      placeholder: t(($) => $.exam.sections.formVersionPlaceholder),
+      options: versionOptions,
+      required: true,
+    },
   };
 
   const modalProps: ModalFormProps = {
@@ -126,6 +151,7 @@ export const DialogSectionForm = ({
       description: section?.description || "",
       durationMinutes: (section?.durationMinutes ?? 0).toString(),
       isActive: section?.isActive ?? true,
+      versionId: section?.versionId?.toString() || "",
     },
     child: formConfig,
     schema: formSchema,
@@ -145,11 +171,12 @@ export const DialogSectionForm = ({
                 ? Number(values.durationMinutes)
                 : 0,
             isActive: values.isActive,
+            versionId: values.versionId ? Number(values.versionId) : undefined,
           },
           {
             onSuccess: () => {
               showNotifSuccess({ message: t(($) => $.exam.sections.updateSuccess) });
-              queryClient.invalidateQueries({ queryKey: ["exam-package-sections-list"] });
+              queryClient.invalidateQueries({ queryKey: ["admin-exam-package-sections-list"] });
               onOpenChange(false);
             },
             onError: (err: any) => {
@@ -169,11 +196,12 @@ export const DialogSectionForm = ({
                 ? Number(values.durationMinutes)
                 : 0,
             isActive: values.isActive,
+            versionId: values.versionId ? Number(values.versionId) : undefined,
           },
           {
             onSuccess: () => {
               showNotifSuccess({ message: t(($) => $.exam.sections.createSuccess) });
-              queryClient.invalidateQueries({ queryKey: ["exam-package-sections-list"] });
+              queryClient.invalidateQueries({ queryKey: ["admin-exam-package-sections-list"] });
               onOpenChange(false);
             },
             onError: (err: any) => {

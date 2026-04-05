@@ -1,12 +1,14 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
-import { examPackages } from "../../../db/schema/exam/packages.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
+import { examPackages } from "../../../../db/schema/exam/packages.ts";
 import { eq } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
+import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
+import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
+import { sql } from "drizzle-orm";
 
 const DetailSectionParams = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -21,6 +23,8 @@ const SectionDetailItem = Type.Object({
   durationMinutes: Type.Number(),
   order: Type.Number(),
   isActive: Type.Boolean(),
+  versionId: Type.Union([Type.Number(), Type.Null()]),
+  isNew: Type.Boolean(),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
 });
@@ -52,12 +56,16 @@ const detailSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
     ) {
       const { t } = getTypedI18n(request);
       const { id } = request.params;
+      const latestVersionId = (app as any).versionCache?.get(EnumContentType.EXAM);
 
       // 1. Get Section & Package Information
       const [sectionResult] = await db
         .select({
           section: examPackageSections,
           packageName: examPackages.title,
+          isNew: latestVersionId
+            ? sql<boolean>`${examPackageSections.versionId} = ${latestVersionId}`.as("isNew")
+            : sql<boolean>`false`.as("isNew"),
         })
         .from(examPackageSections)
         .innerJoin(examPackages, eq(examPackageSections.packageId, examPackages.id))
@@ -82,6 +90,8 @@ const detailSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
           durationMinutes: section.durationMinutes,
           order: section.order,
           isActive: section.isActive,
+          versionId: section.versionId,
+          isNew: !!sectionResult.isNew,
           createdAt: section.createdAt.toISOString(),
           updatedAt: section.updatedAt.toISOString(),
         },

@@ -1,16 +1,17 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
-import { examPackageQuestions } from "../../../db/schema/exam/package-questions.ts";
-import { examPackages } from "../../../db/schema/exam/packages.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
+import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
+import { examPackages } from "../../../../db/schema/exam/packages.ts";
 import { and, eq, sql, desc, ilike } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from "better-auth/node";
-import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
-import { EnumUserRole } from "../../../db/schema/index.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
+import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
+import { EnumUserRole } from "../../../../db/schema/index.ts";
+import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
+import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
 
 const SectionListQuery = Type.Object({
   search: Type.Optional(Type.String({ description: "Search term for section title" })),
@@ -18,7 +19,8 @@ const SectionListQuery = Type.Object({
   isActive: Type.Optional(Type.Boolean()),
   sortBy: Type.Optional(
     Type.String({
-      description: "Sort field: createdAt, title, isActive, updatedAt, durationMinutes, order",
+      description:
+        "Sort field: createdAt, title, isActive, updatedAt, durationMinutes, order, versionId",
       default: "updatedAt",
     }),
   ),
@@ -38,6 +40,8 @@ const SectionResponseItem = Type.Object({
   durationMinutes: Type.Union([Type.Number(), Type.Null()]),
   order: Type.Number(),
   isActive: Type.Boolean(),
+  versionId: Type.Union([Type.Number(), Type.Null()]),
+  isNew: Type.Boolean(),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
   totalQuestions: Type.Number(),
@@ -96,6 +100,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
       } = request.body;
 
       let { sortBy = "updatedAt" } = request.body;
+      const latestVersionId = (app as any).versionCache?.get(EnumContentType.EXAM);
 
       const offset = (page - 1) * limit;
 
@@ -139,6 +144,9 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
           section: examPackageSections,
           packageName: examPackages.title,
           totalQuestions: sql<number>`count(${examPackageQuestions.questionId})::int`,
+          isNew: latestVersionId
+            ? sql<boolean>`${examPackageSections.versionId} = ${latestVersionId}`.as("isNew")
+            : sql<boolean>`false`.as("isNew"),
         })
         .from(examPackageSections)
         .leftJoin(examPackages, eq(examPackageSections.packageId, examPackages.id))
@@ -184,6 +192,12 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
               ? baseQuery.orderBy(examPackageSections.title)
               : baseQuery.orderBy(desc(examPackageSections.title));
           break;
+        case "versionId":
+          queryWithSort =
+            orderDir === "asc"
+              ? baseQuery.orderBy(examPackageSections.versionId)
+              : baseQuery.orderBy(desc(examPackageSections.versionId));
+          break;
         case "order":
         default:
           queryWithSort =
@@ -218,6 +232,8 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
               ...s,
               packageName: r.packageName,
               totalQuestions: Number(r.totalQuestions),
+              versionId: s.versionId,
+              isNew: !!r.isNew,
               createdAt: s.createdAt.toISOString(),
               updatedAt: s.updatedAt.toISOString(),
             };

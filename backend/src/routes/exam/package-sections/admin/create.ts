@@ -15,6 +15,7 @@ const CreateSectionBody = Type.Object({
   durationMinutes: Type.Optional(Type.Number({ minimum: 0 })),
   order: Type.Optional(Type.Number({ default: -1 })),
   isActive: Type.Optional(Type.Boolean({ default: true })),
+  versionId: Type.Number(),
 });
 
 const CreateSectionResponse = Type.Object({
@@ -43,7 +44,8 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
       reply: FastifyReply,
     ) {
       const { t } = getTypedI18n(request);
-      const { packageId, title, description, durationMinutes, order, isActive } = request.body;
+      const { packageId, title, description, durationMinutes, order, isActive, versionId } =
+        request.body;
       let orderToUse = order ?? -1;
 
       // 1. Check if package exists
@@ -77,6 +79,7 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
           durationMinutes,
           order: orderToUse,
           isActive: isActive ?? true,
+          versionId,
         })
         .returning({ id: examPackageSections.id });
 

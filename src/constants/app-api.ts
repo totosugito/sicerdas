@@ -92,10 +92,10 @@ export const AppApi = {
         create: APP_URL_API + "/exam/package-sections/admin/create",
         update: APP_URL_API + "/exam/package-sections/admin/update/:id",
         delete: APP_URL_API + "/exam/package-sections/admin/delete/:id",
+        list: APP_URL_API + "/exam/package-sections/admin/list",
+        listSimple: APP_URL_API + "/exam/package-sections/admin/list-simple",
+        detail: APP_URL_API + "/exam/package-sections/admin/detail/:id",
       },
-      list: APP_URL_API + "/exam/package-sections/list",
-      listSimple: APP_URL_API + "/exam/package-sections/list-simple",
-      detail: APP_URL_API + "/exam/package-sections/detail/:id",
     },
     passages: {
       admin: {

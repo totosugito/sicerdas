@@ -15,6 +15,7 @@ export interface CreateSectionRequest {
   durationMinutes?: number;
   order?: number;
   isActive?: boolean;
+  versionId?: number;
 }
 
 export const useCreatePackageSection = () => {

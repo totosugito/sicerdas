@@ -19,6 +19,7 @@ const UpdateSectionBody = Type.Object({
   durationMinutes: Type.Optional(Type.Number({ minimum: 0 })),
   order: Type.Optional(Type.Number()),
   isActive: Type.Optional(Type.Boolean()),
+  versionId: Type.Optional(Type.Number()),
 });
 
 const UpdateSectionResponse = Type.Object({
@@ -49,7 +50,8 @@ const updateSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
     ) {
       const { t } = getTypedI18n(request);
       const { id } = request.params;
-      const { packageId, title, description, durationMinutes, order, isActive } = request.body;
+      const { packageId, title, description, durationMinutes, order, isActive, versionId } =
+        request.body;
 
       const existing = await db.query.examPackageSections.findFirst({
         where: eq(examPackageSections.id, id),
@@ -78,6 +80,7 @@ const updateSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
           durationMinutes,
           order,
           isActive,
+          versionId,
           updatedAt: new Date(),
         })
         .where(eq(examPackageSections.id, id));

@@ -54,14 +54,24 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
 
         {/* Main Content Column */}
         <div className="flex-1 min-w-0 pt-0.5 space-y-2">
-          <h3 className="font-bold text-base tracking-tight truncate">
-            <Link
-              to={AppRoute.exam.packageSections.admin.detail.url.replace("$id", section.id)}
-              className="hover:underline"
-            >
-              {section.title}
-            </Link>
-          </h3>
+          <div className="flex items-center gap-2">
+            <h3 className="font-bold text-base tracking-tight truncate">
+              <Link
+                to={AppRoute.exam.packageSections.admin.detail.url.replace("$id", section.id)}
+                className="hover:underline"
+              >
+                {section.title}
+              </Link>
+            </h3>
+            {section.isNew && (
+              <Badge
+                variant="default"
+                className="bg-green-500 hover:bg-green-600 text-[10px] px-1.5 h-4 uppercase font-bold border-0"
+              >
+                {t(($) => $.labels.new)}
+              </Badge>
+            )}
+          </div>
 
           {section.description && (
             <div className="text-sm text-muted-foreground mt-1">
