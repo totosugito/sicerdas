@@ -1,20 +1,14 @@
-import React, { useCallback, useEffect, Suspense, lazy, ComponentType } from "react";
+import React, { useEffect } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { UseFormReturn, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
 import { FormWithDetector } from "@/components/custom/components";
 import { CreateVersionRequest } from "@/api/version";
-import { BlockNoteEditorProps } from "@/components/custom/components/BlockNoteEditor";
 import { EnumContentStatus, EnumContentType } from "backend/src/db/schema/enum/enum-app";
-
-const LazyBlockNoteEditor = lazy(() =>
-  import("@/components/custom/components/BlockNoteEditor").then((m) => ({
-    default: m.BlockNoteEditor as ComponentType<BlockNoteEditorProps<CreateVersionRequest>>,
-  })),
-);
+import { Button } from "@/components/ui/button";
 
 type VersionFormProps = {
   defaultValues?: Partial<CreateVersionRequest>;
@@ -76,13 +70,6 @@ export function VersionForm({ defaultValues, onSubmit, isPending }: VersionFormP
       });
     }
   }, [defaultValues, form]);
-
-  const handleContentChange = useCallback(
-    (content: any[]) => {
-      form.setValue("note", content, { shouldDirty: true, shouldTouch: true });
-    },
-    [form],
-  );
 
   const onFormSubmit = (values: CreateVersionRequest) => {
     onSubmit(values);
@@ -148,6 +135,11 @@ export function VersionForm({ defaultValues, onSubmit, isPending }: VersionFormP
       placeholder: t(($) => $.version.form.status.placeholder),
       options: statusOptions,
     },
+    note: {
+      type: "blocknote",
+      name: "note",
+      label: t(($) => $.version.form.note.label),
+    },
   };
 
   return (
@@ -168,18 +160,21 @@ export function VersionForm({ defaultValues, onSubmit, isPending }: VersionFormP
             <ControlForm form={form} item={formConfig.status} showMessage={false} />
           </div>
 
-          <Suspense
-            fallback={<div className="min-h-[300px] rounded-md border bg-muted animate-pulse" />}
-          >
-            <LazyBlockNoteEditor
-              form={form}
-              fieldName="note"
-              label={t(($) => $.version.form.note.label)}
-              defaultValues={defaultValues}
-              isPending={isPending}
-              onContentChange={handleContentChange}
-            />
-          </Suspense>
+          <ControlForm form={form} item={formConfig.note} />
+
+          <div className="flex justify-end gap-3 pt-6 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => form.reset()}
+              disabled={isPending}
+            >
+              {t(($) => $.labels.cancel)}
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? t(($) => $.labels.saving) : t(($) => $.labels.save)}
+            </Button>
+          </div>
         </div>
       </FormWithDetector>
     </Form>

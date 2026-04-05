@@ -1,3 +1,4 @@
+import React, { useMemo } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useQueryClient } from "@tanstack/react-query";
@@ -21,6 +22,19 @@ function EditVersionPage() {
   const { data, isLoading, isError, error } = useGetVersion(id);
   const updateMutation = useUpdateVersion(id);
 
+  const initialValues: Partial<CreateVersionRequest> = useMemo(() => {
+    if (!data?.data) return {};
+    return {
+      appVersion: data.data.appVersion,
+      dbVersion: data.data.dbVersion,
+      dataType: data.data.dataType,
+      status: data.data.status,
+      name: data.data.name,
+      note: data.data.note,
+      extra: data.data.extra,
+    };
+  }, [data?.data]);
+
   const onSubmit = async (values: CreateVersionRequest) => {
     updateMutation.mutate(values, {
       onSuccess: (res) => {
@@ -28,7 +42,6 @@ function EditVersionPage() {
           message: res.message || t(($) => $.version.notifications.updateSuccess),
         });
         queryClient.invalidateQueries({ queryKey: ["version-detail", id] });
-        queryClient.invalidateQueries({ queryKey: ["list-version"] });
       },
       onError: (err: any) => {
         showNotifError({ message: err.message || t(($) => $.labels.error) });
@@ -55,18 +68,6 @@ function EditVersionPage() {
       />
     );
   }
-
-  const initialValues: Partial<CreateVersionRequest> = data?.data
-    ? {
-        appVersion: data.data.appVersion,
-        dbVersion: data.data.dbVersion,
-        dataType: data.data.dataType,
-        status: data.data.status,
-        name: data.data.name,
-        note: data.data.note,
-        extra: data.data.extra,
-      }
-    : {};
 
   return (
     <div className="flex flex-col gap-6 w-full">

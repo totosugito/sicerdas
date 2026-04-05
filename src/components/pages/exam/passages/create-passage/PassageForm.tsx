@@ -1,20 +1,14 @@
-import React, { useCallback, useEffect, Suspense, lazy, ComponentType } from "react";
+import React, { useEffect } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { UseFormReturn, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
 import { FormWithDetector } from "@/components/custom/components";
 import { useListSubjectSimple } from "@/api/exam-subjects";
 import { PassageFormValues } from "@/api/exam-passages/types";
-import { BlockNoteEditorProps } from "@/components/custom/components/BlockNoteEditor";
-
-const LazyBlockNoteEditor = lazy(() =>
-  import("@/components/custom/components/BlockNoteEditor").then((m) => ({
-    default: m.BlockNoteEditor as ComponentType<BlockNoteEditorProps<PassageFormValues>>,
-  })),
-);
+import { Button } from "@/components/ui/button";
 
 type PassageFormProps = {
   defaultValues?: Partial<PassageFormValues>;
@@ -68,13 +62,6 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
     }
   }, [defaultValues, form]);
 
-  const handleContentChange = useCallback(
-    (content: any[]) => {
-      form.setValue("content", content, { shouldDirty: true, shouldTouch: true });
-    },
-    [form],
-  );
-
   const onFormSubmit = (values: PassageFormValues) => {
     onSubmit(values);
   };
@@ -103,6 +90,11 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
       label: t(($) => $.exam.passages.form.isActive.label),
       description: t(($) => $.exam.passages.form.isActive.description),
     },
+    content: {
+      type: "blocknote",
+      name: "content",
+      label: t(($) => $.exam.passages.form.content.label),
+    },
   };
 
   return (
@@ -115,18 +107,21 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
 
           <ControlForm form={form} item={formConfig.isActive} showMessage={false} />
 
-          <Suspense
-            fallback={<div className="min-h-[300px] rounded-md border bg-muted animate-pulse" />}
-          >
-            <LazyBlockNoteEditor
-              form={form}
-              fieldName="content"
-              label={t(($) => $.exam.passages.form.content.label)}
-              defaultValues={defaultValues}
-              isPending={isPending}
-              onContentChange={handleContentChange}
-            />
-          </Suspense>
+          <ControlForm form={form} item={formConfig.content} />
+
+          <div className="flex justify-end gap-3 pt-6 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => form.reset()}
+              disabled={isPending}
+            >
+              {t(($) => $.labels.cancel)}
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? t(($) => $.labels.saving) : t(($) => $.labels.save)}
+            </Button>
+          </div>
         </div>
       </FormWithDetector>
     </Form>
