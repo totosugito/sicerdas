@@ -37,7 +37,7 @@ export const DialogLocalOptionForm = ({
         1,
         t(($) => $.exam.options.form.content.required),
       )
-      .refine((val) => blocknote_to_text(val).trim().length > 0, {
+      .refine((val) => blocknote_to_text(val, { includeMath: true }).trim().length > 0, {
         message: t(($) => $.exam.options.form.content.required),
       }),
     isCorrect: z.boolean().default(false),

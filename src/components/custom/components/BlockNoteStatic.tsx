@@ -6,6 +6,8 @@ import { BlockNoteView } from "@blocknote/shadcn";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/lib/theme-provider";
 
+import { schema } from "@/lib/blocknote-config";
+
 export type BlockNoteStaticProps = {
   content: any[];
   className?: string;
@@ -45,6 +47,7 @@ export const BlockNoteStatic = ({
   }, [appTheme]);
 
   const editor = useCreateBlockNote({
+    schema, // Shared schema with math block support
     initialContent: content && content.length > 0 ? content : undefined,
   });
 

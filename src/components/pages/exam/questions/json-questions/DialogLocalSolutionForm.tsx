@@ -56,7 +56,7 @@ export const DialogLocalSolutionForm = ({
         1,
         t(($) => $.labels.required),
       )
-      .refine((val) => blocknote_to_text(val).trim().length > 0, {
+      .refine((val) => blocknote_to_text(val, { includeMath: true }).trim().length > 0, {
         message: t(($) => $.labels.required),
       }),
     solutionType: z

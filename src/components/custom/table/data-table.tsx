@@ -209,11 +209,16 @@ export function DataTable<TData>({
         className={cn(
           "w-full overflow-hidden",
           isStickyHeader ? "[&>div]:max-h-[80vh]" : "",
-          !showSideBorders && "[&>div]:overflow-x-hidden",
+          // !showSideBorders && "[&>div]:overflow-x-hidden",
           styles?.container?.default,
         )}
       >
-        <Table className="border-separate border-spacing-0 border-none w-full">
+        <Table
+          className={cn(
+            "border-separate border-spacing-0 border-none w-full",
+            showSideBorders ? "" : "[&>div]:overflow-x-hidden px-[1px]",
+          )}
+        >
           <TableHeader
             className={cn(
               "w-full",

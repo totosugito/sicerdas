@@ -5,9 +5,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ExamQuestionSolution } from "@/api/exam-question-solutions";
-import { blocknote_to_text, blocknote_to_html } from "@/lib/blocknote-utils";
-import { LongText } from "@/components/custom/components";
-import React, { useEffect, useState } from "react";
+import { BlockNoteStatic } from "@/components/custom/components";
+import React from "react";
 
 interface SolutionRowProps {
   solution: ExamQuestionSolution;
@@ -28,15 +27,6 @@ export const SolutionRow = ({ solution, index, onDelete, onEdit }: SolutionRowPr
     transition,
   };
 
-  const [htmlContent, setHtmlContent] = useState<string>("");
-  const plainText = blocknote_to_text(solution.content);
-
-  useEffect(() => {
-    if (solution.content) {
-      blocknote_to_html(solution.content).then((html) => setHtmlContent(html));
-    }
-  }, [solution.content]);
-
   return (
     <div
       ref={setNodeRef}
@@ -52,7 +42,7 @@ export const SolutionRow = ({ solution, index, onDelete, onEdit }: SolutionRowPr
           <button
             {...attributes}
             {...listeners}
-            className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-primary touch-none p-1 rounded-md hover:bg-primary/10 transition-colors"
+            className="ml-1 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-primary touch-none p-1 rounded-md hover:bg-primary/10 transition-colors"
           >
             <GripVertical className="w-4 h-4" />
           </button>
@@ -90,8 +80,8 @@ export const SolutionRow = ({ solution, index, onDelete, onEdit }: SolutionRowPr
       </div>
       <div className="p-5">
         <div className="text-sm text-foreground/80 dark:text-foreground/90">
-          {htmlContent || plainText ? (
-            <LongText text={htmlContent || plainText} isHtml={!!htmlContent} maxChars={1024} />
+          {solution.content && solution.content.length > 0 ? (
+            <BlockNoteStatic content={solution.content} className="border-none bg-transparent" />
           ) : (
             <span className="text-muted-foreground italic">
               {t(($) => $.exam.options.noContent)}

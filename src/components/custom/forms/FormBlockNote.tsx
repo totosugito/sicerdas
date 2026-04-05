@@ -5,10 +5,10 @@ import {
   useCreateBlockNote,
   SuggestionMenuController,
   getDefaultReactSlashMenuItems,
+  DefaultReactSuggestionItem,
 } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
-import { BlockNoteSchema, defaultBlockSpecs } from "@blocknote/core";
-import { MathBlock } from "../components/MathBlock";
+import { filterSuggestionItems } from "@blocknote/core/extensions";
 import {
   FormControl,
   FormDescription,
@@ -37,26 +37,7 @@ export type FormBlockNoteProps = {
   showMessage?: boolean;
 };
 
-const schema = BlockNoteSchema.create({
-  blockSpecs: {
-    ...defaultBlockSpecs,
-    math: MathBlock(),
-  },
-});
-
-const insertMath = (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Equation",
-  onItemClick: () => {
-    editor.insertBlocks(
-      [{ type: "math", props: { equation: "E=mc^2" } }],
-      editor.getTextCursorPosition().block,
-      "after",
-    );
-  },
-  aliases: ["math", "equation", "latex", "katex"],
-  group: "Other",
-  icon: <span className="font-bold font-serif text-lg leading-none select-none">∑</span>,
-});
+import { schema, getEquationSlashMenuItem } from "@/lib/blocknote-config";
 
 export const FormBlockNote = ({
   form,
@@ -79,6 +60,17 @@ export const FormBlockNote = ({
 
   // Use a ref to store the initial value for the editor to avoid recreations
   const initialValueRef = useRef(form.getValues(item.name));
+
+  const styleTag = (
+    <style>
+      {`
+        .bn-block-content {
+          margin-inline-start: 0 !important;
+        }
+
+      `}
+    </style>
+  );
 
   const editor = useCreateBlockNote({
     schema,
@@ -165,16 +157,14 @@ export const FormBlockNote = ({
                 <SuggestionMenuController
                   triggerCharacter={"/"}
                   getItems={async (query) => {
-                    const allItems = [...getDefaultReactSlashMenuItems(editor), insertMath(editor)];
-                    const lowerQuery = query.toLowerCase();
-                    return allItems.filter(
-                      (item) =>
-                        item.title.toLowerCase().includes(lowerQuery) ||
-                        (item.aliases &&
-                          item.aliases.some((alias) => alias.toLowerCase().includes(lowerQuery))),
-                    );
+                    const allItems: DefaultReactSuggestionItem[] = [
+                      ...getDefaultReactSlashMenuItems(editor),
+                      getEquationSlashMenuItem(editor),
+                    ];
+                    return filterSuggestionItems(allItems, query);
                   }}
                 />
+                {styleTag}
               </BlockNoteView>
             </div>
           </FormControl>

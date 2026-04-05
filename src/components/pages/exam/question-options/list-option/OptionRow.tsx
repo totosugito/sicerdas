@@ -5,9 +5,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ExamQuestion } from "@/api/exam-questions";
-import { blocknote_to_text, blocknote_to_html } from "@/lib/blocknote-utils";
-import { LongText } from "@/components/custom/components";
-import React, { useEffect, useState } from "react";
+import { BlockNoteStatic } from "@/components/custom/components";
+import React from "react";
 
 interface OptionRowProps {
   option: NonNullable<ExamQuestion["options"]>[number];
@@ -31,15 +30,6 @@ export const OptionRow = ({ option, index, onDelete, onEdit }: OptionRowProps) =
   const getOptionLabel = (idx: number) => {
     return String.fromCharCode(65 + idx); // A, B, C...
   };
-
-  const [htmlContent, setHtmlContent] = useState<string>("");
-  const plainText = blocknote_to_text(option.content);
-
-  useEffect(() => {
-    if (option.content) {
-      blocknote_to_html(option.content).then((html) => setHtmlContent(html));
-    }
-  }, [option.content]);
 
   return (
     <div
@@ -74,8 +64,11 @@ export const OptionRow = ({ option, index, onDelete, onEdit }: OptionRowProps) =
 
       <div className="flex justify-between items-start mb-0 ml-4">
         <div className="w-full text-sm text-foreground/80 dark:text-foreground/90 min-h-[40px] flex items-center">
-          {htmlContent || plainText ? (
-            <LongText text={htmlContent || plainText} isHtml={!!htmlContent} maxChars={1024} />
+          {option.content && option.content.length > 0 ? (
+            <BlockNoteStatic
+              content={option.content}
+              className="border-none bg-transparent flex-1"
+            />
           ) : (
             <span className="text-muted-foreground italic">
               {t(($) => $.exam.options.noContent)}

@@ -16,6 +16,9 @@ export const MathBlock = createReactBlockSpec(
       equation: {
         default: "",
       },
+      size: {
+        default: "1em",
+      },
     },
     content: "none",
   },
@@ -24,19 +27,20 @@ export const MathBlock = createReactBlockSpec(
       const { block, editor } = props;
 
       const isSelected = editor.getTextCursorPosition()?.block?.id === block.id;
-      const [forceHide, setForceHide] = React.useState(false);
+      const [showEditor, setShowEditor] = React.useState(false);
 
       React.useEffect(() => {
         if (!isSelected) {
-          setForceHide(false);
+          setShowEditor(false);
         }
       }, [isSelected]);
 
-      const isFocused = isSelected && !forceHide;
+      const isFocused = editor.isEditable && showEditor;
 
       return (
         <div
-          className={`p-0 my-0 rounded-md transition-all ${isFocused ? "ring-1 ring-primary/20 bg-muted/50" : "hover:bg-muted/30 cursor-pointer"}`}
+          onDoubleClick={() => editor.isEditable && setShowEditor(true)}
+          className={`p-0 my-0 rounded-md transition-all [&_.katex-display]:!my-2 ${isFocused ? "ring-1 ring-primary/20 bg-muted/50" : editor.isEditable ? "hover:bg-muted/30 cursor-pointer" : ""}`}
         >
           {isFocused && (
             <div className="flex flex-col p-4 space-y-2">
@@ -44,19 +48,38 @@ export const MathBlock = createReactBlockSpec(
                 <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   KaTeX Editor
                 </span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 text-muted-foreground hover:text-foreground"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setForceHide(true);
-                  }}
-                  title="Close Editor"
-                >
-                  <IoMdClose className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={block.props.size}
+                    onChange={(e) => {
+                      editor.updateBlock(block, {
+                        type: "math",
+                        props: { ...block.props, size: e.target.value },
+                      });
+                    }}
+                    className="text-xs bg-card border rounded px-2 py-1 outline-none focus:ring-1 focus:ring-primary"
+                  >
+                    <option value="0.75em">Small</option>
+                    <option value="1em">Normal</option>
+                    <option value="1.5em">Large</option>
+                    <option value="2em">Extra Large</option>
+                    <option value="2.5em">Huge</option>
+                  </select>
+
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 text-muted-foreground hover:text-foreground"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowEditor(false);
+                    }}
+                    title="Close Editor"
+                  >
+                    <IoMdClose className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
               <Textarea
                 value={block.props.equation}
@@ -76,10 +99,21 @@ export const MathBlock = createReactBlockSpec(
             </div>
           )}
           <div
-            className={`flex justify-center text-center ${isFocused ? "px-4 pt-4 border-t" : "px-0"}`}
+            className={`w-full overflow-x-auto py-0 ${isFocused ? "px-4 pt-4 border-t" : "px-0"}`}
+            style={{
+              fontSize: block.props.size,
+              textAlign:
+                block.props.textAlignment === "left"
+                  ? "left"
+                  : block.props.textAlignment === "right"
+                    ? "right"
+                    : "center",
+            }}
           >
             <BlockMath
               math={block.props.equation}
+              // @ts-ignore - react-katex typings are missing the settings prop but pass it through strictly to katex options
+              settings={{ strict: false }}
               renderError={(error) => (
                 <span className="text-destructive font-mono text-sm">
                   {error.name}: {error.message}
