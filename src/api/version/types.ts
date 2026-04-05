@@ -35,6 +35,7 @@ export interface ListVersionResponse extends AppVersionResponse {
 export interface VersionSimpleItem {
   id: number;
   name: string;
+  published: boolean;
 }
 
 export interface ListVersionSimpleResponse extends AppVersionResponse {

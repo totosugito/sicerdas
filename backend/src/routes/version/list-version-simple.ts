@@ -6,7 +6,7 @@ import { appVersion } from "../../db/schema/app/app-version.ts";
 import { and, eq, asc, sql, ilike } from "drizzle-orm";
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
-import { EnumContentType, EnumContentStatus } from "../../db/schema/enum/enum-app.ts";
+import { EnumContentStatus, EnumContentType } from "../../db/schema/enum/enum-app.ts";
 
 const VersionSimpleQuery = Type.Object({
   dataType: Type.Enum(EnumContentType),
@@ -18,6 +18,7 @@ const VersionSimpleQuery = Type.Object({
 const VersionSimpleResponseItem = Type.Object({
   id: Type.Number(),
   name: Type.String(),
+  published: Type.Boolean(),
 });
 
 const ListVersionSimpleResponse = Type.Object({
@@ -63,7 +64,7 @@ const listVersionSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       const conditions = [
         eq(appVersion.dataType, dataType),
-        eq(appVersion.status, EnumContentStatus.PUBLISHED),
+        // eq(appVersion.status, EnumContentStatus.PUBLISHED),
       ];
 
       if (search && search.trim() !== "") {
@@ -84,6 +85,7 @@ const listVersionSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
         .select({
           id: appVersion.id,
           name: appVersion.name,
+          status: appVersion.status,
         })
         .from(appVersion)
         .where(and(...conditions))
@@ -98,6 +100,7 @@ const listVersionSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
           items: items.map((item) => ({
             id: item.id,
             name: item.name || "",
+            published: item.status === EnumContentStatus.PUBLISHED,
           })),
           meta: {
             total,

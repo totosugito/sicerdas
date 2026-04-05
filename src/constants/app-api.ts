@@ -82,10 +82,10 @@ export const AppApi = {
         create: APP_URL_API + "/exam/packages/admin/create",
         update: APP_URL_API + "/exam/packages/admin/update/:id",
         delete: APP_URL_API + "/exam/packages/admin/delete/:id",
+        list: APP_URL_API + "/exam/packages/admin/list",
+        listSimple: APP_URL_API + "/exam/packages/admin/list-simple",
+        detail: APP_URL_API + "/exam/packages/admin/detail/:id",
       },
-      list: APP_URL_API + "/exam/packages/list",
-      listSimple: APP_URL_API + "/exam/packages/list-simple",
-      detail: APP_URL_API + "/exam/packages/detail/:id",
     },
     packageSections: {
       admin: {

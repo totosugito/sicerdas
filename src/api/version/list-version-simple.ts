@@ -1,25 +1,28 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { ListVersionSimpleResponse } from "./types";
 
-export const useListVersionSimple = () => {
-  return useMutation({
-    mutationKey: ["version-list-simple"],
-    mutationFn: async (body: {
-      dataType: string;
-      search?: string;
-      page?: number;
-      limit?: number;
-    }) => {
+export interface ListVersionSimpleRequest {
+  dataType: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+}
+
+export const useListVersionSimple = (params: ListVersionSimpleRequest) => {
+  return useQuery({
+    queryKey: ["version-list-simple", params],
+    queryFn: async () => {
       const response = await fetchApi({
         method: "POST",
         url: AppApi.version.listSimple,
-        body: body,
+        body: params,
         withCredentials: true,
       });
       return response as ListVersionSimpleResponse;
     },
+    enabled: !!params.dataType,
   });
 };

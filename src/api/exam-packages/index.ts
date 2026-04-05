@@ -10,10 +10,10 @@ export type { UpdatePackageRequest } from "./admin/update-package";
 export { useDeletePackage } from "./admin/delete-package";
 
 // public exports
-export { useListPackage } from "./list-package";
-export type { ListPackageRequest, ListPackagesResponse } from "./list-package";
-export { useListPackageSimple } from "./list-package-simple";
-export type { ListPackagesSimpleResponse, PackageSimpleItem } from "./list-package-simple";
+export { useListPackage } from "./admin/list-package";
+export type { ListPackageRequest, ListPackagesResponse } from "./admin/list-package";
+export { useListPackageSimple } from "./admin/list-package-simple";
+export type { ListPackagesSimpleResponse, PackageSimpleItem } from "./admin/list-package-simple";
 
-export { useDetailPackage } from "./detail-package";
-export type { DetailPackageRequest } from "./detail-package";
+export { useDetailPackage } from "./admin/detail-package";
+export type { DetailPackageRequest } from "./admin/detail-package";

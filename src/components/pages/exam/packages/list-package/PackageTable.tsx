@@ -176,6 +176,26 @@ export function PackageTable({
       },
     },
     {
+      accessorKey: "versionId",
+      enableSorting: true,
+      size: 80,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.labels.version)}
+          className="justify-center"
+        />
+      ),
+      cell: ({ row }) => {
+        const versionId = row.getValue("versionId") as number | null;
+        return (
+          <div className="flex justify-center">
+            <span className="text-sm font-mono text-muted-foreground">{versionId || "-"}</span>
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "updatedAt",
       enableSorting: true,
       minSize: 70,
