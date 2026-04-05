@@ -32,6 +32,9 @@ export const examPackageSections = pgTable(
     // Title of the section (e.g., "Sub-test Literasi")
     title: varchar("title", { length: 255 }).notNull(),
 
+    // Optional logical grouping (e.g., "TPS", "Basic Arithmetic") used purely for UI categorization
+    groupName: varchar("group_name", { length: 255 }),
+
     // Optional description providing more details about this section
     description: text("description"),
 

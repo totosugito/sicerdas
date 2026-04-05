@@ -27,6 +27,16 @@ export function SectionInfoCard({ section }: SectionInfoCardProps) {
               <p className="font-semibold text-sm line-clamp-2 leading-tight">
                 {section.packageName || "-"}
               </p>
+              {section.groupName && (
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  <Badge
+                    variant="outline"
+                    className="h-5 text-[10px] bg-primary/5 border-primary/20"
+                  >
+                    {section.groupName}
+                  </Badge>
+                </div>
+              )}
             </div>
           </div>
 

@@ -129,6 +129,28 @@ export function PackageTable({
       },
     },
     {
+      accessorKey: "totalSections",
+      enableSorting: false,
+      size: 100,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.exam.packages.table.columns.sections)}
+          className="justify-center"
+        />
+      ),
+      cell: ({ row }) => {
+        const total = row.getValue("totalSections") as number;
+        return (
+          <div className="flex justify-center">
+            <Badge variant="secondary" className="px-3">
+              {total || 0}
+            </Badge>
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "durationMinutes",
       enableSorting: true,
       minSize: 70,

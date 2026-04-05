@@ -35,7 +35,7 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
         isDragging
           ? "shadow-lg opacity-90 z-10 border-primary"
           : "hover:border-primary/30 hover:shadow-sm"
-      }`}
+      } ${section.groupName ? "ml-8" : ""}`}
     >
       <div className="flex items-start gap-4">
         {/* Left Column: Sequence Controls */}
@@ -66,7 +66,7 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
             {section.isNew && (
               <Badge
                 variant="default"
-                className="bg-green-500 hover:bg-green-600 text-[10px] px-1.5 h-4 uppercase font-bold border-0"
+                className="bg-green-500 hover:bg-green-600 dark:bg-green-700 dark:hover:bg-green-800 text-[10px] px-1.5 h-4 uppercase font-bold border-0"
               >
                 {t(($) => $.labels.new)}
               </Badge>

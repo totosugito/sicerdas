@@ -11,6 +11,7 @@ export default {
       title: "Judul Paket",
       category: "Kategori",
       examType: "Tipe Ujian",
+      sections: "Jumlah Seksi",
       duration: "Durasi (Menit)",
       educationGrade: "Tingkat Pendidikan",
       status: "Status",

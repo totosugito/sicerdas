@@ -11,6 +11,7 @@ interface CreateSectionResponse {
 export interface CreateSectionRequest {
   packageId: string;
   title: string;
+  groupName?: string;
   description?: string;
   durationMinutes?: number;
   order?: number;

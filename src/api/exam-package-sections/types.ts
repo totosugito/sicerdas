@@ -3,6 +3,7 @@ export interface ExamPackageSection {
   packageId: string;
   packageName: string | null;
   title: string;
+  groupName?: string | null;
   description?: string | null;
   durationMinutes: number | null;
   order: number;

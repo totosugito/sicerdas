@@ -82,6 +82,21 @@ export function SectionTable({
       },
     },
     {
+      accessorKey: "groupName",
+      enableSorting: true,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.exam.sections.table.columns.groupName)}
+        />
+      ),
+      cell: ({ row }) => {
+        const groupName = row.getValue("groupName") as string;
+        if (!groupName) return "-";
+        return <Badge variant="outline">{groupName}</Badge>;
+      },
+    },
+    {
       accessorKey: "description",
       enableSorting: false,
       header: ({ column }) => (

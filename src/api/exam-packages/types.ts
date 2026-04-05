@@ -12,6 +12,7 @@ export interface ExamPackage {
   isActive: boolean;
   isNew: boolean;
   versionId: number | null;
+  totalSections: number;
   createdAt: string;
   updatedAt: string;
 }

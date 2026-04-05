@@ -5,66 +5,75 @@ This document details the database architecture and technical strategy for the *
 The database is built using PostgreSQL and Drizzle ORM. The schema logic is thoroughly normalized into 15 distinct tables located in `src/db/schema/exam/`.
 
 ## Architecture Highlights
+
 1.  **BlockNote Integration (Rich Text):** All complex text content (questions, passages, options, solutions) strictly utilize the `JSONB` data type to store the BlockNote rich-text editor data structure. This permits native embedding of mathematical formulas, nested lists, and inline images without rigid table alterations or unmaintainable HTML blobs.
 2.  **Monetization & Tier Gating:** The assessment system natively intertwines with the existing Sicerdas Tier Pricing infrastructure (`tier_pricing.slug`). Access control is enforced at three distinct levels: Packages, Questions, and Individual Solutions.
 3.  **Targeted Educational Delivery:** Questions and Exam Packages hold links to the `education_grades` table, meaning tests can dynamically target specific school levels (e.g., separating Grade 6 Math from High School Calculus).
 4.  **Incremental Aggregation (Performance Optimization):** High-load dashboard statistics rely on "Incremental Aggregation" `user_stats` tables which are updated via simple increments (`total + x`) rather than expensive time-consuming `SUM/JOIN` queries on the entire user's history log.
 5.  **Multi-Method Solutions:** Solving a single question can be documented using multiple methodologies (e.g., General method, Fast Trick/King Method), with the advanced fast tricks being easily locked behind the Premium tier wall.
-6.  **Template Questions & Parameterization (Anti-Cheat & Replayability):** Questions support dynamic templates (e.g., `{{a}} + {{b}} = ?`) powered by a predefined `variableFormulas` JSON config. 
-    *   **Structure:** This separates inputs from calculated formulas via a `{ variables: [], options: {}, solutions: {} }` structure. 
-    *   **Backend Evaluation:** The Node.js backend securely calculates the formulas from `options` and `solutions` during runtime and replaces variables directly into the BlockNote JSON before sending the final string to the frontend UI.
-    *   **Options Trick:** Distractor options are built via formulas (e.g., `opt2: "a - b"`). One option text is always `{{opt1}}` (flagged `isCorrect = true` in DB). The CBT engine randomizes display order (A, B, C, D) so the db static correct-answer state never changes.
-    *   **Tracking:** `exam_session_answers` stores `variationIndex` to guarantee that a user reviewing their history will see the exact same numeric variation they were tested on.
+6.  **Template Questions & Parameterization (Anti-Cheat & Replayability):** Questions support dynamic templates (e.g., `{{a}} + {{b}} = ?`) powered by a predefined `variableFormulas` JSON config.
+    - **Structure:** This separates inputs from calculated formulas via a `{ variables: [], options: {}, solutions: {} }` structure.
+    - **Backend Evaluation:** The Node.js backend securely calculates the formulas from `options` and `solutions` during runtime and replaces variables directly into the BlockNote JSON before sending the final string to the frontend UI.
+    - **Options Trick:** Distractor options are built via formulas (e.g., `opt2: "a - b"`). One option text is always `{{opt1}}` (flagged `isCorrect = true` in DB). The CBT engine randomizes display order (A, B, C, D) so the db static correct-answer state never changes.
+    - **Tracking:** `exam_session_answers` stores `variationIndex` to guarantee that a user reviewing their history will see the exact same numeric variation they were tested on.
 
 ### Admin Authoring UI: Variable Formulas
+
 To ensure a high-end authoring experience, the `variableFormulas` editor in the Admin Dashboard utilizes a **Dual-View Hybrid Editor**:
 
 1.  **Structured Table View (Default):**
-    *   **Spreadsheet Interface:** A dynamic grid for the `variables` array where columns are auto-detected from object keys.
-    *   **Row Management:** Admins can easily add/remove "Variations" (rows).
-    *   **Formula List:** Dedicated key-value inputs for `options` and `solutions` formulas with syntax highlighting.
+    - **Spreadsheet Interface:** A dynamic grid for the `variables` array where columns are auto-detected from object keys.
+    - **Row Management:** Admins can easily add/remove "Variations" (rows).
+    - **Formula List:** Dedicated key-value inputs for `options` and `solutions` formulas with syntax highlighting.
 2.  **Raw JSON View:**
-    *   **Power-User Mode:** A lightweight text editor for direct JSON manipulation.
-    *   **Bulk Support:** Ideal for copy-pasting extensive variation sets generated from external tools (Python/Excel).
+    - **Power-User Mode:** A lightweight text editor for direct JSON manipulation.
+    - **Bulk Support:** Ideal for copy-pasting extensive variation sets generated from external tools (Python/Excel).
 3.  **Synchronization & Live Feedback:**
-    *   **Dynamic Parsing:** Real-time sync between Table and JSON views with automatic syntax validation. Switching is blocked if the JSON is malformed.
-    *   **Instant Result Preview:** A preview sidebar that calculates formulas using the first variation row in real-time, allowing admins to verify math logic instantly.
+    - **Dynamic Parsing:** Real-time sync between Table and JSON views with automatic syntax validation. Switching is blocked if the JSON is malformed.
+    - **Instant Result Preview:** A preview sidebar that calculates formulas using the first variation row in real-time, allowing admins to verify math logic instantly.
 
 ---
 
-## The 15 Tables Breakdown
+## The 16 Tables Breakdown
 
 All tables are prefixed with `exam_` within PostgreSQL but are stripped off the prefix for inner file naming conventions to keep the codebase concise.
 
 ### 📚 1. Core Question Bank
-*   1. **`exam_categories`**: Macro-level grouping (e.g., 'CPNS 2026', 'UTBK Kedokteran').
-*   2. **`exam_subjects`**: Specific exam modules (e.g., 'Matematika', 'Tes Intelegensia Umum').
-*   3. **`exam_passages`**: Contextual containers for long reading texts or data tables designed to be referenced by sequential questions without duplication.
-*   4. **`exam_questions`**: The central vault for all question prompts. Protected by `required_tier` for partial teasing in free packages.
-*   5. **`exam_question_options`**: The multiple-choice selections linked to specific questions, storing the definitive boolean marker for correct answers.
-*   6. **`exam_question_solutions`**: Stores the explanation of the question. Categorized by `solution_type` ('general', 'fast_method', 'tips'). Fast methods can enforce the `required_tier` restriction.
+
+- 1. **`exam_categories`**: Macro-level grouping (e.g., 'CPNS 2026', 'UTBK Kedokteran').
+- 2. **`exam_subjects`**: Specific exam modules (e.g., 'Matematika', 'Tes Intelegensia Umum').
+- 3. **`exam_passages`**: Contextual containers for long reading texts or data tables designed to be referenced by sequential questions without duplication.
+- 4. **`exam_questions`**: The central vault for all question prompts. Protected by `required_tier` for partial teasing in free packages.
+- 5. **`exam_question_options`**: The multiple-choice selections linked to specific questions, storing the definitive boolean marker for correct answers.
+- 6. **`exam_question_solutions`**: Stores the explanation of the question. Categorized by `solution_type` ('general', 'fast_method', 'tips'). Fast methods can enforce the `required_tier` restriction.
 
 ### 🏷️ 2. Tagging & Ad-hoc Generation
-*   7. **`exam_tags`**: Catalog database for micro-topics (e.g., 'Syllogism', 'Geometry', 'HOTS').
-*   8. **`exam_question_tags`**: Many-to-Many junction linking `exam_questions` and `exam_tags`. It serves as the query engine for generating random Custom Practices for users (e.g., "Give me 10 random HOTS Geometry questions").
+
+- 7. **`exam_tags`**: Catalog database for micro-topics (e.g., 'Syllogism', 'Geometry', 'HOTS').
+- 8. **`exam_question_tags`**: Many-to-Many junction linking `exam_questions` and `exam_tags`. It serves as the query engine for generating random Custom Practices for users (e.g., "Give me 10 random HOTS Geometry questions").
 
 ### 📦 3. Assembly & Exam Definition
-*   9. **`exam_packages`**: The actual bundle that users "start". Represents either a pre-determined Official Tryout or a `custom_practice` generated on the fly by users. Includes a strict `required_tier` and `education_grade_id`.
-*   10. **`exam_package_questions`**: Junction table that glues questions to an `exam_package`. It mandates a link to a `sectionId` (to enforce standardized package structures and prevent mixed-state bugs) and enforces the default sequence ordering of the questions.
+
+- 9. **`exam_packages`**: The actual bundle that users "start". Represents either a pre-determined Official Tryout or a `custom_practice` generated on the fly by users. Includes a strict `required_tier` and `education_grade_id`.
+- 10. **`exam_package_sections`**: Divides an exam package into logical sub-tests (e.g., Literasi Bahasa, Penalaran Matematika). Includes an optional `groupName` (e.g., "SKD" or "Basic Arithmetic") used to visually group related sections together in the UI without requiring an overly complex nested database structural tree.
+- 11. **`exam_package_questions`**: Junction table that glues questions to an `exam_package`. It mandates a link to a `sectionId` (to enforce standardized package structures and prevent mixed-state bugs) and enforces the default sequence ordering of the questions.
 
 ### ⏱️ 4. Active CBT Sessions
-*   11. **`exam_sessions`**: The historical ledger marking a single User Attempt upon a specific Package. Tracks start times, statuses (`in_progress`, `completed`), and the ultimate numeric Score calculation.
-*   12. **`exam_session_answers`**: The dynamically localized "Answer Sheet". It tracks the user's specific randomized shuffling sequence for questions, immediately auto-saves `selectedOptionId`, evaluates correctness upon end, and flags "is_doubtful" (Ragu-ragu) user status markers.
+
+- 11. **`exam_sessions`**: The historical ledger marking a single User Attempt upon a specific Package. Tracks start times, statuses (`in_progress`, `completed`), and the ultimate numeric Score calculation.
+- 12. **`exam_session_answers`**: The dynamically localized "Answer Sheet". It tracks the user's specific randomized shuffling sequence for questions, immediately auto-saves `selectedOptionId`, evaluates correctness upon end, and flags "is_doubtful" (Ragu-ragu) user status markers.
 
 ### 📈 5. Gamification & Adaptive Analytics
-*   13. **`exam_user_stats_global`**: High-level dashboard aggregate. Running totals of exams taken, cumulative score averages over the user's entire lifespan.
-*   14. **`exam_user_stats_subject`**: Subject-specific radar (e.g., "User is strong in TWK but weak in TIU"). Records accuracy rates specifically tied to an `exam_subject`.
-*   15. **`exam_user_stats_tag`**: hyper-granular accuracy tracking. Exposes targeted frailties (e.g., "The user frequently fails Algebra tags"). The AI Engine or system relies on this data to present "Improve your Algebra" practice recommendations.
+
+- 13. **`exam_user_stats_global`**: High-level dashboard aggregate. Running totals of exams taken, cumulative score averages over the user's entire lifespan.
+- 14. **`exam_user_stats_subject`**: Subject-specific radar (e.g., "User is strong in TWK but weak in TIU"). Records accuracy rates specifically tied to an `exam_subject`.
+- 15. **`exam_user_stats_tag`**: hyper-granular accuracy tracking. Exposes targeted frailties (e.g., "The user frequently fails Algebra tags"). The AI Engine or system relies on this data to present "Improve your Algebra" practice recommendations.
 
 ---
 
 ## Recommended Data Workflow (Reconciliation)
 
 To fight against **Data Drift**, specifically concerning the `exam_user_stats_*` tables which rely wholly on fast Incremental Aggregation logic:
+
 1. When an `exam_session` switches from `in_progress` to `completed`, backend processes perform incremental `UPDATE table SET column = column + X` on the stats tables.
 2. A separate **Reconciliation Script** (Lambda/Cron Job) is advised to run during off-peak hours (e.g., 3:00 AM) to recalculate the statistics from the absolute truth located in `exam_session_answers` and enforce corrections if server crashes previously resulted in desynchronization.

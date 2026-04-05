@@ -34,6 +34,7 @@ const FormEntity = ({ values, form, packageIdDisabled }: any) => {
         />
       )}
       <ControlForm form={form} item={values.title} showMessage={false} />
+      <ControlForm form={form} item={values.groupName} showMessage={false} />
       <ControlForm form={form} item={values.description} showMessage={false} />
       <ControlForm form={form} item={values.durationMinutes} showMessage={false} />
       <ControlForm form={form} item={values.versionId} showMessage={false} />
@@ -78,6 +79,7 @@ export const DialogSectionForm = ({
       1,
       t(($) => $.exam.sections.formTitleRequired),
     ),
+    groupName: z.string().optional(),
     description: z.string().optional(),
     durationMinutes: z.coerce.number().min(
       0,
@@ -105,6 +107,12 @@ export const DialogSectionForm = ({
       label: t(($) => $.exam.sections.formTitle),
       placeholder: t(($) => $.exam.sections.formTitlePlaceholder),
       required: true,
+    },
+    groupName: {
+      type: "text",
+      name: "groupName",
+      label: t(($) => $.exam.sections.formGroupName),
+      placeholder: t(($) => $.exam.sections.formGroupNamePlaceholder),
     },
     description: {
       type: "textarea",
@@ -148,6 +156,7 @@ export const DialogSectionForm = ({
     defaultValue: {
       packageId: section?.packageId || packageId || "",
       title: section?.title || "",
+      groupName: section?.groupName || "",
       description: section?.description || "",
       durationMinutes: (section?.durationMinutes ?? 0).toString(),
       isActive: section?.isActive ?? true,
@@ -165,6 +174,7 @@ export const DialogSectionForm = ({
             id: section.id,
             packageId: values.packageId,
             title: values.title,
+            groupName: values.groupName,
             description: values.description,
             durationMinutes:
               values.durationMinutes !== undefined && values.durationMinutes !== ""
@@ -190,6 +200,7 @@ export const DialogSectionForm = ({
           {
             packageId: values.packageId || packageId,
             title: values.title,
+            groupName: values.groupName,
             description: values.description,
             durationMinutes:
               values.durationMinutes !== undefined && values.durationMinutes !== ""

@@ -7,6 +7,8 @@ export default {
   formTitlePlaceholder: "Masukkan judul bagian",
   formDescription: "Deskripsi",
   formDescriptionPlaceholder: "Masukkan deskripsi bagian...",
+  formGroupName: "Nama Grup",
+  formGroupNamePlaceholder: "Contoh: SKD atau Aritmatika Dasar",
   formDuration: "Durasi (Menit)",
   formDurationPlaceholder: "Opsional",
   formDurationHelp: "Masukkan 0 jika tidak ada batas waktu.",
@@ -57,6 +59,7 @@ export default {
     noResult: "Tidak ada data bagian.",
     columns: {
       title: "Judul",
+      groupName: "Grup",
       package: "Paket Ujian",
       questions: "Jumlah Soal",
       duration: "Durasi",

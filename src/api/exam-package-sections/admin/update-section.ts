@@ -7,6 +7,7 @@ export interface UpdateSectionRequest {
   id: string;
   packageId?: string;
   title?: string;
+  groupName?: string;
   description?: string;
   durationMinutes?: number;
   order?: number;

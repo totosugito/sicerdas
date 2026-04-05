@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
+import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { desc, ilike, and, sql, eq, asc } from "drizzle-orm";
@@ -48,6 +49,7 @@ const PackageResponseItem = Type.Object({
   isActive: Type.Boolean(),
   isNew: Type.Boolean(),
   versionId: Type.Union([Type.Number(), Type.Null()]),
+  totalSections: Type.Number(),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
 });
@@ -134,13 +136,16 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
           package: examPackages,
           categoryName: educationCategories.name,
           educationGradeName: educationGrades.name,
+          totalSections: sql<number>`count(${examPackageSections.id})::int`,
           isNew: latestVersionId
             ? sql<boolean>`${examPackages.versionId} = ${latestVersionId}`.as("isNew")
             : sql<boolean>`false`.as("isNew"),
         })
         .from(examPackages)
         .leftJoin(educationCategories, eq(examPackages.categoryId, educationCategories.id))
-        .leftJoin(educationGrades, eq(examPackages.educationGradeId, educationGrades.id));
+        .leftJoin(educationGrades, eq(examPackages.educationGradeId, educationGrades.id))
+        .leftJoin(examPackageSections, eq(examPackages.id, examPackageSections.packageId))
+        .groupBy(examPackages.id, educationCategories.id, educationGrades.id);
 
       if (conditions.length > 0) {
         baseQuery = baseQuery.where(and(...conditions)) as any;
@@ -229,6 +234,7 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
               ...p,
               categoryName: r.categoryName,
               educationGradeName: r.educationGradeName,
+              totalSections: Number(r.totalSections),
               isNew: !!r.isNew,
               createdAt: p.createdAt.toISOString(),
               updatedAt: p.updatedAt.toISOString(),

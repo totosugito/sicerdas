@@ -11,6 +11,7 @@ import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 const CreateSectionBody = Type.Object({
   packageId: Type.String({ format: "uuid" }),
   title: Type.String({ minLength: 1, maxLength: 255 }),
+  groupName: Type.Optional(Type.String({ maxLength: 255 })),
   description: Type.Optional(Type.String()),
   durationMinutes: Type.Optional(Type.Number({ minimum: 0 })),
   order: Type.Optional(Type.Number({ default: -1 })),
@@ -44,8 +45,16 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
       reply: FastifyReply,
     ) {
       const { t } = getTypedI18n(request);
-      const { packageId, title, description, durationMinutes, order, isActive, versionId } =
-        request.body;
+      const {
+        packageId,
+        title,
+        groupName,
+        description,
+        durationMinutes,
+        order,
+        isActive,
+        versionId,
+      } = request.body;
       let orderToUse = order ?? -1;
 
       // 1. Check if package exists
@@ -75,6 +84,7 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .values({
           packageId,
           title,
+          groupName,
           description,
           durationMinutes,
           order: orderToUse,

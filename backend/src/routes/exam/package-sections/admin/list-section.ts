@@ -20,7 +20,7 @@ const SectionListQuery = Type.Object({
   sortBy: Type.Optional(
     Type.String({
       description:
-        "Sort field: createdAt, title, isActive, updatedAt, durationMinutes, order, versionId",
+        "Sort field: createdAt, title, groupName, isActive, updatedAt, durationMinutes, order, versionId",
       default: "updatedAt",
     }),
   ),
@@ -36,6 +36,7 @@ const SectionResponseItem = Type.Object({
   packageId: Type.String({ format: "uuid" }),
   packageName: Type.Union([Type.String(), Type.Null()]),
   title: Type.String(),
+  groupName: Type.Union([Type.String(), Type.Null()]),
   description: Type.Union([Type.String(), Type.Null()]),
   durationMinutes: Type.Union([Type.Number(), Type.Null()]),
   order: Type.Number(),
@@ -191,6 +192,12 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
             orderDir === "asc"
               ? baseQuery.orderBy(examPackageSections.title)
               : baseQuery.orderBy(desc(examPackageSections.title));
+          break;
+        case "groupName":
+          queryWithSort =
+            orderDir === "asc"
+              ? baseQuery.orderBy(examPackageSections.groupName)
+              : baseQuery.orderBy(desc(examPackageSections.groupName));
           break;
         case "versionId":
           queryWithSort =
