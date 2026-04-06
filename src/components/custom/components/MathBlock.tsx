@@ -3,9 +3,16 @@ import { defaultProps } from "@blocknote/core";
 import { createReactBlockSpec } from "@blocknote/react";
 import "katex/dist/katex.min.css";
 import { BlockMath } from "react-katex";
-import { IoMdClose } from "react-icons/io";
+import { IoMdClose, IoMdCreate } from "react-icons/io";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const MathBlock = createReactBlockSpec(
   {
@@ -16,8 +23,8 @@ export const MathBlock = createReactBlockSpec(
       equation: {
         default: "",
       },
-      size: {
-        default: "1em",
+      fontSize: {
+        default: 18,
       },
     },
     content: "none",
@@ -27,53 +34,98 @@ export const MathBlock = createReactBlockSpec(
       const { block, editor } = props;
 
       const isSelected = editor.getTextCursorPosition()?.block?.id === block.id;
-      const [showEditor, setShowEditor] = React.useState(false);
+      const [isEditing, setIsEditing] = React.useState(false);
 
       React.useEffect(() => {
         if (!isSelected) {
-          setShowEditor(false);
+          setIsEditing(false);
         }
       }, [isSelected]);
 
-      const isFocused = editor.isEditable && showEditor;
+      const isShowingEditor = isSelected && isEditing;
 
       return (
         <div
-          onDoubleClick={() => editor.isEditable && setShowEditor(true)}
-          className={`p-0 my-0 rounded-md transition-all [&_.katex-display]:!my-2 ${isFocused ? "ring-1 ring-primary/20 bg-muted/50" : editor.isEditable ? "hover:bg-muted/30 cursor-pointer" : ""}`}
+          className={`relative group p-0 my-0.5 rounded-md transition-all border ${
+            isShowingEditor
+              ? "border-primary/30 bg-muted/50 shadow-sm"
+              : "border-transparent hover:bg-muted/5"
+          }`}
         >
-          {isFocused && (
-            <div className="flex flex-col p-4 space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  KaTeX Editor
-                </span>
-                <div className="flex items-center gap-2">
-                  <select
-                    value={block.props.size}
-                    onChange={(e) => {
+          {/* Hover Edit Button */}
+          {!isShowingEditor && (
+            <div className="absolute top-1 right-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                className="h-6 gap-1.5 bg-background/80 backdrop-blur-sm border shadow-sm hover:bg-primary hover:text-primary-foreground text-[10px] px-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsEditing(true);
+                  // Ensure the block is selected when clicking edit
+                  editor.setTextCursorPosition(block, "start");
+                  editor.focus();
+                }}
+              >
+                <IoMdCreate className="h-3 w-3" />
+                <span>Edit</span>
+              </Button>
+            </div>
+          )}
+
+          {isShowingEditor && (
+            <div className="flex flex-col p-3 space-y-3 animate-in fade-in slide-in-from-top-1 duration-200">
+              <div className="flex justify-between items-center border-b pb-2">
+                <div className="flex items-center gap-4">
+                  <span className="text-[10px] font-bold text-primary uppercase tracking-wider">
+                    KaTeX Editor
+                  </span>
+
+                  <Select
+                    value={(block.props.fontSize ?? 18).toString()}
+                    onValueChange={(val) => {
                       editor.updateBlock(block, {
                         type: "math",
-                        props: { ...block.props, size: e.target.value },
+                        props: { ...block.props, fontSize: parseInt(val) },
                       });
                     }}
-                    className="text-xs bg-card border rounded px-2 py-1 outline-none focus:ring-1 focus:ring-primary"
                   >
-                    <option value="0.75em">Small</option>
-                    <option value="1em">Normal</option>
-                    <option value="1.5em">Large</option>
-                    <option value="2em">Extra Large</option>
-                    <option value="2.5em">Huge</option>
-                  </select>
-
+                    <SelectTrigger className="w-[90px] h-7 text-[10px] bg-card" size="sm">
+                      <SelectValue placeholder="Size" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="14" className="text-[10px]">
+                        Small
+                      </SelectItem>
+                      <SelectItem value="18" className="text-[10px]">
+                        Normal
+                      </SelectItem>
+                      <SelectItem value="24" className="text-[10px]">
+                        Medium
+                      </SelectItem>
+                      <SelectItem value="32" className="text-[10px]">
+                        Large
+                      </SelectItem>
+                      <SelectItem value="48" className="text-[10px]">
+                        Extra Large
+                      </SelectItem>
+                      <SelectItem value="64" className="text-[10px]">
+                        Huge
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-1">
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6 text-muted-foreground hover:text-foreground"
+                    className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/20"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setShowEditor(false);
+                      setIsEditing(false);
+                      editor.focus();
                     }}
                     title="Close Editor"
                   >
@@ -92,28 +144,33 @@ export const MathBlock = createReactBlockSpec(
                 onKeyDown={(e) => {
                   // Prevent blocknote from swallowing important keystrokes
                   e.stopPropagation();
+                  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                    setIsEditing(false);
+                    editor.focus();
+                  }
                 }}
-                placeholder="Type your KaTeX equation here..."
-                className="font-mono text-sm min-h-[100px] resize-y bg-card"
+                placeholder="Type your KaTeX equation here... (Ctrl+Enter to finish)"
+                className="font-mono text-sm min-h-[80px] resize-y bg-card border-none focus-visible:ring-0 p-0"
+                autoFocus
               />
             </div>
           )}
+
           <div
-            className={`w-full overflow-x-auto py-0 ${isFocused ? "px-4 pt-4 border-t" : "px-0"}`}
-            style={{
-              fontSize: block.props.size,
-              textAlign:
-                block.props.textAlignment === "left"
-                  ? "left"
-                  : block.props.textAlignment === "right"
-                    ? "right"
-                    : "center",
+            className={`flex justify-center text-center overflow-x-auto transition-all ${
+              isShowingEditor ? "px-4 py-4 border-t bg-background/50" : "px-0 py-1"
+            }`}
+            style={{ fontSize: `${block.props.fontSize ?? 18}px` }}
+            onDoubleClick={() => {
+              if (!isShowingEditor) {
+                setIsEditing(true);
+                editor.setTextCursorPosition(block, "start");
+                editor.focus();
+              }
             }}
           >
             <BlockMath
-              math={block.props.equation}
-              // @ts-ignore - react-katex typings are missing the settings prop but pass it through strictly to katex options
-              settings={{ strict: false }}
+              math={block.props.equation || "\\text{Click edit to add equation}"}
               renderError={(error) => (
                 <span className="text-destructive font-mono text-sm">
                   {error.name}: {error.message}
