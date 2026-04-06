@@ -53,7 +53,7 @@ export const MathBlock = createReactBlockSpec(
           }`}
         >
           {/* Hover Edit Button */}
-          {!isShowingEditor && (
+          {!isShowingEditor && editor.isEditable && (
             <div className="absolute top-1 right-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
               <Button
                 type="button"
@@ -157,18 +157,32 @@ export const MathBlock = createReactBlockSpec(
           )}
 
           <div
-            className={`flex justify-center text-center overflow-x-auto transition-all ${
+            className={`block text-center overflow-x-auto overflow-y-hidden transition-all scrollbar-hide ${
               isShowingEditor ? "px-4 py-4 border-t bg-background/50" : "px-0 py-1"
             }`}
             style={{ fontSize: `${block.props.fontSize ?? 18}px` }}
             onDoubleClick={() => {
-              if (!isShowingEditor) {
+              if (!isShowingEditor && editor.isEditable) {
                 setIsEditing(true);
                 editor.setTextCursorPosition(block, "start");
                 editor.focus();
               }
             }}
           >
+            <style>
+              {`
+                .scrollbar-hide::-webkit-scrollbar {
+                  display: none !important;
+                }
+                .scrollbar-hide {
+                  -ms-overflow-style: none !important;
+                  scrollbar-width: none !important;
+                }
+                .katex-display {
+                  margin: 0 !important;
+                }
+              `}
+            </style>
             <BlockMath
               math={block.props.equation || "\\text{Click edit to add equation}"}
               renderError={(error) => (

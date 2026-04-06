@@ -1,8 +1,7 @@
 import React from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { BookOpen, Layers, Target, CheckCircle2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { BookOpen, Layers, Target } from "lucide-react";
 import { ExamQuestion } from "@/api/exam-questions";
 import { BlockNoteStatic } from "@/components/custom/components";
 import { cn } from "@/lib/utils";
@@ -30,6 +29,7 @@ export function DetailContent({ question }: DetailContentProps) {
             <BlockNoteStatic
               content={question.passage.content}
               className="border-none bg-transparent px-0"
+              editable={false}
             />
           </div>
         )}
@@ -39,7 +39,7 @@ export function DetailContent({ question }: DetailContentProps) {
             <BookOpen className="h-5 w-5 text-primary" />
             {t(($) => $.exam.questions.detail.content.title)}
           </h3>
-          <BlockNoteStatic content={question.content} />
+          <BlockNoteStatic content={question.content} editable={false} />
         </div>
 
         <div className="space-y-4">
@@ -72,6 +72,7 @@ export function DetailContent({ question }: DetailContentProps) {
                   <BlockNoteStatic
                     content={option.content}
                     className="border-none bg-transparent px-0"
+                    editable={false}
                   />
                 </div>
               </div>

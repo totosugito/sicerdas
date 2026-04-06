@@ -37,7 +37,7 @@ export type FormBlockNoteProps = {
   showMessage?: boolean;
 };
 
-import { schema, getEquationSlashMenuItem } from "@/lib/blocknote-config";
+import { schema, getEquationSlashMenuItem } from "./lib/blocknote-config";
 
 export const FormBlockNote = ({
   form,

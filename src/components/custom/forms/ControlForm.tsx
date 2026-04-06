@@ -13,7 +13,9 @@ import { FormCheckbox } from "./FormCheckbox";
 import { cn } from "@/lib/utils";
 import { FormSwitch } from "./FormSwitch";
 const FormBlockNote = React.lazy(() =>
-  import("./FormBlockNote").then((m) => ({ default: m.FormBlockNote })),
+  import("@/components/custom/components/block-note/FormBlockNote").then((m) => ({
+    default: m.FormBlockNote,
+  })),
 );
 
 type Props = {

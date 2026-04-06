@@ -1,7 +1,7 @@
 import React from "react";
 import { BlockNoteSchema, defaultBlockSpecs } from "@blocknote/core";
 import { DefaultReactSuggestionItem } from "@blocknote/react";
-import { MathBlock } from "@/components/custom/components/MathBlock";
+import { MathBlock } from "../MathBlock";
 
 // Define our custom schema with the math block
 export const schema = BlockNoteSchema.create({

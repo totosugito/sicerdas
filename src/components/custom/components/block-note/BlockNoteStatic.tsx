@@ -6,18 +6,20 @@ import { BlockNoteView } from "@blocknote/shadcn";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/lib/theme-provider";
 
-import { schema } from "@/lib/blocknote-config";
+import { schema } from "./lib/blocknote-config";
 
 export type BlockNoteStaticProps = {
   content: any[];
   className?: string;
   minHeight?: string;
+  editable?: boolean;
 };
 
 export const BlockNoteStatic = ({
   content,
   className,
   minHeight = "auto",
+  editable = false,
 }: BlockNoteStaticProps) => {
   const { theme: appTheme } = useTheme();
 
@@ -30,9 +32,31 @@ export const BlockNoteStatic = ({
         }
         .bn-block-content {
           margin-inline-start: 0 !important;
+          width: 100% !important;
         }
         .ProseMirror-trailingBreak {
           display: none !important;
+        }
+        /* KaTeX specific fixes for BlockNote */
+        .katex-display {
+          margin: 0 !important;
+          overflow-x: visible !important;
+          overflow-y: hidden !important;
+        }
+        /* Definitively hide scrollbars in math blocks even when they are compact/fit-content */
+        .bn-editor [data-content-type="math"] * {
+          scrollbar-width: none !important;
+          -ms-overflow-style: none !important;
+        }
+        .bn-editor [data-content-type="math"] *::-webkit-scrollbar {
+          display: none !important;
+        }
+        /* Remove any borders/focus rings when clicking math blocks in static view */
+        .bn-editor [data-content-type="math"] > div {
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+          background: transparent !important;
         }
       `}
     </style>
@@ -67,9 +91,10 @@ export const BlockNoteStatic = ({
       <BlockNoteView
         editor={editor}
         theme={resolvedTheme}
-        editable={false}
+        editable={editable}
         sideMenu={false}
         slashMenu={false}
+        formattingToolbar={false}
       />
     </div>
   );
