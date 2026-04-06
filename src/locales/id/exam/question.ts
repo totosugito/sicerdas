@@ -13,6 +13,8 @@ export default {
       difficulty: "Kesulitan",
       type: "Jenis",
       educationGrade: "Jenjang / Kelas",
+      maxScore: "Skor Maks",
+      scoringStrategy: "Strategi Skor",
       requiredTier: "Tier",
       totalOptions: "Opsi",
       status: "Status",
@@ -72,7 +74,8 @@ export default {
       placeholder: "Pilih Jenis",
       required: "Jenis soal wajib dipilih",
       options: {
-        multiple_choice: "Pilihan Ganda",
+        multiple_choice: "Pilihan Tunggal",
+        multiple_select: "Pilihan Ganda",
         essay: "Esai",
       },
     },
@@ -88,6 +91,21 @@ export default {
     isActive: {
       label: "Status Aktif",
       description: "Soal yang aktif dapat dipilih saat membuat ujian.",
+    },
+    scoringStrategy: {
+      label: "Strategi Penilaian",
+      placeholder: "Pilih Strategi",
+      required: "Strategi penilaian wajib dipilih",
+      options: {
+        all_or_nothing: "Semua / Tidak",
+        partial: "Parsial",
+        partial_with_penalty: "Parsial + Penalti",
+      },
+    },
+    maxScore: {
+      label: "Skor Maksimal",
+      placeholder: "Masukkan skor maksimal",
+      required: "Skor maksimal wajib diisi",
     },
   },
   create: {

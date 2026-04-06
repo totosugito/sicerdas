@@ -1,13 +1,15 @@
 import {
   EnumDifficultyLevel,
   EnumQuestionType,
+  EnumScoringStrategy,
   EnumSolutionType,
 } from "backend/src/db/schema/exam/enums";
 
-export { EnumDifficultyLevel, EnumQuestionType, EnumSolutionType };
+export { EnumDifficultyLevel, EnumQuestionType, EnumScoringStrategy, EnumSolutionType };
 
 export type DifficultyLevel = (typeof EnumDifficultyLevel)[keyof typeof EnumDifficultyLevel];
 export type QuestionType = (typeof EnumQuestionType)[keyof typeof EnumQuestionType];
+export type ScoringStrategy = (typeof EnumScoringStrategy)[keyof typeof EnumScoringStrategy];
 export type SolutionType = (typeof EnumSolutionType)[keyof typeof EnumSolutionType];
 
 export interface VariableFormulas {
@@ -25,6 +27,8 @@ export interface ExamQuestion {
   content: Record<string, unknown>[];
   difficulty: DifficultyLevel;
   type: QuestionType;
+  maxScore: number;
+  scoringStrategy: ScoringStrategy;
   requiredTier: string | null;
   educationGradeId: number | null;
   educationGradeName?: string;
@@ -35,6 +39,7 @@ export interface ExamQuestion {
     id: string;
     content: Record<string, unknown>[];
     isCorrect: boolean;
+    score: number;
     order: number;
   }[];
   solutions?: {
@@ -69,6 +74,8 @@ export type QuestionFormValues = {
   content: Record<string, unknown>[];
   difficulty: DifficultyLevel;
   type: QuestionType;
+  maxScore?: number;
+  scoringStrategy?: ScoringStrategy;
   requiredTier?: string | null;
   educationGradeId?: number | null;
   isActive: boolean;
@@ -81,6 +88,8 @@ export interface JsonQuestionImport {
   content: Record<string, unknown>[];
   difficulty: DifficultyLevel;
   type: QuestionType;
+  maxScore: number;
+  scoringStrategy: ScoringStrategy;
   requiredTier: string;
   isActive: boolean;
   educationGradeId?: number | null;
@@ -88,6 +97,7 @@ export interface JsonQuestionImport {
     id: string;
     content: Record<string, unknown>[];
     isCorrect: boolean;
+    score: number;
     order: number;
   }[];
   solutions: {

@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ExamQuestion, DifficultyLevel, QuestionType } from "../types";
+import { ExamQuestion, DifficultyLevel, QuestionType, ScoringStrategy } from "../types";
 import { PaginationData } from "@/components/custom/table";
 
 export interface ListQuestionRequest {
@@ -9,6 +9,7 @@ export interface ListQuestionRequest {
   subjectId?: string;
   difficulty?: DifficultyLevel;
   type?: QuestionType;
+  scoringStrategy?: ScoringStrategy;
   requiredTier?: string;
   educationGradeId?: number;
   excludePackageId?: string;

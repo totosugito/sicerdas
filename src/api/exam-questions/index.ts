@@ -5,8 +5,10 @@ export {
   type QuestionFormValues,
   type DifficultyLevel,
   type QuestionType,
+  type ScoringStrategy,
   EnumDifficultyLevel,
   EnumQuestionType,
+  EnumScoringStrategy,
 } from "./types";
 export {
   useListQuestion,

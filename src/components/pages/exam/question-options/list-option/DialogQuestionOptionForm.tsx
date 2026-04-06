@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
@@ -19,10 +20,20 @@ export type DialogQuestionOptionFormProps = {
 };
 
 const FormOption = ({ values, form }: any) => {
+  const isCorrect = form.watch("isCorrect");
+  const score = form.watch("score");
+
+  useEffect(() => {
+    if (isCorrect && Number(score) === 0) {
+      form.setValue("score", 1);
+    }
+  }, [isCorrect, score, form]);
+
   return (
     <div className="flex flex-col gap-6 w-full">
       <ControlForm form={form} item={values.content} showMessage={false} />
       <ControlForm form={form} item={values.isCorrect} showMessage={false} />
+      <ControlForm form={form} item={values.score} showMessage={false} />
     </div>
   );
 };
@@ -50,6 +61,13 @@ export const DialogQuestionOptionForm = ({
         message: t(($) => $.labels.required),
       }),
     isCorrect: z.boolean().default(false),
+    score: z
+      .number()
+      .min(
+        0,
+        t(($) => $.exam.options.form.score.required),
+      )
+      .default(0),
   };
 
   const formConfig = {
@@ -66,6 +84,13 @@ export const DialogQuestionOptionForm = ({
       name: "isCorrect",
       label: t(($) => $.exam.options.form.isCorrect.label),
       description: t(($) => $.exam.options.form.isCorrect.description),
+    },
+    score: {
+      type: "number",
+      name: "score",
+      label: t(($) => $.exam.options.form.score.label),
+      placeholder: t(($) => $.exam.options.form.score.placeholder),
+      required: true,
     },
   };
 
@@ -88,6 +113,7 @@ export const DialogQuestionOptionForm = ({
           ? option.content
           : [{ type: "paragraph", content: [] }],
       isCorrect: option?.isCorrect ?? false,
+      score: option?.score ?? 0,
     },
     child: formConfig,
     schema: formSchema,
@@ -101,6 +127,7 @@ export const DialogQuestionOptionForm = ({
             id: option.id,
             content: values.content,
             isCorrect: values.isCorrect,
+            score: values.score,
           },
           {
             onSuccess: (res) => {
@@ -122,6 +149,7 @@ export const DialogQuestionOptionForm = ({
             questionId,
             content: values.content,
             isCorrect: values.isCorrect,
+            score: values.score,
             order: nextOrder || 1,
           },
           {

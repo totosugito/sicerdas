@@ -12,8 +12,10 @@ import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import {
   EnumDifficultyLevel,
   EnumQuestionType,
+  EnumScoringStrategy,
   PgEnumDifficultyLevel,
   PgEnumQuestionType,
+  PgEnumScoringStrategy,
 } from "./enums.ts";
 import { examPassages } from "./passages.ts";
 import { examSubjects } from "./subjects.ts";
@@ -57,6 +59,14 @@ export const examQuestions = pgTable(
 
     // Type of the question (Multiple Choice, Essay, etc.)
     type: PgEnumQuestionType("type").default(EnumQuestionType.MULTIPLE_CHOICE).notNull(),
+
+    // Maximum points achievable for this question
+    maxScore: integer("max_score").default(1).notNull(),
+
+    // Strategy used to calculate the final score (e.g., all or nothing, partial)
+    scoringStrategy: PgEnumScoringStrategy("scoring_strategy")
+      .default(EnumScoringStrategy.ALL_OR_NOTHING)
+      .notNull(),
 
     // Access Gate: Minimum subscription tier required to view this question's details
     requiredTier: varchar("required_tier", { length: 50 })

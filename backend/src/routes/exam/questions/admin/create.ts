@@ -8,7 +8,11 @@ import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { eq } from "drizzle-orm";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import { EnumDifficultyLevel, EnumQuestionType } from "../../../../db/schema/exam/enums.ts";
+import {
+  EnumDifficultyLevel,
+  EnumQuestionType,
+  EnumScoringStrategy,
+} from "../../../../db/schema/exam/enums.ts";
 
 const VariableFormulasType = Type.Optional(
   Type.Object({
@@ -24,6 +28,10 @@ const CreateQuestionBody = Type.Object({
   content: Type.Array(Type.Record(Type.String(), Type.Unknown())), // BlockNote JSON format
   difficulty: Type.Enum(EnumDifficultyLevel, { default: EnumDifficultyLevel.MEDIUM }),
   type: Type.Enum(EnumQuestionType, { default: EnumQuestionType.MULTIPLE_CHOICE }),
+  maxScore: Type.Optional(Type.Integer({ default: 1 })),
+  scoringStrategy: Type.Optional(
+    Type.Enum(EnumScoringStrategy, { default: EnumScoringStrategy.ALL_OR_NOTHING }),
+  ),
   requiredTier: Type.Optional(Type.Union([Type.String(), Type.Null()])),
   educationGradeId: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
   isActive: Type.Optional(Type.Boolean({ default: true })),
@@ -37,6 +45,8 @@ const QuestionResponseItem = Type.Object({
   content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
   difficulty: Type.String(),
   type: Type.String(),
+  maxScore: Type.Integer(),
+  scoringStrategy: Type.String(),
   requiredTier: Type.Union([Type.String(), Type.Null()]),
   educationGradeId: Type.Union([Type.Number(), Type.Null()]),
   isActive: Type.Boolean(),
@@ -81,6 +91,8 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         content,
         difficulty,
         type,
+        maxScore,
+        scoringStrategy,
         requiredTier,
         educationGradeId,
         isActive,
@@ -119,6 +131,8 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
           content,
           difficulty,
           type,
+          maxScore: maxScore ?? 1,
+          scoringStrategy: scoringStrategy ?? EnumScoringStrategy.ALL_OR_NOTHING,
           requiredTier: requiredTier !== undefined ? requiredTier : "free",
           educationGradeId: educationGradeId !== undefined ? educationGradeId : null,
           isActive: isActive !== undefined ? isActive : true,

@@ -8,7 +8,11 @@ import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { eq } from "drizzle-orm";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import { EnumDifficultyLevel, EnumQuestionType } from "../../../../db/schema/exam/enums.ts";
+import {
+  EnumDifficultyLevel,
+  EnumQuestionType,
+  EnumScoringStrategy,
+} from "../../../../db/schema/exam/enums.ts";
 
 const VariableFormulasType = Type.Optional(
   Type.Object({
@@ -28,6 +32,8 @@ const UpdateQuestionBody = Type.Object({
   content: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))),
   difficulty: Type.Optional(Type.Enum(EnumDifficultyLevel)),
   type: Type.Optional(Type.Enum(EnumQuestionType)),
+  maxScore: Type.Optional(Type.Integer()),
+  scoringStrategy: Type.Optional(Type.Enum(EnumScoringStrategy)),
   requiredTier: Type.Optional(Type.Union([Type.String(), Type.Null()])),
   educationGradeId: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
   isActive: Type.Optional(Type.Boolean()),
@@ -41,6 +47,8 @@ const QuestionResponseItem = Type.Object({
   content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
   difficulty: Type.String(),
   type: Type.String(),
+  maxScore: Type.Integer(),
+  scoringStrategy: Type.String(),
   requiredTier: Type.Union([Type.String(), Type.Null()]),
   educationGradeId: Type.Union([Type.Number(), Type.Null()]),
   isActive: Type.Boolean(),
@@ -90,6 +98,8 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         content,
         difficulty,
         type,
+        maxScore,
+        scoringStrategy,
         requiredTier,
         educationGradeId,
         isActive,
@@ -137,6 +147,8 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (content !== undefined) updatePayload.content = content;
       if (difficulty !== undefined) updatePayload.difficulty = difficulty;
       if (type !== undefined) updatePayload.type = type;
+      if (maxScore !== undefined) updatePayload.maxScore = maxScore;
+      if (scoringStrategy !== undefined) updatePayload.scoringStrategy = scoringStrategy;
       if (requiredTier !== undefined) updatePayload.requiredTier = requiredTier;
       if (educationGradeId !== undefined) {
         // Handle null, 0, or empty string as NULL in DB

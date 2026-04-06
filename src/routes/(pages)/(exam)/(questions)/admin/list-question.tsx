@@ -6,6 +6,7 @@ import {
   ListQuestionsResponse,
   EnumDifficultyLevel,
   EnumQuestionType,
+  EnumScoringStrategy,
 } from "@/api/exam-questions";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
@@ -42,6 +43,10 @@ export const Route = createFileRoute("/(pages)/(exam)/(questions)/admin/list-que
       .enum(Object.values(EnumQuestionType) as [string, ...string[]])
       .optional()
       .catch(undefined),
+    scoringStrategy: z
+      .enum(Object.values(EnumScoringStrategy) as [string, ...string[]])
+      .optional()
+      .catch(undefined),
   }),
   component: AdminExamQuestionsPage,
 });
@@ -58,7 +63,7 @@ function AdminExamQuestionsPage() {
   const search = searchParams.search ?? "";
   const sortBy = searchParams.sortBy ?? "updatedAt";
   const sortOrder = searchParams.sortOrder ?? "desc";
-  const { subjectId, difficulty, type } = searchParams;
+  const { subjectId, difficulty, type, scoringStrategy } = searchParams;
 
   // API Hooks
   const { data, isLoading } = useListQuestion({
@@ -70,6 +75,7 @@ function AdminExamQuestionsPage() {
     subjectId,
     difficulty,
     type,
+    scoringStrategy,
   });
 
   const deleteMutation = useDeleteQuestion();

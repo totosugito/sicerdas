@@ -65,7 +65,31 @@ export function DetailInfo({ question }: DetailInfoProps) {
             <p className="font-medium text-lg">
               {t(
                 ($) =>
-                  $.exam.questions.form.type.options[question.type as "multiple_choice" | "essay"],
+                  $.exam.questions.form.type.options[
+                    question.type as "multiple_choice" | "multiple_select" | "essay"
+                  ],
+              )}
+            </p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm text-muted-foreground">
+              {t(($) => $.exam.questions.table.columns.maxScore)}
+            </p>
+            <p className="font-medium text-lg">{question.maxScore ?? 1}</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm text-muted-foreground">
+              {t(($) => $.exam.questions.table.columns.scoringStrategy)}
+            </p>
+            <p className="font-medium text-lg">
+              {t(
+                ($) =>
+                  $.exam.questions.form.scoringStrategy.options[
+                    (question.scoringStrategy || "all_or_nothing") as
+                      | "all_or_nothing"
+                      | "partial"
+                      | "partial_with_penalty"
+                  ],
               )}
             </p>
           </div>

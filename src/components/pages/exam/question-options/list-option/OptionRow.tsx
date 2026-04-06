@@ -91,6 +91,14 @@ export const OptionRow = ({ option, index, onDelete, onEdit }: OptionRowProps) =
               {t(($) => $.exam.options.incorrect)}
             </Badge>
           )}
+          {Number(option.score) > 0 && (
+            <Badge
+              variant="outline"
+              className="h-7 text-primary border-primary/50 border-dashed bg-primary/5"
+            >
+              {option.score} Pts
+            </Badge>
+          )}
           <Button
             size="icon"
             variant="ghost"

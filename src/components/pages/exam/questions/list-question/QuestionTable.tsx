@@ -1,4 +1,4 @@
-import { ExamQuestion, ListQuestionsResponse } from "@/api/exam-questions";
+import { ExamQuestion, ListQuestionsResponse, EnumScoringStrategy } from "@/api/exam-questions";
 import {
   DataTable,
   useDataTable,
@@ -158,6 +158,51 @@ export function QuestionTable({
           <div className="flex justify-center">
             <Badge variant="outline" className="capitalize">
               {type.replace("_", " ")}
+            </Badge>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "maxScore",
+      enableSorting: true,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.exam.questions.table.columns.maxScore)}
+          className="justify-center text-center"
+        />
+      ),
+      cell: ({ row }) => {
+        const value = row.getValue("maxScore") as number;
+        return <div className="flex justify-center font-medium">{value ?? 0}</div>;
+      },
+    },
+    {
+      accessorKey: "scoringStrategy",
+      enableSorting: true,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.exam.questions.table.columns.scoringStrategy)}
+          className="justify-center text-center"
+        />
+      ),
+      cell: ({ row }) => {
+        const strategy = row.getValue("scoringStrategy") as string;
+        if (!strategy) return <div className="flex justify-center">-</div>;
+        return (
+          <div className="flex justify-center">
+            <Badge variant="secondary" className="capitalize">
+              {t(
+                ($) =>
+                  $.exam.questions.form.scoringStrategy.options[
+                    (strategy || "all_or_nothing") as
+                      | "all_or_nothing"
+                      | "partial"
+                      | "partial_with_penalty"
+                  ],
+              )}
             </Badge>
           </div>
         );

@@ -1,6 +1,7 @@
 import React from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { BookOpen, Layers, Target } from "lucide-react";
 import { ExamQuestion } from "@/api/exam-questions";
 import { BlockNoteStatic } from "@/components/custom/components";
@@ -58,15 +59,22 @@ export function DetailContent({ question }: DetailContentProps) {
                     : "bg-background border-border hover:bg-accent/50",
                 )}
               >
-                <div
-                  className={cn(
-                    "flex items-center justify-center w-8 h-8 rounded-full font-bold shrink-0 transition-colors",
-                    option.isCorrect
-                      ? "bg-green-500 dark:bg-green-500 text-white"
-                      : "bg-secondary text-secondary-foreground",
+                <div className="flex flex-col items-center gap-2">
+                  <div
+                    className={cn(
+                      "flex items-center justify-center w-8 h-8 rounded-full font-bold shrink-0 transition-colors",
+                      option.isCorrect
+                        ? "bg-green-500 dark:bg-green-500 text-white"
+                        : "bg-secondary text-secondary-foreground",
+                    )}
+                  >
+                    {getOptionLabel(idx)}
+                  </div>
+                  {Number(option.score) > 0 && (
+                    <Badge variant="outline" className="text-[10px] px-1 h-4 bg-primary/5">
+                      +{option.score}
+                    </Badge>
                   )}
-                >
-                  {getOptionLabel(idx)}
                 </div>
                 <div className="flex-1 pt-1">
                   <BlockNoteStatic

@@ -11,7 +11,12 @@ import { useListSubjectSimple } from "@/api/exam-subjects";
 import { useListPassageSimple } from "@/api/exam-passages";
 import { useListTier } from "@/api/app-tier";
 import { useListGradeSimple } from "@/api/education-grade";
-import { ExamQuestion, EnumDifficultyLevel, EnumQuestionType } from "@/api/exam-questions/types";
+import {
+  ExamQuestion,
+  EnumDifficultyLevel,
+  EnumQuestionType,
+  EnumScoringStrategy,
+} from "@/api/exam-questions/types";
 
 type QuestionSettingsFormProps = {
   defaultValues: any;
@@ -47,6 +52,14 @@ export function QuestionSettingsForm({
     passageId: z.string().nullable().optional(),
     difficulty: z.enum(Object.values(EnumDifficultyLevel) as [string, ...string[]]),
     type: z.enum(Object.values(EnumQuestionType) as [string, ...string[]]),
+    maxScore: z
+      .number()
+      .min(
+        0,
+        t(($) => $.exam.questions.form.maxScore.required),
+      )
+      .default(1),
+    scoringStrategy: z.string().optional(),
     requiredTier: z.string().nullable().optional(),
     educationGradeId: z.union([z.number(), z.string(), z.null()]).optional(),
     isActive: z.boolean().default(true),
@@ -57,13 +70,18 @@ export function QuestionSettingsForm({
     defaultValues: {
       subjectId: defaultValues.subjectId || "",
       passageId: defaultValues.passageId || null,
-      difficulty: defaultValues.difficulty,
-      type: defaultValues.type,
+      difficulty: defaultValues.difficulty || EnumDifficultyLevel.MEDIUM,
+      type: defaultValues.type || EnumQuestionType.MULTIPLE_CHOICE,
+      maxScore: defaultValues.maxScore ?? 1,
+      scoringStrategy: defaultValues.scoringStrategy || EnumScoringStrategy.ALL_OR_NOTHING,
       requiredTier: defaultValues.requiredTier || "free",
       educationGradeId: defaultValues.educationGradeId ?? "",
       isActive: defaultValues.isActive ?? true,
     },
   });
+
+  const type = form.watch("type");
+  const isMultipleChoice = type === EnumQuestionType.MULTIPLE_CHOICE;
 
   const onFormSubmit = (values: any) => {
     // Convert empty string/null for educationGradeId and passageId
@@ -107,7 +125,26 @@ export function QuestionSettingsForm({
       label: t(($) => $.exam.questions.form.type.options.multiple_choice),
       value: EnumQuestionType.MULTIPLE_CHOICE,
     },
+    {
+      label: t(($) => $.exam.questions.form.type.options.multiple_select),
+      value: EnumQuestionType.MULTIPLE_SELECT,
+    },
     { label: t(($) => $.exam.questions.form.type.options.essay), value: EnumQuestionType.ESSAY },
+  ];
+
+  const scoringStrategyOptions = [
+    {
+      label: t(($) => $.exam.questions.form.scoringStrategy.options.all_or_nothing),
+      value: EnumScoringStrategy.ALL_OR_NOTHING,
+    },
+    {
+      label: t(($) => $.exam.questions.form.scoringStrategy.options.partial),
+      value: EnumScoringStrategy.PARTIAL,
+    },
+    {
+      label: t(($) => $.exam.questions.form.scoringStrategy.options.partial_with_penalty),
+      value: EnumScoringStrategy.PARTIAL_WITH_PENALTY,
+    },
   ];
 
   const formConfig = {
@@ -142,6 +179,21 @@ export function QuestionSettingsForm({
       label: t(($) => $.exam.questions.form.type.label),
       placeholder: t(($) => $.exam.questions.form.type.placeholder),
       options: typeOptions,
+    },
+    maxScore: {
+      type: "number",
+      name: "maxScore",
+      label: t(($) => $.exam.questions.form.maxScore.label),
+      placeholder: t(($) => $.exam.questions.form.maxScore.placeholder),
+      required: true,
+    },
+    scoringStrategy: {
+      type: "select",
+      name: "scoringStrategy",
+      label: t(($) => $.exam.questions.form.scoringStrategy.label),
+      placeholder: t(($) => $.exam.questions.form.scoringStrategy.placeholder),
+      options: scoringStrategyOptions,
+      disabled: isMultipleChoice,
     },
     requiredTier: {
       type: "select",
@@ -184,8 +236,12 @@ export function QuestionSettingsForm({
           </div>
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <ControlForm form={form} item={formConfig.difficulty} />
-              <ControlForm form={form} item={formConfig.type} />
+              <ControlForm form={form} item={formConfig.difficulty} showMessage={false} />
+              <ControlForm form={form} item={formConfig.type} showMessage={false} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <ControlForm form={form} item={formConfig.maxScore} showMessage={false} />
+              <ControlForm form={form} item={formConfig.scoringStrategy} showMessage={false} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <ControlForm form={form} item={formConfig.requiredTier} />

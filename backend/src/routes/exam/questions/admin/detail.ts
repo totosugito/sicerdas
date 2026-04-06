@@ -9,6 +9,7 @@ import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import {
   EnumDifficultyLevel,
   EnumQuestionType,
+  EnumScoringStrategy,
   EnumSolutionType,
 } from "../../../../db/schema/exam/enums.ts";
 
@@ -23,6 +24,8 @@ import { examQuestionOptions } from "../../../../db/schema/exam/question-options
 import { examQuestionSolutions } from "../../../../db/schema/exam/question-solutions.ts";
 import { examQuestionTags } from "../../../../db/schema/exam/question-tags.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
+import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
+import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { educationTags } from "../../../../db/schema/education/tags.ts";
 
 const GetQuestionParams = Type.Object({
@@ -32,12 +35,16 @@ const GetQuestionParams = Type.Object({
 const QuestionResponseItem = Type.Object({
   id: Type.String({ format: "uuid" }),
   subjectId: Type.String({ format: "uuid" }),
+  subjectName: Type.String(),
   passageId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
   content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
   difficulty: Type.Enum(EnumDifficultyLevel),
   type: Type.Enum(EnumQuestionType),
+  maxScore: Type.Integer(),
+  scoringStrategy: Type.Enum(EnumScoringStrategy),
   requiredTier: Type.Union([Type.String(), Type.Null()]),
   educationGradeId: Type.Union([Type.Number(), Type.Null()]),
+  educationGradeName: Type.Optional(Type.Union([Type.String(), Type.Null()])),
   isActive: Type.Boolean(),
   variableFormulas: VariableFormulasType,
   createdAt: Type.String({ format: "date-time" }),
@@ -47,6 +54,7 @@ const QuestionResponseItem = Type.Object({
       id: Type.String({ format: "uuid" }),
       content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
       isCorrect: Type.Boolean(),
+      score: Type.Integer(),
       order: Type.Number(),
     }),
   ),
@@ -107,9 +115,30 @@ const getQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       const { t } = getTypedI18n(request);
       const { id } = request.params;
 
-      const question = await db.query.examQuestions.findFirst({
-        where: eq(examQuestions.id, id),
-      });
+      const [question] = await db
+        .select({
+          id: examQuestions.id,
+          subjectId: examQuestions.subjectId,
+          subjectName: examSubjects.name,
+          passageId: examQuestions.passageId,
+          content: examQuestions.content,
+          difficulty: examQuestions.difficulty,
+          type: examQuestions.type,
+          maxScore: examQuestions.maxScore,
+          scoringStrategy: examQuestions.scoringStrategy,
+          requiredTier: examQuestions.requiredTier,
+          educationGradeId: examQuestions.educationGradeId,
+          educationGradeName: educationGrades.name,
+          isActive: examQuestions.isActive,
+          variableFormulas: examQuestions.variableFormulas,
+          createdAt: examQuestions.createdAt,
+          updatedAt: examQuestions.updatedAt,
+        })
+        .from(examQuestions)
+        .innerJoin(examSubjects, eq(examQuestions.subjectId, examSubjects.id))
+        .leftJoin(educationGrades, eq(examQuestions.educationGradeId, educationGrades.id))
+        .where(eq(examQuestions.id, id))
+        .limit(1);
 
       if (!question) {
         return reply.notFound(t(($) => $.exam.questions.update.notFound));
@@ -121,6 +150,7 @@ const getQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
           id: examQuestionOptions.id,
           content: examQuestionOptions.content,
           isCorrect: examQuestionOptions.isCorrect,
+          score: examQuestionOptions.score,
           order: examQuestionOptions.order,
         })
         .from(examQuestionOptions)
