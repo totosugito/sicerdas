@@ -79,6 +79,8 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
         orderToUse = currentTotal + 1;
       }
 
+      const userId = request.session.user.id;
+
       const [newSection] = await db
         .insert(examPackageSections)
         .values({
@@ -90,6 +92,7 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
           order: orderToUse,
           isActive: isActive ?? true,
           versionId,
+          createdByUserId: userId,
         })
         .returning({ id: examPackageSections.id });
 

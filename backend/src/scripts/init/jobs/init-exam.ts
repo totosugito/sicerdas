@@ -6,6 +6,7 @@ import * as schema from "../../../db/schema/index.ts";
 import dotenv from "dotenv";
 import { educationCategories, educationTags } from "../../../db/schema/education/index.ts";
 import { examSubjects } from "../../../db/schema/exam/index.ts";
+import { users } from "../../../db/schema/user/index.ts";
 
 dotenv.config({ path: process.env.NODE_ENV === "development" ? ".env.devel" : ".env" });
 
@@ -18,15 +19,41 @@ export default async function seed() {
   try {
     const db = drizzle({ client: pool, schema });
 
+    // 0. Get Admin User for createdByUserId
+    const adminEmail = process.env.ADMIN_DEFAULT_EMAIL;
+    if (!adminEmail) {
+      throw new Error("ADMIN_DEFAULT_EMAIL is not defined in environment variables.");
+    }
+
+    const adminUser = await db.query.users.findFirst({
+      where: eq(users.email, adminEmail.toLowerCase()),
+    });
+
+    if (!adminUser) {
+      console.warn(
+        `Admin user with email ${adminEmail} not found. Skipping createdByUserId assignment.`,
+      );
+    }
+
+    const adminId = adminUser?.id;
+
     // 1. Initialize Categories
     const categoriesData = [
-      { name: "Ujian Semester", description: "Persiapan ujian semester" },
-      { name: "Kuis Mata Pelajaran", description: "Kuis khusus mata pelajaran" },
-      { name: "Ujian Nasional", description: "Latihan ujian nasional" },
-      { name: "UTBK", description: "Latihan tes berbasis komputer" },
-      { name: "CPNS", description: "Persiapan ujian calon pegawai negeri sipil" },
-      { name: "UMPTN", description: "Latihan ujian masuk perguruan tinggi" },
-    ];
+      { name: "Ujian Semester", key: "ujian-semester", description: "Persiapan ujian semester" },
+      {
+        name: "Kuis Mata Pelajaran",
+        key: "kuis-mata-pelajaran",
+        description: "Kuis khusus mata pelajaran",
+      },
+      { name: "Ujian Nasional", key: "ujian-nasional", description: "Latihan ujian nasional" },
+      { name: "UTBK", key: "utbk", description: "Latihan tes berbasis komputer" },
+      { name: "CPNS", key: "cpns", description: "Persiapan ujian calon pegawai negeri sipil" },
+      { name: "UMPTN", key: "umptn", description: "Latihan ujian masuk perguruan tinggi" },
+      { name: "TKA", key: "tka", description: "Tes Kemampuan Akademik" },
+      { name: "TPA", key: "tpa", description: "Tes Potensi Akademik" },
+      { name: "Try Out", key: "try-out", description: "Latihan ujian" },
+      { name: "Latihan Soal", key: "latihan-soal", description: "Latihan soal" },
+    ].map((c) => ({ ...c, createdByUserId: adminId }));
 
     for (const category of categoriesData) {
       const existingCategory = await db
@@ -40,7 +67,11 @@ export default async function seed() {
       } else {
         await db
           .update(educationCategories)
-          .set({ description: category.description })
+          .set({
+            description: category.description,
+            key: category.key,
+            createdByUserId: category.createdByUserId,
+          })
           .where(eq(educationCategories.name, category.name));
       }
     }
@@ -63,7 +94,7 @@ export default async function seed() {
         name: "Berpikir Kritis",
         description: "Mengevaluasi informasi dan argumen secara sistematis",
       },
-    ];
+    ].map((t) => ({ ...t, createdByUserId: adminId }));
 
     for (const tag of tagsData) {
       const existingTag = await db
@@ -77,7 +108,10 @@ export default async function seed() {
       } else {
         await db
           .update(educationTags)
-          .set({ description: tag.description })
+          .set({
+            description: tag.description,
+            createdByUserId: tag.createdByUserId,
+          })
           .where(eq(educationTags.name, tag.name));
       }
     }
@@ -153,7 +187,7 @@ export default async function seed() {
         name: "Kemampuan Dasar (KD)",
         description: "Tes pengukuran bakat dasar keilmuan yang luas.",
       },
-    ];
+    ].map((s) => ({ ...s, createdByUserId: adminId }));
 
     for (const subject of subjectsData) {
       const existingSubject = await db
@@ -167,7 +201,10 @@ export default async function seed() {
       } else {
         await db
           .update(examSubjects)
-          .set({ description: subject.description })
+          .set({
+            description: subject.description,
+            createdByUserId: subject.createdByUserId,
+          })
           .where(eq(examSubjects.name, subject.name));
       }
     }

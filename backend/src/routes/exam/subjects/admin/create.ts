@@ -1,85 +1,91 @@
-import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import type { FastifyReply, FastifyRequest } from 'fastify';
-import { Type } from '@sinclair/typebox';
-import { db } from '../../../../db/db-pool.ts';
-import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
-import { eq } from 'drizzle-orm';
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { Type } from "@sinclair/typebox";
+import { db } from "../../../../db/db-pool.ts";
+import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
+import { eq } from "drizzle-orm";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const CreateSubjectBody = Type.Object({
-    name: Type.String({ minLength: 1 }),
-    description: Type.Optional(Type.String()),
-    isActive: Type.Optional(Type.Boolean({ default: true })),
+  name: Type.String({ minLength: 1 }),
+  description: Type.Optional(Type.String()),
+  isActive: Type.Optional(Type.Boolean({ default: true })),
 });
 
 const SubjectResponseItem = Type.Object({
-    id: Type.String({ format: 'uuid' }),
-    name: Type.String(),
-    description: Type.Union([Type.String(), Type.Null()]),
-    isActive: Type.Boolean(),
-    createdAt: Type.String({ format: 'date-time' }),
-    updatedAt: Type.String({ format: 'date-time' }),
+  id: Type.String({ format: "uuid" }),
+  name: Type.String(),
+  description: Type.Union([Type.String(), Type.Null()]),
+  isActive: Type.Boolean(),
+  createdAt: Type.String({ format: "date-time" }),
+  updatedAt: Type.String({ format: "date-time" }),
 });
 
 const CreateSubjectResponse = Type.Object({
-    success: Type.Boolean(),
-    message: Type.String(),
-    data: SubjectResponseItem,
+  success: Type.Boolean(),
+  message: Type.String(),
+  data: SubjectResponseItem,
 });
 
 const createSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
-    app.route({
-        url: '/create',
-        method: 'POST',
-        schema: {
-            tags: ['Admin Exam Subjects'],
-            body: CreateSubjectBody,
-            response: {
-                201: CreateSubjectResponse,
-                '4xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                }),
-                '5xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                })
-            }
-        },
-        handler: withErrorHandler(async function handler(
-            request: FastifyRequest<{ Body: typeof CreateSubjectBody.static }>,
-            reply: FastifyReply
-        ) {
-            const { t } = getTypedI18n(request);
-            const { name, description, isActive } = request.body;
-
-            // Check if name already exists
-            const existingSubject = await db.query.examSubjects.findFirst({
-                where: eq(examSubjects.name, name)
-            });
-
-            if (existingSubject) {
-                return reply.badRequest(t($ => $.exam.subjects.create.exists));
-            }
-
-            const [newSubject] = await db.insert(examSubjects).values({
-                name,
-                description,
-                isActive: isActive ?? true,
-            }).returning();
-
-            return reply.status(201).send({
-                success: true,
-                message: t($ => $.exam.subjects.create.success),
-                data: {
-                    ...newSubject,
-                    createdAt: newSubject.createdAt.toISOString(),
-                    updatedAt: newSubject.updatedAt.toISOString(),
-                }
-            });
+  app.route({
+    url: "/create",
+    method: "POST",
+    schema: {
+      tags: ["Admin Exam Subjects"],
+      body: CreateSubjectBody,
+      response: {
+        201: CreateSubjectResponse,
+        "4xx": Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String(),
         }),
-    });
+        "5xx": Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String(),
+        }),
+      },
+    },
+    handler: withErrorHandler(async function handler(
+      request: FastifyRequest<{ Body: typeof CreateSubjectBody.static }>,
+      reply: FastifyReply,
+    ) {
+      const { t } = getTypedI18n(request);
+      const { name, description, isActive } = request.body;
+
+      // Check if name already exists
+      const existingSubject = await db.query.examSubjects.findFirst({
+        where: eq(examSubjects.name, name),
+      });
+
+      if (existingSubject) {
+        return reply.badRequest(t(($) => $.exam.subjects.create.exists));
+      }
+
+      const userId = request.session.user.id;
+
+      const [newSubject] = await db
+        .insert(examSubjects)
+        .values({
+          name,
+          description,
+          isActive: isActive ?? true,
+          createdByUserId: userId,
+        })
+        .returning();
+
+      return reply.status(201).send({
+        success: true,
+        message: t(($) => $.exam.subjects.create.success),
+        data: {
+          ...newSubject,
+          createdAt: newSubject.createdAt.toISOString(),
+          updatedAt: newSubject.updatedAt.toISOString(),
+        },
+      });
+    }),
+  });
 };
 
 export default createSubjectRoute;

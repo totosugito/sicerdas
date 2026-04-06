@@ -1,14 +1,14 @@
-import { pgTable, varchar, timestamp, uuid, boolean, jsonb, index } from 'drizzle-orm/pg-core';
-import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { users } from '../user/users.ts';
-import { aiSessions } from './sessions.ts';
+import { pgTable, varchar, timestamp, uuid, boolean, jsonb, index } from "drizzle-orm/pg-core";
+import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
+import { users } from "../user/users.ts";
+import { aiSessions } from "./sessions.ts";
 
 /**
  * Table: ai_shares
- * 
+ *
  * This table stores information about shared AI chat sessions.
  * It enables read-only access to chat sessions for users who have the share link.
- * 
+ *
  * Fields:
  * - id: Unique identifier for the share record
  * - sessionId: ID of the chat session being shared
@@ -19,38 +19,41 @@ import { aiSessions } from './sessions.ts';
  * - createdAt: When the share was created
  * - isActive: Whether the share link is active or disabled
  */
-export const aiShares = pgTable('ai_shares', {
+export const aiShares = pgTable(
+  "ai_shares",
+  {
     id: uuid().primaryKey().notNull().defaultRandom(),
 
     // Reference to the chat session being shared
-    sessionId: uuid('session_id')
-        .notNull()
-        .references(() => aiSessions.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+    sessionId: uuid("session_id")
+      .notNull()
+      .references(() => aiSessions.id, { onDelete: "cascade", onUpdate: "cascade" }),
 
     // Unique token for accessing the shared session
-    shareToken: varchar('share_token', { length: 255 }).notNull().unique(),
+    shareToken: varchar("share_token", { length: 255 }).notNull().unique(),
 
     // User who created the share
-    createdBy: uuid('created_by')
-        .notNull()
-        .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+    createdByUserId: uuid("created_by_user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
 
     // Flexible data storage
-    extra: jsonb("extra")
-        .$type<Record<string, unknown>>()
-        .default({}),
+    extra: jsonb("extra").$type<Record<string, unknown>>().default({}),
 
     // Optional expiration for the share link
-    expiresAt: timestamp('expires_at', { withTimezone: true }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
 
     // Timestamps
-    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 
     // Share status
-    isActive: boolean('is_active').notNull().default(true),
-}, (table) => [
-    index('ai_shares_session_id_idx').on(table.sessionId),
-]);
+    isActive: boolean("is_active").notNull().default(true),
+  },
+  (table) => [
+    index("ai_shares_session_id_idx").on(table.sessionId),
+    index("ai_shares_creator_idx").on(table.createdByUserId),
+  ],
+);
 
 export type SchemaAiShareSelect = InferSelectModel<typeof aiShares>;
 export type SchemaAiShareInsert = InferInsertModel<typeof aiShares>;

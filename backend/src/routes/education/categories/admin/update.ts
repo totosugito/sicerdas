@@ -1,107 +1,124 @@
-import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import type { FastifyReply, FastifyRequest } from 'fastify';
-import { Type } from '@sinclair/typebox';
-import { db } from '../../../../db/db-pool.ts';
-import { educationCategories } from '../../../../db/schema/education/categories.ts';
-import { eq, and, ne } from 'drizzle-orm';
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { Type } from "@sinclair/typebox";
+import { db } from "../../../../db/db-pool.ts";
+import { educationCategories } from "../../../../db/schema/education/categories.ts";
+import { eq, and, ne } from "drizzle-orm";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
+import { stringToKey } from "../../../../utils/my-utils.ts";
 
 const UpdateCategoryParams = Type.Object({
-    id: Type.String({ format: 'uuid' })
+  id: Type.String({ format: "uuid" }),
 });
 
 const UpdateCategoryBody = Type.Object({
-    name: Type.String({ minLength: 1 }),
-    description: Type.Optional(Type.String()),
-    isActive: Type.Optional(Type.Boolean()),
+  name: Type.String({ minLength: 1 }),
+  key: Type.Optional(Type.String({ minLength: 1 })),
+  description: Type.Optional(Type.String()),
+  isActive: Type.Optional(Type.Boolean()),
 });
 
 const CategoryResponseItem = Type.Object({
-    id: Type.String({ format: 'uuid' }),
-    name: Type.String(),
-    description: Type.Union([Type.String(), Type.Null()]),
-    isActive: Type.Boolean(),
-    createdAt: Type.String({ format: 'date-time' }),
-    updatedAt: Type.String({ format: 'date-time' }),
+  id: Type.String({ format: "uuid" }),
+  name: Type.String(),
+  description: Type.Union([Type.String(), Type.Null()]),
+  isActive: Type.Boolean(),
+  createdAt: Type.String({ format: "date-time" }),
+  updatedAt: Type.String({ format: "date-time" }),
 });
 
 const UpdateCategoryResponse = Type.Object({
-    success: Type.Boolean(),
-    message: Type.String(),
-    data: CategoryResponseItem,
+  success: Type.Boolean(),
+  message: Type.String(),
+  data: CategoryResponseItem,
 });
 
 const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
-    app.route({
-        url: '/update/:id',
-        method: 'PUT',
-        schema: {
-            tags: ['Admin Exam Categories'],
-            params: UpdateCategoryParams,
-            body: UpdateCategoryBody,
-            response: {
-                200: UpdateCategoryResponse,
-                '4xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                }),
-                '5xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                })
-            }
-        },
-        handler: withErrorHandler(async function handler(
-            request: FastifyRequest<{ Params: typeof UpdateCategoryParams.static, Body: typeof UpdateCategoryBody.static }>,
-            reply: FastifyReply
-        ) {
-            const { t } = getTypedI18n(request);
-            const { id } = request.params;
-            const { name, description, isActive } = request.body;
-
-            // Ensure category exists
-            const existingCategory = await db.query.educationCategories.findFirst({
-                where: eq(educationCategories.id, id)
-            });
-
-            if (!existingCategory) {
-                return reply.notFound(t($ => $.education.categories.update.notFound));
-            }
-
-            // Check if new name conflicts with another existing category
-            const nameConflict = await db.query.educationCategories.findFirst({
-                where: and(
-                    eq(educationCategories.name, name),
-                    ne(educationCategories.id, id)
-                )
-            });
-
-            if (nameConflict) {
-                return reply.badRequest(t($ => $.education.categories.update.exists));
-            }
-
-            const [updatedCategory] = await db.update(educationCategories)
-                .set({
-                    name,
-                    description,
-                    isActive,
-                    updatedAt: new Date()
-                })
-                .where(eq(educationCategories.id, id))
-                .returning();
-
-            return reply.status(200).send({
-                success: true,
-                message: t($ => $.education.categories.update.success),
-                data: {
-                    ...updatedCategory,
-                    createdAt: updatedCategory.createdAt.toISOString(),
-                    updatedAt: updatedCategory.updatedAt.toISOString(),
-                }
-            });
+  app.route({
+    url: "/update/:id",
+    method: "PUT",
+    schema: {
+      tags: ["Admin Exam Categories"],
+      params: UpdateCategoryParams,
+      body: UpdateCategoryBody,
+      response: {
+        200: UpdateCategoryResponse,
+        "4xx": Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String(),
         }),
-    });
+        "5xx": Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String(),
+        }),
+      },
+    },
+    handler: withErrorHandler(async function handler(
+      request: FastifyRequest<{
+        Params: typeof UpdateCategoryParams.static;
+        Body: typeof UpdateCategoryBody.static;
+      }>,
+      reply: FastifyReply,
+    ) {
+      const { t } = getTypedI18n(request);
+      const { id } = request.params;
+      const { name, key, description, isActive } = request.body;
+
+      // Ensure category exists
+      const existingCategory = await db.query.educationCategories.findFirst({
+        where: eq(educationCategories.id, id),
+      });
+
+      if (!existingCategory) {
+        return reply.notFound(t(($) => $.education.categories.update.notFound));
+      }
+
+      // Determine the key to use
+      const categoryKey =
+        key || (name !== existingCategory.name ? stringToKey(name) : existingCategory.key);
+
+      // Check if new name conflicts with another existing category
+      const nameConflict = await db.query.educationCategories.findFirst({
+        where: and(eq(educationCategories.name, name), ne(educationCategories.id, id)),
+      });
+
+      if (nameConflict) {
+        return reply.badRequest(t(($) => $.education.categories.update.exists));
+      }
+
+      // Check if new key conflicts
+      const keyConflict = await db.query.educationCategories.findFirst({
+        where: and(eq(educationCategories.key, categoryKey), ne(educationCategories.id, id)),
+      });
+
+      if (keyConflict) {
+        return reply.badRequest(t(($) => $.education.categories.update.exists));
+      }
+
+      const [updatedCategory] = await db
+        .update(educationCategories)
+        .set({
+          name,
+          key: categoryKey,
+          description,
+          isActive,
+          updatedAt: new Date(),
+        })
+        .where(eq(educationCategories.id, id))
+        .returning();
+
+      return reply.status(200).send({
+        success: true,
+        message: t(($) => $.education.categories.update.success),
+        data: {
+          ...updatedCategory,
+          createdAt: updatedCategory.createdAt.toISOString(),
+          updatedAt: updatedCategory.updatedAt.toISOString(),
+        },
+      });
+    }),
+  });
 };
 
 export default updateCategoryRoute;

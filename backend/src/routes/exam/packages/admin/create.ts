@@ -7,8 +7,6 @@ import { educationCategories } from "../../../../db/schema/education/categories.
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
-import { fromNodeHeaders } from "better-auth/node";
-import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
 import { eq } from "drizzle-orm";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
@@ -88,10 +86,7 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
         }
       }
 
-      const session = await getAuthInstance(app).api.getSession({
-        headers: fromNodeHeaders(request.headers),
-      });
-      const user = session?.user;
+      const userId = request.session.user.id;
 
       const [newPackage] = await db
         .insert(examPackages)
@@ -105,7 +100,7 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
           educationGradeId,
           isActive: isActive ?? true,
           versionId,
-          createdByUserId: user?.id,
+          createdByUserId: userId,
         })
         .returning({ id: examPackages.id });
 

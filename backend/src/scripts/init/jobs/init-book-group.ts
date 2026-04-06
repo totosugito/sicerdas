@@ -6,6 +6,7 @@ import * as schema from "../../../db/schema/index.ts";
 import dotenv from "dotenv";
 import { bookCategory, bookGroup } from "../../../db/schema/book/index.ts";
 import { educationGrades } from "../../../db/schema/education/index.ts";
+import { users } from "../../../db/schema/user/index.ts";
 import { EnumContentType, EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
 dotenv.config({ path: process.env.NODE_ENV === "development" ? ".env.devel" : ".env" });
@@ -18,6 +19,24 @@ export default async function seed() {
 
   try {
     const db = drizzle({ client: pool, schema });
+
+    // 0. Get Admin User for createdByUserId
+    const adminEmail = process.env.ADMIN_DEFAULT_EMAIL;
+    if (!adminEmail) {
+      throw new Error("ADMIN_DEFAULT_EMAIL is not defined in environment variables.");
+    }
+
+    const adminUser = await db.query.users.findFirst({
+      where: eq(users.email, adminEmail.toLowerCase()),
+    });
+
+    if (!adminUser) {
+      console.warn(
+        `Admin user with email ${adminEmail} not found. Skipping createdByUserId assignment.`,
+      );
+    }
+
+    const adminId = adminUser?.id;
 
     const versionId = 1;
     const versionData_ = [
@@ -55,33 +74,33 @@ export default async function seed() {
 
     // default data for education grade
     const educationGrades_ = [
-      { id: 1, versionId: versionId, grade: "1", name: "SD-1" },
-      { id: 2, versionId: versionId, grade: "2", name: "SD-2" },
-      { id: 3, versionId: versionId, grade: "3", name: "SD-3" },
-      { id: 4, versionId: versionId, grade: "4", name: "SD-4" },
-      { id: 5, versionId: versionId, grade: "5", name: "SD-5" },
-      { id: 6, versionId: versionId, grade: "6", name: "SD-6" },
-      { id: 7, versionId: versionId, grade: "7", name: "SMP-7" },
-      { id: 8, versionId: versionId, grade: "8", name: "SMP-8" },
-      { id: 9, versionId: versionId, grade: "9", name: "SMP-9" },
-      { id: 10, versionId: versionId, grade: "10", name: "SMA-10" },
-      { id: 11, versionId: versionId, grade: "11", name: "SMA-11" },
-      { id: 12, versionId: versionId, grade: "12", name: "SMA-12" },
-      { id: 13, versionId: versionId, grade: "preschool", name: "Pra Sekolah" },
-      { id: 14, versionId: versionId, grade: "paud", name: "PAUD" },
-      { id: 15, versionId: versionId, grade: "empty", name: "Umum" },
-      { id: 16, versionId: versionId, grade: "level_1", name: "Level 1" },
-      { id: 17, versionId: versionId, grade: "level_2", name: "Level 2" },
-      { id: 18, versionId: versionId, grade: "level_3", name: "Level 3" },
-      { id: 19, versionId: versionId, grade: "level_4", name: "Level 4" },
-      { id: 20, versionId: versionId, grade: "sd", name: "SD" },
-      { id: 21, versionId: versionId, grade: "smp", name: "SMP" },
-      { id: 22, versionId: versionId, grade: "sma", name: "SMA" },
-      { id: 23, versionId: versionId, grade: "smk", name: "SMK" },
-      { id: 24, versionId: versionId, grade: "sd_smp", name: "SD/SMP" },
-      { id: 25, versionId: versionId, grade: "sd_123", name: "SD 1-3" },
-      { id: 26, versionId: versionId, grade: "sd_456", name: "SD 4-6" },
-    ];
+      { id: 1, grade: "1", name: "SD-1" },
+      { id: 2, grade: "2", name: "SD-2" },
+      { id: 3, grade: "3", name: "SD-3" },
+      { id: 4, grade: "4", name: "SD-4" },
+      { id: 5, grade: "5", name: "SD-5" },
+      { id: 6, grade: "6", name: "SD-6" },
+      { id: 7, grade: "7", name: "SMP-7" },
+      { id: 8, grade: "8", name: "SMP-8" },
+      { id: 9, grade: "9", name: "SMP-9" },
+      { id: 10, grade: "10", name: "SMA-10" },
+      { id: 11, grade: "11", name: "SMA-11" },
+      { id: 12, grade: "12", name: "SMA-12" },
+      { id: 13, grade: "preschool", name: "Pra Sekolah" },
+      { id: 14, grade: "paud", name: "PAUD" },
+      { id: 15, grade: "empty", name: "Umum" },
+      { id: 16, grade: "level_1", name: "Level 1" },
+      { id: 17, grade: "level_2", name: "Level 2" },
+      { id: 18, grade: "level_3", name: "Level 3" },
+      { id: 19, grade: "level_4", name: "Level 4" },
+      { id: 20, grade: "sd", name: "SD" },
+      { id: 21, grade: "smp", name: "SMP" },
+      { id: 22, grade: "sma", name: "SMA" },
+      { id: 23, grade: "smk", name: "SMK" },
+      { id: 24, grade: "sd_smp", name: "SD/SMP" },
+      { id: 25, grade: "sd_123", name: "SD 1-3" },
+      { id: 26, grade: "sd_456", name: "SD 4-6" },
+    ].map((g) => ({ ...g, createdByUserId: adminId }));
 
     // default data for books category
     const bookCategories_ = [
@@ -332,7 +351,14 @@ export default async function seed() {
       if (!gradeExists) {
         await db.insert(educationGrades).values(grade);
       } else {
-        await db.update(educationGrades).set(grade).where(eq(educationGrades.id, grade.id));
+        await db
+          .update(educationGrades)
+          .set({
+            name: grade.name,
+            grade: grade.grade,
+            createdByUserId: grade.createdByUserId,
+          })
+          .where(eq(educationGrades.id, grade.id));
       }
     }
 

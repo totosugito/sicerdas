@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import { examPackages } from "./packages.ts";
+import { users } from "../user/users.ts";
 import { appVersion } from "../app/app-version.ts";
 
 /**
@@ -44,6 +45,11 @@ export const examPackageSections = pgTable(
     // Sorting order within the package
     order: integer("order").default(1).notNull(),
 
+    // Tracks the user who created this section
+    createdByUserId: uuid("created_by_user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+
     // Soft delete / hide flag
     isActive: boolean("is_active").default(true).notNull(),
 
@@ -59,6 +65,7 @@ export const examPackageSections = pgTable(
   (table) => [
     index("exam_package_sections_version_id_idx").on(table.versionId),
     index("exam_package_sections_package_id_idx").on(table.packageId),
+    index("exam_package_sections_creator_idx").on(table.createdByUserId),
   ],
 );
 
