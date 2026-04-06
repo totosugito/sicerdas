@@ -65,7 +65,7 @@ export const FormBlockNote = ({
     <style>
       {`
         .bn-editor {
-          padding-inline: 54px 12px !important;
+          padding-inline: 54px 10px !important;
         }
         .bn-block-content {
           margin-inline-start: 0 !important;
