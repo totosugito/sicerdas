@@ -76,12 +76,12 @@ export const MathBlock = createReactBlockSpec(
 
           {isShowingEditor && (
             <div className="flex flex-col p-3 space-y-3 animate-in fade-in slide-in-from-top-1 duration-200">
-              <div className="flex justify-between items-center border-b pb-2">
-                <div className="flex items-center gap-4">
-                  <span className="text-[10px] font-bold text-primary uppercase tracking-wider">
-                    KaTeX Editor
-                  </span>
+              <div className="flex flex-row justify-between items-center border-b pb-2 gap-8">
+                <span className="text-[10px] font-bold text-primary uppercase tracking-wider">
+                  KaTeX Editor
+                </span>
 
+                <div className="flex flex-row gap-4">
                   <Select
                     value={(block.props.fontSize ?? 18).toString()}
                     onValueChange={(val) => {
@@ -115,8 +115,6 @@ export const MathBlock = createReactBlockSpec(
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-                <div className="flex items-center gap-1">
                   <Button
                     type="button"
                     variant="ghost"

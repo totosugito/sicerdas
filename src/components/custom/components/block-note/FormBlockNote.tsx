@@ -64,10 +64,12 @@ export const FormBlockNote = ({
   const styleTag = (
     <style>
       {`
+        .bn-editor {
+          padding-inline: 54px 12px !important;
+        }
         .bn-block-content {
           margin-inline-start: 0 !important;
         }
-
       `}
     </style>
   );
