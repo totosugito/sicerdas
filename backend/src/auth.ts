@@ -1,16 +1,16 @@
-import { betterAuth } from 'better-auth';
-import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { admin, openAPI, emailOTP, multiSession, customSession } from 'better-auth/plugins';
-import { db } from './db/db-pool.ts';
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { admin, openAPI, emailOTP, multiSession, customSession } from "better-auth/plugins";
+import { db } from "./db/db-pool.ts";
 import envConfig from "./config/env.config.ts";
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // Brevo email client
-import { BrevoClient } from '@getbrevo/brevo';
-import { getUserAvatarUrl } from './utils/app-utils.ts';
-import { eq } from 'drizzle-orm';
+import { BrevoClient } from "@getbrevo/brevo";
+import { getUserAvatarUrl } from "./utils/user-utils.ts";
+import { eq } from "drizzle-orm";
 
 // Initialize Brevo API client if API key is provided
 let brevo: BrevoClient | null = null;
@@ -26,13 +26,13 @@ const __dirname = path.dirname(__filename);
 
 const auth = betterAuth({
   database: drizzleAdapter(db, {
-    provider: 'pg',
+    provider: "pg",
     usePlural: true,
   }),
   plugins: [
     admin(),
     openAPI({
-      path: '/docs',
+      path: "/docs",
     }),
     customSession(async ({ user, session }) => {
       // get user role from database
@@ -43,10 +43,10 @@ const auth = betterAuth({
       return {
         user: {
           ...user,
-          role: userRecord?.role || 'user',
-          image: getUserAvatarUrl(user.image),
+          role: userRecord?.role || "user",
+          image: getUserAvatarUrl(user.id, user.image),
         },
-        session
+        session,
       };
     }),
     multiSession(),
@@ -62,37 +62,39 @@ const auth = betterAuth({
           // Send the OTP for password reset
           // Only send email if Brevo is configured
           if (!brevo) {
-            console.warn('Brevo API key not configured. Skipping email sending.');
+            console.warn("Brevo API key not configured. Skipping email sending.");
             return Promise.resolve();
           }
 
           try {
             // Read the email template
-            const templatePath = path.join(__dirname, 'templates', 'reset-password-otp.html');
-            let htmlContent = fs.readFileSync(templatePath, 'utf8');
+            const templatePath = path.join(__dirname, "templates", "reset-password-otp.html");
+            let htmlContent = fs.readFileSync(templatePath, "utf8");
 
             // Replace placeholders with actual values
             htmlContent = htmlContent
-              .replace(/{{name}}/g, email.split('@')[0]) // Using email prefix as name
+              .replace(/{{name}}/g, email.split("@")[0]) // Using email prefix as name
               .replace(/{{email}}/g, email)
               .replace(/{{otp}}/g, otp)
               .replace(/{{year}}/g, new Date().getFullYear().toString());
 
             // Send email
             await brevo.transactionalEmails.sendTransacEmail({
-              subject: 'Kode OTP Reset Kata Sandi',
+              subject: "Kode OTP Reset Kata Sandi",
               htmlContent: htmlContent,
               sender: {
-                name: 'SiCerdas No-Reply',
-                email: 'no-reply@sicerdas.com'
+                name: "SiCerdas No-Reply",
+                email: "no-reply@sicerdas.com",
               },
-              to: [{
-                email: email,
-                name: email.split('@')[0],
-              }]
+              to: [
+                {
+                  email: email,
+                  name: email.split("@")[0],
+                },
+              ],
             });
           } catch (error) {
-            console.error('Failed to send password reset OTP email:', error);
+            console.error("Failed to send password reset OTP email:", error);
             // We don't reject the promise as we don't want to break the auth flow
           }
         }
@@ -124,14 +126,14 @@ const auth = betterAuth({
     sendResetPassword: async ({ user, url, token }, request) => {
       // Only send email if Brevo is configured
       if (!brevo) {
-        console.warn('Brevo API key not configured. Skipping email sending.');
+        console.warn("Brevo API key not configured. Skipping email sending.");
         return Promise.resolve();
       }
 
       try {
         // Read the email template
-        const templatePath = path.join(__dirname, 'templates', 'request-password-reset.html');
-        let htmlContent = fs.readFileSync(templatePath, 'utf8');
+        const templatePath = path.join(__dirname, "templates", "request-password-reset.html");
+        let htmlContent = fs.readFileSync(templatePath, "utf8");
 
         // Replace placeholders with actual values
         htmlContent = htmlContent
@@ -142,20 +144,22 @@ const auth = betterAuth({
 
         // Send email
         await brevo.transactionalEmails.sendTransacEmail({
-          subject: 'Reset Password',
+          subject: "Reset Password",
           htmlContent: htmlContent,
           sender: {
-            name: 'SiCerdas No-Reply', // envConfig.email.noReply.name,
-            email: 'no-reply@sicerdas.com' //envConfig.email.noReply.email
+            name: "SiCerdas No-Reply", // envConfig.email.noReply.name,
+            email: "no-reply@sicerdas.com", //envConfig.email.noReply.email
           },
-          to: [{
-            email: user.email,
-            name: user.name || user.email,
-          }]
+          to: [
+            {
+              email: user.email,
+              name: user.name || user.email,
+            },
+          ],
         });
         // console.info(`Password reset email sent to ${user.email}`);
       } catch (error) {
-        console.error('Failed to send password reset email:', error);
+        console.error("Failed to send password reset email:", error);
         // We don't reject the promise as we don't want to break the auth flow
       }
     },

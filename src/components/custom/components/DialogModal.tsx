@@ -1,272 +1,274 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useState } from "react"
+import * as React from "react";
+import { useState } from "react";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { cn } from "@/lib/utils"
-import { AlertTriangle, CheckCircle, Info, XCircle, HelpCircle, LucideIcon } from "lucide-react"
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { cn } from "@/lib/utils";
+import { AlertTriangle, CheckCircle, Info, XCircle, HelpCircle } from "lucide-react";
 
 export type DialogInfoItem = {
-    text: string
-    icon?: React.ReactNode
-}
+  text: string;
+  icon?: React.ReactNode;
+};
 
 export type ModalProps = {
-    title: string
-    desc?: React.ReactNode
-    content?: React.ReactNode
-    textConfirm?: string
-    textCancel?: string
-    onConfirmClick?: () => void
-    onCancelClick?: () => void
-    modal?: boolean
-    icon?: React.ReactNode
-    iconType?: "warning" | "success" | "info" | "error" | "question"
-    showCloseButton?: boolean
-    variant?: "default" | "destructive"
-    // New props for the modern style
-    headerIcon?: React.ReactNode
-    headerIconBgColor?: string
-    infoTitle?: string
-    infoItems?: DialogInfoItem[]
-    showInfoSection?: boolean
-    infoContainer?: string
-    infoContainerVariant?: "warning" | "success" | "info" | "error" | "default"
-    infoContainerClassName?: string
-    maxWidth?: "sm" | "md" | "lg" | "xl"
-}
+  title: string;
+  desc?: React.ReactNode;
+  content?: React.ReactNode;
+  textConfirm?: string;
+  textCancel?: string;
+  onConfirmClick?: () => void;
+  onCancelClick?: () => void;
+  modal?: boolean;
+  icon?: React.ReactNode;
+  iconType?: "warning" | "success" | "info" | "error" | "question";
+  showCloseButton?: boolean;
+  variant?: "default" | "destructive";
+  headerIcon?: React.ReactNode;
+  headerIconBgColor?: string;
+  infoTitle?: string;
+  infoItems?: DialogInfoItem[];
+  showInfoSection?: boolean;
+  infoContainer?: string;
+  infoContainerVariant?: "warning" | "success" | "info" | "error" | "default";
+  infoContainerClassName?: string;
+  maxWidth?: "sm" | "md" | "lg" | "xl";
+};
 
 export type DialogModalProps = {
-    modal?: ModalProps
-    onDismissOutside?: boolean
-    className?: string
-    classNameContent?: string
-    classNameConfirm?: string
-    classNameCancel?: string
-    classNameHeader?: string
-    classNameBody?: string
-    classNameInfoSection?: string
-    variantSubmit?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
-    open?: boolean
-    onOpenChange?: (open: boolean) => void
-    trigger?: React.ReactNode
-    children?: React.ReactNode
-}
+  modal?: ModalProps;
+  className?: string;
+  classNameContent?: string;
+  classNameConfirm?: string;
+  classNameCancel?: string;
+  classNameHeader?: string;
+  classNameBody?: string;
+  classNameInfoSection?: string;
+  variantSubmit?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  trigger?: React.ReactNode;
+  children?: React.ReactNode;
+};
+
+const THEMES = {
+  warning: {
+    icon: AlertTriangle,
+    iconColor: "text-amber-600",
+    bg: "bg-amber-100 dark:bg-amber-900/30",
+    infoClass: "border-amber-500/20 bg-amber-500/5",
+  },
+  success: {
+    icon: CheckCircle,
+    iconColor: "text-emerald-600",
+    bg: "bg-emerald-100 dark:bg-emerald-900/30",
+    infoClass: "border-emerald-500/20 bg-emerald-500/5",
+  },
+  error: {
+    icon: XCircle,
+    iconColor: "text-destructive",
+    bg: "bg-destructive/10",
+    infoClass: "border-destructive/20 bg-destructive/5",
+  },
+  question: {
+    icon: HelpCircle,
+    iconColor: "text-accent-foreground",
+    bg: "bg-accent/50",
+    infoClass: "border-primary/20 bg-primary/5",
+  },
+  info: {
+    icon: Info,
+    iconColor: "text-primary",
+    bg: "bg-primary/10",
+    infoClass: "border-primary/20 bg-primary/5",
+  },
+  default: {
+    icon: Info,
+    iconColor: "text-primary",
+    bg: "bg-primary/10",
+    infoClass: "border-primary/20 bg-primary/5",
+  },
+};
+
+const MAX_WIDTH_MAP = {
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
+};
 
 export function DialogModal({
-    modal = {
-        title: "Notification",
-        desc: "This is a notification message.",
-        content: null,
-        textConfirm: "OK",
-        textCancel: "Cancel",
-        onConfirmClick: undefined,
-        onCancelClick: undefined,
-        modal: true,
-        icon: undefined,
-        iconType: "info",
-        showCloseButton: true,
-        variant: "default",
-        headerIcon: undefined,
-        headerIconBgColor: undefined,
-        infoTitle: undefined,
-        infoItems: undefined,
-        showInfoSection: false,
-        infoContainer: undefined,
-        infoContainerVariant: "info",
-        infoContainerClassName: undefined,
-        maxWidth: "sm",
-    },
-    onDismissOutside = true,
-    className,
-    classNameContent,
-    classNameConfirm,
-    classNameCancel,
-    classNameHeader,
-    classNameBody,
-    classNameInfoSection,
-    variantSubmit = "default",
-    open: controlledOpen,
-    onOpenChange: controlledOnOpenChange,
-    trigger,
-    children,
-    ...props
+  modal,
+  className,
+  classNameContent,
+  classNameConfirm,
+  classNameCancel,
+  classNameHeader,
+  classNameBody,
+  classNameInfoSection,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
+  trigger,
+  children,
 }: DialogModalProps) {
-    const [internalOpen, setInternalOpen] = useState(true)
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(true);
 
-    const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen
-    const setIsOpen = controlledOnOpenChange || setInternalOpen
+  const config = {
+    title: "Notification",
+    desc: "This is a notification message.",
+    textConfirm: "OK",
+    textCancel: "Cancel",
+    iconType: "info" as const,
+    maxWidth: "sm" as const,
+    ...modal,
+  };
 
-    const handleOpenChange = (open: boolean) => {
-        setIsOpen(open)
-        if (!open && modal?.onCancelClick) {
-            modal.onCancelClick()
-        }
-    }
+  const isOpen = controlledOpen ?? uncontrolledOpen;
+  const setIsOpen = controlledOnOpenChange ?? setUncontrolledOpen;
 
-    const getDefaultIcon = () => {
-        switch (modal?.iconType) {
-            case "warning":
-                return <AlertTriangle className="h-5 w-5 text-amber-600" />
-            case "success":
-                return <CheckCircle className="h-5 w-5 text-emerald-600" />
-            case "error":
-                return <XCircle className="h-5 w-5 text-destructive" />
-            case "info":
-                return <Info className="h-5 w-5 text-primary" />
-            case "question":
-                return <HelpCircle className="h-5 w-5 text-accent-foreground" />
-            default:
-                return <Info className="h-5 w-5 text-primary" />
-        }
-    }
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (!open && config.onCancelClick) config.onCancelClick();
+  };
 
-    const getDefaultIconBgColor = () => {
-        if (modal?.headerIconBgColor) return modal.headerIconBgColor
+  const theme = THEMES[config.iconType] || THEMES.info;
+  const isDestructive = config.variant === "destructive";
 
-        switch (modal?.iconType) {
-            case "warning":
-                return "bg-amber-100 dark:bg-amber-900/30"
-            case "success":
-                return "bg-emerald-100 dark:bg-emerald-900/30"
-            case "error":
-                return "bg-destructive/10"
-            case "info":
-                return "bg-primary/10"
-            case "question":
-                return "bg-accent/50"
-            default:
-                return "bg-primary/10"
-        }
-    }
+  // Choose icon: explicit icon prop -> THEME icon with THEME color
+  const ThemeIcon = theme.icon;
+  const finalIcon = config.icon || <ThemeIcon className={cn("h-6 w-6", theme.iconColor)} />;
 
-    const getMaxWidth = () => {
-        switch (modal?.maxWidth) {
-            case "sm":
-                return "max-w-sm"
-            case "md":
-                return "max-w-md"
-            case "lg":
-                return "max-w-lg"
-            case "xl":
-                return "max-w-xl"
-            default:
-                return "max-w-sm"
-        }
-    }
+  // Choose background: explicit prop -> theme default
+  const headerIconBg = config.headerIconBgColor || theme.bg;
 
-    const headerIcon = modal?.headerIcon || (modal?.variant === "destructive" ? <XCircle className="h-5 w-5 text-destructive" /> : getDefaultIcon())
-    const headerIconBg = modal?.variant === "destructive" ? "bg-destructive/10" : getDefaultIconBgColor()
+  return (
+    <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
+      {trigger && <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>}
 
-    return (
-        <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
-            {trigger && <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>}
+      <AlertDialogContent
+        className={cn(
+          MAX_WIDTH_MAP[config.maxWidth],
+          "p-0 overflow-hidden shadow-2xl",
+          classNameContent,
+          className,
+        )}
+      >
+        {/* Header Section */}
+        <div className={cn("px-6 pt-6 pb-2 text-center", classNameHeader)}>
+          <div
+            className={cn(
+              "mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl transition-colors",
+              headerIconBg,
+            )}
+          >
+            {finalIcon}
+          </div>
+          <AlertDialogTitle className="text-foreground text-xl font-bold tracking-tight">
+            {config.title}
+          </AlertDialogTitle>
+          {config.desc && (
+            <AlertDialogDescription className="text-muted-foreground mt-2 text-base leading-relaxed">
+              {config.desc}
+            </AlertDialogDescription>
+          )}
+        </div>
 
-            <AlertDialogContent className={cn(getMaxWidth(), "p-0 overflow-hidden shadow-2xl", classNameContent, className)}>
-                {/* Header */}
-                <div className={cn("px-6 pt-6 pb-2 text-center", classNameHeader)}>
-                    <div className={cn("mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl", headerIconBg)}>
-                        {headerIcon}
-                    </div>
-                    <AlertDialogTitle className="text-foreground text-xl font-bold tracking-tight">
-                        {modal?.title}
-                    </AlertDialogTitle>
-                    {modal?.desc && (
-                        <AlertDialogDescription className="text-muted-foreground mt-2 text-base">
-                            {modal.desc}
-                        </AlertDialogDescription>
-                    )}
-                </div>
+        {/* Body Content */}
+        <div className={cn("px-6 pb-5 space-y-4", classNameBody)}>
+          {config.content && <div className="w-full">{config.content}</div>}
 
-                {/* Body */}
-                <div className={cn("px-6 pb-5 space-y-4", classNameBody)}>
-                    {/* Custom Content */}
-                    {modal?.content && (
-                        <div className="w-full">
-                            {modal.content}
-                        </div>
-                    )}
+          {/* Simple Info Banner */}
+          {config.infoContainer && (
+            <div
+              className={cn(
+                "rounded-lg border p-3.5 text-center transition-all",
+                THEMES[(config.infoContainerVariant || "info") as keyof typeof THEMES]?.infoClass ||
+                  THEMES.info.infoClass,
+                config.infoContainerClassName,
+                classNameInfoSection,
+              )}
+            >
+              <p className="text-sm text-foreground/90 leading-relaxed font-medium">
+                {config.infoContainer}
+              </p>
+            </div>
+          )}
 
-                    {/* Info Container (String only) */}
-                    {modal?.infoContainer && (
-                        <div className={cn(
-                            "rounded-lg border p-3.5 text-center",
-                            modal?.infoContainerVariant === "warning" ? "border-amber-500/20 bg-amber-500/5" :
-                                modal?.infoContainerVariant === "success" ? "border-emerald-500/20 bg-emerald-500/5" :
-                                    modal?.infoContainerVariant === "error" ? "border-destructive/20 bg-destructive/5" :
-                                        "border-primary/20 bg-primary/5",
-                            modal?.infoContainerClassName,
-                            classNameInfoSection
-                        )}>
-                            <p className="text-sm text-foreground/90 leading-relaxed font-medium">
-                                {modal.infoContainer}
-                            </p>
-                        </div>
-                    )}
-
-                    {/* Info Section */}
-                    {modal?.showInfoSection && modal?.infoItems && modal.infoItems.length > 0 && (
-                        <div className={cn("rounded-lg border border-border bg-secondary/50 p-4 space-y-2.5 mb-6", classNameInfoSection)}>
-                            {modal?.infoTitle && (
-                                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                                    {modal.infoTitle}
-                                </p>
-                            )}
-                            <div className="space-y-2">
-                                {modal.infoItems.map((item, index) => (
-                                    <div key={index} className="flex items-start gap-2 text-sm text-foreground/80">
-                                        {item.icon || (
-                                            <div className={cn(
-                                                "mt-2 h-1.5 w-1.5 rounded-full flex-shrink-0",
-                                                modal?.variant === "destructive" ? "bg-destructive" : "bg-primary"
-                                            )} />
-                                        )}
-                                        {item.text}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Children (for custom content) */}
-                    {children}
-
-                    {/* Footer Buttons */}
-                    <AlertDialogFooter className="flex-row gap-2 sm:justify-stretch">
-                        {modal?.textCancel && (
-                            <AlertDialogCancel
-                                className={cn("flex-1 h-9", classNameCancel)}
-                                onClick={modal?.onCancelClick}
-                            >
-                                {modal.textCancel}
-                            </AlertDialogCancel>
+          {/* Detailed Info List */}
+          {config.showInfoSection && config.infoItems && config.infoItems.length > 0 && (
+            <div
+              className={cn(
+                "rounded-lg border border-border bg-secondary/30 p-4 space-y-2.5",
+                classNameInfoSection,
+              )}
+            >
+              {config.infoTitle && (
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {config.infoTitle}
+                </p>
+              )}
+              <div className="space-y-2">
+                {config.infoItems.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-2.5 text-sm text-foreground/80 leading-snug"
+                  >
+                    {item.icon || (
+                      <div
+                        className={cn(
+                          "mt-1.5 h-1.5 w-1.5 rounded-full flex-shrink-0",
+                          isDestructive ? "bg-destructive" : "bg-primary",
                         )}
-                        {modal?.textConfirm && (
-                            <AlertDialogAction
-                                className={cn(
-                                    "flex-1 h-9 shadow-md",
-                                    modal?.variant === "destructive"
-                                        ? "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-destructive/25"
-                                        : "shadow-primary/25",
-                                    classNameConfirm
-                                )}
-                                onClick={modal?.onConfirmClick}
-                            >
-                                {modal.textConfirm}
-                            </AlertDialogAction>
-                        )}
-                    </AlertDialogFooter>
-                </div>
-            </AlertDialogContent>
-        </AlertDialog>
-    )
+                      />
+                    )}
+                    <span>{item.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {children}
+
+          {/* Action Buttons */}
+          <AlertDialogFooter className="flex-row gap-3 sm:justify-stretch pt-2">
+            {config.textCancel && (
+              <AlertDialogCancel
+                className={cn(
+                  "flex-1 h-10 border-slate-200 dark:border-slate-800",
+                  classNameCancel,
+                )}
+                onClick={config.onCancelClick}
+              >
+                {config.textCancel}
+              </AlertDialogCancel>
+            )}
+            {config.textConfirm && (
+              <AlertDialogAction
+                className={cn(
+                  "flex-1 h-10 shadow-lg transition-all",
+                  isDestructive
+                    ? "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-destructive/20"
+                    : "shadow-primary/20",
+                  classNameConfirm,
+                )}
+                onClick={config.onConfirmClick}
+              >
+                {config.textConfirm}
+              </AlertDialogAction>
+            )}
+          </AlertDialogFooter>
+        </div>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
 }

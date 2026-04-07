@@ -11,7 +11,7 @@ export { MultiSelect } from "./MultiSelect";
 export { ThemeToggle } from "./ThemeToggle";
 export { BlockNoteStatic, type BlockNoteStaticProps } from "./block-note";
 export { Breadcrumbs } from "./Breadcrumbs";
-export { ImageCropper } from "./image-cropper";
+export { ImageCropper, type FileWithPreview } from "./image-cropper";
 export { LocalePagination } from "./LocalePagination";
 export { FormWithDetector } from "./FormWithDetector";
 export { LongText } from "./LongText";

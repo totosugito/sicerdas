@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import React, { type SyntheticEvent } from "react"
+import React, { type SyntheticEvent } from "react";
 
 import ReactCrop, {
   centerCrop,
   makeAspectCrop,
   type Crop,
   type PixelCrop,
-} from "@/lib/react-image-crop"
+} from "@/lib/react-image-crop";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -18,24 +18,27 @@ import {
   DialogFooter,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
+} from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
-import "@/assets/ReactCrop.css"
-import { CropIcon, Trash2Icon } from "lucide-react"
-import { FileWithPath } from "react-dropzone"
+import "@/assets/ReactCrop.css";
+import { CropIcon, Trash2Icon } from "lucide-react";
+import { FileWithPath } from "react-dropzone";
 
 export type FileWithPreview = FileWithPath & {
-  preview: string
-}
+  preview: string;
+};
 
 interface ImageCropperProps {
-  dialogOpen: boolean
-  setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
-  selectedFile: FileWithPreview | null
-  setSelectedFile: React.Dispatch<React.SetStateAction<FileWithPreview | null>>
-  title?: string
-  onCropComplete?: (file: File) => void
+  dialogOpen: boolean;
+  setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedFile: FileWithPreview | null;
+  setSelectedFile: React.Dispatch<React.SetStateAction<FileWithPreview | null>>;
+  title?: string;
+  onCropComplete?: (file: File) => void;
+  // Add prop to enable free cropping (no fixed aspect ratio)
+  freeCrop?: boolean;
+  fileName?: string;
 }
 
 export function ImageCropper({
@@ -43,43 +46,56 @@ export function ImageCropper({
   setDialogOpen,
   selectedFile,
   setSelectedFile,
-  title="Image Cropper",
-  onCropComplete
+  title = "Image Cropper",
+  onCropComplete,
+  freeCrop = false, // Default to false to maintain existing behavior
+  fileName = "avatar.png",
 }: ImageCropperProps) {
-  const aspect = 1
+  // Use null for free cropping, 1 for square cropping
+  const aspect = freeCrop ? null : 1;
 
-  const imgRef = React.useRef<HTMLImageElement | null>(null)
+  const imgRef = React.useRef<HTMLImageElement | null>(null);
 
-  const [crop, setCrop] = React.useState<Crop>()
-  const [croppedImageUrl, setCroppedImageUrl] = React.useState<string>("")
-  const [croppedImage, setCroppedImage] = React.useState<string>("")
+  const [crop, setCrop] = React.useState<Crop>();
+  const [croppedImageUrl, setCroppedImageUrl] = React.useState<string>("");
+  const [croppedImage, setCroppedImage] = React.useState<string>("");
 
   function onImageLoad(e: SyntheticEvent<HTMLImageElement>) {
-    if (aspect) {
-      const { width, height } = e.currentTarget
-      setCrop(centerAspectCrop(width, height, aspect))
+    if (aspect !== null) {
+      const { width, height } = e.currentTarget;
+      setCrop(centerAspectCrop(width, height, aspect));
+    } else {
+      // For free cropping, initialize with a default crop
+      const { width, height } = e.currentTarget;
+      setCrop({
+        unit: "%",
+        x: 10,
+        y: 10,
+        width: 80,
+        height: 80,
+      });
     }
   }
 
   function onCropCompleteHandler(crop: PixelCrop) {
     if (imgRef.current && crop.width && crop.height) {
-      const croppedImageUrl = getCroppedImg(imgRef.current, crop)
-      setCroppedImageUrl(croppedImageUrl)
+      const croppedImageUrl = getCroppedImg(imgRef.current, crop);
+      setCroppedImageUrl(croppedImageUrl);
     }
   }
 
   function getCroppedImg(image: HTMLImageElement, crop: PixelCrop): string {
-    const canvas = document.createElement("canvas")
-    const scaleX = image.naturalWidth / image.width
-    const scaleY = image.naturalHeight / image.height
+    const canvas = document.createElement("canvas");
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
 
-    canvas.width = crop.width * scaleX
-    canvas.height = crop.height * scaleY
+    canvas.width = crop.width * scaleX;
+    canvas.height = crop.height * scaleY;
 
-    const ctx = canvas.getContext("2d")
+    const ctx = canvas.getContext("2d");
 
     if (ctx) {
-      ctx.imageSmoothingEnabled = false
+      ctx.imageSmoothingEnabled = false;
 
       ctx.drawImage(
         image,
@@ -91,40 +107,47 @@ export function ImageCropper({
         0,
         crop.width * scaleX,
         crop.height * scaleY,
-      )
+      );
     }
 
-    return canvas.toDataURL("image/png", 1.0)
+    return canvas.toDataURL("image/png", 1.0);
   }
 
   async function onCrop() {
     try {
-      setCroppedImage(croppedImageUrl)
-      
+      setCroppedImage(croppedImageUrl);
+
       // Convert data URL to File object and call onCropComplete callback
       if (onCropComplete && croppedImageUrl) {
-        const response = await fetch(croppedImageUrl)
-        const blob = await response.blob()
-        const file = new File([blob], "cropped-avatar.png", { type: "image/png" })
-        onCropComplete(file)
+        const response = await fetch(croppedImageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], fileName, { type: "image/png" });
+        onCropComplete(file);
       }
-      
-      setDialogOpen(false)
+
+      setDialogOpen(false);
     } catch (error) {
-      alert("Something went wrong!")
+      alert("Something went wrong!");
     }
   }
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger>
-        <Avatar className="size-36 cursor-pointer ring-offset-2 ring-2 ring-slate-200">
-          <AvatarImage
-            src={croppedImage ? croppedImage : selectedFile?.preview}
-            alt=""
-          />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+        {freeCrop ? (
+          <div className="h-36 w-auto cursor-pointer ring-offset-2 ring-2 ring-slate-200 overflow-hidden">
+            <img
+              src={croppedImage ? croppedImage : selectedFile?.preview}
+              alt=""
+              className="h-full w-auto object-contain"
+            />
+          </div>
+        ) : (
+          <Avatar className="size-36 cursor-pointer ring-offset-2 ring-2 ring-slate-200">
+            <AvatarImage src={croppedImage ? croppedImage : selectedFile?.preview} alt="" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        )}
       </DialogTrigger>
       <DialogContent className="p-0 gap-0" aria-describedby={undefined} showCloseButton={false}>
         <VisuallyHidden>
@@ -135,7 +158,8 @@ export function ImageCropper({
             crop={crop}
             onChange={(_, percentCrop) => setCrop(percentCrop)}
             onComplete={(c) => onCropCompleteHandler(c)}
-            aspect={aspect}
+            // Only set aspect if not free cropping
+            {...(aspect !== null ? { aspect } : {})}
             className="w-full"
           >
             <Avatar className="size-full rounded-none">
@@ -160,7 +184,7 @@ export function ImageCropper({
               className="w-fit"
               variant={"outline"}
               onClick={() => {
-                setSelectedFile(null)
+                setSelectedFile(null);
               }}
             >
               <Trash2Icon className="mr-1.5 size-4" />
@@ -174,15 +198,11 @@ export function ImageCropper({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
 // Helper function to center the crop
-export function centerAspectCrop(
-  mediaWidth: number,
-  mediaHeight: number,
-  aspect: number,
-): Crop {
+export function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: number): Crop {
   return centerCrop(
     makeAspectCrop(
       {
@@ -196,5 +216,5 @@ export function centerAspectCrop(
     ),
     mediaWidth,
     mediaHeight,
-  )
+  );
 }

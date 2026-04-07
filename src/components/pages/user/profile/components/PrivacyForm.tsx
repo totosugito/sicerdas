@@ -1,21 +1,42 @@
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form'
-import { Switch } from '@/components/ui/switch'
-import { useAppTranslation, AppTranslation } from '@/lib/i18n-typed'
-import { z } from 'zod'
-import { AlertCircle } from 'lucide-react'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { ControlForm } from "@/components/custom/forms";
+import { FormWithDetector } from "@/components/custom/components";
+import { useAppTranslation, AppTranslation } from "@/lib/i18n-typed";
+import { z } from "zod";
+import { AlertCircle } from "lucide-react";
 
 // Define the form values type
 export type PrivacyFormValues = {
-  profileVisibility: boolean
-  emailNotifications: boolean
-  twoFactorAuth: boolean
-}
+  profileVisibility: boolean;
+  emailNotifications: boolean;
+  twoFactorAuth: boolean;
+};
 
 // Define a function to create form data with translations
 const createPrivacyFormData = (t: AppTranslation) => {
   return {
+    form: {
+      profileVisibility: {
+        type: "switch",
+        name: "profileVisibility",
+        label: t(($) => $.user.profile.privacy.profileVisibility),
+        description: t(($) => $.user.profile.privacy.profileVisibilityDescription),
+      },
+      emailNotifications: {
+        type: "switch",
+        name: "emailNotifications",
+        label: t(($) => $.user.profile.privacy.emailNotifications),
+        description: t(($) => $.user.profile.privacy.emailNotificationsDescription),
+      },
+      twoFactorAuth: {
+        type: "switch",
+        name: "twoFactorAuth",
+        label: t(($) => $.user.profile.privacy.twoFactorAuth),
+        description: t(($) => $.user.profile.privacy.twoFactorAuthDescription),
+      },
+    },
     schema: z.object({
       profileVisibility: z.boolean(),
       emailNotifications: z.boolean(),
@@ -25,18 +46,24 @@ const createPrivacyFormData = (t: AppTranslation) => {
       profileVisibility: false,
       emailNotifications: true,
       twoFactorAuth: false,
-    } satisfies PrivacyFormValues
-  }
-}
+    } satisfies PrivacyFormValues,
+  };
+};
 
 interface PrivacyFormProps {
-  form: any
-  onSubmit: (values: any) => void
-  error?: string | null
+  form: any;
+  onSubmit: (values: any) => void;
+  error?: string | null;
 }
 
 export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
-  const { t } = useAppTranslation()
+  const { t } = useAppTranslation();
+
+  // Create form data with translated labels and placeholders
+  const formData = createPrivacyFormData(t);
+
+  // Define form items
+  const formItems = formData.form;
 
   // Handle form submission
   const handleSubmit = (values: Record<string, any>) => {
@@ -44,20 +71,25 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
       privacy: {
         profileVisibility: values.profileVisibility,
         emailNotifications: values.emailNotifications,
-        twoFactorAuth: values.twoFactorAuth
-      }
-    })
-  }
+        twoFactorAuth: values.twoFactorAuth,
+      },
+    });
+  };
 
   return (
     <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full pb-0">
       <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
         <CardTitle className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight">
-          {t($ => $.user.profile.privacy.title)}
+          {t(($) => $.user.profile.privacy.title)}
         </CardTitle>
       </CardHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <FormWithDetector
+          form={form}
+          onSubmit={handleSubmit}
+          schema={formData.schema}
+          className="w-full"
+        >
           <CardContent className="px-6 pb-6 space-y-6 w-full">
             {error && (
               <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 rounded-md text-red-700 dark:text-red-300">
@@ -65,91 +97,26 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
                 <span>{error}</span>
               </div>
             )}
-            {/* <FormField
-              control={form.control}
-              name="profileVisibility"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">{t($ => $.user.profile.privacy.profileVisibility)}</FormLabel>
-                    <FormDescription>
-                      {t($ => $.user.profile.privacy.profileVisibilityDescription)}
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            /> */}
 
-            <FormField
-              control={form.control}
-              name="emailNotifications"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">{t($ => $.user.profile.privacy.emailNotifications)}</FormLabel>
-                    <FormDescription>
-                      {t($ => $.user.profile.privacy.emailNotificationsDescription)}
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
+            <ControlForm
+              form={form}
+              item={formItems.emailNotifications}
+              showMessage={false}
+              wrapperClassName="rounded-lg border p-4"
             />
-
-            {/* <FormField
-              control={form.control}
-              name="twoFactorAuth"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">{t($ => $.user.profile.privacy.twoFactorAuth)}</FormLabel>
-                    <FormDescription>
-                      {t($ => $.user.profile.privacy.twoFactorAuthDescription)}
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            /> */}
           </CardContent>
-          {form.formState.isDirty && (
-            <CardFooter className="p-6 flex justify-end items-center gap-4 bg-slate-50 dark:bg-slate-900 rounded-b-xl border-t border-slate-200 dark:border-slate-800">
-              <>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => form.reset()}
-                >
-                  {t($ => $.labels.cancel)}
-                </Button>
-                <Button
-                  type="submit"
-                  variant="default"
-                >
-                  {t($ => $.user.profile.privacy.savePreferences)}
-                </Button>
-              </>
-            </CardFooter>)}
-        </form>
+          <CardFooter className="p-6 flex justify-end items-center gap-4 bg-slate-50 dark:bg-slate-900 rounded-b-xl border-t border-slate-200 dark:border-slate-800">
+            <Button type="button" variant="outline" onClick={() => form.reset()}>
+              {t(($) => $.labels.cancel)}
+            </Button>
+            <Button type="submit" variant="default">
+              {t(($) => $.user.profile.privacy.savePreferences)}
+            </Button>
+          </CardFooter>
+        </FormWithDetector>
       </Form>
     </Card>
-  )
+  );
 }
 
-export { createPrivacyFormData }
+export { createPrivacyFormData };

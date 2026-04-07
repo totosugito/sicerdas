@@ -1,28 +1,28 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from '@fastify/type-provider-typebox';
+import { Type } from "@fastify/type-provider-typebox";
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { eq } from "drizzle-orm";
 import { users, usersProfile, accounts } from "../../db/schema/user/index.ts";
-import { getUserAvatarUrl } from "../../utils/app-utils.ts";
+import { getUserAvatarUrl } from "../../utils/user-utils.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
-    url: '/details',
-    method: 'GET',
+    url: "/details",
+    method: "GET",
     schema: {
-      tags: ['User'],
-      summary: 'Get current user details',
-      description: 'Get the authenticated user\'s profile information',
+      tags: ["User"],
+      summary: "Get current user details",
+      description: "Get the authenticated user's profile information",
       response: {
         200: Type.Object({
           success: Type.Literal(true),
           data: Type.Object({
-            id: Type.String({ format: 'uuid' }),
-            email: Type.String({ format: 'email' }),
+            id: Type.String({ format: "uuid" }),
+            email: Type.String({ format: "email" }),
             name: Type.Union([Type.String(), Type.Null()]),
-            image: Type.Union([Type.String({ format: 'uri' }), Type.Null()]),
+            image: Type.Union([Type.String({ format: "uri" }), Type.Null()]),
             emailVerified: Type.Boolean(),
             school: Type.Union([Type.String(), Type.Null()]),
             educationLevel: Type.Union([Type.String(), Type.Null()]),
@@ -32,22 +32,22 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
             bio: Type.Union([Type.String(), Type.Null()]),
             dateOfBirth: Type.Union([Type.String(), Type.Null()]),
 
-            createdAt: Type.String({ format: 'date-time' }),
-            updatedAt: Type.String({ format: 'date-time' }),
+            createdAt: Type.String({ format: "date-time" }),
+            updatedAt: Type.String({ format: "date-time" }),
             providerId: Type.String(),
-            extra: Type.Object({}, { additionalProperties: true })
-          })
+            extra: Type.Object({}, { additionalProperties: true }),
+          }),
         }),
         // Updated to use proper HTTP status codes with Fastify Sensible
-        '4xx': Type.Object({
+        "4xx": Type.Object({
           success: Type.Boolean({ default: false }),
-          message: Type.String()
+          message: Type.String(),
         }),
-        '5xx': Type.Object({
+        "5xx": Type.Object({
           success: Type.Boolean({ default: false }),
-          message: Type.String()
-        })
-      }
+          message: Type.String(),
+        }),
+      },
     },
     handler: withErrorHandler(async (req, reply) => {
       const { t } = getTypedI18n(req);
@@ -55,25 +55,26 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       const userId = req.session.user.id;
 
       // Find the current user by ID with account and profile information joined
-      const userWithAllData = await db.select({
-        id: users.id,
-        email: users.email,
-        name: users.name,
-        image: users.image,
-        emailVerified: users.emailVerified,
-        userCreatedAt: users.createdAt,
-        userUpdatedAt: users.updatedAt,
-        providerId: accounts.providerId,
-        school: usersProfile.school,
-        educationLevel: usersProfile.educationLevel,
-        grade: usersProfile.grade,
-        phone: usersProfile.phone,
-        address: usersProfile.address,
-        bio: usersProfile.bio,
-        dateOfBirth: usersProfile.dateOfBirth,
+      const userWithAllData = await db
+        .select({
+          id: users.id,
+          email: users.email,
+          name: users.name,
+          image: users.image,
+          emailVerified: users.emailVerified,
+          userCreatedAt: users.createdAt,
+          userUpdatedAt: users.updatedAt,
+          providerId: accounts.providerId,
+          school: usersProfile.school,
+          educationLevel: usersProfile.educationLevel,
+          grade: usersProfile.grade,
+          phone: usersProfile.phone,
+          address: usersProfile.address,
+          bio: usersProfile.bio,
+          dateOfBirth: usersProfile.dateOfBirth,
 
-        extra: usersProfile.extra // Add extra field
-      })
+          extra: usersProfile.extra, // Add extra field
+        })
         .from(users)
         .leftJoin(accounts, eq(users.id, accounts.userId))
         .leftJoin(usersProfile, eq(users.id, usersProfile.id))
@@ -84,23 +85,25 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       const userResult = userWithAllData[0];
 
       if (!userResult) {
-        return reply.notFound(t($ => $.user.userNotFound));
+        return reply.notFound(t(($) => $.user.userNotFound));
       }
 
       return reply.status(200).send({
         success: true as const,
         data: {
           ...userResult,
-          image: getUserAvatarUrl(userResult.image),
+          image: getUserAvatarUrl(userResult.id, userResult.image),
           emailVerified: Boolean(userResult.emailVerified),
-          dateOfBirth: userResult.dateOfBirth ? userResult.dateOfBirth.toISOString().split('T')[0] : null,
+          dateOfBirth: userResult.dateOfBirth
+            ? userResult.dateOfBirth.toISOString().split("T")[0]
+            : null,
           createdAt: userResult.userCreatedAt.toISOString(),
           updatedAt: userResult.userUpdatedAt.toISOString(),
-          providerId: userResult.providerId || '',
-          extra: userResult.extra || {}
-        }
+          providerId: userResult.providerId || "",
+          extra: userResult.extra || {},
+        },
       });
-    }, 422)
+    }, 422),
   });
 };
 

@@ -1,26 +1,26 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 export const LogLevel = {
-  trace: 'trace',
-  debug: 'debug',
-  info: 'info',
-  warn: 'warn',
-  error: 'error',
+  trace: "trace",
+  debug: "debug",
+  info: "info",
+  warn: "warn",
+  error: "error",
 } as const;
 export const schema = Type.Object({
-  VERSION: Type.String({default: '0.0.0'}),
+  VERSION: Type.String({ default: "0.0.0" }),
   POSTGRES_HOST: Type.String(),
   POSTGRES_USER: Type.String(),
   POSTGRES_PASSWORD: Type.String(),
   POSTGRES_DB: Type.String(),
-  POSTGRES_PORT: Type.Number({default: 5432}),
+  POSTGRES_PORT: Type.Number({ default: 5432 }),
   LOG_LEVEL: Type.Enum(LogLevel),
-  HOST: Type.String({default: 'localhost'}),
-  PORT: Type.Number({default: 5550}),
-  PROTOCOL: Type.String({default: 'http'}), 
-  FRONTEND_URL: Type.String({default: 'http://localhost:5573'}),
-  COOKIE_PREFIX: Type.String({default: 'cookie'}),
-  BETTER_AUTH_SECRET: Type.String({default: 'secret'}),
+  HOST: Type.String({ default: "localhost" }),
+  PORT: Type.Number({ default: 5550 }),
+  PROTOCOL: Type.String({ default: "http" }),
+  FRONTEND_URL: Type.String({ default: "http://localhost:5573" }),
+  COOKIE_PREFIX: Type.String({ default: "cookie" }),
+  BETTER_AUTH_SECRET: Type.String({ default: "secret" }),
   GOOGLE_CLIENT_ID: Type.Optional(Type.String()),
   GOOGLE_CLIENT_SECRET: Type.Optional(Type.String()),
   BREVO_API_KEY: Type.Optional(Type.String()),
@@ -34,19 +34,18 @@ for (const key of Object.keys(schema.properties)) {
 }
 
 // set env file
-dotenv.config({path: process.env.NODE_ENV === 'development' ? '.env.devel' : '.env'});
+dotenv.config({ path: process.env.NODE_ENV === "development" ? ".env.devel" : ".env" });
 
-import {type Static, Type} from '@sinclair/typebox';
-import envSchema from 'env-schema';
+import { type Static, Type } from "@sinclair/typebox";
+import envSchema from "env-schema";
 
 const env = envSchema<Static<typeof schema>>({
   dotenv: false,
   schema,
 });
 
-const uploadsUrl = process.env.NODE_ENV === 'development' ? `${env.PROTOCOL}://${env.HOST}:${env.PORT}` : `${env.PROTOCOL}://${env.FRONTEND_URL}`;
 export default {
-  version: env.VERSION ?? '0.0.0',
+  version: env.VERSION ?? "0.0.0",
   log: {
     level: env.LOG_LEVEL,
   },
@@ -57,8 +56,18 @@ export default {
     host: env.HOST,
     port: env.PORT,
     frontendUrl: env.FRONTEND_URL,
-    uploadsUrl: uploadsUrl,
-    uploadsUserDir: "uploads/users",
+    uploadsUrl:
+      process.env.NODE_ENV === "development"
+        ? `${env.PROTOCOL}://${env.HOST}:${env.PORT}/uploads`.replace(/([^:]\/)\/+/g, "$1")
+        : env.FRONTEND_URL.startsWith("http")
+          ? `${env.FRONTEND_URL}/uploads`.replace(/([^:]\/)\/+/g, "$1")
+          : `${env.PROTOCOL}://${env.FRONTEND_URL}/uploads`.replace(/([^:]\/)\/+/g, "$1"),
+    baseUrl: `http://${env.HOST === "0.0.0.0" ? "127.0.0.1" : env.HOST}:${env.PORT}`.replace(
+      /([^:]\/)\/+/g,
+      "$1",
+    ),
+    uploadsDir: "../uploads",
+    uploadsUserDir: "users",
     trustedOrigins: [
       env.HOST,
       `${env.PROTOCOL}://${env.HOST}:${env.PORT}`,

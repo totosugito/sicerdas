@@ -1,10 +1,11 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import AutoLoad from '@fastify/autoload';
-import Fastify, { type FastifyServerOptions } from 'fastify';
-import fastifyStatic from '@fastify/static';
-import i18n from 'fastify-i18n';
-import { defaultLocale } from './locales/locales.ts';
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import AutoLoad from "@fastify/autoload";
+import Fastify, { type FastifyServerOptions } from "fastify";
+import fastifyStatic from "@fastify/static";
+import i18n from "fastify-i18n";
+import { defaultLocale } from "./locales/locales.ts";
+import fs from "fs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -13,21 +14,21 @@ export async function buildApp(options?: FastifyServerOptions) {
 
   // Configure i18n with proper options for fastify-i18n v3
   server.register(i18n, {
-    fallbackLocale: 'id',
+    fallbackLocale: "id",
     messages: {
-      id: defaultLocale
+      id: defaultLocale,
     },
   });
 
   // Auto-load plugins
   await server.register(AutoLoad, {
-    dir: path.join(__dirname, 'plugins'),
+    dir: path.join(__dirname, "plugins"),
     dirNameRoutePrefix: false,
   });
 
   // Auto-load routes
   server.register(AutoLoad, {
-    dir: path.join(__dirname, 'routes'),
+    dir: path.join(__dirname, "routes"),
     autoHooks: true,
     autoHooksPattern: /\.hook(?:\.ts|\.js|\.cjs|\.mjs)$/i,
     cascadeHooks: true,
@@ -35,11 +36,17 @@ export async function buildApp(options?: FastifyServerOptions) {
   });
 
   // Serve static files
+  const uploadDir = path.join(process.cwd(), "../uploads");
+
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+
   server.register(fastifyStatic, {
-    root: path.join(__dirname, '../..', 'uploads'),
-    prefix: '/uploads/',
+    root: uploadDir,
+    prefix: "/uploads/",
     setHeaders: (res, _path) => {
-      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
     },
   });
 
@@ -47,9 +54,9 @@ export async function buildApp(options?: FastifyServerOptions) {
   server.setErrorHandler((error, request, reply) => {
     // Type guard to check if error has expected properties
     const isErrorWithProps = (
-      err: unknown
+      err: unknown,
     ): err is { statusCode?: number; code?: number; message?: string } =>
-      err !== null && typeof err === 'object';
+      err !== null && typeof err === "object";
 
     // Skip logging 401 Unauthorized errors as they're expected behavior
     if (isErrorWithProps(error) && error.statusCode !== 401) {
@@ -63,17 +70,15 @@ export async function buildApp(options?: FastifyServerOptions) {
             params: request.params,
           },
         },
-        'Unhandled error occurred',
+        "Unhandled error occurred",
       );
     }
 
-    const statusCode = isErrorWithProps(error)
-      ? error.statusCode ?? error.code ?? 500
-      : 500;
+    const statusCode = isErrorWithProps(error) ? (error.statusCode ?? error.code ?? 500) : 500;
 
     reply.code(statusCode);
 
-    let message = 'Internal Server Error';
+    let message = "Internal Server Error";
     if (isErrorWithProps(error) && error.statusCode && error.statusCode < 500) {
       message = error.message ?? message;
     }
@@ -99,12 +104,12 @@ export async function buildApp(options?: FastifyServerOptions) {
             params: request.params,
           },
         },
-        'Resource not found',
+        "Resource not found",
       );
 
       reply.code(404);
 
-      return { message: 'Not Found' };
+      return { message: "Not Found" };
     },
   );
 
