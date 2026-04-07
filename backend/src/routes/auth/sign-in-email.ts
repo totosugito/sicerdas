@@ -125,7 +125,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           user: {
             ...authData.user,
             ...userWithRole,
-            image: getUserAvatarUrl(userWithRole.image),
+            image: getUserAvatarUrl(userWithRole.id, userWithRole.image),
           },
         });
     }),

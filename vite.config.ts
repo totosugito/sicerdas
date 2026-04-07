@@ -4,7 +4,7 @@ import { defineConfig } from "vite-plus";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import react from "@vitejs/plugin-react";
+import react from "@vitejs/plugin-react-swc";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
 

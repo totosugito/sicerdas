@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { enUS, id } from "date-fns/locale";
-import type { UserSession } from "@/api/user/user-sessions";
+import type { UserSession } from "@/api/user/sessions";
 import { useState } from "react";
 import { ModalProps, DialogModal } from "@/components/custom/components";
 import { RiQuestionLine } from "react-icons/ri";
