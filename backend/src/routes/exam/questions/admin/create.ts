@@ -26,6 +26,7 @@ const CreateQuestionBody = Type.Object({
   subjectId: Type.String({ format: "uuid" }),
   passageId: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])), // Nullable for questions without passages
   content: Type.Array(Type.Record(Type.String(), Type.Unknown())), // BlockNote JSON format
+  reasonContent: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))),
   difficulty: Type.Enum(EnumDifficultyLevel, { default: EnumDifficultyLevel.MEDIUM }),
   type: Type.Enum(EnumQuestionType, { default: EnumQuestionType.MULTIPLE_CHOICE }),
   maxScore: Type.Optional(Type.Integer({ default: 1 })),
@@ -43,6 +44,7 @@ const QuestionResponseItem = Type.Object({
   subjectId: Type.String({ format: "uuid" }),
   passageId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
   content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
+  reasonContent: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))),
   difficulty: Type.String(),
   type: Type.String(),
   maxScore: Type.Integer(),
@@ -97,6 +99,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         educationGradeId,
         isActive,
         variableFormulas,
+        reasonContent,
       } = request.body;
 
       const userId = request.session.user.id;
@@ -129,6 +132,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
           subjectId,
           passageId,
           content,
+          reasonContent,
           difficulty,
           type,
           maxScore: maxScore ?? 1,

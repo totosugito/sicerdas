@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { cn } from "@/lib/utils";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -52,6 +53,7 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
     ),
     passageId: z.string().nullable().optional(),
     content: z.array(z.any()).optional(),
+    reasonContent: z.array(z.any()).optional(),
     difficulty: z.enum(Object.values(EnumDifficultyLevel) as [string, ...string[]]),
     type: z.enum(Object.values(EnumQuestionType) as [string, ...string[]]),
     maxScore: z
@@ -73,6 +75,7 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
       subjectId: "",
       passageId: null,
       content: [],
+      reasonContent: [],
       difficulty: EnumDifficultyLevel.MEDIUM,
       type: EnumQuestionType.MULTIPLE_CHOICE,
       maxScore: 1,
@@ -90,6 +93,7 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
         subjectId: "",
         passageId: null,
         content: [],
+        reasonContent: [],
         difficulty: EnumDifficultyLevel.MEDIUM,
         type: EnumQuestionType.MULTIPLE_CHOICE,
         maxScore: 1,
@@ -140,6 +144,10 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
       value: EnumQuestionType.MULTIPLE_SELECT,
     },
     { label: t(($) => $.exam.questions.form.type.options.essay), value: EnumQuestionType.ESSAY },
+    {
+      label: t(($) => $.exam.questions.form.type.options.statement_reasoning),
+      value: EnumQuestionType.STATEMENT_REASONING,
+    },
   ];
 
   const scoringStrategyOptions = [
@@ -233,6 +241,13 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
       type: "blocknote",
       name: "content",
       label: t(($) => $.exam.questions.form.content.label),
+      minHeight: type === EnumQuestionType.STATEMENT_REASONING ? "200px" : "350px",
+    },
+    reasonContent: {
+      type: "blocknote",
+      name: "reasonContent",
+      label: t(($) => $.exam.questions.form.reasonContent.label),
+      minHeight: type === EnumQuestionType.STATEMENT_REASONING ? "200px" : "300px",
     },
   };
 
@@ -268,8 +283,17 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
               item={formConfig.content}
               showMessage={false}
               className="flex-1"
-              wrapperClassName="flex-1 flex flex-col"
             />
+
+            {type === EnumQuestionType.STATEMENT_REASONING && (
+              <ControlForm
+                form={form}
+                item={formConfig.reasonContent}
+                showMessage={false}
+                className="flex-1"
+                wrapperClassName="pt-4 border-t border-dashed"
+              />
+            )}
 
             <div className="flex justify-end gap-2 pt-4 border-t">
               <Button

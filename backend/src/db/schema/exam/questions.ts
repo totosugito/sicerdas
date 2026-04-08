@@ -46,6 +46,9 @@ export const examQuestions = pgTable(
     // Rich text content of the question stored in BlockNote JSON format
     content: jsonb("content").$type<Record<string, unknown>[]>().notNull(),
 
+    // Optional secondary rich text container for the "Reason" part in STATEMENT_REASONING types
+    reasonContent: jsonb("reason_content").$type<Record<string, unknown>[]>().default([]),
+
     // Holds the dynamic template configuration for parametrized questions
     // Structure: { variables: [{a: 1}], options: {opt1: "a*2"}, solutions: {step1: "a+1"} }
     variableFormulas: jsonb("variable_formulas").$type<{

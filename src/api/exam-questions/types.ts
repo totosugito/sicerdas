@@ -25,6 +25,7 @@ export interface ExamQuestion {
   passageId: string | null;
   passageTitle?: string | null;
   content: Record<string, unknown>[];
+  reasonContent?: Record<string, unknown>[];
   difficulty: DifficultyLevel;
   type: QuestionType;
   maxScore: number;
@@ -72,6 +73,7 @@ export type QuestionFormValues = {
   subjectId: string;
   passageId?: string | null;
   content: Record<string, unknown>[];
+  reasonContent?: Record<string, unknown>[];
   difficulty: DifficultyLevel;
   type: QuestionType;
   maxScore?: number;

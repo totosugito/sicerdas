@@ -77,7 +77,12 @@ export default {
         multiple_choice: "Pilihan Tunggal",
         multiple_select: "Pilihan Ganda",
         essay: "Esai",
+        statement_reasoning: "Pernyataan-Alasan",
       },
+    },
+    reasonContent: {
+      label: "Konten Alasan (Sebab)",
+      placeholder: "Tulis konten alasan di sini...",
     },
     requiredTier: {
       label: "Tier Minimal",

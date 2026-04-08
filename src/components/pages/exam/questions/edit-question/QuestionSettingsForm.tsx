@@ -129,7 +129,14 @@ export function QuestionSettingsForm({
       label: t(($) => $.exam.questions.form.type.options.multiple_select),
       value: EnumQuestionType.MULTIPLE_SELECT,
     },
-    { label: t(($) => $.exam.questions.form.type.options.essay), value: EnumQuestionType.ESSAY },
+    {
+      label: t(($) => $.exam.questions.form.type.options.essay),
+      value: EnumQuestionType.ESSAY,
+    },
+    {
+      label: t(($) => $.exam.questions.form.type.options.statement_reasoning),
+      value: EnumQuestionType.STATEMENT_REASONING,
+    },
   ];
 
   const scoringStrategyOptions = [
@@ -228,7 +235,7 @@ export function QuestionSettingsForm({
         schema={formSchema}
         className="space-y-8"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-6">
             <ControlForm form={form} item={formConfig.subjectId} />
             <ControlForm form={form} item={formConfig.passageId} />

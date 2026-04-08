@@ -41,6 +41,16 @@ export function DetailContent({ question }: DetailContentProps) {
             {t(($) => $.exam.questions.detail.content.title)}
           </h3>
           <BlockNoteStatic content={question.content} editable={false} />
+
+          {question.reasonContent && question.reasonContent.length > 0 && (
+            <div className="mt-6 pt-6 border-t border-dashed">
+              <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
+                <BookOpen className="h-5 w-5 text-primary" />
+                {t(($) => $.exam.questions.form.reasonContent.label)}
+              </h3>
+              <BlockNoteStatic content={question.reasonContent} editable={false} />
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">

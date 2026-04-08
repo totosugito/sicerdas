@@ -1,16 +1,18 @@
-import closeWithGrace from 'close-with-grace';
+import closeWithGrace from "close-with-grace";
 
-import { ajvFilePlugin } from '@fastify/multipart';
-import { buildApp } from './app.ts';
-import envConfig from './config/env.config.ts';
+import { ajvFilePlugin } from "@fastify/multipart";
+import { buildApp } from "./app.ts";
+import envConfig from "./config/env.config.ts";
 
 async function startServer() {
   const app = await buildApp({
     logger: {
       level: envConfig.log.level,
-      redact: ['headers.authorization'],
+      redact: ["headers.authorization"],
     },
-    ignoreDuplicateSlashes: true,
+    routerOptions: {
+      ignoreDuplicateSlashes: true,
+    },
     ajv: {
       plugins: [ajvFilePlugin as any],
     },
@@ -18,7 +20,7 @@ async function startServer() {
 
   closeWithGrace(async ({ signal, err }) => {
     if (err) {
-      app.log.error({ err }, 'server closing with error');
+      app.log.error({ err }, "server closing with error");
     } else {
       app.log.info(`${signal} received, server closing`);
     }
@@ -35,6 +37,6 @@ async function startServer() {
 }
 
 startServer().catch((error: unknown) => {
-  console.error('Failed to start server:', error);
+  console.error("Failed to start server:", error);
   process.exit(1);
 });

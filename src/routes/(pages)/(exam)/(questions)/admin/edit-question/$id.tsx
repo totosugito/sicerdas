@@ -54,6 +54,7 @@ function AdminExamQuestionsEditPage() {
       educationGradeId: question?.educationGradeId ? String(question.educationGradeId) : "",
       isActive: question?.isActive ?? true,
       content: question?.content || [],
+      reasonContent: question?.reasonContent || [],
     };
   }, [question]);
 
@@ -74,10 +75,7 @@ function AdminExamQuestionsEditPage() {
       refetch();
     } catch (error: any) {
       showNotifError({
-        message:
-          error?.response?.data?.message ||
-          error?.message ||
-          "Terjadi kesalahan saat memperbarui data.",
+        message: error?.response?.data?.message || error?.message,
       });
     }
   };
@@ -168,7 +166,7 @@ function AdminExamQuestionsEditPage() {
         <TabsContent value="content" className="mt-0">
           <QuestionContentTab
             defaultValues={initialData}
-            onSubmit={(content) => handleUpdate({ content })}
+            onSubmit={(values) => handleUpdate(values)}
             isPending={updateMutation.isPending}
           />
         </TabsContent>

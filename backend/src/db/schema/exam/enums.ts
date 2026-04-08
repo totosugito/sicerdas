@@ -23,6 +23,7 @@ export const EnumQuestionType = {
   MULTIPLE_CHOICE: "multiple_choice",
   MULTIPLE_SELECT: "multiple_select",
   ESSAY: "essay",
+  STATEMENT_REASONING: "statement_reasoning",
 } as const;
 export const PgEnumQuestionType = pgEnum(
   "question_type",

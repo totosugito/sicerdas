@@ -38,6 +38,7 @@ const QuestionResponseItem = Type.Object({
   subjectName: Type.String(),
   passageId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
   content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
+  reasonContent: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))),
   difficulty: Type.Enum(EnumDifficultyLevel),
   type: Type.Enum(EnumQuestionType),
   maxScore: Type.Integer(),
@@ -131,6 +132,7 @@ const getQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
           educationGradeName: educationGrades.name,
           isActive: examQuestions.isActive,
           variableFormulas: examQuestions.variableFormulas,
+          reasonContent: examQuestions.reasonContent,
           createdAt: examQuestions.createdAt,
           updatedAt: examQuestions.updatedAt,
         })

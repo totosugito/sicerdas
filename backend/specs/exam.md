@@ -43,7 +43,7 @@ All tables are prefixed with `exam_` within PostgreSQL but are stripped off the 
 - 1. **`exam_categories`**: Macro-level grouping (e.g., 'CPNS 2026', 'UTBK Kedokteran').
 - 2. **`exam_subjects`**: Specific exam modules (e.g., 'Matematika', 'Tes Intelegensia Umum').
 - 3. **`exam_passages`**: Contextual containers for long reading texts or data tables designed to be referenced by sequential questions without duplication.
-- 4. **`exam_questions`**: The central vault for all question prompts. Protected by `required_tier` for partial teasing in free packages.
+- 4. **`exam_questions`**: The central vault for all question prompts. Supports `content` (main prompt/statement) and `reason_content` (for specialized reasoning types). Protected by `required_tier`.
 - 5. **`exam_question_options`**: The multiple-choice selections linked to specific questions, storing the definitive boolean marker for correct answers.
 - 6. **`exam_question_solutions`**: Stores the explanation of the question. Categorized by `solution_type` ('general', 'fast_method', 'tips'). Fast methods can enforce the `required_tier` restriction.
 

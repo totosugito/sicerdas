@@ -30,6 +30,7 @@ const UpdateQuestionBody = Type.Object({
   subjectId: Type.Optional(Type.String({ format: "uuid" })),
   passageId: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])),
   content: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))),
+  reasonContent: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))),
   difficulty: Type.Optional(Type.Enum(EnumDifficultyLevel)),
   type: Type.Optional(Type.Enum(EnumQuestionType)),
   maxScore: Type.Optional(Type.Integer()),
@@ -45,6 +46,7 @@ const QuestionResponseItem = Type.Object({
   subjectId: Type.String({ format: "uuid" }),
   passageId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
   content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
+  reasonContent: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))),
   difficulty: Type.String(),
   type: Type.String(),
   maxScore: Type.Integer(),
@@ -104,6 +106,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         educationGradeId,
         isActive,
         variableFormulas,
+        reasonContent,
       } = request.body;
 
       // Ensure question exists
@@ -145,6 +148,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         updatePayload.passageId = passageId === "" || passageId === "null" ? null : passageId;
       }
       if (content !== undefined) updatePayload.content = content;
+      if (reasonContent !== undefined) updatePayload.reasonContent = reasonContent;
       if (difficulty !== undefined) updatePayload.difficulty = difficulty;
       if (type !== undefined) updatePayload.type = type;
       if (maxScore !== undefined) updatePayload.maxScore = maxScore;
