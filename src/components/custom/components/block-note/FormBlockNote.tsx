@@ -30,6 +30,7 @@ export type FormBlockNoteProps = {
     description?: string;
     required?: boolean;
     minHeight?: string;
+    uploadFile?: (file: File) => Promise<string>;
   };
   disabled?: boolean;
   className?: string;
@@ -80,6 +81,7 @@ export const FormBlockNote = ({
       initialValueRef.current && initialValueRef.current.length > 0
         ? initialValueRef.current
         : undefined,
+    uploadFile: item.uploadFile,
   });
 
   // Sync editor content to form state on change

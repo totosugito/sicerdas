@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
@@ -18,6 +18,7 @@ import {
   EnumQuestionType,
   EnumScoringStrategy,
 } from "@/api/exam-questions/types";
+import { resolve_blocknote_urls, prepare_blocknote_submission } from "@/lib/blocknote-utils";
 
 type InternalQuestionFormValues = Omit<QuestionFormValues, "educationGradeId"> & {
   educationGradeId?: string | number | null;
@@ -25,12 +26,17 @@ type InternalQuestionFormValues = Omit<QuestionFormValues, "educationGradeId"> &
 
 type QuestionFormProps = {
   defaultValues?: Partial<QuestionFormValues>;
-  onSubmit: (values: QuestionFormValues) => void;
+  onSubmit: (values: FormData) => void;
   isPending?: boolean;
 };
 
 export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFormProps) {
   const { t } = useAppTranslation();
+  const pendingFiles = useRef<Map<string, File>>(new Map());
+  const uploadsUrl = import.meta.env.VITE_APP_BASE_URL;
+
+  // Data for dropdowns (Fetching all active options at once)
+  // ... (omitting lines for brevity in thought, but I'll provide full replacement)
 
   // Data for dropdowns (Fetching all active options at once)
   const { data: subjectsData, isFetching: isFetchingSubjects } = useListSubjectSimple({
@@ -69,13 +75,19 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
     isActive: z.boolean().default(true),
   });
 
+  const resolvedDefaultValues = useMemo(() => {
+    return {
+      ...defaultValues,
+      content: resolve_blocknote_urls(defaultValues?.content || [], uploadsUrl),
+      reasonContent: resolve_blocknote_urls(defaultValues?.reasonContent || [], uploadsUrl),
+    };
+  }, [defaultValues, uploadsUrl]);
+
   const form = useForm<InternalQuestionFormValues>({
     resolver: zodResolver(formSchema) as any,
     defaultValues: {
       subjectId: "",
       passageId: null,
-      content: [],
-      reasonContent: [],
       difficulty: EnumDifficultyLevel.MEDIUM,
       type: EnumQuestionType.MULTIPLE_CHOICE,
       maxScore: 1,
@@ -83,7 +95,7 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
       requiredTier: "free",
       educationGradeId: "",
       isActive: true,
-      ...(defaultValues as any),
+      ...resolvedDefaultValues,
     },
   });
 
@@ -92,8 +104,6 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
       form.reset({
         subjectId: "",
         passageId: null,
-        content: [],
-        reasonContent: [],
         difficulty: EnumDifficultyLevel.MEDIUM,
         type: EnumQuestionType.MULTIPLE_CHOICE,
         maxScore: 1,
@@ -101,16 +111,50 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
         requiredTier: "free",
         educationGradeId: "",
         isActive: true,
-        ...defaultValues,
+        ...resolvedDefaultValues,
       });
     }
-  }, [defaultValues, form]);
+  }, [resolvedDefaultValues, form]);
 
   const type = form.watch("type");
   const isMultipleChoice = type === EnumQuestionType.MULTIPLE_CHOICE;
 
   const onFormSubmit = (values: any) => {
-    onSubmit(values);
+    const formData = new FormData();
+
+    // 1. Prepare content for submission (replaces blobs with upload_ placeholders)
+    const { submissionContent, filesToUpload } = prepare_blocknote_submission(
+      values.content,
+      pendingFiles.current,
+    );
+
+    const { submissionContent: submissionReasonContent, filesToUpload: reasonFiles } =
+      prepare_blocknote_submission(values.reasonContent, pendingFiles.current);
+
+    // 2. Add files with placeholder names
+    const allFilesToUpload = [...filesToUpload, ...reasonFiles];
+    allFilesToUpload.forEach(({ placeholder, file }) => {
+      formData.append("files", file, placeholder);
+    });
+
+    // 3. Add the rest of the form data as a JSON string
+    formData.append(
+      "data",
+      JSON.stringify({
+        ...defaultValues,
+        ...values,
+        content: submissionContent,
+        reasonContent: submissionReasonContent,
+      }),
+    );
+
+    onSubmit(formData);
+  };
+
+  const uploadFile = async (file: File) => {
+    const url = URL.createObjectURL(file);
+    pendingFiles.current.set(url, file);
+    return url;
   };
 
   const tierOptions =
@@ -242,12 +286,14 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
       name: "content",
       label: t(($) => $.exam.questions.form.content.label),
       minHeight: type === EnumQuestionType.STATEMENT_REASONING ? "200px" : "350px",
+      uploadFile,
     },
     reasonContent: {
       type: "blocknote",
       name: "reasonContent",
       label: t(($) => $.exam.questions.form.reasonContent.label),
       minHeight: type === EnumQuestionType.STATEMENT_REASONING ? "200px" : "300px",
+      uploadFile,
     },
   };
 

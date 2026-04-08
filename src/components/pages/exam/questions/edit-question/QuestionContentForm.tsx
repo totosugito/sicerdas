@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
@@ -7,10 +7,11 @@ import { z } from "zod";
 import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
 import { FormWithDetector } from "@/components/custom/components";
+import { resolve_blocknote_urls, prepare_blocknote_submission } from "@/lib/blocknote-utils";
 
 type QuestionContentFormProps = {
   defaultValues: any;
-  onSubmit: (values: { content?: any[]; reasonContent?: any[] }) => void;
+  onSubmit: (values: FormData) => void;
   isPending?: boolean;
 };
 
@@ -27,24 +28,64 @@ export function QuestionContentForm({
   isPending,
 }: QuestionContentFormProps) {
   const { t } = useAppTranslation();
+  const pendingFiles = useRef<Map<string, File>>(new Map());
+  const uploadsUrl = import.meta.env.VITE_APP_BASE_URL;
+
+  const resolvedDefaultValues = useMemo(() => {
+    return {
+      ...defaultValues,
+      content: resolve_blocknote_urls(defaultValues.content || [], uploadsUrl),
+      reasonContent: resolve_blocknote_urls(defaultValues.reasonContent || [], uploadsUrl),
+    };
+  }, [defaultValues, uploadsUrl]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      content: defaultValues.content || [],
-      reasonContent: defaultValues.reasonContent || [],
-    },
+    defaultValues: resolvedDefaultValues,
   });
 
   useEffect(() => {
-    form.reset({
-      content: defaultValues.content || [],
-      reasonContent: defaultValues.reasonContent || [],
-    });
-  }, [defaultValues.content, defaultValues.reasonContent, form]);
+    form.reset(resolvedDefaultValues);
+    // Clear pending files on reset/mount
+    pendingFiles.current.clear();
+  }, [resolvedDefaultValues, form]);
 
   const onFormSubmit = (values: FormValues) => {
-    onSubmit(values);
+    const formData = new FormData();
+
+    // 1. Prepare content for submission (replaces blobs with upload_ placeholders)
+    const { submissionContent, filesToUpload } = prepare_blocknote_submission(
+      values.content,
+      pendingFiles.current,
+    );
+
+    const { submissionContent: submissionReasonContent, filesToUpload: reasonFiles } =
+      prepare_blocknote_submission(values.reasonContent, pendingFiles.current);
+
+    // 2. Add files with placeholder names
+    const allFilesToUpload = [...filesToUpload, ...reasonFiles];
+    allFilesToUpload.forEach(({ placeholder, file }) => {
+      formData.append("files", file, placeholder);
+    });
+
+    // 3. Add the rest of the form data as a JSON string
+    formData.append(
+      "data",
+      JSON.stringify({
+        ...defaultValues,
+        ...values,
+        content: submissionContent,
+        reasonContent: submissionReasonContent,
+      }),
+    );
+
+    onSubmit(formData);
+  };
+
+  const uploadFile = async (file: File) => {
+    const url = URL.createObjectURL(file);
+    pendingFiles.current.set(url, file);
+    return url;
   };
 
   const type = defaultValues.type;
@@ -57,6 +98,7 @@ export function QuestionContentForm({
       label: t(($) => $.exam.questions.form.content.label),
       placeholder: t(($) => $.exam.questions.form.content.placeholder),
       minHeight: isReasoning ? "200px" : "300px",
+      uploadFile,
     },
     reasonContent: {
       type: "blocknote",
@@ -64,6 +106,7 @@ export function QuestionContentForm({
       label: t(($) => $.exam.questions.form.reasonContent.label),
       placeholder: t(($) => $.exam.questions.form.reasonContent.placeholder),
       minHeight: isReasoning ? "200px" : "300px",
+      uploadFile,
     },
   };
 

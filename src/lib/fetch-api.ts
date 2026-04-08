@@ -1,9 +1,9 @@
-import axios from 'axios'
-import { useAuthStore } from '@/stores/useAuthStore'
-import { useAppStore } from '@/stores/useAppStore';
+import axios from "axios";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useAppStore } from "@/stores/useAppStore";
 import { APP_CONFIG } from "@/constants/config";
 
-export const axiosInstance = axios.create({})
+export const axiosInstance = axios.create({});
 
 // Add interceptor for handling 401 errors globally
 axiosInstance.interceptors.response.use(
@@ -11,18 +11,18 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Clear auth store (you can import directly or trigger a logout function)
-      const authStore = useAuthStore.getState()
-      const appStore = useAppStore.getState()
-      authStore.logout()
-      appStore.resetAll()
+      const authStore = useAuthStore.getState();
+      const appStore = useAppStore.getState();
+      authStore.logout();
+      appStore.resetAll();
 
       // Redirect to public page
-      window.location.href = APP_CONFIG.path.defaultPublic
+      window.location.href = APP_CONFIG.path.defaultPublic;
     }
 
-    return Promise.reject(error)
-  }
-)
+    return Promise.reject(error);
+  },
+);
 
 export const fetchApi = async ({
   method,
@@ -32,12 +32,12 @@ export const fetchApi = async ({
   params,
   withCredentials = true,
 }: {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
-  url: string
-  body?: any
-  headers?: Record<string, string>
-  params?: Record<string, any>
-  withCredentials?: boolean
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  url: string;
+  body?: any;
+  headers?: Record<string, string>;
+  params?: Record<string, any>;
+  withCredentials?: boolean;
 }) => {
   try {
     const authStore = useAuthStore.getState();
@@ -46,15 +46,15 @@ export const fetchApi = async ({
       url,
       data: body ?? null,
       headers: {
-        'Content-Type': 'application/json',
-        'accept-language': authStore.language || 'id',
-        ...(headers ?? {}),
+        ...(body instanceof FormData ? {} : { "Content-Type": "application/json" }),
+        "accept-language": authStore.language || "id",
+        ...headers,
       },
       params: params ?? {},
-      withCredentials
-    })
-    return response.data
+      withCredentials,
+    });
+    return response.data;
   } catch (error: any) {
-    throw error?.response?.data
+    throw error?.response?.data;
   }
-}
+};

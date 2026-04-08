@@ -13,6 +13,8 @@ import {
   EnumQuestionType,
   EnumScoringStrategy,
 } from "../../../../db/schema/exam/enums.ts";
+import type { UploadedFile } from "../../../../types/file.ts";
+import { processQuestionFiles, replaceQuestionUrls } from "../../../../utils/question-utils.ts";
 
 const VariableFormulasType = Type.Optional(
   Type.Object({
@@ -21,23 +23,6 @@ const VariableFormulasType = Type.Optional(
     solutions: Type.Optional(Type.Record(Type.String(), Type.String())),
   }),
 );
-
-const CreateQuestionBody = Type.Object({
-  subjectId: Type.String({ format: "uuid" }),
-  passageId: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])), // Nullable for questions without passages
-  content: Type.Array(Type.Record(Type.String(), Type.Unknown())), // BlockNote JSON format
-  reasonContent: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))),
-  difficulty: Type.Enum(EnumDifficultyLevel, { default: EnumDifficultyLevel.MEDIUM }),
-  type: Type.Enum(EnumQuestionType, { default: EnumQuestionType.MULTIPLE_CHOICE }),
-  maxScore: Type.Optional(Type.Integer({ default: 1 })),
-  scoringStrategy: Type.Optional(
-    Type.Enum(EnumScoringStrategy, { default: EnumScoringStrategy.ALL_OR_NOTHING }),
-  ),
-  requiredTier: Type.Optional(Type.Union([Type.String(), Type.Null()])),
-  educationGradeId: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
-  isActive: Type.Optional(Type.Boolean({ default: true })),
-  variableFormulas: VariableFormulasType,
-});
 
 const QuestionResponseItem = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -69,7 +54,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "POST",
     schema: {
       tags: ["Admin Exam Questions"],
-      body: CreateQuestionBody,
+      consumes: ["multipart/form-data"],
       response: {
         201: CreateQuestionResponse,
         "4xx": Type.Object({
@@ -82,11 +67,33 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
-      request: FastifyRequest<{ Body: typeof CreateQuestionBody.static }>,
-      reply: FastifyReply,
-    ) {
+    handler: withErrorHandler(async function handler(request: FastifyRequest, reply: FastifyReply) {
       const { t } = getTypedI18n(request);
+      const userId = request.session.user.id;
+
+      // Parse multipart data
+      const parts = request.parts();
+      let body: any = {};
+      const files: UploadedFile[] = [];
+
+      for await (const part of parts) {
+        if (part.type === "file") {
+          files.push({
+            buffer: await part.toBuffer(),
+            filename: part.filename,
+            mimetype: part.mimetype,
+          });
+        } else {
+          if (part.fieldname === "data") {
+            try {
+              body = JSON.parse(part.value as string);
+            } catch (e) {
+              return reply.badRequest("Invalid JSON data");
+            }
+          }
+        }
+      }
+
       const {
         subjectId,
         passageId,
@@ -100,9 +107,11 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         isActive,
         variableFormulas,
         reasonContent,
-      } = request.body;
+      } = body;
 
-      const userId = request.session.user.id;
+      if (!subjectId) {
+        return reply.badRequest(t(($) => $.exam.questions.create.invalidSubject));
+      }
 
       // 1. Verify that the subject exists
       const existingSubject = await db.query.examSubjects.findFirst({
@@ -123,33 +132,57 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }
       }
 
-      // We do not do a "name" duplication check like on subjects/categories
-      // Because questions are unique mostly by their content and can be arbitrarily identical
-
+      // Create the question first to get the ID
       const [newQuestion] = await db
         .insert(examQuestions)
         .values({
           subjectId,
           passageId,
-          content,
-          reasonContent,
-          difficulty,
-          type,
+          content: content || [],
+          reasonContent: reasonContent || [],
+          difficulty: difficulty || EnumDifficultyLevel.MEDIUM,
+          type: type || EnumQuestionType.MULTIPLE_CHOICE,
           maxScore: maxScore ?? 1,
           scoringStrategy: scoringStrategy ?? EnumScoringStrategy.ALL_OR_NOTHING,
           requiredTier: requiredTier !== undefined ? requiredTier : "free",
-          educationGradeId: educationGradeId !== undefined ? educationGradeId : null,
+          educationGradeId:
+            educationGradeId === null || educationGradeId === 0 || (educationGradeId as any) === ""
+              ? null
+              : Number(educationGradeId),
           isActive: isActive !== undefined ? isActive : true,
           variableFormulas,
           createdByUserId: userId,
         })
         .returning();
 
+      // Process uploaded files if any
+      let finalContent = content || [];
+      let finalReasonContent = reasonContent || [];
+
+      if (files.length > 0) {
+        const urlMap = await processQuestionFiles(newQuestion.id, files);
+
+        // Replace blob URLs with final URLs in content
+        finalContent = replaceQuestionUrls(finalContent, urlMap);
+        finalReasonContent = replaceQuestionUrls(finalReasonContent, urlMap);
+
+        // Update the question with final content
+        await db
+          .update(examQuestions)
+          .set({
+            content: finalContent,
+            reasonContent: finalReasonContent,
+          })
+          .where(eq(examQuestions.id, newQuestion.id));
+      }
+
       return reply.status(201).send({
         success: true,
         message: t(($) => $.exam.questions.create.success),
         data: {
           ...newQuestion,
+          content: finalContent,
+          reasonContent: finalReasonContent,
           createdAt: newQuestion.createdAt.toISOString(),
           updatedAt: newQuestion.updatedAt.toISOString(),
         },

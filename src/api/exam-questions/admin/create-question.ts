@@ -32,7 +32,7 @@ export interface CreateQuestionRequest {
 export const useCreateQuestion = () => {
   return useMutation({
     mutationKey: ["admin-exam-questions-create"],
-    mutationFn: async (body: CreateQuestionRequest) => {
+    mutationFn: async (body: CreateQuestionRequest | FormData) => {
       const response = await fetchApi({
         method: "POST",
         url: AppApi.exam.questions.admin.create,

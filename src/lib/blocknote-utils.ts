@@ -44,3 +44,140 @@ export async function blocknote_to_html(content: any[] | null | undefined): Prom
     return "";
   }
 }
+
+/**
+ * Utility to extract all unique URLs from BlockNote content
+ */
+export function extract_blocknote_urls(content: any[] | null | undefined): string[] {
+  if (!content || !Array.isArray(content) || content.length === 0) return [];
+
+  const urls: string[] = [];
+
+  const traverse = (blocks: any[]) => {
+    for (const block of blocks) {
+      if (
+        ["image", "file", "video", "audio"].includes(block.type) &&
+        block.props?.url &&
+        typeof block.props.url === "string"
+      ) {
+        urls.push(block.props.url);
+      }
+      if (block.children && Array.isArray(block.children)) {
+        traverse(block.children);
+      }
+    }
+  };
+
+  traverse(content);
+
+  return Array.from(new Set(urls));
+}
+
+/**
+ * Utility to resolve relative URLs (starting with /uploads/) to absolute URLs for display
+ */
+export function resolve_blocknote_urls(
+  content: any[] | null | undefined,
+  uploadsUrl: string,
+): any[] {
+  if (!content || !Array.isArray(content) || content.length === 0) return [];
+
+  const traverse = (blocks: any[]): any[] => {
+    return blocks.map((block) => {
+      let newBlock = { ...block };
+
+      if (
+        ["image", "file", "video", "audio"].includes(block.type) &&
+        block.props?.url &&
+        typeof block.props.url === "string" &&
+        block.props.url.startsWith("/uploads/")
+      ) {
+        // Prepend uploadsUrl (assuming uploadsUrl doesn't end with / if we start with /)
+        // Actually, we should be safe with double slashes
+        newBlock.props = {
+          ...newBlock.props,
+          url: `${uploadsUrl}${block.props.url}`.replace(/([^:]\/)\/+/g, "$1"),
+        };
+      }
+
+      if (block.children && Array.isArray(block.children)) {
+        newBlock.children = traverse(block.children);
+      }
+
+      return newBlock;
+    });
+  };
+
+  return traverse(content);
+}
+
+/**
+ * Utility to prepare BlockNote content for submission by replacing blob URLs with placeholders
+ */
+export function prepare_blocknote_submission(
+  content: any[] | null | undefined,
+  pendingFiles: Map<string, File>,
+): {
+  submissionContent: any[];
+  filesToUpload: { placeholder: string; file: File }[];
+} {
+  if (!content || !Array.isArray(content) || content.length === 0) {
+    return { submissionContent: [], filesToUpload: [] };
+  }
+
+  const filesToUpload: { placeholder: string; file: File }[] = [];
+  const blobToPlaceholderMap: Map<string, string> = new Map();
+  let placeholderCount = 0;
+
+  const traverse = (blocks: any[]): any[] => {
+    return blocks.map((block) => {
+      let newBlock = { ...block };
+
+      if (
+        ["image", "file", "video", "audio"].includes(block.type) &&
+        block.props?.url &&
+        typeof block.props.url === "string"
+      ) {
+        const url = block.props.url;
+
+        if (url.startsWith("blob:")) {
+          let placeholder = blobToPlaceholderMap.get(url);
+
+          if (!placeholder) {
+            const file = pendingFiles.get(url);
+            if (file) {
+              // Get original extension
+              const originalExt = file.name.split(".").pop() || "png";
+              placeholder = `upload_${placeholderCount++}.${originalExt}`;
+              blobToPlaceholderMap.set(url, placeholder);
+              filesToUpload.push({ placeholder, file });
+            }
+          }
+
+          if (placeholder) {
+            newBlock.props = { ...newBlock.props, url: placeholder };
+          }
+        } else if (url.includes("/uploads/")) {
+          // If it's already a server URL, we should store only the relative part
+          const uploadsIndex = url.indexOf("/uploads/");
+          if (uploadsIndex !== -1) {
+            newBlock.props = {
+              ...newBlock.props,
+              url: url.substring(uploadsIndex),
+            };
+          }
+        }
+      }
+
+      if (block.children && Array.isArray(block.children)) {
+        newBlock.children = traverse(block.children);
+      }
+
+      return newBlock;
+    });
+  };
+
+  const submissionContent = traverse(content);
+
+  return { submissionContent, filesToUpload };
+}

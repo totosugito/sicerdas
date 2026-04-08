@@ -60,17 +60,24 @@ function AdminExamQuestionsEditPage() {
 
   const handleUpdate = async (values: any) => {
     try {
-      await updateMutation.mutateAsync({
-        ...values,
-        educationGradeId:
-          values.educationGradeId === undefined
-            ? undefined
-            : values.educationGradeId === null || values.educationGradeId === ""
-              ? null
-              : Number(values.educationGradeId),
-        requiredTier: values.requiredTier || undefined,
-        passageId: values.passageId === undefined ? undefined : values.passageId || null,
-      });
+      let submissionData = values;
+
+      // Only transform if it's a plain object (not FormData)
+      if (!(values instanceof FormData)) {
+        submissionData = {
+          ...values,
+          educationGradeId:
+            values.educationGradeId === undefined
+              ? undefined
+              : values.educationGradeId === null || values.educationGradeId === ""
+                ? null
+                : Number(values.educationGradeId),
+          requiredTier: values.requiredTier || undefined,
+          passageId: values.passageId === undefined ? undefined : values.passageId || null,
+        };
+      }
+
+      await updateMutation.mutateAsync(submissionData);
       showNotifSuccess({ message: t(($) => $.exam.questions.edit.success) });
       refetch();
     } catch (error: any) {

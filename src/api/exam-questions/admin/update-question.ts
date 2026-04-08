@@ -32,7 +32,7 @@ export interface UpdateQuestionRequest {
 export const useUpdateQuestion = (id: string) => {
   return useMutation({
     mutationKey: ["admin-exam-questions-update", id],
-    mutationFn: async (body: UpdateQuestionRequest) => {
+    mutationFn: async (body: UpdateQuestionRequest | FormData) => {
       const response = await fetchApi({
         method: "PUT",
         url: AppApi.exam.questions.admin.update.replace(":id", id),

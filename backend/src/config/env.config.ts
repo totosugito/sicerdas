@@ -68,6 +68,8 @@ export default {
     ),
     uploadsDir: "../uploads",
     uploadsUserDir: "users",
+    uploadsQuestionDir: "exam/question",
+    uploadsPassageDir: "exam/passage",
     trustedOrigins: [
       env.HOST,
       `${env.PROTOCOL}://${env.HOST}:${env.PORT}`,

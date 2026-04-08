@@ -13,6 +13,12 @@ import {
   EnumQuestionType,
   EnumScoringStrategy,
 } from "../../../../db/schema/exam/enums.ts";
+import type { UploadedFile } from "../../../../types/file.ts";
+import {
+  processQuestionFiles,
+  replaceQuestionUrls,
+  cleanupQuestionFiles,
+} from "../../../../utils/question-utils.ts";
 
 const VariableFormulasType = Type.Optional(
   Type.Object({
@@ -24,21 +30,6 @@ const VariableFormulasType = Type.Optional(
 
 const UpdateQuestionParams = Type.Object({
   id: Type.String({ format: "uuid" }),
-});
-
-const UpdateQuestionBody = Type.Object({
-  subjectId: Type.Optional(Type.String({ format: "uuid" })),
-  passageId: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])),
-  content: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))),
-  reasonContent: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))),
-  difficulty: Type.Optional(Type.Enum(EnumDifficultyLevel)),
-  type: Type.Optional(Type.Enum(EnumQuestionType)),
-  maxScore: Type.Optional(Type.Integer()),
-  scoringStrategy: Type.Optional(Type.Enum(EnumScoringStrategy)),
-  requiredTier: Type.Optional(Type.Union([Type.String(), Type.Null()])),
-  educationGradeId: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
-  isActive: Type.Optional(Type.Boolean()),
-  variableFormulas: VariableFormulasType,
 });
 
 const QuestionResponseItem = Type.Object({
@@ -71,8 +62,8 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "PUT",
     schema: {
       tags: ["Admin Exam Questions"],
+      consumes: ["multipart/form-data"],
       params: UpdateQuestionParams,
-      body: UpdateQuestionBody,
       response: {
         200: UpdateQuestionResponse,
         "4xx": Type.Object({
@@ -88,12 +79,44 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
     handler: withErrorHandler(async function handler(
       request: FastifyRequest<{
         Params: typeof UpdateQuestionParams.static;
-        Body: typeof UpdateQuestionBody.static;
       }>,
       reply: FastifyReply,
     ) {
       const { t } = getTypedI18n(request);
       const { id } = request.params;
+
+      // Ensure question exists
+      const existingQuestion = await db.query.examQuestions.findFirst({
+        where: eq(examQuestions.id, id),
+      });
+
+      if (!existingQuestion) {
+        return reply.notFound(t(($) => $.exam.questions.update.notFound));
+      }
+
+      // Parse multipart data
+      const parts = request.parts();
+      let body: any = {};
+      const files: UploadedFile[] = [];
+
+      for await (const part of parts) {
+        if (part.type === "file") {
+          files.push({
+            buffer: await part.toBuffer(),
+            filename: part.filename,
+            mimetype: part.mimetype,
+          });
+        } else {
+          if (part.fieldname === "data") {
+            try {
+              body = JSON.parse(part.value as string);
+            } catch (e) {
+              return reply.badRequest("Invalid JSON data");
+            }
+          }
+        }
+      }
+
       const {
         subjectId,
         passageId,
@@ -107,16 +130,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         isActive,
         variableFormulas,
         reasonContent,
-      } = request.body;
-
-      // Ensure question exists
-      const existingQuestion = await db.query.examQuestions.findFirst({
-        where: eq(examQuestions.id, id),
-      });
-
-      if (!existingQuestion) {
-        return reply.notFound(t(($) => $.exam.questions.update.notFound));
-      }
+      } = body;
 
       // Verify new subject exists if provided
       if (subjectId !== undefined) {
@@ -138,6 +152,22 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }
       }
 
+      // Process uploaded files if any
+      let finalContent = content ?? existingQuestion.content;
+      let finalReasonContent = reasonContent ?? existingQuestion.reasonContent;
+
+      if (files.length > 0) {
+        const urlMap = await processQuestionFiles(id, files);
+
+        // Replace blob URLs with final URLs
+        if (content !== undefined) {
+          finalContent = replaceQuestionUrls(content, urlMap);
+        }
+        if (reasonContent !== undefined) {
+          finalReasonContent = replaceQuestionUrls(reasonContent, urlMap);
+        }
+      }
+
       // Build dynamic update payload
       const updatePayload: any = {
         updatedAt: new Date(),
@@ -147,15 +177,14 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (passageId !== undefined) {
         updatePayload.passageId = passageId === "" || passageId === "null" ? null : passageId;
       }
-      if (content !== undefined) updatePayload.content = content;
-      if (reasonContent !== undefined) updatePayload.reasonContent = reasonContent;
+      if (content !== undefined) updatePayload.content = finalContent;
+      if (reasonContent !== undefined) updatePayload.reasonContent = finalReasonContent;
       if (difficulty !== undefined) updatePayload.difficulty = difficulty;
       if (type !== undefined) updatePayload.type = type;
       if (maxScore !== undefined) updatePayload.maxScore = maxScore;
       if (scoringStrategy !== undefined) updatePayload.scoringStrategy = scoringStrategy;
       if (requiredTier !== undefined) updatePayload.requiredTier = requiredTier;
       if (educationGradeId !== undefined) {
-        // Handle null, 0, or empty string as NULL in DB
         updatePayload.educationGradeId =
           educationGradeId === null || educationGradeId === 0 || (educationGradeId as any) === ""
             ? null
@@ -169,6 +198,14 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .set(updatePayload)
         .where(eq(examQuestions.id, id))
         .returning();
+
+      // Clean up orphaned files
+      if (content !== undefined || reasonContent !== undefined) {
+        await cleanupQuestionFiles(
+          [...(existingQuestion.content || []), ...(existingQuestion.reasonContent || [])],
+          [...(finalContent || []), ...(finalReasonContent || [])],
+        );
+      }
 
       return reply.status(200).send({
         success: true,
