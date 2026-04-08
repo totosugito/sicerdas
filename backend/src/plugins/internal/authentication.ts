@@ -17,7 +17,16 @@ const authentication: FastifyPluginAsync = async (fastify) => {
     const response = await auth.handler(req);
 
     reply.status(response.status);
-    response.headers.forEach((value, key) => reply.header(key, value));
+
+    // Properly forward headers, especially multiple Set-Cookie headers
+    for (const [key, value] of response.headers.entries()) {
+      if (key.toLowerCase() === "set-cookie") {
+        reply.raw.appendHeader(key, value);
+      } else {
+        reply.header(key, value);
+      }
+    }
+
     return reply.send(response.body ? await response.text() : null);
   });
 };

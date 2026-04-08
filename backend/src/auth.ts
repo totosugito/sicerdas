@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, openAPI, emailOTP, multiSession, customSession } from "better-auth/plugins";
 import { db } from "./db/db-pool.ts";
@@ -29,6 +29,8 @@ const auth = betterAuth({
     provider: "pg",
     usePlural: true,
   }),
+  baseURL: envConfig.server.baseUrl,
+  basePath: "/api/auth",
   plugins: [
     admin(),
     openAPI({
@@ -173,9 +175,11 @@ const auth = betterAuth({
     },
   },
   trustedOrigins: envConfig.server.trustedOrigins,
-  secretKey: envConfig.server.secretKey,
-  debug: false,
-});
+  secret: envConfig.server.secretKey,
+  telemetry: {
+    debug: false,
+  },
+} satisfies BetterAuthOptions);
 
 export type User = typeof auth.$Infer.Session.user;
 export type Session = typeof auth.$Infer.Session;

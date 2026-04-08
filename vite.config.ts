@@ -42,7 +42,7 @@ export default defineConfig({
     },
   },
   build: {
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -57,6 +57,11 @@ export default defineConfig({
         },
       },
     },
+    // rolldownOptions: {
+    //   output: {
+    //     codeSplitting: true,
+    //   },
+    // },
   },
   define: {
     __BUILD_VERSION__: JSON.stringify(

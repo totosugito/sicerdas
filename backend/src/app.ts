@@ -10,7 +10,10 @@ import fs from "fs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export async function buildApp(options?: FastifyServerOptions) {
-  const server = Fastify(options);
+  const server = Fastify({
+    ...options,
+    trustProxy: true,
+  });
 
   // Configure i18n with proper options for fastify-i18n v3
   server.register(i18n, {
