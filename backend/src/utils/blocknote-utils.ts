@@ -21,10 +21,7 @@ export const getBlockNoteFileUrl = (
   entityId: string,
   fileName: string,
 ): string => {
-  return `${env.server.uploadsDir}/${subDir}/${yearMonth}/${entityId}/${fileName}`.replace(
-    /\/+/g,
-    "/",
-  );
+  return `${subDir}/${yearMonth}/${entityId}/${fileName}`.replace(/\/+/g, "/");
 };
 
 /**
@@ -98,11 +95,8 @@ export const processBlockNoteFiles = async (
     // S3/R2 STORAGE
     for (const file of files) {
       const fileName = createUniqueFileName(file.filename, "blocknote_file");
-      // Key includes /uploads/ prefix to match local structure
-      const key = `${env.server.uploadsDir}/${subDir}/${yearMonth}/${entityId}/${fileName}`.replace(
-        /\/+/g,
-        "/",
-      );
+      const relativePath = getBlockNoteFileUrl(subDir, yearMonth, entityId, fileName);
+      const key = `${env.server.uploadsDir}/${relativePath}`.replace(/\/+/g, "/");
 
       await s3Client.send(
         new PutObjectCommand({
@@ -113,7 +107,7 @@ export const processBlockNoteFiles = async (
         }),
       );
 
-      urlMap[file.filename] = key;
+      urlMap[file.filename] = relativePath;
     }
   } else {
     // LOCAL STORAGE
@@ -157,14 +151,19 @@ export const cleanupBlockNoteFiles = async (
   const oldUrls = extractBlockNoteUrls(oldContent, types);
   const newUrls = extractBlockNoteUrls(newContent, types);
 
-  const uploadsMark = env.server.uploadsDir;
+  const downloadsMark = env.server.uploadsDir;
 
   const getRelativePath = (url: string) => {
-    const index = url.indexOf(uploadsMark);
-    if (index !== -1) {
-      return url.substring(index + uploadsMark.length).replace(/^\/+/, "");
+    // Since images are now stored as subDir/year-month/entityId/filename.ext
+    // Any URL NOT starting with http or blob: is likely our relative path
+    if (url.startsWith("http") || url.startsWith("blob:")) {
+      return null;
     }
-    return null;
+    // If for some reason it still has the uploadsDir prefix (legacy), strip it
+    if (url.startsWith(downloadsMark)) {
+      return url.substring(downloadsMark.length).replace(/^\/+/, "");
+    }
+    return url;
   };
 
   const oldPaths = oldUrls.map(getRelativePath).filter((p): p is string => p !== null);
@@ -298,12 +297,16 @@ export const resolveBlockNoteUrls = (
         types.includes(block.type) &&
         block.props?.url &&
         typeof block.props.url === "string" &&
-        block.props.url.startsWith(env.server.uploadsDir)
+        !block.props.url.startsWith("http") &&
+        !block.props.url.startsWith("blob:")
       ) {
-        // Prepend uploadsUrl (which already has baseUrl or S3_PUBLIC_URL)
+        // Prepend baseUrl and uploadsDir
         newBlock.props = {
           ...newBlock.props,
-          url: `${env.server.baseUrl}${block.props.url}`.replace(/([^:]\/)\/+/g, "$1"),
+          url: `${env.server.baseUrl}/${env.server.uploadsDir}/${block.props.url}`.replace(
+            /([^:]\/)\/+/g,
+            "$1",
+          ),
         };
       }
 

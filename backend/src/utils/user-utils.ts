@@ -20,15 +20,16 @@ export const getUserAvatarUrl = (
     return avatarPath;
   }
 
-  // Ensure absolute path from baseUrl
-  const cleanPath = avatarPath.startsWith("/") ? avatarPath : `/${avatarPath}`;
+  // Ensure absolute path from baseUrl and uploadsDir
+  const uploadsDir = env.server.uploadsDir;
+  const cleanPath = avatarPath.startsWith("/") ? avatarPath.substring(1) : avatarPath;
 
-  return `${env.server.baseUrl}${cleanPath}`.replace(/([^:]\/)\/+/g, "$1");
+  return `${env.server.baseUrl}/${uploadsDir}/${cleanPath}`.replace(/([^:]\/)\/+/g, "$1");
 };
 
 /**
  * Saves a user's avatar to storage (Local or S3).
- * Returns the relative path for database storage (including uploadsDir).
+ * Returns the relative path for database storage (EXCLUDING uploadsDir).
  */
 export const saveUserAvatar = async (
   userId: string,
@@ -41,18 +42,16 @@ export const saveUserAvatar = async (
   const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
   const subDir = env.server.uploadsUserDir; // e.g. "users"
 
-  // Full path relative to project root / bucket root, including uploadsDir
-  const fullPath = `${env.server.uploadsDir}/${subDir}/${yearMonth}/${userId}/${fileName}`.replace(
-    /\/+/g,
-    "/",
-  );
+  // Relative path inside the uploads directory
+  const relativePath = `${subDir}/${yearMonth}/${userId}/${fileName}`.replace(/\/+/g, "/");
 
   if (env.server.useS3Storage) {
     // S3/R2 STORAGE
+    const key = `${env.server.uploadsDir}/${relativePath}`.replace(/\/+/g, "/");
     await s3Client.send(
       new PutObjectCommand({
         Bucket: env.server.s3Storage.bucketName,
-        Key: fullPath.startsWith("/") ? fullPath.substring(1) : fullPath,
+        Key: key.startsWith("/") ? key.substring(1) : key,
         Body: buffer,
         ContentType: mimetype,
       }),
@@ -76,17 +75,19 @@ export const saveUserAvatar = async (
     await writeFile(filePath, buffer);
   }
 
-  return fullPath;
+  return relativePath;
 };
 
 /**
  * Deletes a user's avatar from storage (Local or S3).
- * @param avatarPath The full path stored in the database (e.g. "/uploads/users/2026-04/...")
+ * @param avatarPath The relative path stored in the database (e.g. "users/2026-04/...")
  */
 export const deleteUserAvatar = async (avatarPath: string): Promise<void> => {
+  const uploadsDir = env.server.uploadsDir;
+
   if (env.server.useS3Storage) {
     // S3/R2 STORAGE
-    const key = avatarPath.replace(/\/+/g, "/").replace(/^\/+/, "");
+    const key = `${uploadsDir}/${avatarPath}`.replace(/\/+/g, "/").replace(/^\/+/, "");
 
     try {
       await s3Client.send(
@@ -100,7 +101,7 @@ export const deleteUserAvatar = async (avatarPath: string): Promise<void> => {
     }
   } else {
     // LOCAL STORAGE
-    const filePath = join(process.cwd(), env.server.uploadsRelativePath, avatarPath);
+    const filePath = join(process.cwd(), env.server.uploadsRelativePath, uploadsDir, avatarPath);
 
     if (existsSync(filePath)) {
       try {
