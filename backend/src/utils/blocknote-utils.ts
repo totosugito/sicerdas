@@ -2,24 +2,15 @@ import { join } from "node:path";
 import { writeFile, unlink, rm } from "node:fs/promises";
 import { existsSync, mkdirSync } from "node:fs";
 import {
-  S3Client,
+  s3Client,
   PutObjectCommand,
   DeleteObjectCommand,
   ListObjectsV2Command,
   DeleteObjectsCommand,
-} from "@aws-sdk/client-s3";
+} from "./storage.ts";
 import env from "../config/env.config.ts";
 import { createUniqueFileName } from "./my-utils.ts";
 import type { UploadedFile } from "../types/file.ts";
-
-const s3Client = new S3Client({
-  region: env.server.s3Storage.region || "auto",
-  endpoint: env.server.s3Storage.endpoint,
-  credentials: {
-    accessKeyId: env.server.s3Storage.accessKeyId || "",
-    secretAccessKey: env.server.s3Storage.secretAccessKey || "",
-  },
-});
 
 /**
  * Generates the relative URL for a BlockNote file

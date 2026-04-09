@@ -3,24 +3,13 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { users } from "../../db/schema/user/index.ts";
 import { eq } from "drizzle-orm";
-import { join } from "node:path";
-import { writeFile, unlink } from "node:fs/promises";
-import { existsSync, mkdirSync } from "node:fs";
 import sharp from "sharp";
 import type { UploadedFile } from "../../types/file.ts";
-import env from "../../config/env.config.ts";
 import { createUniqueFileName } from "../../utils/my-utils.ts";
 import { Type } from "@sinclair/typebox";
 import type { FastifyReply } from "fastify";
-import { getUserAvatarUrl } from "../../utils/user-utils.ts";
+import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../utils/user-utils.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
-
-const uploadDir = join(
-  process.cwd(),
-  env.server.uploadsRelativePath,
-  env.server.uploadsDir,
-  env.server.uploadsUserDir,
-);
 
 export const processChangeAvatar = async (
   req: any,
@@ -41,7 +30,7 @@ export const processChangeAvatar = async (
   }
 
   // Validate file size (2MB max)
-  const maxSize = 2 * 1024 * 1024; // 5MB
+  const maxSize = 2 * 1024 * 1024; // 2MB
   if (buffer.length > maxSize) {
     return reply.status(400).send({
       success: false,
@@ -52,17 +41,13 @@ export const processChangeAvatar = async (
   // Generate a unique filename with cleaned name
   const fileName = createUniqueFileName(originalName, "avatar", "jpg");
 
-  // Create user-specific directory
-  const userDir = join(uploadDir, userId);
-  if (!existsSync(userDir)) {
-    mkdirSync(userDir, { recursive: true });
-  }
-
-  const filePath = join(userDir, fileName);
-
-  // Get current user to check for existing avatar
+  // Get current user to check for existing avatar and get createdAt for folder structure
   const [currentUser] = await db
-    .select({ userId: users.id, image: users.image })
+    .select({
+      userId: users.id,
+      image: users.image,
+      createdAt: users.createdAt,
+    })
     .from(users)
     .where(eq(users.id, userId))
     .limit(1);
@@ -70,10 +55,8 @@ export const processChangeAvatar = async (
   // If user has an existing avatar, delete the old file
   if (currentUser?.image) {
     try {
-      const oldFilePath = join(uploadDir, currentUser.userId, currentUser.image);
-      if (existsSync(oldFilePath)) {
-        await unlink(oldFilePath);
-      }
+      // image now contains the full relative path
+      await deleteUserAvatar(currentUser.image);
     } catch (_error: unknown) {
       // Continue with the upload even if deletion fails
     }
@@ -82,16 +65,22 @@ export const processChangeAvatar = async (
   // Process and save the image with sharp
   const processedImage = await sharp(buffer)
     .resize(400) // Set width to 400px, height will be calculated automatically to maintain aspect ratio
-    .jpeg({ quality: 90, force: false }) // Convert to JPEG with 80% quality if not already
+    .jpeg({ quality: 90, force: false }) // Convert to JPEG with 90% quality if not already
     .toBuffer();
 
-  await writeFile(filePath, processedImage);
+  const finalPath = await saveUserAvatar(
+    userId,
+    processedImage,
+    fileName,
+    "image/jpeg",
+    currentUser.createdAt,
+  );
 
-  // Update user's avatar in the database
+  // Update user's avatar in the database with the full relative path
   const [updatedUser] = await db
     .update(users)
     .set({
-      image: fileName,
+      image: finalPath,
       updatedAt: new Date(),
     })
     .where(eq(users.id, userId))
@@ -103,7 +92,7 @@ export const processChangeAvatar = async (
     data: {
       id: updatedUser.id,
       name: updatedUser.name,
-      image: getUserAvatarUrl(userId, updatedUser.image), // Return the public URL of the updatedUser.image
+      image: getUserAvatarUrl(userId, updatedUser.image), // Return the public URL
     },
   };
 };
@@ -152,7 +141,18 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       // Check if this is a remove avatar request
       const action = query.action;
       if (action === "remove") {
-        // Remove the user's avatar
+        // Get current user to delete the file
+        const [currentUser] = await db
+          .select({ image: users.image })
+          .from(users)
+          .where(eq(users.id, userId))
+          .limit(1);
+
+        if (currentUser?.image) {
+          await deleteUserAvatar(currentUser.image);
+        }
+
+        // Remove the user's avatar from DB
         const [updatedUser] = await db
           .update(users)
           .set({
