@@ -222,7 +222,7 @@ export function DataTable<TData>({
           <TableHeader
             className={cn(
               "w-full",
-              isStickyHeader ? "sticky top-0 z-10 backdrop-blur-xs" : "",
+              isStickyHeader ? "sticky top-0 z-5 backdrop-blur-xs" : "",
               styles?.TableHeader?.default,
             )}
           >
