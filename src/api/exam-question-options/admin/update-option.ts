@@ -4,7 +4,6 @@ import { useMutation } from "@tanstack/react-query";
 import { ExamQuestionOptionDetailResponse } from "../types";
 
 export interface UpdateQuestionOptionRequest {
-  id: string;
   questionId?: string;
   content?: Record<string, unknown>[];
   isCorrect?: boolean;
@@ -12,14 +11,14 @@ export interface UpdateQuestionOptionRequest {
   order?: number;
 }
 
-export const useUpdateQuestionOption = () => {
+export const useUpdateQuestionOption = (id: string) => {
   return useMutation({
-    mutationFn: async (payload: UpdateQuestionOptionRequest) => {
-      const { id, ...body } = payload;
+    mutationKey: ["admin-exam-question-options-update", id],
+    mutationFn: async (payload: UpdateQuestionOptionRequest | FormData) => {
       const response = await fetchApi({
         method: "PUT",
         url: AppApi.exam.questionOptions.admin.update.replace(":id", id),
-        body: body,
+        body: payload,
         withCredentials: true,
       });
       return response as ExamQuestionOptionDetailResponse;

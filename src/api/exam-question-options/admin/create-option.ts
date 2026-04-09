@@ -6,15 +6,15 @@ import { ExamQuestionOptionDetailResponse, QuestionOptionFormValues } from "../t
 export type CreateQuestionOptionRequest = QuestionOptionFormValues;
 
 export const useCreateQuestionOption = () => {
-    return useMutation({
-        mutationFn: async (payload: CreateQuestionOptionRequest) => {
-            const response = await fetchApi({
-                method: "POST",
-                url: AppApi.exam.questionOptions.admin.create,
-                body: payload,
-                withCredentials: true,
-            });
-            return response as ExamQuestionOptionDetailResponse;
-        },
-    });
+  return useMutation({
+    mutationFn: async (payload: CreateQuestionOptionRequest | FormData) => {
+      const response = await fetchApi({
+        method: "POST",
+        url: AppApi.exam.questionOptions.admin.create,
+        body: payload,
+        withCredentials: true,
+      });
+      return response as ExamQuestionOptionDetailResponse;
+    },
+  });
 };

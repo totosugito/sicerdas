@@ -6,15 +6,15 @@ import { ExamQuestionSolutionDetailResponse, QuestionSolutionFormValues } from "
 export type CreateQuestionSolutionRequest = QuestionSolutionFormValues;
 
 export const useCreateQuestionSolution = () => {
-    return useMutation({
-        mutationFn: async (payload: CreateQuestionSolutionRequest) => {
-            const response = await fetchApi({
-                method: "POST",
-                url: AppApi.exam.questionSolutions.admin.create,
-                body: payload,
-                withCredentials: true,
-            });
-            return response as ExamQuestionSolutionDetailResponse;
-        },
-    });
+  return useMutation({
+    mutationFn: async (payload: CreateQuestionSolutionRequest | FormData) => {
+      const response = await fetchApi({
+        method: "POST",
+        url: AppApi.exam.questionSolutions.admin.create,
+        body: payload,
+        withCredentials: true,
+      });
+      return response as ExamQuestionSolutionDetailResponse;
+    },
+  });
 };

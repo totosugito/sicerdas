@@ -9,7 +9,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 
 import { ExamQuestion } from "@/api/exam-questions";
 
-import { blocknote_to_text } from "@/lib/blocknote-utils";
+import { blocknote_to_text, prepare_blocknote_submission } from "@/lib/blocknote-utils";
 
 export type DialogQuestionOptionFormProps = {
   open: boolean;
@@ -48,7 +48,14 @@ export const DialogQuestionOptionForm = ({
   const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const createMutation = useCreateQuestionOption();
-  const updateMutation = useUpdateQuestionOption();
+  const updateMutation = useUpdateQuestionOption(option?.id || "");
+  const pendingFiles = React.useRef<Map<string, File>>(new Map());
+
+  const uploadFile = async (file: File) => {
+    const url = URL.createObjectURL(file);
+    pendingFiles.current.set(url, file);
+    return url;
+  };
 
   const formSchema = {
     content: z
@@ -78,6 +85,7 @@ export const DialogQuestionOptionForm = ({
       placeholder: t(($) => $.exam.options.form.content.placeholder),
       wrapperClassName: "min-h-[300px]",
       required: true,
+      uploadFile,
     },
     isCorrect: {
       type: "switch",
@@ -120,51 +128,68 @@ export const DialogQuestionOptionForm = ({
     content: <FormOption />,
     onCancelClick: () => onOpenChange(false),
     onConfirmClick: async (values: any) => {
+      const formData = new FormData();
+
+      // 1. Prepare content for submission
+      const { submissionContent, filesToUpload } = prepare_blocknote_submission(
+        values.content,
+        pendingFiles.current,
+        { prefix: "option" },
+      );
+
+      // 2. Add files
+      filesToUpload.forEach(({ placeholder, file }) => {
+        formData.append("files", file, placeholder);
+      });
+
+      // 3. Add data
+      const commonData = {
+        ...values,
+        content: submissionContent,
+      };
+
       if (option) {
         // UPDATE
-        await updateMutation.mutateAsync(
-          {
-            id: option.id,
-            content: values.content,
-            isCorrect: values.isCorrect,
-            score: values.score,
-          },
-          {
-            onSuccess: (res) => {
-              showNotifSuccess({
-                message: res.message || t(($) => $.exam.options.notifications.updateSuccess),
-              });
-              queryClient.invalidateQueries({ queryKey: ["admin-exam-question-detail"] });
-              onOpenChange(false);
-            },
-            onError: (err: any) => {
-              showNotifError({ message: err.message || t(($) => $.labels.error) });
-            },
-          },
+        formData.append(
+          "data",
+          JSON.stringify({
+            ...commonData,
+          }),
         );
+        await updateMutation.mutateAsync(formData, {
+          onSuccess: (res) => {
+            showNotifSuccess({
+              message: res.message || t(($) => $.exam.options.notifications.updateSuccess),
+            });
+            queryClient.invalidateQueries({ queryKey: ["admin-exam-question-detail"] });
+            onOpenChange(false);
+          },
+          onError: (err: any) => {
+            showNotifError({ message: err.message || t(($) => $.labels.error) });
+          },
+        });
       } else {
         // CREATE
-        await createMutation.mutateAsync(
-          {
+        formData.append(
+          "data",
+          JSON.stringify({
             questionId,
-            content: values.content,
-            isCorrect: values.isCorrect,
-            score: values.score,
+            ...commonData,
             order: nextOrder || 1,
-          },
-          {
-            onSuccess: (res) => {
-              showNotifSuccess({
-                message: res.message || t(($) => $.exam.options.notifications.createSuccess),
-              });
-              queryClient.invalidateQueries({ queryKey: ["admin-exam-question-detail"] });
-              onOpenChange(false);
-            },
-            onError: (err: any) => {
-              showNotifError({ message: err.message || t(($) => $.labels.error) });
-            },
-          },
+          }),
         );
+        await createMutation.mutateAsync(formData, {
+          onSuccess: (res) => {
+            showNotifSuccess({
+              message: res.message || t(($) => $.exam.options.notifications.createSuccess),
+            });
+            queryClient.invalidateQueries({ queryKey: ["admin-exam-question-detail"] });
+            onOpenChange(false);
+          },
+          onError: (err: any) => {
+            showNotifError({ message: err.message || t(($) => $.labels.error) });
+          },
+        });
       }
     },
   };

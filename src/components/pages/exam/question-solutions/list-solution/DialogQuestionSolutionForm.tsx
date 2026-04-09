@@ -1,3 +1,4 @@
+import React from "react";
 import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
@@ -11,7 +12,7 @@ import { EnumSolutionType } from "@/api/exam-questions/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { useListTier } from "@/api/app-tier";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
-import { blocknote_to_text } from "@/lib/blocknote-utils";
+import { blocknote_to_text, prepare_blocknote_submission } from "@/lib/blocknote-utils";
 
 export type DialogQuestionSolutionFormProps = {
   open: boolean;
@@ -46,8 +47,15 @@ export const DialogQuestionSolutionForm = ({
   const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const createMutation = useCreateQuestionSolution();
-  const updateMutation = useUpdateQuestionSolution();
+  const updateMutation = useUpdateQuestionSolution(solution?.id || "");
   const { data: tierData, isLoading: isLoadingTier } = useListTier();
+  const pendingFiles = React.useRef<Map<string, File>>(new Map());
+
+  const uploadFile = async (file: File) => {
+    const url = URL.createObjectURL(file);
+    pendingFiles.current.set(url, file);
+    return url;
+  };
 
   const tierOptions =
     tierData?.data?.map((tier: any) => ({
@@ -119,6 +127,7 @@ export const DialogQuestionSolutionForm = ({
       placeholder: t(($) => $.exam.solutions.form.content.placeholder),
       wrapperClassName: "min-h-[400px]",
       required: true,
+      uploadFile,
     },
   };
 
@@ -149,43 +158,64 @@ export const DialogQuestionSolutionForm = ({
     content: <FormSolution />,
     onCancelClick: () => onOpenChange(false),
     onConfirmClick: async (values: any) => {
+      const formData = new FormData();
+
+      // 1. Prepare content for submission
+      const { submissionContent, filesToUpload } = prepare_blocknote_submission(
+        values.content,
+        pendingFiles.current,
+        { prefix: "solution" },
+      );
+
+      // 2. Add files
+      filesToUpload.forEach(({ placeholder, file }) => {
+        formData.append("files", file, placeholder);
+      });
+
+      // 3. Add data
+      const commonData = {
+        ...values,
+        content: submissionContent,
+      };
+
       if (solution) {
         // UPDATE
-        await updateMutation.mutateAsync(
-          {
-            id: solution.id,
-            ...values,
-          },
-          {
-            onSuccess: (res) => {
-              showNotifSuccess({ message: res.message || t(($) => $.labels.success) });
-              queryClient.invalidateQueries({ queryKey: ["admin-exam-question-detail"] });
-              onOpenChange(false);
-            },
-            onError: (err: any) => {
-              showNotifError({ message: err.message || t(($) => $.labels.error) });
-            },
-          },
+        formData.append(
+          "data",
+          JSON.stringify({
+            ...commonData,
+          }),
         );
+        await updateMutation.mutateAsync(formData, {
+          onSuccess: (res) => {
+            showNotifSuccess({ message: res.message || t(($) => $.labels.success) });
+            queryClient.invalidateQueries({ queryKey: ["admin-exam-question-detail"] });
+            onOpenChange(false);
+          },
+          onError: (err: any) => {
+            showNotifError({ message: err.message || t(($) => $.labels.error) });
+          },
+        });
       } else {
         // CREATE
-        await createMutation.mutateAsync(
-          {
+        formData.append(
+          "data",
+          JSON.stringify({
             questionId,
             order: nextOrder || 1,
-            ...values,
-          },
-          {
-            onSuccess: (res) => {
-              showNotifSuccess({ message: res.message || t(($) => $.labels.success) });
-              queryClient.invalidateQueries({ queryKey: ["admin-exam-question-detail"] });
-              onOpenChange(false);
-            },
-            onError: (err: any) => {
-              showNotifError({ message: err.message || t(($) => $.labels.error) });
-            },
-          },
+            ...commonData,
+          }),
         );
+        await createMutation.mutateAsync(formData, {
+          onSuccess: (res) => {
+            showNotifSuccess({ message: res.message || t(($) => $.labels.success) });
+            queryClient.invalidateQueries({ queryKey: ["admin-exam-question-detail"] });
+            onOpenChange(false);
+          },
+          onError: (err: any) => {
+            showNotifError({ message: err.message || t(($) => $.labels.error) });
+          },
+        });
       }
     },
   };
