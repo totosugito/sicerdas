@@ -4,9 +4,10 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { eq } from "drizzle-orm";
+import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import { cleanupQuestionFiles } from "../../../../utils/question-utils.ts";
+import { deleteBlockNoteEntityDirectory } from "../../../../utils/blocknote-utils.ts";
 
 const DeleteQuestionParams = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -56,11 +57,11 @@ const deleteQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       // and solutions, so they will be automatically deleted by PostgreSQL.
       await db.delete(examQuestions).where(eq(examQuestions.id, id));
 
-      // Clean up files from disk
-      await cleanupQuestionFiles(
-        [...(existingQuestion.content || []), ...(existingQuestion.reasonContent || [])],
-        [],
-        ["image"],
+      // Clean up directory from disk
+      await deleteBlockNoteEntityDirectory(
+        env.server.uploadsQuestionDir,
+        id,
+        existingQuestion.createdAt,
         request.log,
       );
 

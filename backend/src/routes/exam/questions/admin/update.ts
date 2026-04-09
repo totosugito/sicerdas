@@ -6,15 +6,16 @@ import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { eq } from "drizzle-orm";
+import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
-  processQuestionFiles,
-  replaceQuestionUrls,
-  cleanupQuestionFiles,
+  processBlockNoteFiles,
+  replaceBlockNoteUrls,
+  cleanupBlockNoteFiles,
   resolveBlockNoteUrls,
-} from "../../../../utils/question-utils.ts";
+} from "../../../../utils/blocknote-utils.ts";
 
 const VariableFormulasType = Type.Optional(
   Type.Object({
@@ -153,14 +154,19 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       let finalReasonContent = reasonContent ?? existingQuestion.reasonContent;
 
       if (files.length > 0) {
-        const urlMap = await processQuestionFiles(id, files);
+        const urlMap = await processBlockNoteFiles(
+          env.server.uploadsQuestionDir,
+          id,
+          files,
+          existingQuestion.createdAt,
+        );
 
         // Replace blob URLs with final URLs
         if (content !== undefined) {
-          finalContent = replaceQuestionUrls(content, urlMap);
+          finalContent = replaceBlockNoteUrls(content, urlMap);
         }
         if (reasonContent !== undefined) {
-          finalReasonContent = replaceQuestionUrls(reasonContent, urlMap);
+          finalReasonContent = replaceBlockNoteUrls(reasonContent, urlMap);
         }
       }
 
@@ -197,9 +203,10 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Clean up orphaned files
       if (content !== undefined || reasonContent !== undefined) {
-        await cleanupQuestionFiles(
+        await cleanupBlockNoteFiles(
           [...(existingQuestion.content || []), ...(existingQuestion.reasonContent || [])],
           [...(finalContent || []), ...(finalReasonContent || [])],
+          env.server.uploadsQuestionDir,
           ["image"],
           request.log,
         );

@@ -1,19 +1,20 @@
 import { join } from "node:path";
-import { writeFile, unlink } from "node:fs/promises";
+import { writeFile, unlink, rm } from "node:fs/promises";
 import { existsSync, mkdirSync } from "node:fs";
 import env from "../config/env.config.ts";
 import { createUniqueFileName } from "./my-utils.ts";
 import type { UploadedFile } from "../types/file.ts";
 
 /**
- * Generates the relative URL for a question file
+ * Generates the relative URL for a BlockNote file
  */
-export const getQuestionFileUrl = (
+export const getBlockNoteFileUrl = (
+  subDir: string,
   yearMonth: string,
-  questionId: string,
+  entityId: string,
   fileName: string,
 ): string => {
-  return `${env.server.uploadsDir}/${env.server.uploadsQuestionDir}/${yearMonth}/${questionId}/${fileName}`.replace(
+  return `${env.server.uploadsDir}/${subDir}/${yearMonth}/${entityId}/${fileName}`.replace(
     /\/+/g,
     "/",
   );
@@ -22,7 +23,7 @@ export const getQuestionFileUrl = (
 /**
  * Extracts all unique URLs from BlockNote content
  */
-export const extractQuestionUrls = (content: any[], types: string[] = ["image"]): string[] => {
+export const extractBlockNoteUrls = (content: any[], types: string[] = ["image"]): string[] => {
   const urls: string[] = [];
 
   const traverse = (blocks: any[]) => {
@@ -46,7 +47,7 @@ export const extractQuestionUrls = (content: any[], types: string[] = ["image"])
 /**
  * Replaces temporary blob URLs or specific filenames with final public URLs in BlockNote content
  */
-export const replaceQuestionUrls = (
+export const replaceBlockNoteUrls = (
   content: any[],
   urlMap: Record<string, string>,
   types: string[] = ["image"],
@@ -74,21 +75,23 @@ export const replaceQuestionUrls = (
 };
 
 /**
- * Processes and saves uploaded question files, returning a map of original names to final URLs
+ * Processes and saves uploaded BlockNote files, returning a map of original names to final URLs
  */
-export const processQuestionFiles = async (
-  questionId: string,
+export const processBlockNoteFiles = async (
+  subDir: string,
+  entityId: string,
   files: UploadedFile[],
+  createdAt?: Date | string,
 ): Promise<Record<string, string>> => {
-  const now = new Date();
-  const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const date = createdAt ? new Date(createdAt) : new Date();
+  const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
   const uploadDir = join(
     process.cwd(),
     env.server.uploadsRelativePath,
     env.server.uploadsDir,
-    env.server.uploadsQuestionDir,
+    subDir,
     yearMonth,
-    questionId,
+    entityId,
   );
 
   if (!existsSync(uploadDir)) {
@@ -98,30 +101,30 @@ export const processQuestionFiles = async (
   const urlMap: Record<string, string> = {};
 
   for (const file of files) {
-    const fileName = createUniqueFileName(file.filename, "question_file");
+    const fileName = createUniqueFileName(file.filename, "blocknote_file");
     const filePath = join(uploadDir, fileName);
 
     await writeFile(filePath, file.buffer);
 
     // Save mapping using the original filename as the key
-    // This assumes the frontend sends the original filename (or blob URL name)
-    urlMap[file.filename] = getQuestionFileUrl(yearMonth, questionId, fileName);
+    urlMap[file.filename] = getBlockNoteFileUrl(subDir, yearMonth, entityId, fileName);
   }
 
   return urlMap;
 };
 
 /**
- * Deletes files that are no longer referenced in the question content
+ * Deletes files that are no longer referenced in the BlockNote content
  */
-export const cleanupQuestionFiles = async (
+export const cleanupBlockNoteFiles = async (
   oldContent: any[],
   newContent: any[],
+  subDir: string, // Unused for now but kept for consistency if path logic changes
   types: string[] = ["image"],
   logger?: any,
 ): Promise<void> => {
-  const oldUrls = extractQuestionUrls(oldContent, types);
-  const newUrls = extractQuestionUrls(newContent, types);
+  const oldUrls = extractBlockNoteUrls(oldContent, types);
+  const newUrls = extractBlockNoteUrls(newContent, types);
 
   const uploadsMark = env.server.uploadsDir;
 
@@ -159,7 +162,38 @@ export const cleanupQuestionFiles = async (
 };
 
 /**
- * Resolves relative URLs (starting with /uploads/) to absolute URLs in BlockNote content for display
+ * Deletes the entire directory associated with a BlockNote entity
+ */
+export const deleteBlockNoteEntityDirectory = async (
+  subDir: string,
+  entityId: string,
+  createdAt: Date | string,
+  logger?: any,
+): Promise<void> => {
+  const date = new Date(createdAt);
+  const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+  const dirPath = join(
+    process.cwd(),
+    env.server.uploadsRelativePath,
+    env.server.uploadsDir,
+    subDir,
+    yearMonth,
+    entityId,
+  );
+
+  if (existsSync(dirPath)) {
+    try {
+      await rm(dirPath, { recursive: true, force: true });
+    } catch (error) {
+      if (logger?.error) {
+        logger.error({ err: error, dirPath }, "Error deleting entity directory from disk");
+      }
+    }
+  }
+};
+
+/**
+ * Resolves relative URLs to absolute URLs in BlockNote content for display
  */
 export const resolveBlockNoteUrls = (
   content: any[] | null | undefined,

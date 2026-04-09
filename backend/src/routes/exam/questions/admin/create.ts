@@ -6,6 +6,7 @@ import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { eq } from "drizzle-orm";
+import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import {
@@ -14,7 +15,7 @@ import {
   EnumScoringStrategy,
 } from "../../../../db/schema/exam/enums.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
-import { processQuestionFiles, replaceQuestionUrls } from "../../../../utils/question-utils.ts";
+import { processBlockNoteFiles, replaceBlockNoteUrls } from "../../../../utils/blocknote-utils.ts";
 
 const VariableFormulasType = Type.Optional(
   Type.Object({
@@ -160,11 +161,16 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       let finalReasonContent = reasonContent || [];
 
       if (files.length > 0) {
-        const urlMap = await processQuestionFiles(newQuestion.id, files);
+        const urlMap = await processBlockNoteFiles(
+          env.server.uploadsQuestionDir,
+          newQuestion.id,
+          files,
+          newQuestion.createdAt,
+        );
 
         // Replace blob URLs with final URLs in content
-        finalContent = replaceQuestionUrls(finalContent, urlMap);
-        finalReasonContent = replaceQuestionUrls(finalReasonContent, urlMap);
+        finalContent = replaceBlockNoteUrls(finalContent, urlMap);
+        finalReasonContent = replaceBlockNoteUrls(finalReasonContent, urlMap);
 
         // Update the question with final content
         await db

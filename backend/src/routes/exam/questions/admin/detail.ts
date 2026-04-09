@@ -12,6 +12,14 @@ import {
   EnumScoringStrategy,
   EnumSolutionType,
 } from "../../../../db/schema/exam/enums.ts";
+import { examQuestionOptions } from "../../../../db/schema/exam/question-options.ts";
+import { examQuestionSolutions } from "../../../../db/schema/exam/question-solutions.ts";
+import { examQuestionTags } from "../../../../db/schema/exam/question-tags.ts";
+import { examPassages } from "../../../../db/schema/exam/passages.ts";
+import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
+import { educationGrades } from "../../../../db/schema/education/grades.ts";
+import { educationTags } from "../../../../db/schema/education/tags.ts";
+import { resolveBlockNoteUrls } from "../../../../utils/blocknote-utils.ts";
 
 const VariableFormulasType = Type.Optional(
   Type.Object({
@@ -20,14 +28,6 @@ const VariableFormulasType = Type.Optional(
     solutions: Type.Optional(Type.Record(Type.String(), Type.String())),
   }),
 );
-import { examQuestionOptions } from "../../../../db/schema/exam/question-options.ts";
-import { examQuestionSolutions } from "../../../../db/schema/exam/question-solutions.ts";
-import { examQuestionTags } from "../../../../db/schema/exam/question-tags.ts";
-import { examPassages } from "../../../../db/schema/exam/passages.ts";
-import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
-import { educationGrades } from "../../../../db/schema/education/grades.ts";
-import { educationTags } from "../../../../db/schema/education/tags.ts";
-import { resolveBlockNoteUrls } from "../../../../utils/question-utils.ts";
 
 const GetQuestionParams = Type.Object({
   id: Type.String({ format: "uuid" }),
