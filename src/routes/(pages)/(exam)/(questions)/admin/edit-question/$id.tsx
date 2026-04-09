@@ -61,11 +61,13 @@ function AdminExamQuestionsEditPage() {
 
   const handleUpdate = async (values: UpdateQuestionRequest | FormData) => {
     try {
-      let submissionData: UpdateQuestionRequest | FormData = values;
+      // Always use FormData for this endpoint because backend requires multipart
+      let finalSubmission: FormData;
 
-      // Only transform if it's a plain object (not FormData)
-      if (!(values instanceof FormData)) {
-        submissionData = {
+      if (values instanceof FormData) {
+        finalSubmission = values;
+      } else {
+        const transformedData = {
           ...values,
           educationGradeId:
             values.educationGradeId === undefined
@@ -81,9 +83,12 @@ function AdminExamQuestionsEditPage() {
                 ? null
                 : values.passageId,
         };
+
+        finalSubmission = new FormData();
+        finalSubmission.append("data", JSON.stringify(transformedData));
       }
 
-      await updateMutation.mutateAsync(submissionData);
+      await updateMutation.mutateAsync(finalSubmission);
       showNotifSuccess({ message: t(($) => $.exam.questions.edit.success) });
       refetch();
     } catch (error: any) {

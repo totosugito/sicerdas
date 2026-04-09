@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -9,15 +9,23 @@ import { FormWithDetector } from "@/components/custom/components";
 import { useListSubjectSimple } from "@/api/exam-subjects";
 import { PassageFormValues } from "@/api/exam-passages/types";
 import { Button } from "@/components/ui/button";
+import { prepare_blocknote_submission } from "@/lib/blocknote-utils";
 
 type PassageFormProps = {
   defaultValues?: Partial<PassageFormValues>;
-  onSubmit: (values: PassageFormValues) => void;
+  onSubmit: (data: FormData) => void;
   isPending?: boolean;
 };
 
 export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormProps) {
   const { t } = useAppTranslation();
+  const pendingFiles = useRef<Map<string, File>>(new Map());
+
+  const uploadFile = async (file: File) => {
+    const url = URL.createObjectURL(file);
+    pendingFiles.current.set(url, file);
+    return url;
+  };
 
   // Fetch searchable subjects
   const { data: subjectsData, isFetching: isFetchingSubjects } = useListSubjectSimple({
@@ -63,7 +71,30 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
   }, [defaultValues, form]);
 
   const onFormSubmit = (values: PassageFormValues) => {
-    onSubmit(values);
+    const formData = new FormData();
+
+    // 1. Prepare content for submission
+    const { submissionContent, filesToUpload } = prepare_blocknote_submission(
+      values.content || [],
+      pendingFiles.current,
+      { prefix: "passage" },
+    );
+
+    // 2. Add files
+    filesToUpload.forEach(({ placeholder, file }) => {
+      formData.append("files", file, placeholder);
+    });
+
+    // 3. Add data
+    formData.append(
+      "data",
+      JSON.stringify({
+        ...values,
+        content: submissionContent,
+      }),
+    );
+
+    onSubmit(formData);
   };
 
   const formConfig = {
@@ -94,6 +125,7 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
       type: "blocknote",
       name: "content",
       label: t(($) => $.exam.passages.form.content.label),
+      uploadFile,
     },
   };
 

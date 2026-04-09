@@ -20,19 +20,23 @@ function AdminExamQuestionsCreatePage() {
   const createMutation = useCreateQuestion();
 
   const onSubmit = async (values: QuestionFormValues | FormData) => {
-    let submissionData = values;
+    let finalSubmission: FormData;
 
-    // If it's a plain object (not FormData), apply transformations
-    if (!(values instanceof FormData)) {
-      submissionData = {
+    if (values instanceof FormData) {
+      finalSubmission = values;
+    } else {
+      const transformedData = {
         ...values,
         educationGradeId: values.educationGradeId ? Number(values.educationGradeId) : undefined,
         requiredTier: values.requiredTier || undefined,
         passageId: values.passageId || undefined,
       };
+
+      finalSubmission = new FormData();
+      finalSubmission.append("data", JSON.stringify(transformedData));
     }
 
-    createMutation.mutate(submissionData as any, {
+    createMutation.mutate(finalSubmission, {
       onSuccess: (res) => {
         showNotifSuccess({ message: res.message || t(($) => $.exam.questions.create.success) });
         queryClient.invalidateQueries({ queryKey: ["admin-exam-questions-list"] });

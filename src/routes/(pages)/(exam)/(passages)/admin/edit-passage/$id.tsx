@@ -20,7 +20,7 @@ function EditPassagePage() {
   const navigate = useNavigate();
 
   const { data, isLoading, isError, error } = useGetPassage(id);
-  const updateMutation = useUpdatePassage();
+  const updateMutation = useUpdatePassage(id);
 
   const initialValues: Partial<PassageFormValues> = useMemo(() => {
     if (!data?.data) return {};
@@ -32,21 +32,18 @@ function EditPassagePage() {
     };
   }, [data?.data]);
 
-  const onSubmit = async (values: PassageFormValues) => {
-    updateMutation.mutate(
-      { id, ...values },
-      {
-        onSuccess: (res) => {
-          showNotifSuccess({
-            message: res.message || t(($) => $.exam.passages.notifications.updateSuccess),
-          });
-          queryClient.invalidateQueries({ queryKey: ["admin-exam-passages-detail", id] });
-        },
-        onError: (err: any) => {
-          showNotifError({ message: err.message || t(($) => $.labels.error) });
-        },
+  const onSubmit = async (values: FormData) => {
+    updateMutation.mutate(values, {
+      onSuccess: (res) => {
+        showNotifSuccess({
+          message: res.message || t(($) => $.exam.passages.notifications.updateSuccess),
+        });
+        queryClient.invalidateQueries({ queryKey: ["admin-exam-passages-detail", id] });
       },
-    );
+      onError: (err: any) => {
+        showNotifError({ message: err.message || t(($) => $.labels.error) });
+      },
+    });
   };
 
   if (isLoading) {
