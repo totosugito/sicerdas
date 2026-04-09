@@ -27,12 +27,13 @@ export const schema = Type.Object({
   NO_REPLY_EMAIL: Type.Optional(Type.String()),
   NO_REPLY_EMAIL_NAME: Type.Optional(Type.String()),
   UPLOAD_DIR: Type.String({ default: "/uploads/" }),
-  USE_S3_STRORAGE: Type.Boolean({ default: false }),
-  S3_BUCKET_NAME: Type.Optional(Type.String()),
-  S3_REGION: Type.Optional(Type.String()),
+  USE_S3_STORAGE: Type.Boolean({ default: false }),
+  S3_BUCKET_NAME: Type.Optional(Type.String({ default: "si-cerdas" })),
   S3_ACCESS_KEY_ID: Type.Optional(Type.String()),
   S3_SECRET_ACCESS_KEY: Type.Optional(Type.String()),
   S3_ENDPOINT: Type.Optional(Type.String()),
+  S3_PUBLIC_URL: Type.Optional(Type.String()),
+  S3_REGION: Type.Optional(Type.String()),
 });
 
 // Delete only keys defined in schema from process.env
@@ -63,21 +64,27 @@ export default {
     host: env.HOST,
     port: env.PORT,
     frontendUrl: env.FRONTEND_URL,
-    uploadsUrl:
-      process.env.NODE_ENV === "development"
-        ? `${env.PROTOCOL}://${env.HOST}:${env.PORT}${env.UPLOAD_DIR}`.replace(/([^:]\/)\/+/g, "$1")
-        : env.FRONTEND_URL.startsWith("http")
-          ? `${env.FRONTEND_URL}${env.UPLOAD_DIR}`.replace(/([^:]\/)\/+/g, "$1")
-          : `${env.PROTOCOL}://${env.FRONTEND_URL}${env.UPLOAD_DIR}`.replace(/([^:]\/)\/+/g, "$1"),
-    baseUrl: `http://${env.HOST === "0.0.0.0" ? "127.0.0.1" : env.HOST}:${env.PORT}`.replace(
-      /([^:]\/)\/+/g,
-      "$1",
-    ),
-    uploadsRelativePath: env.USE_S3_STRORAGE ? "" : "..",
+    baseUrl:
+      env.USE_S3_STORAGE && env.S3_PUBLIC_URL
+        ? env.S3_PUBLIC_URL
+        : `http://${env.HOST === "0.0.0.0" ? "127.0.0.1" : env.HOST}:${env.PORT}`.replace(
+            /([^:]\/)\/+/g,
+            "$1",
+          ),
+    uploadsRelativePath: env.USE_S3_STORAGE ? "" : "..",
     uploadsDir: env.UPLOAD_DIR,
     uploadsUserDir: "users",
     uploadsQuestionDir: "exam/question",
     uploadsPassageDir: "exam/passage",
+    useS3Storage: env.USE_S3_STORAGE,
+    s3Storage: {
+      bucketName: env.S3_BUCKET_NAME,
+      accessKeyId: env.S3_ACCESS_KEY_ID,
+      secretAccessKey: env.S3_SECRET_ACCESS_KEY,
+      endpoint: env.S3_ENDPOINT,
+      publicUrl: env.S3_PUBLIC_URL,
+      region: env.S3_REGION,
+    },
     trustedOrigins: [
       env.HOST,
       `${env.PROTOCOL}://${env.HOST}:${env.PORT}`,

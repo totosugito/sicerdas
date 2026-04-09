@@ -1,9 +1,25 @@
 import { join } from "node:path";
 import { writeFile, unlink, rm } from "node:fs/promises";
 import { existsSync, mkdirSync } from "node:fs";
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+  ListObjectsV2Command,
+  DeleteObjectsCommand,
+} from "@aws-sdk/client-s3";
 import env from "../config/env.config.ts";
 import { createUniqueFileName } from "./my-utils.ts";
 import type { UploadedFile } from "../types/file.ts";
+
+const s3Client = new S3Client({
+  region: env.server.s3Storage.region || "auto",
+  endpoint: env.server.s3Storage.endpoint,
+  credentials: {
+    accessKeyId: env.server.s3Storage.accessKeyId || "",
+    secretAccessKey: env.server.s3Storage.secretAccessKey || "",
+  },
+});
 
 /**
  * Generates the relative URL for a BlockNote file
@@ -85,29 +101,53 @@ export const processBlockNoteFiles = async (
 ): Promise<Record<string, string>> => {
   const date = createdAt ? new Date(createdAt) : new Date();
   const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-  const uploadDir = join(
-    process.cwd(),
-    env.server.uploadsRelativePath,
-    env.server.uploadsDir,
-    subDir,
-    yearMonth,
-    entityId,
-  );
-
-  if (!existsSync(uploadDir)) {
-    mkdirSync(uploadDir, { recursive: true });
-  }
-
   const urlMap: Record<string, string> = {};
 
-  for (const file of files) {
-    const fileName = createUniqueFileName(file.filename, "blocknote_file");
-    const filePath = join(uploadDir, fileName);
+  if (env.server.useS3Storage) {
+    // S3/R2 STORAGE
+    for (const file of files) {
+      const fileName = createUniqueFileName(file.filename, "blocknote_file");
+      // Key includes /uploads/ prefix to match local structure
+      const key = `${env.server.uploadsDir}/${subDir}/${yearMonth}/${entityId}/${fileName}`.replace(
+        /\/+/g,
+        "/",
+      );
 
-    await writeFile(filePath, file.buffer);
+      await s3Client.send(
+        new PutObjectCommand({
+          Bucket: env.server.s3Storage.bucketName,
+          Key: key.startsWith("/") ? key.substring(1) : key,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+        }),
+      );
 
-    // Save mapping using the original filename as the key
-    urlMap[file.filename] = getBlockNoteFileUrl(subDir, yearMonth, entityId, fileName);
+      urlMap[file.filename] = key;
+    }
+  } else {
+    // LOCAL STORAGE
+    const uploadDir = join(
+      process.cwd(),
+      env.server.uploadsRelativePath,
+      env.server.uploadsDir,
+      subDir,
+      yearMonth,
+      entityId,
+    );
+
+    if (!existsSync(uploadDir)) {
+      mkdirSync(uploadDir, { recursive: true });
+    }
+
+    for (const file of files) {
+      const fileName = createUniqueFileName(file.filename, "blocknote_file");
+      const filePath = join(uploadDir, fileName);
+
+      await writeFile(filePath, file.buffer);
+
+      // Save mapping using the original filename as the key
+      urlMap[file.filename] = getBlockNoteFileUrl(subDir, yearMonth, entityId, fileName);
+    }
   }
 
   return urlMap;
@@ -142,19 +182,39 @@ export const cleanupBlockNoteFiles = async (
   const deletedPaths = oldPaths.filter((path) => !newPaths.includes(path));
 
   for (const relativePath of deletedPaths) {
-    const filePath = join(
-      process.cwd(),
-      env.server.uploadsRelativePath,
-      env.server.uploadsDir,
-      relativePath,
-    );
-
-    if (existsSync(filePath)) {
+    if (env.server.useS3Storage) {
+      // S3/R2 STORAGE
+      const key = `${env.server.uploadsDir}/${relativePath}`
+        .replace(/\/+/g, "/")
+        .replace(/^\/+/, "");
       try {
-        await unlink(filePath);
+        await s3Client.send(
+          new DeleteObjectCommand({
+            Bucket: env.server.s3Storage.bucketName,
+            Key: key,
+          }),
+        );
       } catch (error) {
         if (logger?.error) {
-          logger.error({ err: error, filePath }, "Error deleting file from disk during cleanup");
+          logger.error({ err: error, key }, "Error deleting object from S3 during cleanup");
+        }
+      }
+    } else {
+      // LOCAL STORAGE
+      const filePath = join(
+        process.cwd(),
+        env.server.uploadsRelativePath,
+        env.server.uploadsDir,
+        relativePath,
+      );
+
+      if (existsSync(filePath)) {
+        try {
+          await unlink(filePath);
+        } catch (error) {
+          if (logger?.error) {
+            logger.error({ err: error, filePath }, "Error deleting file from disk during cleanup");
+          }
         }
       }
     }
@@ -172,21 +232,59 @@ export const deleteBlockNoteEntityDirectory = async (
 ): Promise<void> => {
   const date = new Date(createdAt);
   const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-  const dirPath = join(
-    process.cwd(),
-    env.server.uploadsRelativePath,
-    env.server.uploadsDir,
-    subDir,
-    yearMonth,
-    entityId,
-  );
 
-  if (existsSync(dirPath)) {
+  if (env.server.useS3Storage) {
+    // S3/R2 STORAGE
+    const prefix = `${env.server.uploadsDir}/${subDir}/${yearMonth}/${entityId}/`
+      .replace(/\/+/g, "/")
+      .replace(/^\/+/, "");
+
     try {
-      await rm(dirPath, { recursive: true, force: true });
+      const listParams = {
+        Bucket: env.server.s3Storage.bucketName,
+        Prefix: prefix,
+      };
+
+      const listedObjects = await s3Client.send(new ListObjectsV2Command(listParams));
+
+      if (!listedObjects.Contents || listedObjects.Contents.length === 0) return;
+
+      const deleteParams = {
+        Bucket: env.server.s3Storage.bucketName,
+        Delete: {
+          Objects: listedObjects.Contents.map(({ Key }) => ({ Key })),
+        },
+      };
+
+      await s3Client.send(new DeleteObjectsCommand(deleteParams));
+
+      // Handle pagination if more than 1000 objects (rare for a single entity but good practice)
+      if (listedObjects.IsTruncated) {
+        await deleteBlockNoteEntityDirectory(subDir, entityId, createdAt, logger);
+      }
     } catch (error) {
       if (logger?.error) {
-        logger.error({ err: error, dirPath }, "Error deleting entity directory from disk");
+        logger.error({ err: error, prefix }, "Error deleting entity prefix from S3");
+      }
+    }
+  } else {
+    // LOCAL STORAGE
+    const dirPath = join(
+      process.cwd(),
+      env.server.uploadsRelativePath,
+      env.server.uploadsDir,
+      subDir,
+      yearMonth,
+      entityId,
+    );
+
+    if (existsSync(dirPath)) {
+      try {
+        await rm(dirPath, { recursive: true, force: true });
+      } catch (error) {
+        if (logger?.error) {
+          logger.error({ err: error, dirPath }, "Error deleting entity directory from disk");
+        }
       }
     }
   }
@@ -211,7 +309,7 @@ export const resolveBlockNoteUrls = (
         typeof block.props.url === "string" &&
         block.props.url.startsWith(env.server.uploadsDir)
       ) {
-        // Prepend baseUrl
+        // Prepend uploadsUrl (which already has baseUrl or S3_PUBLIC_URL)
         newBlock.props = {
           ...newBlock.props,
           url: `${env.server.baseUrl}${block.props.url}`.replace(/([^:]\/)\/+/g, "$1"),

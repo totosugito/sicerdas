@@ -30,6 +30,7 @@
     "db:init_user": "cross-env NODE_ENV=development ts-node src/scripts/init/jobs/init-user.ts --trace-warnings"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1027.0",
     "@fastify/autoload": "^6.3.1",
     "@fastify/compress": "^8.3.1",
     "@fastify/cookie": "^11.0.2",
