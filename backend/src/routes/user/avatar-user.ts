@@ -15,7 +15,12 @@ import type { FastifyReply } from "fastify";
 import { getUserAvatarUrl } from "../../utils/user-utils.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
-const uploadDir = join(process.cwd(), env.server.uploadsDir, env.server.uploadsUserDir);
+const uploadDir = join(
+  process.cwd(),
+  env.server.uploadsRelativePath,
+  env.server.uploadsDir,
+  env.server.uploadsUserDir,
+);
 
 export const processChangeAvatar = async (
   req: any,

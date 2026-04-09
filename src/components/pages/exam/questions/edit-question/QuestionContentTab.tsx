@@ -5,7 +5,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 
 interface QuestionContentTabProps {
   defaultValues: any;
-  onSubmit: (values: { content?: any[]; reasonContent?: any[] }) => void;
+  onSubmit: (values: FormData) => void;
   isPending: boolean;
 }
 

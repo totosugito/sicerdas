@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useMemo } from "react";
-import { cn } from "@/lib/utils";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -18,7 +17,7 @@ import {
   EnumQuestionType,
   EnumScoringStrategy,
 } from "@/api/exam-questions/types";
-import { resolve_blocknote_urls, prepare_blocknote_submission } from "@/lib/blocknote-utils";
+import { prepare_blocknote_submission } from "@/lib/blocknote-utils";
 
 type InternalQuestionFormValues = Omit<QuestionFormValues, "educationGradeId"> & {
   educationGradeId?: string | number | null;
@@ -33,7 +32,6 @@ type QuestionFormProps = {
 export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFormProps) {
   const { t } = useAppTranslation();
   const pendingFiles = useRef<Map<string, File>>(new Map());
-  const uploadsUrl = import.meta.env.VITE_APP_BASE_URL;
 
   // Data for dropdowns (Fetching all active options at once)
   // ... (omitting lines for brevity in thought, but I'll provide full replacement)
@@ -78,10 +76,10 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
   const resolvedDefaultValues = useMemo(() => {
     return {
       ...defaultValues,
-      content: resolve_blocknote_urls(defaultValues?.content || [], uploadsUrl),
-      reasonContent: resolve_blocknote_urls(defaultValues?.reasonContent || [], uploadsUrl),
+      content: defaultValues?.content || [],
+      reasonContent: defaultValues?.reasonContent || [],
     };
-  }, [defaultValues, uploadsUrl]);
+  }, [defaultValues]);
 
   const form = useForm<InternalQuestionFormValues>({
     resolver: zodResolver(formSchema) as any,
@@ -126,10 +124,13 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
     const { submissionContent, filesToUpload } = prepare_blocknote_submission(
       values.content,
       pendingFiles.current,
+      { prefix: "question" },
     );
 
     const { submissionContent: submissionReasonContent, filesToUpload: reasonFiles } =
-      prepare_blocknote_submission(values.reasonContent, pendingFiles.current);
+      prepare_blocknote_submission(values.reasonContent, pendingFiles.current, {
+        prefix: "question",
+      });
 
     // 2. Add files with placeholder names
     const allFilesToUpload = [...filesToUpload, ...reasonFiles];

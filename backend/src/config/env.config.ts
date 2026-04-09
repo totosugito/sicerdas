@@ -26,6 +26,13 @@ export const schema = Type.Object({
   BREVO_API_KEY: Type.Optional(Type.String()),
   NO_REPLY_EMAIL: Type.Optional(Type.String()),
   NO_REPLY_EMAIL_NAME: Type.Optional(Type.String()),
+  UPLOAD_DIR: Type.String({ default: "/uploads/" }),
+  USE_S3_STRORAGE: Type.Boolean({ default: false }),
+  S3_BUCKET_NAME: Type.Optional(Type.String()),
+  S3_REGION: Type.Optional(Type.String()),
+  S3_ACCESS_KEY_ID: Type.Optional(Type.String()),
+  S3_SECRET_ACCESS_KEY: Type.Optional(Type.String()),
+  S3_ENDPOINT: Type.Optional(Type.String()),
 });
 
 // Delete only keys defined in schema from process.env
@@ -58,15 +65,16 @@ export default {
     frontendUrl: env.FRONTEND_URL,
     uploadsUrl:
       process.env.NODE_ENV === "development"
-        ? `${env.PROTOCOL}://${env.HOST}:${env.PORT}/uploads`.replace(/([^:]\/)\/+/g, "$1")
+        ? `${env.PROTOCOL}://${env.HOST}:${env.PORT}${env.UPLOAD_DIR}`.replace(/([^:]\/)\/+/g, "$1")
         : env.FRONTEND_URL.startsWith("http")
-          ? `${env.FRONTEND_URL}/uploads`.replace(/([^:]\/)\/+/g, "$1")
-          : `${env.PROTOCOL}://${env.FRONTEND_URL}/uploads`.replace(/([^:]\/)\/+/g, "$1"),
+          ? `${env.FRONTEND_URL}${env.UPLOAD_DIR}`.replace(/([^:]\/)\/+/g, "$1")
+          : `${env.PROTOCOL}://${env.FRONTEND_URL}${env.UPLOAD_DIR}`.replace(/([^:]\/)\/+/g, "$1"),
     baseUrl: `http://${env.HOST === "0.0.0.0" ? "127.0.0.1" : env.HOST}:${env.PORT}`.replace(
       /([^:]\/)\/+/g,
       "$1",
     ),
-    uploadsDir: "../uploads",
+    uploadsRelativePath: env.USE_S3_STRORAGE ? "" : "..",
+    uploadsDir: env.UPLOAD_DIR,
     uploadsUserDir: "users",
     uploadsQuestionDir: "exam/question",
     uploadsPassageDir: "exam/passage",

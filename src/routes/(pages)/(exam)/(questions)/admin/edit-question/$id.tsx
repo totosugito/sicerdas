@@ -15,6 +15,7 @@ import {
   QuestionSolutionsTab,
   QuestionTagsTab,
 } from "@/components/pages/exam/questions/edit-question";
+import { type UpdateQuestionRequest } from "@/api/exam-questions/admin/update-question";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
 
 export const Route = createFileRoute("/(pages)/(exam)/(questions)/admin/edit-question/$id")({
@@ -58,9 +59,9 @@ function AdminExamQuestionsEditPage() {
     };
   }, [question]);
 
-  const handleUpdate = async (values: any) => {
+  const handleUpdate = async (values: UpdateQuestionRequest | FormData) => {
     try {
-      let submissionData = values;
+      let submissionData: UpdateQuestionRequest | FormData = values;
 
       // Only transform if it's a plain object (not FormData)
       if (!(values instanceof FormData)) {
@@ -69,11 +70,16 @@ function AdminExamQuestionsEditPage() {
           educationGradeId:
             values.educationGradeId === undefined
               ? undefined
-              : values.educationGradeId === null || values.educationGradeId === ""
+              : values.educationGradeId === null || (values.educationGradeId as any) === ""
                 ? null
                 : Number(values.educationGradeId),
           requiredTier: values.requiredTier || undefined,
-          passageId: values.passageId === undefined ? undefined : values.passageId || null,
+          passageId:
+            values.passageId === undefined
+              ? undefined
+              : values.passageId === "" || values.passageId === "null" || values.passageId === null
+                ? null
+                : values.passageId,
         };
       }
 

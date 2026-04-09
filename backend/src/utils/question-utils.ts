@@ -13,7 +13,7 @@ export const getQuestionFileUrl = (
   questionId: string,
   fileName: string,
 ): string => {
-  return `/uploads/${env.server.uploadsQuestionDir}/${yearMonth}/${questionId}/${fileName}`.replace(
+  return `${env.server.uploadsDir}/${env.server.uploadsQuestionDir}/${yearMonth}/${questionId}/${fileName}`.replace(
     /\/+/g,
     "/",
   );
@@ -22,16 +22,12 @@ export const getQuestionFileUrl = (
 /**
  * Extracts all unique URLs from BlockNote content
  */
-export const extractQuestionUrls = (content: any[]): string[] => {
+export const extractQuestionUrls = (content: any[], types: string[] = ["image"]): string[] => {
   const urls: string[] = [];
 
   const traverse = (blocks: any[]) => {
     for (const block of blocks) {
-      if (
-        ["image", "file", "video", "audio"].includes(block.type) &&
-        block.props?.url &&
-        typeof block.props.url === "string"
-      ) {
+      if (types.includes(block.type) && block.props?.url && typeof block.props.url === "string") {
         urls.push(block.props.url);
       }
       if (block.children && Array.isArray(block.children)) {
@@ -50,16 +46,16 @@ export const extractQuestionUrls = (content: any[]): string[] => {
 /**
  * Replaces temporary blob URLs or specific filenames with final public URLs in BlockNote content
  */
-export const replaceQuestionUrls = (content: any[], urlMap: Record<string, string>): any[] => {
+export const replaceQuestionUrls = (
+  content: any[],
+  urlMap: Record<string, string>,
+  types: string[] = ["image"],
+): any[] => {
   const traverse = (blocks: any[]): any[] => {
     return blocks.map((block) => {
       let newBlock = { ...block };
 
-      if (
-        ["image", "file", "video", "audio"].includes(block.type) &&
-        block.props?.url &&
-        urlMap[block.props.url]
-      ) {
+      if (types.includes(block.type) && block.props?.url && urlMap[block.props.url]) {
         newBlock.props = {
           ...newBlock.props,
           url: urlMap[block.props.url],
@@ -88,6 +84,7 @@ export const processQuestionFiles = async (
   const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
   const uploadDir = join(
     process.cwd(),
+    env.server.uploadsRelativePath,
     env.server.uploadsDir,
     env.server.uploadsQuestionDir,
     yearMonth,
@@ -117,11 +114,16 @@ export const processQuestionFiles = async (
 /**
  * Deletes files that are no longer referenced in the question content
  */
-export const cleanupQuestionFiles = async (oldContent: any[], newContent: any[]): Promise<void> => {
-  const oldUrls = extractQuestionUrls(oldContent);
-  const newUrls = extractQuestionUrls(newContent);
+export const cleanupQuestionFiles = async (
+  oldContent: any[],
+  newContent: any[],
+  types: string[] = ["image"],
+  logger?: any,
+): Promise<void> => {
+  const oldUrls = extractQuestionUrls(oldContent, types);
+  const newUrls = extractQuestionUrls(newContent, types);
 
-  const uploadsMark = "/uploads/";
+  const uploadsMark = env.server.uploadsDir;
 
   const getRelativePath = (url: string) => {
     const index = url.indexOf(uploadsMark);
@@ -136,29 +138,59 @@ export const cleanupQuestionFiles = async (oldContent: any[], newContent: any[])
 
   const deletedPaths = oldPaths.filter((path) => !newPaths.includes(path));
 
-  console.log(`[Cleanup] Scanning for orphaned files...`);
-  console.log(
-    `[Cleanup] Found ${oldPaths.length} old files and ${newPaths.length} new files in content.`,
-  );
-
-  if (deletedPaths.length > 0) {
-    console.log(`[Cleanup] Identified ${deletedPaths.length} files to be removed:`, deletedPaths);
-  } else {
-    console.log(`[Cleanup] No files identified for deletion.`);
-  }
-
   for (const relativePath of deletedPaths) {
-    const filePath = join(process.cwd(), env.server.uploadsDir, relativePath);
+    const filePath = join(
+      process.cwd(),
+      env.server.uploadsRelativePath,
+      env.server.uploadsDir,
+      relativePath,
+    );
 
     if (existsSync(filePath)) {
       try {
         await unlink(filePath);
-        console.log(`[Cleanup] Successfully deleted: ${filePath}`);
       } catch (error) {
-        console.error(`[Cleanup] Error deleting file ${filePath}:`, error);
+        if (logger?.error) {
+          logger.error({ err: error, filePath }, "Error deleting file from disk during cleanup");
+        }
       }
-    } else {
-      console.warn(`[Cleanup] File not found on disk, skipping: ${filePath}`);
     }
   }
+};
+
+/**
+ * Resolves relative URLs (starting with /uploads/) to absolute URLs in BlockNote content for display
+ */
+export const resolveBlockNoteUrls = (
+  content: any[] | null | undefined,
+  types: string[] = ["image"],
+): any[] => {
+  if (!content || !Array.isArray(content) || content.length === 0) return [];
+
+  const traverse = (blocks: any[]): any[] => {
+    return blocks.map((block) => {
+      let newBlock = { ...block };
+
+      if (
+        types.includes(block.type) &&
+        block.props?.url &&
+        typeof block.props.url === "string" &&
+        block.props.url.startsWith(env.server.uploadsDir)
+      ) {
+        // Prepend baseUrl
+        newBlock.props = {
+          ...newBlock.props,
+          url: `${env.server.baseUrl}${block.props.url}`.replace(/([^:]\/)\/+/g, "$1"),
+        };
+      }
+
+      if (block.children && Array.isArray(block.children)) {
+        newBlock.children = traverse(block.children);
+      }
+
+      return newBlock;
+    });
+  };
+
+  return traverse(content);
 };

@@ -27,6 +27,7 @@ import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { educationTags } from "../../../../db/schema/education/tags.ts";
+import { resolveBlockNoteUrls } from "../../../../utils/question-utils.ts";
 
 const GetQuestionParams = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -202,12 +203,25 @@ const getQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         message: t(($) => $.exam.questions.list.success),
         data: {
           ...question,
+          content: resolveBlockNoteUrls(question.content as any[]),
+          reasonContent: resolveBlockNoteUrls(question.reasonContent as any[]),
           createdAt: question.createdAt.toISOString(),
           updatedAt: question.updatedAt.toISOString(),
-          options,
-          solutions,
+          options: options.map((opt) => ({
+            ...opt,
+            content: resolveBlockNoteUrls(opt.content as any[]),
+          })),
+          solutions: solutions.map((sol) => ({
+            ...sol,
+            content: resolveBlockNoteUrls(sol.content as any[]),
+          })),
           tags,
-          passage,
+          passage: passage
+            ? {
+                ...passage,
+                content: resolveBlockNoteUrls(passage.content as any[]),
+              }
+            : null,
         },
       });
     }),

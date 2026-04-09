@@ -7,7 +7,7 @@ import { z } from "zod";
 import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
 import { FormWithDetector } from "@/components/custom/components";
-import { resolve_blocknote_urls, prepare_blocknote_submission } from "@/lib/blocknote-utils";
+import { prepare_blocknote_submission } from "@/lib/blocknote-utils";
 
 type QuestionContentFormProps = {
   defaultValues: any;
@@ -29,15 +29,14 @@ export function QuestionContentForm({
 }: QuestionContentFormProps) {
   const { t } = useAppTranslation();
   const pendingFiles = useRef<Map<string, File>>(new Map());
-  const uploadsUrl = import.meta.env.VITE_APP_BASE_URL;
 
   const resolvedDefaultValues = useMemo(() => {
     return {
       ...defaultValues,
-      content: resolve_blocknote_urls(defaultValues.content || [], uploadsUrl),
-      reasonContent: resolve_blocknote_urls(defaultValues.reasonContent || [], uploadsUrl),
+      content: defaultValues.content || [],
+      reasonContent: defaultValues.reasonContent || [],
     };
-  }, [defaultValues, uploadsUrl]);
+  }, [defaultValues]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -57,10 +56,13 @@ export function QuestionContentForm({
     const { submissionContent, filesToUpload } = prepare_blocknote_submission(
       values.content,
       pendingFiles.current,
+      { prefix: "question" },
     );
 
     const { submissionContent: submissionReasonContent, filesToUpload: reasonFiles } =
-      prepare_blocknote_submission(values.reasonContent, pendingFiles.current);
+      prepare_blocknote_submission(values.reasonContent, pendingFiles.current, {
+        prefix: "question",
+      });
 
     // 2. Add files with placeholder names
     const allFilesToUpload = [...filesToUpload, ...reasonFiles];

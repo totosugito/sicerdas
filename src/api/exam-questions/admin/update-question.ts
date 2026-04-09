@@ -19,6 +19,7 @@ export interface UpdateQuestionRequest {
   subjectId?: string;
   passageId?: string | null;
   content?: Record<string, unknown>[];
+  reasonContent?: Record<string, unknown>[];
   difficulty?: DifficultyLevel;
   type?: QuestionType;
   maxScore?: number;

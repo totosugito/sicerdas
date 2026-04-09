@@ -8,16 +8,12 @@ import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { eq } from "drizzle-orm";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import {
-  EnumDifficultyLevel,
-  EnumQuestionType,
-  EnumScoringStrategy,
-} from "../../../../db/schema/exam/enums.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
   processQuestionFiles,
   replaceQuestionUrls,
   cleanupQuestionFiles,
+  resolveBlockNoteUrls,
 } from "../../../../utils/question-utils.ts";
 
 const VariableFormulasType = Type.Optional(
@@ -204,6 +200,8 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         await cleanupQuestionFiles(
           [...(existingQuestion.content || []), ...(existingQuestion.reasonContent || [])],
           [...(finalContent || []), ...(finalReasonContent || [])],
+          ["image"],
+          request.log,
         );
       }
 
@@ -212,6 +210,8 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         message: t(($) => $.exam.questions.update.success),
         data: {
           ...updatedQuestion,
+          content: resolveBlockNoteUrls(updatedQuestion.content as any[]),
+          reasonContent: resolveBlockNoteUrls(updatedQuestion.reasonContent as any[]),
           createdAt: updatedQuestion.createdAt.toISOString(),
           updatedAt: updatedQuestion.updatedAt.toISOString(),
         },
