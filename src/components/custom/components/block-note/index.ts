@@ -1,3 +1,4 @@
+export { MathBlock } from "./block/MathBlock";
+export { AlertBlock } from "./block/AlertBlock";
 export { BlockNoteStatic, type BlockNoteStaticProps } from "./BlockNoteStatic";
-export { MathBlock } from "./MathBlock";
 export { FormBlockNote, type FormBlockNoteProps } from "./FormBlockNote";

@@ -2,8 +2,8 @@ import React from "react";
 import { BlockNoteSchema, defaultBlockSpecs } from "@blocknote/core";
 import { DefaultReactSuggestionItem } from "@blocknote/react";
 import { Info } from "lucide-react";
-import { MathBlock } from "../MathBlock";
-import { AlertBlock, alertTypes } from "../AlertBlock";
+import { MathBlock } from "../block/MathBlock";
+import { AlertBlock } from "../block/AlertBlock";
 
 // Define our custom schema with math and alert blocks
 // Using .extend is the standard way to add blocks to original schema
@@ -27,6 +27,7 @@ export const getEquationSlashMenuItem = (editor: any): DefaultReactSuggestionIte
   aliases: ["math", "equation", "formula", "katex", "latex"],
   group: "Custom",
   icon: React.createElement("span", null, "∑"),
+  subtext: "Insert a mathematical formula using KaTeX",
 });
 
 // Helper to get slash menu item for alerts
@@ -41,5 +42,10 @@ export const getAlertSlashMenuItem = (editor: any): DefaultReactSuggestionItem =
   },
   aliases: ["alert", "info", "warning", "success", "error", "notice", "callout"],
   group: "Custom",
-  icon: React.createElement(Info, { size: 18 }),
+  icon: React.createElement(
+    "span",
+    { style: { fontWeight: "bold", fontSize: "18px", fontStyle: "italic", fontFamily: "serif" } },
+    "i",
+  ),
+  subtext: "Insert a colorful callout box",
 });
