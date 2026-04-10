@@ -20,7 +20,6 @@ import { processBlockNoteFiles, replaceBlockNoteUrls } from "../../../../utils/b
 const VariableFormulasType = Type.Optional(
   Type.Object({
     variables: Type.Array(Type.Record(Type.String(), Type.Union([Type.String(), Type.Number()]))),
-    options: Type.Optional(Type.Record(Type.String(), Type.String())),
     solutions: Type.Optional(Type.Record(Type.String(), Type.String())),
   }),
 );

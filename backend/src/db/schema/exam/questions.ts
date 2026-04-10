@@ -8,7 +8,7 @@ import {
   index,
   boolean,
 } from "drizzle-orm/pg-core";
-import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
+import { sql, type InferSelectModel, type InferInsertModel } from "drizzle-orm";
 import {
   EnumDifficultyLevel,
   EnumQuestionType,
@@ -49,11 +49,11 @@ export const examQuestions = pgTable(
     // Optional secondary rich text container for the "Reason" part in STATEMENT_REASONING types
     reasonContent: jsonb("reason_content").$type<Record<string, unknown>[]>().default([]),
 
-    // Holds the dynamic template configuration for parametrized questions
-    // Structure: { variables: [{a: 1}], options: {opt1: "a*2"}, solutions: {step1: "a+1"} }
+    // Hybrid structure for parameterization configuration
+    // - variables: holds base inputs AND finalized distractors (opt1, opt2) to ensure fast live-exam execution without Math evaluating overhead.
+    // - solutions: holds optional string formulas to auto-calculate intermediate steps during Post-Exam Review.
     variableFormulas: jsonb("variable_formulas").$type<{
       variables: Record<string, string | number>[];
-      options?: Record<string, string>;
       solutions?: Record<string, string>;
     }>(),
 
@@ -100,6 +100,9 @@ export const examQuestions = pgTable(
     index("exam_questions_passage_id_idx").on(table.passageId),
     index("exam_questions_creator_idx").on(table.createdByUserId),
     index("exam_questions_grade_tier_idx").on(table.educationGradeId, table.requiredTier),
+    index("exam_questions_variations_count_idx").on(
+      sql`jsonb_array_length(${table.variableFormulas}->'variables')`,
+    ),
   ],
 );
 

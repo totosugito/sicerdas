@@ -12,25 +12,24 @@ The database is built using PostgreSQL and Drizzle ORM. The schema logic is thor
 4.  **Incremental Aggregation (Performance Optimization):** High-load dashboard statistics rely on "Incremental Aggregation" `user_stats` tables which are updated via simple increments (`total + x`) rather than expensive time-consuming `SUM/JOIN` queries on the entire user's history log.
 5.  **Multi-Method Solutions:** Solving a single question can be documented using multiple methodologies (e.g., General method, Fast Trick/King Method), with the advanced fast tricks being easily locked behind the Premium tier wall.
 6.  **Template Questions & Parameterization (Anti-Cheat & Replayability):** Questions support dynamic templates (e.g., `{{a}} + {{b}} = ?`) powered by a predefined `variableFormulas` JSON config.
-    - **Structure:** This separates inputs from calculated formulas via a `{ variables: [], options: {}, solutions: {} }` structure.
-    - **Backend Evaluation:** The Node.js backend securely calculates the formulas from `options` and `solutions` during runtime and replaces variables directly into the BlockNote JSON before sending the final string to the frontend UI.
-    - **Options Trick:** Distractor options are built via formulas (e.g., `opt2: "a - b"`). One option text is always `{{opt1}}` (flagged `isCorrect = true` in DB). The CBT engine randomizes display order (A, B, C, D) so the db static correct-answer state never changes.
-    - **Tracking:** `exam_session_answers` stores `variationIndex` to guarantee that a user reviewing their history will see the exact same numeric variation they were tested on.
+    - **Hybrid Structure:** Uses a `{ variables: [], solutions: {} }` syntax. The `variables` array holds flat objects containing both base inputs and fully calculated distractors (e.g., `{ a: 5, b: 10, opt1: 15, opt2: 5 }`). This completely eliminates heavy mathematical calculation from the CBT Engine "Critical Path", ensuring live exams are blazing fast and 100% crash-proof due to syntax bugs.
+    - **Dynamic Solutions:** Post-exam review is not time-critical, so calculation steps within `solutions` optionally use math formulas (e.g., `step1: "a * b"`) to auto-evaluate intermediate explanations across all variations at runtime.
+    - **Options Trick:** One base option text is always statically `{{opt1}}` (flagged `isCorrect = true` in DB). The CBT engine injects the explicit literal value from the selected `variables` row and seamlessly randomizes the final UI order (A, B, C, D) so the db correctly matches the index.
+    - **Tracking:** `exam_session_answers` stores `variationIndex` to guarantee that a user reviewing their history will see the exact same variation they took.
+    - **Scalability (Expression Indexing):** To efficiently count variations across hundreds of thousands of questions without full table scans, `exam_questions` enforces a PostgreSQL Functional Index on `jsonb_array_length(variableFormulas->'variables')`. This enables massive statistical dashboards and ultra-fast admin filtering without data-drift risks from normalized integer columns.
 
 ### Admin Authoring UI: Variable Formulas
 
-To ensure a high-end authoring experience, the `variableFormulas` editor in the Admin Dashboard utilizes a **Dual-View Hybrid Editor**:
+To ensure a high-end authoring workflow, the `variableFormulas` editor acts as a **Flat-Data Hub** combined with a **Dual-View Array Editor**:
 
-1.  **Structured Table View (Default):**
-    - **Spreadsheet Interface:** A dynamic grid for the `variables` array where columns are auto-detected from object keys.
-    - **Row Management:** Admins can easily add/remove "Variations" (rows).
-    - **Formula List:** Dedicated key-value inputs for `options` and `solutions` formulas with syntax highlighting.
+1.  **Spreadsheet / Table View (Default):**
+    - **Data Grid Interface:** A dynamic Excel-like grid mapping exactly to the `variables` array, automatically rendering columns for any keys detected (`a`, `b`, `opt1`, `opt2`).
+    - **Solutions Logic View:** An additional pane strictly reserved for solution step formulas.
 2.  **Raw JSON View:**
-    - **Power-User Mode:** A lightweight text editor for direct JSON manipulation.
-    - **Bulk Support:** Ideal for copy-pasting extensive variation sets generated from external tools (Python/Excel).
-3.  **Synchronization & Live Feedback:**
-    - **Dynamic Parsing:** Real-time sync between Table and JSON views with automatic syntax validation. Switching is blocked if the JSON is malformed.
-    - **Instant Result Preview:** A preview sidebar that calculates formulas using the first variation row in real-time, allowing admins to verify math logic instantly.
+    - **Power-User Mode:** Direct JSON manipulation of the entire array.
+    - **Bulk Generation:** Because the target structure is flat key-value pairs, admins can generate 1,000s of variations using Python, Excel, or LLMs, and simply copy-paste the raw JSON output into the portal.
+3.  **Synchronization & Live Preview:**
+    - Real-time previews recalculate both the BlockNote Question UI and the backend Solution formulas using the row currently selected by the Admin string-injector.
 
 ---
 

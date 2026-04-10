@@ -14,7 +14,6 @@ export type SolutionType = (typeof EnumSolutionType)[keyof typeof EnumSolutionTy
 
 export interface VariableFormulas {
   variables: Record<string, string | number>[];
-  options?: Record<string, string>;
   solutions?: Record<string, string>;
 }
 
