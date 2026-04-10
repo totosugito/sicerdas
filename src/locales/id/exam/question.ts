@@ -128,6 +128,8 @@ export default {
       options: "Pilihan",
       solutions: "Solusi",
       tags: "Tag",
+      variables: "Variabel",
+      preview: "Pratinjau",
     },
     settings: {
       title: "Pengaturan Umum",
@@ -155,6 +157,18 @@ export default {
       noResult: "Tidak ada tag yang ditemukan.",
       addAsNew: 'Tambah "{{name}}" sebagai tag baru',
       existingTags: "Tag yang Sudah Ada",
+    },
+    variables: {
+      title: "Variabel Pertanyaan",
+      description: "Konfigurasi variabel dinamis dan formula solusi untuk soal ini.",
+    },
+    preview: {
+      title: "Pratinjau Soal",
+      description: "Simulasi tampilan soal untuk siswa dengan variabel yang sudah diinjeksikan.",
+      variationSelection: "Pilih Variasi:",
+      noVariables: "Soal ini tidak memiliki variabel. Menampilkan konten statis.",
+      studentViewBadge: "Student View Preview",
+      variationBadge: "Variasi #{{index}}",
     },
   },
   detail: {

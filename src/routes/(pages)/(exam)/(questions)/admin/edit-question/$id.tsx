@@ -6,7 +6,15 @@ import { z } from "zod";
 import { PageTitle, ErrorContainer, LoadingView } from "@/components/app";
 import { AppRoute } from "@/constants/app-route";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings, ListChecks, Lightbulb, Tag as TagIcon, FileText } from "lucide-react";
+import {
+  Settings,
+  ListChecks,
+  Lightbulb,
+  Tag as TagIcon,
+  FileText,
+  Database,
+  Eye,
+} from "lucide-react";
 import { useDetailQuestion, useUpdateQuestion } from "@/api/exam-questions";
 import {
   QuestionSettingsTab,
@@ -14,6 +22,8 @@ import {
   QuestionOptionsTab,
   QuestionSolutionsTab,
   QuestionTagsTab,
+  QuestionVariablesTab,
+  QuestionPreviewTab,
 } from "@/components/pages/exam/questions/edit-question";
 import { type UpdateQuestionRequest } from "@/api/exam-questions/admin/update-question";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
@@ -56,6 +66,7 @@ function AdminExamQuestionsEditPage() {
       isActive: question?.isActive ?? true,
       content: question?.content || [],
       reasonContent: question?.reasonContent || [],
+      variableFormulas: question?.variableFormulas || { variables: [], solutions: {} },
     };
   }, [question]);
 
@@ -144,7 +155,7 @@ function AdminExamQuestionsEditPage() {
       />
 
       <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full gap-0">
-        <TabsList className="grid w-full grid-cols-5 lg:w-[750px] mb-4">
+        <TabsList className="grid w-full grid-cols-7 lg:w-[950px] mb-4">
           <TabsTrigger value="settings" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
             <span className="hidden sm:inline">
@@ -168,6 +179,16 @@ function AdminExamQuestionsEditPage() {
           <TabsTrigger value="tags" className="flex items-center gap-2">
             <TagIcon className="h-4 w-4" />
             <span className="hidden sm:inline">{t(($) => $.exam.questions.edit.tabs.tags)}</span>
+          </TabsTrigger>
+          <TabsTrigger value="variables" className="flex items-center gap-2">
+            <Database className="h-4 w-4" />
+            <span className="hidden sm:inline">
+              {t(($) => $.exam.questions.edit.tabs.variables)}
+            </span>
+          </TabsTrigger>
+          <TabsTrigger value="preview" className="flex items-center gap-2">
+            <Eye className="h-4 w-4" />
+            <span className="hidden sm:inline">{t(($) => $.exam.questions.edit.tabs.preview)}</span>
           </TabsTrigger>
         </TabsList>
 
@@ -202,6 +223,20 @@ function AdminExamQuestionsEditPage() {
         {/* Tags Tab */}
         <TabsContent value="tags" className="mt-0">
           <QuestionTagsTab questionId={id} tags={question.tags} />
+        </TabsContent>
+
+        {/* Variables Tab */}
+        <TabsContent value="variables" className="mt-0">
+          <QuestionVariablesTab
+            variableFormulas={question.variableFormulas}
+            onSubmit={handleUpdate}
+            isPending={updateMutation.isPending}
+          />
+        </TabsContent>
+
+        {/* Preview Tab */}
+        <TabsContent value="preview" className="mt-0">
+          <QuestionPreviewTab question={question} />
         </TabsContent>
       </Tabs>
     </div>

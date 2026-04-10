@@ -43,6 +43,8 @@ const jsonQuestionsSearchSchema = z.object({
   solutionsExpanded: z.coerce.boolean().default(true).catch(true),
   tagsExpanded: z.coerce.boolean().default(true).catch(true),
   packageExpanded: z.coerce.boolean().default(true).catch(true),
+  variablesExpanded: z.coerce.boolean().default(true).catch(true),
+  previewExpanded: z.coerce.boolean().default(true).catch(true),
 });
 
 export const Route = createFileRoute("/(pages)/(exam)/(questions)/admin/json-questions")({
@@ -61,6 +63,8 @@ function JsonQuestionsPage() {
     solutionsExpanded,
     tagsExpanded,
     packageExpanded,
+    variablesExpanded,
+    previewExpanded,
   } = Route.useSearch();
   const navigate = Route.useNavigate();
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
@@ -89,6 +93,12 @@ function JsonQuestionsPage() {
 
   const setTagsExpanded = (tagsExpanded: boolean) => {
     navigate({ search: (prev: any) => ({ ...prev, tagsExpanded }), replace: true });
+  };
+  const setVariablesExpanded = (variablesExpanded: boolean) => {
+    navigate({ search: (prev: any) => ({ ...prev, variablesExpanded }), replace: true });
+  };
+  const setPreviewExpanded = (previewExpanded: boolean) => {
+    navigate({ search: (prev: any) => ({ ...prev, previewExpanded }), replace: true });
   };
 
   const queryClient = useQueryClient();
@@ -276,47 +286,58 @@ function JsonQuestionsPage() {
         const q = jsonQuestions[index];
 
         // 1. Create Question (Global values as overrides)
-        const qRes = await createQuestionMutation.mutateAsync({
+        const transformedData = {
+          ...q,
           subjectId: globalParams.subjectId,
-          passageId: globalParams.passageId || q.passageId,
-          content: q.content,
           difficulty: globalParams.difficulty,
           type: globalParams.type,
-          requiredTier: globalParams.requiredTier,
-          educationGradeId: globalParams.educationGradeId
-            ? Number(globalParams.educationGradeId)
-            : q.educationGradeId
-              ? Number(q.educationGradeId)
-              : undefined,
-          isActive: q.isActive ?? true,
-          // variableFormulas: q.variableFormulas,
-        } as CreateQuestionRequest);
+          educationGradeId: (() => {
+            const val = globalParams.educationGradeId || q.educationGradeId;
+            if (val === undefined || val === null || val === "") return null;
+            const num = Number(val);
+            return isNaN(num) ? null : num;
+          })(),
+          requiredTier: globalParams.requiredTier || q.requiredTier || null,
+          passageId: globalParams.passageId || q.passageId || null,
+          maxScore: q.maxScore !== undefined && q.maxScore !== null ? Number(q.maxScore) : 1,
+        };
+
+        const formData = new FormData();
+        formData.append("data", JSON.stringify(transformedData));
+
+        const qRes = await createQuestionMutation.mutateAsync(formData);
 
         const newQuestionId = qRes.data.id;
 
         // 2. Create Options
         if (q.options?.length) {
           for (const opt of q.options) {
-            await createOptionMutation.mutateAsync({
+            const optPayload = {
               questionId: newQuestionId,
               content: opt.content,
               isCorrect: opt.isCorrect,
               order: opt.order,
-            } as any);
+            };
+            const optFormData = new FormData();
+            optFormData.append("data", JSON.stringify(optPayload));
+            await createOptionMutation.mutateAsync(optFormData as any);
           }
         }
 
         // 3. Create Solutions
         if (q.solutions?.length) {
           for (const sol of q.solutions) {
-            await createSolutionMutation.mutateAsync({
+            const solPayload = {
               questionId: newQuestionId,
               title: sol.title,
               content: sol.content,
               solutionType: sol.solutionType,
               order: sol.order,
               requiredTier: sol.requiredTier,
-            } as any);
+            };
+            const solFormData = new FormData();
+            solFormData.append("data", JSON.stringify(solPayload));
+            await createSolutionMutation.mutateAsync(solFormData as any);
           }
         }
 
@@ -467,6 +488,10 @@ function JsonQuestionsPage() {
               onToggleSolutions={setSolutionsExpanded}
               tagsExpanded={tagsExpanded}
               onToggleTags={setTagsExpanded}
+              variablesExpanded={variablesExpanded}
+              onToggleVariables={setVariablesExpanded}
+              previewExpanded={previewExpanded}
+              onTogglePreview={setPreviewExpanded}
             />
           ) : (
             <div className="flex items-center justify-center p-12 border rounded-lg bg-card text-muted-foreground">

@@ -3,7 +3,9 @@ import { JsonQuestionContentTab } from "./JsonQuestionContentTab";
 import { JsonQuestionOptionsTab } from "./JsonQuestionOptionsTab";
 import { JsonQuestionSolutionsTab } from "./JsonQuestionSolutionsTab";
 import { JsonTagsContentTab } from "./JsonTagsContentTab";
-import { JsonQuestionImport } from "@/api/exam-questions/types";
+import { JsonQuestionVariablesTab } from "./JsonQuestionVariablesTab";
+import { JsonQuestionPreviewTab } from "./JsonQuestionPreviewTab";
+import { JsonQuestionImport, VariableFormulas } from "@/api/exam-questions/types";
 
 interface JsonQuestionEditViewProps {
   question: JsonQuestionImport;
@@ -17,6 +19,10 @@ interface JsonQuestionEditViewProps {
   onToggleSolutions?: (expanded: boolean) => void;
   tagsExpanded?: boolean;
   onToggleTags?: (expanded: boolean) => void;
+  variablesExpanded?: boolean;
+  onToggleVariables?: (expanded: boolean) => void;
+  previewExpanded?: boolean;
+  onTogglePreview?: (expanded: boolean) => void;
 }
 
 export function JsonQuestionEditView({
@@ -31,6 +37,10 @@ export function JsonQuestionEditView({
   onToggleSolutions,
   tagsExpanded = true,
   onToggleTags,
+  variablesExpanded = true,
+  onToggleVariables,
+  previewExpanded = true,
+  onTogglePreview,
 }: JsonQuestionEditViewProps) {
   const { t } = useAppTranslation();
 
@@ -50,8 +60,27 @@ export function JsonQuestionEditView({
     onUpdate({ ...question, tags: newTags });
   };
 
+  const handleUpdateVariables = (newVariables: VariableFormulas) => {
+    onUpdate({ ...question, variableFormulas: newVariables });
+  };
+
   return (
     <div className="flex flex-col gap-6 w-full pb-10">
+      {/* Preview Section */}
+      <JsonQuestionPreviewTab
+        question={question}
+        isOpen={previewExpanded}
+        onOpenChange={onTogglePreview}
+      />
+
+      {/* Variables Section */}
+      <JsonQuestionVariablesTab
+        variableFormulas={question.variableFormulas}
+        onUpdate={handleUpdateVariables}
+        isOpen={variablesExpanded}
+        onOpenChange={onToggleVariables}
+      />
+
       {/* Tags Section */}
       <JsonTagsContentTab
         tags={question.tags}
