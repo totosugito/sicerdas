@@ -1,0 +1,174 @@
+/* Custom BlockNote Styles */
+
+/* Alert Block Styling */
+.bn-editor [data-content-type="alert"] {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.alert-wrapper {
+  display: flex;
+  align-items: center; /* Centered align as per official example */
+  padding: 0.5rem 0.75rem; /* More compact per official example but still premium */
+  gap: 0.75rem;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 0.75rem;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 48px;
+}
+
+/* Glassmorphism focus effect */
+.bn-editor [data-content-type="alert"]:focus-within .alert-wrapper {
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.alert-icon-container {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+  user-select: none;
+}
+
+.alert-icon-container:hover {
+  transform: scale(1.1);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark .alert-icon-container:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Editable Area */
+.alert-content.inline-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Custom properties for types - Premium Glassmorphism Colors */
+
+/* Info */
+.alert-wrapper[data-type="info"] {
+  background-color: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.2);
+  color: #1d4ed8;
+}
+
+.dark .alert-wrapper[data-type="info"] {
+  background-color: rgba(37, 99, 235, 0.15);
+  border-color: rgba(37, 99, 235, 0.4);
+  color: #93c5fd;
+}
+
+.alert-wrapper[data-type="info"] .alert-icon {
+  color: #2563eb;
+}
+
+/* Warning */
+.alert-wrapper[data-type="warning"] {
+  background-color: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.2);
+  color: #b45309;
+}
+
+.dark .alert-wrapper[data-type="warning"] {
+  background-color: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fcd34d;
+}
+
+.alert-wrapper[data-type="warning"] .alert-icon {
+  color: #d97706;
+}
+
+/* Success */
+.alert-wrapper[data-type="success"] {
+  background-color: rgba(5, 150, 105, 0.08);
+  border-color: rgba(5, 150, 105, 0.2);
+  color: #047857;
+}
+
+.dark .alert-wrapper[data-type="success"] {
+  background-color: rgba(5, 150, 105, 0.15);
+  border-color: rgba(5, 150, 105, 0.4);
+  color: #6ee7b7;
+}
+
+.alert-wrapper[data-type="success"] .alert-icon {
+  color: #059669;
+}
+
+/* Error */
+.alert-wrapper[data-type="error"] {
+  background-color: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.2);
+  color: #b91c1c;
+}
+
+.dark .alert-wrapper[data-type="error"] {
+  background-color: rgba(220, 38, 38, 0.15);
+  border-color: rgba(220, 38, 38, 0.4);
+  color: #fca5a5;
+}
+
+.alert-wrapper[data-type="error"] .alert-icon {
+  color: #dc2626;
+}
+
+/* Popover Switcher Styling */
+.alert-type-popover {
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  min-width: 160px;
+  z-index: 1000;
+  animation: alert-popover-slide-up 0.2s cubic-bezier(0, 0, 0.2, 1);
+}
+
+@keyframes alert-popover-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.alert-type-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.alert-type-item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.dark .alert-type-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}

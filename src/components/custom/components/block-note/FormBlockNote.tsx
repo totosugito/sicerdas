@@ -38,7 +38,8 @@ export type FormBlockNoteProps = {
   showMessage?: boolean;
 };
 
-import { schema, getEquationSlashMenuItem } from "./lib/blocknote-config";
+import { schema, getEquationSlashMenuItem, getAlertSlashMenuItem } from "./lib/blocknote-config";
+import "@/assets/custom-blocknote.css";
 
 export const FormBlockNote = ({
   form,
@@ -164,6 +165,7 @@ export const FormBlockNote = ({
                     const allItems: DefaultReactSuggestionItem[] = [
                       ...getDefaultReactSlashMenuItems(editor),
                       getEquationSlashMenuItem(editor),
+                      getAlertSlashMenuItem(editor),
                     ];
                     return filterSuggestionItems(allItems, query);
                   }}

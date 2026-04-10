@@ -3,15 +3,23 @@ import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
 import { ExamQuestionSolutionDetailResponse, QuestionSolutionFormValues } from "../types";
 
-export type UpdateQuestionSolutionRequest = Partial<QuestionSolutionFormValues>;
+export interface UpdateQuestionSolutionRequest extends Partial<QuestionSolutionFormValues> {
+  id?: string;
+}
 
-export const useUpdateQuestionSolution = (id: string) => {
+export const useUpdateQuestionSolution = (id?: string) => {
   return useMutation({
     mutationKey: ["admin-exam-question-solutions-update", id],
     mutationFn: async (payload: UpdateQuestionSolutionRequest | FormData) => {
+      const solutionId = payload instanceof FormData ? id : payload.id || id;
+
+      if (!solutionId) {
+        throw new Error("Solution ID is required for update");
+      }
+
       const response = await fetchApi({
         method: "PUT",
-        url: AppApi.exam.questionSolutions.admin.update.replace(":id", id),
+        url: AppApi.exam.questionSolutions.admin.update.replace(":id", solutionId),
         body: payload,
         withCredentials: true,
       });

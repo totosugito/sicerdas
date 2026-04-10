@@ -8,7 +8,6 @@ import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import { EnumSolutionType } from "../../../../db/schema/exam/enums.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
   processBlockNoteFiles,

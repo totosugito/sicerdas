@@ -1,13 +1,16 @@
 import React from "react";
 import { BlockNoteSchema, defaultBlockSpecs } from "@blocknote/core";
 import { DefaultReactSuggestionItem } from "@blocknote/react";
+import { Info } from "lucide-react";
 import { MathBlock } from "../MathBlock";
+import { AlertBlock, alertTypes } from "../AlertBlock";
 
-// Define our custom schema with the math block
-export const schema = BlockNoteSchema.create({
+// Define our custom schema with math and alert blocks
+// Using .extend is the standard way to add blocks to original schema
+export const schema = BlockNoteSchema.create().extend({
   blockSpecs: {
-    ...defaultBlockSpecs,
     math: MathBlock(),
+    alert: AlertBlock(),
   },
 });
 
@@ -22,6 +25,21 @@ export const getEquationSlashMenuItem = (editor: any): DefaultReactSuggestionIte
     );
   },
   aliases: ["math", "equation", "formula", "katex", "latex"],
-  group: "Equations",
+  group: "Custom",
   icon: React.createElement("span", null, "∑"),
+});
+
+// Helper to get slash menu item for alerts
+export const getAlertSlashMenuItem = (editor: any): DefaultReactSuggestionItem => ({
+  title: "Alert",
+  onItemClick: () => {
+    editor.insertBlocks(
+      [{ type: "alert", props: { type: "info" } }],
+      editor.getTextCursorPosition().block,
+      "after",
+    );
+  },
+  aliases: ["alert", "info", "warning", "success", "error", "notice", "callout"],
+  group: "Custom",
+  icon: React.createElement(Info, { size: 18 }),
 });

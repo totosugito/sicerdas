@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "@/lib/theme-provider";
 
 import { schema } from "./lib/blocknote-config";
+import "@/assets/custom-blocknote.css";
 
 export type BlockNoteStaticProps = {
   content: any[];
