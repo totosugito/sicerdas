@@ -1,0 +1,103 @@
+[
+  {
+    "difficulty": "easy",
+    "type": "multiple_choice",
+    "maxScore": 1,
+    "scoringStrategy": "all_or_nothing",
+    "requiredTier": "free",
+    "isActive": true,
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Berapakah hasil dari {{a}} + {{b}}?",
+            "styles": {}
+          }
+        ]
+      }
+    ],
+    "options": [
+      {
+        "content": [
+          {
+            "type": "paragraph",
+            "content": []
+          },
+          {
+            "type": "math",
+            "props": {
+              "textAlignment": "left",
+              "textColor": "default",
+              "equation": "{{opt1}}",
+              "fontSize": 18
+            },
+            "content": [],
+            "children": []
+          }
+        ],
+        "isCorrect": true,
+        "score": 1,
+        "order": 1
+      },
+      {
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "{{opt2}}",
+                "styles": {}
+              }
+            ]
+          }
+        ],
+        "isCorrect": false,
+        "score": 0,
+        "order": 2
+      }
+    ],
+    "solutions": [
+      {
+        "title": "Pembahasan",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Kita cukup menjumlahkan variabel a ({{a}}) dan variabel b ({{b}}). Hasil perhitungannya adalah {{step1}}.",
+                "styles": {}
+              }
+            ]
+          }
+        ],
+        "solutionType": "general",
+        "order": 1,
+        "requiredTier": "free"
+      }
+    ],
+    "variableFormulas": {
+      "variables": [
+        {
+          "a": 5,
+          "b": 10,
+          "opt1": 15,
+          "opt2": 20
+        },
+        {
+          "a": 20,
+          "b": 30,
+          "opt1": 50,
+          "opt2": 60
+        }
+      ],
+      "solutions": {
+        "step1": "a + b"
+      }
+    },
+    "tags": ["Matematika", "Aritmatika"]
+  }
+]
