@@ -67,7 +67,7 @@ export const DialogSectionForm = ({
   });
   const versionOptions = (versionsData?.data.items || []).map((v: any) => ({
     value: v.id.toString(),
-    label: `${v.id} - ${v.name}${v.published ? ` [${t(($) => $.labels.published)}]` : ""}`,
+    label: `${v.id} - ${v.name}${v.published ? ` [${t(($) => $.labels.publishedText)}]` : ""}`,
   }));
 
   const formSchema: any = {

@@ -135,7 +135,7 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
   ];
   const versionOptions =
     versionData?.data?.items?.map((v) => ({
-      label: `${v.id} - ${v.name}${v.published ? ` [${t(($) => $.labels.published)}]` : ""}`,
+      label: `${v.id} - ${v.name}${v.published ? ` [${t(($) => $.labels.publishedText)}]` : ""}`,
       value: v.id.toString(),
     })) || [];
 

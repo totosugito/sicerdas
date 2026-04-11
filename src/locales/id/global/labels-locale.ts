@@ -68,5 +68,6 @@ export default {
   new: "Baru",
   version: "Versi",
   published: "Dipublikasikan",
+  publishedText: "Published",
   tip: "Tip",
 };
