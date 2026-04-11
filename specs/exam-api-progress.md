@@ -7,6 +7,7 @@ Date: February 2026
 We are building a comprehensive Exam & Practice Question module for the Sicerdas application backend (Fastify + Drizzle ORM). The database schema involves multiple interconnected tables to support flexible questions (multiple-choice or other types) tied to categories, subjects, and topics (tags), spanning different subscription tiers and education grades.
 
 All new API endpoints are built following the conventions found in `app-tier/admin`, specifically utilizing:
+
 - `@sinclair/typebox` for schema validation
 - `withErrorHandler` wrapper for centralized error handling
 - Multi-language support (Locales) primarily initialized with Indonesian strings in `src/locales/id/exam.json`
@@ -48,7 +49,6 @@ The foundational content components of the exam module have been built. We have 
     - [x] POST `/exam/admin/passages/list` (Supports pagination and title text search)
     - [x] PUT `/exam/admin/passages/update/:id`
     - [x] DELETE `/exam/admin/passages/delete/:id`
-    
 - **Questions (`exam_questions`)**
   - Schema: Links to `subjectId`, `passageId` (optional), `educationGradeId` (optional). Contains deep JSONB `content` (replaces hardcoded HTML constraints).
   - Deletion Constraint: Built with cascading deletes for its children (Options/Solutions are deleted synchronously when the parent question is deleted).
@@ -104,6 +104,7 @@ This phase represents the next major milestone. It will bridge the gap between a
    - Aggregate statistics to update user profiles and global rankings.
 
 ### Known Architectural Decisions
-*   **Paging/Listing API Strategy:** We opted to use `POST` instead of `GET` for the list endpoints. This pattern allows us to cleanly accept complex JSON validation through TypeBox body objects (such as robust nested filter conditions) which are difficult to parse in standard query strings.
-*   **Locales First:** Any string returned directly to the user/admin UI is strictly mapped against `src/locales/id/exam.json` through the Fastify `i18n` handler.
-*   **Cascade Controls:** Deep deletion checks are relegated to PostgreSQL's native `CASCADE` or `RESTRICT` depending on data safety. Specifically, deleting an `exam_question` safely cascades and rips out options/solutions to avoid orphan queries. Evaluated `RESTRICT` on packages so users don't mysteriously lose test records.
+
+- **Paging/Listing API Strategy:** We opted to use `POST` instead of `GET` for the list endpoints. This pattern allows us to cleanly accept complex JSON validation through TypeBox body objects (such as robust nested filter conditions) which are difficult to parse in standard query strings.
+- **Locales First:** Any string returned directly to the user/admin UI is strictly mapped against `src/locales/id/exam.json` through the Fastify `i18n` handler.
+- **Cascade Controls:** Deep deletion checks are relegated to PostgreSQL's native `CASCADE` or `RESTRICT` depending on data safety. Specifically, deleting an `exam_question` safely cascades and rips out options/solutions to avoid orphan queries. Evaluated `RESTRICT` on packages so users don't mysteriously lose test records.
