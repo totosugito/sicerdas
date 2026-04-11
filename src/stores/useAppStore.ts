@@ -20,6 +20,14 @@ type Store = {
     sortOrder: "asc" | "desc";
   };
   setBooks: (books: any) => void;
+  examPackages: {
+    viewMode: "table" | "card";
+    limit: number;
+    sortBy: string;
+    sortOrder: "asc" | "desc";
+    search: string;
+  };
+  setExamPackages: (examPackages: any) => void;
 
   periodicTable: {
     viewMode: PeriodicViewMode;
@@ -65,6 +73,13 @@ export const defaultStore = {
     grade: [] as number[],
     sortBy: "createdAt",
     sortOrder: "desc" as "asc" | "desc",
+  },
+  examPackages: {
+    viewMode: "table" as "table" | "card",
+    limit: 10,
+    sortBy: "updatedAt",
+    sortOrder: "desc" as "asc" | "desc",
+    search: "",
   },
   periodicTable: {
     viewMode: EnumPeriodicViewMode.theme1.value,
@@ -126,6 +141,11 @@ export const useAppStore = create<Store>()(
         set({
           elementExpandedSections: defaultStore.elementExpandedSections,
         }),
+      examPackages: defaultStore.examPackages,
+      setExamPackages: (examPackages: any) =>
+        set({
+          examPackages,
+        }),
 
       mobileMenu: defaultStore.mobileMenu,
       setMobileMenuExpanded: (id: string, expanded: boolean) =>
@@ -159,6 +179,7 @@ export const useAppStore = create<Store>()(
           jsonQuestions: defaultStore.jsonQuestions,
           jsonQuestionsGlobalParams: defaultStore.jsonQuestionsGlobalParams,
           jsonQuestionsPackageParams: defaultStore.jsonQuestionsPackageParams,
+          examPackages: defaultStore.examPackages,
         }),
     }),
     {

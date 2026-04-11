@@ -29,6 +29,20 @@ export default {
       openMenu: "Buka menu",
     },
     noResult: "Tidak ada data paket yang ditemukan.",
+    viewMode: "Mode Tampilan",
+    viewModes: {
+      table: "Tabel",
+      card: "Kartu",
+    },
+    sort: {
+      placeholder: "Urutkan Berdasarkan",
+      title: "Judul Paket",
+      updatedAt: "Terakhir Diperbarui",
+      examType: "Tipe Ujian",
+      duration: "Durasi",
+      status: "Status Keaktifan",
+      version: "Versi",
+    },
   },
   delete: {
     confirmTitle: "Hapus Paket Ujian",

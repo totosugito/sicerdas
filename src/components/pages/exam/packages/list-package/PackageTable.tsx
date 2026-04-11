@@ -34,6 +34,7 @@ interface PackageTableProps {
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
   onDelete: (pkg: ExamPackage) => void;
+  showPagination?: boolean;
 }
 
 export function PackageTable({
@@ -46,6 +47,7 @@ export function PackageTable({
   sortOrder,
   onSortChange,
   onDelete,
+  showPagination = true,
 }: PackageTableProps) {
   const { t } = useAppTranslation();
 
@@ -355,26 +357,14 @@ export function PackageTable({
   });
 
   return (
-    <div className="flex flex-col gap-4 border border-border rounded-lg bg-card">
-      <div className={"flex flex-row gap-2 justify-between px-4 pt-6"}>
-        <div></div>
-        <div className={"flex flex-row gap-2 max-w-sm"}>
-          <DataTableFilter
-            table={table}
-            searchPlaceholder={t(($) => $.exam.packages.table.search)}
-            className="min-w-sm"
-            searchOnEnter={true}
-          ></DataTableFilter>
-        </div>
-      </div>
-      <DataTable
-        table={table}
-        paginationData={paginationData}
-        totalRowCount={paginationData?.total || 0}
-        showSideBorders={false}
-        showZebraStriping={true}
-        defaultNoResultText={t(($) => $.exam.packages.table.noResult)}
-      />
-    </div>
+    <DataTable
+      table={table}
+      paginationData={paginationData}
+      totalRowCount={paginationData?.total || 0}
+      showSideBorders={true}
+      showZebraStriping={true}
+      defaultNoResultText={t(($) => $.exam.packages.table.noResult)}
+      showPagination={showPagination}
+    />
   );
 }

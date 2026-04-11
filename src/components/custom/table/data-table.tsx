@@ -55,6 +55,7 @@ interface DataTableProps<TData> extends React.ComponentProps<"div"> {
     };
   };
   defaultNoResultText?: string;
+  showPagination?: boolean;
 }
 
 type RowNumberColumnDef<T> = ColumnDef<T> & {
@@ -195,6 +196,7 @@ export function DataTable<TData>({
   zebraStripingClassName,
   styles,
   defaultNoResultText = "No result found",
+  showPagination = true,
   ...props
 }: DataTableProps<TData> & { pageSizeOptions?: number[] }) {
   const rowLength = table.getFilteredSelectedRowModel().rows.length;
@@ -321,19 +323,21 @@ export function DataTable<TData>({
           </TableBody>
         </Table>
       </div>
-      <div className={cn("flex flex-col gap-2 px-4 pb-6", styles?.pagination?.default)}>
-        <DataTablePagination
-          pageIndex={table.getState().pagination.pageIndex}
-          setPageIndex={table.setPageIndex}
-          pageSize={table.getState().pagination.pageSize}
-          setPageSize={table.setPageSize}
-          rowsCount={totalRowCount ?? table.getRowCount()} // Use totalRowCount if provided for manual pagination
-          pageSizeOptions={pageSizeOptions}
-          paginationData={paginationData} // Pass pagination object for manual pagination
-        />
+      {showPagination && (
+        <div className={cn("flex flex-col gap-2 px-4 pb-6", styles?.pagination?.default)}>
+          <DataTablePagination
+            pageIndex={table.getState().pagination.pageIndex}
+            setPageIndex={table.setPageIndex}
+            pageSize={table.getState().pagination.pageSize}
+            setPageSize={table.setPageSize}
+            rowsCount={totalRowCount ?? table.getRowCount()} // Use totalRowCount if provided for manual pagination
+            pageSizeOptions={pageSizeOptions}
+            paginationData={paginationData} // Pass pagination object for manual pagination
+          />
 
-        {actionBar && rowLength > 0 && actionBar}
-      </div>
+          {actionBar && rowLength > 0 && actionBar}
+        </div>
+      )}
     </div>
   );
 }
