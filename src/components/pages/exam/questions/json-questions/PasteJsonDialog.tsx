@@ -28,7 +28,7 @@ export function PasteJsonDialog({ open, onOpenChange, onSubmit }: PasteJsonDialo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>{t(($) => $.exam.questions.jsonQuestions.pasteModalTitle)}</DialogTitle>
         </DialogHeader>

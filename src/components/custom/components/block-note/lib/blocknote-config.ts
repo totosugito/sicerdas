@@ -5,6 +5,27 @@ import { Info } from "lucide-react";
 import { MathBlock } from "../block/MathBlock";
 import { AlertBlock } from "../block/AlertBlock";
 
+// List of all valid block types in our schema
+export const VALID_BLOCK_TYPES = [
+  // Default blocks
+  "paragraph",
+  "heading",
+  "bulletListItem",
+  "numberedListItem",
+  "checkListItem",
+  "table",
+  "image",
+  "video",
+  "audio",
+  "file",
+  "codeBlock",
+  // Custom blocks
+  "math",
+  "alert",
+] as const;
+
+export type ValidBlockType = (typeof VALID_BLOCK_TYPES)[number];
+
 // Define our custom schema with math and alert blocks
 // Using .extend is the standard way to add blocks to original schema
 export const schema = BlockNoteSchema.create().extend({

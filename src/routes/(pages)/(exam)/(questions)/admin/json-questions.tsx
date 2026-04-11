@@ -13,8 +13,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
-import { CreateQuestionRequest, useCreateQuestion } from "@/api/exam-questions";
+import { ChevronDown, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useCreateQuestion } from "@/api/exam-questions";
 import { useCreateQuestionOption } from "@/api/exam-question-options";
 import { useCreateQuestionSolution } from "@/api/exam-question-solutions";
 import { useAssignQuestionTagByName } from "@/api/exam-question-tags";
@@ -34,6 +35,7 @@ import {
 } from "@/components/pages/exam/questions/json-questions";
 import { useAssignPackageQuestions } from "@/api/exam-package-questions";
 import { JsonQuestionImport } from "@/api/exam-questions/types";
+import { VALID_BLOCK_TYPES } from "@/components/custom/components/block-note/lib/blocknote-config";
 
 const jsonQuestionsSearchSchema = z.object({
   index: z.coerce.number().default(0).catch(0),
@@ -70,6 +72,7 @@ function JsonQuestionsPage() {
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
   const [isPasteModalOpen, setIsPasteModalOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
 
   const setSelectedIndex = (index: number) => {
     navigate({ search: (prev: any) => ({ ...prev, index }), replace: true });
@@ -99,6 +102,37 @@ function JsonQuestionsPage() {
   };
   const setPreviewExpanded = (previewExpanded: boolean) => {
     navigate({ search: (prev: any) => ({ ...prev, previewExpanded }), replace: true });
+  };
+
+  /**
+   * Recursively validates that all blocks in a BlockNote content array have valid types.
+   * This prevents the editor from crashing when it encounters unknown block types.
+   */
+  const validateBlockNoteContent = (blocks: any[]): { isValid: boolean; errorPath?: string } => {
+    if (!Array.isArray(blocks)) return { isValid: true };
+
+    for (let i = 0; i < blocks.length; i++) {
+      const block = blocks[i];
+      if (typeof block !== "object" || block === null) continue;
+
+      // Check the block type
+      if (block.type && !VALID_BLOCK_TYPES.includes(block.type)) {
+        return { isValid: false, errorPath: `type: "${block.type}"` };
+      }
+
+      // Recursively check children
+      if (block.children && Array.isArray(block.children)) {
+        const result = validateBlockNoteContent(block.children);
+        if (!result.isValid) {
+          return {
+            isValid: false,
+            errorPath: `${block.type} > ${result.errorPath}`,
+          };
+        }
+      }
+    }
+
+    return { isValid: true };
   };
 
   const queryClient = useQueryClient();
@@ -158,6 +192,7 @@ function JsonQuestionsPage() {
   }, [packageForm, setJsonQuestionsPackageParams]);
 
   const processJsonContent = (content: string) => {
+    setImportError(null);
     try {
       const parsed = JSON.parse(content);
       const rawArray = Array.isArray(parsed)
@@ -183,20 +218,69 @@ function JsonQuestionsPage() {
           };
         });
 
+        // RE-VALIDATE BLOCKNOTE CONTENT TYPES
+        // This is crucial to prevent crashes in the editor view
+        for (let i = 0; i < processed.length; i++) {
+          const q = processed[i];
+          const questionNum = i + 1;
+
+          // Validate main content
+          const mainContentVal = validateBlockNoteContent(q.content);
+          if (!mainContentVal.isValid) {
+            const msg = `Question #${questionNum}: Invalid BlockNote block ${mainContentVal.errorPath}`;
+            setImportError(msg);
+            showNotifError({ message: msg });
+            return false;
+          }
+
+          // Validate options
+          if (q.options) {
+            for (let j = 0; j < q.options.length; j++) {
+              const opt = q.options[j];
+              const optVal = validateBlockNoteContent(opt.content as any[]);
+              if (!optVal.isValid) {
+                const msg = `Question #${questionNum}, Option #${j + 1}: Invalid BlockNote block ${optVal.errorPath}`;
+                setImportError(msg);
+                showNotifError({ message: msg });
+                return false;
+              }
+            }
+          }
+
+          // Validate solutions
+          if (q.solutions) {
+            for (let j = 0; j < q.solutions.length; j++) {
+              const sol = q.solutions[j];
+              const solVal = validateBlockNoteContent(sol.content as any[]);
+              if (!solVal.isValid) {
+                const msg = `Question #${questionNum}, Solution #${j + 1}: Invalid BlockNote block ${solVal.errorPath}`;
+                setImportError(msg);
+                showNotifError({ message: msg });
+                return false;
+              }
+            }
+          }
+        }
+
         setJsonQuestions(processed);
         setSelectedIndex(0);
         return true;
       } else {
-        showNotifError({ message: t(($) => $.exam.questions.jsonQuestions.invalidFormat) });
+        const msg = t(($) => $.exam.questions.jsonQuestions.invalidFormat);
+        setImportError(msg);
+        showNotifError({ message: msg });
         return false;
       }
     } catch (err) {
-      showNotifError({ message: t(($) => $.exam.questions.jsonQuestions.parseError) });
+      const msg = t(($) => $.exam.questions.jsonQuestions.parseError);
+      setImportError(msg);
+      showNotifError({ message: msg });
       return false;
     }
   };
 
   const handleImportClick = () => {
+    setImportError(null);
     fileInputRef.current?.click();
   };
 
@@ -221,10 +305,8 @@ function JsonQuestionsPage() {
   };
 
   const onPasteSubmit = (json: string) => {
-    const success = processJsonContent(json);
-    if (success) {
-      setIsPasteModalOpen(false);
-    }
+    setIsPasteModalOpen(false);
+    processJsonContent(json);
   };
 
   const handleUpdateQuestion = (updatedQuestion: JsonQuestionImport) => {
@@ -237,6 +319,7 @@ function JsonQuestionsPage() {
     setJsonQuestions([]);
     setSelectedIndex(0);
     setSelectedIndices([]);
+    setImportError(null);
   };
 
   const toggleSelect = (index: number) => {
@@ -428,7 +511,13 @@ function JsonQuestionsPage() {
                   <Upload className="h-4 w-4" />
                   {t(($) => $.exam.questions.jsonQuestions.importButton)}
                 </DropdownMenuItem>
-                <DropdownMenuItem className="gap-2" onClick={() => setIsPasteModalOpen(true)}>
+                <DropdownMenuItem
+                  className="gap-2"
+                  onClick={() => {
+                    setImportError(null);
+                    setIsPasteModalOpen(true);
+                  }}
+                >
                   <ClipboardPaste className="h-4 w-4" />
                   {t(($) => $.exam.questions.jsonQuestions.pasteButton)}
                 </DropdownMenuItem>
@@ -450,6 +539,14 @@ function JsonQuestionsPage() {
           </div>
         }
       />
+
+      {importError && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>{t(($) => $.labels.error)}</AlertTitle>
+          <AlertDescription>{importError}</AlertDescription>
+        </Alert>
+      )}
 
       {jsonQuestions.length > 0 ? (
         <div className="flex flex-col gap-6">
