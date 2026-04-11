@@ -1,27 +1,28 @@
 export interface ExamPassage {
-    id: string;
-    title: string | null;
-    content: Record<string, unknown>[];
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-    subjectId: string;
-    subjectName: string;
-    totalQuestions?: number;
+  id: string;
+  title: string | null;
+  content: Record<string, unknown>[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  subjectId: string;
+  subjectName: string;
+  totalQuestions: number;
+  activeQuestions: number;
 }
 
 export interface ExamPassageResponse {
-    success: boolean;
-    message: string;
+  success: boolean;
+  message: string;
 }
 
 export interface ExamPassageDetailResponse extends ExamPassageResponse {
-    data: ExamPassage;
+  data: ExamPassage;
 }
 
 export type PassageFormValues = {
-    title: string;
-    subjectId: string;
-    content: any[];
-    isActive: boolean;
+  title: string;
+  subjectId: string;
+  content: any[];
+  isActive: boolean;
 };

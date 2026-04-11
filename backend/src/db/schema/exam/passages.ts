@@ -1,4 +1,13 @@
-import { pgTable, uuid, varchar, timestamp, jsonb, boolean, index } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  varchar,
+  timestamp,
+  jsonb,
+  boolean,
+  index,
+  integer,
+} from "drizzle-orm/pg-core";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import { examSubjects } from "./subjects.ts";
 import { users } from "../user/users.ts";
@@ -34,6 +43,10 @@ export const examPassages = pgTable(
     // Control flag to softly hide passages without deleting them
     isActive: boolean("is_active").default(true).notNull(),
 
+    // Active/Total counters for questions (Denormalization for scale)
+    totalQuestions: integer("total_questions").default(0).notNull(),
+    activeQuestions: integer("active_questions").default(0).notNull(),
+
     // Timestamp when this passage was created
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 
@@ -43,6 +56,8 @@ export const examPassages = pgTable(
   (table) => [
     index("exam_passages_subject_id_idx").on(table.subjectId),
     index("exam_passages_creator_idx").on(table.createdByUserId),
+    index("idx_passage_total_questions").on(table.totalQuestions),
+    index("idx_passage_active_questions").on(table.activeQuestions),
   ],
 );
 

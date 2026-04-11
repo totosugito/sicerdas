@@ -3,7 +3,8 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
-import { eq } from "drizzle-orm";
+import { examPassages } from "../../../../db/schema/exam/passages.ts";
+import { eq, sql } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
@@ -53,9 +54,25 @@ const deleteQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         return reply.notFound(t(($) => $.exam.questions.delete.notFound));
       }
 
-      // Perform Hard Delete. The database schema has `onDelete: 'cascade'` for options
-      // and solutions, so they will be automatically deleted by PostgreSQL.
-      await db.delete(examQuestions).where(eq(examQuestions.id, id));
+      await db.transaction(async (tx) => {
+        // Perform Hard Delete. The database schema has `onDelete: 'cascade'` for options
+        // and solutions, so they will be automatically deleted by PostgreSQL.
+        await tx.delete(examQuestions).where(eq(examQuestions.id, id));
+
+        // If a passage was associated, update its counters
+        if (existingQuestion.passageId) {
+          await tx
+            .update(examPassages)
+            .set({
+              totalQuestions: sql`${examPassages.totalQuestions} - 1`,
+              activeQuestions: existingQuestion.isActive
+                ? sql`${examPassages.activeQuestions} - 1`
+                : examPassages.activeQuestions,
+              updatedAt: new Date(),
+            })
+            .where(eq(examPassages.id, existingQuestion.passageId));
+        }
+      });
 
       // Clean up directory from disk
       await deleteBlockNoteEntityDirectory(

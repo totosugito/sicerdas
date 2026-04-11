@@ -139,7 +139,15 @@ export function PassageCardListItem({ passage, onDelete }: PassageCardListItemPr
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <HelpCircle className="h-3.5 w-3.5 text-amber-500/60 shrink-0" />
-              <span className="text-xs font-semibold">{passage.totalQuestions || 0}</span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                  {passage.activeQuestions}
+                </span>
+                <span className="text-[10px] text-muted-foreground">/</span>
+                <span className="text-xs font-semibold text-slate-500">
+                  {passage.totalQuestions - passage.activeQuestions}
+                </span>
+              </div>
             </div>
           </div>
         </div>

@@ -112,10 +112,25 @@ export function PassageTable({
         />
       ),
       cell: ({ row }) => {
-        const total = row.getValue("totalQuestions") as number;
+        const passage = row.original;
+        const inactive = passage.totalQuestions - passage.activeQuestions;
         return (
-          <div className="flex justify-center">
-            <Badge variant="secondary">{total}</Badge>
+          <div className="flex justify-center flex-col items-center gap-1">
+            <div className="flex items-center gap-1.5">
+              <Badge variant="success" className="px-1.5 py-0 h-5 text-[10px]">
+                {passage.activeQuestions}
+              </Badge>
+              <span className="text-[10px] text-muted-foreground">/</span>
+              <Badge variant="secondary" className="px-1.5 py-0 h-5 text-[10px] opacity-70">
+                {inactive}
+              </Badge>
+            </div>
+            <div className="flex gap-2 text-[9px] font-medium uppercase tracking-tighter opacity-60">
+              <span className="text-emerald-600 dark:text-emerald-400">
+                {t(($) => $.labels.active)}
+              </span>
+              <span className="text-slate-500">{t(($) => $.labels.inactive)}</span>
+            </div>
           </div>
         );
       },

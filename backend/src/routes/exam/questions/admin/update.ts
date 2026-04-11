@@ -204,6 +204,54 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
           .where(eq(examQuestions.id, id))
           .returning();
 
+        const isStatusChanged = isActive !== undefined && isActive !== existingQuestion.isActive;
+        const isPassageChanged =
+          passageId !== undefined &&
+          (updatePayload.passageId ?? null) !== existingQuestion.passageId;
+
+        // 1. Handle Passage Change
+        if (isPassageChanged) {
+          // Decrement old passage
+          if (existingQuestion.passageId) {
+            await tx
+              .update(examPassages)
+              .set({
+                totalQuestions: sql`${examPassages.totalQuestions} - 1`,
+                activeQuestions: existingQuestion.isActive
+                  ? sql`${examPassages.activeQuestions} - 1`
+                  : examPassages.activeQuestions,
+                updatedAt: new Date(),
+              })
+              .where(eq(examPassages.id, existingQuestion.passageId));
+          }
+
+          // Increment new passage
+          if (updatePayload.passageId) {
+            const currentIsActive = isActive !== undefined ? isActive : existingQuestion.isActive;
+            await tx
+              .update(examPassages)
+              .set({
+                totalQuestions: sql`${examPassages.totalQuestions} + 1`,
+                activeQuestions: currentIsActive
+                  ? sql`${examPassages.activeQuestions} + 1`
+                  : examPassages.activeQuestions,
+                updatedAt: new Date(),
+              })
+              .where(eq(examPassages.id, updatePayload.passageId));
+          }
+        }
+        // 2. Handle only status change (if passage didn't change)
+        else if (isStatusChanged && existingQuestion.passageId) {
+          const diff = isActive ? 1 : -1;
+          await tx
+            .update(examPassages)
+            .set({
+              activeQuestions: sql`${examPassages.activeQuestions} + ${diff}`,
+              updatedAt: new Date(),
+            })
+            .where(eq(examPassages.id, existingQuestion.passageId));
+        }
+
         // If isActive status changed, update activeQuestions count in all related packages and sections
         if (isActive !== undefined && isActive !== existingQuestion.isActive) {
           const relatedAssignments = await tx

@@ -17,6 +17,8 @@ const PassageResponseItem = Type.Object({
   title: Type.Union([Type.String(), Type.Null()]),
   content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
   isActive: Type.Boolean(),
+  totalQuestions: Type.Number(),
+  activeQuestions: Type.Number(),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
   subjectId: Type.String({ format: "uuid" }),

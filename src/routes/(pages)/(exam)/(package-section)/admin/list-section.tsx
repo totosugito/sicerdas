@@ -50,7 +50,7 @@ function AdminExamPackageSectionsPage() {
   const search = searchParams.search ?? "";
   const sortBy = searchParams.sortBy ?? "order";
   const sortOrder = searchParams.sortOrder ?? "asc";
-  const viewMode = searchParams.view ?? "table";
+  const viewMode = searchParams.view ?? "card";
   const packageId = searchParams.packageId;
 
   const { examSections, setExamSections } = useAppStore();

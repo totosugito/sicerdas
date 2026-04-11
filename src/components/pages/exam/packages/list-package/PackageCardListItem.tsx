@@ -167,9 +167,15 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <Layers className="h-3.5 w-3.5 text-primary/60 shrink-0" />
-              <span className="text-xs font-semibold">
-                {pkg.activeSections}/{pkg.totalSections}
-              </span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                  {pkg.activeSections}
+                </span>
+                <span className="text-[10px] text-muted-foreground">/</span>
+                <span className="text-xs font-semibold text-slate-500">
+                  {pkg.totalSections - pkg.activeSections}
+                </span>
+              </div>
             </div>
           </div>
           <div className="flex flex-col gap-1">
@@ -178,9 +184,15 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <HelpCircle className="h-3.5 w-3.5 text-amber-500/60 shrink-0" />
-              <span className="text-xs font-semibold">
-                {pkg.activeQuestions}/{pkg.totalQuestions}
-              </span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                  {pkg.activeQuestions}
+                </span>
+                <span className="text-[10px] text-muted-foreground">/</span>
+                <span className="text-xs font-semibold text-slate-500">
+                  {pkg.totalQuestions - pkg.activeQuestions}
+                </span>
+              </div>
             </div>
           </div>
           <div className="flex flex-col gap-1">

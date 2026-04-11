@@ -71,7 +71,7 @@ function AdminExamQuestionsPage() {
   const search = searchParams.search ?? "";
   const sortBy = searchParams.sortBy ?? "updatedAt";
   const sortOrder = searchParams.sortOrder ?? "desc";
-  const viewMode = searchParams.view ?? "table";
+  const viewMode = searchParams.view ?? "card";
   const { subjectId, difficulty, type, scoringStrategy } = searchParams;
 
   const { examQuestions, setExamQuestions } = useAppStore();

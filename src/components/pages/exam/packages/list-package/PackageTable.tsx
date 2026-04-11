@@ -165,10 +165,16 @@ export function PackageTable({
         const pkg = row.original;
         const inactive = Math.max(0, pkg.totalSections - pkg.activeSections);
         return (
-          <div className="flex justify-center">
-            <Badge variant="secondary" className="px-2 font-mono">
-              {pkg.activeSections}/{inactive}
-            </Badge>
+          <div className="flex justify-center flex-col items-center gap-1">
+            <div className="flex items-center gap-1.5">
+              <Badge variant="success" className="px-1.5 py-0 h-5 text-[10px]">
+                {pkg.activeSections}
+              </Badge>
+              <span className="text-[10px] text-muted-foreground">/</span>
+              <Badge variant="secondary" className="px-1.5 py-0 h-5 text-[10px] opacity-70">
+                {inactive}
+              </Badge>
+            </div>
           </div>
         );
       },
@@ -188,10 +194,16 @@ export function PackageTable({
         const pkg = row.original;
         const inactive = Math.max(0, pkg.totalQuestions - pkg.activeQuestions);
         return (
-          <div className="flex justify-center">
-            <Badge variant="secondary" className="px-2 font-mono">
-              {pkg.activeQuestions}/{inactive}
-            </Badge>
+          <div className="flex justify-center flex-col items-center gap-1">
+            <div className="flex items-center gap-1.5">
+              <Badge variant="success" className="px-1.5 py-0 h-5 text-[10px]">
+                {pkg.activeQuestions}
+              </Badge>
+              <span className="text-[10px] text-muted-foreground">/</span>
+              <Badge variant="secondary" className="px-1.5 py-0 h-5 text-[10px] opacity-70">
+                {inactive}
+              </Badge>
+            </div>
           </div>
         );
       },

@@ -5,7 +5,7 @@ import { db } from "../../../../db/db-pool.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
@@ -132,28 +132,48 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }
       }
 
-      // Create the question first to get the ID
-      const [newQuestion] = await db
-        .insert(examQuestions)
-        .values({
-          subjectId,
-          passageId,
-          content: content || [],
-          reasonContent: reasonContent || [],
-          difficulty: difficulty || EnumDifficultyLevel.MEDIUM,
-          type: type || EnumQuestionType.MULTIPLE_CHOICE,
-          maxScore: maxScore ?? 1,
-          scoringStrategy: scoringStrategy ?? EnumScoringStrategy.ALL_OR_NOTHING,
-          requiredTier: requiredTier !== undefined ? requiredTier : "free",
-          educationGradeId:
-            educationGradeId === null || educationGradeId === 0 || (educationGradeId as any) === ""
-              ? null
-              : Number(educationGradeId),
-          isActive: isActive !== undefined ? isActive : true,
-          variableFormulas,
-          createdByUserId: userId,
-        })
-        .returning();
+      const [newQuestion] = await db.transaction(async (tx) => {
+        const [question] = await tx
+          .insert(examQuestions)
+          .values({
+            subjectId,
+            passageId,
+            content: content || [],
+            reasonContent: reasonContent || [],
+            difficulty: difficulty || EnumDifficultyLevel.MEDIUM,
+            type: type || EnumQuestionType.MULTIPLE_CHOICE,
+            maxScore: maxScore ?? 1,
+            scoringStrategy: scoringStrategy ?? EnumScoringStrategy.ALL_OR_NOTHING,
+            requiredTier: requiredTier !== undefined ? requiredTier : "free",
+            educationGradeId:
+              educationGradeId === null ||
+              educationGradeId === 0 ||
+              (educationGradeId as any) === ""
+                ? null
+                : Number(educationGradeId),
+            isActive: isActive !== undefined ? isActive : true,
+            variableFormulas,
+            createdByUserId: userId,
+          })
+          .returning();
+
+        // If a passage is associated, update its counters
+        if (passageId) {
+          await tx
+            .update(examPassages)
+            .set({
+              totalQuestions: sql`${examPassages.totalQuestions} + 1`,
+              activeQuestions:
+                isActive !== false
+                  ? sql`${examPassages.activeQuestions} + 1`
+                  : examPassages.activeQuestions,
+              updatedAt: new Date(),
+            })
+            .where(eq(examPassages.id, passageId));
+        }
+
+        return [question];
+      });
 
       // Process uploaded files if any
       let finalContent = content || [];
