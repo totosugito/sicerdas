@@ -13,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, AlertCircle } from "lucide-react";
+import { ChevronDown, AlertCircle, Sparkles } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useCreateQuestion } from "@/api/exam-questions";
 import { useCreateQuestionOption } from "@/api/exam-question-options";
@@ -46,7 +46,9 @@ const jsonQuestionsSearchSchema = z.object({
   tagsExpanded: z.coerce.boolean().default(true).catch(true),
   packageExpanded: z.coerce.boolean().default(true).catch(true),
   variablesExpanded: z.coerce.boolean().default(true).catch(true),
+  reasonExpanded: z.coerce.boolean().default(true).catch(true),
   previewExpanded: z.coerce.boolean().default(true).catch(true),
+  tab: z.string().default("edit").catch("edit"),
 });
 
 export const Route = createFileRoute("/(pages)/(exam)/(questions)/admin/json-questions")({
@@ -66,7 +68,9 @@ function JsonQuestionsPage() {
     tagsExpanded,
     packageExpanded,
     variablesExpanded,
+    reasonExpanded,
     previewExpanded,
+    tab,
   } = Route.useSearch();
   const navigate = Route.useNavigate();
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
@@ -100,29 +104,59 @@ function JsonQuestionsPage() {
   const setVariablesExpanded = (variablesExpanded: boolean) => {
     navigate({ search: (prev: any) => ({ ...prev, variablesExpanded }), replace: true });
   };
+  const setReasonExpanded = (reasonExpanded: boolean) => {
+    navigate({ search: (prev: any) => ({ ...prev, reasonExpanded }), replace: true });
+  };
   const setPreviewExpanded = (previewExpanded: boolean) => {
     navigate({ search: (prev: any) => ({ ...prev, previewExpanded }), replace: true });
+  };
+  const setTab = (tab: string) => {
+    navigate({ search: (prev: any) => ({ ...prev, tab }), replace: true });
   };
 
   /**
    * Recursively validates that all blocks in a BlockNote content array have valid types.
-   * This prevents the editor from crashing when it encounters unknown block types.
+   * Also repairs missing required props to prevent BlockNote from crashing.
    */
-  const validateBlockNoteContent = (blocks: any[]): { isValid: boolean; errorPath?: string } => {
+  const validateAndRepairBlockNoteContent = (
+    blocks: any[],
+  ): { isValid: boolean; errorPath?: string } => {
     if (!Array.isArray(blocks)) return { isValid: true };
 
     for (let i = 0; i < blocks.length; i++) {
-      const block = blocks[i];
+      let block = blocks[i];
       if (typeof block !== "object" || block === null) continue;
 
+      // Automatically repair common AI error: raw inline "text" object used as a block
+      if (block.type === "text") {
+        block = {
+          type: "paragraph",
+          props: {},
+          content: [block],
+          children: [],
+        };
+        blocks[i] = block;
+      }
+
       // Check the block type
-      if (block.type && !VALID_BLOCK_TYPES.includes(block.type)) {
+      if (block.type && !VALID_BLOCK_TYPES.includes(block.type as any)) {
         return { isValid: false, errorPath: `type: "${block.type}"` };
+      }
+
+      // Automatically repair missing properties to prevent BlockNote crashes
+      if (!block.props) block.props = {};
+
+      if (block.type === "math") {
+        if (!block.props.textAlignment) block.props.textAlignment = "left";
+        if (!block.props.textColor) block.props.textColor = "default";
+        if (block.props.fontSize === undefined) block.props.fontSize = 18;
+      } else if (block.type === "alert") {
+        if (!block.props.type) block.props.type = "info";
       }
 
       // Recursively check children
       if (block.children && Array.isArray(block.children)) {
-        const result = validateBlockNoteContent(block.children);
+        const result = validateAndRepairBlockNoteContent(block.children);
         if (!result.isValid) {
           return {
             isValid: false,
@@ -224,8 +258,8 @@ function JsonQuestionsPage() {
           const q = processed[i];
           const questionNum = i + 1;
 
-          // Validate main content
-          const mainContentVal = validateBlockNoteContent(q.content);
+          // Validate and repair main content
+          const mainContentVal = validateAndRepairBlockNoteContent(q.content);
           if (!mainContentVal.isValid) {
             const msg = `Question #${questionNum}: Invalid BlockNote block ${mainContentVal.errorPath}`;
             setImportError(msg);
@@ -233,11 +267,22 @@ function JsonQuestionsPage() {
             return false;
           }
 
-          // Validate options
+          // Validate and repair reason content (for statement_reasoning)
+          if (q.reasonContent) {
+            const reasonContentVal = validateAndRepairBlockNoteContent(q.reasonContent);
+            if (!reasonContentVal.isValid) {
+              const msg = `Question #${questionNum} (Reason): Invalid BlockNote block ${reasonContentVal.errorPath}`;
+              setImportError(msg);
+              showNotifError({ message: msg });
+              return false;
+            }
+          }
+
+          // Validate and repair options
           if (q.options) {
             for (let j = 0; j < q.options.length; j++) {
               const opt = q.options[j];
-              const optVal = validateBlockNoteContent(opt.content as any[]);
+              const optVal = validateAndRepairBlockNoteContent(opt.content as any[]);
               if (!optVal.isValid) {
                 const msg = `Question #${questionNum}, Option #${j + 1}: Invalid BlockNote block ${optVal.errorPath}`;
                 setImportError(msg);
@@ -247,11 +292,11 @@ function JsonQuestionsPage() {
             }
           }
 
-          // Validate solutions
+          // Validate and repair solutions
           if (q.solutions) {
             for (let j = 0; j < q.solutions.length; j++) {
               const sol = q.solutions[j];
-              const solVal = validateBlockNoteContent(sol.content as any[]);
+              const solVal = validateAndRepairBlockNoteContent(sol.content as any[]);
               if (!solVal.isValid) {
                 const msg = `Question #${questionNum}, Solution #${j + 1}: Invalid BlockNote block ${solVal.errorPath}`;
                 setImportError(msg);
@@ -507,6 +552,15 @@ function JsonQuestionsPage() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[200px]">
+                <DropdownMenuItem
+                  className="gap-2"
+                  onClick={() =>
+                    navigate({ to: AppRoute.exam.questions.admin.promptGenerator.url })
+                  }
+                >
+                  <Sparkles className="h-4 w-4 text-primary" />
+                  {t(($) => $.exam.questions.jsonQuestions.promptGeneratorButton)}
+                </DropdownMenuItem>
                 <DropdownMenuItem className="gap-2" onClick={handleImportClick}>
                   <Upload className="h-4 w-4" />
                   {t(($) => $.exam.questions.jsonQuestions.importButton)}
@@ -587,8 +641,12 @@ function JsonQuestionsPage() {
               onToggleTags={setTagsExpanded}
               variablesExpanded={variablesExpanded}
               onToggleVariables={setVariablesExpanded}
+              reasonExpanded={reasonExpanded}
+              onToggleReason={setReasonExpanded}
               previewExpanded={previewExpanded}
               onTogglePreview={setPreviewExpanded}
+              tab={tab}
+              onTabChange={setTab}
             />
           ) : (
             <div className="flex items-center justify-center p-12 border rounded-lg bg-card text-muted-foreground">

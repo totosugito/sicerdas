@@ -4,13 +4,18 @@ import { JsonQuestionOptionsTab } from "./JsonQuestionOptionsTab";
 import { JsonQuestionSolutionsTab } from "./JsonQuestionSolutionsTab";
 import { JsonTagsContentTab } from "./JsonTagsContentTab";
 import { JsonQuestionVariablesTab } from "./JsonQuestionVariablesTab";
+import { JsonQuestionReasonTab } from "./JsonQuestionReasonTab";
 import { JsonQuestionPreviewTab } from "./JsonQuestionPreviewTab";
-import { JsonQuestionImport, VariableFormulas } from "@/api/exam-questions/types";
+import { JsonQuestionImport, VariableFormulas, EnumQuestionType } from "@/api/exam-questions/types";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Eye, PencilLine, Settings2 } from "lucide-react";
 
 interface JsonQuestionEditViewProps {
   question: JsonQuestionImport;
   availableTags?: string[];
   onUpdate: (updatedQuestion: JsonQuestionImport) => void;
+  tab?: string;
+  onTabChange?: (tab: string) => void;
   contentExpanded?: boolean;
   onToggleContent?: (expanded: boolean) => void;
   optionsExpanded?: boolean;
@@ -21,6 +26,8 @@ interface JsonQuestionEditViewProps {
   onToggleTags?: (expanded: boolean) => void;
   variablesExpanded?: boolean;
   onToggleVariables?: (expanded: boolean) => void;
+  reasonExpanded?: boolean;
+  onToggleReason?: (expanded: boolean) => void;
   previewExpanded?: boolean;
   onTogglePreview?: (expanded: boolean) => void;
 }
@@ -29,6 +36,8 @@ export function JsonQuestionEditView({
   question,
   availableTags = [],
   onUpdate,
+  tab = "edit",
+  onTabChange,
   contentExpanded = true,
   onToggleContent,
   optionsExpanded = true,
@@ -39,6 +48,8 @@ export function JsonQuestionEditView({
   onToggleTags,
   variablesExpanded = true,
   onToggleVariables,
+  reasonExpanded = true,
+  onToggleReason,
   previewExpanded = true,
   onTogglePreview,
 }: JsonQuestionEditViewProps) {
@@ -64,55 +75,92 @@ export function JsonQuestionEditView({
     onUpdate({ ...question, variableFormulas: newVariables });
   };
 
+  const handleUpdateReasonContent = (newReasonContent: any[]) => {
+    onUpdate({ ...question, reasonContent: newReasonContent });
+  };
+
   return (
     <div className="flex flex-col gap-6 w-full pb-10">
-      {/* Preview Section */}
-      <JsonQuestionPreviewTab
-        question={question}
-        isOpen={previewExpanded}
-        onOpenChange={onTogglePreview}
-      />
+      <Tabs value={tab} onValueChange={onTabChange} className="w-full">
+        <TabsList className="grid w-full grid-cols-3 lg:w-[450px] mb-4">
+          <TabsTrigger value="preview" className="gap-2">
+            <Eye className="h-4 w-4" />
+            {t(($) => $.exam.questions.edit.tabs.preview)}
+          </TabsTrigger>
+          <TabsTrigger value="edit" className="gap-2">
+            <PencilLine className="h-4 w-4" />
+            {t(($) => $.exam.questions.edit.tabs.content)}
+          </TabsTrigger>
+          <TabsTrigger value="variables" className="gap-2">
+            <Settings2 className="h-4 w-4" />
+            {t(($) => $.exam.questions.edit.tabs.variables)}
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Variables Section */}
-      <JsonQuestionVariablesTab
-        variableFormulas={question.variableFormulas}
-        onUpdate={handleUpdateVariables}
-        isOpen={variablesExpanded}
-        onOpenChange={onToggleVariables}
-      />
+        <TabsContent value="preview" className="flex flex-col gap-6 mt-0">
+          {/* Preview Section */}
+          <JsonQuestionPreviewTab
+            question={question}
+            isOpen={previewExpanded}
+            onOpenChange={onTogglePreview}
+          />
 
-      {/* Tags Section */}
-      <JsonTagsContentTab
-        tags={question.tags}
-        availableTags={availableTags}
-        onUpdate={handleUpdateTags}
-        isOpen={tagsExpanded}
-        onOpenChange={onToggleTags}
-      />
+          {/* Tags Section */}
+          <JsonTagsContentTab
+            tags={question.tags}
+            availableTags={availableTags}
+            onUpdate={handleUpdateTags}
+            isOpen={tagsExpanded}
+            onOpenChange={onToggleTags}
+          />
+        </TabsContent>
 
-      {/* Content Section */}
-      <JsonQuestionContentTab
-        content={question.content}
-        onUpdate={handleUpdateContent}
-        isOpen={contentExpanded}
-        onOpenChange={onToggleContent}
-      />
+        <TabsContent value="edit" className="flex flex-col gap-6 mt-0">
+          {/* Content Section */}
+          <JsonQuestionContentTab
+            content={question.content}
+            onUpdate={handleUpdateContent}
+            isOpen={contentExpanded}
+            onOpenChange={onToggleContent}
+          />
 
-      {/* Options Section */}
-      <JsonQuestionOptionsTab
-        options={question.options}
-        onUpdate={handleUpdateOptions}
-        isOpen={optionsExpanded}
-        onOpenChange={onToggleOptions}
-      />
+          {/* Reason Section (Conditional) */}
+          {(question.reasonContent || question.type === EnumQuestionType.STATEMENT_REASONING) && (
+            <JsonQuestionReasonTab
+              reasonContent={question.reasonContent}
+              onUpdate={handleUpdateReasonContent}
+              isOpen={reasonExpanded}
+              onOpenChange={onToggleReason}
+            />
+          )}
 
-      {/* Solutions Section */}
-      <JsonQuestionSolutionsTab
-        solutions={question.solutions}
-        onUpdate={handleUpdateSolutions}
-        isOpen={solutionsExpanded}
-        onOpenChange={onToggleSolutions}
-      />
+          {/* Options Section */}
+          <JsonQuestionOptionsTab
+            options={question.options}
+            onUpdate={handleUpdateOptions}
+            isOpen={optionsExpanded}
+            onOpenChange={onToggleOptions}
+          />
+
+          {/* Solutions Section */}
+          <JsonQuestionSolutionsTab
+            solutions={question.solutions}
+            onUpdate={handleUpdateSolutions}
+            isOpen={solutionsExpanded}
+            onOpenChange={onToggleSolutions}
+          />
+        </TabsContent>
+
+        <TabsContent value="variables" className="flex flex-col gap-6 mt-0">
+          {/* Variables Section */}
+          <JsonQuestionVariablesTab
+            variableFormulas={question.variableFormulas}
+            onUpdate={handleUpdateVariables}
+            isOpen={variablesExpanded}
+            onOpenChange={onToggleVariables}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

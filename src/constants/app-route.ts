@@ -86,6 +86,7 @@ export const AppRoute = {
         edit: { url: "/admin/edit-question/$id" },
         detail: { url: "/admin/detail-question/$id" },
         importJson: { url: "/admin/json-questions" },
+        promptGenerator: { url: "/admin/prompt-generator" },
       },
     },
     passages: {

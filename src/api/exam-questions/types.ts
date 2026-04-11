@@ -87,6 +87,7 @@ export interface JsonQuestionImport {
   id: string;
   passageId?: string | null;
   content: Record<string, unknown>[];
+  reasonContent?: Record<string, unknown>[];
   difficulty: DifficultyLevel;
   type: QuestionType;
   maxScore: number;

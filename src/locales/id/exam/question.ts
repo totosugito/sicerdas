@@ -124,7 +124,7 @@ export default {
     success: "Soal berhasil diperbarui.",
     tabs: {
       settings: "Pengaturan",
-      content: "Isi Soal",
+      content: "Edit Soal",
       options: "Pilihan",
       solutions: "Solusi",
       tags: "Tag",
@@ -204,6 +204,7 @@ export default {
     importButton: "Impor JSON",
     pasteButton: "Tempel JSON",
     clearButton: "Bersihkan",
+    promptGeneratorButton: "AI Prompt Generator",
     questionNumber: "Soal",
     selectQuestion: "Pilih soal untuk melihat detailnya.",
     noJsonImported: "Belum ada soal JSON yang diimpor.",
@@ -229,6 +230,47 @@ export default {
       description: "Pilih paket dan sesi ujian untuk menugaskan soal yang diekspor.",
       overrideNote:
         "Catatan: Jika dipilih, soal yang diekspor akan secara otomatis ditugaskan ke paket dan sesi ujian ini.",
+    },
+    promptGenerator: {
+      description: "Buat prompt AI secara dinamis berdasarkan parameter tugas spesifik.",
+      paramsCard: {
+        title: "Parameter Tugas",
+        description: "Isi parameter di bawah ini untuk mengatur set instruksi tambahan bagi AI.",
+        curriculum: "Kurikulum",
+        curriculumPlaceholder: "Misal: Kurikulum Merdeka",
+        grade: "Kelas/Level",
+        gradePlaceholder: "Misal: SMA Kelas 10",
+        subject: "Mata Pelajaran",
+        subjectPlaceholder: "Misal: Fisika",
+        language: "Bahasa Jawaban",
+        languagePlaceholder: "Misal: Formal Bahasa Indonesia",
+        sourceMaterial: "Material Sumber (Prompt Instruksi)",
+        sourceMaterialPlaceholder:
+          "Jelaskan kebutuhan soal atau tulis 'Dari gambar yang dilampirkan...'",
+        presets: {
+          title: "Sampel Prompt Cepat",
+          image: "Ekstrak Gambar",
+          topic: "Buat dari Topik",
+          variation: "Buat Variasi",
+          bulk: "Buat Massal",
+          prompts: {
+            image:
+              "Tolong ekstrak semua soal dari gambar yang dilampirkan. Tangkap semua teks dan diagram/rumus dengan akurat, lalu buatkan format JSON-nya.",
+            topic:
+              "Tolong buatkan 3 soal tipe HOTS tentang [NAMA_TOPIK]. Gunakan variabel untuk perhitungan jika memungkinkan.",
+            variation:
+              "Berikut adalah contoh soal: '[CONTOH_SOAL]'. Tolong buatkan 5 variasi dari soal ini dengan angka yang berbeda-beda ke dalam format array variables JSON.",
+            bulk: "Tolong buatkan 10 soal pilihan ganda tentang [NAMA_TOPIK] dengan tingkat kesulitan mulai dari Mudah, Sedang, hingga Sulit.",
+          },
+        },
+      },
+      outputCard: {
+        title: "Hasil Markdown Prompt",
+        description: "Copy text ini ke ChatGPT, Claude, atau Gemini.",
+        copyButton: "Salin ke Clipboard",
+        copiedButton: "Berhasil Disalin!",
+        copyError: "Gagal menyalin teks ke clipboard.",
+      },
     },
   },
 };

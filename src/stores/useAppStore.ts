@@ -83,6 +83,15 @@ type Store = {
   };
   setJsonQuestionsPackageParams: (params: any) => void;
 
+  promptGeneratorParams: {
+    curriculum: string;
+    grade: string;
+    subject: string;
+    language: string;
+    sourceMaterial: string;
+  };
+  setPromptGeneratorParams: (params: any) => void;
+
   resetAll: () => void;
 };
 
@@ -157,6 +166,14 @@ export const defaultStore = {
     packageId: null,
     sectionId: null,
   },
+  promptGeneratorParams: {
+    curriculum: "Kurikulum Merdeka",
+    grade: "SMA Kelas 12",
+    subject: "Matematika",
+    language: "Formal Bahasa Indonesia (Baku/EYD)",
+    sourceMaterial:
+      "Dari gambar terlampir, buatkan 5 soal multiple choice HOTS beserta pembahasannya.",
+  },
 };
 
 export const useAppStore = create<Store>()(
@@ -230,6 +247,12 @@ export const useAppStore = create<Store>()(
           jsonQuestionsPackageParams: params,
         }),
 
+      promptGeneratorParams: defaultStore.promptGeneratorParams,
+      setPromptGeneratorParams: (params: any) =>
+        set({
+          promptGeneratorParams: params,
+        }),
+
       resetAll: () =>
         set({
           books: defaultStore.books,
@@ -243,6 +266,7 @@ export const useAppStore = create<Store>()(
           examSections: defaultStore.examSections,
           examPassages: defaultStore.examPassages,
           examQuestions: defaultStore.examQuestions,
+          promptGeneratorParams: defaultStore.promptGeneratorParams,
         }),
     }),
     {

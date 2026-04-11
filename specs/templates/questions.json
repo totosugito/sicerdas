@@ -22,16 +22,9 @@
       {
         "content": [
           {
-            "type": "paragraph",
-            "content": []
-          },
-          {
             "type": "math",
             "props": {
-              "textAlignment": "left",
-              "textColor": "default",
-              "equation": "{{opt1}}",
-              "fontSize": 18
+              "equation": "{{opt1}}"
             },
             "content": [],
             "children": []
@@ -44,14 +37,12 @@
       {
         "content": [
           {
-            "type": "paragraph",
-            "content": [
-              {
-                "type": "text",
-                "text": "{{opt2}}",
-                "styles": {}
-              }
-            ]
+            "type": "math",
+            "props": {
+              "equation": "{{opt2}}"
+            },
+            "content": [],
+            "children": []
           }
         ],
         "isCorrect": false,
@@ -61,14 +52,14 @@
     ],
     "solutions": [
       {
-        "title": "Pembahasan",
+        "title": "Cara Konseptual",
         "content": [
           {
             "type": "paragraph",
             "content": [
               {
                 "type": "text",
-                "text": "Kita cukup menjumlahkan variabel a ({{a}}) dan variabel b ({{b}}). Hasil perhitungannya adalah {{step1}}.",
+                "text": "Kita cukup menjumlahkan variabel a ({{a}}) dan variabel b ({{b}}).",
                 "styles": {}
               }
             ]
@@ -99,5 +90,68 @@
       }
     },
     "tags": ["Matematika", "Aritmatika"]
+  },
+  {
+    "difficulty": "hard",
+    "type": "essay",
+    "maxScore": 5,
+    "scoringStrategy": "partial",
+    "requiredTier": "premium",
+    "isActive": true,
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Jelaskan secara singkat mengenai Hukum I Newton tentang kelembaman (Inersia).",
+            "styles": {}
+          }
+        ]
+      }
+    ],
+    "options": [],
+    "solutions": [
+      {
+        "title": "Kriteria Jawaban",
+        "content": [
+          {
+            "type": "bulletListItem",
+            "content": [
+              {
+                "type": "text",
+                "text": "Menyebutkan bahwa benda yang diam akan tetap diam (1 poin)",
+                "styles": {}
+              }
+            ]
+          },
+          {
+            "type": "bulletListItem",
+            "content": [
+              {
+                "type": "text",
+                "text": "Menyebutkan bahwa benda bergerak akan terus bergerak dengan kecepatan tetap (1 poin)",
+                "styles": {}
+              }
+            ]
+          },
+          {
+            "type": "bulletListItem",
+            "content": [
+              {
+                "type": "text",
+                "text": "Menyebutkan syarat: 𝚺F = 0 (resultan gaya sama dengan nol) (3 poin)",
+                "styles": {}
+              }
+            ]
+          }
+        ],
+        "solutionType": "general",
+        "order": 1,
+        "requiredTier": "premium"
+      }
+    ],
+    "variableFormulas": null,
+    "tags": ["Fisika", "Dinamika"]
   }
 ]

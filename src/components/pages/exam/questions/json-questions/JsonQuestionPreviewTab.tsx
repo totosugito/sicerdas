@@ -43,6 +43,9 @@ export function JsonQuestionPreviewTab({
     return {
       ...question,
       content: injectVariablesIntoBlocks(question.content as any, fullScope),
+      reasonContent: question.reasonContent
+        ? injectVariablesIntoBlocks(question.reasonContent as any, fullScope)
+        : undefined,
       options: question.options?.map((opt) => ({
         ...opt,
         content: injectVariablesIntoBlocks(opt.content as any, fullScope),
