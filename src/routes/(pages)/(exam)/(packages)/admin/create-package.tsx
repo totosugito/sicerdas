@@ -7,6 +7,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppRoute } from "@/constants/app-route";
 import { PackageForm, PackageFormValues } from "@/components/pages/exam/packages/create-package";
+import { useUploadPackageThumbnail } from "@/api/exam-packages";
 
 export const Route = createFileRoute("/(pages)/(exam)/(packages)/admin/create-package")({
   component: AdminExamPackagesCreatePage,
@@ -17,6 +18,7 @@ function AdminExamPackagesCreatePage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const createMutation = useCreatePackage();
+  const uploadThumbnailMutation = useUploadPackageThumbnail();
 
   const onSubmit = async (values: PackageFormValues) => {
     const payload = {
@@ -29,11 +31,24 @@ function AdminExamPackagesCreatePage() {
     };
 
     createMutation.mutate(payload, {
-      onSuccess: (res) => {
+      onSuccess: async (res) => {
+        const packageId = (res as any).data?.id;
+
+        // Handle Thumbnail Upload if a file was selected
+        if (packageId && values.newThumbnailFile) {
+          try {
+            await uploadThumbnailMutation.mutateAsync({
+              id: packageId,
+              file: values.newThumbnailFile,
+            });
+          } catch (uploadError: any) {
+            showNotifError({ message: uploadError.message || t(($) => $.labels.error) });
+          }
+        }
+
         showNotifSuccess({
           message: res.message || t(($) => $.exam.packages.notifications.createSuccess),
         });
-        queryClient.invalidateQueries({ queryKey: ["admin-exam-packages-list"] });
         navigate({ to: AppRoute.exam.packages.admin.list.url });
       },
       onError: (err: any) => {

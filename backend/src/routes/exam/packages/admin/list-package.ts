@@ -13,6 +13,7 @@ import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from "../../../../db/schema/index.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
+import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";
 
 const PackageListQuery = Type.Object({
   search: Type.Optional(Type.String({ description: "Search term for package title" })),
@@ -41,6 +42,7 @@ const PackageResponseItem = Type.Object({
   title: Type.String(),
   examType: Type.String(),
   durationMinutes: Type.Number(),
+  thumbnail: Type.Union([Type.String(), Type.Null()]),
   description: Type.Union([Type.String(), Type.Null()]),
   requiredTier: Type.Union([Type.String(), Type.Null()]),
   educationGradeId: Type.Union([Type.Number(), Type.Null()]),
@@ -232,6 +234,7 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
             const p = r.package;
             return {
               ...p,
+              thumbnail: getPackageThumbnailUrl(p.thumbnail),
               categoryName: r.categoryName,
               educationGradeName: r.educationGradeName,
               totalSections: Number(r.totalSections),

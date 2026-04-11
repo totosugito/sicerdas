@@ -66,6 +66,9 @@ export const examPackages = pgTable(
     // References the version of this package
     versionId: integer("version_id").references(() => appVersion.id, { onDelete: "set null" }),
 
+    // Public image representing this package on cards and dashboard
+    thumbnail: text("thumbnail"),
+
     // Timestamp when this package was created
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 

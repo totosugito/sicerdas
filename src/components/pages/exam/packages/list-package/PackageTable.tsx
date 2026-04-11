@@ -10,7 +10,7 @@ import {
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, Eye, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -55,6 +55,26 @@ export function PackageTable({
       size: 50,
       paginationData: paginationData,
     }),
+    {
+      accessorKey: "thumbnail",
+      enableSorting: false,
+      header: "",
+      size: 100,
+      cell: ({ row }) => {
+        const thumbnail = row.original.thumbnail;
+        return (
+          <div className="w-20 aspect-video rounded-md overflow-hidden bg-muted border border-border/50">
+            {thumbnail ? (
+              <img src={thumbnail} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
+                <ImageIcon className="h-4 w-4" />
+              </div>
+            )}
+          </div>
+        );
+      },
+    },
     {
       accessorKey: "title",
       enableSorting: true,

@@ -53,7 +53,10 @@ All tables are prefixed with `exam_` within PostgreSQL but are stripped off the 
 
 ### 📦 3. Assembly & Exam Definition
 
-- 9. **`exam_packages`**: The actual bundle that users "start". Represents either a pre-determined Official Tryout or a `custom_practice` generated on the fly by users. Includes a strict `required_tier` and `education_grade_id`.
+- 9. **`exam_packages`**: The actual bundle that users "start". Represents either a pre-determined Official Tryout or a `custom_practice` generated on the fly by users. Includes a strict `required_tier`, `education_grade_id`, and a **`thumbnail`** field for card-based UI presentation.
+  - **High-End Authoring**: The admin editor for packages utilizes a **Standalone Page Router** with a **Dual-View Preview**.
+  - **Hero View**: Displays the full original image to ensure content/text visibility.
+  - **Student Card Preview**: A 16:9 simulated preview simulating exactly how the student will see the package on their dashboard.
 - 10. **`exam_package_sections`**: Divides an exam package into logical sub-tests (e.g., Literasi Bahasa, Penalaran Matematika). Includes an optional `groupName` (e.g., "SKD" or "Basic Arithmetic") used to visually group related sections together in the UI without requiring an overly complex nested database structural tree.
 - 11. **`exam_package_questions`**: Junction table that glues questions to an `exam_package`. It mandates a link to a `sectionId` (to enforce standardized package structures and prevent mixed-state bugs) and enforces the default sequence ordering of the questions.
 

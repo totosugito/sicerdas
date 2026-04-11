@@ -74,8 +74,10 @@ export default {
     uploadsRelativePath: env.USE_S3_STORAGE ? "" : "..",
     uploadsDir: env.UPLOAD_DIR,
     uploadsUserDir: "users",
+    uploadsPackageDir: "exam/package",
     uploadsQuestionDir: "exam/question",
     uploadsPassageDir: "exam/passage",
+    uploadsCourseDir: "course",
     useS3Storage: env.USE_S3_STORAGE,
     s3Storage: {
       bucketName: env.S3_BUCKET_NAME,

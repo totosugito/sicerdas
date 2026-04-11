@@ -85,6 +85,7 @@ export const AppApi = {
         list: APP_URL_API + "/exam/packages/admin/list",
         listSimple: APP_URL_API + "/exam/packages/admin/list-simple",
         detail: APP_URL_API + "/exam/packages/admin/detail/:id",
+        thumbnail: APP_URL_API + "/exam/packages/admin/thumbnail/:id",
       },
     },
     packageSections: {

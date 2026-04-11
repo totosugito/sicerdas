@@ -3,7 +3,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageTitle, ErrorContainer } from "@/components/app";
-import { useUpdatePackage, useDetailPackage } from "@/api/exam-packages";
+import { useUpdatePackage, useDetailPackage, useUploadPackageThumbnail } from "@/api/exam-packages";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { AppRoute } from "@/constants/app-route";
 import {
@@ -22,6 +22,7 @@ function AdminExamPackagesEditPage() {
   const { id } = Route.useParams();
   const queryClient = useQueryClient();
   const updateMutation = useUpdatePackage();
+  const uploadThumbnailMutation = useUploadPackageThumbnail();
   const { data: detailData, isLoading, isError, error } = useDetailPackage({ id });
 
   const packageData = detailData?.data;
@@ -37,10 +38,21 @@ function AdminExamPackagesEditPage() {
       description: packageData?.description || "",
       isActive: packageData?.isActive,
       versionId: packageData?.versionId ? String(packageData.versionId) : "",
+      thumbnail: packageData?.thumbnail,
     };
   }, [packageData]);
 
   const onSubmit = async (values: PackageFormValues) => {
+    // 1. Handle Thumbnail Removal if requested
+    if (values.thumbnail === null && packageData?.thumbnail) {
+      try {
+        await uploadThumbnailMutation.mutateAsync({ id, action: "remove" });
+      } catch (err: any) {
+        showNotifError({ message: err.message || t(($) => $.labels.error) });
+      }
+    }
+
+    // 2. Update metadata
     const payload = {
       id,
       ...values,
@@ -52,7 +64,19 @@ function AdminExamPackagesEditPage() {
     };
 
     updateMutation.mutate(payload, {
-      onSuccess: (res) => {
+      onSuccess: async (res) => {
+        // 3. Handle New Thumbnail Upload if selected
+        if (values.newThumbnailFile) {
+          try {
+            await uploadThumbnailMutation.mutateAsync({
+              id,
+              file: values.newThumbnailFile,
+            });
+          } catch (uploadError: any) {
+            showNotifError({ message: uploadError.message || t(($) => $.labels.error) });
+          }
+        }
+
         showNotifSuccess({
           message: res.message || t(($) => $.exam.packages.notifications.updateSuccess),
         });

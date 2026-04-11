@@ -17,3 +17,6 @@ export type { ListPackagesSimpleResponse, PackageSimpleItem } from "./admin/list
 
 export { useDetailPackage } from "./admin/detail-package";
 export type { DetailPackageRequest } from "./admin/detail-package";
+
+export { useUploadPackageThumbnail } from "./admin/upload-thumbnail";
+export type { UploadThumbnailRequest } from "./admin/upload-thumbnail";

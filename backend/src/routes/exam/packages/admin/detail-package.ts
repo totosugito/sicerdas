@@ -9,6 +9,7 @@ import { eq, sql } from "drizzle-orm";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
+import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";
 
 const DetailPackageParams = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -21,6 +22,7 @@ const PackageResponseItem = Type.Object({
   examType: Type.String(),
   durationMinutes: Type.Number(),
   description: Type.Union([Type.String(), Type.Null()]),
+  thumbnail: Type.Union([Type.String(), Type.Null()]),
   requiredTier: Type.Union([Type.String(), Type.Null()]),
   educationGradeId: Type.Union([Type.Number(), Type.Null()]),
   categoryName: Type.Union([Type.String(), Type.Null()]),
@@ -86,6 +88,7 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
         message: t(($) => $.exam.packages.detail.success),
         data: {
           ...pkg,
+          thumbnail: getPackageThumbnailUrl(pkg.thumbnail),
           categoryName: result.categoryName,
           educationGradeName: result.educationGradeName,
           isNew: !!result.isNew,

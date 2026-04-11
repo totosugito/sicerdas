@@ -4,6 +4,7 @@ export interface ExamPackage {
   title: string;
   examType: string;
   durationMinutes: number;
+  thumbnail: string | null;
   description: string | null;
   requiredTier: string | null;
   educationGradeId: number | null;
