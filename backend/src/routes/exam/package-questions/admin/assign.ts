@@ -3,6 +3,9 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
+import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
+import { examPackages } from "../../../../db/schema/exam/packages.ts";
+import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
@@ -91,6 +94,38 @@ const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
         }));
 
         await tx.insert(examPackageQuestions).values(values);
+
+        // 4. Update counts in the package AND section
+        const questionsInfo = await tx
+          .select({ isActive: examQuestions.isActive })
+          .from(examQuestions)
+          .where(inArray(examQuestions.id, newQuestionIds));
+
+        const activeCount = questionsInfo.filter((q) => q.isActive).length;
+
+        // Update Package
+        await tx
+          .update(examPackages)
+          .set({
+            totalQuestions: sql`${examPackages.totalQuestions} + ${newQuestionIds.length}`,
+            activeQuestions:
+              activeCount > 0 ? sql`${examPackages.activeQuestions} + ${activeCount}` : undefined,
+            updatedAt: new Date(),
+          })
+          .where(eq(examPackages.id, packageId));
+
+        // Update Section
+        await tx
+          .update(examPackageSections)
+          .set({
+            totalQuestions: sql`${examPackageSections.totalQuestions} + ${newQuestionIds.length}`,
+            activeQuestions:
+              activeCount > 0
+                ? sql`${examPackageSections.activeQuestions} + ${activeCount}`
+                : undefined,
+            updatedAt: new Date(),
+          })
+          .where(eq(examPackageSections.id, sectionId));
       });
 
       return reply.status(200).send({

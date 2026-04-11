@@ -13,6 +13,7 @@ export interface ExamPackageSection {
   createdAt: string;
   updatedAt: string;
   totalQuestions: number;
+  activeQuestions: number;
 }
 
 export interface SectionQuestionItem {

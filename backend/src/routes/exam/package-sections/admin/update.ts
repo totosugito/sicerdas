@@ -4,7 +4,7 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
@@ -80,20 +80,36 @@ const updateSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }
       }
 
-      await db
-        .update(examPackageSections)
-        .set({
-          packageId,
-          title,
-          groupName,
-          description,
-          durationMinutes,
-          order,
-          isActive,
-          versionId,
-          updatedAt: new Date(),
-        })
-        .where(eq(examPackageSections.id, id));
+      await db.transaction(async (tx) => {
+        await tx
+          .update(examPackageSections)
+          .set({
+            packageId,
+            title,
+            groupName,
+            description,
+            durationMinutes,
+            order,
+            isActive,
+            versionId,
+            updatedAt: new Date(),
+          })
+          .where(eq(examPackageSections.id, id));
+
+        // If isActive changed, update activeSections count in parent package
+        if (isActive !== undefined && isActive !== existing.isActive) {
+          const targetPackageId = packageId ?? existing.packageId;
+          await tx
+            .update(examPackages)
+            .set({
+              activeSections: isActive
+                ? sql`${examPackages.activeSections} + 1`
+                : sql`${examPackages.activeSections} - 1`,
+              updatedAt: new Date(),
+            })
+            .where(eq(examPackages.id, targetPackageId));
+        }
+      });
 
       return reply.status(200).send({
         success: true,

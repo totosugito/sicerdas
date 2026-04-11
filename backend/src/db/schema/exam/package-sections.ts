@@ -56,6 +56,10 @@ export const examPackageSections = pgTable(
     // References the version of this section
     versionId: integer("version_id").references(() => appVersion.id, { onDelete: "set null" }),
 
+    // Active/Total counters for questions (Denormalization for scale)
+    totalQuestions: integer("total_questions").default(0).notNull(),
+    activeQuestions: integer("active_questions").default(0).notNull(),
+
     // Timestamp when this section was created
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 
@@ -66,6 +70,8 @@ export const examPackageSections = pgTable(
     index("exam_package_sections_version_id_idx").on(table.versionId),
     index("exam_package_sections_package_id_idx").on(table.packageId),
     index("exam_package_sections_creator_idx").on(table.createdByUserId),
+    index("idx_section_total_questions").on(table.totalQuestions),
+    index("idx_section_active_questions").on(table.activeQuestions),
   ],
 );
 

@@ -152,7 +152,7 @@ export function PackageTable({
     },
     {
       accessorKey: "totalSections",
-      enableSorting: false,
+      enableSorting: true,
       size: 100,
       header: ({ column }) => (
         <DataTableColumnHeader
@@ -162,11 +162,35 @@ export function PackageTable({
         />
       ),
       cell: ({ row }) => {
-        const total = row.getValue("totalSections") as number;
+        const pkg = row.original;
+        const inactive = Math.max(0, pkg.totalSections - pkg.activeSections);
         return (
           <div className="flex justify-center">
-            <Badge variant="secondary" className="px-3">
-              {total || 0}
+            <Badge variant="secondary" className="px-2 font-mono">
+              {pkg.activeSections}/{inactive}
+            </Badge>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "totalQuestions",
+      enableSorting: true,
+      size: 100,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.exam.packages.table.columns.questions)}
+          className="justify-center"
+        />
+      ),
+      cell: ({ row }) => {
+        const pkg = row.original;
+        const inactive = Math.max(0, pkg.totalQuestions - pkg.activeQuestions);
+        return (
+          <div className="flex justify-center">
+            <Badge variant="secondary" className="px-2 font-mono">
+              {pkg.activeQuestions}/{inactive}
             </Badge>
           </div>
         );

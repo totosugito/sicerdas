@@ -36,6 +36,8 @@ interface SectionTableProps {
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
   onDelete: (section: ExamPackageSection) => void;
   onEdit: (section: ExamPackageSection) => void;
+  showPagination?: boolean;
+  showToolbar?: boolean;
 }
 
 export function SectionTable({
@@ -49,6 +51,8 @@ export function SectionTable({
   onSortChange,
   onDelete,
   onEdit,
+  showPagination = true,
+  showToolbar = true,
 }: SectionTableProps) {
   const { t } = useAppTranslation();
 
@@ -145,11 +149,17 @@ export function SectionTable({
           className="justify-center"
         />
       ),
-      cell: ({ row }) => (
-        <div className="flex justify-center">
-          <span className="text-sm">{row.getValue("totalQuestions")}</span>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const section = row.original;
+        const inactive = Math.max(0, section.totalQuestions - section.activeQuestions);
+        return (
+          <div className="flex justify-center">
+            <Badge variant="secondary" className="px-2 font-mono">
+              {section.activeQuestions}/{inactive}
+            </Badge>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "durationMinutes",
@@ -331,18 +341,20 @@ export function SectionTable({
   });
 
   return (
-    <div className="flex flex-col gap-4 border border-border rounded-lg bg-card">
-      <div className={"flex flex-row gap-2 justify-between px-4 pt-6"}>
-        <div></div>
-        <div className={"flex flex-row gap-2 max-w-sm"}>
-          <DataTableFilter
-            table={table}
-            searchPlaceholder={t(($) => $.exam.sections.table.search)}
-            className="min-w-sm"
-            searchOnEnter={true}
-          ></DataTableFilter>
+    <div className="flex flex-col gap-4 border-l border-r">
+      {showToolbar && (
+        <div className={"flex flex-row gap-2 justify-between px-4 pt-6"}>
+          <div></div>
+          <div className={"flex flex-row gap-2 max-w-sm"}>
+            <DataTableFilter
+              table={table}
+              searchPlaceholder={t(($) => $.exam.sections.table.search)}
+              className="min-w-sm"
+              searchOnEnter={true}
+            />
+          </div>
         </div>
-      </div>
+      )}
       <DataTable
         table={table}
         paginationData={paginationData}
@@ -350,6 +362,7 @@ export function SectionTable({
         showSideBorders={false}
         showZebraStriping={true}
         defaultNoResultText={t(($) => $.exam.sections.table.noResult)}
+        showPagination={showPagination}
       />
     </div>
   );

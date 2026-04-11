@@ -1,4 +1,4 @@
-import { create } from "zustand/index";
+import { create } from "zustand";
 import { APP_CONFIG } from "@/constants/config";
 import { persist } from "zustand/middleware";
 import { EnumPeriodicViewMode, EnumViewMode } from "@/constants/app-enum";
@@ -28,6 +28,14 @@ type Store = {
     search: string;
   };
   setExamPackages: (examPackages: any) => void;
+  examSections: {
+    viewMode: "table" | "card";
+    limit: number;
+    sortBy: string;
+    sortOrder: "asc" | "desc";
+    search: string;
+  };
+  setExamSections: (examSections: any) => void;
 
   periodicTable: {
     viewMode: PeriodicViewMode;
@@ -79,6 +87,13 @@ export const defaultStore = {
     limit: 10,
     sortBy: "updatedAt",
     sortOrder: "desc" as "asc" | "desc",
+    search: "",
+  },
+  examSections: {
+    viewMode: "table" as "table" | "card",
+    limit: 10,
+    sortBy: "order",
+    sortOrder: "asc" as "asc" | "desc",
     search: "",
   },
   periodicTable: {
@@ -146,6 +161,11 @@ export const useAppStore = create<Store>()(
         set({
           examPackages,
         }),
+      examSections: defaultStore.examSections,
+      setExamSections: (examSections: any) =>
+        set({
+          examSections,
+        }),
 
       mobileMenu: defaultStore.mobileMenu,
       setMobileMenuExpanded: (id: string, expanded: boolean) =>
@@ -180,6 +200,7 @@ export const useAppStore = create<Store>()(
           jsonQuestionsGlobalParams: defaultStore.jsonQuestionsGlobalParams,
           jsonQuestionsPackageParams: defaultStore.jsonQuestionsPackageParams,
           examPackages: defaultStore.examPackages,
+          examSections: defaultStore.examSections,
         }),
     }),
     {

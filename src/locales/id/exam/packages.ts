@@ -14,6 +14,7 @@ export default {
       sections: "Jumlah Seksi",
       duration: "Durasi (Menit)",
       educationGrade: "Tingkat Pendidikan",
+      questions: "Jumlah Soal",
       status: "Status",
       updatedAt: "Diperbarui Pada",
       actions: "Aksi",
@@ -42,6 +43,10 @@ export default {
       duration: "Durasi",
       status: "Status Keaktifan",
       version: "Versi",
+      totalSections: "Total Seksi",
+      activeSections: "Seksi Aktif",
+      totalQuestions: "Total Soal",
+      activeQuestions: "Soal Aktif",
     },
   },
   delete: {

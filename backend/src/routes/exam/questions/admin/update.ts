@@ -5,7 +5,10 @@ import { db } from "../../../../db/db-pool.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
-import { eq } from "drizzle-orm";
+import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
+import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
+import { examPackages } from "../../../../db/schema/exam/packages.ts";
+import { eq, inArray, sql } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
@@ -194,11 +197,50 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (isActive !== undefined) updatePayload.isActive = isActive;
       if (variableFormulas !== undefined) updatePayload.variableFormulas = variableFormulas;
 
-      const [updatedQuestion] = await db
-        .update(examQuestions)
-        .set(updatePayload)
-        .where(eq(examQuestions.id, id))
-        .returning();
+      const [updatedQuestion] = await db.transaction(async (tx) => {
+        const [result] = await tx
+          .update(examQuestions)
+          .set(updatePayload)
+          .where(eq(examQuestions.id, id))
+          .returning();
+
+        // If isActive status changed, update activeQuestions count in all related packages and sections
+        if (isActive !== undefined && isActive !== existingQuestion.isActive) {
+          const relatedAssignments = await tx
+            .select({
+              packageId: examPackageQuestions.packageId,
+              sectionId: examPackageQuestions.sectionId,
+            })
+            .from(examPackageQuestions)
+            .where(eq(examPackageQuestions.questionId, id));
+
+          if (relatedAssignments.length > 0) {
+            const packageIds = relatedAssignments.map((a) => a.packageId);
+            const sectionIds = relatedAssignments.map((a) => a.sectionId);
+            const diff = isActive ? 1 : -1;
+
+            // Update related packages
+            await tx
+              .update(examPackages)
+              .set({
+                activeQuestions: sql`${examPackages.activeQuestions} + ${diff}`,
+                updatedAt: new Date(),
+              })
+              .where(inArray(examPackages.id, packageIds));
+
+            // Update related sections
+            await tx
+              .update(examPackageSections)
+              .set({
+                activeQuestions: sql`${examPackageSections.activeQuestions} + ${diff}`,
+                updatedAt: new Date(),
+              })
+              .where(inArray(examPackageSections.id, sectionIds));
+          }
+        }
+
+        return [result];
+      });
 
       // Clean up orphaned files
       if (content !== undefined || reasonContent !== undefined) {

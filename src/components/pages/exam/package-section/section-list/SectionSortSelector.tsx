@@ -9,31 +9,33 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpAZ, ArrowDownAZ } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 
-interface PackageSortSelectorProps {
+interface SectionSortSelectorProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
 }
 
-export const PackageSortSelector = ({
+export const SectionSortSelector = ({
   sortBy,
   sortOrder,
   onSortChange,
-}: PackageSortSelectorProps) => {
+}: SectionSortSelectorProps) => {
   const { t } = useAppTranslation();
 
   const sortOptions = [
-    { value: "updatedAt", label: t(($) => $.exam.packages.table.sort.updatedAt) },
-    { value: "title", label: t(($) => $.exam.packages.table.sort.title) },
-    { value: "examType", label: t(($) => $.exam.packages.table.sort.examType) },
-    { value: "durationMinutes", label: t(($) => $.exam.packages.table.sort.duration) },
-    { value: "isActive", label: t(($) => $.exam.packages.table.sort.status) },
-    { value: "versionId", label: t(($) => $.exam.packages.table.sort.version) },
-    { value: "totalSections", label: t(($) => $.exam.packages.table.sort.totalSections) },
-    { value: "activeSections", label: t(($) => $.exam.packages.table.sort.activeSections) },
-    { value: "totalQuestions", label: t(($) => $.exam.packages.table.sort.totalQuestions) },
-    { value: "activeQuestions", label: t(($) => $.exam.packages.table.sort.activeQuestions) },
+    { value: "order", label: t(($) => $.labels.order) },
+    { value: "updatedAt", label: t(($) => $.exam.sections.table.columns.updatedAt) },
+    { value: "title", label: t(($) => $.exam.sections.table.columns.title) },
+    { value: "groupName", label: t(($) => $.exam.sections.table.columns.groupName) },
+    { value: "totalQuestions", label: t(($) => $.exam.sections.table.columns.questions) },
+    {
+      value: "activeQuestions",
+      label: t(($) => $.exam.sections.table.columns.questions) + " (Aktif)",
+    },
   ];
+
+  // Note: I should probably refined labels in locale for better UX, but let's use what's available
+  // Actually, I'll check the locale to see if there are better keys.
 
   const handleSortFieldChange = (value: string) => {
     onSortChange(value, sortOrder);

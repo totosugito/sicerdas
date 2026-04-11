@@ -66,6 +66,7 @@ export default {
   loading: "Memuat...",
   action: "Aksi",
   new: "Baru",
+  order: "Urutan",
   version: "Versi",
   published: "Dipublikasikan",
   publishedText: "Published",

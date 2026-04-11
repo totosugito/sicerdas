@@ -3,7 +3,6 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
-import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
 import { and, eq, sql, desc, ilike } from "drizzle-orm";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
@@ -46,6 +45,7 @@ const SectionResponseItem = Type.Object({
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
   totalQuestions: Type.Number(),
+  activeQuestions: Type.Number(),
 });
 
 const ListSectionsResponse = Type.Object({
@@ -144,15 +144,12 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
         .select({
           section: examPackageSections,
           packageName: examPackages.title,
-          totalQuestions: sql<number>`count(${examPackageQuestions.questionId})::int`,
           isNew: latestVersionId
             ? sql<boolean>`${examPackageSections.versionId} = ${latestVersionId}`.as("isNew")
             : sql<boolean>`false`.as("isNew"),
         })
         .from(examPackageSections)
-        .leftJoin(examPackages, eq(examPackageSections.packageId, examPackages.id))
-        .leftJoin(examPackageQuestions, eq(examPackageSections.id, examPackageQuestions.sectionId))
-        .groupBy(examPackageSections.id, examPackages.id);
+        .leftJoin(examPackages, eq(examPackageSections.packageId, examPackages.id));
 
       if (conditions.length > 0) {
         baseQuery = baseQuery.where(and(...conditions)) as any;
@@ -163,6 +160,18 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
       let queryWithSort;
 
       switch (sortBy) {
+        case "totalQuestions":
+          queryWithSort =
+            orderDir === "asc"
+              ? baseQuery.orderBy(examPackageSections.totalQuestions)
+              : baseQuery.orderBy(desc(examPackageSections.totalQuestions));
+          break;
+        case "activeQuestions":
+          queryWithSort =
+            orderDir === "asc"
+              ? baseQuery.orderBy(examPackageSections.activeQuestions)
+              : baseQuery.orderBy(desc(examPackageSections.activeQuestions));
+          break;
         case "isActive":
           queryWithSort =
             orderDir === "asc"
@@ -238,7 +247,6 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
             return {
               ...s,
               packageName: r.packageName,
-              totalQuestions: Number(r.totalQuestions),
               versionId: s.versionId,
               isNew: !!r.isNew,
               createdAt: s.createdAt.toISOString(),

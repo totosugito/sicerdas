@@ -80,27 +80,42 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       const userId = request.session.user.id;
+      const isSectionActive = isActive ?? true;
 
-      const [newSection] = await db
-        .insert(examPackageSections)
-        .values({
-          packageId,
-          title,
-          groupName,
-          description,
-          durationMinutes,
-          order: orderToUse,
-          isActive: isActive ?? true,
-          versionId,
-          createdByUserId: userId,
-        })
-        .returning({ id: examPackageSections.id });
+      const newSectionId = await db.transaction(async (tx) => {
+        const [section] = await tx
+          .insert(examPackageSections)
+          .values({
+            packageId,
+            title,
+            groupName,
+            description,
+            durationMinutes,
+            order: orderToUse,
+            isActive: isSectionActive,
+            versionId,
+            createdByUserId: userId,
+          })
+          .returning({ id: examPackageSections.id });
+
+        // Update counts in the parent package
+        await tx
+          .update(examPackages)
+          .set({
+            totalSections: sql`${examPackages.totalSections} + 1`,
+            activeSections: isSectionActive ? sql`${examPackages.activeSections} + 1` : undefined,
+            updatedAt: new Date(),
+          })
+          .where(eq(examPackages.id, packageId));
+
+        return section.id;
+      });
 
       return reply.status(201).send({
         success: true,
         message: t(($) => $.exam.package_sections.create.success),
         data: {
-          id: newSection.id,
+          id: newSectionId,
         },
       });
     }),

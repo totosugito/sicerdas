@@ -13,6 +13,7 @@ import {
   Eye,
   ImageIcon,
   CalendarDays,
+  HelpCircle,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -137,22 +138,30 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
           </p>
         </div>
 
-        <div className="pt-3 border-t border-border/40 grid grid-cols-2 gap-2">
+        <div className="pt-3 border-t border-border/40 grid grid-cols-2 gap-x-2 gap-y-3">
           <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-medium">
             <Layers className="h-3.5 w-3.5 text-primary" />
-            <span>
-              {pkg.totalSections || 0} {t(($) => $.exam.packages.table.columns.sections)}
+            <span className="truncate">
+              {pkg.activeSections}/{Math.max(0, pkg.totalSections - pkg.activeSections)}{" "}
+              {t(($) => $.exam.packages.table.columns.sections)}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-medium">
+            <HelpCircle className="h-3.5 w-3.5 text-primary" />
+            <span className="truncate">
+              {pkg.activeQuestions}/{Math.max(0, pkg.totalQuestions - pkg.activeQuestions)}{" "}
+              {t(($) => $.exam.packages.table.columns.questions)}
             </span>
           </div>
           <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-medium">
             <Clock className="h-3.5 w-3.5 text-primary" />
-            <span>
+            <span className="truncate">
               {pkg.durationMinutes || 0} {t(($) => $.exam.packages.table.columns.duration)}
             </span>
           </div>
-          <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-medium col-span-2">
+          <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-medium">
             <CalendarDays className="h-3.5 w-3.5 text-primary" />
-            <span>{string_to_locale_date("id-ID", pkg.updatedAt)}</span>
+            <span className="truncate">{string_to_locale_date("id-ID", pkg.updatedAt)}</span>
           </div>
         </div>
       </CardContent>
