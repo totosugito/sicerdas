@@ -34,6 +34,8 @@ interface PassageTableProps {
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
   onDelete: (passage: ExamPassage) => void;
+  showPagination?: boolean;
+  showToolbar?: boolean;
 }
 
 export function PassageTable({
@@ -46,6 +48,8 @@ export function PassageTable({
   sortOrder,
   onSortChange,
   onDelete,
+  showPagination = true,
+  showToolbar = true,
 }: PassageTableProps) {
   const { t } = useAppTranslation();
 
@@ -248,18 +252,20 @@ export function PassageTable({
   });
 
   return (
-    <div className="flex flex-col gap-4 border border-border rounded-lg bg-card shadow-sm overflow-hidden">
-      <div className={"flex flex-row gap-2 justify-between px-4 pt-6"}>
-        <div />
-        <div className={"flex flex-row gap-2 w-full max-w-sm"}>
-          <DataTableFilter
-            table={table}
-            searchPlaceholder={t(($) => $.exam.passages.table.search)}
-            className="w-full"
-            searchOnEnter={true}
-          />
+    <div className="flex flex-col gap-4 border-l border-r bg-card">
+      {showToolbar && (
+        <div className={"flex flex-row gap-2 justify-between px-4 pt-6"}>
+          <div />
+          <div className={"flex flex-row gap-2 w-full max-w-sm"}>
+            <DataTableFilter
+              table={table}
+              searchPlaceholder={t(($) => $.exam.passages.table.search)}
+              className="w-full"
+              searchOnEnter={true}
+            />
+          </div>
         </div>
-      </div>
+      )}
       <DataTable
         table={table}
         paginationData={paginationData}
@@ -267,6 +273,7 @@ export function PassageTable({
         showSideBorders={false}
         showZebraStriping={true}
         defaultNoResultText={t(($) => $.exam.passages.table.noResult)}
+        showPagination={showPagination}
       />
     </div>
   );

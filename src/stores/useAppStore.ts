@@ -36,6 +36,22 @@ type Store = {
     search: string;
   };
   setExamSections: (examSections: any) => void;
+  examPassages: {
+    viewMode: "table" | "card";
+    limit: number;
+    sortBy: string;
+    sortOrder: "asc" | "desc";
+    search: string;
+  };
+  setExamPassages: (examPassages: any) => void;
+  examQuestions: {
+    viewMode: "table" | "card";
+    limit: number;
+    sortBy: string;
+    sortOrder: "asc" | "desc";
+    search: string;
+  };
+  setExamQuestions: (examQuestions: any) => void;
 
   periodicTable: {
     viewMode: PeriodicViewMode;
@@ -94,6 +110,20 @@ export const defaultStore = {
     limit: 10,
     sortBy: "order",
     sortOrder: "asc" as "asc" | "desc",
+    search: "",
+  },
+  examPassages: {
+    viewMode: "table" as "table" | "card",
+    limit: 10,
+    sortBy: "updatedAt",
+    sortOrder: "desc" as "asc" | "desc",
+    search: "",
+  },
+  examQuestions: {
+    viewMode: "table" as "table" | "card",
+    limit: 10,
+    sortBy: "updatedAt",
+    sortOrder: "desc" as "asc" | "desc",
     search: "",
   },
   periodicTable: {
@@ -166,6 +196,16 @@ export const useAppStore = create<Store>()(
         set({
           examSections,
         }),
+      examPassages: defaultStore.examPassages,
+      setExamPassages: (examPassages: any) =>
+        set({
+          examPassages,
+        }),
+      examQuestions: defaultStore.examQuestions,
+      setExamQuestions: (examQuestions: any) =>
+        set({
+          examQuestions,
+        }),
 
       mobileMenu: defaultStore.mobileMenu,
       setMobileMenuExpanded: (id: string, expanded: boolean) =>
@@ -201,6 +241,8 @@ export const useAppStore = create<Store>()(
           jsonQuestionsPackageParams: defaultStore.jsonQuestionsPackageParams,
           examPackages: defaultStore.examPackages,
           examSections: defaultStore.examSections,
+          examPassages: defaultStore.examPassages,
+          examQuestions: defaultStore.examQuestions,
         }),
     }),
     {

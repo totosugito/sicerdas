@@ -36,6 +36,8 @@ interface QuestionTableProps {
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
   onDelete: (question: ExamQuestion) => void;
+  showPagination?: boolean;
+  showToolbar?: boolean;
 }
 
 export function QuestionTable({
@@ -48,6 +50,8 @@ export function QuestionTable({
   sortOrder,
   onSortChange,
   onDelete,
+  showPagination = true,
+  showToolbar = true,
 }: QuestionTableProps) {
   const { t } = useAppTranslation();
 
@@ -337,18 +341,20 @@ export function QuestionTable({
   });
 
   return (
-    <div className="flex flex-col gap-4 border border-border rounded-lg bg-card shadow-sm overflow-hidden text-sm">
-      <div className={"flex flex-row gap-2 justify-between px-4 pt-6"}>
-        <div />
-        <div className={"flex flex-row gap-2 w-full max-w-sm"}>
-          <DataTableFilter
-            table={table}
-            searchPlaceholder={t(($) => $.exam.questions.table.search)}
-            className="w-full"
-            searchOnEnter={true}
-          />
+    <div className="flex flex-col gap-4 border-l border-r bg-card text-sm">
+      {showToolbar && (
+        <div className="flex flex-row gap-2 justify-between px-4 pt-6">
+          <div />
+          <div className="flex flex-row gap-2 w-full max-w-sm">
+            <DataTableFilter
+              table={table}
+              searchPlaceholder={t(($) => $.exam.questions.table.search)}
+              className="w-full"
+              searchOnEnter={true}
+            />
+          </div>
         </div>
-      </div>
+      )}
       <DataTable
         table={table}
         paginationData={paginationData}
@@ -356,6 +362,7 @@ export function QuestionTable({
         showSideBorders={false}
         showZebraStriping={true}
         defaultNoResultText={t(($) => $.exam.questions.table.noResult)}
+        showPagination={showPagination}
       />
     </div>
   );

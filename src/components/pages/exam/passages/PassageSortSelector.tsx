@@ -9,33 +9,25 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpAZ, ArrowDownAZ } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 
-interface SectionSortSelectorProps {
+interface PassageSortSelectorProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
 }
 
-export const SectionSortSelector = ({
+export const PassageSortSelector = ({
   sortBy,
   sortOrder,
   onSortChange,
-}: SectionSortSelectorProps) => {
+}: PassageSortSelectorProps) => {
   const { t } = useAppTranslation();
 
   const sortOptions = [
-    { value: "order", label: t(($) => $.labels.order) },
-    { value: "updatedAt", label: t(($) => $.exam.sections.table.columns.updatedAt) },
-    { value: "title", label: t(($) => $.exam.sections.table.columns.title) },
-    { value: "groupName", label: t(($) => $.exam.sections.table.columns.groupName) },
-    { value: "totalQuestions", label: t(($) => $.exam.sections.table.columns.questions) },
-    {
-      value: "activeQuestions",
-      label: t(($) => $.exam.sections.table.columns.questions) + " (Aktif)",
-    },
+    { value: "updatedAt", label: t(($) => $.exam.passages.table.columns.updatedAt) },
+    { value: "title", label: t(($) => $.exam.passages.table.columns.title) },
+    { value: "subjectName", label: t(($) => $.exam.passages.table.columns.subject) },
+    { value: "totalQuestions", label: t(($) => $.exam.passages.table.columns.questions) },
   ];
-
-  // Note: I should probably refined labels in locale for better UX, but let's use what's available
-  // Actually, I'll check the locale to see if there are better keys.
 
   const handleSortFieldChange = (value: string) => {
     onSortChange(value, sortOrder);

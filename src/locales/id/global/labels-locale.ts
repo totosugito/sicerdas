@@ -71,4 +71,13 @@ export default {
   published: "Dipublikasikan",
   publishedText: "Published",
   tip: "Tip",
+  sortBy: "Urutkan Berdasarkan",
+  updatedAt: "Diperbarui",
+  noDescription: "Tidak ada deskripsi",
+  noContent: "Tidak ada konten",
+  noGroup: "Tanpa Grup",
+  noSubject: "Tanpa Subjek",
+  noCategory: "Tanpa Kategori",
+  noLevel: "Tanpa Tingkat",
+  level: "Tingkat",
 };
