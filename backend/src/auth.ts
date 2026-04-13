@@ -176,8 +176,8 @@ const auth = betterAuth({
   },
   trustedOrigins: envConfig.server.trustedOrigins,
   secret: envConfig.server.secretKey,
-  telemetry: {
-    debug: false,
+  logger: {
+    level: envConfig.log.level === "trace" ? "debug" : envConfig.log.level,
   },
 } satisfies BetterAuthOptions);
 

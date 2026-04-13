@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { APP_CONFIG } from '@/constants/config';
-import { AuthProps } from '@/types/auth';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { APP_CONFIG } from "@/constants/config";
+import { AuthProps } from "@/types/auth";
 
 type Store = {
   user: AuthProps | null;
@@ -18,24 +18,22 @@ type Store = {
 
 export const useAuthStore = create<Store>()(
   persist(
-    (set) => (
-      {
-        // Auth slice
-        user: null,
-        login: (user) => set({ user }),
-        logout: () => set({ user: null, theme: 'light', language: 'id', openSideMenu: true }),
+    (set) => ({
+      // Auth slice
+      user: null,
+      login: (user) => set({ user }),
+      logout: () => set({ user: null, theme: "light", language: "id", openSideMenu: false }),
 
-        // Theme slice
-        theme: 'light',
-        setTheme: (theme) => set({ theme }),
-        language: 'id',
-        setLanguage: (language) => set({ language }),
-        openSideMenu: true,
-        setOpenSideMenu: (openSideMenu) => set({ openSideMenu }),
-      }
-    ),
+      // Theme slice
+      theme: "light",
+      setTheme: (theme) => set({ theme }),
+      language: "id",
+      setLanguage: (language) => set({ language }),
+      openSideMenu: true,
+      setOpenSideMenu: (openSideMenu) => set({ openSideMenu }),
+    }),
     {
       name: `${APP_CONFIG.prefixStore}-auth`, // single storage key
-    }
-  )
+    },
+  ),
 );
