@@ -33,6 +33,9 @@ export const PackageSortSelector = ({
     { value: "activeSections", label: t(($) => $.exam.packages.table.sort.activeSections) },
     { value: "totalQuestions", label: t(($) => $.exam.packages.table.sort.totalQuestions) },
     { value: "activeQuestions", label: t(($) => $.exam.packages.table.sort.activeQuestions) },
+    { value: "viewCount", label: t(($) => $.exam.packages.table.sort.viewCount) },
+    { value: "bookmarkCount", label: t(($) => $.exam.packages.table.sort.bookmarkCount) },
+    { value: "rating", label: t(($) => $.exam.packages.table.sort.rating) },
   ];
 
   const handleSortFieldChange = (value: string) => {

@@ -105,16 +105,16 @@ export function SectionCardListItem({ section, onEdit, onDelete }: SectionCardLi
       <div className="flex flex-col p-5 flex-grow">
         <div className="group/title cursor-pointer mb-4 flex-grow" onClick={() => onEdit(section)}>
           <div className="flex flex-col gap-1.5 mb-2">
-            <span className="text-[10px] font-bold text-primary uppercase tracking-wider">
+            <span className="text-xs font-bold text-primary uppercase tracking-wider">
               {section.groupName || (
                 <span className="italic opacity-60 lowercase">{t(($) => $.labels.noGroup)}</span>
               )}
             </span>
-            <h3 className="text-sm font-bold text-foreground group-hover/title:text-primary transition-colors line-clamp-1">
+            <h3 className="text-base font-bold text-foreground group-hover/title:text-primary transition-colors line-clamp-1">
               {section.title}
             </h3>
           </div>
-          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed opacity-80">
+          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed opacity-80">
             {section.description || (
               <span className="italic opacity-60">{t(($) => $.labels.noDescription)}</span>
             )}
@@ -124,47 +124,47 @@ export function SectionCardListItem({ section, onEdit, onDelete }: SectionCardLi
         {/* Info Grid */}
         <div className="grid grid-cols-2 gap-x-4 gap-y-3 mb-0 pt-4 border-t border-border/40">
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {t(($) => $.labels.order)}
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <Hash className="h-3.5 w-3.5 text-primary/60 shrink-0" />
-              <span className="text-xs font-semibold">{section.order}</span>
+              <span className="text-sm font-semibold">{section.order}</span>
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {t(($) => $.exam.sections.table.columns.questions)}
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <HelpCircle className="h-3.5 w-3.5 text-amber-500/60 shrink-0" />
               <div className="flex items-baseline gap-1">
-                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
                   {section.activeQuestions}
                 </span>
-                <span className="text-[10px] text-muted-foreground">/</span>
-                <span className="text-xs font-semibold text-slate-500">
+                <span className="text-xs text-muted-foreground">/</span>
+                <span className="text-sm font-semibold text-slate-500">
                   {section.totalQuestions - section.activeQuestions}
                 </span>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {t(($) => $.exam.sections.table.columns.duration)}
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <Clock className="h-3.5 w-3.5 text-blue-500/60 shrink-0" />
-              <span className="text-xs font-semibold">{section.durationMinutes} m</span>
+              <span className="text-sm font-semibold">{section.durationMinutes} m</span>
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {t(($) => $.labels.updatedAt || "Updated")}
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <CalendarDays className="h-3.5 w-3.5 text-slate-500/60 shrink-0" />
-              <span className="text-[10px] font-medium leading-none">
+              <span className="text-xs font-medium leading-none">
                 {string_to_locale_date("id-ID", section.updatedAt)}
               </span>
             </div>

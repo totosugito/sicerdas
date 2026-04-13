@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
+import { examPackageEventStats } from "../../../../db/schema/exam/index.ts";
 import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { eq, sql } from "drizzle-orm";
@@ -30,6 +31,14 @@ const PackageResponseItem = Type.Object({
   isActive: Type.Boolean(),
   versionId: Type.Union([Type.Number(), Type.Null()]),
   isNew: Type.Boolean(),
+  totalSections: Type.Number(),
+  activeSections: Type.Number(),
+  totalQuestions: Type.Number(),
+  activeQuestions: Type.Number(),
+  viewCount: Type.Number(),
+  likeCount: Type.Number(),
+  bookmarkCount: Type.Number(),
+  rating: Type.Number(),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
 });
@@ -67,6 +76,10 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
           package: examPackages,
           categoryName: educationCategories.name,
           educationGradeName: educationGrades.name,
+          viewCount: examPackageEventStats.viewCount,
+          likeCount: examPackageEventStats.likeCount,
+          bookmarkCount: examPackageEventStats.bookmarkCount,
+          rating: examPackageEventStats.rating,
           isNew: latestVersionId
             ? sql<boolean>`${examPackages.versionId} = ${latestVersionId}`.as("isNew")
             : sql<boolean>`false`.as("isNew"),
@@ -74,6 +87,7 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
         .from(examPackages)
         .leftJoin(educationCategories, eq(examPackages.categoryId, educationCategories.id))
         .leftJoin(educationGrades, eq(examPackages.educationGradeId, educationGrades.id))
+        .leftJoin(examPackageEventStats, eq(examPackages.id, examPackageEventStats.packageId))
         .where(eq(examPackages.id, id))
         .limit(1);
 
@@ -92,6 +106,14 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
           categoryName: result.categoryName,
           educationGradeName: result.educationGradeName,
           isNew: !!result.isNew,
+          totalSections: pkg.totalSections,
+          activeSections: pkg.activeSections,
+          totalQuestions: pkg.totalQuestions,
+          activeQuestions: pkg.activeQuestions,
+          viewCount: result.viewCount ?? 0,
+          likeCount: result.likeCount ?? 0,
+          bookmarkCount: result.bookmarkCount ?? 0,
+          rating: result.rating ? parseFloat(result.rating) : 0,
           versionId: pkg.versionId,
           createdAt: pkg.createdAt.toISOString(),
           updatedAt: pkg.updatedAt.toISOString(),

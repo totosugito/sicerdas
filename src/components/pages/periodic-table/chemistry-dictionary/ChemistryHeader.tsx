@@ -1,5 +1,6 @@
 import { FlaskConical } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
+import { to_decimal_formatted } from "@/lib/my-utils";
 
 interface ChemistryHeaderProps {
   totalTerms: number;
@@ -15,11 +16,13 @@ export function ChemistryHeader({ totalTerms }: ChemistryHeaderProps) {
           <FlaskConical className="h-7 w-7" />
         </div>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-          {t($ => $.periodicTable.chemistryDictionary.header.title)}
+          {t(($) => $.periodicTable.chemistryDictionary.header.title)}
         </h1>
       </div>
       <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-        {t($ => $.periodicTable.chemistryDictionary.header.description, { totalTerms: totalTerms.toLocaleString() })}
+        {t(($) => $.periodicTable.chemistryDictionary.header.description, {
+          totalTerms: to_decimal_formatted(totalTerms, 0),
+        })}
       </p>
     </header>
   );

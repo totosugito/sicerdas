@@ -16,6 +16,8 @@ import {
   useUpdatePackageSection,
   ExamPackageSection,
 } from "@/api/exam-package-sections";
+import { useDetailPackage } from "@/api/exam-packages";
+import { PackageStatsHeader } from "@/components/pages/exam/packages/detail-package/PackageStatsHeader";
 import {
   SectionList,
   SectionListSkeleton,
@@ -39,6 +41,7 @@ function DetailPackagePage() {
     sortBy: "order",
     sortOrder: "asc",
   });
+  const { data: detailData, isLoading: isDetailLoading } = useDetailPackage({ id });
   const deleteMutation = useDeletePackageSection();
   const updateMutation = useUpdatePackageSection();
 
@@ -152,12 +155,18 @@ function DetailPackagePage() {
     <div className="flex flex-col w-full space-y-4">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={data?.data?.package?.packageName || t(($) => $.exam.sections.pageTitle)}
+          title={
+            detailData?.data?.title ||
+            data?.data?.package?.packageName ||
+            t(($) => $.exam.sections.pageTitle)
+          }
           description={t(($) => $.exam.sections.description)}
           showBack={true}
           backTo={AppRoute.exam.packages.admin.list.url}
         />
       </div>
+
+      <PackageStatsHeader pkg={detailData?.data as any} isLoading={isDetailLoading} />
 
       <div className="bg-card border rounded-xl p-6">
         <div className="flex justify-between items-center mb-6">

@@ -133,7 +133,7 @@ export function QuestionCardListItem({ question, onDelete }: QuestionCardListIte
           to={AppRoute.exam.questions.admin.detail.url.replace("$id", question.id)}
           className="group/title block mb-4 flex-grow"
         >
-          <div className="text-xs text-muted-foreground line-clamp-2 leading-relaxed opacity-80">
+          <div className="text-sm text-muted-foreground line-clamp-2 leading-relaxed opacity-80">
             {plainText || <span className="italic opacity-60">{t(($) => $.labels.noContent)}</span>}
           </div>
         </Link>
@@ -141,14 +141,14 @@ export function QuestionCardListItem({ question, onDelete }: QuestionCardListIte
         {/* Info Grid */}
         <div className="grid grid-cols-2 gap-3 mb-5">
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {t(($) => $.exam.questions.table.columns.subject)}
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <BookOpen className="h-3.5 w-3.5 text-primary/60 shrink-0" />
-              <span className="text-xs font-semibold truncate">
+              <span className="text-sm font-semibold truncate">
                 {question.subjectName || (
-                  <span className="italic opacity-60 normal-case font-normal">
+                  <span className="italic opacity-60 normal-case font-normal text-xs">
                     {t(($) => $.labels.noSubject)}
                   </span>
                 )}
@@ -156,12 +156,12 @@ export function QuestionCardListItem({ question, onDelete }: QuestionCardListIte
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {t(($) => $.exam.questions.table.columns.maxScore)}
             </span>
             <div className="flex items-center gap-1.5">
               <Target className="h-3.5 w-3.5 text-amber-500/60 shrink-0" />
-              <span className="text-xs font-bold">{question.maxScore ?? 0}</span>
+              <span className="text-sm font-bold">{question.maxScore ?? 0}</span>
             </div>
           </div>
         </div>
@@ -170,13 +170,13 @@ export function QuestionCardListItem({ question, onDelete }: QuestionCardListIte
         <div className="flex items-center justify-between pt-4 border-t border-border/40">
           <Badge
             variant="outline"
-            className="text-[10px] font-bold px-2 py-0 h-5 bg-muted/30 text-muted-foreground border-border/60 uppercase tracking-tighter"
+            className="text-xs font-bold px-2 py-0 h-5 bg-muted/30 text-muted-foreground border-border/60 uppercase tracking-tighter"
           >
             {question.type.replace("_", " ")}
           </Badge>
           <div className="flex items-center gap-1.5 text-muted-foreground">
             <Clock className="h-3 w-3" />
-            <span className="text-[10px] font-medium leading-none">
+            <span className="text-xs font-medium leading-none">
               {string_to_locale_date("id-ID", question.updatedAt)}
             </span>
           </div>

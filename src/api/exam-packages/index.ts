@@ -20,3 +20,13 @@ export type { DetailPackageRequest } from "./admin/detail-package";
 
 export { useUploadPackageThumbnail } from "./admin/upload-thumbnail";
 export type { UploadThumbnailRequest } from "./admin/upload-thumbnail";
+
+// Client exports
+export { useListPackageClient } from "./client/list-package";
+export type { ListPackageClientRequest, ListPackagesClientResponse } from "./client/list-package";
+
+export { useDetailPackageClient } from "./client/detail-package";
+export type { DetailPackageClientRequest } from "./client/detail-package";
+
+export { useBookmarkPackage } from "./client/bookmark-package";
+export type { BookmarkPackageRequest, BookmarkPackageResponse } from "./client/bookmark-package";

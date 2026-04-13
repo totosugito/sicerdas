@@ -2,7 +2,7 @@
 
 This document details the database architecture and technical strategy for the **Practice Questions and Computer-Based Test (CBT) engine** within the Sicerdas backend.
 
-The database is built using PostgreSQL and Drizzle ORM. The schema logic is thoroughly normalized into 15 distinct tables located in `src/db/schema/exam/`.
+The database is built using PostgreSQL and Drizzle ORM. The schema logic is thoroughly normalized into **18 distinct tables** supporting the Exam module, primarily located in `src/db/schema/exam/`.
 
 ## Architecture Highlights
 
@@ -33,13 +33,13 @@ To ensure a high-end authoring workflow, the `variableFormulas` editor acts as a
 
 ---
 
-## The 16 Tables Breakdown
+## The 18 Tables Breakdown
 
 All tables are prefixed with `exam_` within PostgreSQL but are stripped off the prefix for inner file naming conventions to keep the codebase concise.
 
 ### 📚 1. Core Question Bank
 
-- 1. **`exam_categories`**: Macro-level grouping (e.g., 'CPNS 2026', 'UTBK Kedokteran').
+- 1. **`education_categories`**: Macro-level grouping (e.g., 'CPNS 2026', 'UTBK Kedokteran'). Located in `education/`.
 - 2. **`exam_subjects`**: Specific exam modules (e.g., 'Matematika', 'Tes Intelegensia Umum').
 - 3. **`exam_passages`**: Contextual containers for long reading texts or data tables designed to be referenced by sequential questions without duplication.
 - 4. **`exam_questions`**: The central vault for all question prompts. Supports `content` (main prompt/statement) and `reason_content` (for specialized reasoning types). Protected by `required_tier`.
@@ -48,8 +48,8 @@ All tables are prefixed with `exam_` within PostgreSQL but are stripped off the 
 
 ### 🏷️ 2. Tagging & Ad-hoc Generation
 
-- 7. **`exam_tags`**: Catalog database for micro-topics (e.g., 'Syllogism', 'Geometry', 'HOTS').
-- 8. **`exam_question_tags`**: Many-to-Many junction linking `exam_questions` and `exam_tags`. It serves as the query engine for generating random Custom Practices for users (e.g., "Give me 10 random HOTS Geometry questions").
+- 7. **`education_tags`**: Catalog database for micro-topics (e.g., 'Syllogism', 'Geometry', 'HOTS'). Located in `education/`.
+- 8. **`exam_question_tags`**: many-to-Many junction linking `exam_questions` and `education_tags`. It serves as the query engine for generating random Custom Practices for users (e.g., "Give me 10 random HOTS Geometry questions").
 
 ### 📦 3. Assembly & Exam Definition
 
@@ -70,6 +70,11 @@ All tables are prefixed with `exam_` within PostgreSQL but are stripped off the 
 - 13. **`exam_user_stats_global`**: High-level dashboard aggregate. Running totals of exams taken, cumulative score averages over the user's entire lifespan.
 - 14. **`exam_user_stats_subject`**: Subject-specific radar (e.g., "User is strong in TWK but weak in TIU"). Records accuracy rates specifically tied to an `exam_subject`.
 - 15. **`exam_user_stats_tag`**: hyper-granular accuracy tracking. Exposes targeted frailties (e.g., "The user frequently fails Algebra tags"). The AI Engine or system relies on this data to present "Improve your Algebra" practice recommendations.
+
+### 📈 6. Engagement & User Interaction
+
+- 17. **`exam_package_interactions`**: Per-user interaction ledger. Tracks individual state for each package, including `liked`, `bookmarked`, `rating`, and `viewCount`.
+- 18. **`exam_package_event_stats`**: Global aggregated statistics for packages. Maintains performance-optimized counters for `viewCount`, `likeCount`, `bookmarkCount`, and `rating` (average) to avoid expensive on-the-fly calculations.
 
 ---
 

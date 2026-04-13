@@ -14,6 +14,8 @@ import {
   ImageIcon,
   CalendarDays,
   HelpCircle,
+  Bookmark,
+  Star,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -141,16 +143,16 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
           className="group/title block mb-4 flex-grow"
         >
           <div className="flex flex-col gap-1.5 mb-2">
-            <span className="text-[10px] font-bold text-primary uppercase tracking-wider">
+            <span className="text-xs font-bold text-primary uppercase tracking-wider">
               {pkg.categoryName || (
                 <span className="italic opacity-60 lowercase">{t(($) => $.labels.noCategory)}</span>
               )}
             </span>
-            <h3 className="text-sm font-bold text-foreground group-hover/title:text-primary transition-colors line-clamp-1">
+            <h3 className="text-base font-bold text-foreground group-hover/title:text-primary transition-colors line-clamp-1">
               {pkg.title}
             </h3>
           </div>
-          <div className="text-[11px] text-muted-foreground/80 font-medium flex items-center gap-1">
+          <div className="text-xs text-muted-foreground/80 font-medium flex items-center gap-1">
             {pkg.educationGradeName ? (
               `${t(($) => $.labels.level)}: ${pkg.educationGradeName}`
             ) : (
@@ -162,58 +164,85 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
         {/* Info Grid */}
         <div className="grid grid-cols-2 gap-x-4 gap-y-4 mb-5 pt-4 border-t border-border/40">
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {t(($) => $.exam.packages.table.columns.sections)}
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <Layers className="h-3.5 w-3.5 text-primary/60 shrink-0" />
               <div className="flex items-baseline gap-1">
-                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
                   {pkg.activeSections}
                 </span>
-                <span className="text-[10px] text-muted-foreground">/</span>
-                <span className="text-xs font-semibold text-slate-500">
+                <span className="text-xs text-muted-foreground">/</span>
+                <span className="text-sm font-semibold text-slate-500">
                   {pkg.totalSections - pkg.activeSections}
                 </span>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {t(($) => $.exam.packages.table.columns.questions)}
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <HelpCircle className="h-3.5 w-3.5 text-amber-500/60 shrink-0" />
               <div className="flex items-baseline gap-1">
-                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
                   {pkg.activeQuestions}
                 </span>
-                <span className="text-[10px] text-muted-foreground">/</span>
-                <span className="text-xs font-semibold text-slate-500">
+                <span className="text-xs text-muted-foreground">/</span>
+                <span className="text-sm font-semibold text-slate-500">
                   {pkg.totalQuestions - pkg.activeQuestions}
                 </span>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {t(($) => $.exam.packages.table.columns.duration)}
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <Clock className="h-3.5 w-3.5 text-blue-500/60 shrink-0" />
-              <span className="text-xs font-semibold">{pkg.durationMinutes}m</span>
+              <span className="text-sm font-semibold">{pkg.durationMinutes}m</span>
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {t(($) => $.labels.updatedAt)}
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <CalendarDays className="h-3.5 w-3.5 text-slate-500/60 shrink-0" />
-              <span className="text-[10px] font-medium leading-none">
+              <span className="text-xs font-medium leading-none">
                 {string_to_locale_date("id-ID", pkg.updatedAt)}
               </span>
             </div>
+          </div>
+        </div>
+
+        {/* Engagement Stats Bar */}
+        <div className="mt-auto px-4 py-3 bg-muted/20 border-t border-border/30 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div
+              className="flex items-center gap-1.5"
+              title={t(($) => $.exam.packages.table.columns.views)}
+            >
+              <Eye className="h-4 w-4 text-muted-foreground/70" />
+              <span className="text-sm font-bold text-foreground/80">{pkg.viewCount || 0}</span>
+            </div>
+            <div
+              className="flex items-center gap-1.5"
+              title={t(($) => $.exam.packages.table.columns.bookmarks)}
+            >
+              <Bookmark className="h-4 w-4 text-muted-foreground/70" />
+              <span className="text-sm font-bold text-foreground/80">{pkg.bookmarkCount || 0}</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+            <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+            <span className="text-sm font-black text-amber-700 dark:text-amber-400">
+              {Number(pkg.rating || 0).toFixed(1)}
+            </span>
           </div>
         </div>
       </div>

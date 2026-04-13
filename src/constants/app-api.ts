@@ -58,6 +58,7 @@ export const AppApi = {
     filterParams: APP_URL_API + "/book/filter-params",
     proxyPdf: APP_URL_API + "/book/proxy-pdf",
     bookmark: APP_URL_API + "/book/bookmark",
+    rating: APP_URL_API + "/book/rating",
     updateDownload: APP_URL_API + "/book/update-download",
   },
   periodicTable: {
@@ -86,6 +87,11 @@ export const AppApi = {
         listSimple: APP_URL_API + "/exam/packages/admin/list-simple",
         detail: APP_URL_API + "/exam/packages/admin/detail/:id",
         thumbnail: APP_URL_API + "/exam/packages/admin/thumbnail/:id",
+      },
+      client: {
+        list: APP_URL_API + "/exam/packages/client/list",
+        detail: APP_URL_API + "/exam/packages/client/detail/:id",
+        bookmark: APP_URL_API + "/exam/packages/client/bookmark",
       },
     },
     packageSections: {

@@ -17,6 +17,17 @@ export interface ExamPackage {
   activeSections: number;
   totalQuestions: number;
   activeQuestions: number;
+  viewCount: number;
+  likeCount: number;
+  bookmarkCount: number;
+  rating: number;
+  userInteraction?: {
+    liked: boolean;
+    disliked: boolean;
+    rating: number;
+    bookmarked: boolean;
+    viewCount?: number;
+  };
   createdAt: string;
   updatedAt: string;
 }

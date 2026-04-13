@@ -16,6 +16,7 @@ export type BookDetil = {
   viewCount?: number;
   downloadCount?: number;
   bookmarkCount?: number;
+  ratingCount?: number;
   cover: {
     xs: string;
     lg: string;

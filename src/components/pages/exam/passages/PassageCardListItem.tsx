@@ -107,11 +107,11 @@ export function PassageCardListItem({ passage, onDelete }: PassageCardListItemPr
           className="group/title block mb-4 flex-grow"
         >
           <div className="flex flex-col gap-1.5 mb-2">
-            <h3 className="text-sm font-bold text-foreground group-hover/title:text-primary transition-colors line-clamp-1">
+            <h3 className="text-base font-bold text-foreground group-hover/title:text-primary transition-colors line-clamp-1">
               {passage.title || "No Title"}
             </h3>
           </div>
-          <div className="text-xs text-muted-foreground line-clamp-3 leading-relaxed opacity-80">
+          <div className="text-sm text-muted-foreground line-clamp-3 leading-relaxed opacity-80">
             {plainText || <span className="italic opacity-60">{t(($) => $.labels.noContent)}</span>}
           </div>
         </Link>
@@ -119,14 +119,14 @@ export function PassageCardListItem({ passage, onDelete }: PassageCardListItemPr
         {/* Info Grid */}
         <div className="grid grid-cols-2 gap-3 mb-5 pt-4 border-t border-border/40">
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {t(($) => $.exam.passages.table.columns.subject)}
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <BookOpen className="h-3.5 w-3.5 text-primary/60 shrink-0" />
-              <span className="text-xs font-semibold truncate">
+              <span className="text-sm font-semibold truncate">
                 {passage.subjectName || (
-                  <span className="italic opacity-60 normal-case font-normal">
+                  <span className="italic opacity-60 normal-case font-normal text-xs">
                     {t(($) => $.labels.noSubject)}
                   </span>
                 )}
@@ -134,17 +134,17 @@ export function PassageCardListItem({ passage, onDelete }: PassageCardListItemPr
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {t(($) => $.exam.passages.table.columns.questions)}
             </span>
             <div className="flex items-center gap-1.5 min-w-0">
               <HelpCircle className="h-3.5 w-3.5 text-amber-500/60 shrink-0" />
               <div className="flex items-baseline gap-1">
-                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
                   {passage.activeQuestions}
                 </span>
-                <span className="text-[10px] text-muted-foreground">/</span>
-                <span className="text-xs font-semibold text-slate-500">
+                <span className="text-xs text-muted-foreground">/</span>
+                <span className="text-sm font-semibold text-slate-500">
                   {passage.totalQuestions - passage.activeQuestions}
                 </span>
               </div>
@@ -156,7 +156,7 @@ export function PassageCardListItem({ passage, onDelete }: PassageCardListItemPr
         <div className="flex items-center justify-between pt-4 border-t border-border/40">
           <div className="flex items-center gap-1.5 text-muted-foreground">
             <Clock className="h-3 w-3" />
-            <span className="text-[10px] font-medium leading-none">
+            <span className="text-xs font-medium leading-none">
               {string_to_locale_date("id-ID", passage.updatedAt)}
             </span>
           </div>

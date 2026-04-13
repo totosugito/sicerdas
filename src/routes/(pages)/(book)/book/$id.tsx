@@ -1,5 +1,7 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { useBookDetail } from "@/api/book/book-detail";
+import { useUpdateBookRating } from "@/api/book/update-rating";
 import { BookDetail } from "@/components/pages/book/book/BookDetail";
 import { BookDetailError } from "@/components/pages/book/book/BookDetailError";
 import { BookDetailSkeleton } from "@/components/pages/book/book/BookDetailSkeleton";
@@ -47,6 +49,8 @@ function RouteComponent() {
   const { data, isLoading, isError } = useBookDetail(bookId);
   const { mutate: updateBookmark } = useUpdateBookmark();
   const { mutate: updateDownload } = useUpdateDownload();
+  const { mutateAsync: updateRating } = useUpdateBookRating();
+  const queryClient = useQueryClient();
   const { t } = useAppTranslation();
   const { user } = useAuth();
   const [showReportDialog, setShowReportDialog] = useState(false);
@@ -152,6 +156,44 @@ function RouteComponent() {
     setShowReportDialog(true);
   };
 
+  const handleRate = async (rating: number) => {
+    if (!user) {
+      setShowLoginDialog(true);
+      return;
+    }
+
+    try {
+      const response = await updateRating({
+        bookId: book.bookId,
+        rating,
+      });
+
+      if (response.success) {
+        showNotifSuccess({ title: null, message: response.message });
+
+        // Update local cache for immediate feedback
+        queryClient.setQueryData(["book-detail", book.bookId.toString()], (oldResponse: any) => {
+          if (!oldResponse?.data) return oldResponse;
+          return {
+            ...oldResponse,
+            data: {
+              ...oldResponse.data,
+              ...response.data,
+              userInteraction: {
+                ...oldResponse.data.userInteraction,
+                ...response.data.userInteraction,
+              },
+            },
+          };
+        });
+      } else {
+        showNotifError({ title: null, message: response.message });
+      }
+    } catch (error) {
+      showNotifError({ title: null, message: t(($) => $.labels.error) });
+    }
+  };
+
   const handleBack = () => {
     router.navigate({ to: AppRoute.book.books.url });
   };
@@ -180,6 +222,7 @@ function RouteComponent() {
         onDownload={handleDownload}
         onToggleFavorite={handleToggleFavorite}
         onReport={handleReport}
+        onRate={handleRate}
       />
 
       <CreateContentReport

@@ -1,25 +1,29 @@
 {
-    "book": {
-        "detail": {
-            "success": "Berhasil mengambil detail buku",
-            "notFound": "Buku tidak ditemukan"
-        },
-        "bookmark": {
-            "noChange": "Status bookmark tidak berubah",
-            "updated": "Status bookmark berhasil diperbarui"
-        },
-        "filterParams": {
-            "success": "Berhasil mengambil parameter filter"
-        },
-        "list": {
-            "success": "Berhasil mengambil daftar buku"
-        },
-        "proxyPdf": {
-            "success": "Berhasil memproksi konten PDF",
-            "error": "Gagal mengambil PDF: {{message}}"
-        },
-        "download": {
-            "updated": "Status download berhasil diperbarui"
-        }
+  "book": {
+    "detail": {
+      "success": "Berhasil mengambil detail buku",
+      "notFound": "Buku tidak ditemukan"
+    },
+    "bookmark": {
+      "noChange": "Status bookmark tidak berubah",
+      "updated": "Status bookmark berhasil diperbarui"
+    },
+    "rating": {
+      "noChange": "Rating tidak berubah",
+      "updated": "Rating berhasil diperbarui"
+    },
+    "filterParams": {
+      "success": "Berhasil mengambil parameter filter"
+    },
+    "list": {
+      "success": "Berhasil mengambil daftar buku"
+    },
+    "proxyPdf": {
+      "success": "Berhasil memproksi konten PDF",
+      "error": "Gagal mengambil PDF: {{message}}"
+    },
+    "download": {
+      "updated": "Status download berhasil diperbarui"
     }
+  }
 }

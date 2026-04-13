@@ -1,0 +1,23 @@
+import { AppApi } from "@/constants/app-api";
+import { fetchApi } from "@/lib/fetch-api";
+import { useQuery } from "@tanstack/react-query";
+import { ExamPackageDetailResponse } from "../types";
+
+export interface DetailPackageClientRequest {
+  id: string;
+}
+
+export const useDetailPackageClient = ({ id }: DetailPackageClientRequest) => {
+  return useQuery({
+    queryKey: ["client-exam-packages-detail", id],
+    queryFn: async () => {
+      const response = await fetchApi({
+        method: "GET",
+        url: AppApi.exam.packages.client.detail.replace(":id", id),
+        withCredentials: true,
+      });
+      return response as ExamPackageDetailResponse;
+    },
+    enabled: !!id,
+  });
+};

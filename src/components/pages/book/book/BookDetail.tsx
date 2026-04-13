@@ -1,15 +1,16 @@
 import { useState } from "react";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, BookOpen, FileText, Heart, Star, Download, Flag, ImageOff } from "lucide-react";
-import { getGrade } from "@/components/pages/book/types/books";
-import { formatFileSize } from "@/lib/my-utils";
+import { formatFileSize, to_decimal_formatted, to_decimal_compact } from "@/lib/my-utils";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { SamplePages } from "./SamplePages";
 import { BookDetailInfoCard } from "./BookDetailInfoCard";
 import { cn } from "@/lib/utils";
 import { BookDetil } from "@/api/book/book-detail";
+import { BookRatingDialog } from "./BookRatingDialog";
 
 interface BookDetailProps {
   book: BookDetil;
@@ -18,6 +19,7 @@ interface BookDetailProps {
   onDownload: () => void;
   onToggleFavorite: () => void;
   onReport: () => void;
+  onRate: (rating: number) => Promise<void>;
 }
 
 export const BookDetail = ({
@@ -27,9 +29,13 @@ export const BookDetail = ({
   onDownload,
   onToggleFavorite,
   onReport,
+  onRate,
 }: BookDetailProps) => {
   const { t } = useAppTranslation();
   const [imageError, setImageError] = useState(false);
+  const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
+
+  const userRating = book.userInteraction?.rating || 0;
 
   return (
     <div className="w-full">
@@ -138,17 +144,36 @@ export const BookDetail = ({
 
               {/* Rating & Action Stats */}
               <div className="flex items-center gap-6 mt-4">
-                <div className="flex items-center gap-1.5">
-                  <Star className="w-6 h-6 text-amber-500 fill-amber-500" />
-                  <span className="text-2xl font-bold text-slate-900 dark:text-white">
-                    {book.rating?.toFixed(1)}
-                  </span>
-                  <span className="text-slate-500 dark:text-slate-400 text-sm mt-1">/ 5.0</span>
+                <div
+                  className="flex items-center gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 p-2 -m-2 rounded-xl transition-colors group"
+                  onClick={() => setIsRatingDialogOpen(true)}
+                >
+                  <div className="flex items-center gap-2">
+                    <Star className="w-8 h-8 text-amber-500 fill-amber-500 group-hover:scale-110 transition-transform" />
+                    <div className="flex flex-col items-center">
+                      <span className="text-xl font-bold text-slate-900 dark:text-white leading-none">
+                        {book.rating?.toFixed(1)}
+                      </span>
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold mt-1">
+                        {(book.ratingCount ?? 0) < 1000
+                          ? `${to_decimal_formatted(book.ratingCount ?? 0, 0)} ${t(($) => $.book.detail.rating)}`
+                          : `(${to_decimal_formatted(book.ratingCount ?? 0, 0)})`}
+                      </span>
+                    </div>
+                  </div>
                 </div>
+
+                <BookRatingDialog
+                  isOpen={isRatingDialogOpen}
+                  onOpenChange={setIsRatingDialogOpen}
+                  onRate={onRate}
+                  initialRating={userRating}
+                  bookTitle={book.title}
+                />
                 <div className="w-px h-8 bg-slate-200 dark:bg-slate-800" />
                 <div className="flex flex-col items-center">
                   <span className="font-bold text-slate-900 dark:text-white text-lg leading-none">
-                    {book.viewCount?.toLocaleString()}
+                    {to_decimal_formatted(book.viewCount ?? 0, 0)}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
                     {t(($) => $.book.detail.views)}
@@ -157,7 +182,7 @@ export const BookDetail = ({
                 <div className="w-px h-8 bg-slate-200 dark:bg-slate-800" />
                 <div className="flex flex-col items-center">
                   <span className="font-bold text-slate-900 dark:text-white text-lg leading-none">
-                    {book.downloadCount?.toLocaleString()}
+                    {to_decimal_formatted(book.downloadCount ?? 0, 0)}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
                     {t(($) => $.book.detail.download)}
@@ -166,7 +191,7 @@ export const BookDetail = ({
                 <div className="w-px h-8 bg-slate-200 dark:bg-slate-800" />
                 <div className="flex flex-col items-center">
                   <span className="font-bold text-slate-900 dark:text-white text-lg leading-none">
-                    {book.bookmarkCount?.toLocaleString()}
+                    {to_decimal_formatted(book.bookmarkCount ?? 0, 0)}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
                     {t(($) => $.book.detail.favorites)}

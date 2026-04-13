@@ -141,6 +141,10 @@
         "invalidFileType": "Jenis file tidak valid. Hanya file JPEG, PNG, dan WEBP yang diizinkan.",
         "fileSizeTooLarge": "Ukuran file thumbnail tidak boleh melebihi 5MB",
         "noFileUploaded": "Tidak ada file yang diunggah"
+      },
+      "bookmark": {
+        "updated": "Bookmark berhasil diperbarui",
+        "noChange": "Status bookmark tidak berubah"
       }
     },
     "package_sections": {

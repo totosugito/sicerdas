@@ -35,6 +35,7 @@ const BookDetailResponse = Type.Object({
   viewCount: Type.Optional(Type.Number()),
   downloadCount: Type.Optional(Type.Number()),
   bookmarkCount: Type.Optional(Type.Number()),
+  ratingCount: Type.Optional(Type.Number()),
   cover: Type.Object({
     xs: Type.String(),
     lg: Type.String(),
@@ -137,6 +138,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             viewCount: bookEventStats.viewCount,
             downloadCount: bookEventStats.downloadCount,
             bookmarkCount: bookEventStats.bookmarkCount,
+            ratingCount: bookEventStats.ratingCount,
             isNew: app.versionCache.get(EnumContentType.BOOK)
               ? sql<boolean>`${books.versionId} = ${app.versionCache.get(EnumContentType.BOOK)}`.as(
                   "isNew",
@@ -193,6 +195,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             viewCount: bookEventStats.viewCount,
             downloadCount: bookEventStats.downloadCount,
             bookmarkCount: bookEventStats.bookmarkCount,
+            ratingCount: bookEventStats.ratingCount,
             isNew: app.versionCache.get(EnumContentType.BOOK)
               ? sql<boolean>`${books.versionId} = ${app.versionCache.get(EnumContentType.BOOK)}`.as(
                   "isNew",
@@ -248,10 +251,14 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         totalPages: book.totalPages,
         size: book.size,
         status: book.status,
-        rating: book.rating !== null ? parseFloat(book.rating.toString()) : undefined,
-        viewCount: book.viewCount !== null ? book.viewCount : undefined,
-        downloadCount: book.downloadCount !== null ? book.downloadCount : undefined,
-        bookmarkCount: book.bookmarkCount !== null ? book.bookmarkCount : undefined,
+        rating:
+          book.rating !== null && parseFloat(book.rating.toString()) > 0
+            ? parseFloat(book.rating.toString())
+            : 5.0,
+        viewCount: book.viewCount !== null ? book.viewCount : 0,
+        downloadCount: book.downloadCount !== null ? book.downloadCount : 0,
+        bookmarkCount: book.bookmarkCount !== null ? book.bookmarkCount : 0,
+        ratingCount: book.ratingCount !== null ? book.ratingCount : 0,
         cover: getBookCoverUrl({ bookId: book.bookId }),
         pdf: getBookPdfUrl({ bookId: book.bookId }),
         samples: getBookSamplePagesUrl({ bookId: book.bookId }),

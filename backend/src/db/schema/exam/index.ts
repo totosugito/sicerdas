@@ -67,6 +67,18 @@ export {
   type SchemaExamPackageQuestionInsert,
 } from "./package-questions.ts";
 
+// Interactions & Stats
+export {
+  examPackageInteractions,
+  type SchemaExamPackageInteractionSelect,
+  type SchemaExamPackageInteractionInsert,
+} from "./user-interactions.ts";
+export {
+  examPackageEventStats,
+  type SchemaExamPackageEventStatSelect,
+  type SchemaExamPackageEventStatInsert,
+} from "./event-stats.ts";
+
 // Sessions & Answers
 export {
   examSessions,

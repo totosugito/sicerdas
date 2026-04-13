@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
+import { examPackageEventStats } from "../../../../db/schema/exam/index.ts";
 import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { desc, ilike, and, sql, eq, asc } from "drizzle-orm";
@@ -54,6 +55,10 @@ const PackageResponseItem = Type.Object({
   activeSections: Type.Number(),
   totalQuestions: Type.Number(),
   activeQuestions: Type.Number(),
+  viewCount: Type.Number(),
+  likeCount: Type.Number(),
+  bookmarkCount: Type.Number(),
+  rating: Type.Number(),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
 });
@@ -140,13 +145,18 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
           package: examPackages,
           categoryName: educationCategories.name,
           educationGradeName: educationGrades.name,
+          viewCount: examPackageEventStats.viewCount,
+          likeCount: examPackageEventStats.likeCount,
+          bookmarkCount: examPackageEventStats.bookmarkCount,
+          rating: examPackageEventStats.rating,
           isNew: latestVersionId
             ? sql<boolean>`${examPackages.versionId} = ${latestVersionId}`.as("isNew")
             : sql<boolean>`false`.as("isNew"),
         })
         .from(examPackages)
         .leftJoin(educationCategories, eq(examPackages.categoryId, educationCategories.id))
-        .leftJoin(educationGrades, eq(examPackages.educationGradeId, educationGrades.id));
+        .leftJoin(educationGrades, eq(examPackages.educationGradeId, educationGrades.id))
+        .leftJoin(examPackageEventStats, eq(examPackages.id, examPackageEventStats.packageId));
 
       if (conditions.length > 0) {
         baseQuery = baseQuery.where(and(...conditions)) as any;
@@ -260,6 +270,10 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
               thumbnail: getPackageThumbnailUrl(p.thumbnail),
               categoryName: r.categoryName,
               educationGradeName: r.educationGradeName,
+              viewCount: r.viewCount ?? 0,
+              likeCount: r.likeCount ?? 0,
+              bookmarkCount: r.bookmarkCount ?? 0,
+              rating: r.rating ? parseFloat(r.rating) : 0,
               isNew: !!r.isNew,
               createdAt: p.createdAt.toISOString(),
               updatedAt: p.updatedAt.toISOString(),

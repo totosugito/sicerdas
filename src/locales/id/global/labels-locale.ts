@@ -80,4 +80,5 @@ export default {
   noCategory: "Tanpa Kategori",
   noLevel: "Tanpa Tingkat",
   level: "Tingkat",
+  minutes: "Menit",
 };

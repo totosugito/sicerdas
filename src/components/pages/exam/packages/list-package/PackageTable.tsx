@@ -10,7 +10,7 @@ import {
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, Pencil, Trash2, Eye, ImageIcon } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, Eye, ImageIcon, Bookmark, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -204,6 +204,71 @@ export function PackageTable({
                 {inactive}
               </Badge>
             </div>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "viewCount",
+      enableSorting: true,
+      size: 80,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.exam.packages.table.columns.views)}
+          className="justify-center"
+        />
+      ),
+      cell: ({ row }) => {
+        const viewCount = row.original.viewCount;
+        return (
+          <div className="flex justify-center items-center gap-1.5">
+            <Eye className="h-3.5 w-3.5 text-muted-foreground/60" />
+            <span className="text-sm font-medium">{viewCount || 0}</span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "bookmarkCount",
+      enableSorting: true,
+      size: 80,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.exam.packages.table.columns.bookmarks)}
+          className="justify-center"
+        />
+      ),
+      cell: ({ row }) => {
+        const bookmarkCount = row.original.bookmarkCount;
+        return (
+          <div className="flex justify-center items-center gap-1.5">
+            <Bookmark className="h-3.5 w-3.5 text-muted-foreground/60" />
+            <span className="text-sm font-medium">{bookmarkCount || 0}</span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "rating",
+      enableSorting: true,
+      size: 80,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.exam.packages.table.columns.rating)}
+          className="justify-center"
+        />
+      ),
+      cell: ({ row }) => {
+        const rating = row.original.rating;
+        return (
+          <div className="flex justify-center items-center gap-1.5">
+            <Star className="h-3.5 w-3.5 text-amber-500/60 fill-amber-500/10" />
+            <span className="text-sm font-bold text-amber-600 dark:text-amber-400">
+              {Number(rating).toFixed(1)}
+            </span>
           </div>
         );
       },

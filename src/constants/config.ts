@@ -30,7 +30,7 @@ export const APP_CONFIG = {
   path: {
     defaultPublic: "/",
     defaultPrivate: "/",
-    defaultAdmin: AppRoute.admin.dashboard.url,
+    defaultAdmin: AppRoute.exam.packages.admin.list.url,
   },
   RESEND_OTP_DELAY: 120, // 2 minutes
   book: {
