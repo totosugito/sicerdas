@@ -2,11 +2,13 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 
 import { SubmitHandler } from "react-hook-form";
-import { useLoginMutation } from "@/api/auth/login";
+import { useLoginMutation, LoginResponse } from "@/api/auth/login";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { SignInForm } from "@/components/pages/auth/sign-in";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { isAdminString } from "@/types/auth";
+import { APP_CONFIG } from "@/constants/config";
 
 const fallback = "/" as const;
 export const Route = createFileRoute("/(auth)/sign-in")({
@@ -34,13 +36,18 @@ function LoginComponent() {
     loginMutation.mutate(
       { body: data },
       {
-        onSuccess: (data: any) => {
-          navigate({ to: search.redirect || fallback });
+        onSuccess: (response: LoginResponse) => {
+          if (response.success) {
+            const defaultPath = isAdminString(response.user.role || "")
+              ? APP_CONFIG.path.defaultAdmin
+              : APP_CONFIG.path.defaultPrivate;
+            navigate({ to: search.redirect || defaultPath });
+          } else {
+            setErrorMessage(response.message || t(($) => $.labels.error));
+          }
         },
-        onError: (error: Record<string, any>) => {
-          setErrorMessage(
-            error?.response?.data?.message || error?.response?.data?.error || error?.message,
-          );
+        onError: (error: { message?: string; error?: string }) => {
+          setErrorMessage(error?.message || error?.error || t(($) => $.labels.error));
         },
       },
     );

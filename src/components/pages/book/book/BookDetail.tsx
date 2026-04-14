@@ -20,6 +20,9 @@ interface BookDetailProps {
   onToggleFavorite: () => void;
   onReport: () => void;
   onRate: (rating: number) => Promise<void>;
+  onRatingClick: () => void;
+  isRatingDialogOpen: boolean;
+  onRatingDialogOpenChange: (open: boolean) => void;
 }
 
 export const BookDetail = ({
@@ -30,10 +33,12 @@ export const BookDetail = ({
   onToggleFavorite,
   onReport,
   onRate,
+  onRatingClick,
+  isRatingDialogOpen,
+  onRatingDialogOpenChange,
 }: BookDetailProps) => {
   const { t } = useAppTranslation();
   const [imageError, setImageError] = useState(false);
-  const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
 
   const userRating = book.userInteraction?.rating || 0;
 
@@ -146,7 +151,7 @@ export const BookDetail = ({
               <div className="flex items-center gap-6 mt-4">
                 <div
                   className="flex items-center gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 p-2 -m-2 rounded-xl transition-colors group"
-                  onClick={() => setIsRatingDialogOpen(true)}
+                  onClick={onRatingClick}
                 >
                   <div className="flex items-center gap-2">
                     <Star className="w-8 h-8 text-amber-500 fill-amber-500 group-hover:scale-110 transition-transform" />
@@ -165,7 +170,7 @@ export const BookDetail = ({
 
                 <BookRatingDialog
                   isOpen={isRatingDialogOpen}
-                  onOpenChange={setIsRatingDialogOpen}
+                  onOpenChange={onRatingDialogOpenChange}
                   onRate={onRate}
                   initialRating={userRating}
                   bookTitle={book.title}

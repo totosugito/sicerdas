@@ -81,42 +81,42 @@ export const AppRoute = {
   exam: {
     questions: {
       admin: {
-        list: { url: "/admin/list-question" },
-        create: { url: "/admin/create-question" },
-        edit: { url: "/admin/edit-question/$id" },
-        detail: { url: "/admin/detail-question/$id" },
-        importJson: { url: "/admin/json-questions" },
-        promptGenerator: { url: "/admin/prompt-generator" },
+        list: { url: "/exam/admin/list-question" },
+        create: { url: "/exam/admin/create-question" },
+        edit: { url: "/exam/admin/edit-question/$id" },
+        detail: { url: "/exam/admin/detail-question/$id" },
+        importJson: { url: "/exam/admin/json-questions" },
+        promptGenerator: { url: "/exam/admin/prompt-generator" },
       },
     },
     passages: {
       admin: {
-        list: { url: "/admin/list-passage" },
-        create: { url: "/admin/create-passage" },
-        edit: { url: "/admin/edit-passage/$id" },
+        list: { url: "/exam/admin/list-passage" },
+        create: { url: "/exam/admin/create-passage" },
+        edit: { url: "/exam/admin/edit-passage/$id" },
       },
     },
     subjects: {
       admin: {
-        list: { url: "/admin/list-subject" },
-        create: { url: "/admin/create-subject" },
-        edit: { url: "/admin/edit-subject/$id" },
+        list: { url: "/exam/admin/list-subject" },
+        create: { url: "/exam/admin/create-subject" },
+        edit: { url: "/exam/admin/edit-subject/$id" },
       },
     },
     packages: {
       admin: {
-        list: { url: "/admin/list-package" },
-        create: { url: "/admin/create-package" },
-        edit: { url: "/admin/edit-package/$id" },
-        detail: { url: "/admin/detail-package/$id" },
+        list: { url: "/exam/admin/list-package" },
+        create: { url: "/exam/admin/create-package" },
+        edit: { url: "/exam/admin/edit-package/$id" },
+        detail: { url: "/exam/admin/detail-package/$id" },
       },
     },
     packageSections: {
       admin: {
-        list: { url: "/admin/list-section" },
-        detail: { url: "/admin/detail-section/$id" },
-        edit: { url: "/admin/edit-section/$id" },
-        create: { url: "/admin/create-section" },
+        list: { url: "/exam/admin/list-section" },
+        detail: { url: "/exam/admin/detail-section/$id" },
+        edit: { url: "/exam/admin/edit-section/$id" },
+        create: { url: "/exam/admin/create-section" },
       },
     },
   },

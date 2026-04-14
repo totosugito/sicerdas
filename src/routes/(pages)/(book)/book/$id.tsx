@@ -57,6 +57,7 @@ function RouteComponent() {
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [showViewer, setShowViewer] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
 
   useEffect(() => {
     if (data?.data?.userInteraction?.bookmarked !== undefined) {
@@ -152,6 +153,14 @@ function RouteComponent() {
     );
   };
 
+  const handleRatingClick = () => {
+    if (!user) {
+      setShowLoginDialog(true);
+      return;
+    }
+    setIsRatingDialogOpen(true);
+  };
+
   const handleReport = () => {
     setShowReportDialog(true);
   };
@@ -223,6 +232,9 @@ function RouteComponent() {
         onToggleFavorite={handleToggleFavorite}
         onReport={handleReport}
         onRate={handleRate}
+        onRatingClick={handleRatingClick}
+        isRatingDialogOpen={isRatingDialogOpen}
+        onRatingDialogOpenChange={setIsRatingDialogOpen}
       />
 
       <CreateContentReport
