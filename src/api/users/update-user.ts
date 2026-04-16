@@ -1,0 +1,28 @@
+import { AppApi } from "@/constants/app-api";
+import { fetchApi } from "@/lib/fetch-api";
+import { useMutation } from "@tanstack/react-query";
+import { GenericResponse } from "./types";
+
+export interface UpdateUserRequest {
+  id: string;
+  name?: string;
+  role?: string;
+  banned?: boolean;
+  banReason?: string;
+  school?: string;
+  grade?: string;
+}
+
+export const useUpdateUser = () => {
+  return useMutation({
+    mutationFn: async (data: UpdateUserRequest) => {
+      const response = await fetchApi({
+        method: "PATCH",
+        url: AppApi.users.update,
+        body: data,
+        withCredentials: true,
+      });
+      return response as GenericResponse;
+    },
+  });
+};

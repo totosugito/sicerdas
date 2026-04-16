@@ -8,7 +8,7 @@ import {
   examPackageInteractions,
 } from "../../../../db/schema/exam/index.ts";
 import { educationCategories, educationGrades } from "../../../../db/schema/education/index.ts";
-import { and, eq, inArray, sql, or, ilike, desc, asc } from "drizzle-orm";
+import { and, eq, sql, ilike, desc, asc } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
 import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";

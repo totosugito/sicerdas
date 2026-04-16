@@ -99,6 +99,25 @@
     "fileSizeTooLarge": "Ukuran file harus kurang dari 5MB",
     "noFileUploaded": "Tidak ada file yang diunggah",
     "avatarRemovedSuccessfully": "Avatar berhasil dihapus",
-    "avatarUpdatedSuccessfully": "Avatar berhasil diperbarui"
+    "avatarUpdatedSuccessfully": "Avatar berhasil diperbarui",
+    "management": {
+      "list": {
+        "success": "Daftar pengguna berhasil diambil"
+      },
+      "details": {
+        "success": "Detail pengguna berhasil diambil"
+      },
+      "create": {
+        "success": "Pengguna berhasil dibuat",
+        "emailExists": "Email sudah digunakan oleh pengguna lain"
+      },
+      "update": {
+        "success": "Pengguna berhasil diperbarui"
+      },
+      "delete": {
+        "success": "Pengguna berhasil dihapus",
+        "inUse": "Pengguna tidak dapat dihapus karena masih memiliki data terkait (konten, laporan, dll)"
+      }
+    }
   }
 }
