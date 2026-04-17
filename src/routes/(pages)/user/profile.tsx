@@ -50,7 +50,7 @@ export const Route = createFileRoute("/(pages)/user/profile")({
 
 function RouteComponent() {
   const { t } = useAppTranslation();
-  const { user: authUser } = useAuth();
+  const { user: authUser, login: updateAuthUser } = useAuth();
   const navigate = Route.useNavigate();
   const search = Route.useSearch();
 
@@ -179,6 +179,20 @@ function RouteComponent() {
             profileInfoFormRef.current.resetImageState();
           }
 
+          // Update auth context so navbar updates immediately
+          if (authUser && success.data) {
+            updateAuthUser({
+              ...authUser,
+              user: {
+                ...authUser.user,
+                ...success.data,
+                // Ensure date fields are Dates if necessary, though the store might handle strings
+                createdAt: new Date(success.data.createdAt),
+                updatedAt: new Date(success.data.updatedAt),
+              } as any,
+            });
+          }
+
           // Reset forms with updated data from success response
           populateForms(success.data);
 
@@ -205,6 +219,20 @@ function RouteComponent() {
           const successMessage =
             success?.message || t(($) => $.user.profile.personalInfo.updateSuccess);
           showNotifSuccess({ message: successMessage });
+
+          // Update auth context so navbar updates immediately
+          if (authUser && success.data) {
+            updateAuthUser({
+              ...authUser,
+              user: {
+                ...authUser.user,
+                ...success.data,
+                createdAt: new Date(success.data.createdAt),
+                updatedAt: new Date(success.data.updatedAt),
+              } as any,
+            });
+          }
+
           populateForms(success?.data);
         },
         onError: (error: Record<string, any>) => {
@@ -249,6 +277,20 @@ function RouteComponent() {
         onSuccess: (success: UpdateUserResponse) => {
           const successMessage = success?.message || t(($) => $.user.profile.privacy.updateSuccess);
           showNotifSuccess({ message: successMessage });
+
+          // Update auth context so navbar updates immediately
+          if (authUser && success.data) {
+            updateAuthUser({
+              ...authUser,
+              user: {
+                ...authUser.user,
+                ...success.data,
+                createdAt: new Date(success.data.createdAt),
+                updatedAt: new Date(success.data.updatedAt),
+              } as any,
+            });
+          }
+
           populateForms(success?.data);
         },
         onError: (error: Record<string, any>) => {
