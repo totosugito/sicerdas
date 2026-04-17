@@ -4,15 +4,19 @@ export interface UserItem {
   id: string;
   name: string;
   email: string;
-  emailVerified?: string;
+  emailVerified: boolean;
   role: string;
-  banned?: boolean;
-  banReason?: string;
-  image?: string;
-  school?: string;
-  grade?: string;
+  banned: boolean;
+  banReason?: string | null;
+  banExpires?: string | null;
+  image?: string | null;
   createdAt: string;
   updatedAt: string;
+  phone?: string | null;
+  address?: string | null;
+  bio?: string | null;
+  dateOfBirth?: string | null;
+  extra?: any;
 }
 
 export interface ListUsersResponse {

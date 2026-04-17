@@ -23,6 +23,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 import "@/assets/ReactCrop.css";
 import { CropIcon, Trash2Icon } from "lucide-react";
+import { showNotifError } from "@/lib/show-notif";
 import { FileWithPath } from "react-dropzone";
 
 export type FileWithPreview = FileWithPath & {
@@ -36,9 +37,7 @@ interface ImageCropperProps {
   setSelectedFile: React.Dispatch<React.SetStateAction<FileWithPreview | null>>;
   title?: string;
   onCropComplete?: (file: File) => void;
-  // Add prop to enable free cropping (no fixed aspect ratio)
-  freeCrop?: boolean;
-  fileName?: string;
+  showTrigger?: boolean;
 }
 
 export function ImageCropper({
@@ -48,11 +47,9 @@ export function ImageCropper({
   setSelectedFile,
   title = "Image Cropper",
   onCropComplete,
-  freeCrop = false, // Default to false to maintain existing behavior
-  fileName = "avatar.png",
+  showTrigger = true,
 }: ImageCropperProps) {
-  // Use null for free cropping, 1 for square cropping
-  const aspect = freeCrop ? null : 1;
+  const aspect = 1;
 
   const imgRef = React.useRef<HTMLImageElement | null>(null);
 
@@ -61,19 +58,9 @@ export function ImageCropper({
   const [croppedImage, setCroppedImage] = React.useState<string>("");
 
   function onImageLoad(e: SyntheticEvent<HTMLImageElement>) {
-    if (aspect !== null) {
+    if (aspect) {
       const { width, height } = e.currentTarget;
       setCrop(centerAspectCrop(width, height, aspect));
-    } else {
-      // For free cropping, initialize with a default crop
-      const { width, height } = e.currentTarget;
-      setCrop({
-        unit: "%",
-        x: 10,
-        y: 10,
-        width: 80,
-        height: 80,
-      });
     }
   }
 
@@ -121,39 +108,27 @@ export function ImageCropper({
       if (onCropComplete && croppedImageUrl) {
         const response = await fetch(croppedImageUrl);
         const blob = await response.blob();
-        const file = new File([blob], fileName, { type: "image/png" });
+        const file = new File([blob], "cropped-avatar.png", { type: "image/png" });
         onCropComplete(file);
       }
 
       setDialogOpen(false);
     } catch (error) {
-      alert("Something went wrong!");
+      showNotifError({ message: "Something went wrong!" });
     }
   }
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogTrigger>
-        {freeCrop ? (
-          <div className="h-36 w-auto cursor-pointer ring-offset-2 ring-2 ring-slate-200 overflow-hidden">
-            <img
-              src={croppedImage ? croppedImage : selectedFile?.preview}
-              alt=""
-              className="h-full w-auto object-contain"
-            />
-          </div>
-        ) : (
+      {showTrigger && (
+        <DialogTrigger asChild>
           <Avatar className="size-36 cursor-pointer ring-offset-2 ring-2 ring-slate-200">
             <AvatarImage src={croppedImage ? croppedImage : selectedFile?.preview} alt="" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-        )}
-      </DialogTrigger>
-      <DialogContent
-        className="p-0 gap-0 sm:max-w-lg"
-        aria-describedby={undefined}
-        showCloseButton={false}
-      >
+        </DialogTrigger>
+      )}
+      <DialogContent className="p-0 gap-0" aria-describedby={undefined} showCloseButton={false}>
         <VisuallyHidden>
           <DialogTitle>{title}</DialogTitle>
         </VisuallyHidden>
@@ -162,8 +137,7 @@ export function ImageCropper({
             crop={crop}
             onChange={(_, percentCrop) => setCrop(percentCrop)}
             onComplete={(c) => onCropCompleteHandler(c)}
-            // Only set aspect if not free cropping
-            {...(aspect !== null ? { aspect } : {})}
+            aspect={aspect}
             className="w-full"
           >
             <Avatar className="size-full rounded-none">

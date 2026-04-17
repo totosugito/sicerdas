@@ -110,7 +110,7 @@ export function UserTable({
         return (
           <div className="flex items-center gap-3 py-1">
             <Avatar className="h-9 w-9 border border-border/50 shrink-0">
-              <AvatarImage src={image} alt={name} className="object-cover" />
+              <AvatarImage src={image ?? undefined} alt={name} className="object-cover" />
               <AvatarFallback className="bg-muted text-muted-foreground font-semibold text-xs uppercase">
                 {name.substring(0, 2)}
               </AvatarFallback>

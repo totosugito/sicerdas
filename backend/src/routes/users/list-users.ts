@@ -33,8 +33,6 @@ const UserResponseItem = Type.Object({
   role: Type.String(),
   image: Type.Union([Type.String(), Type.Null()]),
   banned: Type.Union([Type.Boolean(), Type.Null()]),
-  school: Type.Union([Type.String(), Type.Null()]),
-  grade: Type.Union([Type.String(), Type.Null()]),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
 });
@@ -111,8 +109,6 @@ const listUsers: FastifyPluginAsyncTypebox = async (app) => {
           banned: users.banned,
           createdAt: users.createdAt,
           updatedAt: users.updatedAt,
-          school: usersProfile.school,
-          grade: usersProfile.grade,
         })
         .from(users)
         .leftJoin(usersProfile, eq(users.id, usersProfile.id));

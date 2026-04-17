@@ -236,7 +236,7 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
                     <Avatar className="h-10 w-10">
                       <AvatarImage
                         src={user?.user?.image || ""}
-                        alt={user?.user?.name || "User"}
+                        alt={user?.user?.name?.substring(0, 2)?.toUpperCase() || "U"}
                         className="object-cover"
                       />
                       <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-sm uppercase">

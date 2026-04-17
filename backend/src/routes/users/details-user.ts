@@ -12,10 +12,29 @@ const Params = Type.Object({
   id: Type.String({ format: "uuid", description: "User ID to retrieve" }),
 });
 
+const UserData = Type.Object({
+  id: Type.String({ format: "uuid" }),
+  email: Type.String({ format: "email" }),
+  name: Type.String(),
+  role: Type.Enum(EnumUserRole),
+  image: Type.Union([Type.String(), Type.Null()]),
+  emailVerified: Type.Boolean(),
+  banned: Type.Boolean(),
+  banReason: Type.Union([Type.String(), Type.Null()]),
+  banExpires: Type.Union([Type.String(), Type.Null()]),
+  createdAt: Type.String(),
+  updatedAt: Type.String(),
+  phone: Type.Union([Type.String(), Type.Null()]),
+  address: Type.Union([Type.String(), Type.Null()]),
+  bio: Type.Union([Type.String(), Type.Null()]),
+  dateOfBirth: Type.Union([Type.String(), Type.Null()]),
+  extra: Type.Union([Type.Unknown(), Type.Null()]),
+});
+
 const DetailsResponse = Type.Object({
   success: Type.Boolean({ default: true }),
   message: Type.String(),
-  data: Type.Any(),
+  data: UserData,
 });
 
 const detailsUser: FastifyPluginAsyncTypebox = async (app) => {
@@ -58,14 +77,10 @@ const detailsUser: FastifyPluginAsyncTypebox = async (app) => {
           banExpires: users.banExpires,
           createdAt: users.createdAt,
           updatedAt: users.updatedAt,
-          school: usersProfile.school,
-          educationLevel: usersProfile.educationLevel,
-          grade: usersProfile.grade,
           phone: usersProfile.phone,
           address: usersProfile.address,
           bio: usersProfile.bio,
           dateOfBirth: usersProfile.dateOfBirth,
-          tierId: usersProfile.tierId,
           extra: usersProfile.extra,
         })
         .from(users)
@@ -87,8 +102,8 @@ const detailsUser: FastifyPluginAsyncTypebox = async (app) => {
           image: getUserAvatarUrl(user.id, user.image),
           createdAt: user.createdAt.toISOString(),
           updatedAt: user.updatedAt.toISOString(),
-          dateOfBirth: user.dateOfBirth?.toISOString(),
-          banExpires: user.banExpires?.toISOString(),
+          dateOfBirth: user.dateOfBirth?.toISOString() || null,
+          banExpires: user.banExpires?.toISOString() || null,
         },
       });
     }),

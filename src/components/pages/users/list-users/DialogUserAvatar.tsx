@@ -116,7 +116,10 @@ export function DialogUserAvatar({ open, onOpenChange, user }: DialogUserAvatarP
           <div className="flex flex-col items-center justify-center py-6 gap-6">
             <div className="relative group">
               <Avatar className="h-56 w-56 border-2 border-muted shadow-sm ring-offset-background transition-all group-hover:ring-2 group-hover:ring-primary/20">
-                <AvatarImage src={croppedPreview || user.image} className="object-cover" />
+                <AvatarImage
+                  src={croppedPreview || user.image || undefined}
+                  className="object-cover"
+                />
                 <AvatarFallback className="text-4xl font-bold bg-muted text-muted-foreground uppercase">
                   {user.name.substring(0, 2)}
                 </AvatarFallback>
@@ -178,6 +181,7 @@ export function DialogUserAvatar({ open, onOpenChange, user }: DialogUserAvatarP
           selectedFile={selectedFile}
           setSelectedFile={setSelectedFile}
           onCropComplete={onCropComplete}
+          showTrigger={false}
           title={t(($) => $.user.management.dialog.changeAvatarTitle)}
         />
       )}
