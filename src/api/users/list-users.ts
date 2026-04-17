@@ -5,7 +5,7 @@ import { ListUsersResponse } from "./types";
 
 export interface ListUsersRequest {
   search?: string;
-  role?: string;
+  roles?: string[];
   banned?: boolean;
   sortBy?: string;
   sortOrder?: "asc" | "desc";

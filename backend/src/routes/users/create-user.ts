@@ -1,9 +1,10 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../db/db-pool.ts";
-import { users, usersProfile, EnumUserRole } from "../../db/schema/user/index.ts";
+import { users, usersProfile, accounts, EnumUserRole } from "../../db/schema/user/index.ts";
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
+import { getAuthInstance } from "../../decorators/auth.decorator.ts";
 import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
@@ -13,8 +14,7 @@ const CreateBody = Type.Object({
   role: Type.Optional(
     Type.Enum(EnumUserRole, { default: EnumUserRole.USER, description: "Role of the user" }),
   ),
-  school: Type.Optional(Type.String({ description: "School name" })),
-  grade: Type.Optional(Type.String({ description: "Grade level" })),
+  password: Type.String({ minLength: 6, description: "Initial password for the user" }),
 });
 
 const CreateResponse = Type.Object({
@@ -48,9 +48,10 @@ const createUser: FastifyPluginAsyncTypebox = async (app) => {
       reply: FastifyReply,
     ): Promise<typeof CreateResponse.static> {
       const { t } = getTypedI18n(req);
+      const auth = getAuthInstance(app);
 
       // Explicit destructuring for Mass Assignment Protection
-      const { name, email, role = EnumUserRole.USER, school, grade } = req.body;
+      const { name, email, role = EnumUserRole.USER, password } = req.body;
 
       // Check if email already exists
       const existingUser = await db.query.users.findFirst({
@@ -61,24 +62,39 @@ const createUser: FastifyPluginAsyncTypebox = async (app) => {
         return reply.badRequest(t(($) => $.user.management.create.emailExists));
       }
 
+      // Get auth context for password hashing
+      const context = await auth.$context;
+      const hashedPassword = await context.password.hash(password);
+
       // Start a transaction for atomicity
       const newUser = await db.transaction(async (tx) => {
+        // 1. Create User
         const [insertedUser] = await tx
           .insert(users)
           .values({
             name,
             email,
             role,
+            emailVerified: true, // Manual admin creation skips verification
             updatedAt: new Date(),
           })
           .returning();
 
+        // 2. Create Profile
         await tx.insert(usersProfile).values({
           id: insertedUser.id,
-          school: school ?? null,
-          grade: grade ?? null,
           updatedAt: new Date(),
         });
+
+        // 3. Create Account (for better-auth email/password login)
+        await tx.insert(accounts).values({
+          userId: insertedUser.id,
+          accountId: email, // Better Auth standard for email provider
+          providerId: "email",
+          password: hashedPassword,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        } as any);
 
         return insertedUser;
       });

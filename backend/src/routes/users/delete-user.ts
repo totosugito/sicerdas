@@ -6,6 +6,8 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import env from "../../config/env.config.ts";
+import { deleteStorageDirectory } from "../../utils/storage.ts";
 
 const Params = Type.Object({
   id: Type.String({ format: "uuid", description: "User ID to delete" }),
@@ -59,6 +61,9 @@ const deleteUser: FastifyPluginAsyncTypebox = async (app) => {
 
       try {
         await db.delete(users).where(eq(users.id, id));
+
+        // Clean up user directory from disk (avatars, etc.)
+        await deleteStorageDirectory(env.server.uploadsUserDir, id, user.createdAt, req.log);
 
         return reply.status(200).send({
           success: true,

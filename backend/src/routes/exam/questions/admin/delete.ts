@@ -8,7 +8,7 @@ import { eq, sql } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import { deleteBlockNoteEntityDirectory } from "../../../../utils/blocknote-utils.ts";
+import { deleteStorageDirectory } from "../../../../utils/storage.ts";
 
 const DeleteQuestionParams = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -75,7 +75,7 @@ const deleteQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       // Clean up directory from disk
-      await deleteBlockNoteEntityDirectory(
+      await deleteStorageDirectory(
         env.server.uploadsQuestionDir,
         id,
         existingQuestion.createdAt,

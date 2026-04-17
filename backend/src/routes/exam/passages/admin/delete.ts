@@ -8,7 +8,7 @@ import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import { deleteBlockNoteEntityDirectory } from "../../../../utils/blocknote-utils.ts";
+import { deleteStorageDirectory } from "../../../../utils/storage.ts";
 
 const DeletePassageParams = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -67,7 +67,7 @@ const deletePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
       await db.delete(examPassages).where(eq(examPassages.id, id));
 
       // Clean up directory from disk
-      await deleteBlockNoteEntityDirectory(
+      await deleteStorageDirectory(
         env.server.uploadsPassageDir,
         id,
         existingPassage.createdAt,

@@ -6,6 +6,8 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import { inArray } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import env from "../../config/env.config.ts";
+import { deleteStorageDirectory } from "../../utils/storage.ts";
 
 const DeletesBody = Type.Object({
   ids: Type.Array(Type.String({ format: "uuid" }), {
@@ -47,7 +49,18 @@ const bulkDeleteUsers: FastifyPluginAsyncTypebox = async (app) => {
       const { ids } = req.body;
 
       try {
+        // Fetch target users to get their createdAt dates for directory cleanup
+        const targetUsers = await db
+          .select({ id: users.id, createdAt: users.createdAt })
+          .from(users)
+          .where(inArray(users.id, ids));
+
         await db.delete(users).where(inArray(users.id, ids));
+
+        // Clean up directories for all deleted users
+        for (const user of targetUsers) {
+          await deleteStorageDirectory(env.server.uploadsUserDir, user.id, user.createdAt, req.log);
+        }
 
         return reply.status(200).send({
           success: true,

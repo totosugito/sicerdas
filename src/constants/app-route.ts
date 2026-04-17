@@ -141,11 +141,11 @@ export const AppRoute = {
   },
   admin: {
     dashboard: { url: "/admin/dashboard" },
+    users: {
+      list: { url: "/users/list-users" },
+    },
     chatAi: {
       models: { url: "/admin/chat-ai/models" },
-    },
-    user: {
-      list: { url: "/admin/users" },
     },
     version: {
       list: { url: "/admin/versions" },

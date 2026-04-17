@@ -6,6 +6,8 @@ import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { getAuthInstance } from "../../decorators/auth.decorator.ts";
+import { fromNodeHeaders } from "better-auth/node";
 
 const BanBody = Type.Object({
   id: Type.String({ format: "uuid", description: "User ID to ban/unban" }),
@@ -44,6 +46,16 @@ const banUser: FastifyPluginAsyncTypebox = async (app) => {
     ): Promise<typeof BanResponse.static> {
       const { t } = getTypedI18n(req);
       const { id, banned, banReason } = req.body;
+
+      // Determine user role from session
+      const session = await getAuthInstance(app).api.getSession({
+        headers: fromNodeHeaders(req.headers),
+      });
+      const adminId = session?.user?.id;
+
+      if (adminId === id) {
+        return reply.badRequest(t(($) => $.user.management.update.cannotBanSelf));
+      }
 
       const user = await db.query.users.findFirst({
         where: (fields) => eq(fields.id, id),

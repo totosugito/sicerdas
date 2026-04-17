@@ -149,7 +149,11 @@ export function ImageCropper({
           </Avatar>
         )}
       </DialogTrigger>
-      <DialogContent className="p-0 gap-0" aria-describedby={undefined} showCloseButton={false}>
+      <DialogContent
+        className="p-0 gap-0 sm:max-w-lg"
+        aria-describedby={undefined}
+        showCloseButton={false}
+      >
         <VisuallyHidden>
           <DialogTitle>{title}</DialogTitle>
         </VisuallyHidden>

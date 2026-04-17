@@ -1,13 +1,7 @@
 import { join } from "node:path";
-import { writeFile, unlink, rm } from "node:fs/promises";
+import { writeFile, unlink } from "node:fs/promises";
 import { existsSync, mkdirSync } from "node:fs";
-import {
-  s3Client,
-  PutObjectCommand,
-  DeleteObjectCommand,
-  ListObjectsV2Command,
-  DeleteObjectsCommand,
-} from "./storage.ts";
+import { s3Client, PutObjectCommand, DeleteObjectCommand } from "./storage.ts";
 import env from "../config/env.config.ts";
 import { createUniqueFileName } from "./my-utils.ts";
 import type { UploadedFile } from "../types/file.ts";
@@ -205,75 +199,6 @@ export const cleanupBlockNoteFiles = async (
           if (logger?.error) {
             logger.error({ err: error, filePath }, "Error deleting file from disk during cleanup");
           }
-        }
-      }
-    }
-  }
-};
-
-/**
- * Deletes the entire directory associated with a BlockNote entity
- */
-export const deleteBlockNoteEntityDirectory = async (
-  subDir: string,
-  entityId: string,
-  createdAt: Date | string,
-  logger?: any,
-): Promise<void> => {
-  const date = new Date(createdAt);
-  const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-
-  if (env.server.useS3Storage) {
-    // S3/R2 STORAGE
-    const prefix = `${env.server.uploadsDir}/${subDir}/${yearMonth}/${entityId}/`
-      .replace(/\/+/g, "/")
-      .replace(/^\/+/, "");
-
-    try {
-      const listParams = {
-        Bucket: env.server.s3Storage.bucketName,
-        Prefix: prefix,
-      };
-
-      const listedObjects = await s3Client.send(new ListObjectsV2Command(listParams));
-
-      if (!listedObjects.Contents || listedObjects.Contents.length === 0) return;
-
-      const deleteParams = {
-        Bucket: env.server.s3Storage.bucketName,
-        Delete: {
-          Objects: listedObjects.Contents.map(({ Key }) => ({ Key })),
-        },
-      };
-
-      await s3Client.send(new DeleteObjectsCommand(deleteParams));
-
-      // Handle pagination if more than 1000 objects (rare for a single entity but good practice)
-      if (listedObjects.IsTruncated) {
-        await deleteBlockNoteEntityDirectory(subDir, entityId, createdAt, logger);
-      }
-    } catch (error) {
-      if (logger?.error) {
-        logger.error({ err: error, prefix }, "Error deleting entity prefix from S3");
-      }
-    }
-  } else {
-    // LOCAL STORAGE
-    const dirPath = join(
-      process.cwd(),
-      env.server.uploadsRelativePath,
-      env.server.uploadsDir,
-      subDir,
-      yearMonth,
-      entityId,
-    );
-
-    if (existsSync(dirPath)) {
-      try {
-        await rm(dirPath, { recursive: true, force: true });
-      } catch (error) {
-        if (logger?.error) {
-          logger.error({ err: error, dirPath }, "Error deleting entity directory from disk");
         }
       }
     }

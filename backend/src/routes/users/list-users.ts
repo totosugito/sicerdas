@@ -4,14 +4,17 @@ import { db } from "../../db/db-pool.ts";
 import { users, usersProfile, EnumUserRole } from "../../db/schema/user/index.ts";
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
-import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, or, sql, inArray } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { getUserAvatarUrl } from "../../utils/user-utils.ts";
 
 const ListBody = Type.Object({
   page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
   limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100, default: 10 })),
   search: Type.Optional(Type.String({ description: "Search term for name or email" })),
-  role: Type.Optional(Type.Enum(EnumUserRole, { description: "Filter by user role" })),
+  roles: Type.Optional(
+    Type.Array(Type.Enum(EnumUserRole), { description: "Filter by multiple user roles" }),
+  ),
   sortBy: Type.Optional(
     Type.String({
       default: "createdAt",
@@ -79,7 +82,7 @@ const listUsers: FastifyPluginAsyncTypebox = async (app) => {
         page = 1,
         limit = 10,
         search,
-        role,
+        roles,
         sortBy = "createdAt",
         sortOrder = "desc",
       } = req.body;
@@ -93,8 +96,8 @@ const listUsers: FastifyPluginAsyncTypebox = async (app) => {
         conditions.push(or(ilike(users.name, searchTerm), ilike(users.email, searchTerm)));
       }
 
-      if (role) {
-        conditions.push(eq(users.role, role));
+      if (roles && roles.length > 0) {
+        conditions.push(inArray(users.role, roles));
       }
 
       // Build base query
@@ -158,6 +161,7 @@ const listUsers: FastifyPluginAsyncTypebox = async (app) => {
         data: {
           items: items.map((item) => ({
             ...item,
+            image: getUserAvatarUrl(item.id, item.image),
             createdAt: item.createdAt ? item.createdAt.toISOString() : new Date().toISOString(),
             updatedAt: item.updatedAt ? item.updatedAt.toISOString() : new Date().toISOString(),
           })),

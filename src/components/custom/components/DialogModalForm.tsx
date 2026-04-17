@@ -30,6 +30,8 @@ export type ModalFormProps = {
   child?: any;
   defaultValue: Record<string, any>;
   schema: any;
+  headerIcon?: React.ReactNode;
+  variant?: "default" | "destructive" | "confirm";
 };
 
 export type DialogModalFormProps = {
@@ -72,7 +74,11 @@ export const DialogModalForm = ({
   }
 
   const form = useForm({
-    resolver: modal.schema ? zodResolver(z.object(modal.schema)) : undefined,
+    resolver: modal.schema
+      ? zodResolver(
+          (modal.schema instanceof z.ZodType ? modal.schema : z.object(modal.schema)) as any,
+        )
+      : undefined,
     defaultValues: modal.defaultValue,
   });
 
@@ -102,7 +108,10 @@ export const DialogModalForm = ({
         aria-describedby=""
       >
         <DialogHeader className={"flex flex-col"}>
-          <DialogTitle>{modal?.title}</DialogTitle>
+          <div className="flex items-center gap-2">
+            {modal?.headerIcon && <div className="flex-shrink-0">{modal.headerIcon}</div>}
+            <DialogTitle>{modal?.title}</DialogTitle>
+          </div>
           {modal?.desc && <DialogDescription>{modal?.desc}</DialogDescription>}
         </DialogHeader>
         <Form {...form}>
@@ -128,7 +137,15 @@ export const DialogModalForm = ({
 
             <DialogFooter className="flex-shrink-0">
               <div className="w-full flex sm:flex-row flex-col gap-2 justify-end pt-4">
-                <Button className="min-w-[80px]" type="submit">
+                <Button
+                  className={cn(
+                    "min-w-[80px]",
+                    modal?.variant === "confirm" &&
+                      "bg-emerald-600 hover:bg-emerald-700 text-white",
+                  )}
+                  variant={modal?.variant === "destructive" ? "destructive" : "default"}
+                  type="submit"
+                >
                   {modal?.textConfirm ?? t(($) => $.labels.save)}
                 </Button>
                 {modal.onCancelClick && (

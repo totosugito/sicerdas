@@ -6,11 +6,8 @@ import { GenericResponse } from "./types";
 export interface UpdateUserRequest {
   id: string;
   name?: string;
+  email?: string;
   role?: string;
-  banned?: boolean;
-  banReason?: string;
-  school?: string;
-  grade?: string;
 }
 
 export const useUpdateUser = () => {

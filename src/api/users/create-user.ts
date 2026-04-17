@@ -7,8 +7,7 @@ export interface CreateUserRequest {
   name: string;
   email: string;
   role: string;
-  school?: string;
-  grade?: string;
+  password: string;
 }
 
 export const useCreateUser = () => {

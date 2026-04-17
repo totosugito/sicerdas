@@ -112,7 +112,9 @@
         "emailExists": "Email sudah digunakan oleh pengguna lain"
       },
       "update": {
-        "success": "Pengguna berhasil diperbarui"
+        "success": "Pengguna berhasil diperbarui",
+        "emailExists": "Email sudah digunakan oleh pengguna lain",
+        "cannotBanSelf": "Anda tidak dapat mengubah status blokir akun Anda sendiri."
       },
       "delete": {
         "success": "Pengguna berhasil dihapus",

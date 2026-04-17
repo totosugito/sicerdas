@@ -49,16 +49,24 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
     handler: withErrorHandler(async (req: FastifyRequest, reply: FastifyReply) => {
       const { t } = getTypedI18n(req);
 
-      // Get the multipart reader
-      const data = await req.file();
-      if (!data) {
-        return reply.badRequest(t(($) => $.user.noFileUploaded));
-      }
+      let targetUserId = (req.query as any).id as string | undefined;
+      let action = (req.query as any).action as string | undefined;
+      let uploadedFile: any = null;
 
-      // Extract userId and action from fields or query
-      const fields = data.fields as any;
-      const targetUserId = fields.id?.value || (req.query as any).id;
-      const action = fields.action?.value || (req.query as any).action;
+      // Iterate through multipart parts to collect fields and optional file
+      const parts = req.parts();
+      for await (const part of parts) {
+        if (part.type === "file") {
+          uploadedFile = part;
+          // Once we hit the file, if we already have ID and action, we could stop collecting fields
+          // but we usually want to continue if we need more fields.
+          // However, for this route, id and action are the priority.
+          break;
+        } else {
+          if (part.fieldname === "id") targetUserId = part.value as string;
+          if (part.fieldname === "action") action = part.value as string;
+        }
+      }
 
       if (!targetUserId) {
         return reply.badRequest("Missing user ID (id) in request");
@@ -66,18 +74,20 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
 
       // Handle remove action
       if (action === "remove") {
-        const [currentUser] = await db
-          .select({ image: users.image })
-          .from(users)
-          .where(eq(users.id, targetUserId))
-          .limit(1);
+        const currentUser = await db.query.users.findFirst({
+          where: (fields) => eq(fields.id, targetUserId as string),
+        });
 
         if (!currentUser) {
           return reply.notFound(t(($) => $.user.userNotFound));
         }
 
         if (currentUser.image) {
-          await deleteUserAvatar(currentUser.image);
+          try {
+            await deleteUserAvatar(currentUser.image);
+          } catch (_error) {
+            // Continue even if deletion fails
+          }
         }
 
         const [updatedUser] = await db
@@ -86,7 +96,7 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
             image: null,
             updatedAt: new Date(),
           })
-          .where(eq(users.id, targetUserId))
+          .where(eq(users.id, targetUserId as string))
           .returning();
 
         return reply.status(200).send({
@@ -100,15 +110,19 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
         });
       }
 
-      // Handle upload logic similar to avatar-user.ts but for target userId
+      // If not removing, then we MUST have a file
+      if (!uploadedFile) {
+        return reply.badRequest(t(($) => $.user.noFileUploaded));
+      }
+
       const {
         buffer,
         filename: originalName,
         mimetype,
       } = {
-        buffer: await data.toBuffer(),
-        filename: data.filename,
-        mimetype: data.mimetype,
+        buffer: await uploadedFile.toBuffer(),
+        filename: uploadedFile.filename,
+        mimetype: uploadedFile.mimetype,
       };
 
       // Validate file type
@@ -125,7 +139,7 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
 
       // Get current user to check for existing avatar and get createdAt for folder structure
       const currentUser = await db.query.users.findFirst({
-        where: (fields) => eq(fields.id, targetUserId),
+        where: (fields) => eq(fields.id, targetUserId as string),
       });
 
       if (!currentUser) {
