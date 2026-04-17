@@ -12,6 +12,7 @@ interface FormWithDetectorProps {
   className?: string;
   schema?: z.ZodType<any> | any;
   errorClassName?: string;
+  error?: string | null;
 }
 
 export const FormWithDetector = ({
@@ -21,6 +22,7 @@ export const FormWithDetector = ({
   className,
   schema,
   errorClassName,
+  error,
 }: FormWithDetectorProps) => {
   const { t } = useAppTranslation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -167,18 +169,20 @@ export const FormWithDetector = ({
     }
   };
 
+  const effectiveError = errorMessage || error;
+
   return (
     <form onSubmit={handleFormSubmit} className={className}>
       {/* Display error message */}
-      {errorMessage && (
+      {effectiveError && (
         <div
           className={cn(
-            "flex items-center bg-destructive/10 border border-destructive/20 text-sm text-destructive mb-4 p-3 rounded-lg gap-3",
+            "flex items-center bg-destructive/10 border border-destructive/20 text-sm text-destructive mb-6 p-3 rounded-lg gap-3",
             errorClassName,
           )}
         >
           <AlertCircle className="h-5 w-5 shrink-0" />
-          <div className="">{errorMessage}</div>
+          <div className="">{effectiveError}</div>
         </div>
       )}
       {children}

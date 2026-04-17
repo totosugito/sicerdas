@@ -7,6 +7,7 @@ import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import { eq } from "drizzle-orm";
 import { getUserAvatarUrl } from "../../utils/user-utils.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { EnumUserRole } from "../../db/schema/user/types.ts";
 
 const Params = Type.Object({
   id: Type.String({ format: "uuid", description: "User ID to retrieve" }),

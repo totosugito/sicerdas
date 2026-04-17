@@ -64,8 +64,12 @@ export default {
     host: env.HOST,
     port: env.PORT,
     frontendUrl: env.FRONTEND_URL,
-    baseUrl:
-      env.USE_S3_STORAGE && env.S3_PUBLIC_URL
+    // if USE_S3_STORAGE is true, use S3_PUBLIC_URL
+    // or if S3_PUBLIC_URL set, use it.
+    // otherwise use local storage
+    baseUrl: env.USE_S3_STORAGE
+      ? env.S3_PUBLIC_URL
+      : env.S3_PUBLIC_URL && env.S3_PUBLIC_URL !== ""
         ? env.S3_PUBLIC_URL
         : `http://${env.HOST === "0.0.0.0" ? "127.0.0.1" : env.HOST}:${env.PORT}`.replace(
             /([^:]\/)\/+/g,

@@ -89,8 +89,8 @@ const createUser: FastifyPluginAsyncTypebox = async (app) => {
         // 3. Create Account (for better-auth email/password login)
         await tx.insert(accounts).values({
           userId: insertedUser.id,
-          accountId: email, // Better Auth standard for email provider
-          providerId: "email",
+          accountId: insertedUser.id,
+          providerId: "credential",
           password: hashedPassword,
           createdAt: new Date(),
           updatedAt: new Date(),

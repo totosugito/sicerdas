@@ -1,4 +1,11 @@
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
@@ -9,20 +16,26 @@ import { cn } from "@/lib/utils";
 export type FormPasswordProps = {
   form: UseFormReturn<any>;
   item: {
-    name: string
-    label: string
-    placeholder?: string
-    description?: string
-    readonly?: boolean
+    name: string;
+    label: string;
+    placeholder?: string;
+    description?: string;
+    readonly?: boolean;
     required?: boolean;
   };
-  disabled?: boolean
-  className?: string
-  labelClassName?: string  // Added labelClassName prop
-  showMessage?: boolean  // Added showMessage prop
-}
+  disabled?: boolean;
+  className?: string;
+  labelClassName?: string; // Added labelClassName prop
+  showMessage?: boolean; // Added showMessage prop
+};
 
-export const FormPassword = ({ form, item, labelClassName = "", showMessage = true, ...props }: FormPasswordProps) => {
+export const FormPassword = ({
+  form,
+  item,
+  labelClassName = "",
+  showMessage = true,
+  ...props
+}: FormPasswordProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -34,9 +47,12 @@ export const FormPassword = ({ form, item, labelClassName = "", showMessage = tr
       name={item.name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className={cn("", labelClassName)}>{item.label}{item.required && <span className="text-red-500">*</span>}</FormLabel>
-          <FormControl>
-            <div className="relative">
+          <FormLabel className={cn("", labelClassName)}>
+            {item.label}
+            {item.required && <span className="text-red-500">*</span>}
+          </FormLabel>
+          <div className="relative">
+            <FormControl>
               <Input
                 type={showPassword ? "text" : "password"}
                 placeholder={item.placeholder}
@@ -44,21 +60,22 @@ export const FormPassword = ({ form, item, labelClassName = "", showMessage = tr
                 {...props}
                 {...field}
               />
+            </FormControl>
 
-              <Button
-                type="button"
-                variant={"ghost"}
-                size="icon"
-                className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground/90 hover:text-foreground/90"
-                onClick={togglePasswordVisibility}>
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </Button>
-            </div>
-          </FormControl>
+            <Button
+              type="button"
+              variant={"ghost"}
+              size="icon"
+              className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground/90 hover:text-foreground/90"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </Button>
+          </div>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
           {showMessage && <FormMessage />}
         </FormItem>
       )}
     />
-  )
-}
+  );
+};

@@ -202,8 +202,7 @@ function RouteComponent() {
           showNotifSuccess({ message: successMessage });
         },
         onError: (error: Record<string, any>) => {
-          const msg_ =
-            error?.response?.data?.message || t(($) => $.user.profile.information.updateError);
+          const msg_ = error?.message || t(($) => $.user.profile.information.updateError);
           setProfileUpdateError(msg_);
         },
       },
@@ -236,8 +235,7 @@ function RouteComponent() {
           populateForms(success?.data);
         },
         onError: (error: Record<string, any>) => {
-          const errorMessage =
-            error?.response?.data?.message || t(($) => $.user.profile.personalInfo.updateError);
+          const errorMessage = error?.message || t(($) => $.user.profile.personalInfo.updateError);
           setPersonalInfoUpdateError(errorMessage);
         },
       },
@@ -258,8 +256,7 @@ function RouteComponent() {
           securityForm.reset(securityFormData.defaultValue);
         },
         onError: (error: Record<string, any>) => {
-          const errorMessage =
-            error?.response?.data?.message || t(($) => $.user.profile.security.updateError);
+          const errorMessage = error?.message || t(($) => $.user.profile.security.updateError);
           setSecurityUpdateError(errorMessage);
         },
       },
@@ -294,8 +291,7 @@ function RouteComponent() {
           populateForms(success?.data);
         },
         onError: (error: Record<string, any>) => {
-          const errorMessage =
-            error?.response?.data?.message || t(($) => $.user.profile.privacy.updateError);
+          const errorMessage = error?.message || t(($) => $.user.profile.privacy.updateError);
           setPrivacyUpdateError(errorMessage);
         },
       },
@@ -314,8 +310,7 @@ function RouteComponent() {
           refetchSessions();
         },
         onError: (error: Record<string, any>) => {
-          const errorMessage =
-            error?.response?.data?.message || t(($) => $.user.profile.sessions.revokeError);
+          const errorMessage = error?.message || t(($) => $.user.profile.sessions.revokeError);
           showNotifError({ message: error?.message || errorMessage });
         },
       },
@@ -330,8 +325,7 @@ function RouteComponent() {
         refetchSessions();
       })
       .catch((error: Record<string, any>) => {
-        const errorMessage =
-          error?.response?.data?.message || t(($) => $.user.profile.sessions.revokeError);
+        const errorMessage = error?.message || t(($) => $.user.profile.sessions.revokeError);
         showNotifError({ message: error?.message || errorMessage });
       });
   };

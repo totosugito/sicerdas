@@ -102,15 +102,9 @@ export function SecurityForm({ form, onSubmit, error }: SecurityFormProps) {
           schema={formData.schema}
           className="w-full"
           errorClassName="mx-6"
+          error={error}
         >
           <CardContent className="px-6 pb-6 space-y-6 w-full">
-            {error && (
-              <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 rounded-md text-red-700 dark:text-red-300">
-                <AlertCircle className="h-5 w-5 flex-shrink-0" />
-                <span>{error}</span>
-              </div>
-            )}
-
             <ControlForm form={form} item={formItems.currentPassword} showMessage={false} />
 
             <ControlForm form={form} item={formItems.newPassword} showMessage={false} />
