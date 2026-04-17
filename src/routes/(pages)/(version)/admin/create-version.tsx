@@ -27,7 +27,7 @@ function AdminVersionsCreatePage() {
             res.message || t(($) => $.version.notifications?.createSuccess || $.labels.success),
         });
         queryClient.invalidateQueries({ queryKey: ["version-list"] });
-        navigate({ to: AppRoute.admin.version.list.url });
+        navigate({ to: AppRoute.app.version.admin.list.url });
       },
       onError: (err: any) => {
         showNotifError({ message: err.message || t(($) => $.labels.error) });
@@ -42,7 +42,7 @@ function AdminVersionsCreatePage() {
           title={t(($) => $.labels.add) + " " + t(($) => $.version.title)}
           description={<span>{t(($) => $.version.form.name.placeholder)}</span>}
           showBack
-          backTo={AppRoute.admin.version.list.url}
+          backTo={AppRoute.app.version.admin.list.url}
         />
       </div>
 

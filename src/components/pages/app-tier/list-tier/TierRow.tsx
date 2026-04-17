@@ -79,7 +79,7 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
             <div className="flex items-baseline gap-2 flex-wrap">
               <h3 className="font-bold text-base tracking-tight truncate">
                 <Link
-                  to={AppRoute.appTier.adminEdit.url}
+                  to={AppRoute.app.tier.admin.edit.url}
                   params={{ slug: tier.slug }}
                   className="text-foreground hover:text-primary transition-colors"
                 >
@@ -179,7 +179,7 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
               asChild
               title={t(($) => $.labels.edit)}
             >
-              <Link to={AppRoute.appTier.adminEdit.url} params={{ slug: tier.slug }}>
+              <Link to={AppRoute.app.tier.admin.edit.url} params={{ slug: tier.slug }}>
                 <Edit2 className="w-4 h-4" />
               </Link>
             </Button>

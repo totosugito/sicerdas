@@ -29,9 +29,6 @@ export const AppRoute = {
       breadcrumb: [],
     },
   },
-  user: {
-    profile: { url: "/user/profile" },
-  },
   dashboard: {
     dashboard: "/",
   },
@@ -42,41 +39,9 @@ export const AppRoute = {
     elementComparison: { url: "/periodic/element-comparison" },
     chemistryDictionary: { url: "/periodic/chemistry-dictionary" },
   },
-  constitution: {
-    pancasila: { url: "/constitution/pancasila" },
-    pembukaanUud1945: { url: "/constitution/pembukaan-uud-1945" },
-    butirPancasila: { url: "/constitution/butir-pancasila" },
-    uud1945: { url: "/constitution/pasal-uud-1945" },
-    uud1945Asli: { url: "/constitution/pasal-uud-1945-asli" },
-    amandemen: { url: "/constitution/pasal-uud-1945-amandemen" },
-  },
-  quiz: {
-    quiz: { url: "/quiz" },
-    detail: { url: "/quiz/$id" },
-  },
-  web: {
-    about: { url: "/about" },
-    faq: { url: "/faq" },
-    privacy: { url: "/privacy" },
-    support: { url: "/support" },
-    terms: { url: "/terms" },
-  },
-  appTier: {
-    adminList: { url: "/admin/list-tier" },
-    adminCreate: { url: "/admin/create-tier" },
-    adminEdit: { url: "/admin/edit-tier/$slug" },
-    publicList: { url: "/tier-pricing" },
-  },
   book: {
     detail: { url: "/book/$id" },
     books: { url: "/books" },
-  },
-  educationGrade: {
-    admin: {
-      list: { url: "/admin/list-grade" },
-      create: { url: "/admin/create-grade" },
-      edit: { url: "/admin/edit-grade/$id" },
-    },
   },
   exam: {
     questions: {
@@ -140,18 +105,48 @@ export const AppRoute = {
       },
     },
   },
-  admin: {
-    dashboard: { url: "/admin/dashboard" },
-    users: {
-      list: { url: "/users/list-users" },
+  users: {
+    admin: {
+      list: { url: "/users/admin/list-users" },
     },
+    user: {
+      profile: { url: "/user/profile" },
+    },
+    dashboard: { url: "/admin/dashboard" },
     chatAi: {
       models: { url: "/admin/chat-ai/models" },
     },
-    version: {
-      list: { url: "/admin/versions" },
-      create: { url: "/admin/create-version" },
-      edit: { url: "/admin/edit-version/$id" },
+  },
+  app: {
+    tier: {
+      admin: {
+        list: { url: "/admin/list-tier" },
+        create: { url: "/admin/create-tier" },
+        edit: { url: "/admin/edit-tier/$slug" },
+      },
+      list: { url: "/tier-pricing" },
     },
+    version: {
+      admin: {
+        list: { url: "/admin/versions" },
+        create: { url: "/admin/create-version" },
+        edit: { url: "/admin/edit-version/$id" },
+      },
+    },
+  },
+  constitution: {
+    pancasila: { url: "/constitution/pancasila" },
+    pembukaanUud1945: { url: "/constitution/pembukaan-uud-1945" },
+    butirPancasila: { url: "/constitution/butir-pancasila" },
+    uud1945: { url: "/constitution/pasal-uud-1945" },
+    uud1945Asli: { url: "/constitution/pasal-uud-1945-asli" },
+    amandemen: { url: "/constitution/pasal-uud-1945-amandemen" },
+  },
+  web: {
+    about: { url: "/about" },
+    faq: { url: "/faq" },
+    privacy: { url: "/privacy" },
+    support: { url: "/support" },
+    terms: { url: "/terms" },
   },
 };

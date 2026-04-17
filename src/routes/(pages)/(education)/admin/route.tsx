@@ -1,24 +1,22 @@
-import { NotFoundError } from '@/components/custom/errors';
-import { useAuth } from '@/hooks/use-auth';
-import { isAdmin } from '@/types/auth';
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { NotFoundError } from "@/components/custom/errors";
+import { useAuth } from "@/hooks/use-auth";
+import { isAdmin } from "@/types/auth";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/(pages)/(education)/admin')({
-    component: RouteComponent,
-})
+export const Route = createFileRoute("/(pages)/(education)/admin")({
+  component: RouteComponent,
+});
 
 function RouteComponent() {
-    const auth = useAuth();
-    const user = auth?.user;
+  const auth = useAuth();
 
-    if (!isAdmin(user)) {
-        return <NotFoundError />
-    }
+  if (!isAdmin(auth?.user)) {
+    return <NotFoundError />;
+  }
 
-    return (
-        <div className="page-container">
-            <Outlet />
-        </div>
-    )
+  return (
+    <div className="page-container">
+      <Outlet />
+    </div>
+  );
 }
-

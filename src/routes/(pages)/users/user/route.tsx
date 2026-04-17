@@ -1,5 +1,6 @@
 import { NotFoundError } from "@/components/custom/errors";
 import { useAuth } from "@/hooks/use-auth";
+import { getUserStore } from "@/types/auth";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(pages)/users/user")({
@@ -8,9 +9,8 @@ export const Route = createFileRoute("/(pages)/users/user")({
 
 function RouteComponent() {
   const auth = useAuth();
-  const user = auth?.user?.user;
 
-  if (!user) {
+  if (!getUserStore(auth?.user)) {
     return <NotFoundError />;
   }
 

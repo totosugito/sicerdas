@@ -64,7 +64,7 @@ function EditVersionPage() {
         title={t(($) => $.version.delete.error)}
         message={error?.message || t(($) => $.version.delete.error)}
         buttonText={t(($) => $.version.backToPage)}
-        onButtonClick={() => navigate({ to: AppRoute.admin.version.list.url })}
+        onButtonClick={() => navigate({ to: AppRoute.app.version.admin.list.url })}
       />
     );
   }
@@ -76,7 +76,7 @@ function EditVersionPage() {
           title={t(($) => $.version.edit.title)}
           description={<span>{t(($) => $.version.edit.description)}</span>}
           showBack
-          backTo={AppRoute.admin.version.list.url}
+          backTo={AppRoute.app.version.admin.list.url}
         />
       </div>
 

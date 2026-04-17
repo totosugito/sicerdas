@@ -94,17 +94,17 @@ export const useAdminNav = () => {
           items: [
             {
               title: t(($) => $.appTier.title),
-              url: AppRoute.appTier.adminList.url,
+              url: AppRoute.app.tier.admin.list.url,
               icon: DollarSign,
             },
             {
               title: t(($) => $.user.title),
-              url: AppRoute.admin.users.list.url,
+              url: AppRoute.users.admin.list.url,
               icon: HiOutlineUsers,
             },
             {
               title: t(($) => $.version.menu),
-              url: AppRoute.admin.version.list.url,
+              url: AppRoute.app.version.admin.list.url,
               icon: History,
             },
           ],

@@ -1,7 +1,7 @@
 import { NotFoundError } from "@/components/custom/errors";
 import { useAuth } from "@/hooks/use-auth";
+import { isAdmin } from "@/types/auth";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { EnumUserRole } from "backend/src/db/schema/user/types";
 
 export const Route = createFileRoute("/(pages)/exam/(questions)/admin")({
   component: RouteComponent,
@@ -9,9 +9,8 @@ export const Route = createFileRoute("/(pages)/exam/(questions)/admin")({
 
 function RouteComponent() {
   const auth = useAuth();
-  const userRole = auth?.user?.user?.role ?? "";
 
-  if (userRole !== EnumUserRole.ADMIN) {
+  if (!isAdmin(auth?.user)) {
     return <NotFoundError />;
   }
 

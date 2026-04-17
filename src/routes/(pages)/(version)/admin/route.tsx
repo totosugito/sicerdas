@@ -9,9 +9,8 @@ export const Route = createFileRoute("/(pages)/(version)/admin")({
 
 function RouteComponent() {
   const auth = useAuth();
-  const user = auth?.user;
 
-  if (!isAdmin(user)) {
+  if (!isAdmin(auth?.user)) {
     return <NotFoundError />;
   }
 

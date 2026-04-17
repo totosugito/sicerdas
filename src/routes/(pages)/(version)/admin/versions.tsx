@@ -83,7 +83,7 @@ function AdminVersionsPage() {
           description={<span>{t(($) => $.version.menu)}</span>}
         />
         <Button asChild className="flex-shrink-0 gap-1.5 shadow-sm">
-          <Link to={AppRoute.admin.version.create.url}>
+          <Link to={AppRoute.app.version.admin.create.url}>
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">{t(($) => $.labels.add)}</span>
           </Link>

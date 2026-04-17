@@ -255,7 +255,7 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to={AppRoute.user.profile.url}>
+                  <Link to={AppRoute.users.user.profile.url}>
                     <User className="mr-2 h-4 w-4" />
                     {t(($) => $.labels.profile)}
                   </Link>

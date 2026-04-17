@@ -107,7 +107,7 @@ export function VersionTable({
         return (
           <div className="font-medium text-primary">
             <Link
-              to={AppRoute.admin.version.edit.url.replace("$id", version.id.toString())}
+              to={AppRoute.app.version.admin.edit.url.replace("$id", version.id.toString())}
               className="hover:underline"
             >
               {row.getValue("name") || (
@@ -219,7 +219,9 @@ export function VersionTable({
                 <DropdownMenuLabel>{t(($) => $.labels.actions)}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to={AppRoute.admin.version.edit.url.replace("$id", version.id.toString())}>
+                  <Link
+                    to={AppRoute.app.version.admin.edit.url.replace("$id", version.id.toString())}
+                  >
                     <Pencil className="mr-2 h-4 w-4" />
                     {t(($) => $.labels.edit)}
                   </Link>

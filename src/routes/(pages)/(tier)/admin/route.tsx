@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { isAdmin } from "@/types/auth";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/(pages)/users/admin")({
+export const Route = createFileRoute("/(pages)/(tier)/admin")({
   component: RouteComponent,
 });
 
