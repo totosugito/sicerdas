@@ -119,6 +119,7 @@ export const AppRoute = {
         create: { url: "/exam/admin/create-section" },
       },
     },
+    exams: { url: "/exam/exams" },
   },
   education: {
     categories: {
