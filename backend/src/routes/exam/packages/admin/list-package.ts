@@ -18,6 +18,7 @@ import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";
 const PackageListQuery = Type.Object({
   search: Type.Optional(Type.String({ description: "Search term for package title" })),
   categoryId: Type.Optional(Type.String({ format: "uuid" })),
+  categoryKey: Type.Optional(Type.String({ description: "Search by category human-readable key" })),
   examType: Type.Optional(Type.String()),
   isActive: Type.Optional(Type.Boolean()),
   educationGradeId: Type.Optional(Type.Number()),
@@ -38,27 +39,34 @@ const PackageListQuery = Type.Object({
 
 const PackageResponseItem = Type.Object({
   id: Type.String({ format: "uuid" }),
-  categoryId: Type.String({ format: "uuid" }),
   title: Type.String(),
   examType: Type.String(),
   durationMinutes: Type.Number(),
   thumbnail: Type.Union([Type.String(), Type.Null()]),
   description: Type.Union([Type.String(), Type.Null()]),
   requiredTier: Type.Union([Type.String(), Type.Null()]),
-  educationGradeId: Type.Union([Type.Number(), Type.Null()]),
-  categoryName: Type.Union([Type.String(), Type.Null()]),
-  educationGradeName: Type.Union([Type.String(), Type.Null()]),
+  category: Type.Object({
+    id: Type.String({ format: "uuid" }),
+    name: Type.Union([Type.String(), Type.Null()]),
+    key: Type.Union([Type.String(), Type.Null()]),
+  }),
+  grade: Type.Object({
+    id: Type.Union([Type.Number(), Type.Null()]),
+    name: Type.Union([Type.String(), Type.Null()]),
+  }),
   isActive: Type.Boolean(),
   isNew: Type.Boolean(),
   versionId: Type.Union([Type.Number(), Type.Null()]),
-  totalSections: Type.Number(),
-  activeSections: Type.Number(),
-  totalQuestions: Type.Number(),
-  activeQuestions: Type.Number(),
-  viewCount: Type.Number(),
-  likeCount: Type.Number(),
-  bookmarkCount: Type.Number(),
-  rating: Type.Number(),
+  stats: Type.Object({
+    totalSections: Type.Number(),
+    activeSections: Type.Number(),
+    totalQuestions: Type.Number(),
+    activeQuestions: Type.Number(),
+    viewCount: Type.Number(),
+    likeCount: Type.Number(),
+    bookmarkCount: Type.Number(),
+    rating: Type.Number(),
+  }),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
 });
@@ -105,6 +113,7 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
       const {
         search,
         categoryId,
+        categoryKey,
         examType,
         isActive,
         educationGradeId,
@@ -131,6 +140,7 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       if (categoryId) conditions.push(eq(examPackages.categoryId, categoryId));
+      if (categoryKey) conditions.push(eq(educationCategories.key, categoryKey));
       if (examType) conditions.push(eq(examPackages.examType, examType as any));
       if (educationGradeId) conditions.push(eq(examPackages.educationGradeId, educationGradeId));
 
@@ -143,8 +153,15 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
       let baseQuery = db
         .select({
           package: examPackages,
-          categoryName: educationCategories.name,
-          educationGradeName: educationGrades.name,
+          category: {
+            id: educationCategories.id,
+            name: educationCategories.name,
+            key: educationCategories.key,
+          },
+          grade: {
+            id: educationGrades.id,
+            name: educationGrades.name,
+          },
           viewCount: examPackageEventStats.viewCount,
           likeCount: examPackageEventStats.likeCount,
           bookmarkCount: examPackageEventStats.bookmarkCount,
@@ -268,12 +285,18 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
             return {
               ...p,
               thumbnail: getPackageThumbnailUrl(p.thumbnail),
-              categoryName: r.categoryName,
-              educationGradeName: r.educationGradeName,
-              viewCount: r.viewCount ?? 0,
-              likeCount: r.likeCount ?? 0,
-              bookmarkCount: r.bookmarkCount ?? 0,
-              rating: r.rating ? parseFloat(r.rating) : 0,
+              category: r.category,
+              grade: r.grade,
+              stats: {
+                totalSections: p.totalSections,
+                activeSections: p.activeSections,
+                totalQuestions: p.totalQuestions,
+                activeQuestions: p.activeQuestions,
+                viewCount: r.viewCount ?? 0,
+                likeCount: r.likeCount ?? 0,
+                bookmarkCount: r.bookmarkCount ?? 0,
+                rating: r.rating ? parseFloat(r.rating) : 0,
+              },
               isNew: !!r.isNew,
               createdAt: p.createdAt.toISOString(),
               updatedAt: p.updatedAt.toISOString(),

@@ -101,8 +101,9 @@ export function PackageTable({
       },
     },
     {
-      accessorKey: "categoryName",
-      enableSorting: false, // Sorting by joined column names might need more complex backend logic
+      id: "categoryId",
+      accessorFn: (row) => row.category.name,
+      enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -110,13 +111,14 @@ export function PackageTable({
         />
       ),
       cell: ({ row }) =>
-        row.getValue("categoryName") || (
+        row.original.category.name || (
           <span className="text-muted-foreground italic text-xs">-</span>
         ),
     },
     {
-      accessorKey: "educationGradeName",
-      enableSorting: false,
+      id: "educationGradeId",
+      accessorFn: (row) => row.grade.name,
+      enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -124,9 +126,7 @@ export function PackageTable({
         />
       ),
       cell: ({ row }) =>
-        row.getValue("educationGradeName") || (
-          <span className="text-muted-foreground italic text-xs">-</span>
-        ),
+        row.original.grade.name || <span className="text-muted-foreground italic text-xs">-</span>,
     },
     {
       accessorKey: "examType",
@@ -163,12 +163,12 @@ export function PackageTable({
       ),
       cell: ({ row }) => {
         const pkg = row.original;
-        const inactive = Math.max(0, pkg.totalSections - pkg.activeSections);
+        const inactive = Math.max(0, pkg.stats.totalSections - pkg.stats.activeSections);
         return (
           <div className="flex justify-center flex-col items-center gap-1">
             <div className="flex items-center gap-1.5">
               <Badge variant="success" className="px-1.5 py-0 h-5 text-[10px]">
-                {pkg.activeSections}
+                {pkg.stats.activeSections}
               </Badge>
               <span className="text-[10px] text-muted-foreground">/</span>
               <Badge variant="secondary" className="px-1.5 py-0 h-5 text-[10px] opacity-70">
@@ -192,12 +192,12 @@ export function PackageTable({
       ),
       cell: ({ row }) => {
         const pkg = row.original;
-        const inactive = Math.max(0, pkg.totalQuestions - pkg.activeQuestions);
+        const inactive = Math.max(0, pkg.stats.totalQuestions - pkg.stats.activeQuestions);
         return (
           <div className="flex justify-center flex-col items-center gap-1">
             <div className="flex items-center gap-1.5">
               <Badge variant="success" className="px-1.5 py-0 h-5 text-[10px]">
-                {pkg.activeQuestions}
+                {pkg.stats.activeQuestions}
               </Badge>
               <span className="text-[10px] text-muted-foreground">/</span>
               <Badge variant="secondary" className="px-1.5 py-0 h-5 text-[10px] opacity-70">
@@ -220,7 +220,7 @@ export function PackageTable({
         />
       ),
       cell: ({ row }) => {
-        const viewCount = row.original.viewCount;
+        const viewCount = row.original.stats.viewCount;
         return (
           <div className="flex justify-center items-center gap-1.5">
             <Eye className="h-3.5 w-3.5 text-muted-foreground/60" />
@@ -241,7 +241,7 @@ export function PackageTable({
         />
       ),
       cell: ({ row }) => {
-        const bookmarkCount = row.original.bookmarkCount;
+        const bookmarkCount = row.original.stats.bookmarkCount;
         return (
           <div className="flex justify-center items-center gap-1.5">
             <Bookmark className="h-3.5 w-3.5 text-muted-foreground/60" />
@@ -262,7 +262,7 @@ export function PackageTable({
         />
       ),
       cell: ({ row }) => {
-        const rating = row.original.rating;
+        const rating = row.original.stats.rating;
         return (
           <div className="flex justify-center items-center gap-1.5">
             <Star className="h-3.5 w-3.5 text-amber-500/60 fill-amber-500/10" />

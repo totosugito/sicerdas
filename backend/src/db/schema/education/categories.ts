@@ -38,7 +38,12 @@ export const educationCategories = pgTable(
     // Timestamp when this category was last updated
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => [index("education_categories_creator_idx").on(table.createdByUserId)],
+  (table) => [
+    index("education_categories_creator_idx").on(table.createdByUserId),
+    index("education_categories_key_idx").on(table.key),
+    index("education_categories_name_idx").on(table.name),
+    index("education_categories_active_idx").on(table.isActive),
+  ],
 );
 
 export type SchemaEducationCategorySelect = InferSelectModel<typeof educationCategories>;

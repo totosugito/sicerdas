@@ -6,6 +6,7 @@ import { PaginationData } from "@/components/custom/table";
 
 export interface ListPackageClientRequest {
   categoryId?: string;
+  categoryKey?: string;
   educationGradeId?: number;
   search?: string;
   sortBy?: string;

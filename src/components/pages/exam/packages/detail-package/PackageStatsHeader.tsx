@@ -29,25 +29,25 @@ export function PackageStatsHeader({ pkg, isLoading }: PackageStatsHeaderProps) 
   const stats = [
     {
       label: t(($) => $.exam.packages.table.columns.views),
-      value: pkg.viewCount || 0,
+      value: pkg.stats.viewCount || 0,
       icon: <Eye className="h-5 w-5 text-blue-500" />,
       color: "blue",
     },
     {
       label: t(($) => $.exam.packages.table.columns.bookmarks),
-      value: pkg.bookmarkCount || 0,
+      value: pkg.stats.bookmarkCount || 0,
       icon: <Bookmark className="h-5 w-5 text-emerald-500" />,
       color: "emerald",
     },
     {
       label: t(($) => $.exam.packages.table.columns.rating),
-      value: Number(pkg.rating || 0).toFixed(1),
+      value: Number(pkg.stats.rating || 0).toFixed(1),
       icon: <Star className="h-5 w-5 text-amber-500 fill-amber-500/20" />,
       color: "amber",
     },
     {
       label: t(($) => $.exam.packages.table.columns.questions),
-      value: `${pkg.activeQuestions} / ${pkg.totalQuestions}`,
+      value: `${pkg.stats.activeQuestions} / ${pkg.stats.totalQuestions}`,
       icon: <Trophy className="h-5 w-5 text-purple-500" />,
       color: "purple",
     },
@@ -109,7 +109,7 @@ export function PackageStatsHeader({ pkg, isLoading }: PackageStatsHeaderProps) 
           <span className="text-muted-foreground">
             {t(($) => $.exam.packages.table.columns.educationGrade)}:
           </span>
-          <span className="font-bold">{pkg.educationGradeName || "-"}</span>
+          <span className="font-bold">{pkg.grade.name || "-"}</span>
         </div>
 
         <div className="h-4 w-px bg-border/60" />

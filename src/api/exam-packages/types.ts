@@ -1,26 +1,33 @@
 export interface ExamPackage {
   id: string;
-  categoryId: string;
   title: string;
   examType: string;
   durationMinutes: number;
   thumbnail: string | null;
   description: string | null;
   requiredTier: string | null;
-  educationGradeId: number | null;
-  categoryName: string | null;
-  educationGradeName: string | null;
   isActive: boolean;
   isNew: boolean;
   versionId: number | null;
-  totalSections: number;
-  activeSections: number;
-  totalQuestions: number;
-  activeQuestions: number;
-  viewCount: number;
-  likeCount: number;
-  bookmarkCount: number;
-  rating: number;
+  category: {
+    id: string;
+    name: string | null;
+    key: string | null;
+  };
+  grade: {
+    id: number | null;
+    name: string | null;
+  };
+  stats: {
+    totalSections: number;
+    activeSections: number;
+    totalQuestions: number;
+    activeQuestions: number;
+    viewCount: number;
+    likeCount: number;
+    bookmarkCount: number;
+    rating: number;
+  };
   userInteraction?: {
     liked: boolean;
     disliked: boolean;

@@ -18,6 +18,7 @@ import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const PackageListQuery = Type.Object({
   categoryId: Type.Optional(Type.String({ format: "uuid" })),
+  categoryKey: Type.Optional(Type.String({ description: "Search by category human-readable key" })),
   educationGradeId: Type.Optional(Type.Number()),
   search: Type.Optional(Type.String({ description: "Search term for package title" })),
   sortBy: Type.Optional(
@@ -42,13 +43,20 @@ const PackageResponseItem = Type.Object({
   thumbnail: Type.Union([Type.String(), Type.Null()]),
   requiredTier: Type.Union([Type.String(), Type.Null()]),
   isActive: Type.Boolean(),
-  rating: Type.Optional(Type.Number()),
-  viewCount: Type.Optional(Type.Number()),
-  likeCount: Type.Optional(Type.Number()),
-  bookmarkCount: Type.Optional(Type.Number()),
+  stats: Type.Object({
+    totalSections: Type.Number(),
+    activeSections: Type.Number(),
+    totalQuestions: Type.Number(),
+    activeQuestions: Type.Number(),
+    rating: Type.Number(),
+    viewCount: Type.Number(),
+    likeCount: Type.Number(),
+    bookmarkCount: Type.Number(),
+  }),
   category: Type.Object({
     id: Type.String({ format: "uuid" }),
     name: Type.String(),
+    key: Type.String(),
   }),
   grade: Type.Object({
     id: Type.Number(),
@@ -110,6 +118,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const { t } = getTypedI18n(req);
       const {
         categoryId,
+        categoryKey,
         educationGradeId,
         search,
         sortBy = "createdAt",
@@ -139,6 +148,10 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         conditions.push(eq(examPackages.categoryId, categoryId));
       }
 
+      if (categoryKey) {
+        conditions.push(eq(educationCategories.key, categoryKey));
+      }
+
       if (educationGradeId) {
         conditions.push(eq(examPackages.educationGradeId, educationGradeId));
       }
@@ -156,11 +169,16 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           thumbnail: examPackages.thumbnail,
           requiredTier: examPackages.requiredTier,
           isActive: examPackages.isActive,
+          totalSections: examPackages.totalSections,
+          activeSections: examPackages.activeSections,
+          totalQuestions: examPackages.totalQuestions,
+          activeQuestions: examPackages.activeQuestions,
           createdAt: examPackages.createdAt,
           updatedAt: examPackages.updatedAt,
           category: {
             id: educationCategories.id,
             name: educationCategories.name,
+            key: educationCategories.key,
           },
           grade: {
             id: educationGrades.id,
@@ -258,13 +276,19 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
               thumbnail: getPackageThumbnailUrl(item.thumbnail),
               requiredTier: item.requiredTier,
               isActive: item.isActive,
-              rating: item.rating !== null ? parseFloat(item.rating.toString()) : undefined,
-              viewCount: item.viewCount !== null ? item.viewCount : undefined,
-              likeCount: item.likeCount !== null ? item.likeCount : undefined,
-              bookmarkCount: item.bookmarkCount !== null ? item.bookmarkCount : undefined,
+              stats: {
+                totalSections: item.totalSections,
+                activeSections: item.activeSections,
+                totalQuestions: item.totalQuestions,
+                activeQuestions: item.activeQuestions,
+                rating: item.rating !== null ? parseFloat(item.rating.toString()) : 0,
+                viewCount: item.viewCount !== null ? item.viewCount : 0,
+                likeCount: item.likeCount !== null ? item.likeCount : 0,
+                bookmarkCount: item.bookmarkCount !== null ? item.bookmarkCount : 0,
+              },
               category: item.category
-                ? { id: item.category.id, name: item.category.name }
-                : { id: "", name: "" },
+                ? { id: item.category.id, name: item.category.name, key: item.category.key }
+                : { id: "", name: "", key: "" },
               grade: item.grade
                 ? { id: item.grade.id, name: item.grade.name }
                 : { id: 0, name: "" },

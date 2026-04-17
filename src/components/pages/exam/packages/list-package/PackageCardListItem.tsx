@@ -144,7 +144,7 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
         >
           <div className="flex flex-col gap-1.5 mb-2">
             <span className="text-xs font-bold text-primary uppercase tracking-wider">
-              {pkg.categoryName || (
+              {pkg.category.name || (
                 <span className="italic opacity-60 lowercase">{t(($) => $.labels.noCategory)}</span>
               )}
             </span>
@@ -153,8 +153,8 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
             </h3>
           </div>
           <div className="text-xs text-muted-foreground/80 font-medium flex items-center gap-1">
-            {pkg.educationGradeName ? (
-              `${t(($) => $.labels.level)}: ${pkg.educationGradeName}`
+            {pkg.grade.name ? (
+              `${t(($) => $.labels.level)}: ${pkg.grade.name}`
             ) : (
               <span className="italic opacity-60 lowercase">{t(($) => $.labels.noLevel)}</span>
             )}
@@ -171,11 +171,11 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
               <Layers className="h-3.5 w-3.5 text-primary/60 shrink-0" />
               <div className="flex items-baseline gap-1">
                 <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                  {pkg.activeSections}
+                  {pkg.stats.activeSections}
                 </span>
                 <span className="text-xs text-muted-foreground">/</span>
                 <span className="text-sm font-semibold text-slate-500">
-                  {pkg.totalSections - pkg.activeSections}
+                  {pkg.stats.totalSections - pkg.stats.activeSections}
                 </span>
               </div>
             </div>
@@ -188,11 +188,11 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
               <HelpCircle className="h-3.5 w-3.5 text-amber-500/60 shrink-0" />
               <div className="flex items-baseline gap-1">
                 <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                  {pkg.activeQuestions}
+                  {pkg.stats.activeQuestions}
                 </span>
                 <span className="text-xs text-muted-foreground">/</span>
                 <span className="text-sm font-semibold text-slate-500">
-                  {pkg.totalQuestions - pkg.activeQuestions}
+                  {pkg.stats.totalQuestions - pkg.stats.activeQuestions}
                 </span>
               </div>
             </div>
@@ -227,21 +227,25 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
               title={t(($) => $.exam.packages.table.columns.views)}
             >
               <Eye className="h-4 w-4 text-muted-foreground/70" />
-              <span className="text-sm font-bold text-foreground/80">{pkg.viewCount || 0}</span>
+              <span className="text-sm font-bold text-foreground/80">
+                {pkg.stats.viewCount || 0}
+              </span>
             </div>
             <div
               className="flex items-center gap-1.5"
               title={t(($) => $.exam.packages.table.columns.bookmarks)}
             >
               <Bookmark className="h-4 w-4 text-muted-foreground/70" />
-              <span className="text-sm font-bold text-foreground/80">{pkg.bookmarkCount || 0}</span>
+              <span className="text-sm font-bold text-foreground/80">
+                {pkg.stats.bookmarkCount || 0}
+              </span>
             </div>
           </div>
 
           <div className="flex items-center gap-1.5 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
             <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
             <span className="text-sm font-black text-amber-700 dark:text-amber-400">
-              {Number(pkg.rating || 0).toFixed(1)}
+              {Number(pkg.stats.rating || 0).toFixed(1)}
             </span>
           </div>
         </div>

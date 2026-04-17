@@ -30,10 +30,10 @@ function AdminExamPackagesEditPage() {
   const initialData: Partial<PackageFormValues> = useMemo(() => {
     return {
       title: packageData?.title,
-      categoryId: packageData?.categoryId,
-      examType: packageData?.examType,
+      categoryId: packageData?.category?.id,
+      examType: packageData?.examType as any,
       durationMinutes: (packageData?.durationMinutes || 0).toString(),
-      educationGradeId: packageData?.educationGradeId ? String(packageData.educationGradeId) : "",
+      educationGradeId: packageData?.grade?.id ? String(packageData.grade.id) : "",
       requiredTier: packageData?.requiredTier || "free",
       description: packageData?.description || "",
       isActive: packageData?.isActive,
