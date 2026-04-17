@@ -23,25 +23,28 @@ export const AppApi = {
     list: APP_URL_API + "/app-tier",
   },
   users: {
-    list: APP_URL_API + "/users/list",
-    delete: APP_URL_API + "/users/delete/:id",
-    create: APP_URL_API + "/users/create",
-    changePassword: APP_URL_API + "/users/reset-password",
-    details: APP_URL_API + "/users/:id",
-    update: APP_URL_API + "/users/update",
-    avatar: APP_URL_API + "/users/avatar",
-    deletes: APP_URL_API + "/users/deletes",
-    ban: APP_URL_API + "/users/ban",
+    admin: {
+      list: APP_URL_API + "/users/admin/list",
+      delete: APP_URL_API + "/users/admin/delete/:id",
+      create: APP_URL_API + "/users/admin/create",
+      changePassword: APP_URL_API + "/users/admin/reset-password",
+      details: APP_URL_API + "/users/admin/:id",
+      update: APP_URL_API + "/users/admin/update",
+      avatar: APP_URL_API + "/users/admin/avatar",
+      deletes: APP_URL_API + "/users/admin/deletes",
+      ban: APP_URL_API + "/users/admin/ban",
+    },
+    user: {
+      details: APP_URL_API + "/users/user/details",
+      update: APP_URL_API + "/users/user/update",
+      changePassword: APP_URL_API + "/users/user/change-password",
+      avatar: APP_URL_API + "/users/user/avatar",
+      sessions: APP_URL_API + "/users/user/sessions-list",
+      revokeSession: APP_URL_API + "/users/user/multi-session-revoke",
+      revokeOtherSessions: APP_URL_API + "/user/revoke-other-sessions-v1",
+    },
   },
-  user: {
-    details: APP_URL_API + "/user/details",
-    update: APP_URL_API + "/user/update",
-    changePassword: APP_URL_API + "/user/change-password",
-    avatar: APP_URL_API + "/user/avatar",
-    sessions: APP_URL_API + "/user/sessions-list",
-    revokeSession: APP_URL_API + "/user/multi-session-revoke",
-    revokeOtherSessions: APP_URL_API + "/user/revoke-other-sessions-v1",
-  },
+
   ai: {
     models: {
       list: APP_URL_API + "/admin/chat-ai/models/list",
@@ -89,10 +92,10 @@ export const AppApi = {
         detail: APP_URL_API + "/exam/packages/admin/detail/:id",
         thumbnail: APP_URL_API + "/exam/packages/admin/thumbnail/:id",
       },
-      client: {
-        list: APP_URL_API + "/exam/packages/client/list",
-        detail: APP_URL_API + "/exam/packages/client/detail/:id",
-        bookmark: APP_URL_API + "/exam/packages/client/bookmark",
+      user: {
+        list: APP_URL_API + "/exam/packages/user/list",
+        detail: APP_URL_API + "/exam/packages/user/detail/:id",
+        bookmark: APP_URL_API + "/exam/packages/user/bookmark",
       },
     },
     packageSections: {
@@ -160,11 +163,11 @@ export const AppApi = {
       },
     },
     sessions: {
-      client: {
-        start: APP_URL_API + "/exam/sessions/client/start",
-        details: APP_URL_API + "/exam/sessions/client/details/:id",
-        saveAnswer: APP_URL_API + "/exam/sessions/client/save-answer",
-        submit: APP_URL_API + "/exam/sessions/client/submit/:id",
+      user: {
+        start: APP_URL_API + "/exam/sessions/user/start",
+        details: APP_URL_API + "/exam/sessions/user/details/:id",
+        saveAnswer: APP_URL_API + "/exam/sessions/user/save-answer",
+        submit: APP_URL_API + "/exam/sessions/user/submit/:id",
       },
     },
   },

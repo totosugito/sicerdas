@@ -22,11 +22,11 @@ export { useUploadPackageThumbnail } from "./admin/upload-thumbnail";
 export type { UploadThumbnailRequest } from "./admin/upload-thumbnail";
 
 // Client exports
-export { useListPackageClient } from "./client/list-package";
-export type { ListPackageClientRequest, ListPackagesClientResponse } from "./client/list-package";
+export { useListPackageClient } from "./user/list-package";
+export type { ListPackageClientRequest, ListPackagesClientResponse } from "./user/list-package";
 
-export { useDetailPackageClient } from "./client/detail-package";
-export type { DetailPackageClientRequest } from "./client/detail-package";
+export { useDetailPackageClient } from "./user/detail-package";
+export type { DetailPackageClientRequest } from "./user/detail-package";
 
-export { useBookmarkPackage } from "./client/bookmark-package";
-export type { BookmarkPackageRequest, BookmarkPackageResponse } from "./client/bookmark-package";
+export { useBookmarkPackage } from "./user/bookmark-package";
+export type { BookmarkPackageRequest, BookmarkPackageResponse } from "./user/bookmark-package";

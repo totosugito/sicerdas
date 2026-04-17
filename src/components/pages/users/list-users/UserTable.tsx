@@ -1,4 +1,4 @@
-import { UserItem, ListUsersResponse } from "@/api/users";
+import { UserItem, ListUsersResponse } from "@/api/users/admin";
 import {
   DataTable,
   useDataTable,

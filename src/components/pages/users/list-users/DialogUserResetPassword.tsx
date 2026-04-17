@@ -2,7 +2,7 @@ import { DialogModalForm, ModalFormProps } from "@/components/custom/components"
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import { ControlForm } from "@/components/custom/forms";
-import { UserItem, useResetPassword } from "@/api/users";
+import { UserItem, useResetPassword } from "@/api/users/admin";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 
 export type DialogUserResetPasswordProps = {

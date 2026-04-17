@@ -8,7 +8,7 @@ import {
   useUpdateUser,
   CreateUserRequest,
   UpdateUserRequest,
-} from "@/api/users";
+} from "@/api/users/admin";
 import { EnumUserRole } from "backend/src/db/schema/user/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";

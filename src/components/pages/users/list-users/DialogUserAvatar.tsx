@@ -1,4 +1,4 @@
-import { UserItem, useUpdateUserAvatar } from "@/api/users";
+import { UserItem, useUpdateUserAvatar } from "@/api/users/admin";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
