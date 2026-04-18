@@ -53,6 +53,7 @@ export default {
       viewCount: "Populer (Dilihat)",
       bookmarkCount: "Banyak Disimpan",
       rating: "Rating Tertinggi",
+      showingText: "Menampilkan <bold>{{count}}</bold> dari <bold>{{total}}</bold> paket",
     },
   },
   delete: {

@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ExamPackageDetailResponse } from "../types";
+import { ExamPackageDetailResponse } from "./types";
 
 export interface DetailPackageClientRequest {
   id: string;
@@ -9,11 +9,11 @@ export interface DetailPackageClientRequest {
 
 export const useDetailPackageClient = ({ id }: DetailPackageClientRequest) => {
   return useQuery({
-    queryKey: ["client-exam-packages-detail", id],
+    queryKey: ["exam-packages-detail", id],
     queryFn: async () => {
       const response = await fetchApi({
         method: "GET",
-        url: AppApi.exam.packages.user.detail.replace(":id", id),
+        url: AppApi.exam.packages.detail.replace(":id", id),
         withCredentials: true,
       });
       return response as ExamPackageDetailResponse;

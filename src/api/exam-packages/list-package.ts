@@ -1,13 +1,13 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ExamPackage } from "../types";
+import { ExamPackage } from "./types";
 import { PaginationData } from "@/components/custom/table";
 
 export interface ListPackageClientRequest {
   categoryId?: string;
   categoryKey?: string;
-  educationGradeId?: number;
+  educationGradeIds?: number[];
   search?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
@@ -26,11 +26,11 @@ export interface ListPackagesClientResponse {
 
 export const useListPackageClient = (params: ListPackageClientRequest) => {
   return useQuery({
-    queryKey: ["client-exam-packages-list", params],
+    queryKey: ["exam-packages-list", params],
     queryFn: async () => {
       const response = await fetchApi({
         method: "POST",
-        url: AppApi.exam.packages.user.list,
+        url: AppApi.exam.packages.list,
         body: params,
         withCredentials: true,
       });

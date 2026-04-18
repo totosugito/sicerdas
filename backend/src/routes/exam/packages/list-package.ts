@@ -1,20 +1,20 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
-import { db } from "../../../../db/db-pool.ts";
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { db } from "../../../db/db-pool.ts";
 import {
   examPackages,
   examPackageEventStats,
   examPackageInteractions,
-} from "../../../../db/schema/exam/index.ts";
-import { educationCategories, educationGrades } from "../../../../db/schema/education/index.ts";
+} from "../../../db/schema/exam/index.ts";
+import { educationCategories, educationGrades } from "../../../db/schema/education/index.ts";
 import { and, eq, sql, ilike, desc, asc } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
-import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";
+import { EnumContentType } from "../../../db/schema/enum/enum-app.ts";
+import { getPackageThumbnailUrl } from "../../../utils/exam-utils.ts";
 import { fromNodeHeaders } from "better-auth/node";
-import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
+import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const PackageListQuery = Type.Object({
   categoryId: Type.Optional(Type.String({ format: "uuid" })),

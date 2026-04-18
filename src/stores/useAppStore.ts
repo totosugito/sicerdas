@@ -20,6 +20,17 @@ type Store = {
     sortOrder: "asc" | "desc";
   };
   setBooks: (books: any) => void;
+  exams: {
+    viewMode: ViewMode;
+    limit: number;
+    page: number;
+    search: string;
+    categoryKey: string;
+    grade: number[];
+    sortBy: string;
+    sortOrder: "asc" | "desc";
+  };
+  setExams: (exams: any) => void;
   examPackages: {
     viewMode: "table" | "card";
     limit: number;
@@ -107,6 +118,16 @@ export const defaultStore = {
     sortBy: "createdAt",
     sortOrder: "desc" as "asc" | "desc",
   },
+  exams: {
+    viewMode: EnumViewMode.grid.value,
+    limit: 12,
+    page: 1,
+    search: "",
+    categoryKey: "",
+    grade: [] as number[],
+    sortBy: "createdAt",
+    sortOrder: "desc" as "asc" | "desc",
+  },
   examPackages: {
     viewMode: "card" as "card" | "table",
     limit: 10,
@@ -184,6 +205,11 @@ export const useAppStore = create<Store>()(
         set({
           books,
         }),
+      exams: defaultStore.exams,
+      setExams: (exams: any) =>
+        set({
+          exams,
+        }),
 
       periodicTable: defaultStore.periodicTable,
       setPeriodicTable: (periodicTable: any) =>
@@ -256,6 +282,7 @@ export const useAppStore = create<Store>()(
       resetAll: () =>
         set({
           books: defaultStore.books,
+          exams: defaultStore.exams,
           periodicTable: defaultStore.periodicTable,
           elementExpandedSections: defaultStore.elementExpandedSections,
           mobileMenu: defaultStore.mobileMenu,

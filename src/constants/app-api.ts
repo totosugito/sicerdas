@@ -93,10 +93,10 @@ export const AppApi = {
         thumbnail: APP_URL_API + "/exam/packages/admin/thumbnail/:id",
       },
       user: {
-        list: APP_URL_API + "/exam/packages/user/list",
-        detail: APP_URL_API + "/exam/packages/user/detail/:id",
         bookmark: APP_URL_API + "/exam/packages/user/bookmark",
       },
+      list: APP_URL_API + "/exam/packages/list",
+      detail: APP_URL_API + "/exam/packages/detail/:id",
     },
     packageSections: {
       admin: {

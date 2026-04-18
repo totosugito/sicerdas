@@ -1,22 +1,22 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
-import { db } from "../../../../db/db-pool.ts";
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { db } from "../../../db/db-pool.ts";
 import {
   examPackages,
   examPackageEventStats,
   examPackageInteractions,
-} from "../../../../db/schema/exam/index.ts";
-import { educationCategories, educationGrades } from "../../../../db/schema/education/index.ts";
-import { appEventHistory } from "../../../../db/schema/app/app-event-history.ts";
+} from "../../../db/schema/exam/index.ts";
+import { educationCategories, educationGrades } from "../../../db/schema/education/index.ts";
+import { appEventHistory } from "../../../db/schema/app/app-event-history.ts";
 import { and, eq, sql, desc } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";
-import { EnumContentType, EnumEventStatus } from "../../../../db/schema/enum/enum-app.ts";
-import { CONFIG } from "../../../../config/app-constant.ts";
+import { getPackageThumbnailUrl } from "../../../utils/exam-utils.ts";
+import { EnumContentType, EnumEventStatus } from "../../../db/schema/enum/enum-app.ts";
+import { CONFIG } from "../../../config/app-constant.ts";
 import { fromNodeHeaders } from "better-auth/node";
-import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
+import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const PackageDetailResponse = Type.Object({
   id: Type.String({ format: "uuid" }),

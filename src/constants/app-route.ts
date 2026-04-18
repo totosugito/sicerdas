@@ -75,6 +75,7 @@ export const AppRoute = {
         edit: { url: "/exam/admin/edit-package/$id" },
         detail: { url: "/exam/admin/detail-package/$id" },
       },
+      detail: { url: "/exam/package/$id" },
     },
     packageSections: {
       admin: {
@@ -110,7 +111,7 @@ export const AppRoute = {
       list: { url: "/users/admin/list-users" },
     },
     user: {
-      profile: { url: "/user/profile" },
+      profile: { url: "/users/user/profile" },
     },
     dashboard: { url: "/admin/dashboard" },
     chatAi: {
