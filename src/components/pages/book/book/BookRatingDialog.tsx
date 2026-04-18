@@ -110,7 +110,7 @@ export const BookRatingDialog = ({
             onClick={() => onOpenChange(false)}
             disabled={isPending}
           >
-            {t(($) => $.book.detail.cancel)}
+            {t(($) => $.labels.cancel)}
           </Button>
           <Button
             className="flex-1 font-bold shadow-lg shadow-primary/20"

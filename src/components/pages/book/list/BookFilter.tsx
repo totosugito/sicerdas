@@ -147,7 +147,7 @@ export const BookFilter = ({
           onClick={onReset}
           className="text-xs text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary-foreground transition-colors"
         >
-          {t(($) => $.book.info.reset)}
+          {t(($) => $.labels.reset)}
         </button>
       )}
     </div>
@@ -253,7 +253,7 @@ export const BookFilter = ({
       {!autoSubmit && (
         <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 sticky bottom-0 bg-white/5 dark:bg-slate-900/5 backdrop-blur-sm">
           <Button className="w-full" onClick={() => onFilterChange(localFilters)}>
-            {t(($) => $.book.applyFilters)}
+            {t(($) => $.labels.applyFilters)}
           </Button>
         </div>
       )}

@@ -73,7 +73,7 @@ export const BookDetail = ({
               <div className="grid grid-cols-3 gap-3">
                 <Button onClick={onDownload} variant="outline" className="w-full">
                   <Download className="w-5 h-5 mr-2" />
-                  {t(($) => $.book.detail.download)}
+                  {t(($) => $.labels.download)}
                 </Button>
                 <Button
                   onClick={onToggleFavorite}
@@ -86,7 +86,7 @@ export const BookDetail = ({
                   )}
                 >
                   <Heart className={cn("w-5 h-5 mr-2", isFavorite && "fill-current")} />
-                  {t(($) => $.book.detail.favorites)}
+                  {t(($) => $.labels.favorites)}
                 </Button>
                 <Button
                   onClick={onReport}
@@ -94,7 +94,7 @@ export const BookDetail = ({
                   className="w-full border border-slate-200 dark:border-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400"
                 >
                   <Flag className="w-5 h-5 mr-2" />
-                  {t(($) => $.book.detail.report)}
+                  {t(($) => $.labels.report)}
                 </Button>
               </div>
             </div>
@@ -161,7 +161,7 @@ export const BookDetail = ({
                       </span>
                       <span className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold mt-1">
                         {(book.ratingCount ?? 0) < 1000
-                          ? `${to_decimal_formatted(book.ratingCount ?? 0, 0)} ${t(($) => $.book.detail.rating)}`
+                          ? `${to_decimal_formatted(book.ratingCount ?? 0, 0)} ${t(($) => $.labels.rating)}`
                           : `(${to_decimal_formatted(book.ratingCount ?? 0, 0)})`}
                       </span>
                     </div>
@@ -181,7 +181,7 @@ export const BookDetail = ({
                     {to_decimal_formatted(book.viewCount ?? 0, 0)}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
-                    {t(($) => $.book.detail.views)}
+                    {t(($) => $.labels.views)}
                   </span>
                 </div>
                 <div className="w-px h-8 bg-slate-200 dark:bg-slate-800" />
@@ -190,7 +190,7 @@ export const BookDetail = ({
                     {to_decimal_formatted(book.downloadCount ?? 0, 0)}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
-                    {t(($) => $.book.detail.download)}
+                    {t(($) => $.labels.download)}
                   </span>
                 </div>
                 <div className="w-px h-8 bg-slate-200 dark:bg-slate-800" />
@@ -199,7 +199,7 @@ export const BookDetail = ({
                     {to_decimal_formatted(book.bookmarkCount ?? 0, 0)}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
-                    {t(($) => $.book.detail.favorites)}
+                    {t(($) => $.labels.favorites)}
                   </span>
                 </div>
               </div>
@@ -211,17 +211,17 @@ export const BookDetail = ({
             <div className="grid grid-cols-3 gap-4">
               <BookDetailInfoCard
                 icon={BookOpen}
-                label={t(($) => $.book.detail.pages)}
+                label={t(($) => $.labels.pages)}
                 value={book.totalPages?.toString()}
               />
               <BookDetailInfoCard
                 icon={FileText}
-                label={t(($) => $.book.detail.fileSize)}
+                label={t(($) => $.labels.fileSize)}
                 value={formatFileSize(book.size)}
               />
               <BookDetailInfoCard
                 icon={Calendar}
-                label={t(($) => $.book.detail.addedOn)}
+                label={t(($) => $.labels.addedOn)}
                 value={new Date(book.createdAt).toLocaleDateString(undefined, {
                   month: "short",
                   day: "numeric",

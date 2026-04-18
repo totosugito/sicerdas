@@ -6,7 +6,7 @@ import { CategoryOption, FilterCheckbox } from "../../book/list/FilterOptions";
 
 const EDUCATION_CATEGORY = ["ujian-semester", "kuis-mata-pelajaran", "try-out", "latihan-soal"];
 
-interface ExamFilterProps {
+interface PackageFilterProps {
   selectedFilters: {
     categoryKey: string;
     grades?: number[];
@@ -16,12 +16,12 @@ interface ExamFilterProps {
   autoSubmit?: boolean;
 }
 
-export const ExamFilter = ({
+export const PackageFilter = ({
   selectedFilters,
   onFilterChange,
   idPrefix = "filter",
   autoSubmit = true,
-}: ExamFilterProps) => {
+}: PackageFilterProps) => {
   const { t } = useAppTranslation();
 
   const [localFilters, setLocalFilters] = useState(selectedFilters);

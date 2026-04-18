@@ -39,6 +39,7 @@ export default {
       card: "Kartu",
     },
     sort: {
+      createdAt: "Terbaru",
       placeholder: "Urutkan Berdasarkan",
       title: "Judul Paket",
       updatedAt: "Terakhir Diperbarui",
@@ -151,5 +152,8 @@ export default {
   notifications: {
     createSuccess: "Paket ujian berhasil ditambahkan.",
     updateSuccess: "Paket ujian berhasil diperbarui.",
+  },
+  list: {
+    error: "Gagal mengambil data paket ujian.",
   },
 };

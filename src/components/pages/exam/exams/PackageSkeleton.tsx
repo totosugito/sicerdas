@@ -1,12 +1,12 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
-interface ExamsSkeletonProps {
+interface PackageSkeletonProps {
   viewMode: "grid" | "list";
   length?: number;
 }
 
-export const ExamsSkeleton = ({ viewMode, length = 8 }: ExamsSkeletonProps) => {
+export const PackageSkeleton = ({ viewMode, length = 8 }: PackageSkeletonProps) => {
   return (
     <div
       className={cn(

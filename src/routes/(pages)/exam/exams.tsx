@@ -2,15 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { z } from "zod";
 import { Trans } from "react-i18next";
-import { useListPackageClient, ListPackagesClientResponse } from "@/api/exam-packages";
-import { HelpCircle, LayoutGrid, ListIcon } from "lucide-react";
+import { useListPackageClient } from "@/api/exam-packages";
+import { LayoutGrid, ListIcon } from "lucide-react";
 import { showNotifError } from "@/lib/show-notif";
 import {
-  ExamsSkeleton,
-  ExamFilter,
-  ExamCard,
-  ExamSearchBar,
-  ExamSortSelector,
+  PackageSkeleton,
+  PackageEmptyState,
+  PackageFilter,
+  PackageCard,
+  PackageSearchBar,
+  PackageSortSelector,
 } from "@/components/pages/exam/exams";
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from "@/components/custom/table";
@@ -53,18 +54,17 @@ function RouteComponent() {
   const [currentPage, setCurrentPage] = useState(urlPage ?? pageStore.page ?? 1);
   const [viewMode, setViewMode] = useState<ViewMode>(pageStore.viewMode ?? EnumViewMode.grid.value);
 
-  const sortBy = urlSortBy ?? pageStore.sortBy ?? "createdAt";
-  const sortOrder = urlSortOrder ?? pageStore.sortOrder ?? "desc";
+  const [sortBy, setSortBy] = useState(urlSortBy ?? pageStore.sortBy ?? "createdAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
+    urlSortOrder ?? pageStore.sortOrder ?? "desc",
+  );
+
   const selectedFilters = {
     categoryKey: urlCategoryKey ?? pageStore.categoryKey ?? "",
     grades: urlGrade ?? pageStore.grade ?? [],
   };
 
-  const {
-    data: response,
-    isLoading,
-    isError,
-  } = useListPackageClient({
+  const packageQuery = useListPackageClient({
     page: currentPage,
     limit: urlLimit ?? pageStore.limit ?? 12,
     search: searchTerm.trim() || undefined,
@@ -74,30 +74,32 @@ function RouteComponent() {
     sortOrder,
   });
 
-  useEffect(() => {
-    if (isError) {
-      showNotifError({ message: t(($) => $.exam.packages.list.error) });
-    }
-  }, [isError, t]);
+  const isLoading = packageQuery.isLoading;
+  const isError = packageQuery.isError;
+  const response = packageQuery.data;
+  const exams = response?.data?.items || [];
+  const totalPages = response?.data?.meta?.totalPages || 0;
+  const totalExams = response?.data?.meta?.total || 0;
 
-  const updateUrlParams = (params: {
-    page?: number;
-    search?: string;
-    categoryKey?: string;
-    grades?: number[];
-    sortBy?: string;
-    sortOrder?: "asc" | "desc";
-  }) => {
+  const updateUrlParams = (
+    newPage?: number,
+    newSearch?: string,
+    newFilters?: { categoryKey: string; grades?: number[] },
+    newSortBy?: string,
+    newSortOrder?: "asc" | "desc",
+  ) => {
     navigate({
       search: {
-        page: params.page ?? currentPage,
+        page: newPage || currentPage,
         limit: urlLimit ?? pageStore.limit ?? 12,
-        search: params.search !== undefined ? params.search : searchTerm,
+        search: newSearch !== undefined ? newSearch : searchTerm,
         categoryKey:
-          params.categoryKey !== undefined ? params.categoryKey : selectedFilters.categoryKey,
-        grade: params.grades !== undefined ? params.grades : selectedFilters.grades,
-        sortBy: params.sortBy !== undefined ? params.sortBy : sortBy,
-        sortOrder: params.sortOrder !== undefined ? params.sortOrder : sortOrder,
+          newFilters?.categoryKey !== undefined
+            ? newFilters.categoryKey
+            : selectedFilters.categoryKey,
+        grade: newFilters?.grades !== undefined ? newFilters.grades : selectedFilters.grades,
+        sortBy: newSortBy !== undefined ? newSortBy : sortBy,
+        sortOrder: newSortOrder !== undefined ? newSortOrder : sortOrder,
       },
       replace: true,
     });
@@ -125,18 +127,24 @@ function RouteComponent() {
 
     setCurrentPage(effectivePage);
     setSearchTerm(effectiveSearch);
-  }, [urlPage, urlSearch, urlCategoryKey, urlGrade, urlSortBy, urlSortOrder]);
+    setSortBy(effectiveSortBy);
+    setSortOrder(effectiveSortOrder);
 
-  const handleSearch = (term: string) => {
-    updateUrlParams({ page: 1, search: term });
+    if (isError) {
+      showNotifError({ message: t(($) => $.exam.packages.list.error) });
+    }
+  }, [urlPage, urlSearch, urlCategoryKey, urlGrade, urlSortBy, urlSortOrder, isError]);
+
+  const handleSearch = (term: string = searchTerm) => {
+    updateUrlParams(1, term);
   };
 
   const handlePageChange = (page: number) => {
-    updateUrlParams({ page });
+    updateUrlParams(page, searchTerm);
   };
 
   const handleFilterChange = (filters: { categoryKey: string; grades?: number[] }) => {
-    updateUrlParams({ page: 1, ...filters });
+    updateUrlParams(1, searchTerm, filters);
   };
 
   const handleViewModeChange = (mode: ViewMode) => {
@@ -144,88 +152,79 @@ function RouteComponent() {
     setViewMode(mode);
   };
 
-  const handleSortChange = (newSortBy: string, newSortOrder: "asc" | "desc") => {
-    updateUrlParams({ page: 1, sortBy: newSortBy, sortOrder: newSortOrder });
-  };
+  const isAnyFilterActive = !!(
+    selectedFilters.categoryKey !== "" || selectedFilters.grades.length > 0
+  );
 
-  const exams = response?.data?.items || [];
-  const totalPages = response?.data?.meta?.totalPages || 0;
-  const totalExams = response?.data?.meta?.total || 0;
+  const handleSortChange = (newSortBy: string, newSortOrder: "asc" | "desc") => {
+    setSortBy(newSortBy);
+    setSortOrder(newSortOrder);
+    updateUrlParams(1, searchTerm, selectedFilters, newSortBy, newSortOrder);
+  };
 
   return (
     <div className="flex flex-col flex-1 w-full px-6 pb-6">
       <div className="flex flex-col lg:flex-row gap-6 pt-6">
         <aside className="hidden lg:block w-70 flex-shrink-0">
           <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
-            <ExamFilter
+            <PackageFilter
               selectedFilters={selectedFilters}
               onFilterChange={handleFilterChange}
+              autoSubmit={true}
               idPrefix="sidebar"
             />
           </div>
         </aside>
 
+        {/* Exam List Content */}
         <div className="flex flex-col flex-1 gap-4">
-          <div className="flex flex-col gap-6">
-            {/* Search and Header Section */}
-            <div className="space-y-6">
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-                <div>
-                  <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-2 uppercase tracking-tight">
-                    {t(($) => $.exam.packages.menu)}
-                  </h1>
-                  <p className="text-slate-500 dark:text-slate-400 font-medium">
-                    {t(($) => $.exam.packages.description)}
-                  </p>
-                </div>
-              </div>
+          {/* Loading State */}
+          {isLoading && (
+            <PackageSkeleton viewMode={viewMode === "grid" ? "grid" : "list"} length={6} />
+          )}
 
-              <ExamSearchBar
-                searchTerm={searchTerm}
-                onSearchTermChange={setSearchTerm}
-                onSearch={handleSearch}
-                isSearchDisabled={isLoading}
-                selectedFilters={selectedFilters}
-                onFilterChange={handleFilterChange}
-              />
-            </div>
+          <div className="flex flex-col gap-4">
+            {/* Search Bar */}
+            <PackageSearchBar
+              searchTerm={searchTerm}
+              onSearchTermChange={setSearchTerm}
+              onSearch={handleSearch}
+              isSearchDisabled={isLoading}
+              selectedFilters={selectedFilters}
+              onFilterChange={handleFilterChange}
+            />
 
             {/* View Toggles and Results Count */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-1 bg-primary rounded-full" />
-                {totalExams !== undefined && (
-                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                    <Trans
-                      i18nKey="exam.packages.table.sort.showingText"
-                      values={{ count: exams.length, total: totalExams }}
-                      components={{
-                        bold: <span className="font-bold text-primary" />,
-                      }}
-                    />
-                  </p>
-                )}
-              </div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              {totalExams !== undefined && (
+                <p className="text-slate-500 dark:text-slate-400">
+                  <Trans
+                    i18nKey="exam.packages.table.sort.showingText"
+                    values={{ count: exams.length, total: totalExams }}
+                    components={{
+                      bold: <span className="font-bold text-slate-900 dark:text-white" />,
+                    }}
+                  />
+                </p>
+              )}
 
               <div className="flex items-center gap-4">
-                <ExamSortSelector
+                <PackageSortSelector
                   sortBy={sortBy}
                   sortOrder={sortOrder}
                   onSortChange={handleSortChange}
                 />
-                <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+                <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
                   <Button
                     variant={viewMode === "grid" ? "default" : "ghost"}
-                    size="icon"
-                    className="h-8 w-8 rounded-lg"
+                    className="h-7 w-7"
                     onClick={() => handleViewModeChange?.("grid")}
                   >
                     <LayoutGrid className="w-4 h-4" />
                   </Button>
                   <Button
                     variant={viewMode === "list" ? "default" : "ghost"}
-                    size="icon"
-                    className="h-8 w-8 rounded-lg"
+                    className="h-7 w-7"
                     onClick={() => handleViewModeChange?.("list")}
                   >
                     <ListIcon className="w-4 h-4" />
@@ -235,45 +234,30 @@ function RouteComponent() {
             </div>
 
             {/* Exams Display */}
-            {isLoading ? (
-              <ExamsSkeleton viewMode={viewMode} length={8} />
-            ) : exams.length > 0 ? (
-              <ExamCard exams={exams} viewMode={viewMode} />
-            ) : (
-              /* Empty State */
-              <div className="text-center py-24 bg-white dark:bg-slate-900 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800 mb-6 group">
-                  <HelpCircle className="w-10 h-10 text-slate-300 dark:text-slate-600 group-hover:scale-110 transition-transform duration-500" />
-                </div>
-                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-2">
-                  {t(($) => $.exam.packages.table.noResult)}
-                </h3>
-                <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-sm mx-auto font-medium">
-                  {searchTerm
-                    ? `${t(($) => $.exam.packages.table.noData)} "${searchTerm}"`
-                    : t(($) => $.exam.packages.table.noData)}
-                </p>
-                {(searchTerm ||
-                  selectedFilters.categoryKey ||
-                  selectedFilters.grades.length > 0) && (
-                  <Button
-                    variant="outline"
-                    className="rounded-xl px-8"
-                    onClick={() => {
-                      setSearchTerm("");
-                      updateUrlParams({ page: 1, search: "", categoryKey: "", grades: [] });
-                    }}
-                  >
-                    Clear All Filters
-                  </Button>
-                )}
-              </div>
+            {!isLoading && exams.length > 0 && (
+              <PackageCard exams={exams} viewMode={viewMode === "grid" ? "grid" : "list"} />
             )}
           </div>
 
+          {/* Empty State */}
+          {!isLoading && exams.length === 0 && (
+            <PackageEmptyState
+              searchTerm={searchTerm}
+              hasActiveFilters={isAnyFilterActive}
+              onReset={() => {
+                if (searchTerm) {
+                  setSearchTerm("");
+                  updateUrlParams(1, "");
+                } else if (isAnyFilterActive) {
+                  updateUrlParams(1, searchTerm, { categoryKey: "", grades: [] });
+                }
+              }}
+            />
+          )}
+
           {/* Pagination */}
           {!isLoading && totalPages > 1 && (
-            <div className="pt-8 mt-4 border-t border-slate-200 dark:border-slate-800">
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
               <DataTablePagination
                 pageIndex={currentPage - 1}
                 setPageIndex={(newPageIndex) => handlePageChange(newPageIndex + 1)}

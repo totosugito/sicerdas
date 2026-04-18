@@ -1,33 +1,31 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Search, X, Filter } from "lucide-react"; // Added X icon for clear button and Filter icon
+import { Search, X, Filter } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useState, useEffect } from "react";
-import { BookFilter } from "./BookFilter";
+import { PackageFilter } from "./PackageFilter";
 
-interface BookSearchBarProps {
+interface PackageSearchBarProps {
   searchTerm?: string;
   onSearchTermChange?: (value: string) => void;
   onSearch?: (term: string) => void;
   isSearchDisabled?: boolean;
-  filterData?: any;
   selectedFilters?: {
-    categories: number[];
-    groups: number[];
+    categoryKey: string;
+    grades?: number[];
   };
-  onFilterChange?: (filters: { categories: number[]; groups: number[] }) => void;
+  onFilterChange?: (filters: { categoryKey: string; grades?: number[] }) => void;
 }
 
-export const BookSearchBar = ({
+export const PackageSearchBar = ({
   searchTerm,
   onSearchTermChange,
   onSearch,
   isSearchDisabled = false,
-  filterData,
-  selectedFilters = { categories: [], groups: [] },
+  selectedFilters = { categoryKey: "", grades: [] },
   onFilterChange,
-}: BookSearchBarProps) => {
+}: PackageSearchBarProps) => {
   const { t } = useAppTranslation();
 
   // Local state for input value to avoid updating parent on every keystroke
@@ -77,7 +75,7 @@ export const BookSearchBar = ({
           }`}
         />
         <Input
-          placeholder={t(($) => $.book.searchPlaceholder)}
+          placeholder={t(($) => $.exam.packages.table.search)}
           value={localSearchTerm}
           onChange={(e) => setLocalSearchTerm(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -109,13 +107,12 @@ export const BookSearchBar = ({
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[300px] px-4">
-              <BookFilter
+              <PackageFilter
                 selectedFilters={selectedFilters}
-                onFilterChange={(filters: { categories: number[]; groups: number[] }) => {
+                onFilterChange={(filters: { categoryKey: string; grades?: number[] }) => {
                   onFilterChange?.(filters);
                   setIsMobileFilterOpen(false);
                 }}
-                filterData={filterData}
                 autoSubmit={false}
                 idPrefix="search-bar"
               />

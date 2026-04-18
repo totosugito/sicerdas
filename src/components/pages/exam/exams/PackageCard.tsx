@@ -5,14 +5,14 @@ import { ExamPackage } from "@/api/exam-packages/types";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate, Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { Clock, HelpCircle, Star, Bookmark, Eye } from "lucide-react";
+import { HelpCircle, Layers } from "lucide-react";
 
-interface ExamCardProps {
+interface PackageCardProps {
   exams: ExamPackage[];
   viewMode: "grid" | "list";
 }
 
-export const ExamCard = ({ exams, viewMode }: ExamCardProps) => {
+export const PackageCard = ({ exams, viewMode }: PackageCardProps) => {
   const { openSideMenu } = useAuthStore();
 
   const gridClass =
@@ -25,13 +25,13 @@ export const ExamCard = ({ exams, viewMode }: ExamCardProps) => {
   return (
     <div className={gridClass}>
       {exams.map((exam) => (
-        <ExamCardView key={exam.id} exam={exam} viewMode={viewMode} />
+        <PackageCardView key={exam.id} exam={exam} viewMode={viewMode} />
       ))}
     </div>
   );
 };
 
-interface ExamCardViewProps {
+interface PackageCardViewProps {
   exam: ExamPackage;
   viewMode: "grid" | "list";
 }
@@ -56,7 +56,7 @@ const getGradeColor = (gradeName: string | null) => {
   return "bg-slate-600";
 };
 
-const ExamCardView = ({ exam, viewMode }: ExamCardViewProps) => {
+const PackageCardView = ({ exam, viewMode }: PackageCardViewProps) => {
   const { t } = useAppTranslation();
   const isListView = viewMode === "list";
   const navigate = useNavigate();
@@ -100,31 +100,24 @@ const ExamCardView = ({ exam, viewMode }: ExamCardViewProps) => {
         )}
 
         {/* Badges on overlay */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          <Badge
-            className={cn(
-              getGradeColor(exam.grade.name),
-              "text-white border-0 shadow-lg px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider",
-            )}
-          >
-            {exam.grade.name}
-          </Badge>
-          {exam.isNew && (
+        {exam.grade.name && (
+          <div className="absolute top-3 left-3">
             <Badge
-              variant="destructive"
-              className="animate-pulse shadow-lg px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border-0"
+              className={cn(
+                getGradeColor(exam.grade.name),
+                "text-white rounded shadow-sm backdrop-blur-sm text-xs px-2 py-1 border-muted",
+              )}
             >
-              {t(($) => $.exam.form.preview.new)}
+              {exam.grade.name}
             </Badge>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Category Overlay (Bottom) */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <span className="text-white text-xs font-medium backdrop-blur-sm bg-white/10 px-2 py-1 rounded">
-            {exam.category.name}
-          </span>
-        </div>
+        {exam.isNew && (
+          <div className="absolute top-3 right-3 z-10">
+            <span className="new-badge animate-pulse">{t(($) => $.labels.new)}</span>
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -133,10 +126,6 @@ const ExamCardView = ({ exam, viewMode }: ExamCardViewProps) => {
           <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em]">
             {exam.category.name}
           </span>
-          <div className="flex items-center gap-1 text-amber-500">
-            <Star className={cn("w-3.5 h-3.5", exam.stats.rating > 0 ? "fill-current" : "")} />
-            <span className="text-xs font-bold">{exam.stats.rating.toFixed(1)}</span>
-          </div>
         </div>
 
         <h3
@@ -156,39 +145,33 @@ const ExamCardView = ({ exam, viewMode }: ExamCardViewProps) => {
 
         {isListView && (
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-2 hidden sm:block">
-            {exam.description || t(($) => $.exam.description)}
+            {exam.description}
           </p>
         )}
 
-        {/* Stats Row */}
-        <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4 text-xs font-medium text-slate-500 dark:text-slate-400">
+        {/* Info Grid */}
+        <div className="mt-auto grid grid-cols-2 gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              {t(($) => $.exam.packages.table.columns.sections)}
+            </span>
             <div className="flex items-center gap-1.5">
-              <HelpCircle className="w-3.5 h-3.5" />
-              <span>
-                {exam.stats.totalQuestions} {t(($) => $.exam.table.columns.questions)}
+              <Layers className="h-3.5 w-3.5 text-primary/60 shrink-0" />
+              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                {exam.stats.activeSections}
               </span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5" />
-              <span>{exam.durationMinutes}m</span>
-            </div>
           </div>
-
-          <div className="flex items-center gap-2">
-            <div className="flex -space-x-2">
-              {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="w-6 h-6 rounded-full border-2 border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-800 flex items-center justify-center overflow-hidden"
-                >
-                  <div className="w-full h-full bg-primary/10 flex items-center justify-center">
-                    <HelpCircle className="w-3 h-3 text-primary/40" />
-                  </div>
-                </div>
-              ))}
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              {t(($) => $.exam.packages.table.columns.questions)}
+            </span>
+            <div className="flex items-center gap-1.5">
+              <HelpCircle className="h-3.5 w-3.5 text-amber-500/60 shrink-0" />
+              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                {exam.stats.activeQuestions}
+              </span>
             </div>
-            <span className="text-[10px] text-slate-400 font-medium">+{exam.stats.viewCount}</span>
           </div>
         </div>
       </div>

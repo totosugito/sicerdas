@@ -1,5 +1,6 @@
 export default {
   menu: "Daftar Soal",
+  label: "Soal",
   title: "Manajemen Soal Ujian",
   description: "Kelola bank soal ujian, tingkat kesulitan, dan kategori soal.",
   backToPage: "Kembali ke Daftar",

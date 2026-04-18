@@ -253,10 +253,10 @@ function RouteComponent() {
         open={showLoginDialog}
         onOpenChange={setShowLoginDialog}
         modal={{
-          title: t(($) => $.book.detail.loginRequired),
-          desc: t(($) => $.book.detail.loginRequiredDesc),
-          textConfirm: t(($) => $.book.detail.login),
-          textCancel: t(($) => $.book.detail.cancel),
+          title: t(($) => $.labels.loginRequired),
+          desc: t(($) => $.labels.loginRequiredDesc),
+          textConfirm: t(($) => $.labels.login),
+          textCancel: t(($) => $.labels.cancel),
           onConfirmClick: handleLogin,
           onCancelClick: () => setShowLoginDialog(false),
           iconType: "info",
