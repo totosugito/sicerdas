@@ -1,10 +1,8 @@
 import { useCallback, useState, useEffect, useMemo } from "react";
-import { useListCategorySimple } from "@/api/education-categories";
-import { RadioGroup } from "@/components/ui/radio-group";
 import { useAppTranslation } from "@/lib/i18n-typed";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { CategoryOption, FilterCheckbox } from "../../book/list/FilterOptions";
-
-const EDUCATION_CATEGORY = ["ujian-semester", "kuis-mata-pelajaran", "try-out", "latihan-soal"];
+import { ExamFilterParamsResponse } from "@/api/exam-packages";
 
 interface PackageFilterProps {
   selectedFilters: {
@@ -14,6 +12,7 @@ interface PackageFilterProps {
   onFilterChange: (filters: { categoryKey: string; grades?: number[] }) => void;
   idPrefix?: string;
   autoSubmit?: boolean;
+  filterData?: ExamFilterParamsResponse;
 }
 
 export const PackageFilter = ({
@@ -21,8 +20,10 @@ export const PackageFilter = ({
   onFilterChange,
   idPrefix = "filter",
   autoSubmit = true,
+  filterData,
 }: PackageFilterProps) => {
   const { t } = useAppTranslation();
+  const categories = filterData?.data || [];
 
   const [localFilters, setLocalFilters] = useState(selectedFilters);
 
@@ -40,22 +41,24 @@ export const PackageFilter = ({
     [autoSubmit, onFilterChange],
   );
 
-  const categoryQuery = useListCategorySimple({ limit: 100 });
-  const categories = categoryQuery.data?.data?.items || [];
-
   const { grades, gradesGridClass } = useMemo(() => {
     const categoryKey = localFilters.categoryKey;
     if (!categoryKey) return { grades: [], gradesGridClass: "" };
 
-    if (EDUCATION_CATEGORY.includes(categoryKey)) {
-      return {
-        grades: Array.from({ length: 12 }, (_, i) => ({ id: i + 1, label: (i + 1).toString() })),
-        gradesGridClass: "grid-cols-4",
-      };
+    const activeCategory = categories.find((c) => c.key === categoryKey);
+    if (!activeCategory || activeCategory.grades.length === 0) {
+      return { grades: [], gradesGridClass: "" };
     }
 
-    return { grades: [], gradesGridClass: "" };
-  }, [localFilters.categoryKey]);
+    return {
+      grades: activeCategory.grades.map((g) => ({
+        id: g.id,
+        label: g.name,
+        count: g.stats.packageTotal,
+      })),
+      gradesGridClass: "grid-cols-2",
+    };
+  }, [localFilters.categoryKey, categories]);
 
   const handleCategoryChange = (value: string) => {
     updateFilters({
@@ -123,17 +126,18 @@ export const PackageFilter = ({
             <CategoryOption value="all" id={`${idPrefix}-cat-all`} label={t(($) => $.exam.all)} />
             {categories.map((category) => (
               <CategoryOption
-                key={category.value}
+                key={category.id}
                 value={category.key}
-                id={`${idPrefix}-cat-${category.value}`}
-                label={category.label}
+                id={`${idPrefix}-cat-${category.id}`}
+                label={category.name}
+                count={category.grades.reduce((sum, g) => sum + g.stats.packageTotal, 0)}
               />
             ))}
           </RadioGroup>
         </div>
 
         {/* Grades Filter */}
-        {grades.length > 0 && (
+        {grades.length > 1 && (
           <>
             <div className="h-px bg-slate-100 dark:bg-slate-800 w-full" />
             <div>
@@ -148,6 +152,7 @@ export const PackageFilter = ({
                     key={grade.id}
                     id={`${idPrefix}-grade-${grade.id}`}
                     label={grade.label}
+                    count={grade.count}
                     checked={localFilters.grades?.includes(grade.id) || false}
                     onCheckedChange={(checked) => toggleGrade(grade.id, checked)}
                     className="space-x-2 p-1"

@@ -9,6 +9,8 @@ import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
 import { eq } from "drizzle-orm";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
+import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
+import { recalculateEducationStats } from "../../../../utils/education-stats-utils.ts";
 
 const CreatePackageBody = Type.Object({
   categoryId: Type.String({ format: "uuid" }),
@@ -103,6 +105,18 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
           createdByUserId: userId,
         })
         .returning({ id: examPackages.id });
+
+      // 3. Recalculate statistics if it's an official package
+      if (examType === EnumExamType.OFFICIAL && educationGradeId) {
+        recalculateEducationStats(EnumContentType.EXAM, categoryId, educationGradeId).catch(
+          (err) => {
+            request.log.error(
+              { err, categoryId, educationGradeId },
+              "[Admin/CreatePackage] Failed to recalculate stats",
+            );
+          },
+        );
+      }
 
       return reply.status(201).send({
         success: true,

@@ -6,6 +6,8 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { useState, useEffect } from "react";
 import { PackageFilter } from "./PackageFilter";
 
+import { ExamFilterParamsResponse } from "@/api/exam-packages";
+
 interface PackageSearchBarProps {
   searchTerm?: string;
   onSearchTermChange?: (value: string) => void;
@@ -16,6 +18,7 @@ interface PackageSearchBarProps {
     grades?: number[];
   };
   onFilterChange?: (filters: { categoryKey: string; grades?: number[] }) => void;
+  filterData?: ExamFilterParamsResponse;
 }
 
 export const PackageSearchBar = ({
@@ -25,6 +28,7 @@ export const PackageSearchBar = ({
   isSearchDisabled = false,
   selectedFilters = { categoryKey: "", grades: [] },
   onFilterChange,
+  filterData,
 }: PackageSearchBarProps) => {
   const { t } = useAppTranslation();
 
@@ -115,6 +119,7 @@ export const PackageSearchBar = ({
                 }}
                 autoSubmit={false}
                 idPrefix="search-bar"
+                filterData={filterData}
               />
             </PopoverContent>
           </Popover>

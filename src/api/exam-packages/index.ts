@@ -1,4 +1,11 @@
-export type { ExamPackage, ExamPackageResponse, ExamPackageDetailResponse } from "./types";
+export type {
+  ExamPackage,
+  ExamPackageResponse,
+  ExamPackageDetailResponse,
+  FilterParamsItem,
+  GradeStats,
+  ExamFilterParamsResponse,
+} from "./types";
 
 // Admin exports
 export { useCreatePackage } from "./admin/create-package";
@@ -27,6 +34,8 @@ export type { ListPackageClientRequest, ListPackagesClientResponse } from "./lis
 
 export { useDetailPackageClient } from "./detail-package";
 export type { DetailPackageClientRequest } from "./detail-package";
+
+export { useExamFilterParams } from "./filter-params";
 
 export { useBookmarkPackage } from "./user/bookmark-package";
 export type { BookmarkPackageRequest, BookmarkPackageResponse } from "./user/bookmark-package";

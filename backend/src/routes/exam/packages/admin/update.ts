@@ -9,6 +9,8 @@ import { eq } from "drizzle-orm";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
+import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
+import { recalculateEducationStats } from "../../../../utils/education-stats-utils.ts";
 
 const UpdatePackageParams = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -111,6 +113,52 @@ const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: new Date(),
         })
         .where(eq(examPackages.id, id));
+
+      // 3. Recalculate statistics if relevant fields changed
+      const anyRelevantChange =
+        (categoryId !== undefined && categoryId !== existing.categoryId) ||
+        (educationGradeId !== undefined && educationGradeId !== existing.educationGradeId) ||
+        (examType !== undefined && examType !== existing.examType) ||
+        (isActive !== undefined && isActive !== existing.isActive);
+
+      if (anyRelevantChange) {
+        // Recalculate for OLD combo
+        if (
+          existing.examType === EnumExamType.OFFICIAL &&
+          existing.educationGradeId &&
+          existing.categoryId
+        ) {
+          recalculateEducationStats(
+            EnumContentType.EXAM,
+            existing.categoryId,
+            existing.educationGradeId,
+          ).catch((err) =>
+            request.log.error(
+              { err, categoryId: existing.categoryId, gradeId: existing.educationGradeId },
+              "[Admin/UpdatePackage] Stats sync failed (old)",
+            ),
+          );
+        }
+
+        // Recalculate for NEW combo
+        const newCategory = categoryId ?? existing.categoryId;
+        const newGrade = educationGradeId ?? existing.educationGradeId;
+        const newType = examType ?? existing.examType;
+
+        if (
+          newType === EnumExamType.OFFICIAL &&
+          newGrade &&
+          newCategory &&
+          (newCategory !== existing.categoryId || newGrade !== existing.educationGradeId)
+        ) {
+          recalculateEducationStats(EnumContentType.EXAM, newCategory, newGrade).catch((err) =>
+            request.log.error(
+              { err, categoryId: newCategory, gradeId: newGrade },
+              "[Admin/UpdatePackage] Stats sync failed (new)",
+            ),
+          );
+        }
+      }
 
       return reply.status(200).send({
         success: true,

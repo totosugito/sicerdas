@@ -143,3 +143,9 @@ For production, it is highly recommended to use a process manager like **PM2** t
   pm2 restart sicerdas-backend
   pm2 stop sicerdas-backend
   ```
+
+### 6. Sync education category stats
+
+```bash
+npx cross-env NODE_ENV=development npx tsx src/scripts/init/jobs/sync-education-stats.ts
+```

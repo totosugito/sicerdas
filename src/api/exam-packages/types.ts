@@ -47,3 +47,23 @@ export interface ExamPackageResponse {
 export interface ExamPackageDetailResponse extends ExamPackageResponse {
   data: ExamPackage;
 }
+
+export interface GradeStats {
+  id: number;
+  name: string;
+  stats: {
+    packageTotal: number;
+  };
+}
+
+export interface FilterParamsItem {
+  id: string;
+  name: string;
+  key: string;
+  description: string | null;
+  grades: GradeStats[];
+}
+
+export interface ExamFilterParamsResponse extends ExamPackageResponse {
+  data: FilterParamsItem[];
+}

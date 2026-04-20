@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { z } from "zod";
 import { Trans } from "react-i18next";
-import { useListPackageClient } from "@/api/exam-packages";
+import { useListPackageClient, useExamFilterParams } from "@/api/exam-packages";
 import { LayoutGrid, ListIcon } from "lucide-react";
 import { showNotifError } from "@/lib/show-notif";
 import {
@@ -53,6 +53,8 @@ function RouteComponent() {
   const [searchTerm, setSearchTerm] = useState(urlSearch ?? pageStore.search ?? "");
   const [currentPage, setCurrentPage] = useState(urlPage ?? pageStore.page ?? 1);
   const [viewMode, setViewMode] = useState<ViewMode>(pageStore.viewMode ?? EnumViewMode.grid.value);
+
+  const filterParamsQuery = useExamFilterParams();
 
   const [sortBy, setSortBy] = useState(urlSortBy ?? pageStore.sortBy ?? "createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
@@ -171,6 +173,7 @@ function RouteComponent() {
               selectedFilters={selectedFilters}
               onFilterChange={handleFilterChange}
               autoSubmit={true}
+              filterData={filterParamsQuery.data}
               idPrefix="sidebar"
             />
           </div>
@@ -192,6 +195,7 @@ function RouteComponent() {
               isSearchDisabled={isLoading}
               selectedFilters={selectedFilters}
               onFilterChange={handleFilterChange}
+              filterData={filterParamsQuery.data}
             />
 
             {/* View Toggles and Results Count */}

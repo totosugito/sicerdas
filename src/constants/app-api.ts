@@ -97,6 +97,7 @@ export const AppApi = {
       },
       list: APP_URL_API + "/exam/packages/list",
       detail: APP_URL_API + "/exam/packages/detail/:id",
+      filterParams: APP_URL_API + "/exam/packages/filter-params",
     },
     packageSections: {
       admin: {

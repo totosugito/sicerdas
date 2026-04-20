@@ -10,6 +10,9 @@ import { eq } from "drizzle-orm";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { deletePackageDirectory } from "../../../../utils/exam-utils.ts";
+import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
+import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
+import { recalculateEducationStats } from "../../../../utils/education-stats-utils.ts";
 
 const DeletePackageParams = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -77,6 +80,20 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
           t(($) => $.exam.packages.delete.cleanupError),
         );
       });
+
+      // 2. Recalculate statistics if it was an official package
+      if (existing.examType === EnumExamType.OFFICIAL && existing.educationGradeId) {
+        recalculateEducationStats(
+          EnumContentType.EXAM,
+          existing.categoryId,
+          existing.educationGradeId,
+        ).catch((err) => {
+          request.log.error(
+            { err, categoryId: existing.categoryId, gradeId: existing.educationGradeId },
+            "[Admin/DeletePackage] Stats sync failed",
+          );
+        });
+      }
 
       return reply.status(200).send({
         success: true,
