@@ -122,8 +122,8 @@ export default {
     preview: {
       title: "Live Authoring Preview",
       description: "Visualisasikan tampilan paket untuk siswa secara langsung",
-      card: "Tampilan Card (Siswa)",
-      hero: "Tampilan Hero (Detail)",
+      card: "Tampilan Kartu",
+      hero: "Tampilan Hero",
       empty: "Pratinjau akan muncul di sini saat data diisi",
       viewDetail: "Lihat Detail",
       multiSections: "Banyak Seksi",

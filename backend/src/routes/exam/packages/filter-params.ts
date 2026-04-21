@@ -22,7 +22,8 @@ const FilterParamsResponseItem = Type.Object({
       id: Type.Number(),
       name: Type.String(),
       stats: Type.Object({
-        packageTotal: Type.Number(),
+        activeCount: Type.Number(),
+        totalCount: Type.Number(),
       }),
     }),
   ),
@@ -69,7 +70,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           categoryDescription: educationCategories.description,
           gradeId: educationGrades.id,
           gradeName: educationGrades.name,
-          packageTotal: educationCategoryGradeStats.activeCount,
+          activeCount: educationCategoryGradeStats.activeCount,
+          totalCount: educationCategoryGradeStats.totalCount,
         })
         .from(educationCategories)
         .innerJoin(
@@ -105,7 +107,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           id: row.gradeId,
           name: row.gradeName,
           stats: {
-            packageTotal: row.packageTotal,
+            activeCount: row.activeCount,
+            totalCount: row.totalCount,
           },
         });
       }

@@ -1,7 +1,7 @@
 import { db } from "../db/db-pool.ts";
 import { educationCategoryGradeStats } from "../db/schema/education/index.ts";
 import { examPackages } from "../db/schema/exam/index.ts";
-import { eq, and, count } from "drizzle-orm";
+import { eq, and, count, gt } from "drizzle-orm";
 import { EnumContentType } from "../db/schema/enum/enum-app.ts";
 import { EnumExamType } from "../db/schema/exam/enums.ts";
 
@@ -43,6 +43,8 @@ export const recalculateEducationStats = async (
           eq(examPackages.educationGradeId, educationGradeId),
           eq(examPackages.examType, EnumExamType.OFFICIAL),
           eq(examPackages.isActive, true),
+          gt(examPackages.activeSections, 0),
+          gt(examPackages.activeQuestions, 0),
         ),
       );
 

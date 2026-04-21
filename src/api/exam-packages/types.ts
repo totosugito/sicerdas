@@ -52,7 +52,8 @@ export interface GradeStats {
   id: number;
   name: string;
   stats: {
-    packageTotal: number;
+    activeCount: number;
+    totalCount: number;
   };
 }
 

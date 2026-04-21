@@ -3,6 +3,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { CategoryOption, FilterCheckbox } from "../../book/list/FilterOptions";
 import { ExamFilterParamsResponse } from "@/api/exam-packages";
+import { Button } from "@/components/ui/button";
 
 interface PackageFilterProps {
   selectedFilters: {
@@ -54,7 +55,7 @@ export const PackageFilter = ({
       grades: activeCategory.grades.map((g) => ({
         id: g.id,
         label: g.name,
-        count: g.stats.packageTotal,
+        count: g.stats.activeCount,
       })),
       gradesGridClass: "grid-cols-2",
     };
@@ -130,7 +131,7 @@ export const PackageFilter = ({
                 value={category.key}
                 id={`${idPrefix}-cat-${category.id}`}
                 label={category.name}
-                count={category.grades.reduce((sum, g) => sum + g.stats.packageTotal, 0)}
+                count={category.grades.reduce((sum, g) => sum + g.stats.activeCount, 0)}
               />
             ))}
           </RadioGroup>
@@ -163,6 +164,14 @@ export const PackageFilter = ({
           </>
         )}
       </div>
+
+      {!autoSubmit && (
+        <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 sticky bottom-0 bg-white/5 dark:bg-slate-900/5 backdrop-blur-sm">
+          <Button className="w-full" onClick={() => onFilterChange(localFilters)}>
+            {t(($) => $.labels.applyFilters)}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

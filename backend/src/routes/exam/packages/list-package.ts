@@ -8,7 +8,7 @@ import {
   examPackageInteractions,
 } from "../../../db/schema/exam/index.ts";
 import { educationCategories, educationGrades } from "../../../db/schema/education/index.ts";
-import { and, eq, sql, ilike, desc, asc } from "drizzle-orm";
+import { and, eq, sql, ilike, desc, asc, inArray, gt } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { EnumContentType } from "../../../db/schema/enum/enum-app.ts";
 import { getPackageThumbnailUrl } from "../../../utils/exam-utils.ts";
@@ -19,7 +19,7 @@ import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 const PackageListQuery = Type.Object({
   categoryId: Type.Optional(Type.String({ format: "uuid" })),
   categoryKey: Type.Optional(Type.String({ description: "Search by category human-readable key" })),
-  educationGradeId: Type.Optional(Type.Number()),
+  educationGradeIds: Type.Optional(Type.Array(Type.Number())),
   search: Type.Optional(Type.String({ description: "Search term for package title" })),
   sortBy: Type.Optional(
     Type.String({
@@ -119,7 +119,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const {
         categoryId,
         categoryKey,
-        educationGradeId,
+        educationGradeIds,
         search,
         sortBy = "createdAt",
         sortOrder = "desc",
@@ -138,6 +138,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       const conditions = [];
       conditions.push(eq(examPackages.isActive, true));
+      conditions.push(gt(examPackages.activeSections, 0));
+      conditions.push(gt(examPackages.activeQuestions, 0));
 
       if (search && search.trim() !== "") {
         const searchTerm: string = `%${search.trim().toLowerCase()}%`;
@@ -152,8 +154,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         conditions.push(eq(educationCategories.key, categoryKey));
       }
 
-      if (educationGradeId) {
-        conditions.push(eq(examPackages.educationGradeId, educationGradeId));
+      if (educationGradeIds && educationGradeIds.length > 0) {
+        conditions.push(inArray(examPackages.educationGradeId, educationGradeIds));
       }
 
       const latestVersionId = app.versionCache.get(EnumContentType.EXAM);
