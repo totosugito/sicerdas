@@ -25,3 +25,5 @@ export type {
 } from "./admin/list-section-simple";
 
 export { useDetailPackageSection } from "./admin/detail-section";
+export { useListPackageSectionsClient } from "./list-sections";
+export type { ListSectionsClientRequest, ListSectionsClientResponse } from "./list-sections";

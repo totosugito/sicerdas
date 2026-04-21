@@ -94,6 +94,7 @@ export const AppApi = {
       },
       user: {
         bookmark: APP_URL_API + "/exam/packages/user/bookmark",
+        rating: APP_URL_API + "/exam/packages/user/rating",
       },
       list: APP_URL_API + "/exam/packages/list",
       detail: APP_URL_API + "/exam/packages/detail/:id",
@@ -108,6 +109,7 @@ export const AppApi = {
         listSimple: APP_URL_API + "/exam/package-sections/admin/list-simple",
         detail: APP_URL_API + "/exam/package-sections/admin/detail/:id",
       },
+      list: APP_URL_API + "/exam/package-sections/list",
     },
     passages: {
       admin: {

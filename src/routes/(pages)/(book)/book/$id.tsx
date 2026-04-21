@@ -3,10 +3,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useBookDetail } from "@/api/book/book-detail";
 import { useUpdateBookRating } from "@/api/book/update-rating";
 import { BookDetail } from "@/components/pages/book/book/BookDetail";
-import { BookDetailError } from "@/components/pages/book/book/BookDetailError";
 import { BookDetailSkeleton } from "@/components/pages/book/book/BookDetailSkeleton";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ErrorPageDetails, PageTitle } from "@/components/app";
+import { AlertTriangle } from "lucide-react";
 import { AppRoute } from "@/constants/app-route";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useState, useEffect, Suspense, lazy, ComponentType } from "react";
@@ -67,12 +66,24 @@ function RouteComponent() {
 
   const book = data?.data;
 
+  const handleBack = () => {
+    router.navigate({ to: AppRoute.book.books.url });
+  };
+
   if (isLoading) {
     return <BookDetailSkeleton />;
   }
 
   if (isError || !data?.success || !book) {
-    return <BookDetailError message={data?.message} />;
+    return (
+      <ErrorPageDetails
+        icon={AlertTriangle}
+        title={data?.message || t(($) => $.book.detail.notFound)}
+        description={t(($) => $.book.detail.notFoundDesc)}
+        onBack={handleBack}
+        backLabel={t(($) => $.book.detail.backToBooks)}
+      />
+    );
   }
 
   const handleRead = () => {
@@ -203,27 +214,18 @@ function RouteComponent() {
     }
   };
 
-  const handleBack = () => {
-    router.navigate({ to: AppRoute.book.books.url });
-  };
-
   const handleLogin = () => {
     router.navigate({ to: AppRoute.auth.signIn.url });
   };
 
   return (
-    <div className="flex flex-col gap-4 w-full">
-      {/* Navigation */}
-      <div className="mb-2">
-        <Button
-          variant="ghost"
-          className="pl-0 hover:bg-transparent hover:text-primary transition-colors gap-2 text-slate-500 dark:text-slate-400"
-          onClick={handleBack}
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span className="text-base font-medium">{t(($) => $.book.detail.backToBooks)}</span>
-        </Button>
-      </div>
+    <div className="flex flex-col gap-6 w-full">
+      <PageTitle
+        title={t(($) => $.book.detail.title)}
+        description={t(($) => $.book.detail.description)}
+        showBack={true}
+        onBack={handleBack}
+      />
       <BookDetail
         book={book}
         isFavorite={isFavorite}

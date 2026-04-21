@@ -101,4 +101,8 @@ export default {
   fileSize: "Ukuran File",
   addedOn: "Ditambahkan",
   preview: "Pratinjau",
+  back: "Kembali",
+  retry: "Coba Lagi",
+  description: "Deskripsi",
+  share: "Bagikan",
 };

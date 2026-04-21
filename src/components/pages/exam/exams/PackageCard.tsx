@@ -5,7 +5,7 @@ import { ExamPackage } from "@/api/exam-packages/types";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate, Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { HelpCircle, Layers } from "lucide-react";
+import { Heart, HelpCircle, Layers } from "lucide-react";
 
 interface PackageCardProps {
   exams: ExamPackage[];
@@ -19,7 +19,7 @@ export const PackageCard = ({ exams, viewMode }: PackageCardProps) => {
     viewMode === "grid"
       ? openSideMenu
         ? "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
-        : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
       : "grid grid-cols-1 gap-4";
 
   return (
@@ -61,15 +61,10 @@ const PackageCardView = ({ exam, viewMode }: PackageCardViewProps) => {
   const isListView = viewMode === "list";
   const navigate = useNavigate();
 
-  const slug = exam.title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)+/g, "");
-
   const handleExamClick = () => {
     navigate({
       to: AppRoute.exam.packages.detail.url,
-      params: { id: `${exam.id}-${slug}` },
+      params: { id: exam.id },
     });
   };
 
@@ -126,6 +121,9 @@ const PackageCardView = ({ exam, viewMode }: PackageCardViewProps) => {
           <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em]">
             {exam.category.name}
           </span>
+          {exam.userInteraction?.bookmarked && (
+            <Heart className="w-4 h-4 text-red-500 fill-current" />
+          )}
         </div>
 
         <h3
@@ -136,7 +134,7 @@ const PackageCardView = ({ exam, viewMode }: PackageCardViewProps) => {
         >
           <Link
             to={AppRoute.exam.packages.detail.url}
-            params={{ id: `${exam.id}-${slug}` }}
+            params={{ id: exam.id }}
             className="cursor-pointer"
           >
             {exam.title}

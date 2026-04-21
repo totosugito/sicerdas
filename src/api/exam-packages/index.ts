@@ -39,3 +39,6 @@ export { useExamFilterParams } from "./filter-params";
 
 export { useBookmarkPackage } from "./user/bookmark-package";
 export type { BookmarkPackageRequest, BookmarkPackageResponse } from "./user/bookmark-package";
+
+export { useRatePackage } from "./user/rate-package";
+export type { RatePackageRequest, RatePackageResponse } from "./user/rate-package";

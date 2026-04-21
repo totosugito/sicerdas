@@ -44,6 +44,8 @@ export default {
     unknownAuthor: "Penulis Tidak Diketahui",
   },
   detail: {
+    title: "Detail Buku",
+    description: "Lihat rincian buku, baca secara online, atau unduh untuk dipelajari nanti.",
     invalidToken: "Token tidak valid atau telah kedaluwarsa",
     networkError: "Respon jaringan tidak OK",
     notFound: "Buku Tidak Ditemukan",

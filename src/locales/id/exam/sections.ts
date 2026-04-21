@@ -32,6 +32,11 @@ export default {
   pageTitle: "Detail Paket Ujian",
   createButton: "Tambah Bagian",
 
+  curriculumDescription: "Kelola bagian-bagian untuk paket ujian ini.",
+  noSections: "Tidak ada bagian",
+  noSectionsDescription: "Klik tombol Tambah Bagian untuk mulai menambahkan.",
+  generalGroup: "Grup Umum",
+  sectionsCount: "Bagian",
   orderSuccess: "Berhasil mengubah urutan bagian",
   orderError: "Gagal mengubah urutan bagian",
   deleteConfirm: {

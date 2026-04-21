@@ -36,6 +36,7 @@ const PackageDetailResponse = Type.Object({
     viewCount: Type.Number(),
     likeCount: Type.Number(),
     bookmarkCount: Type.Number(),
+    ratingCount: Type.Number(),
   }),
   category: Type.Object({
     id: Type.String({ format: "uuid" }),
@@ -136,6 +137,7 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
           viewCount: examPackageEventStats.viewCount,
           likeCount: examPackageEventStats.likeCount,
           bookmarkCount: examPackageEventStats.bookmarkCount,
+          ratingCount: examPackageEventStats.ratingCount,
           // User interaction data
           liked: examPackageInteractions.liked,
           disliked: examPackageInteractions.disliked,
@@ -185,10 +187,16 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
           activeSections: pkg.activeSections,
           totalQuestions: pkg.totalQuestions,
           activeQuestions: pkg.activeQuestions,
-          rating: pkg.rating !== null ? parseFloat(pkg.rating.toString()) : 0,
+          rating:
+            pkg.ratingCount && pkg.ratingCount > 0
+              ? pkg.rating !== null
+                ? parseFloat(pkg.rating.toString())
+                : 0
+              : 5.0,
           viewCount: pkg.viewCount !== null ? pkg.viewCount : 0,
           likeCount: pkg.likeCount !== null ? pkg.likeCount : 0,
           bookmarkCount: pkg.bookmarkCount !== null ? pkg.bookmarkCount : 0,
+          ratingCount: pkg.ratingCount !== null ? pkg.ratingCount : 0,
         },
         category: pkg.category
           ? { id: pkg.category.id, name: pkg.category.name, key: pkg.category.key }

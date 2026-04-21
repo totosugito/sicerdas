@@ -45,6 +45,7 @@ const PackageResponseItem = Type.Object({
     likeCount: Type.Number(),
     bookmarkCount: Type.Number(),
     rating: Type.Number(),
+    ratingCount: Type.Number(),
   }),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
@@ -94,6 +95,7 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
           likeCount: examPackageEventStats.likeCount,
           bookmarkCount: examPackageEventStats.bookmarkCount,
           rating: examPackageEventStats.rating,
+          ratingCount: examPackageEventStats.ratingCount,
           isNew: latestVersionId
             ? sql<boolean>`${examPackages.versionId} = ${latestVersionId}`.as("isNew")
             : sql<boolean>`false`.as("isNew"),
@@ -128,7 +130,13 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
             viewCount: result.viewCount ?? 0,
             likeCount: result.likeCount ?? 0,
             bookmarkCount: result.bookmarkCount ?? 0,
-            rating: result.rating ? parseFloat(result.rating) : 0,
+            rating:
+              result.ratingCount && result.ratingCount > 0
+                ? result.rating
+                  ? parseFloat(result.rating)
+                  : 0
+                : 5.0,
+            ratingCount: result.ratingCount ?? 0,
           },
           versionId: pkg.versionId,
           createdAt: pkg.createdAt.toISOString(),

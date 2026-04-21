@@ -4,6 +4,22 @@ export default {
   description:
     "Kelola paket soal ujian, atur waktu, dan kategorikan berdasarkan tingkat pendidikan.",
   backToPage: "Kembali ke Daftar",
+  rating: {
+    title: "Beri Rating",
+    description: "Beri rating untuk paket ini.",
+    selected: "{{count}} dari 5 bintang",
+    prompt: "Pilih rating",
+  },
+  detail: {
+    title: "Detail Paket",
+    description: "Lihat detail paket ujian, kurikulum, dan statistik interaksi.",
+    notFound: "Gagal Memuat Paket",
+    noDescription: "Tidak ada deskripsi untuk paket ini.",
+    takeExam: "Ikuti Ujian",
+    backToList: "Kembali ke Daftar",
+    mnt: "mnt",
+    questions: "soal",
+  },
   table: {
     search: "Cari paket ujian...",
     noData: "Tidak ada data paket ujian.",

@@ -27,6 +27,7 @@ export interface ExamPackage {
     likeCount: number;
     bookmarkCount: number;
     rating: number;
+    ratingCount: number;
   };
   userInteraction?: {
     liked: boolean;
