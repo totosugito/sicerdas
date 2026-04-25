@@ -4,29 +4,19 @@ import { z } from "zod";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  FormDescription,
-} from "@/components/ui/form";
+import { Form, FormLabel } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
 import { EnumExamType } from "backend/src/db/schema/exam/enums";
 import { FormWithDetector } from "@/components/custom/components";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { ImageIcon, UploadCloud, Trash2, Clock, BookOpen, Layers, Zap, Info } from "lucide-react";
+import { UploadCloud, Trash2, Zap, Info } from "lucide-react";
 
 // Hooks for dropdowns
 import { useListCategorySimple } from "@/api/education-categories";
 import { useListTier } from "@/api/app-tier";
 import { useListGradeSimple } from "@/api/education-grade";
-import { durationOnMinutes } from "@/constants/app-enum";
 import { useListVersionSimple } from "@/api/version/list-version-simple";
 import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
 import { PackageFormValues } from "./types";
@@ -70,7 +60,6 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
       1,
       t(($) => $.exam.packages.form.examType.required),
     ),
-    durationMinutes: z.string().optional(),
     educationGradeId: z.coerce.number().optional().nullable(),
     requiredTier: z.string().optional(),
     description: z.string().optional(),
@@ -89,7 +78,6 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
       title: "",
       categoryId: "",
       examType: EnumExamType.OFFICIAL,
-      durationMinutes: "0",
       requiredTier: "free",
       description: "",
       isActive: true,
@@ -109,7 +97,6 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
         title: "",
         categoryId: "",
         examType: EnumExamType.OFFICIAL,
-        durationMinutes: "0",
         requiredTier: "free",
         description: "",
         isActive: true,
@@ -257,7 +244,7 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4">
                   <ControlForm
                     form={form}
                     item={{
@@ -272,6 +259,9 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
                     }}
                     showMessage={false}
                   />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
                   <ControlForm
                     form={form}
                     item={{
@@ -280,20 +270,6 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
                       label: t(($) => $.exam.packages.form.examType.label),
                       placeholder: t(($) => $.exam.packages.form.examType.placeholder),
                       options: examTypeOptions,
-                    }}
-                    showMessage={false}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <ControlForm
-                    form={form}
-                    item={{
-                      type: "select",
-                      name: "durationMinutes",
-                      label: t(($) => $.exam.packages.form.durationMinutes.label),
-                      placeholder: t(($) => $.exam.packages.form.durationMinutes.placeholder),
-                      options: durationOnMinutes,
                     }}
                     showMessage={false}
                   />

@@ -1,4 +1,14 @@
-import { pgTable, varchar, timestamp, text, jsonb, serial, uuid, index } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  varchar,
+  timestamp,
+  text,
+  jsonb,
+  serial,
+  uuid,
+  index,
+  boolean,
+} from "drizzle-orm/pg-core";
 import { users } from "../user/index.ts";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 
@@ -36,6 +46,7 @@ export const educationGrades = pgTable(
 
     // The user who created this grade record
     createdByUserId: uuid("created_by_user_id").references(() => users.id),
+    isDefault: boolean("is_default").default(true),
 
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),

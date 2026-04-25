@@ -53,7 +53,7 @@ export const PackageDetailInfo = ({ pkg }: PackageDetailInfoProps) => {
         />
         <InfoCard
           icon={HelpCircle}
-          label={t(($) => $.exam.questions.title)}
+          label={t(($) => $.exam.questions.testQuestions)}
           value={`${pkg.stats.totalQuestions} Soal`}
           colorClass="bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
         />

@@ -3,6 +3,7 @@ export default {
   label: "Soal",
   title: "Manajemen Soal Ujian",
   description: "Kelola bank soal ujian, tingkat kesulitan, dan kategori soal.",
+  testQuestions: "Soal Ujian",
   backToPage: "Kembali ke Daftar",
   importJson: "Impor dari JSON",
   table: {

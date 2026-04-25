@@ -45,7 +45,7 @@ export const examPackages = pgTable(
     }),
 
     // Total time allowed to finish this exam
-    durationMinutes: integer("duration_minutes").notNull().default(120),
+    durationMinutes: integer("duration_minutes").notNull().default(0),
 
     // Description, rules, or briefing for the tryout
     description: text("description"),

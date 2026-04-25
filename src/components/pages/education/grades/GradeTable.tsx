@@ -11,6 +11,7 @@ import { LongText } from "@/components/custom/components";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -92,6 +93,30 @@ export function GradeTable({
           className="max-w-[300px] text-muted-foreground italic text-sm"
         />
       ),
+    },
+    {
+      accessorKey: "isDefault",
+      enableSorting: true,
+      size: 100,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.education.grade.table.columns.isDefault)}
+          className="justify-center"
+        />
+      ),
+      cell: ({ row }) => {
+        const isDefault = row.getValue("isDefault") as boolean;
+        return (
+          <div className="flex justify-center">
+            <Badge variant={isDefault ? "success" : "secondary"}>
+              {isDefault
+                ? t(($) => $.education.grade.table.status.default)
+                : t(($) => $.education.grade.table.status.notDefault)}
+            </Badge>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "updatedAt",

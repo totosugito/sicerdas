@@ -12,8 +12,13 @@ export default {
       grade: "Kode",
       name: "Nama",
       desc: "Deskripsi",
+      isDefault: "Default",
       updatedAt: "Diperbarui",
       actions: "Aksi",
+    },
+    status: {
+      default: "Ya",
+      notDefault: "Tidak",
     },
     actions: {
       openMenu: "Buka menu",
@@ -36,6 +41,10 @@ export default {
     desc: {
       label: "Deskripsi",
       placeholder: "Masukkan deskripsi singkat",
+    },
+    isDefault: {
+      label: "Jadikan Default",
+      description: "Tandai sebagai jenjang pendidikan utama atau default",
     },
   },
   delete: {

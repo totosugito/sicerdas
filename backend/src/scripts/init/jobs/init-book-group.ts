@@ -74,32 +74,32 @@ export default async function seed() {
 
     // default data for education grade
     const educationGrades_ = [
-      { id: 1, grade: "1", name: "SD-1" },
-      { id: 2, grade: "2", name: "SD-2" },
-      { id: 3, grade: "3", name: "SD-3" },
-      { id: 4, grade: "4", name: "SD-4" },
-      { id: 5, grade: "5", name: "SD-5" },
-      { id: 6, grade: "6", name: "SD-6" },
-      { id: 7, grade: "7", name: "SMP-7" },
-      { id: 8, grade: "8", name: "SMP-8" },
-      { id: 9, grade: "9", name: "SMP-9" },
-      { id: 10, grade: "10", name: "SMA-10" },
-      { id: 11, grade: "11", name: "SMA-11" },
-      { id: 12, grade: "12", name: "SMA-12" },
-      { id: 13, grade: "preschool", name: "Pra Sekolah" },
-      { id: 14, grade: "paud", name: "PAUD" },
-      { id: 15, grade: "empty", name: "Umum" },
-      { id: 16, grade: "level_1", name: "Level 1" },
-      { id: 17, grade: "level_2", name: "Level 2" },
-      { id: 18, grade: "level_3", name: "Level 3" },
-      { id: 19, grade: "level_4", name: "Level 4" },
-      { id: 20, grade: "sd", name: "SD" },
-      { id: 21, grade: "smp", name: "SMP" },
-      { id: 22, grade: "sma", name: "SMA" },
-      { id: 23, grade: "smk", name: "SMK" },
-      { id: 24, grade: "sd_smp", name: "SD/SMP" },
-      { id: 25, grade: "sd_123", name: "SD 1-3" },
-      { id: 26, grade: "sd_456", name: "SD 4-6" },
+      { id: 1, grade: "1", name: "SD-1", isDefault: true },
+      { id: 2, grade: "2", name: "SD-2", isDefault: true },
+      { id: 3, grade: "3", name: "SD-3", isDefault: true },
+      { id: 4, grade: "4", name: "SD-4", isDefault: true },
+      { id: 5, grade: "5", name: "SD-5", isDefault: true },
+      { id: 6, grade: "6", name: "SD-6", isDefault: true },
+      { id: 7, grade: "7", name: "SMP-7", isDefault: true },
+      { id: 8, grade: "8", name: "SMP-8", isDefault: true },
+      { id: 9, grade: "9", name: "SMP-9", isDefault: true },
+      { id: 10, grade: "10", name: "SMA-10", isDefault: true },
+      { id: 11, grade: "11", name: "SMA-11", isDefault: true },
+      { id: 12, grade: "12", name: "SMA-12", isDefault: true },
+      { id: 13, grade: "preschool", name: "Pra Sekolah", isDefault: false },
+      { id: 14, grade: "paud", name: "PAUD", isDefault: false },
+      { id: 15, grade: "empty", name: "Umum", isDefault: false },
+      { id: 16, grade: "level_1", name: "Level 1", isDefault: false },
+      { id: 17, grade: "level_2", name: "Level 2", isDefault: false },
+      { id: 18, grade: "level_3", name: "Level 3", isDefault: false },
+      { id: 19, grade: "level_4", name: "Level 4", isDefault: false },
+      { id: 20, grade: "sd", name: "SD", isDefault: false },
+      { id: 21, grade: "smp", name: "SMP", isDefault: false },
+      { id: 22, grade: "sma", name: "SMA", isDefault: false },
+      { id: 23, grade: "smk", name: "SMK", isDefault: false },
+      { id: 24, grade: "sd_smp", name: "SD/SMP", isDefault: false },
+      { id: 25, grade: "sd_123", name: "SD 1-3", isDefault: false },
+      { id: 26, grade: "sd_456", name: "SD 4-6", isDefault: false },
     ].map((g) => ({ ...g, createdByUserId: adminId }));
 
     // default data for books category
@@ -349,7 +349,13 @@ export default async function seed() {
         .then((result: { id: number }[]) => !!result[0]?.id);
 
       if (!gradeExists) {
-        await db.insert(educationGrades).values(grade);
+        await db.insert(educationGrades).values({
+          id: grade.id,
+          grade: grade.grade,
+          name: grade.name,
+          createdByUserId: grade.createdByUserId,
+          isDefault: grade.isDefault,
+        });
       } else {
         await db
           .update(educationGrades)
@@ -357,6 +363,7 @@ export default async function seed() {
             name: grade.name,
             grade: grade.grade,
             createdByUserId: grade.createdByUserId,
+            isDefault: grade.isDefault,
           })
           .where(eq(educationGrades.id, grade.id));
       }

@@ -12,6 +12,7 @@ const CreateEducationGradeBody = Type.Object({
   name: Type.String({ minLength: 1, maxLength: 128 }),
   desc: Type.Optional(Type.String()),
   extra: Type.Optional(Type.Any()),
+  isDefault: Type.Optional(Type.Boolean({ default: true })),
 });
 
 const EducationGradeResponseItem = Type.Object({
@@ -19,7 +20,7 @@ const EducationGradeResponseItem = Type.Object({
   grade: Type.String(),
   name: Type.String(),
   desc: Type.Union([Type.String(), Type.Null()]),
-  extra: Type.Any(),
+  isDefault: Type.Boolean(),
   createdAt: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
   updatedAt: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
 });
@@ -54,7 +55,7 @@ const createEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
       reply: FastifyReply,
     ) {
       const { t } = getTypedI18n(request);
-      const { grade, name, desc, extra } = request.body;
+      const { grade, name, desc, extra, isDefault } = request.body;
 
       // Check if grade or name already exists
       const existingGrade = await db.query.educationGrades.findFirst({
@@ -75,6 +76,7 @@ const createEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
           desc: desc ?? "",
           extra: extra ?? {},
           createdByUserId: userId,
+          isDefault: isDefault ?? true,
         })
         .returning();
 

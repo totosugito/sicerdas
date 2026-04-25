@@ -32,7 +32,6 @@ function AdminExamPackagesEditPage() {
       title: packageData?.title,
       categoryId: packageData?.category?.id,
       examType: packageData?.examType as any,
-      durationMinutes: (packageData?.durationMinutes || 0).toString(),
       educationGradeId: packageData?.grade?.id ? String(packageData.grade.id) : "",
       requiredTier: packageData?.requiredTier || "free",
       description: packageData?.description || "",
@@ -56,7 +55,6 @@ function AdminExamPackagesEditPage() {
     const payload = {
       id,
       ...values,
-      durationMinutes: Number(values.durationMinutes) || 0,
       educationGradeId: values.educationGradeId ? Number(values.educationGradeId) : undefined,
       requiredTier: values.requiredTier || undefined,
       description: values.description || undefined,

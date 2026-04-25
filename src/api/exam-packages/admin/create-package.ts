@@ -7,7 +7,6 @@ export interface CreatePackageRequest {
   categoryId: string;
   title: string;
   examType: string;
-  durationMinutes?: number;
   description?: string;
   requiredTier?: string;
   educationGradeId?: number;

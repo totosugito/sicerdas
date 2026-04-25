@@ -43,6 +43,7 @@ interface AddQuestionModalProps {
   onConfirm: (questionIds: string[]) => void;
   isAssigning?: boolean;
   packageId?: string;
+  educationGradeId?: number | null;
 }
 
 type FilterValues = {
@@ -59,6 +60,7 @@ export function AddQuestionModal({
   onConfirm,
   isAssigning = false,
   packageId,
+  educationGradeId,
 }: AddQuestionModalProps) {
   const { t } = useAppTranslation();
   const [pagination, setPagination] = useState({ page: 1, limit: 10 });
@@ -75,6 +77,13 @@ export function AddQuestionModal({
       type: "all",
     },
   });
+
+  // Set initial grade filter if educationGradeId is provided
+  useEffect(() => {
+    if (open && educationGradeId) {
+      form.setValue("gradeId", educationGradeId.toString());
+    }
+  }, [open, educationGradeId, form]);
 
   const filterValues = form.watch();
 

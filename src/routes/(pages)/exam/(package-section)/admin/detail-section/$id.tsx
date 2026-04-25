@@ -228,6 +228,7 @@ function AdminPackageSectionDetailPage() {
         onConfirm={handleAssign}
         isAssigning={isAssigning}
         packageId={section.packageId}
+        educationGradeId={section.educationGradeId}
       />
     </div>
   );

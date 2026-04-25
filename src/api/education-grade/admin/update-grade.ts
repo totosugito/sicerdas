@@ -4,23 +4,24 @@ import { useMutation } from "@tanstack/react-query";
 import { EducationGradeDetailResponse } from "../types";
 
 export interface UpdateEducationGradeRequest {
-    id: number;
-    name?: string;
-    desc?: string;
-    extra?: any;
+  id: number;
+  name?: string;
+  desc?: string;
+  extra?: any;
+  isDefault?: boolean;
 }
 
 export const useUpdateEducationGrade = () => {
-    return useMutation({
-        mutationKey: ["admin-education-grade-update"],
-        mutationFn: async ({ id, ...body }: UpdateEducationGradeRequest) => {
-            const response = await fetchApi({
-                method: "PUT",
-                url: AppApi.education.grade.admin.update.replace(":id", id.toString()),
-                body,
-                withCredentials: true,
-            });
-            return response as EducationGradeDetailResponse;
-        },
-    });
+  return useMutation({
+    mutationKey: ["admin-education-grade-update"],
+    mutationFn: async ({ id, ...body }: UpdateEducationGradeRequest) => {
+      const response = await fetchApi({
+        method: "PUT",
+        url: AppApi.education.grade.admin.update.replace(":id", id.toString()),
+        body,
+        withCredentials: true,
+      });
+      return response as EducationGradeDetailResponse;
+    },
+  });
 };
