@@ -102,6 +102,8 @@ export default {
     backButton: "Kembali ke Daftar Paket",
   },
   detail: {
+    title: "Detail : {{title}}",
+    description: "Tampilkan detail bagian paket ujian",
     infoCard: {
       title: "Informasi Bagian",
       statusAndOrder: "Status & Urutan",

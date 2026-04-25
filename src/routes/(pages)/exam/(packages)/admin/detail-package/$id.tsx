@@ -90,6 +90,7 @@ function DetailPackagePage() {
       onSuccess: (res) => {
         showNotifSuccess({ message: res.message });
         queryClient.invalidateQueries({ queryKey: ["admin-exam-package-sections-list"] });
+        queryClient.invalidateQueries({ queryKey: ["admin-exam-packages-detail", id] });
         setShowDeleteDialog(false);
         setSectionToDelete(null);
       },
@@ -229,6 +230,9 @@ function DetailPackagePage() {
         section={selectedSection}
         packageId={id}
         packageIdDisabled={true}
+        onSuccess={() => {
+          queryClient.invalidateQueries({ queryKey: ["admin-exam-packages-detail", id] });
+        }}
       />
     </div>
   );

@@ -25,6 +25,8 @@ const SectionDetailItem = Type.Object({
   order: Type.Number(),
   isActive: Type.Boolean(),
   versionId: Type.Union([Type.Number(), Type.Null()]),
+  categoryId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
+  educationGradeId: Type.Union([Type.Number(), Type.Null()]),
   isNew: Type.Boolean(),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
@@ -64,6 +66,8 @@ const detailSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .select({
           section: examPackageSections,
           packageName: examPackages.title,
+          categoryId: examPackages.categoryId,
+          educationGradeId: examPackages.educationGradeId,
           isNew: latestVersionId
             ? sql<boolean>`${examPackageSections.versionId} = ${latestVersionId}`.as("isNew")
             : sql<boolean>`false`.as("isNew"),
@@ -93,6 +97,8 @@ const detailSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
           order: section.order,
           isActive: section.isActive,
           versionId: section.versionId,
+          categoryId: sectionResult.categoryId,
+          educationGradeId: sectionResult.educationGradeId,
           isNew: !!sectionResult.isNew,
           createdAt: section.createdAt.toISOString(),
           updatedAt: section.updatedAt.toISOString(),

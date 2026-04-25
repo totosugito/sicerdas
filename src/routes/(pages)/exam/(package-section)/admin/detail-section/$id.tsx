@@ -9,13 +9,12 @@ import {
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { PageTitle, LoadingView, ErrorContainer } from "@/components/app";
 import { AppRoute } from "@/constants/app-route";
-import { Badge } from "@/components/ui/badge";
 import { ListChecks, Plus } from "lucide-react";
 import {
   SectionQuestionTable,
   SectionInfoCard,
+  AddQuestionModal,
 } from "@/components/pages/exam/package-section/detail-section";
-import { AddQuestionModal } from "@/components/pages/exam/package-section/detail-section/AddQuestionModal";
 import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -166,8 +165,8 @@ function AdminPackageSectionDetailPage() {
   return (
     <div className="flex flex-col gap-8 w-full pb-10">
       <PageTitle
-        title={t(($) => $.exam.sections.table.actions.detail)}
-        description={section.title}
+        title={t(($) => $.exam.sections.detail.title, { title: section.title })}
+        description={t(($) => $.exam.sections.detail.description)}
         showBack
         backTo={AppRoute.exam.packageSections.admin.list.url}
       />

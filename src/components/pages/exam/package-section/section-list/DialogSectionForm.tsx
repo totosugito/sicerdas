@@ -20,6 +20,7 @@ export type DialogSectionFormProps = {
   section?: ExamPackageSection | null;
   packageId?: string;
   packageIdDisabled?: boolean;
+  onSuccess?: () => void;
 };
 
 const FormEntity = ({ values, form, packageIdDisabled }: any) => {
@@ -49,6 +50,7 @@ export const DialogSectionForm = ({
   section,
   packageId,
   packageIdDisabled = false,
+  onSuccess,
 }: DialogSectionFormProps) => {
   const { t } = useAppTranslation();
   const queryClient = useQueryClient();
@@ -187,6 +189,7 @@ export const DialogSectionForm = ({
             onSuccess: () => {
               showNotifSuccess({ message: t(($) => $.exam.sections.updateSuccess) });
               queryClient.invalidateQueries({ queryKey: ["admin-exam-package-sections-list"] });
+              onSuccess?.();
               onOpenChange(false);
             },
             onError: (err: any) => {
@@ -213,6 +216,7 @@ export const DialogSectionForm = ({
             onSuccess: () => {
               showNotifSuccess({ message: t(($) => $.exam.sections.createSuccess) });
               queryClient.invalidateQueries({ queryKey: ["admin-exam-package-sections-list"] });
+              onSuccess?.();
               onOpenChange(false);
             },
             onError: (err: any) => {

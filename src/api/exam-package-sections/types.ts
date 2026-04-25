@@ -9,6 +9,8 @@ export interface ExamPackageSection {
   order: number;
   isActive: boolean;
   versionId: number | null;
+  categoryId: string | null;
+  educationGradeId: number | null;
   isNew: boolean;
   createdAt: string;
   updatedAt: string;

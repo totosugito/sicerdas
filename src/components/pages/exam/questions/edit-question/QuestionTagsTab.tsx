@@ -82,6 +82,8 @@ export function QuestionTagsTab({ questionId, tags = [] }: QuestionTagsTabProps)
       });
 
       if (newTag.data?.id) {
+        // Invalidate the tags list so the new tag appears in the dropdown next time
+        queryClient.invalidateQueries({ queryKey: ["education-tags-list-simple"] });
         await handleAssign(newTag.data.id);
         setSearchValue("");
       }

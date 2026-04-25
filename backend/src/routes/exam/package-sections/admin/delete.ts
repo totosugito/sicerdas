@@ -58,12 +58,18 @@ const deleteSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
       await db.transaction(async (tx) => {
         await tx.delete(examPackageSections).where(eq(examPackageSections.id, id));
 
-        // Update counts in the parent package
+        // Update counts and duration in the parent package in a single operation
         await tx
           .update(examPackages)
           .set({
             totalSections: sql`${examPackages.totalSections} - 1`,
             activeSections: existing.isActive ? sql`${examPackages.activeSections} - 1` : undefined,
+            durationMinutes: sql`(
+              SELECT COALESCE(SUM(${examPackageSections.durationMinutes}), 0)
+              FROM ${examPackageSections}
+              WHERE ${examPackageSections.packageId} = ${existing.packageId}
+              AND ${examPackageSections.isActive} = true
+            )`,
             updatedAt: new Date(),
           })
           .where(eq(examPackages.id, existing.packageId));

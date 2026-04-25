@@ -96,18 +96,70 @@ const updateSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
           })
           .where(eq(examPackageSections.id, id));
 
-        // If isActive changed, update activeSections count in parent package
-        if (isActive !== undefined && isActive !== existing.isActive) {
-          const targetPackageId = packageId ?? existing.packageId;
+        const targetPackageId = packageId ?? existing.packageId;
+        const isMovingPackage = packageId !== undefined && packageId !== existing.packageId;
+        const isSectionActive = isActive ?? existing.isActive;
+
+        // 1. Handle Target Package Update
+        if (isMovingPackage) {
+          // Moved to this package: increment counts and recalculate duration
           await tx
             .update(examPackages)
             .set({
-              activeSections: isActive
-                ? sql`${examPackages.activeSections} + 1`
-                : sql`${examPackages.activeSections} - 1`,
+              totalSections: sql`${examPackages.totalSections} + 1`,
+              activeSections: isSectionActive ? sql`${examPackages.activeSections} + 1` : undefined,
+              durationMinutes: sql`(
+                SELECT COALESCE(SUM(${examPackageSections.durationMinutes}), 0)
+                FROM ${examPackageSections}
+                WHERE ${examPackageSections.packageId} = ${targetPackageId}
+                AND ${examPackageSections.isActive} = true
+              )`,
               updatedAt: new Date(),
             })
             .where(eq(examPackages.id, targetPackageId));
+
+          // Removed from old package: decrement counts and recalculate duration
+          await tx
+            .update(examPackages)
+            .set({
+              totalSections: sql`${examPackages.totalSections} - 1`,
+              activeSections: existing.isActive
+                ? sql`${examPackages.activeSections} - 1`
+                : undefined,
+              durationMinutes: sql`(
+                SELECT COALESCE(SUM(${examPackageSections.durationMinutes}), 0)
+                FROM ${examPackageSections}
+                WHERE ${examPackageSections.packageId} = ${existing.packageId}
+                AND ${examPackageSections.isActive} = true
+              )`,
+              updatedAt: new Date(),
+            })
+            .where(eq(examPackages.id, existing.packageId));
+        } else {
+          // Same package: handle isActive and durationMinutes changes
+          const activeChanged = isActive !== undefined && isActive !== existing.isActive;
+          const durationChanged =
+            durationMinutes !== undefined && durationMinutes !== existing.durationMinutes;
+
+          if (activeChanged || durationChanged) {
+            await tx
+              .update(examPackages)
+              .set({
+                activeSections: activeChanged
+                  ? isActive
+                    ? sql`${examPackages.activeSections} + 1`
+                    : sql`${examPackages.activeSections} - 1`
+                  : undefined,
+                durationMinutes: sql`(
+                  SELECT COALESCE(SUM(${examPackageSections.durationMinutes}), 0)
+                  FROM ${examPackageSections}
+                  WHERE ${examPackageSections.packageId} = ${targetPackageId}
+                  AND ${examPackageSections.isActive} = true
+                )`,
+                updatedAt: new Date(),
+              })
+              .where(eq(examPackages.id, targetPackageId));
+          }
         }
       });
 

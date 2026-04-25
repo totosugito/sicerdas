@@ -90,7 +90,7 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
             title,
             groupName,
             description,
-            durationMinutes,
+            durationMinutes: durationMinutes ?? 0,
             order: orderToUse,
             isActive: isSectionActive,
             versionId,
@@ -98,12 +98,18 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
           })
           .returning({ id: examPackageSections.id });
 
-        // Update counts in the parent package
+        // Update counts and duration in the parent package in a single operation
         await tx
           .update(examPackages)
           .set({
             totalSections: sql`${examPackages.totalSections} + 1`,
             activeSections: isSectionActive ? sql`${examPackages.activeSections} + 1` : undefined,
+            durationMinutes: sql`(
+              SELECT COALESCE(SUM(${examPackageSections.durationMinutes}), 0)
+              FROM ${examPackageSections}
+              WHERE ${examPackageSections.packageId} = ${packageId}
+              AND ${examPackageSections.isActive} = true
+            )`,
             updatedAt: new Date(),
           })
           .where(eq(examPackages.id, packageId));
