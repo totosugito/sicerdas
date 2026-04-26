@@ -4,6 +4,7 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examSessions } from "../../../../db/schema/exam/sessions.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
+import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { examSessionAnswers } from "../../../../db/schema/exam/session-answers.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { examQuestionOptions } from "../../../../db/schema/exam/question-options.ts";
@@ -23,7 +24,13 @@ const SessionDetailsResponse = Type.Object({
       id: Type.String({ format: "uuid" }),
       startTime: Type.String({ format: "date-time" }),
       status: Type.String(),
+      mode: Type.String(),
+      elapsedSeconds: Type.Number(),
+      isTimerActive: Type.Boolean(),
       package: Type.Object({
+        title: Type.String(),
+      }),
+      section: Type.Object({
         title: Type.String(),
         durationMinutes: Type.Number(),
       }),
@@ -61,7 +68,14 @@ const sessionDetailsRoute: FastifyPluginAsyncTypebox = async (app) => {
       params: SessionDetailsParams,
       response: {
         200: SessionDetailsResponse,
-        404: Type.Object({ success: Type.Boolean(), message: Type.String() }),
+        "4xx": Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String(),
+        }),
+        "5xx": Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String(),
+        }),
       },
     },
     handler: withErrorHandler(async function handler(
@@ -69,22 +83,29 @@ const sessionDetailsRoute: FastifyPluginAsyncTypebox = async (app) => {
       reply: FastifyReply,
     ) {
       const { t } = getTypedI18n(request);
-      const { id } = request.params;
       const userId = (request as any).session.user.id;
+      const { id } = request.params;
 
-      // 1. Get Session & Package Info
+      // 1. Get Session, Package, and Section Info
       const [session] = await db
         .select({
           id: examSessions.id,
           startTime: examSessions.startTime,
           status: examSessions.status,
+          mode: examSessions.mode,
+          elapsedSeconds: examSessions.elapsedSeconds,
+          isTimerActive: examSessions.isTimerActive,
           package: {
             title: examPackages.title,
-            durationMinutes: examPackages.durationMinutes,
+          },
+          section: {
+            title: examPackageSections.title,
+            durationMinutes: examPackageSections.durationMinutes,
           },
         })
         .from(examSessions)
         .innerJoin(examPackages, eq(examSessions.packageId, examPackages.id))
+        .innerJoin(examPackageSections, eq(examSessions.sectionId, examPackageSections.id))
         .where(and(eq(examSessions.id, id), eq(examSessions.userId, userId)))
         .limit(1);
 
@@ -100,6 +121,7 @@ const sessionDetailsRoute: FastifyPluginAsyncTypebox = async (app) => {
           isDoubtful: examSessionAnswers.isDoubtful,
           selectedOptionId: examSessionAnswers.selectedOptionId,
           textAnswer: examSessionAnswers.textAnswer,
+          shuffledOptionsOrder: examSessionAnswers.shuffledOptionsOrder,
           question: {
             content: examQuestions.content,
             type: examQuestions.type,
@@ -120,21 +142,34 @@ const sessionDetailsRoute: FastifyPluginAsyncTypebox = async (app) => {
         })
         .from(examQuestionOptions)
         .where(inArray(examQuestionOptions.questionId, questionIds));
-      // Filter options in memory for easier grouping or execute separate queries.
-      // For exam scale, fetching all active options is fine or use inArray.
 
-      const resultAnswers = answersRaw.map((ans) => ({
-        ...ans,
-        question: {
-          ...ans.question,
-          options: allOptions
-            .filter((o) => o.questionId === ans.questionId)
-            .map((o) => ({
+      // 4. Map and sort options based on shuffledOptionsOrder
+      const resultAnswers = answersRaw.map((ans) => {
+        const questionOptions = allOptions.filter((o) => o.questionId === ans.questionId);
+
+        let sortedOptions = questionOptions;
+        if (ans.shuffledOptionsOrder && ans.shuffledOptionsOrder.length > 0) {
+          // Sort based on the stored randomized order
+          sortedOptions = ans.shuffledOptionsOrder
+            .map((id) => questionOptions.find((o) => o.id === id))
+            .filter((o): o is (typeof questionOptions)[0] => !!o);
+        }
+
+        return {
+          questionId: ans.questionId,
+          questionOrder: ans.questionOrder,
+          isDoubtful: ans.isDoubtful,
+          selectedOptionId: ans.selectedOptionId,
+          textAnswer: ans.textAnswer,
+          question: {
+            ...ans.question,
+            options: sortedOptions.map((o) => ({
               id: o.id,
               content: o.content,
             })),
-        },
-      }));
+          },
+        };
+      });
 
       return reply.status(200).send({
         success: true,

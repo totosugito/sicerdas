@@ -34,6 +34,10 @@ export const schema = Type.Object({
   S3_ENDPOINT: Type.Optional(Type.String()),
   S3_PUBLIC_URL: Type.Optional(Type.String()),
   S3_REGION: Type.Optional(Type.String()),
+  // Retention period for detailed exam answers (purged by daily cron)
+  EXAM_ANSWERS_RETENTION_DAYS: Type.Number({ default: 365 }),
+  // Inactivity period before an IN_PROGRESS session is auto-abandoned
+  EXAM_STALE_SESSION_DAYS: Type.Number({ default: 30 }),
 });
 
 // Delete only keys defined in schema from process.env
@@ -114,5 +118,11 @@ export default {
   },
   db: {
     url: `postgresql://${env.POSTGRES_USER}:${env.POSTGRES_PASSWORD}@${env.POSTGRES_HOST}:${env.POSTGRES_PORT}/${env.POSTGRES_DB}`,
+  },
+  exam: {
+    /** Days before exam_session_answers are purged */
+    retentionDays: env.EXAM_ANSWERS_RETENTION_DAYS,
+    /** Days of inactivity before an IN_PROGRESS session is auto-abandoned */
+    staleSessionDays: env.EXAM_STALE_SESSION_DAYS,
   },
 };

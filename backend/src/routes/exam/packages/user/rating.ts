@@ -54,14 +54,7 @@ const ratingRoute: FastifyPluginAsyncTypebox = async (app) => {
       reply: FastifyReply,
     ): Promise<typeof UpdateRatingResponse.static> {
       const { t } = getTypedI18n(req);
-      const session = (req as any).session;
-      const user = session?.user;
-
-      if (!user) {
-        return reply.unauthorized(t(($) => $.auth.unauthorized));
-      }
-
-      const userId = user.id;
+      const userId = (req as any).session.user.id;
       const { packageId, rating } = req.body;
 
       // Verify package existence

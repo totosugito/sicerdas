@@ -4,16 +4,21 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examSessions } from "../../../../db/schema/exam/sessions.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
+import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { examSessionAnswers } from "../../../../db/schema/exam/session-answers.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
-import { EnumExamSessionStatus } from "../../../../db/schema/exam/enums.ts";
-import { eq, and } from "drizzle-orm";
+import { examQuestionOptions } from "../../../../db/schema/exam/question-options.ts";
+import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../../db/schema/exam/enums.ts";
+import { eq, and, inArray } from "drizzle-orm";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
+import { shuffleArray } from "../../../../utils/my-utils.ts";
 
 const StartSessionBody = Type.Object({
   packageId: Type.String({ format: "uuid" }),
+  sectionId: Type.String({ format: "uuid" }),
+  mode: Type.Enum(EnumExamSessionMode),
 });
 
 const StartSessionResponse = Type.Object({
@@ -21,6 +26,7 @@ const StartSessionResponse = Type.Object({
   message: Type.String(),
   data: Type.Object({
     sessionId: Type.String({ format: "uuid" }),
+    isResumed: Type.Boolean(),
   }),
 });
 
@@ -33,7 +39,15 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
       body: StartSessionBody,
       response: {
         201: StartSessionResponse,
-        404: Type.Object({ success: Type.Boolean(), message: Type.String() }),
+        200: StartSessionResponse,
+        "4xx": Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String(),
+        }),
+        "5xx": Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String(),
+        }),
       },
     },
     handler: withErrorHandler(async function handler(
@@ -41,60 +55,110 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
       reply: FastifyReply,
     ) {
       const { t } = getTypedI18n(request);
-      const { packageId } = request.body;
       const userId = (request as any).session.user.id;
+      const { packageId, sectionId, mode } = request.body;
 
-      // 1. Check if package exists and is active
-      const [pkg] = await db
-        .select({ id: examPackages.id })
-        .from(examPackages)
-        .where(and(eq(examPackages.id, packageId), eq(examPackages.isActive, true)))
+      // 1. Check if package and section exist and are active
+      const [section] = await db
+        .select({ id: examPackageSections.id })
+        .from(examPackageSections)
+        .innerJoin(examPackages, eq(examPackageSections.packageId, examPackages.id))
+        .where(
+          and(
+            eq(examPackageSections.id, sectionId),
+            eq(examPackageSections.packageId, packageId),
+            eq(examPackageSections.isActive, true),
+            eq(examPackages.isActive, true),
+          ),
+        )
         .limit(1);
 
-      if (!pkg) {
+      if (!section) {
         return reply.notFound(t(($) => $.exam.packages.update.notFound));
       }
 
-      // 2. Create the session
+      // 2. Check for existing IN_PROGRESS session (Resume Capability)
+      const [existingSession] = await db
+        .select({ id: examSessions.id })
+        .from(examSessions)
+        .where(
+          and(
+            eq(examSessions.userId, userId),
+            eq(examSessions.packageId, packageId),
+            eq(examSessions.sectionId, sectionId),
+            eq(examSessions.status, EnumExamSessionStatus.IN_PROGRESS),
+          ),
+        )
+        .limit(1);
+
+      if (existingSession) {
+        return reply.status(200).send({
+          success: true,
+          message: t(($) => $.exam.sessions.start.success),
+          data: {
+            sessionId: existingSession.id,
+            isResumed: true,
+          },
+        });
+      }
+
+      // 3. Create a new session
       const [newSession] = await db
         .insert(examSessions)
         .values({
           userId,
           packageId,
+          sectionId,
+          mode,
+          isTimerActive: mode === EnumExamSessionMode.TRYOUT,
           status: EnumExamSessionStatus.IN_PROGRESS,
         })
         .returning({ id: examSessions.id });
 
-      // 3. Fetch questions belonging to this package
-      const questions = await db
+      // 4. Fetch questions for this section
+      const questionsRaw = await db
         .select({
           questionId: examPackageQuestions.questionId,
-          order: examPackageQuestions.order,
           variableFormulas: examQuestions.variableFormulas,
         })
         .from(examPackageQuestions)
         .innerJoin(examQuestions, eq(examPackageQuestions.questionId, examQuestions.id))
-        .where(eq(examPackageQuestions.packageId, packageId))
-        .orderBy(examPackageQuestions.order);
+        .where(eq(examPackageQuestions.sectionId, sectionId));
 
-      // 4. Pre-populate exam_session_answers
-      if (questions.length > 0) {
-        const answerValues = questions.map((q) => {
+      if (questionsRaw.length > 0) {
+        // A. Scramble question order
+        const shuffledQuestions = shuffleArray(questionsRaw);
+
+        // B. Fetch all options for these questions to scramble them
+        const questionIds = shuffledQuestions.map((q) => q.questionId);
+        const allOptions = await db
+          .select({ id: examQuestionOptions.id, questionId: examQuestionOptions.questionId })
+          .from(examQuestionOptions)
+          .where(inArray(examQuestionOptions.questionId, questionIds));
+
+        // C. Prepare answer rows with scrambled data
+        const answerValues = shuffledQuestions.map((q, index) => {
+          // Scramble option IDs for this question
+          const questionOptions = allOptions
+            .filter((o) => o.questionId === q.questionId)
+            .map((o) => o.id);
+
+          const shuffledOptionsOrder = shuffleArray(questionOptions);
+
+          // Handle variable variations
           let variationIndex = 0;
-          if (
-            q.variableFormulas &&
-            q.variableFormulas.variables &&
-            q.variableFormulas.variables.length > 0
-          ) {
-            variationIndex = Math.floor(Math.random() * q.variableFormulas.variables.length);
+          const vars = q.variableFormulas?.variables;
+          if (Array.isArray(vars) && vars.length > 0) {
+            variationIndex = Math.floor(Math.random() * vars.length);
           }
 
           return {
             sessionId: newSession.id,
             questionId: q.questionId,
-            questionOrder: q.order,
+            questionOrder: index + 1, // Randomized sequence
             variationIndex,
             isDoubtful: false,
+            shuffledOptionsOrder,
           };
         });
 
@@ -106,6 +170,7 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         message: t(($) => $.exam.sessions.start.success),
         data: {
           sessionId: newSession.id,
+          isResumed: false,
         },
       });
     }),

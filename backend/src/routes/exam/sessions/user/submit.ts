@@ -25,6 +25,8 @@ const SubmitSessionResponse = Type.Object({
   data: Type.Object({
     score: Type.Number(),
     totalCorrect: Type.Number(),
+    totalWrong: Type.Number(),
+    totalSkipped: Type.Number(),
     totalQuestions: Type.Number(),
   }),
 });
@@ -38,8 +40,14 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
       params: SubmitSessionParams,
       response: {
         200: SubmitSessionResponse,
-        403: Type.Object({ success: Type.Boolean(), message: Type.String() }),
-        404: Type.Object({ success: Type.Boolean(), message: Type.String() }),
+        "4xx": Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String(),
+        }),
+        "5xx": Type.Object({
+          success: Type.Boolean({ default: false }),
+          message: Type.String(),
+        }),
       },
     },
     handler: withErrorHandler(async function handler(
@@ -47,10 +55,10 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
       reply: FastifyReply,
     ) {
       const { t } = getTypedI18n(request);
-      const { id } = request.params;
       const userId = (request as any).session.user.id;
+      const { id } = request.params;
 
-      // 1. Get and Lock Session
+      // 1. Get Session
       const [session] = await db
         .select({ id: examSessions.id, status: examSessions.status })
         .from(examSessions)
@@ -71,11 +79,16 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
           id: examSessionAnswers.id,
           questionId: examSessionAnswers.questionId,
           selectedOptionId: examSessionAnswers.selectedOptionId,
+          textAnswer: examSessionAnswers.textAnswer,
           subjectId: examQuestions.subjectId,
         })
         .from(examSessionAnswers)
         .innerJoin(examQuestions, eq(examSessionAnswers.questionId, examQuestions.id))
         .where(eq(examSessionAnswers.sessionId, id));
+
+      if (studentAnswers.length === 0) {
+        return reply.badRequest(t(($) => $.exam.sessions.submit.noQuestions));
+      }
 
       const questionIds = studentAnswers.map((a) => a.questionId);
 
@@ -104,135 +117,161 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // 3. Process Scoring & Stats Aggregation
       let totalCorrect = 0;
+      let totalWrong = 0;
+      let totalSkipped = 0;
       const totalQuestions = studentAnswers.length;
 
       // Aggregators for subject and tag stats
-      const subjectStatsMap = new Map<string, { total: number; correct: number; wrong: number }>();
-      const tagStatsMap = new Map<string, { total: number; correct: number; wrong: number }>();
+      const subjectStatsMap = new Map<
+        string,
+        { total: number; correct: number; wrong: number; skipped: number }
+      >();
+      const tagStatsMap = new Map<
+        string,
+        { total: number; correct: number; wrong: number; skipped: number }
+      >();
 
       for (const answer of studentAnswers) {
         const correct = correctOptions.find((o) => o.questionId === answer.questionId);
-        const isCorrect = answer.selectedOptionId === correct?.id;
+
+        const isSkipped =
+          !answer.selectedOptionId && (!answer.textAnswer || answer.textAnswer.length === 0);
+        const isCorrect = !isSkipped && answer.selectedOptionId === correct?.id;
+        const isWrong = !isSkipped && !isCorrect;
 
         if (isCorrect) totalCorrect++;
+        else if (isWrong) totalWrong++;
+        else totalSkipped++;
 
         // Track Subject Stats
         const sId = answer.subjectId;
-        if (!subjectStatsMap.has(sId)) subjectStatsMap.set(sId, { total: 0, correct: 0, wrong: 0 });
+        if (!subjectStatsMap.has(sId))
+          subjectStatsMap.set(sId, { total: 0, correct: 0, wrong: 0, skipped: 0 });
         const sStat = subjectStatsMap.get(sId)!;
         sStat.total++;
         if (isCorrect) sStat.correct++;
-        else sStat.wrong++;
+        else if (isWrong) sStat.wrong++;
+        else sStat.skipped++;
 
         // Track Tag Stats
         const qTags = questionTagsRes.filter((qt) => qt.questionId === answer.questionId);
         for (const qt of qTags) {
           if (!tagStatsMap.has(qt.tagId))
-            tagStatsMap.set(qt.tagId, { total: 0, correct: 0, wrong: 0 });
+            tagStatsMap.set(qt.tagId, { total: 0, correct: 0, wrong: 0, skipped: 0 });
           const tStat = tagStatsMap.get(qt.tagId)!;
           tStat.total++;
           if (isCorrect) tStat.correct++;
-          else tStat.wrong++;
+          else if (isWrong) tStat.wrong++;
+          else tStat.skipped++;
         }
 
         // Update individual answer record
         await db
           .update(examSessionAnswers)
-          .set({ isCorrect, updatedAt: new Date() })
+          .set({ isCorrect: isSkipped ? null : isCorrect, updatedAt: new Date() })
           .where(eq(examSessionAnswers.id, answer.id));
       }
 
-      const totalWrong = totalQuestions - totalCorrect;
       const finalScore = totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
 
       // 4. Update Statistics Tables (Incremental)
-
-      // 4a. Global Stats
-      await db
-        .insert(examUserStatsGlobal)
-        .values({
-          userId,
-          totalExamsTaken: 1,
-          totalQuestionsAnswered: totalQuestions,
-          totalCorrectAnswers: totalCorrect,
-          totalWrongAnswers: totalWrong,
-          averageScore: finalScore.toString(),
-          lastActiveAt: new Date(),
-          updatedAt: new Date(),
-        })
-        .onConflictDoUpdate({
-          target: examUserStatsGlobal.userId,
-          set: {
-            totalExamsTaken: sql`${examUserStatsGlobal.totalExamsTaken} + 1`,
-            totalQuestionsAnswered: sql`${examUserStatsGlobal.totalQuestionsAnswered} + ${totalQuestions}`,
-            totalCorrectAnswers: sql`${examUserStatsGlobal.totalCorrectAnswers} + ${totalCorrect}`,
-            totalWrongAnswers: sql`${examUserStatsGlobal.totalWrongAnswers} + ${totalWrong}`,
-            averageScore: sql`(${examUserStatsGlobal.averageScore} * ${examUserStatsGlobal.totalExamsTaken} + ${finalScore}) / (${examUserStatsGlobal.totalExamsTaken} + 1)`,
+      await db.transaction(async (tx) => {
+        // 4a. Global Stats
+        await tx
+          .insert(examUserStatsGlobal)
+          .values({
+            userId,
+            totalExamsTaken: 1,
+            totalQuestionsAnswered: totalQuestions - totalSkipped,
+            totalCorrectAnswers: totalCorrect,
+            totalWrongAnswers: totalWrong,
+            averageScore: finalScore.toString(),
             lastActiveAt: new Date(),
             updatedAt: new Date(),
-          },
-        });
-
-      // 4b. Subject Stats
-      for (const [sId, sStat] of subjectStatsMap.entries()) {
-        await db
-          .insert(examUserStatsSubject)
-          .values({
-            userId,
-            subjectId: sId,
-            totalQuestionsAnswered: sStat.total,
-            totalCorrect: sStat.correct,
-            totalWrong: sStat.wrong,
-            accuracyRate: ((sStat.correct / sStat.total) * 100).toString(),
-            updatedAt: new Date(),
           })
           .onConflictDoUpdate({
-            target: [examUserStatsSubject.userId, examUserStatsSubject.subjectId],
+            target: examUserStatsGlobal.userId,
             set: {
-              totalQuestionsAnswered: sql`${examUserStatsSubject.totalQuestionsAnswered} + ${sStat.total}`,
-              totalCorrect: sql`${examUserStatsSubject.totalCorrect} + ${sStat.correct}`,
-              totalWrong: sql`${examUserStatsSubject.totalWrong} + ${sStat.wrong}`,
-              accuracyRate: sql`(${examUserStatsSubject.totalCorrect} + ${sStat.correct})::decimal / (${examUserStatsSubject.totalQuestionsAnswered} + ${sStat.total}) * 100`,
+              totalExamsTaken: sql`${examUserStatsGlobal.totalExamsTaken} + 1`,
+              totalQuestionsAnswered: sql`${examUserStatsGlobal.totalQuestionsAnswered} + ${totalQuestions - totalSkipped}`,
+              totalCorrectAnswers: sql`${examUserStatsGlobal.totalCorrectAnswers} + ${totalCorrect}`,
+              totalWrongAnswers: sql`${examUserStatsGlobal.totalWrongAnswers} + ${totalWrong}`,
+              averageScore: sql`(${examUserStatsGlobal.averageScore} * ${examUserStatsGlobal.totalExamsTaken} + ${finalScore}) / (${examUserStatsGlobal.totalExamsTaken} + 1)`,
+              lastActiveAt: new Date(),
               updatedAt: new Date(),
             },
           });
-      }
 
-      // 4c. Tag Stats
-      for (const [tId, tStat] of tagStatsMap.entries()) {
-        await db
-          .insert(examUserStatsTag)
-          .values({
-            userId,
-            tagId: tId,
-            totalQuestionsAnswered: tStat.total,
-            totalCorrect: tStat.correct,
-            totalWrong: tStat.wrong,
-            accuracyRate: ((tStat.correct / tStat.total) * 100).toString(),
+        // 4b. Subject Stats
+        for (const [sId, sStat] of subjectStatsMap.entries()) {
+          await tx
+            .insert(examUserStatsSubject)
+            .values({
+              userId,
+              subjectId: sId,
+              totalQuestionsAnswered: sStat.total - sStat.skipped,
+              totalCorrect: sStat.correct,
+              totalWrong: sStat.wrong,
+              accuracyRate:
+                sStat.total - sStat.skipped > 0
+                  ? ((sStat.correct / (sStat.total - sStat.skipped)) * 100).toString()
+                  : "0",
+              updatedAt: new Date(),
+            })
+            .onConflictDoUpdate({
+              target: [examUserStatsSubject.userId, examUserStatsSubject.subjectId],
+              set: {
+                totalQuestionsAnswered: sql`${examUserStatsSubject.totalQuestionsAnswered} + ${sStat.total - sStat.skipped}`,
+                totalCorrect: sql`${examUserStatsSubject.totalCorrect} + ${sStat.correct}`,
+                totalWrong: sql`${examUserStatsSubject.totalWrong} + ${sStat.wrong}`,
+                accuracyRate: sql`CASE WHEN (${examUserStatsSubject.totalQuestionsAnswered} + ${sStat.total - sStat.skipped}) > 0 THEN (${examUserStatsSubject.totalCorrect} + ${sStat.correct})::decimal / (${examUserStatsSubject.totalQuestionsAnswered} + ${sStat.total - sStat.skipped}) * 100 ELSE 0 END`,
+                updatedAt: new Date(),
+              },
+            });
+        }
+
+        // 4c. Tag Stats
+        for (const [tId, tStat] of tagStatsMap.entries()) {
+          await tx
+            .insert(examUserStatsTag)
+            .values({
+              userId,
+              tagId: tId,
+              totalQuestionsAnswered: tStat.total - tStat.skipped,
+              totalCorrect: tStat.correct,
+              totalWrong: tStat.wrong,
+              accuracyRate:
+                tStat.total - tStat.skipped > 0
+                  ? ((tStat.correct / (tStat.total - tStat.skipped)) * 100).toString()
+                  : "0",
+              updatedAt: new Date(),
+            })
+            .onConflictDoUpdate({
+              target: [examUserStatsTag.userId, examUserStatsTag.tagId],
+              set: {
+                totalQuestionsAnswered: sql`${examUserStatsTag.totalQuestionsAnswered} + ${tStat.total - tStat.skipped}`,
+                totalCorrect: sql`${examUserStatsTag.totalCorrect} + ${tStat.correct}`,
+                totalWrong: sql`${examUserStatsTag.totalWrong} + ${tStat.wrong}`,
+                accuracyRate: sql`CASE WHEN (${examUserStatsTag.totalQuestionsAnswered} + ${tStat.total - tStat.skipped}) > 0 THEN (${examUserStatsTag.totalCorrect} + ${tStat.correct})::decimal / (${examUserStatsTag.totalQuestionsAnswered} + ${tStat.total - tStat.skipped}) * 100 ELSE 0 END`,
+                updatedAt: new Date(),
+              },
+            });
+        }
+
+        // 5. Finalize Session
+        await tx
+          .update(examSessions)
+          .set({
+            status: EnumExamSessionStatus.COMPLETED,
+            endTime: new Date(),
+            score: finalScore.toString(),
+            totalCorrect,
+            totalWrong,
+            totalSkipped,
             updatedAt: new Date(),
           })
-          .onConflictDoUpdate({
-            target: [examUserStatsTag.userId, examUserStatsTag.tagId],
-            set: {
-              totalQuestionsAnswered: sql`${examUserStatsTag.totalQuestionsAnswered} + ${tStat.total}`,
-              totalCorrect: sql`${examUserStatsTag.totalCorrect} + ${tStat.correct}`,
-              totalWrong: sql`${examUserStatsTag.totalWrong} + ${tStat.wrong}`,
-              accuracyRate: sql`(${examUserStatsTag.totalCorrect} + ${tStat.correct})::decimal / (${examUserStatsTag.totalQuestionsAnswered} + ${tStat.total}) * 100`,
-              updatedAt: new Date(),
-            },
-          });
-      }
-
-      // 5. Finalize Session
-      await db
-        .update(examSessions)
-        .set({
-          status: EnumExamSessionStatus.COMPLETED,
-          endTime: new Date(),
-          score: finalScore.toString(), // Score is decimal
-          updatedAt: new Date(),
-        })
-        .where(eq(examSessions.id, id));
+          .where(eq(examSessions.id, id));
+      });
 
       return reply.status(200).send({
         success: true,
@@ -240,6 +279,8 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         data: {
           score: finalScore,
           totalCorrect,
+          totalWrong,
+          totalSkipped,
           totalQuestions,
         },
       });

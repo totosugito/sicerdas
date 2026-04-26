@@ -9,8 +9,6 @@ import {
 } from "../../../../db/schema/exam/index.ts";
 import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { fromNodeHeaders } from "better-auth/node";
-import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdateBookmarkRequest = Type.Object({
@@ -53,16 +51,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       reply: FastifyReply,
     ): Promise<typeof UpdateBookmarkResponse.static> {
       const { t } = getTypedI18n(req);
-      const session = await getAuthInstance(app).api.getSession({
-        headers: fromNodeHeaders(req.headers),
-      });
-      const user = session?.user;
-
-      if (!user) {
-        return reply.unauthorized(t(($) => $.auth.unauthorized));
-      }
-
-      const userId = user.id;
+      const userId = (req as any).session.user.id;
       const { packageId, bookmarked } = req.body;
 
       // Check if package exists

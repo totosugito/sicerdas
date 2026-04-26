@@ -60,3 +60,12 @@ export const PgEnumExamSessionStatus = pgEnum(
   "exam_session_status",
   Object.values(EnumExamSessionStatus) as [string, ...string[]],
 );
+
+export const EnumExamSessionMode = {
+  STUDY: "study",
+  TRYOUT: "tryout",
+} as const;
+export const PgEnumExamSessionMode = pgEnum(
+  "exam_session_mode",
+  Object.values(EnumExamSessionMode) as [string, ...string[]],
+);

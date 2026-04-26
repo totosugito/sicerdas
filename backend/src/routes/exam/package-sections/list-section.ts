@@ -4,7 +4,7 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
 import { examPackages } from "../../../db/schema/exam/packages.ts";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 

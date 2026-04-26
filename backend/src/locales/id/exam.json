@@ -181,7 +181,7 @@
     },
     "sessions": {
       "start": {
-        "success": "Ujian dimulai, selamat mengerjakan!"
+        "success": "Sesi ujian berhasil dimulai, selamat mengerjakan!"
       },
       "details": {
         "notFound": "Sesi tidak ditemukan"
@@ -189,12 +189,21 @@
       "saveAnswer": {
         "success": "Jawaban berhasil disimpan",
         "notFound": "Sesi tidak ditemukan",
-        "finished": "Sesi sudah berakhir"
+        "finished": "Sesi sudah berakhir atau tidak dapat diubah lagi",
+        "studyLocked": "Jawaban sudah terkunci pada mode Belajar"
       },
       "submit": {
         "success": "Ujian telah selesai dikirim",
         "notFound": "Sesi tidak ditemukan",
-        "alreadySubmitted": "Ujian sudah dikirim sebelumnya"
+        "alreadySubmitted": "Ujian sudah dikirim sebelumnya",
+        "noQuestions": "Tidak ada soal yang ditemukan untuk sesi ini"
+      },
+      "history": {
+        "success": "Daftar riwayat sesi berhasil diambil"
+      },
+      "abandon": {
+        "success": "Sesi berhasil dibatalkan",
+        "notFound": "Sesi tidak ditemukan atau sudah ditutup"
       }
     },
     "user_stats": {
