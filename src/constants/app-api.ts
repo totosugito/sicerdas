@@ -171,6 +171,8 @@ export const AppApi = {
         details: APP_URL_API + "/exam/sessions/user/details/:id",
         saveAnswer: APP_URL_API + "/exam/sessions/user/save-answer",
         submit: APP_URL_API + "/exam/sessions/user/submit/:id",
+        history: APP_URL_API + "/exam/sessions/user/history/:packageId/:sectionId",
+        abandon: APP_URL_API + "/exam/sessions/user/abandon/:id",
       },
     },
   },

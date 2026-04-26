@@ -1,56 +1,70 @@
+export type ExamSessionStatus = "in_progress" | "completed" | "abandoned";
+export type ExamSessionMode = "study" | "tryout";
+
 export interface ExamSession {
-    id: string;
-    startTime: string;
-    status: string;
-    package: {
-        title: string;
-        durationMinutes: number;
-    };
+  id: string;
+  userId: string;
+  packageId: string;
+  sectionId: string;
+  mode: ExamSessionMode;
+  status: ExamSessionStatus;
+  startTime: string;
+  endTime: string | null;
+  score: string | null;
+  totalCorrect: number;
+  totalWrong: number;
+  totalSkipped: number;
+  currentQuestionId: string | null;
+  questionOrder: string[]; // Array of question IDs
 }
 
-export interface ExamSessionAnswer {
-    questionId: string;
-    questionOrder: number;
-    variationIndex: number;
+export interface ExamSessionQuestion {
+  id: string;
+  passageId: string | null;
+  content: string;
+  questionType: string;
+  options: ExamSessionOption[];
+  userAnswer?: {
+    selectedOptionId?: string;
+    textAnswer?: string;
     isDoubtful: boolean;
-    selectedOptionId: string | null;
-    textAnswer?: Record<string, unknown>[] | null;
-    question: {
-        content: Record<string, unknown>[];
-        type: string;
-        options: {
-            id: string;
-            content: Record<string, unknown>[];
-        }[];
-    };
+  };
 }
 
-export interface StartSessionResponse {
-    success: boolean;
-    message: string;
-    data: {
-        sessionId: string;
-    };
+export interface ExamSessionOption {
+  id: string;
+  content: string;
+  order: number;
 }
 
-export interface SessionDetailsResponse {
-    success: boolean;
-    message: string;
-    data: {
-        session: ExamSession;
-        answers: ExamSessionAnswer[];
-    };
+export interface ExamSessionDetails {
+  session: ExamSession;
+  questions: ExamSessionQuestion[];
+}
+
+export interface StartSessionRequest {
+  packageId: string;
+  sectionId: string;
+  mode: ExamSessionMode;
 }
 
 export interface SaveAnswerRequest {
-    sessionId: string;
-    questionId: string;
-    selectedOptionId?: string | null;
-    textAnswer?: Record<string, unknown>[] | null;
-    isDoubtful?: boolean;
+  sessionId: string;
+  questionId: string;
+  selectedOptionId?: string;
+  textAnswer?: string;
+  isDoubtful?: boolean;
+  elapsedSeconds?: number;
 }
 
-export interface CommonResponse {
-    success: boolean;
-    message: string;
+export interface ExamHistoryItem {
+  id: string;
+  startTime: string;
+  endTime: string | null;
+  status: ExamSessionStatus;
+  mode: ExamSessionMode;
+  score: string | null;
+  totalCorrect: number;
+  totalWrong: number;
+  totalSkipped: number;
 }

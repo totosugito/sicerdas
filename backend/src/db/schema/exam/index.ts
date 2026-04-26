@@ -12,6 +12,8 @@ export {
   PgEnumExamSessionStatus,
   EnumScoringStrategy,
   PgEnumScoringStrategy,
+  EnumExamSessionMode,
+  PgEnumExamSessionMode,
 } from "./enums.ts";
 
 // Categories & Subjects
