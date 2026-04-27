@@ -8,6 +8,7 @@ import options from "./options";
 import solutions from "./solutions";
 import tags from "./tags";
 import packageQuestions from "./package-questions";
+import sessions from "./sessions";
 
 const obj = {
   ...exam,
@@ -20,5 +21,6 @@ const obj = {
   solutions,
   tags,
   packageQuestions,
+  sessions,
 };
 export default obj;

@@ -7,8 +7,8 @@ export interface StartSessionResponse {
   success: boolean;
   message: string;
   data: {
-    session: ExamSession;
-    isNew: boolean;
+    sessionId: string;
+    isResumed: boolean;
   };
 }
 

@@ -16,6 +16,9 @@ export interface ExamPackageSection {
   updatedAt: string;
   totalQuestions: number;
   activeQuestions: number;
+  userStatus?: "in_progress" | "completed" | "abandoned" | null;
+  userMode?: "study" | "tryout" | null;
+  bestTryoutScore?: number | null;
 }
 
 export interface SectionQuestionItem {

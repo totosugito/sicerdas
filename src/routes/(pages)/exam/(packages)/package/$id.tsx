@@ -6,8 +6,10 @@ import {
   PackageDetailInfo,
   PackageSectionAccordion,
   PackageRatingDialog,
+  SectionModeDialog,
   PackageDetailSkeleton,
 } from "@/components/pages/exam/packages/detail-package";
+import { useStartSession, ExamSessionMode } from "@/api/exam-sessions";
 import { AppRoute } from "@/constants/app-route";
 import { ErrorPageDetails, PageTitle } from "@/components/app";
 import { useAppTranslation } from "@/lib/i18n-typed";
@@ -48,12 +50,16 @@ function RouteComponent() {
   // Mutation Hooks
   const { mutate: updateBookmark } = useBookmarkPackage();
   const { mutateAsync: ratePackage } = useRatePackage();
+  const { mutate: startSessionMutation } = useStartSession();
 
   // Local UI State
   const [isFavorite, setIsFavorite] = useState(false);
   const [showRatingDialog, setShowRatingDialog] = useState(false);
   const [showReportDialog, setShowReportDialog] = useState(false);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [showModeDialog, setShowModeDialog] = useState(false);
+  const [selectedSectionId, setSelectedSectionId] = useState("");
+  const [selectedSectionTitle, setSelectedSectionTitle] = useState("");
 
   // Sync favorite state
   useEffect(() => {
@@ -118,12 +124,38 @@ function RouteComponent() {
     }
   };
 
-  const startExam = () => {
+  const openModeDialog = (sectionId: string, sectionTitle: string) => {
     if (!user) {
       setShowLoginDialog(true);
       return;
     }
-    showNotifSuccess({ message: "Memulai persiapan ujian..." });
+    setSelectedSectionId(sectionId);
+    setSelectedSectionTitle(sectionTitle);
+    setShowModeDialog(true);
+  };
+
+  const handleStartSession = (mode: ExamSessionMode) => {
+    const pkg = detailRes?.data;
+    if (!pkg || !selectedSectionId) return;
+
+    startSessionMutation(
+      { packageId: pkg.id, sectionId: selectedSectionId, mode },
+      {
+        onSuccess: (res) => {
+          if (res.success) {
+            router.navigate({
+              to: AppRoute.exam.session.url,
+              params: { id: res.data.sessionId },
+            });
+          } else {
+            showNotifError({ message: res.message });
+          }
+        },
+        onError: (err: any) => {
+          showNotifError({ message: err?.message || t(($) => $.labels.error) });
+        },
+      },
+    );
   };
 
   if (isLoading) {
@@ -171,7 +203,10 @@ function RouteComponent() {
           <PackageDetailInfo pkg={pkg} />
 
           <div className="pt-4 border-t">
-            <PackageSectionAccordion sections={sections} onTakeExam={(sectionId) => startExam()} />
+            <PackageSectionAccordion
+              sections={sections}
+              onTakeExam={(sectionId, title) => openModeDialog(sectionId, title)}
+            />
           </div>
         </div>
 
@@ -182,6 +217,15 @@ function RouteComponent() {
           onRate={handleRate}
           initialRating={pkg.userInteraction?.rating || 0}
           packageTitle={pkg.title}
+        />
+
+        <SectionModeDialog
+          isOpen={showModeDialog}
+          onOpenChange={setShowModeDialog}
+          packageId={pkg.id}
+          sectionId={selectedSectionId}
+          sectionTitle={selectedSectionTitle}
+          onStart={handleStartSession}
         />
 
         <CreateContentReport

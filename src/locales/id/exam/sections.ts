@@ -114,4 +114,5 @@ export default {
       order: "Urutan",
     },
   },
+  takeExamConfirm: "Silakan pilih mode ujian untuk memulai pengerjaan sub-test ini.",
 };

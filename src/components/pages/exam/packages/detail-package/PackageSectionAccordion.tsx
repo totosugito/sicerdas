@@ -6,12 +6,15 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { Clock, LayoutGrid } from "lucide-react";
+import { Clock, LayoutGrid, PlayCircle, Trophy } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { useMemo } from "react";
+import { ExamSessionStatusConfig } from "@/constants/app-enum";
 
 interface PackageSectionAccordionProps {
   sections: ExamPackageSection[];
-  onTakeExam?: (sectionId: string) => void;
+  onTakeExam?: (sectionId: string, sectionTitle: string) => void;
 }
 
 interface Chapter {
@@ -93,15 +96,28 @@ export const PackageSectionAccordion = ({ sections, onTakeExam }: PackageSection
                   <div
                     key={section.id}
                     role="button"
-                    onClick={() => onTakeExam?.(section.id)}
+                    onClick={() => onTakeExam?.(section.id, section.title)}
                     className="group flex flex-col gap-4 p-5 transition-all hover:bg-primary/5 sm:flex-row sm:items-center sm:justify-between"
                   >
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted transition-colors group-hover:bg-primary group-hover:text-primary-foreground group-active:scale-90">
-                        <Clock className="h-5 w-5" />
+                    <div className="flex flex-1 items-start gap-4 min-w-0">
+                      <div className="flex shrink-0 items-center justify-center transition-all group-active:scale-90 mt-1 w-6">
+                        {(() => {
+                          const config = section.userStatus
+                            ? ExamSessionStatusConfig[
+                                section.userStatus as keyof typeof ExamSessionStatusConfig
+                              ]
+                            : ExamSessionStatusConfig.abandoned;
+
+                          const StatusIcon = config.icon;
+                          return (
+                            <StatusIcon
+                              className={cn("h-5 w-5 transition-colors", config.iconClassName)}
+                            />
+                          );
+                        })()}
                       </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-sm font-bold text-foreground transition-colors group-hover:text-primary">
+                      <div className="flex flex-col gap-1 min-w-0 flex-1">
+                        <span className="text-sm font-bold text-foreground transition-colors group-hover:text-primary line-clamp-2">
                           {section.title}
                         </span>
                         {section.description && (
@@ -109,22 +125,78 @@ export const PackageSectionAccordion = ({ sections, onTakeExam }: PackageSection
                             {section.description}
                           </p>
                         )}
+                        <div className="mt-1 flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-wider text-muted-foreground/60">
+                          <div className="flex items-center gap-1.5">
+                            <Clock className="h-3 w-3" />
+                            <span>
+                              {section.durationMinutes} {t(($) => $.exam.packages.detail.mnt)}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 border-l pl-3">
+                            <PlayCircle className="h-3 w-3" />
+                            <span>
+                              {section.totalQuestions} {t(($) => $.exam.packages.detail.questions)}
+                            </span>
+                          </div>
+                          {section.userMode && (
+                            <div className="flex items-center gap-1.5 border-l pl-3 text-amber-500/80">
+                              <span>
+                                {section.userMode === "study"
+                                  ? t(($) => $.exam.sessions.mode.study)
+                                  : t(($) => $.exam.sessions.mode.tryout)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-6 text-xs font-bold text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-primary/40" />
-                        <span>
-                          {section.durationMinutes} {t(($) => $.exam.packages.detail.mnt)}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 border-l pl-6">
-                        <div className="h-1.5 w-1.5 rounded-full bg-amber-400/60" />
-                        <span>
-                          {section.totalQuestions} {t(($) => $.exam.packages.detail.questions)}
-                        </span>
-                      </div>
+                    <div className="flex shrink-0 flex-col items-end gap-3 sm:text-right">
+                      {section.userStatus &&
+                        ExamSessionStatusConfig[
+                          section.userStatus as keyof typeof ExamSessionStatusConfig
+                        ] &&
+                        (() => {
+                          const config =
+                            ExamSessionStatusConfig[
+                              section.userStatus as keyof typeof ExamSessionStatusConfig
+                            ];
+                          const StatusIcon = config.icon;
+                          return (
+                            <Badge
+                              variant={config.variant as any}
+                              className={cn(
+                                "h-6 px-2 text-xs uppercase tracking-wider font-black",
+                                config.animate && "animate-pulse",
+                              )}
+                            >
+                              <span className="flex items-center gap-1">
+                                <StatusIcon className="h-3 w-3" />
+                                {t(
+                                  ($) =>
+                                    ($.exam.sessions.status as any)[
+                                      config.labelKey.split(".").pop()!
+                                    ],
+                                )}
+                              </span>
+                            </Badge>
+                          );
+                        })()}
+
+                      {section.bestTryoutScore !== null &&
+                        section.bestTryoutScore !== undefined && (
+                          <div className="flex items-center gap-3 rounded-lg bg-primary/5 px-3 py-1.5 text-primary ring-1 ring-primary/10 transition-colors group-hover:bg-primary/10">
+                            <Trophy className="h-4 w-4 shrink-0" />
+                            <div className="flex flex-col items-end">
+                              <span className="text-xs leading-none uppercase font-black text-primary/60 tracking-tighter">
+                                {t(($) => $.exam.sessions.bestScore)}
+                              </span>
+                              <span className="text-lg font-black leading-none">
+                                {section.bestTryoutScore}
+                              </span>
+                            </div>
+                          </div>
+                        )}
                     </div>
                   </div>
                 ))}
