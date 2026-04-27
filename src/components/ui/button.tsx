@@ -34,7 +34,7 @@ const buttonVariants = cva(
         "subtle-success":
           "bg-green-50 text-green-700 dark:bg-green-900/30 border-1 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/40",
         "subtle-destructive":
-          "bg-red-50 text-red-700 dark:bg-red-900/30 border-1 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40",
+          "bg-red-50 text-red-700 dark:bg-red-900/30 border-1 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 hover:text-red-500",
         "subtle-info":
           "bg-blue-50 text-blue-700 dark:bg-blue-900/30 border-1 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40",
       },

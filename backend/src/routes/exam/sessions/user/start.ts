@@ -86,6 +86,7 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
             eq(examSessions.userId, userId),
             eq(examSessions.packageId, packageId),
             eq(examSessions.sectionId, sectionId),
+            eq(examSessions.mode, mode),
             eq(examSessions.status, EnumExamSessionStatus.IN_PROGRESS),
           ),
         )

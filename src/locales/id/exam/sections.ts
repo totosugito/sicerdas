@@ -114,5 +114,7 @@ export default {
       order: "Urutan",
     },
   },
-  takeExamConfirm: "Silakan pilih mode ujian untuk memulai pengerjaan sub-test ini.",
+  takeExamTitle: "Mulai Sesi Ujian",
+  takeExamConfirm:
+    "Anda akan mengerjakan sub-test {{title}}. Silakan pilih mode ujian untuk memulai pengerjaan.",
 };

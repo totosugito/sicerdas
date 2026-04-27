@@ -7,10 +7,9 @@ import {
 } from "@/components/ui/accordion";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Clock, LayoutGrid, PlayCircle, Trophy } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { useMemo } from "react";
-import { ExamSessionStatusConfig } from "@/constants/app-enum";
+import { EnumExamSessionStatus } from "@/constants/app-enum";
 
 interface PackageSectionAccordionProps {
   sections: ExamPackageSection[];
@@ -95,27 +94,9 @@ export const PackageSectionAccordion = ({ sections, onTakeExam }: PackageSection
                 {chapter.sections.map((section) => (
                   <div
                     key={section.id}
-                    role="button"
-                    onClick={() => onTakeExam?.(section.id, section.title)}
-                    className="group flex flex-col gap-4 p-5 transition-all hover:bg-primary/5 sm:flex-row sm:items-center sm:justify-between"
+                    className="group flex flex-col gap-4 p-5 transition-all hover:bg-muted/30 sm:flex-row sm:items-center sm:justify-between"
                   >
-                    <div className="flex flex-1 items-start gap-4 min-w-0">
-                      <div className="flex shrink-0 items-center justify-center transition-all group-active:scale-90 mt-1 w-6">
-                        {(() => {
-                          const config = section.userStatus
-                            ? ExamSessionStatusConfig[
-                                section.userStatus as keyof typeof ExamSessionStatusConfig
-                              ]
-                            : ExamSessionStatusConfig.abandoned;
-
-                          const StatusIcon = config.icon;
-                          return (
-                            <StatusIcon
-                              className={cn("h-5 w-5 transition-colors", config.iconClassName)}
-                            />
-                          );
-                        })()}
-                      </div>
+                    <div className="flex flex-1 items-start gap-0 min-w-0">
                       <div className="flex flex-col gap-1 min-w-0 flex-1">
                         <span className="text-sm font-bold text-foreground transition-colors group-hover:text-primary line-clamp-2">
                           {section.title}
@@ -151,52 +132,38 @@ export const PackageSectionAccordion = ({ sections, onTakeExam }: PackageSection
                       </div>
                     </div>
 
-                    <div className="flex shrink-0 flex-col items-end gap-3 sm:text-right">
-                      {section.userStatus &&
-                        ExamSessionStatusConfig[
-                          section.userStatus as keyof typeof ExamSessionStatusConfig
-                        ] &&
-                        (() => {
-                          const config =
-                            ExamSessionStatusConfig[
-                              section.userStatus as keyof typeof ExamSessionStatusConfig
-                            ];
-                          const StatusIcon = config.icon;
-                          return (
-                            <Badge
-                              variant={config.variant as any}
-                              className={cn(
-                                "h-6 px-2 text-xs uppercase tracking-wider font-black",
-                                config.animate && "animate-pulse",
-                              )}
-                            >
-                              <span className="flex items-center gap-1">
-                                <StatusIcon className="h-3 w-3" />
-                                {t(
-                                  ($) =>
-                                    ($.exam.sessions.status as any)[
-                                      config.labelKey.split(".").pop()!
-                                    ],
-                                )}
-                              </span>
-                            </Badge>
-                          );
-                        })()}
-
+                    <div className="flex shrink-0 flex-wrap items-center gap-4 sm:flex-nowrap">
                       {section.bestTryoutScore !== null &&
                         section.bestTryoutScore !== undefined && (
-                          <div className="flex items-center gap-3 rounded-lg bg-primary/5 px-3 py-1.5 text-primary ring-1 ring-primary/10 transition-colors group-hover:bg-primary/10">
-                            <Trophy className="h-4 w-4 shrink-0" />
+                          <div className="flex items-center gap-2.5 rounded-lg bg-primary/5 px-3 py-1.5 text-primary ring-1 ring-primary/10 transition-colors group-hover:bg-primary/10">
+                            <Trophy className="h-3.5 w-3.5 shrink-0" />
                             <div className="flex flex-col items-end">
-                              <span className="text-xs leading-none uppercase font-black text-primary/60 tracking-tighter">
+                              <span className="text-[9px] leading-none uppercase font-black text-primary/60 tracking-tighter">
                                 {t(($) => $.exam.sessions.bestScore)}
                               </span>
-                              <span className="text-lg font-black leading-none">
+                              <span className="text-base font-black leading-none">
                                 {section.bestTryoutScore}
                               </span>
                             </div>
                           </div>
                         )}
+
+                      <div className="flex flex-col items-end gap-2">
+                        <Button
+                          size="sm"
+                          variant={
+                            section.userStatus === EnumExamSessionStatus.IN_PROGRESS
+                              ? "warning"
+                              : "default"
+                          }
+                          className="h-8 rounded-lg px-4 text-xs font-bold"
+                          onClick={() => onTakeExam?.(section.id, section.title)}
+                        >
+                          {section.userStatus === EnumExamSessionStatus.IN_PROGRESS
+                            ? t(($) => $.exam.sessions.active.continue)
+                            : t(($) => $.exam.packages.detail.takeExam)}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}

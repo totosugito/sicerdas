@@ -1,23 +1,24 @@
+import { EnumExamSessionStatus } from "backend/src/db/schema/exam/enums";
 import { CheckCircle2, PlayCircle, FileText } from "lucide-react";
 
 export { EnumExamSessionStatus } from "backend/src/db/schema/exam/enums";
 
 export const ExamSessionStatusConfig = {
-  completed: {
+  [EnumExamSessionStatus.COMPLETED]: {
     variant: "success" as const,
     icon: CheckCircle2,
     labelKey: "exam.sessions.status.completed" as const,
     animate: false,
     iconClassName: "text-success group-hover:text-primary",
   },
-  in_progress: {
+  [EnumExamSessionStatus.IN_PROGRESS]: {
     variant: "warning" as const,
     icon: PlayCircle,
     labelKey: "exam.sessions.status.inProgress" as const,
     animate: true,
     iconClassName: "text-warning group-hover:text-primary",
   },
-  abandoned: {
+  [EnumExamSessionStatus.ABANDONED]: {
     variant: "secondary" as const,
     icon: FileText,
     labelKey: "exam.sessions.status.abandoned" as const,

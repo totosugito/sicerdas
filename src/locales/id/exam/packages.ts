@@ -15,7 +15,7 @@ export default {
     description: "Lihat detail paket ujian, kurikulum, dan statistik interaksi.",
     notFound: "Gagal Memuat Paket",
     noDescription: "Tidak ada deskripsi untuk paket ini.",
-    takeExam: "Ikuti Ujian",
+    takeExam: "Mulai Ujian",
     backToList: "Kembali ke Daftar",
     mnt: "mnt",
     questions: "soal",

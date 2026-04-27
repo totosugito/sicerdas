@@ -13,7 +13,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
-import { AlertTriangle, CheckCircle, Info, XCircle, HelpCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Info, XCircle, HelpCircle, X } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 
 export type DialogInfoItem = {
   text: string;
@@ -54,6 +55,14 @@ export type DialogModalProps = {
   classNameBody?: string;
   classNameInfoSection?: string;
   variantSubmit?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  variantCancel?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link"
+    | "subtle-destructive";
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   trigger?: React.ReactNode;
@@ -115,6 +124,8 @@ export function DialogModal({
   classNameHeader,
   classNameBody,
   classNameInfoSection,
+  variantSubmit = "default",
+  variantCancel = "outline",
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
   trigger,
@@ -162,6 +173,17 @@ export function DialogModal({
           className,
         )}
       >
+        {/* Close Button */}
+        {config.showCloseButton && (
+          <button
+            onClick={() => handleOpenChange(false)}
+            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-50"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </button>
+        )}
+
         {/* Header Section */}
         <div className={cn("px-6 pt-6 pb-2 text-center", classNameHeader)}>
           <div
@@ -240,10 +262,11 @@ export function DialogModal({
           {children}
 
           {/* Action Buttons */}
-          <AlertDialogFooter className="flex-row gap-3 sm:justify-stretch pt-2">
+          <AlertDialogFooter className="flex-row gap-3 sm:justify-stretch pt-4">
             {config.textCancel && (
               <AlertDialogCancel
                 className={cn(
+                  buttonVariants({ variant: variantCancel }),
                   "flex-1 h-10 border-slate-200 dark:border-slate-800",
                   classNameCancel,
                 )}
@@ -255,10 +278,10 @@ export function DialogModal({
             {config.textConfirm && (
               <AlertDialogAction
                 className={cn(
+                  buttonVariants({ variant: variantSubmit }),
                   "flex-1 h-10 shadow-lg transition-all",
-                  isDestructive
-                    ? "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-destructive/20"
-                    : "shadow-primary/20",
+                  variantSubmit === "default" && !isDestructive && "shadow-primary/20",
+                  isDestructive && "shadow-destructive/20",
                   classNameConfirm,
                 )}
                 onClick={config.onConfirmClick}
