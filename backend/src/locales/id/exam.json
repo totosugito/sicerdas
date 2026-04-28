@@ -186,6 +186,9 @@
       "details": {
         "notFound": "Sesi tidak ditemukan"
       },
+      "errors": {
+        "notFound": "Sesi atau soal ujian tidak ditemukan"
+      },
       "saveAnswer": {
         "success": "Jawaban berhasil disimpan",
         "notFound": "Sesi tidak ditemukan",

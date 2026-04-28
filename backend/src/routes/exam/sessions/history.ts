@@ -1,11 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examSessions } from "../../../../db/schema/exam/sessions.ts";
+import { db } from "../../../db/db-pool.ts";
+import { examSessions } from "../../../db/schema/exam/sessions.ts";
 import { eq, and, desc, sql } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const HistoryBody = Type.Object({
   packageId: Type.String({ format: "uuid" }),

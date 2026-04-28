@@ -1,5 +1,7 @@
-export type ExamSessionStatus = "in_progress" | "completed" | "abandoned";
-export type ExamSessionMode = "study" | "tryout";
+import { EnumExamSessionStatus, EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
+
+export type ExamSessionStatus = (typeof EnumExamSessionStatus)[keyof typeof EnumExamSessionStatus];
+export type ExamSessionMode = (typeof EnumExamSessionMode)[keyof typeof EnumExamSessionMode];
 
 export interface ExamSession {
   id: string;
@@ -16,6 +18,33 @@ export interface ExamSession {
   totalSkipped: number;
   currentQuestionId: string | null;
   questionOrder: string[]; // Array of question IDs
+}
+
+export interface QuestionData {
+  id: string;
+  type: string;
+  htmlContent: string;
+}
+
+export interface PassageData {
+  id: string;
+  title: string | null;
+  htmlContent: string;
+}
+
+export interface OptionData {
+  id: string;
+  htmlContent: string;
+}
+
+export interface EvaluationData {
+  isCorrect: boolean | null;
+  solutions: {
+    id: string;
+    title: string;
+    solutionType: string;
+    htmlContent: string;
+  }[];
 }
 
 export interface ExamSessionQuestion {
@@ -37,9 +66,18 @@ export interface ExamSessionOption {
   order: number;
 }
 
+export interface ExamSessionGridItem {
+  questionId: string;
+  order: number;
+  isAnswered: boolean;
+  isDoubtful: boolean;
+  isCorrect: boolean | null;
+}
+
 export interface ExamSessionDetails {
-  session: ExamSession;
-  questions: ExamSessionQuestion[];
+  session: ExamSession & { elapsedSeconds: number; isTimerActive: boolean };
+  grid: ExamSessionGridItem[];
+  package?: { title: string };
 }
 
 export interface StartSessionRequest {

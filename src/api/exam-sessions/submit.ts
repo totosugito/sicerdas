@@ -2,21 +2,27 @@ import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
 
-export interface AbandonSessionResponse {
+export interface SubmitSessionResponse {
   success: boolean;
   message: string;
-  data: { id: string };
+  data: {
+    id: string;
+    score: string;
+    totalCorrect: number;
+    totalWrong: number;
+    totalSkipped: number;
+  };
 }
 
-export const useAbandonSession = () => {
+export const useSubmitSession = () => {
   return useMutation({
     mutationFn: async (sessionId: string) => {
       const response = await fetchApi({
         method: "POST",
-        url: AppApi.exam.sessions.user.abandon.replace(":id", sessionId),
+        url: AppApi.exam.sessions.submit.replace(":id", sessionId),
         withCredentials: true,
       });
-      return response as AbandonSessionResponse;
+      return response as SubmitSessionResponse;
     },
   });
 };

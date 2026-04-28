@@ -1,19 +1,19 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examSessions } from "../../../../db/schema/exam/sessions.ts";
-import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
-import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
-import { examSessionAnswers } from "../../../../db/schema/exam/session-answers.ts";
-import { examQuestions } from "../../../../db/schema/exam/questions.ts";
-import { examQuestionOptions } from "../../../../db/schema/exam/question-options.ts";
-import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../../db/schema/exam/enums.ts";
+import { db } from "../../../db/db-pool.ts";
+import { examSessions } from "../../../db/schema/exam/sessions.ts";
+import { examPackages } from "../../../db/schema/exam/packages.ts";
+import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
+import { examPackageQuestions } from "../../../db/schema/exam/package-questions.ts";
+import { examSessionAnswers } from "../../../db/schema/exam/session-answers.ts";
+import { examQuestions } from "../../../db/schema/exam/questions.ts";
+import { examQuestionOptions } from "../../../db/schema/exam/question-options.ts";
+import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
 import { eq, and, inArray } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import { shuffleArray } from "../../../../utils/my-utils.ts";
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
+import { shuffleArray } from "../../../utils/my-utils.ts";
 
 const StartSessionBody = Type.Object({
   packageId: Type.String({ format: "uuid" }),

@@ -5,6 +5,7 @@ import { s3Client, PutObjectCommand, DeleteObjectCommand } from "./storage.ts";
 import env from "../config/env.config.ts";
 import { createUniqueFileName } from "./my-utils.ts";
 import type { UploadedFile } from "../types/file.ts";
+import { ServerBlockNoteEditor } from "@blocknote/server-util";
 
 /**
  * Generates the relative URL for a BlockNote file
@@ -244,4 +245,19 @@ export const resolveBlockNoteUrls = (
   };
 
   return traverse(content);
+};
+
+/**
+ * Utility to convert BlockNote JSON structure to HTML string using @blocknote/core.
+ */
+export const blocknoteToHtml = async (content: any[] | null | undefined): Promise<string> => {
+  if (!content || !Array.isArray(content) || content.length === 0) return "";
+
+  try {
+    const editor = ServerBlockNoteEditor.create();
+    return await editor.blocksToFullHTML(content);
+  } catch (error) {
+    console.error("Error converting blocknote to html", error);
+    return "";
+  }
 };

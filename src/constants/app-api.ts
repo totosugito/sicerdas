@@ -166,14 +166,13 @@ export const AppApi = {
       },
     },
     sessions: {
-      user: {
-        start: APP_URL_API + "/exam/sessions/user/start",
-        details: APP_URL_API + "/exam/sessions/user/details/:id",
-        saveAnswer: APP_URL_API + "/exam/sessions/user/save-answer",
-        submit: APP_URL_API + "/exam/sessions/user/submit/:id",
-        history: APP_URL_API + "/exam/sessions/user/history",
-        abandon: APP_URL_API + "/exam/sessions/user/abandon/:id",
-      },
+      start: APP_URL_API + "/exam/sessions/start",
+      details: APP_URL_API + "/exam/sessions/details/:id",
+      question: APP_URL_API + "/exam/sessions/:id/questions/:questionId",
+      saveAnswer: APP_URL_API + "/exam/sessions/save-answer",
+      submit: APP_URL_API + "/exam/sessions/submit/:id",
+      history: APP_URL_API + "/exam/sessions/history",
+      abandon: APP_URL_API + "/exam/sessions/abandon/:id",
     },
   },
   education: {

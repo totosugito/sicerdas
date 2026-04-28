@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import type { ExamSessionDetails } from "../types";
+import type { ExamSessionDetails } from "./types";
 
 export interface SessionDetailsResponse {
   success: boolean;
@@ -16,7 +16,7 @@ export const useSessionDetails = (sessionId: string | undefined) => {
       if (!sessionId) return null;
       const response = await fetchApi({
         method: "GET",
-        url: AppApi.exam.sessions.user.details.replace(":id", sessionId),
+        url: AppApi.exam.sessions.details.replace(":id", sessionId),
         withCredentials: true,
       });
       return response as SessionDetailsResponse;

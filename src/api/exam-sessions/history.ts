@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import type { ExamHistoryItem } from "../types";
+import type { ExamHistoryItem } from "./types";
 
 export interface SessionHistoryResponse {
   success: boolean;
@@ -26,7 +26,7 @@ export const useSessionHistory = (
     queryKey: ["exam-session-history", packageId, sectionId, params.page, params.limit],
     queryFn: async () => {
       if (!packageId || !sectionId) return null;
-      const url = AppApi.exam.sessions.user.history;
+      const url = AppApi.exam.sessions.history;
 
       const response = await fetchApi({
         method: "POST",

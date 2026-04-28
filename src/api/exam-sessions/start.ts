@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import type { StartSessionRequest } from "../types";
+import type { StartSessionRequest } from "./types";
 
 export interface StartSessionResponse {
   success: boolean;
@@ -17,7 +17,7 @@ export const useStartSession = () => {
     mutationFn: async (body: StartSessionRequest) => {
       const response = await fetchApi({
         method: "POST",
-        url: AppApi.exam.sessions.user.start,
+        url: AppApi.exam.sessions.start,
         body,
         withCredentials: true,
       });
