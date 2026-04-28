@@ -45,21 +45,40 @@ export const examSessions = pgTable("exam_sessions", {
 
 ---
 
-## 3. Backend API Routes (`/api/exam/sessions`)
+## 3. Backend API Routes (`/api/exam/sessions/user`)
+
+The CBT engine relies on a strict 6-API architecture to ensure zero data leakage and secure evaluation:
+
+**A. Session Management & Actions**
 
 1. **`POST /start`**: Starts a new session or resumes an `IN_PROGRESS` one.
    - Requires `packageId`, `sectionId`, `mode`.
    - **Crucial:** Scrambles questions and options here. Inserts into `exam_session_answers`.
-2. **`GET /history/:packageId/:sectionId`**: Fetches a user's past attempts.
-   - Returns a list of `COMPLETED`, `IN_PROGRESS`, and `ABANDONED` sessions. Used to show historical progress before clicking "Start".
-3. **`PUT /:id/answer`**: Syncs user interactions.
-   - Accepts `selectedOptionId`, `isDoubtful` (Ragu-Ragu flag), and current `elapsedSeconds`.
-   - **Timeout Enforcement:** If `isTimerActive === true` and `elapsedSeconds > maxLimit`, the backend rejects the request and forces the session to `COMPLETED`.
-4. **`POST /:id/abandon`**: Restarts/Forfeits an exam.
-   - Changes status to `ABANDONED`.
-   - Still grades answered questions and saves the score to the session log, but updates global analytics to reflect the partial data.
-5. **`POST /:id/submit`**: Finishes the exam.
+2. **`POST /save-answer`**: Syncs user interactions (Autosave).
+   - Accepts `selectedOptionId`, `textAnswer`, `isDoubtful` (Ragu-Ragu flag), and current `elapsedSeconds`.
+   - **Note:** This API _only_ saves the answer. It does NOT evaluate correctness or return solutions.
+3. **`POST /submit`**: Finishes the exam.
    - Changes status to `COMPLETED`. Updates all `user_stats_*` tables via incremental aggregation.
+4. **`POST /abandon`**: Restarts/Forfeits an exam early.
+   - Changes status to `ABANDONED`. Still grades answered questions for partial analytics.
+
+**B. Pre-Exam & History** 5. **`POST /history`**: Fetches a user's past attempts for a specific package and section.
+
+- **Note:** Recently updated to a `POST` request to support pagination (`page`, `limit` in body).
+- Returns a paginated list of `COMPLETED`, `IN_PROGRESS`, and `ABANDONED` sessions to show in the Section Mode Dialog before starting.
+
+**C. Data Fetching (Lazy Loading Architecture)** 6. **`GET /:id/details`**: Fetches lightweight session metadata.
+
+- Returns the active timer, score, and the **Navigation Grid** (array of question IDs, their scrambled order, and their status: answered/unanswered/doubtful).
+- _Never_ returns HTML content or solutions.
+
+7. **`GET /:id/questions/:questionId`**: Fetches heavy content for a specific question.
+   - Returns the question's rich text content, passage, and randomized options.
+   - **Performance Rule (JSON to HTML)**: The backend MUST convert the stored BlockNote JSON arrays for the passage, question, and options into raw HTML strings before sending the response. This prevents the frontend from needing to load heavy BlockNote editors to render the exam.
+   - **Secure Evaluation Rule (Study Mode):** If the session is `completed`, or if it is `mode === 'study'` AND the user has already answered this question, the backend will:
+     1. Evaluate the answer (`isCorrect: true/false`).
+     2. Attach the `exam_question_solutions` array (also converted to HTML).
+   - If in `tryout` mode (and not completed), or if unanswered, solutions and correctness are strictly omitted.
 
 ---
 
@@ -83,12 +102,19 @@ When clicking a section, a dialog opens:
 
 ### B. The Exam Engine Page (`/exam/session/$sessionId.tsx`)
 
-This is the main interactive interface. It dynamically adjusts based on `session.mode`:
+This is the main interactive interface. It uses a **Hybrid Layout** optimized for desktop and mobile, dividing the screen into four key zones:
+
+1. **Top Header**: Contains the Exam Title (Left), Timer (Center), and Submit button (Right).
+2. **Right Sidebar**: Contains the Navigation Grid (question numbers 1 to N, color-coded) and the "Ragu-Ragu" checkbox. (Becomes a drawer/sheet on mobile).
+3. **Main Content (Center)**: Displays "Question X of Y", the reading passage (if any), the rich-text question, and the inline options (A, B, C, D, E).
+4. **Sticky Bottom Bar**: Always visible at the bottom of the screen. Contains `[< Previous]` on the left, `[Next >]` on the right, and a fast-action **Answer Pad** (`[A] [B] [C] [D] [E]`) in the center to solve the UX issue of scrolling past large option images.
+
+It dynamically adjusts behavior based on `session.mode`:
 
 | UI Component              | `mode === 'study'`                                                  | `mode === 'tryout'`                                                                                                          |
 | :------------------------ | :------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------- |
-| **Timer UI**              | Hidden, or a simple count-up stopwatch.                             | Countdown timer (red when < 5 mins).                                                                                         |
-| **Option Click**          | Locks answer immediately. Displays "Correct/Wrong" UI.              | Selects option. Can be changed until submit.                                                                                 |
+| **Timer UI**              | Hidden, or a simple count-up stopwatch.                             | Countdown timer (red when `< 5 mins`).                                                                                       |
+| **Option Click**          | Locks answer immediately. Displays "Correct/Wrong" UI.              | Selects option (via inline click or bottom Answer Pad). Can be changed until submit.                                         |
 | **Pembahasan (Solution)** | Appears instantly below the question after clicking an option.      | Hidden entirely.                                                                                                             |
 | **Navigation Grid**       | Shows specific color for answered (green/red based on correctness). | Shows gray (unanswered), blue (answered), yellow (ragu-ragu).                                                                |
 | **"Ragu-Ragu" Checkbox**  | Hidden.                                                             | Available for marking uncertain answers.                                                                                     |

@@ -255,7 +255,7 @@ export const SectionModeDialog = ({
                           </div>
                         </div>
                       )}
-                      <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                      {/* <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary" /> */}
                     </div>
                   </div>
                 ))}

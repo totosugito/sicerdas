@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import type { SaveAnswerRequest } from "./types";
+import type { SaveAnswerRequest } from "../types";
 
 export interface SaveAnswerResponse {
   success: boolean;

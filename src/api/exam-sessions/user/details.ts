@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import type { ExamSessionDetails } from "./types";
+import type { ExamSessionDetails } from "../types";
 
 export interface SessionDetailsResponse {
   success: boolean;
