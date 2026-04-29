@@ -17,8 +17,10 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AppRoute } from "@/constants/app-route";
+import { showNotifError } from "@/lib/show-notif";
 
-export const Route = createFileRoute("/(pages)/exam/session/$id")({
+export const Route = createFileRoute("/(pages)/exam/session/$id/")({
   component: RouteComponent,
 });
 
@@ -35,6 +37,7 @@ function RouteComponent() {
     setActiveQuestionId,
     setIsSaving,
     isTimerActive,
+    draftOptionId,
     resetAll,
   } = useCbtStore();
 
@@ -127,7 +130,16 @@ function RouteComponent() {
         onSuccess: () => {
           // Re-fetch details to switch to completed mode
           queryClient.invalidateQueries({ queryKey: ["exam-session", sessionId] });
-          // Maybe navigate to a summary page if needed
+          // Navigate to results page
+          navigate({
+            to: AppRoute.exam.results.url,
+            params: { id: sessionId },
+          });
+        },
+        onError: (err: any) => {
+          showNotifError({
+            message: err.message || "Gagal menyelesaikan ujian. Silakan coba lagi.",
+          });
         },
       });
     }
@@ -146,11 +158,33 @@ function RouteComponent() {
   const isLast = currentIndex >= details.grid.length - 1;
 
   const handlePrevious = () => {
-    if (!isFirst) setActiveQuestionId(details.grid[currentIndex - 1].questionId);
+    if (isFirst) return;
+
+    // Auto-save draft if any (only in tryout mode as study mode is one-shot)
+    if (
+      details.session.mode === "tryout" &&
+      draftOptionId &&
+      draftOptionId !== questionData?.selectedOptionId
+    ) {
+      handleOptionSelect(draftOptionId);
+    }
+
+    setActiveQuestionId(details.grid[currentIndex - 1].questionId);
   };
 
   const handleNext = () => {
-    if (!isLast) setActiveQuestionId(details.grid[currentIndex + 1].questionId);
+    if (isLast) return;
+
+    // Auto-save draft if any (only in tryout mode as study mode is one-shot)
+    if (
+      details.session.mode === "tryout" &&
+      draftOptionId &&
+      draftOptionId !== questionData?.selectedOptionId
+    ) {
+      handleOptionSelect(draftOptionId);
+    }
+
+    setActiveQuestionId(details.grid[currentIndex + 1].questionId);
   };
 
   // Convert Grid items for UI
@@ -172,11 +206,19 @@ function RouteComponent() {
   const hasAnswered = activeGridItem?.isAnswered || activeGridItem?.isDoubtful || false;
 
   return (
-    <div className="flex flex-col h-screen bg-background overflow-hidden font-sans">
+    <div className="flex flex-col h-[calc(100dvh-50px)] bg-background overflow-hidden font-sans">
       <CbtHeader
         title={details.package?.title || "Sesi Ujian"}
         mode={details.session.mode as "study" | "tryout"}
         onSubmit={handleSubmit}
+        isSubmitting={submitSessionMutation.isPending}
+        showSubmit={details.session.status === "in_progress"}
+        onGoToResult={() =>
+          navigate({
+            to: AppRoute.exam.results.url,
+            params: { id: sessionId },
+          })
+        }
       />
 
       <div className="flex flex-1 overflow-hidden relative">
@@ -188,6 +230,7 @@ function RouteComponent() {
             </div>
           ) : (
             <CbtQuestionView
+              key={questionData.question.id}
               question={questionData.question}
               passage={questionData.passage}
               options={questionData.options}
@@ -242,6 +285,7 @@ function RouteComponent() {
         <CbtAnswerPad
           options={questionData.options}
           selectedOptionId={questionData.selectedOptionId}
+          evaluation={questionData.evaluation}
           mode={details.session.mode as "study" | "tryout"}
           hasAnswered={hasAnswered}
           onOptionSelect={handleOptionSelect}

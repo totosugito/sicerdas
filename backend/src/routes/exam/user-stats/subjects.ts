@@ -1,12 +1,12 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examUserStatsSubject } from "../../../../db/schema/exam/user-stats-subject.ts";
-import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
+import { db } from "../../../db/db-pool.ts";
+import { examUserStatsSubject } from "../../../db/schema/exam/user-stats-subject.ts";
+import { examSubjects } from "../../../db/schema/exam/subjects.ts";
 import { eq, desc } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const SubjectStatsResponse = Type.Object({
   success: Type.Boolean(),

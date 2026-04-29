@@ -6,6 +6,9 @@ interface CbtHeaderProps {
   title: string;
   mode: "study" | "tryout";
   onSubmit: () => void;
+  isSubmitting?: boolean;
+  showSubmit?: boolean;
+  onGoToResult?: () => void;
 }
 
 const formatTime = (seconds: number) => {
@@ -14,7 +17,14 @@ const formatTime = (seconds: number) => {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 };
 
-export const CbtHeader: React.FC<CbtHeaderProps> = ({ title, mode, onSubmit }) => {
+export const CbtHeader: React.FC<CbtHeaderProps> = ({
+  title,
+  mode,
+  onSubmit,
+  isSubmitting,
+  showSubmit = true,
+  onGoToResult,
+}) => {
   const { elapsedSeconds, isTimerActive } = useCbtStore();
 
   return (
@@ -40,9 +50,20 @@ export const CbtHeader: React.FC<CbtHeaderProps> = ({ title, mode, onSubmit }) =
       </div>
 
       <div className="flex-1 flex justify-end items-center gap-2">
-        <Button variant="default" size="sm" onClick={onSubmit}>
-          {mode === "tryout" ? "Submit Exam" : "Finish Study"}
-        </Button>
+        {showSubmit ? (
+          <Button variant="default" size="sm" onClick={onSubmit} disabled={isSubmitting}>
+            {isSubmitting ? "Submitting..." : mode === "tryout" ? "Submit Exam" : "Finish Study"}
+          </Button>
+        ) : onGoToResult ? (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onGoToResult}
+            className="border-primary text-primary hover:bg-primary/5"
+          >
+            Lihat Hasil
+          </Button>
+        ) : null}
       </div>
     </header>
   );

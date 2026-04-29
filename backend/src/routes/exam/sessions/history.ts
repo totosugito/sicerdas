@@ -25,7 +25,7 @@ const HistoryResponse = Type.Object({
         endTime: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
         status: Type.String(),
         mode: Type.String(),
-        score: Type.Union([Type.String(), Type.Null()]),
+        score: Type.Union([Type.Number(), Type.Null()]),
         totalCorrect: Type.Number(),
         totalWrong: Type.Number(),
         totalSkipped: Type.Number(),
@@ -113,6 +113,7 @@ const sessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             ...h,
             startTime: h.startTime.toISOString(),
             endTime: h.endTime?.toISOString() ?? null,
+            score: h.score !== null ? Number(h.score) : null,
           })) as any,
           meta: {
             total,

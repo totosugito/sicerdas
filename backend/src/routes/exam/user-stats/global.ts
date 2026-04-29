@@ -1,11 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examUserStatsGlobal } from "../../../../db/schema/exam/user-stats-global.ts";
+import { db } from "../../../db/db-pool.ts";
+import { examUserStatsGlobal } from "../../../db/schema/exam/user-stats-global.ts";
 import { eq } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const GlobalStatsResponse = Type.Object({
   success: Type.Boolean(),

@@ -6,11 +6,11 @@ export interface SubmitSessionResponse {
   success: boolean;
   message: string;
   data: {
-    id: string;
-    score: string;
+    score: number;
     totalCorrect: number;
     totalWrong: number;
     totalSkipped: number;
+    totalQuestions: number;
   };
 }
 

@@ -44,6 +44,7 @@ const QuestionDetailsResponse = Type.Object({
     evaluation: Type.Union([
       Type.Object({
         isCorrect: Type.Union([Type.Boolean(), Type.Null()]),
+        correctOptionId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
         solutions: Type.Array(
           Type.Object({
             id: Type.String(),
@@ -204,8 +205,20 @@ const questionSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
           .where(eq(examQuestionSolutions.questionId, questionId))
           .orderBy(examQuestionSolutions.order);
 
+        const [correctOption] = await db
+          .select({ id: examQuestionOptions.id })
+          .from(examQuestionOptions)
+          .where(
+            and(
+              eq(examQuestionOptions.questionId, questionId),
+              eq(examQuestionOptions.isCorrect, true),
+            ),
+          )
+          .limit(1);
+
         evaluation = {
           isCorrect: answerRecord.isCorrect ?? null,
+          correctOptionId: correctOption?.id ?? null,
           solutions: await Promise.all(
             solutionsRaw.map(async (sol) => {
               const resolvedSolContent = resolveBlockNoteUrls(sol.content as any);

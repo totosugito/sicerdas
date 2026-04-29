@@ -4,6 +4,7 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { examSessions } from "../../../db/schema/exam/sessions.ts";
 import { examSessionAnswers } from "../../../db/schema/exam/session-answers.ts";
+import { examQuestionOptions } from "../../../db/schema/exam/question-options.ts";
 import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
 import { eq, and } from "drizzle-orm";
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
@@ -102,6 +103,19 @@ const saveAnswerRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (selectedOptionId !== undefined) updateData.selectedOptionId = selectedOptionId;
       if (textAnswer !== undefined) updateData.textAnswer = textAnswer;
       if (isDoubtful !== undefined) updateData.isDoubtful = isDoubtful;
+
+      // 5. Automatic evaluation for Study Mode (One-shot)
+      if (session.mode === EnumExamSessionMode.STUDY && selectedOptionId) {
+        const [option] = await db
+          .select({ isCorrect: examQuestionOptions.isCorrect })
+          .from(examQuestionOptions)
+          .where(eq(examQuestionOptions.id, selectedOptionId))
+          .limit(1);
+
+        if (option) {
+          updateData.isCorrect = option.isCorrect;
+        }
+      }
 
       await db
         .update(examSessionAnswers)

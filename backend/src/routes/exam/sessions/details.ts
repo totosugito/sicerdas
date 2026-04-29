@@ -4,6 +4,7 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { examSessions } from "../../../db/schema/exam/sessions.ts";
 import { examSessionAnswers } from "../../../db/schema/exam/session-answers.ts";
+import { examQuestions } from "../../../db/schema/exam/questions.ts";
 import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
 import { eq, and } from "drizzle-orm";
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
@@ -31,6 +32,7 @@ const SessionDetailsResponse = Type.Object({
         isAnswered: Type.Boolean(),
         isDoubtful: Type.Boolean(),
         isCorrect: Type.Union([Type.Boolean(), Type.Null()]),
+        questionContent: Type.Union([Type.Array(Type.Any()), Type.Null()]),
       }),
     ),
   }),
@@ -83,8 +85,10 @@ const detailsSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
           textAnswer: examSessionAnswers.textAnswer,
           isDoubtful: examSessionAnswers.isDoubtful,
           isCorrect: examSessionAnswers.isCorrect,
+          questionContent: examQuestions.content,
         })
         .from(examSessionAnswers)
+        .innerJoin(examQuestions, eq(examSessionAnswers.questionId, examQuestions.id))
         .where(eq(examSessionAnswers.sessionId, session.id))
         .orderBy(examSessionAnswers.questionOrder);
 
@@ -102,6 +106,7 @@ const detailsSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
             (session.mode === EnumExamSessionMode.STUDY && isAnswered)
               ? (ans.isCorrect ?? null)
               : null,
+          questionContent: ans.questionContent,
         };
       });
 

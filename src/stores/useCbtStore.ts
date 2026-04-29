@@ -6,6 +6,7 @@ interface CbtState {
   isSaving: boolean;
   connectionError: boolean;
   isTimerActive: boolean;
+  draftOptionId: string | null;
 
   setElapsedSeconds: (seconds: number) => void;
   incrementElapsedSeconds: () => void;
@@ -13,6 +14,7 @@ interface CbtState {
   setIsSaving: (isSaving: boolean) => void;
   setConnectionError: (error: boolean) => void;
   setIsTimerActive: (active: boolean) => void;
+  setDraftOptionId: (id: string | null) => void;
   resetAll: () => void;
 }
 
@@ -22,6 +24,7 @@ const defaultState = {
   isSaving: false,
   connectionError: false,
   isTimerActive: true,
+  draftOptionId: null,
 };
 
 export const useCbtStore = create<CbtState>((set) => ({
@@ -33,5 +36,6 @@ export const useCbtStore = create<CbtState>((set) => ({
   setIsSaving: (isSaving) => set({ isSaving }),
   setConnectionError: (error) => set({ connectionError: error }),
   setIsTimerActive: (active) => set({ isTimerActive: active }),
+  setDraftOptionId: (id) => set({ draftOptionId: id }),
   resetAll: () => set(defaultState),
 }));

@@ -12,7 +12,7 @@ export interface ExamSession {
   status: ExamSessionStatus;
   startTime: string;
   endTime: string | null;
-  score: string | null;
+  score: number | null;
   totalCorrect: number;
   totalWrong: number;
   totalSkipped: number;
@@ -39,6 +39,7 @@ export interface OptionData {
 
 export interface EvaluationData {
   isCorrect: boolean | null;
+  correctOptionId: string | null;
   solutions: {
     id: string;
     title: string;
@@ -72,6 +73,7 @@ export interface ExamSessionGridItem {
   isAnswered: boolean;
   isDoubtful: boolean;
   isCorrect: boolean | null;
+  questionContent: Record<string, any>[] | null;
 }
 
 export interface ExamSessionDetails {
@@ -101,7 +103,7 @@ export interface ExamHistoryItem {
   endTime: string | null;
   status: ExamSessionStatus;
   mode: ExamSessionMode;
-  score: string | null;
+  score: number | null;
   totalCorrect: number;
   totalWrong: number;
   totalSkipped: number;
