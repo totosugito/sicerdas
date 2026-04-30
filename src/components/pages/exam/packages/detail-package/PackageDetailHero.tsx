@@ -1,18 +1,17 @@
 import { ExamPackage } from "@/api/exam-packages";
-import { EnumExamPackageUserStatus } from "backend/src/db/schema/exam/enums";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { cn } from "@/lib/utils";
 import { to_decimal_formatted } from "@/lib/my-utils";
-import { Heart, Star, Flag, ImageOff } from "lucide-react";
+import { Heart, Star, ImageOff } from "lucide-react";
 import { useState } from "react";
+import { getGradeColor } from "@/lib/exam-utils";
 
 interface PackageDetailHeroProps {
   pkg: ExamPackage;
   isFavorite: boolean;
   onToggleFavorite: () => void;
-  onReport: () => void;
   onRatingClick: () => void;
 }
 
@@ -20,7 +19,6 @@ export const PackageDetailHero = ({
   pkg,
   isFavorite,
   onToggleFavorite,
-  onReport,
   onRatingClick,
 }: PackageDetailHeroProps) => {
   const { t } = useAppTranslation();
@@ -37,14 +35,14 @@ export const PackageDetailHero = ({
         <div className="shrink-0 -mx-6 -mt-6 lg:m-0">
           <div className="group relative w-full overflow-hidden rounded-t-[22px] bg-muted shadow-sm lg:rounded-2xl lg:shadow-lg lg:w-[240px]">
             {imageError || !pkg.thumbnail ? (
-              <div className="flex aspect-[3/1] items-center justify-center bg-accent/30 lg:aspect-[4/3]">
+              <div className="flex aspect-video items-center justify-center bg-accent/30 lg:aspect-[4/3]">
                 <ImageOff className="h-12 w-12 text-muted-foreground/40" />
               </div>
             ) : (
               <img
                 src={pkg.thumbnail}
                 alt={pkg.title}
-                className="aspect-[3/1] w-full object-cover transition-transform duration-700 group-hover:scale-110 lg:aspect-[4/3]"
+                className="aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-110 lg:aspect-[4/3]"
                 onError={() => setImageError(true)}
               />
             )}
@@ -54,7 +52,7 @@ export const PackageDetailHero = ({
 
         {/* Right Column: Title & Actions */}
         <div className="flex flex-1 flex-col">
-          <div className="flex flex-col items-start gap-4 @container lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
               {pkg.isNew && (
                 <Badge
@@ -69,29 +67,19 @@ export const PackageDetailHero = ({
                   {pkg.category.name}
                 </Badge>
               )}
-              {pkg.grade.name && <Badge variant="outline">{pkg.grade.name}</Badge>}
-              {pkg.userInteraction?.status &&
-                pkg.userInteraction.status !== EnumExamPackageUserStatus.NOT_STARTED && (
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      pkg.userInteraction.status === EnumExamPackageUserStatus.COMPLETED
-                        ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300"
-                        : "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300",
-                      "font-bold",
-                    )}
-                  >
-                    {pkg.userInteraction.status === EnumExamPackageUserStatus.COMPLETED
-                      ? t(($) => $.exam.packages.userStatus.completed)
-                      : t(($) => $.exam.packages.userStatus.sectionsCompletedHero, {
-                          completed: pkg.userInteraction.completedSectionsCount,
-                          total: pkg.stats.activeSections,
-                        })}
-                  </Badge>
-                )}
+              {pkg.grade.name && (
+                <Badge
+                  className={cn(
+                    getGradeColor(pkg.grade.name),
+                    "text-white border-none shadow-sm text-xs px-2 py-0.5 font-medium",
+                  )}
+                >
+                  {pkg.grade.name}
+                </Badge>
+              )}
             </div>
 
-            <div className="flex items-center gap-2 max-lg:w-full">
+            <div className="flex items-center gap-2 shrink-0">
               <Button
                 variant="outline"
                 size="icon"
@@ -104,15 +92,6 @@ export const PackageDetailHero = ({
                 onClick={onToggleFavorite}
               >
                 <Heart className={cn("h-5 w-5", isFavorite && "fill-current")} />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-10 w-10 shrink-0 rounded-xl transition-all hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30"
-                onClick={onReport}
-              >
-                <Flag className="h-5 w-5" />
               </Button>
             </div>
           </div>
@@ -128,11 +107,11 @@ export const PackageDetailHero = ({
             >
               <div className="flex items-center gap-2">
                 <Star className="w-8 h-8 text-amber-500 fill-amber-500 group-hover:scale-110 transition-transform" />
-                <div className="flex flex-col items-center">
-                  <span className="text-xl font-bold text-foreground leading-none">
+                <div className="flex flex-col items-start leading-tight">
+                  <span className="text-2xl font-black text-foreground tracking-tight">
                     {pkg.stats.rating.toFixed(1)}
                   </span>
-                  <span className="text-[11px] text-muted-foreground font-semibold mt-1">
+                  <span className="text-xs text-muted-foreground font-bold uppercase tracking-widest mt-0.5">
                     {(pkg.stats.ratingCount || 0) < 1000
                       ? `${to_decimal_formatted(pkg.stats.ratingCount || 0, 0)} ${t(($) => $.labels.rating)}`
                       : `(${to_decimal_formatted(pkg.stats.ratingCount || 0, 0)})`}
@@ -144,10 +123,10 @@ export const PackageDetailHero = ({
             <div className="h-10 w-px bg-border/50 max-sm:hidden" />
 
             <div className="flex flex-col leading-none">
-              <span className="text-xs font-bold text-foreground">
+              <span className="text-sm font-black text-foreground tracking-tight">
                 {to_decimal_formatted(pkg.stats.viewCount || 0, 0)}
               </span>
-              <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+              <span className="mt-1.5 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
                 {t(($) => $.labels.views)}
               </span>
             </div>
@@ -155,10 +134,10 @@ export const PackageDetailHero = ({
             <div className="h-10 w-px bg-border/50 max-sm:hidden" />
 
             <div className="flex flex-col leading-none">
-              <span className="text-xs font-bold text-foreground">
+              <span className="text-sm font-black text-foreground tracking-tight">
                 {to_decimal_formatted(pkg.stats.bookmarkCount || 0, 0)}
               </span>
-              <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+              <span className="mt-1.5 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
                 {t(($) => $.labels.favorites)}
               </span>
             </div>

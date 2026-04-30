@@ -90,6 +90,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Group results by category
       const categoriesMap = new Map<string, typeof FilterParamsResponseItem.static>();
+      console.log("Category Map:", result);
 
       for (const row of result) {
         if (!categoriesMap.has(row.categoryId)) {
@@ -115,7 +116,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.packages.list.success), // Reuse list success message or create new one
+        message: t(($) => $.exam.packages.list.success),
         data: Array.from(categoriesMap.values()),
       });
     }),

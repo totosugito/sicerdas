@@ -80,3 +80,36 @@ export function evaluateFormulas(
 
   return results;
 }
+
+/**
+ * Returns a Tailwind background color class based on the grade name.
+ */
+export function getGradeColor(gradeName: string | null): string {
+  if (!gradeName) return "bg-slate-500";
+  const name = gradeName.toLowerCase();
+
+  // SMA / High School
+  if (name.includes("sma") || name.includes("10") || name.includes("11") || name.includes("12")) {
+    return "bg-blue-600";
+  }
+
+  // SMP / Junior High
+  if (name.includes("smp") || name.includes("7") || name.includes("8") || name.includes("9")) {
+    return "bg-emerald-600";
+  }
+
+  // SD / Elementary
+  if (
+    name.includes("sd") ||
+    name.includes("1") ||
+    name.includes("2") ||
+    name.includes("3") ||
+    name.includes("4") ||
+    name.includes("5") ||
+    name.includes("6")
+  ) {
+    return "bg-orange-600";
+  }
+
+  return "bg-slate-600";
+}

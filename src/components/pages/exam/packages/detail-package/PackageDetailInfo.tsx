@@ -7,19 +7,22 @@ interface PackageDetailInfoProps {
   pkg: ExamPackage;
 }
 
-interface InfoCardProps {
+const InfoCard = ({
+  icon: Icon,
+  label,
+  value,
+  colorClass,
+}: {
   icon: LucideIcon;
   label: string;
   value: string;
   colorClass?: string;
-}
-
-const InfoCard = ({ icon: Icon, label, value, colorClass }: InfoCardProps) => (
-  <div className="group flex flex-col gap-3 rounded-2xl border bg-card p-4 transition-all hover:border-primary/30 sm:p-5">
+}) => (
+  <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-slate-800 dark:bg-slate-900/50">
     <div
       className={cn(
-        "flex h-10 w-10 items-center justify-center rounded-xl transition-colors",
-        colorClass || "bg-muted group-hover:bg-primary/10",
+        "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
+        colorClass || "bg-primary/5 text-primary",
       )}
     >
       <Icon
@@ -29,11 +32,11 @@ const InfoCard = ({ icon: Icon, label, value, colorClass }: InfoCardProps) => (
         )}
       />
     </div>
-    <div className="flex flex-col gap-0.5">
-      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+    <div className="flex flex-col gap-0.5 min-w-0">
+      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 truncate">
         {label}
       </span>
-      <span className="font-bold text-foreground">{value}</span>
+      <span className="font-bold text-foreground truncate">{value}</span>
     </div>
   </div>
 );
@@ -47,31 +50,31 @@ export const PackageDetailInfo = ({ pkg }: PackageDetailInfoProps) => {
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <InfoCard
           icon={LayoutGrid}
-          label={t(($) => $.exam.sections.title)}
-          value={`${pkg.stats.totalSections} Seksi`}
+          label={t(($) => $.exam.sections.shortTitle)}
+          value={`${pkg.stats.totalSections} ${t(($) => $.exam.sections.sectionsCount)}`}
           colorClass="bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
         />
         <InfoCard
           icon={HelpCircle}
           label={t(($) => $.exam.questions.testQuestions)}
-          value={`${pkg.stats.totalQuestions} Soal`}
+          value={`${pkg.stats.totalQuestions} ${t(($) => $.exam.packages.detail.questions)}`}
           colorClass="bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
         />
         <InfoCard
           icon={Clock}
           label={t(($) => $.exam.packages.form.durationMinutes.label)}
-          value={`${pkg.durationMinutes} Menit`}
+          value={`${pkg.durationMinutes} ${t(($) => $.labels.minutes)}`}
           colorClass="bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"
         />
         <InfoCard
           icon={Calendar}
           label={t(($) => $.labels.addedOn)}
           value={new Date(pkg.createdAt).toLocaleDateString(undefined, {
-            month: "short",
             day: "numeric",
+            month: "short",
             year: "numeric",
           })}
-          colorClass="bg-violet-50 text-violet-600 dark:bg-violet-900/20 dark:text-violet-400"
+          colorClass="bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
         />
       </div>
 

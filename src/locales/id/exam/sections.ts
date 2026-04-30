@@ -1,6 +1,7 @@
 export default {
   menu: "Bagian Paket",
   title: "Daftar Bagian Paket",
+  shortTitle: "Bagian Paket",
   description: "Kelola daftar bagian-bagian untuk paket ujian.",
   formTitleRequired: "Judul wajib diisi",
   formTitle: "Judul",

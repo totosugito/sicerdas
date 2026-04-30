@@ -4,6 +4,7 @@ import { useListPackageSectionsClient } from "@/api/exam-package-sections";
 import {
   PackageDetailHero,
   PackageDetailInfo,
+  PackageDetailProgress,
   PackageSectionAccordion,
   PackageRatingDialog,
   SectionModeDialog,
@@ -17,8 +18,6 @@ import { AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
-import { CreateContentReport } from "@/components/pages/layout/CreateContentReport";
-import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
 import { DialogModal } from "@/components/custom/components";
 
 export const Route = createFileRoute("/(pages)/exam/(packages)/package/$id")({
@@ -55,7 +54,6 @@ function RouteComponent() {
   // Local UI State
   const [isFavorite, setIsFavorite] = useState(false);
   const [showRatingDialog, setShowRatingDialog] = useState(false);
-  const [showReportDialog, setShowReportDialog] = useState(false);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [showModeDialog, setShowModeDialog] = useState(false);
   const [selectedSectionId, setSelectedSectionId] = useState("");
@@ -196,11 +194,12 @@ function RouteComponent() {
             pkg={pkg}
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
-            onReport={() => setShowReportDialog(true)}
             onRatingClick={() => (user ? setShowRatingDialog(true) : setShowLoginDialog(true))}
           />
 
           <PackageDetailInfo pkg={pkg} />
+
+          <PackageDetailProgress pkg={pkg} />
 
           <div className="pt-4 border-t">
             <PackageSectionAccordion
@@ -226,18 +225,6 @@ function RouteComponent() {
           sectionId={selectedSectionId}
           sectionTitle={selectedSectionTitle}
           onStart={handleStartSession}
-        />
-
-        <CreateContentReport
-          isOpen={showReportDialog}
-          onOpenChange={setShowReportDialog}
-          data={{
-            contentType: EnumContentType.EXAM,
-            referenceId: pkg.id,
-            title: pkg.title,
-            name: user?.user?.name || "",
-            email: user?.user?.email || "",
-          }}
         />
 
         <DialogModal

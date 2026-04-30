@@ -82,8 +82,8 @@ export const PackageSectionAccordion = ({ sections, onTakeExam }: PackageSection
                   <LayoutGrid className="h-4 w-4" />
                 </div>
                 <div className="flex flex-col items-start gap-0.5">
-                  <span className="text-sm font-bold leading-none">{chapter.name}</span>
-                  <span className="text-xs font-medium text-muted-foreground">
+                  <span className="text-base font-bold leading-tight">{chapter.name}</span>
+                  <span className="text-xs font-medium text-muted-foreground/80">
                     {chapter.sections.length} {t(($) => $.exam.sections.sectionsCount)}
                   </span>
                 </div>
@@ -98,11 +98,11 @@ export const PackageSectionAccordion = ({ sections, onTakeExam }: PackageSection
                   >
                     <div className="flex flex-1 items-start gap-0 min-w-0">
                       <div className="flex flex-col gap-1 min-w-0 flex-1">
-                        <span className="text-sm font-bold text-foreground transition-colors group-hover:text-primary line-clamp-2">
+                        <span className="text-base font-bold text-foreground transition-colors group-hover:text-primary line-clamp-2 leading-tight">
                           {section.title}
                         </span>
                         {section.description && (
-                          <p className="line-clamp-1 text-xs text-muted-foreground">
+                          <p className="line-clamp-1 text-sm text-muted-foreground/80">
                             {section.description}
                           </p>
                         )}
@@ -138,7 +138,7 @@ export const PackageSectionAccordion = ({ sections, onTakeExam }: PackageSection
                           <div className="flex items-center gap-2.5 rounded-lg bg-primary/5 px-3 py-1.5 text-primary ring-1 ring-primary/10 transition-colors group-hover:bg-primary/10">
                             <Trophy className="h-3.5 w-3.5 shrink-0" />
                             <div className="flex flex-col items-end">
-                              <span className="text-[9px] leading-none uppercase font-black text-primary/60 tracking-tighter">
+                              <span className="text-[10px] leading-none uppercase font-black text-primary/60 tracking-tight">
                                 {t(($) => $.exam.sessions.bestScore)}
                               </span>
                               <span className="text-base font-black leading-none">

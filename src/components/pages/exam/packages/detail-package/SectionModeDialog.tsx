@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { ExamSessionStatusConfig, EnumExamSessionStatus } from "@/constants/app-enum";
 import { EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useRouter } from "@tanstack/react-router";
+import { AppRoute } from "@/constants/app-route";
 
 interface SectionModeDialogProps {
   isOpen: boolean;
@@ -30,6 +32,7 @@ export const SectionModeDialog = ({
   onStart,
 }: SectionModeDialogProps) => {
   const { t } = useAppTranslation();
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const { data: historyRes, isLoading: isHistoryLoading } = useSessionHistory(
     packageId,
@@ -233,9 +236,17 @@ export const SectionModeDialog = ({
               </div>
               <div className="max-h-[260px] overflow-y-auto pr-1 space-y-2 custom-scrollbar">
                 {history.map((item) => (
-                  <div
+                  <button
                     key={item.id}
-                    className="group flex items-center justify-between rounded-xl border bg-card p-3 transition-all hover:border-primary/30 hover:bg-primary/5"
+                    className="group flex w-full items-center justify-between rounded-xl border bg-card p-3 text-left transition-all hover:border-primary/30 hover:bg-primary/5 active:scale-[0.98]"
+                    onClick={() => {
+                      onOpenChange(false);
+                      const isCompleted = item.status === EnumExamSessionStatus.COMPLETED;
+                      router.navigate({
+                        to: isCompleted ? AppRoute.exam.results.url : AppRoute.exam.session.url,
+                        params: { id: item.id },
+                      });
+                    }}
                   >
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
@@ -255,9 +266,9 @@ export const SectionModeDialog = ({
                           </div>
                         </div>
                       )}
-                      {/* <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary" /> */}
+                      <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -299,11 +310,12 @@ export const SectionModeDialog = ({
         })(),
         content: dialogContent,
         textConfirm: "",
-        textCancel: t(($) => $.labels.close),
+        textCancel: "",
         maxWidth: "xl",
         iconType: "info",
         showCloseButton: true,
       }}
+      classNameBody="pb-0"
     />
   );
 };

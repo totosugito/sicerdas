@@ -1,5 +1,6 @@
 export { PackageDetailHero } from "./PackageDetailHero";
 export { PackageDetailInfo } from "./PackageDetailInfo";
+export { PackageDetailProgress } from "./PackageDetailProgress";
 export { PackageSectionAccordion } from "./PackageSectionAccordion";
 export { PackageRatingDialog } from "./PackageRatingDialog";
 export { PackageDetailSkeleton } from "./PackageDetailSkeleton";

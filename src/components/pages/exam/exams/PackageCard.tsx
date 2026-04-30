@@ -7,6 +7,7 @@ import { useNavigate, Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { Heart, HelpCircle, Layers, CheckCircle2, PlayCircle } from "lucide-react";
 import { EnumExamPackageUserStatus } from "backend/src/db/schema/exam/enums";
+import { getGradeColor } from "@/lib/exam-utils";
 
 interface PackageCardProps {
   exams: ExamPackage[];
@@ -36,26 +37,6 @@ interface PackageCardViewProps {
   exam: ExamPackage;
   viewMode: "grid" | "list";
 }
-
-const getGradeColor = (gradeName: string | null) => {
-  if (!gradeName) return "bg-slate-500";
-  const name = gradeName.toLowerCase();
-  if (name.includes("sma") || name.includes("10") || name.includes("11") || name.includes("12"))
-    return "bg-blue-600";
-  if (name.includes("smp") || name.includes("7") || name.includes("8") || name.includes("9"))
-    return "bg-emerald-600";
-  if (
-    name.includes("sd") ||
-    name.includes("1") ||
-    name.includes("2") ||
-    name.includes("3") ||
-    name.includes("4") ||
-    name.includes("5") ||
-    name.includes("6")
-  )
-    return "bg-orange-600";
-  return "bg-slate-600";
-};
 
 const PackageCardView = ({ exam, viewMode }: PackageCardViewProps) => {
   const { t } = useAppTranslation();
@@ -95,60 +76,62 @@ const PackageCardView = ({ exam, viewMode }: PackageCardViewProps) => {
           </div>
         )}
 
-        {/* Badges on overlay */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2 items-start z-10">
-          {exam.grade.name && (
+        {/* Grade Badge - Top Left (Essential) */}
+        {exam.grade.name && (
+          <div className="absolute top-3 left-3 z-10">
             <Badge
               className={cn(
                 getGradeColor(exam.grade.name),
-                "text-white rounded shadow-sm backdrop-blur-sm text-xs px-2 py-1 border-muted border-white/20",
+                "text-white rounded shadow-sm backdrop-blur-sm text-xs px-2 py-0.5 border-none font-medium",
               )}
             >
               {exam.grade.name}
             </Badge>
-          )}
+          </div>
+        )}
 
-          {exam.userInteraction?.status &&
-            exam.userInteraction.status !== EnumExamPackageUserStatus.NOT_STARTED && (
-              <Badge
-                className={cn(
-                  exam.userInteraction.status === EnumExamPackageUserStatus.COMPLETED
-                    ? "bg-green-600 border-green-400/50"
-                    : "bg-amber-600 border-amber-400/50",
-                  "text-white rounded shadow-md backdrop-blur-md text-[10px] px-2 py-0.5 border font-black flex items-center gap-1 animate-in slide-in-from-left-2 duration-300",
-                )}
-              >
-                {exam.userInteraction.status === EnumExamPackageUserStatus.COMPLETED ? (
-                  <>
-                    <CheckCircle2 className="w-3 h-3" />
-                    {t(($) => $.exam.packages.userStatus.completed)}
-                  </>
-                ) : (
-                  <>
-                    <PlayCircle className="w-3 h-3 animate-pulse" />
-                    {t(($) => $.exam.packages.userStatus.sectionsCompleted, {
-                      completed: exam.userInteraction.completedSectionsCount,
-                      total: exam.stats.activeSections,
-                    })}
-                  </>
-                )}
-              </Badge>
-            )}
-        </div>
+        {/* Progress Bar - Minimalist and Premium */}
+        {exam.userInteraction?.status === EnumExamPackageUserStatus.IN_PROGRESS && (
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/10 backdrop-blur-sm">
+            <div
+              className="h-full bg-amber-500 transition-all duration-1000 ease-out"
+              style={{
+                width: `${(exam.userInteraction.completedSectionsCount / exam.stats.activeSections) * 100}%`,
+              }}
+            />
+          </div>
+        )}
 
+        {/* Completion Bar - Full width Green for finished exams */}
+        {exam.userInteraction?.status === EnumExamPackageUserStatus.COMPLETED && (
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-green-500 shadow-[0_-2px_4px_rgba(34,197,94,0.3)]" />
+        )}
+
+        {/* New Badge - Top Right */}
         {exam.isNew && (
           <div className="absolute top-3 right-3 z-10">
-            <span className="new-badge animate-pulse">{t(($) => $.labels.new)}</span>
+            <span className="new-badge text-xs px-2 py-0.5 rounded shadow-sm bg-red-500 text-white font-bold animate-pulse">
+              {t(($) => $.labels.new)}
+            </span>
           </div>
         )}
       </div>
 
       {/* Content */}
       <div className="p-5 flex flex-col flex-1">
-        <div className="flex justify-between items-start mb-2">
-          <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em]">
-            {exam.category.name}
-          </span>
+        <div className="flex justify-between items-center mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-primary uppercase tracking-[0.15em]">
+              {exam.category.name}
+            </span>
+            {/* Completion Indicator (Only for finished exams) */}
+            {exam.userInteraction?.status === EnumExamPackageUserStatus.COMPLETED && (
+              <span className="flex items-center gap-0.5 text-xs font-bold text-green-600 dark:text-green-400">
+                <CheckCircle2 className="w-3 h-3" />
+                {t(($) => $.exam.packages.userStatus.completed)}
+              </span>
+            )}
+          </div>
           {exam.userInteraction?.bookmarked && (
             <Heart className="w-4 h-4 text-red-500 fill-current" />
           )}
@@ -178,18 +161,35 @@ const PackageCardView = ({ exam, viewMode }: PackageCardViewProps) => {
         {/* Info Grid */}
         <div className="mt-auto grid grid-cols-2 gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
               {t(($) => $.exam.packages.table.columns.sections)}
             </span>
             <div className="flex items-center gap-1.5">
-              <Layers className="h-3.5 w-3.5 text-primary/60 shrink-0" />
-              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                {exam.stats.activeSections}
+              <Layers
+                className={cn(
+                  "h-3.5 w-3.5 shrink-0",
+                  exam.userInteraction?.status === EnumExamPackageUserStatus.IN_PROGRESS
+                    ? "text-amber-500 animate-pulse"
+                    : "text-primary/60",
+                )}
+              />
+              <span
+                className={cn(
+                  "text-sm font-semibold",
+                  exam.userInteraction?.status === EnumExamPackageUserStatus.IN_PROGRESS
+                    ? "text-amber-600 dark:text-amber-400"
+                    : "text-slate-700 dark:text-slate-300",
+                )}
+              >
+                {exam.userInteraction?.status === EnumExamPackageUserStatus.IN_PROGRESS ||
+                exam.userInteraction?.status === EnumExamPackageUserStatus.COMPLETED
+                  ? `${exam.userInteraction.completedSectionsCount}/${exam.stats.activeSections}`
+                  : exam.stats.activeSections}
               </span>
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
               {t(($) => $.exam.packages.table.columns.questions)}
             </span>
             <div className="flex items-center gap-1.5">

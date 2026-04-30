@@ -109,10 +109,10 @@ const THEMES = {
 };
 
 const MAX_WIDTH_MAP = {
-  sm: "max-w-sm",
-  md: "max-w-md",
-  lg: "max-w-lg",
-  xl: "max-w-xl",
+  sm: "sm:max-w-sm",
+  md: "sm:max-w-md",
+  lg: "sm:max-w-lg",
+  xl: "sm:max-w-xl",
 };
 
 export function DialogModal({
@@ -188,7 +188,7 @@ export function DialogModal({
         <div className={cn("px-6 pt-6 pb-2 text-center", classNameHeader)}>
           <div
             className={cn(
-              "mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl transition-colors",
+              "mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl transition-colors",
               headerIconBg,
             )}
           >
