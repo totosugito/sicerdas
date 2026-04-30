@@ -5,7 +5,7 @@ import { db } from "../../../../db/db-pool.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
@@ -16,6 +16,7 @@ import {
 } from "../../../../db/schema/exam/enums.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import { processBlockNoteFiles, replaceBlockNoteUrls } from "../../../../utils/blocknote-utils.ts";
+import { syncPassage } from "../../../../services/exam/index.ts";
 
 const VariableFormulasType = Type.Optional(
   Type.Object({
@@ -155,19 +156,9 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
           })
           .returning();
 
-        // If a passage is associated, update its counters
+        // If associated with a passage, sync its counters
         if (passageId) {
-          await tx
-            .update(examPassages)
-            .set({
-              totalQuestions: sql`${examPassages.totalQuestions} + 1`,
-              activeQuestions:
-                isActive !== false
-                  ? sql`${examPassages.activeQuestions} + 1`
-                  : examPassages.activeQuestions,
-              updatedAt: new Date(),
-            })
-            .where(eq(examPassages.id, passageId));
+          await syncPassage(passageId, tx);
         }
 
         return [question];

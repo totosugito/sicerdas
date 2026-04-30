@@ -6,7 +6,7 @@ import { examQuestionOptions } from "../../../../db/schema/exam/question-options
 import { inArray } from "drizzle-orm";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import { ScoringService } from "../../../../services/exam/scoring-service.ts";
+import { syncQuestionMaxScore } from "../../../../services/exam/index.ts";
 
 const DeleteMultipleQuestionOptionsBody = Type.Object({
   ids: Type.Array(Type.String({ format: "uuid" }), { minItems: 1 }),
@@ -55,8 +55,8 @@ const deleteMultipleQuestionOptionsRoute: FastifyPluginAsyncTypebox = async (app
       await db.delete(examQuestionOptions).where(inArray(examQuestionOptions.id, ids));
 
       // Sync each affected question's maxScore
-      for (const qId of uniqueQuestionIds) {
-        await ScoringService.syncQuestionMaxScore(qId);
+      for (const questionId of uniqueQuestionIds) {
+        await syncQuestionMaxScore(questionId);
       }
 
       return reply.status(200).send({

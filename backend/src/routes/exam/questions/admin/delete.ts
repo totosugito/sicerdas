@@ -3,13 +3,12 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
-import { examPassages } from "../../../../db/schema/exam/passages.ts";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { deleteStorageDirectory } from "../../../../utils/storage.ts";
-import { ScoringService } from "../../../../services/exam/scoring-service.ts";
+import { syncSection, syncPassage, syncPackage } from "../../../../services/exam/index.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 
 const DeleteQuestionParams = Type.Object({
@@ -59,7 +58,10 @@ const deleteQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       await db.transaction(async (tx) => {
         // Identify related sections before deleting
         const relatedSections = await tx
-          .select({ sectionId: examPackageQuestions.sectionId })
+          .select({
+            sectionId: examPackageQuestions.sectionId,
+            packageId: examPackageQuestions.packageId,
+          })
           .from(examPackageQuestions)
           .where(eq(examPackageQuestions.questionId, id));
 
@@ -67,23 +69,20 @@ const deleteQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         // and solutions, so they will be automatically deleted by PostgreSQL.
         await tx.delete(examQuestions).where(eq(examQuestions.id, id));
 
-        // Recalculate each affected section
+        // Recalculate each affected section and package
+        const uniquePackageIds = [...new Set(relatedSections.map((rs) => rs.packageId))];
+
         for (const rs of relatedSections) {
-          await ScoringService.recalculateSectionMaxScore(rs.sectionId, tx);
+          await syncSection(rs.sectionId, tx);
+        }
+
+        for (const pkgId of uniquePackageIds) {
+          await syncPackage(pkgId, tx);
         }
 
         // If a passage was associated, update its counters
         if (existingQuestion.passageId) {
-          await tx
-            .update(examPassages)
-            .set({
-              totalQuestions: sql`${examPassages.totalQuestions} - 1`,
-              activeQuestions: existingQuestion.isActive
-                ? sql`${examPassages.activeQuestions} - 1`
-                : examPassages.activeQuestions,
-              updatedAt: new Date(),
-            })
-            .where(eq(examPassages.id, existingQuestion.passageId));
+          await syncPassage(existingQuestion.passageId, tx);
         }
       });
 

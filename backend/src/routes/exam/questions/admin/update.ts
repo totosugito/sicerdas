@@ -6,13 +6,16 @@ import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
-import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
-import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { eq, inArray, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import { ScoringService } from "../../../../services/exam/scoring-service.ts";
+import {
+  syncSection,
+  syncPackage,
+  syncPassage,
+  syncQuestionMaxScore,
+} from "../../../../services/exam/index.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
   processBlockNoteFiles,
@@ -210,45 +213,12 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         // 1. Handle Passage Change
         if (isPassageChanged) {
-          // Decrement old passage
-          if (existingQuestion.passageId) {
-            await tx
-              .update(examPassages)
-              .set({
-                totalQuestions: sql`${examPassages.totalQuestions} - 1`,
-                activeQuestions: existingQuestion.isActive
-                  ? sql`${examPassages.activeQuestions} - 1`
-                  : examPassages.activeQuestions,
-                updatedAt: new Date(),
-              })
-              .where(eq(examPassages.id, existingQuestion.passageId));
-          }
-
-          // Increment new passage
-          if (updatePayload.passageId) {
-            const currentIsActive = isActive !== undefined ? isActive : existingQuestion.isActive;
-            await tx
-              .update(examPassages)
-              .set({
-                totalQuestions: sql`${examPassages.totalQuestions} + 1`,
-                activeQuestions: currentIsActive
-                  ? sql`${examPassages.activeQuestions} + 1`
-                  : examPassages.activeQuestions,
-                updatedAt: new Date(),
-              })
-              .where(eq(examPassages.id, updatePayload.passageId));
-          }
+          if (existingQuestion.passageId) await syncPassage(existingQuestion.passageId, tx);
+          if (updatePayload.passageId) await syncPassage(updatePayload.passageId, tx);
         }
         // 2. Handle only status change (if passage didn't change)
         else if (isStatusChanged && existingQuestion.passageId) {
-          const diff = isActive ? 1 : -1;
-          await tx
-            .update(examPassages)
-            .set({
-              activeQuestions: sql`${examPassages.activeQuestions} + ${diff}`,
-              updatedAt: new Date(),
-            })
-            .where(eq(examPassages.id, existingQuestion.passageId));
+          await syncPassage(existingQuestion.passageId, tx);
         }
 
         // If isActive status changed, update activeQuestions count in all related packages and sections
@@ -261,34 +231,15 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             .from(examPackageQuestions)
             .where(eq(examPackageQuestions.questionId, id));
 
-          if (relatedAssignments.length > 0) {
-            const packageIds = relatedAssignments.map((a) => a.packageId);
-            const sectionIds = relatedAssignments.map((a) => a.sectionId);
-            const diff = isActive ? 1 : -1;
-
-            // Update related packages
-            await tx
-              .update(examPackages)
-              .set({
-                activeQuestions: sql`${examPackages.activeQuestions} + ${diff}`,
-                updatedAt: new Date(),
-              })
-              .where(inArray(examPackages.id, packageIds));
-
-            // Update related sections
-            await tx
-              .update(examPackageSections)
-              .set({
-                activeQuestions: sql`${examPackageSections.activeQuestions} + ${diff}`,
-                updatedAt: new Date(),
-              })
-              .where(inArray(examPackageSections.id, sectionIds));
+          for (const assignment of relatedAssignments) {
+            await syncPackage(assignment.packageId, tx);
+            await syncSection(assignment.sectionId, tx);
           }
         }
 
         // 3. NEW: If scoringStrategy changed, sync question maxScore
         if (scoringStrategy !== undefined && scoringStrategy !== existingQuestion.scoringStrategy) {
-          await ScoringService.syncQuestionMaxScore(id);
+          await syncQuestionMaxScore(id, tx);
         }
 
         return [result];

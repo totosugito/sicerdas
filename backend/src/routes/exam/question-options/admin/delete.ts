@@ -8,7 +8,7 @@ import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { cleanupBlockNoteFiles } from "../../../../utils/blocknote-utils.ts";
-import { ScoringService } from "../../../../services/exam/scoring-service.ts";
+import { syncQuestionMaxScore } from "../../../../services/exam/index.ts";
 
 const DeleteQuestionOptionParams = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -67,7 +67,7 @@ const deleteQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
       );
 
       // Sync Question Max Score
-      await ScoringService.syncQuestionMaxScore(existingOption.questionId);
+      await syncQuestionMaxScore(existingOption.questionId);
 
       return reply.status(200).send({
         success: true,

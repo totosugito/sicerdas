@@ -3,13 +3,11 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
-import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
-import { examPackages } from "../../../../db/schema/exam/packages.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import { ScoringService } from "../../../../services/exam/scoring-service.ts";
+import { syncSection, syncPackage } from "../../../../services/exam/index.ts";
 
 const UnassignPackageQuestionsBody = Type.Object({
   packageId: Type.String({ format: "uuid" }),
@@ -60,19 +58,6 @@ const unassignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => 
 
         if (assignments.length === 0) return;
 
-        const totalUnassigned = assignments.length;
-        const activeUnassigned = assignments.filter((a) => a.isActive).length;
-
-        // Group by section to update section-level counts
-        const sectionStats: Record<string, { total: number; active: number }> = {};
-        for (const a of assignments) {
-          if (!sectionStats[a.sectionId]) {
-            sectionStats[a.sectionId] = { total: 0, active: 0 };
-          }
-          sectionStats[a.sectionId].total++;
-          if (a.isActive) sectionStats[a.sectionId].active++;
-        }
-
         // 2. Perform deletion
         await tx
           .delete(examPackageQuestions)
@@ -83,35 +68,12 @@ const unassignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => 
             ),
           );
 
-        // 3. Update Package counts
-        await tx
-          .update(examPackages)
-          .set({
-            totalQuestions: sql`${examPackages.totalQuestions} - ${totalUnassigned}`,
-            activeQuestions:
-              activeUnassigned > 0
-                ? sql`${examPackages.activeQuestions} - ${activeUnassigned}`
-                : undefined,
-            updatedAt: new Date(),
-          })
-          .where(eq(examPackages.id, packageId));
+        // 3. Fully sync Package and Section counters via SQL Ground Truth
+        await syncPackage(packageId, tx);
 
-        // 4. Update Section counts (loop through affected sections)
-        for (const [sectionId, stats] of Object.entries(sectionStats)) {
-          await tx
-            .update(examPackageSections)
-            .set({
-              totalQuestions: sql`${examPackageSections.totalQuestions} - ${stats.total}`,
-              activeQuestions:
-                stats.active > 0
-                  ? sql`${examPackageSections.activeQuestions} - ${stats.active}`
-                  : undefined,
-              updatedAt: new Date(),
-            })
-            .where(eq(examPackageSections.id, sectionId));
-
-          // 5. NEW: Recalculate the section maxScore after removal
-          await ScoringService.recalculateSectionMaxScore(sectionId, tx);
+        const uniqueSectionIds = [...new Set(assignments.map((a) => a.sectionId))];
+        for (const sectionId of uniqueSectionIds) {
+          await syncSection(sectionId, tx);
         }
       });
 
