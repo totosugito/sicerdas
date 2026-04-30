@@ -16,6 +16,8 @@ export interface ExamSession {
   totalCorrect: number;
   totalWrong: number;
   totalSkipped: number;
+  earnedPoints: number | null;
+  maxPoints: number | null;
   currentQuestionId: string | null;
   questionOrder: string[]; // Array of question IDs
 }
@@ -107,4 +109,6 @@ export interface ExamHistoryItem {
   totalCorrect: number;
   totalWrong: number;
   totalSkipped: number;
+  earnedPoints: number | null;
+  maxPoints: number | null;
 }

@@ -7,6 +7,8 @@ export interface SubmitSessionResponse {
   message: string;
   data: {
     score: number;
+    earnedPoints: number;
+    maxPoints: number;
     totalCorrect: number;
     totalWrong: number;
     totalSkipped: number;

@@ -40,6 +40,11 @@ export const examSessions = pgTable("exam_sessions", {
   totalCorrect: integer("total_correct").default(0).notNull(),
   totalWrong: integer("total_wrong").default(0).notNull(),
   totalSkipped: integer("total_skipped").default(0).notNull(),
+
+  // NEW: Weighted scoring fields
+  earnedPoints: decimal("earned_points", { precision: 10, scale: 2 }).default("0").notNull(),
+  maxPoints: decimal("max_points", { precision: 10, scale: 2 }).default("0").notNull(),
+  score: decimal("score", { precision: 10, scale: 2 }),
 });
 ```
 

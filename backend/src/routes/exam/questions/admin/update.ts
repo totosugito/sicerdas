@@ -12,6 +12,7 @@ import { eq, inArray, sql } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
+import { ScoringService } from "../../../../services/exam/scoring-service.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
   processBlockNoteFiles,
@@ -122,7 +123,6 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         content,
         difficulty,
         type,
-        maxScore,
         scoringStrategy,
         requiredTier,
         educationGradeId,
@@ -185,7 +185,6 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (reasonContent !== undefined) updatePayload.reasonContent = finalReasonContent;
       if (difficulty !== undefined) updatePayload.difficulty = difficulty;
       if (type !== undefined) updatePayload.type = type;
-      if (maxScore !== undefined) updatePayload.maxScore = maxScore;
       if (scoringStrategy !== undefined) updatePayload.scoringStrategy = scoringStrategy;
       if (requiredTier !== undefined) updatePayload.requiredTier = requiredTier;
       if (educationGradeId !== undefined) {
@@ -285,6 +284,11 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
               })
               .where(inArray(examPackageSections.id, sectionIds));
           }
+        }
+
+        // 3. NEW: If scoringStrategy changed, sync question maxScore
+        if (scoringStrategy !== undefined && scoringStrategy !== existingQuestion.scoringStrategy) {
+          await ScoringService.syncQuestionMaxScore(id);
         }
 
         return [result];

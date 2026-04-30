@@ -67,6 +67,7 @@ function AdminExamQuestionsEditPage() {
       content: question?.content || [],
       reasonContent: question?.reasonContent || [],
       variableFormulas: question?.variableFormulas || { variables: [], solutions: {} },
+      maxScore: question?.maxScore ?? 1,
     };
   }, [question]);
 

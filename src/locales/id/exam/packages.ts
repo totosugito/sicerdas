@@ -172,4 +172,10 @@ export default {
   list: {
     error: "Gagal mengambil data paket ujian.",
   },
+  userStatus: {
+    completed: "SELESAI",
+    inProgress: "BERPROGRES",
+    sectionsCompleted: "{{completed}} / {{total}} SELESAI",
+    sectionsCompletedHero: "{{completed}} / {{total}} Bagian Selesai",
+  },
 };

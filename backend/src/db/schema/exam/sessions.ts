@@ -63,6 +63,9 @@ export const examSessions = pgTable(
     totalWrong: integer("total_wrong").default(0).notNull(),
     totalSkipped: integer("total_skipped").default(0).notNull(),
 
+    earnedPoints: decimal("earned_points", { precision: 10, scale: 2 }).default("0.00").notNull(),
+    maxPoints: decimal("max_points", { precision: 10, scale: 2 }).default("0.00").notNull(),
+
     // Final calculated score for the entire session. Uses decimal to support IRT grading systems.
     score: decimal("score", { precision: 10, scale: 2 }),
 

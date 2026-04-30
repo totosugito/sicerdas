@@ -31,4 +31,10 @@ export default {
     success: "Sesi berhasil dibatalkan",
     notFound: "Sesi tidak ditemukan atau sudah selesai",
   },
+  results: {
+    finalScore: "Skor Akhir",
+    scaleInfo: "Skala 0 - 100",
+    pointsInfo: "{{earned}} / {{max}} Points",
+    accuracy: "Akurasi",
+  },
 };

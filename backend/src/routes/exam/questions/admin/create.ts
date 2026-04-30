@@ -100,7 +100,6 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         content,
         difficulty,
         type,
-        maxScore,
         scoringStrategy,
         requiredTier,
         educationGradeId,
@@ -142,7 +141,6 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             reasonContent: reasonContent || [],
             difficulty: difficulty || EnumDifficultyLevel.MEDIUM,
             type: type || EnumQuestionType.MULTIPLE_CHOICE,
-            maxScore: maxScore ?? 1,
             scoringStrategy: scoringStrategy ?? EnumScoringStrategy.ALL_OR_NOTHING,
             requiredTier: requiredTier !== undefined ? requiredTier : "free",
             educationGradeId:

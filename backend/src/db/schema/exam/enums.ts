@@ -69,3 +69,13 @@ export const PgEnumExamSessionMode = pgEnum(
   "exam_session_mode",
   Object.values(EnumExamSessionMode) as [string, ...string[]],
 );
+
+export const EnumExamPackageUserStatus = {
+  NOT_STARTED: "not_started",
+  IN_PROGRESS: "in_progress",
+  COMPLETED: "completed",
+} as const;
+export const PgEnumExamPackageUserStatus = pgEnum(
+  "exam_package_user_status",
+  Object.values(EnumExamPackageUserStatus) as [string, ...string[]],
+);

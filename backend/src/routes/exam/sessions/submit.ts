@@ -7,10 +7,12 @@ import { examSessionAnswers } from "../../../db/schema/exam/session-answers.ts";
 import { examQuestions } from "../../../db/schema/exam/questions.ts";
 import { examQuestionOptions } from "../../../db/schema/exam/question-options.ts";
 import { examQuestionTags } from "../../../db/schema/exam/question-tags.ts";
+import { examPackages } from "../../../db/schema/exam/packages.ts";
+import { examPackageInteractions } from "../../../db/schema/exam/user-interactions.ts";
 import { examUserStatsGlobal } from "../../../db/schema/exam/user-stats-global.ts";
 import { examUserStatsSubject } from "../../../db/schema/exam/user-stats-subject.ts";
 import { examUserStatsTag } from "../../../db/schema/exam/user-stats-tag.ts";
-import { EnumExamSessionStatus } from "../../../db/schema/exam/enums.ts";
+import { EnumExamSessionStatus, EnumExamPackageUserStatus } from "../../../db/schema/exam/enums.ts";
 import { eq, and, inArray, sql } from "drizzle-orm";
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
@@ -24,6 +26,8 @@ const SubmitSessionResponse = Type.Object({
   message: Type.String(),
   data: Type.Object({
     score: Type.Number(),
+    earnedPoints: Type.Number(),
+    maxPoints: Type.Number(),
     totalCorrect: Type.Number(),
     totalWrong: Type.Number(),
     totalSkipped: Type.Number(),
@@ -73,7 +77,7 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         return reply.forbidden(t(($) => $.exam.sessions.submit.alreadySubmitted));
       }
 
-      // 2. Fetch all answers and corresponding correct options, subjects, and tags
+      // 2. Fetch all answers, correct options, question weights, and user selection scores
       const studentAnswers = await db
         .select({
           id: examSessionAnswers.id,
@@ -81,9 +85,15 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
           selectedOptionId: examSessionAnswers.selectedOptionId,
           textAnswer: examSessionAnswers.textAnswer,
           subjectId: examQuestions.subjectId,
+          maxScore: examQuestions.maxScore,
+          earnedScore: examQuestionOptions.score,
         })
         .from(examSessionAnswers)
         .innerJoin(examQuestions, eq(examSessionAnswers.questionId, examQuestions.id))
+        .leftJoin(
+          examQuestionOptions,
+          eq(examSessionAnswers.selectedOptionId, examQuestionOptions.id),
+        )
         .where(eq(examSessionAnswers.sessionId, id));
 
       if (studentAnswers.length === 0) {
@@ -92,7 +102,7 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       const questionIds = studentAnswers.map((a) => a.questionId);
 
-      // Fetch correct options for these questions
+      // Fetch correct options IDs for correctness-count analytics
       const correctOptions = await db
         .select({
           id: examQuestionOptions.id,
@@ -119,6 +129,8 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
       let totalCorrect = 0;
       let totalWrong = 0;
       let totalSkipped = 0;
+      let earnedPoints = 0;
+      let maxPoints = 0;
       const totalQuestions = studentAnswers.length;
 
       // Aggregators for subject and tag stats
@@ -142,6 +154,10 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         if (isCorrect) totalCorrect++;
         else if (isWrong) totalWrong++;
         else totalSkipped++;
+
+        // Weighted Scoring
+        earnedPoints += Number(answer.earnedScore || 0);
+        maxPoints += Number(answer.maxScore || 0);
 
         // Track Subject Stats
         const sId = answer.subjectId;
@@ -172,7 +188,7 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
           .where(eq(examSessionAnswers.id, answer.id));
       }
 
-      const finalScore = totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
+      const finalScore = maxPoints > 0 ? (earnedPoints / maxPoints) * 100 : 0;
 
       // 4. Update Statistics Tables (Incremental)
       await db.transaction(async (tx) => {
@@ -259,18 +275,68 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }
 
         // 5. Finalize Session
-        await tx
+        const [updatedSession] = await tx
           .update(examSessions)
           .set({
             status: EnumExamSessionStatus.COMPLETED,
             endTime: new Date(),
+            earnedPoints: earnedPoints.toString(),
+            maxPoints: maxPoints.toString(),
             score: finalScore.toString(),
             totalCorrect,
             totalWrong,
             totalSkipped,
             updatedAt: new Date(),
           })
-          .where(eq(examSessions.id, id));
+          .where(eq(examSessions.id, id))
+          .returning({ packageId: examSessions.packageId });
+
+        // 6. Update Package Interaction / Progress Tracking
+        if (updatedSession?.packageId) {
+          // Count how many distinct sections in this package have at least one COMPLETED session
+          const [completedSections] = await tx
+            .select({ count: sql<number>`count(distinct ${examSessions.sectionId})` })
+            .from(examSessions)
+            .where(
+              and(
+                eq(examSessions.userId, userId),
+                eq(examSessions.packageId, updatedSession.packageId),
+                eq(examSessions.status, EnumExamSessionStatus.COMPLETED),
+              ),
+            );
+
+          const completedCount = Number(completedSections?.count || 0);
+
+          // Get total sections in package to determine if fully completed
+          const [pkg] = await tx
+            .select({ totalSections: examPackages.totalSections })
+            .from(examPackages)
+            .where(eq(examPackages.id, updatedSession.packageId));
+
+          const isFullyCompleted = pkg && completedCount >= pkg.totalSections;
+
+          await tx
+            .insert(examPackageInteractions)
+            .values({
+              userId,
+              packageId: updatedSession.packageId,
+              status: isFullyCompleted
+                ? EnumExamPackageUserStatus.COMPLETED
+                : EnumExamPackageUserStatus.IN_PROGRESS,
+              completedSectionsCount: completedCount,
+              updatedAt: new Date(),
+            })
+            .onConflictDoUpdate({
+              target: [examPackageInteractions.userId, examPackageInteractions.packageId],
+              set: {
+                status: isFullyCompleted
+                  ? EnumExamPackageUserStatus.COMPLETED
+                  : EnumExamPackageUserStatus.IN_PROGRESS,
+                completedSectionsCount: completedCount,
+                updatedAt: new Date(),
+              },
+            });
+        }
       });
 
       return reply.status(200).send({
@@ -278,6 +344,8 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         message: t(($) => $.exam.sessions.submit.success),
         data: {
           score: finalScore,
+          earnedPoints,
+          maxPoints,
           totalCorrect,
           totalWrong,
           totalSkipped,

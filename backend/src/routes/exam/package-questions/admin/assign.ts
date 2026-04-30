@@ -9,6 +9,7 @@ import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
+import { ScoringService } from "../../../../services/exam/scoring-service.ts";
 
 const AssignPackageQuestionsBody = Type.Object({
   packageId: Type.String({ format: "uuid" }),
@@ -126,6 +127,9 @@ const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
             updatedAt: new Date(),
           })
           .where(eq(examPackageSections.id, sectionId));
+
+        // 5. NEW: Recalculate the section maxScore to account for the new weights
+        await ScoringService.recalculateSectionMaxScore(sectionId, tx);
       });
 
       return reply.status(200).send({

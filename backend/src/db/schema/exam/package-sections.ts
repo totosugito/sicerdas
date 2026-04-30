@@ -59,6 +59,7 @@ export const examPackageSections = pgTable(
     // Active/Total counters for questions (Denormalization for scale)
     totalQuestions: integer("total_questions").default(0).notNull(),
     activeQuestions: integer("active_questions").default(0).notNull(),
+    maxScore: integer("max_score").default(0).notNull(),
 
     // Timestamp when this section was created
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

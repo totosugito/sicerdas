@@ -9,6 +9,8 @@ import env from "../../../../config/env.config.ts";
 import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { deleteStorageDirectory } from "../../../../utils/storage.ts";
+import { ScoringService } from "../../../../services/exam/scoring-service.ts";
+import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 
 const DeleteQuestionParams = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -55,9 +57,20 @@ const deleteQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       await db.transaction(async (tx) => {
+        // Identify related sections before deleting
+        const relatedSections = await tx
+          .select({ sectionId: examPackageQuestions.sectionId })
+          .from(examPackageQuestions)
+          .where(eq(examPackageQuestions.questionId, id));
+
         // Perform Hard Delete. The database schema has `onDelete: 'cascade'` for options
         // and solutions, so they will be automatically deleted by PostgreSQL.
         await tx.delete(examQuestions).where(eq(examQuestions.id, id));
+
+        // Recalculate each affected section
+        for (const rs of relatedSections) {
+          await ScoringService.recalculateSectionMaxScore(rs.sectionId, tx);
+        }
 
         // If a passage was associated, update its counters
         if (existingQuestion.passageId) {

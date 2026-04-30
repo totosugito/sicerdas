@@ -15,6 +15,7 @@ import { getPackageThumbnailUrl } from "../../../utils/exam-utils.ts";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
+import { EnumExamPackageUserStatus } from "../../../db/schema/exam/enums.ts";
 
 const PackageListQuery = Type.Object({
   categoryId: Type.Optional(Type.String({ format: "uuid" })),
@@ -69,6 +70,8 @@ const PackageResponseItem = Type.Object({
       disliked: Type.Boolean(),
       rating: Type.Number(),
       bookmarked: Type.Boolean(),
+      status: Type.Enum(EnumExamPackageUserStatus),
+      completedSectionsCount: Type.Number(),
     }),
   ),
   isNew: Type.Boolean(),
@@ -203,6 +206,12 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           bookmarked: isLoggedIn
             ? examPackageInteractions.bookmarked
             : sql<boolean | null>`NULL`.as("bookmarked"),
+          interactionStatus: isLoggedIn
+            ? examPackageInteractions.status
+            : sql<string | null>`NULL`.as("interactionStatus"),
+          completedSectionsCount: isLoggedIn
+            ? examPackageInteractions.completedSectionsCount
+            : sql<number | null>`NULL`.as("completedSectionsCount"),
         })
         .from(examPackages)
         .leftJoin(educationCategories, eq(examPackages.categoryId, educationCategories.id))
@@ -314,6 +323,15 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
                     item.bookmarked !== undefined && item.bookmarked !== null
                       ? item.bookmarked
                       : false,
+                  status:
+                    item.interactionStatus !== undefined && item.interactionStatus !== null
+                      ? item.interactionStatus
+                      : EnumExamPackageUserStatus.NOT_STARTED,
+                  completedSectionsCount:
+                    item.completedSectionsCount !== undefined &&
+                    item.completedSectionsCount !== null
+                      ? item.completedSectionsCount
+                      : 0,
                 },
               };
             }

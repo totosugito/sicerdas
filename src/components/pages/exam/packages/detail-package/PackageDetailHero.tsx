@@ -1,4 +1,5 @@
 import { ExamPackage } from "@/api/exam-packages";
+import { EnumExamPackageUserStatus } from "backend/src/db/schema/exam/enums";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAppTranslation } from "@/lib/i18n-typed";
@@ -69,6 +70,25 @@ export const PackageDetailHero = ({
                 </Badge>
               )}
               {pkg.grade.name && <Badge variant="outline">{pkg.grade.name}</Badge>}
+              {pkg.userInteraction?.status &&
+                pkg.userInteraction.status !== EnumExamPackageUserStatus.NOT_STARTED && (
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      pkg.userInteraction.status === EnumExamPackageUserStatus.COMPLETED
+                        ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300"
+                        : "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300",
+                      "font-bold",
+                    )}
+                  >
+                    {pkg.userInteraction.status === EnumExamPackageUserStatus.COMPLETED
+                      ? t(($) => $.exam.packages.userStatus.completed)
+                      : t(($) => $.exam.packages.userStatus.sectionsCompletedHero, {
+                          completed: pkg.userInteraction.completedSectionsCount,
+                          total: pkg.stats.activeSections,
+                        })}
+                  </Badge>
+                )}
             </div>
 
             <div className="flex items-center gap-2 max-lg:w-full">

@@ -5,7 +5,8 @@ import { ExamPackage } from "@/api/exam-packages/types";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate, Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { Heart, HelpCircle, Layers } from "lucide-react";
+import { Heart, HelpCircle, Layers, CheckCircle2, PlayCircle } from "lucide-react";
+import { EnumExamPackageUserStatus } from "backend/src/db/schema/exam/enums";
 
 interface PackageCardProps {
   exams: ExamPackage[];
@@ -95,18 +96,45 @@ const PackageCardView = ({ exam, viewMode }: PackageCardViewProps) => {
         )}
 
         {/* Badges on overlay */}
-        {exam.grade.name && (
-          <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3 flex flex-col gap-2 items-start z-10">
+          {exam.grade.name && (
             <Badge
               className={cn(
                 getGradeColor(exam.grade.name),
-                "text-white rounded shadow-sm backdrop-blur-sm text-xs px-2 py-1 border-muted",
+                "text-white rounded shadow-sm backdrop-blur-sm text-xs px-2 py-1 border-muted border-white/20",
               )}
             >
               {exam.grade.name}
             </Badge>
-          </div>
-        )}
+          )}
+
+          {exam.userInteraction?.status &&
+            exam.userInteraction.status !== EnumExamPackageUserStatus.NOT_STARTED && (
+              <Badge
+                className={cn(
+                  exam.userInteraction.status === EnumExamPackageUserStatus.COMPLETED
+                    ? "bg-green-600 border-green-400/50"
+                    : "bg-amber-600 border-amber-400/50",
+                  "text-white rounded shadow-md backdrop-blur-md text-[10px] px-2 py-0.5 border font-black flex items-center gap-1 animate-in slide-in-from-left-2 duration-300",
+                )}
+              >
+                {exam.userInteraction.status === EnumExamPackageUserStatus.COMPLETED ? (
+                  <>
+                    <CheckCircle2 className="w-3 h-3" />
+                    {t(($) => $.exam.packages.userStatus.completed)}
+                  </>
+                ) : (
+                  <>
+                    <PlayCircle className="w-3 h-3 animate-pulse" />
+                    {t(($) => $.exam.packages.userStatus.sectionsCompleted, {
+                      completed: exam.userInteraction.completedSectionsCount,
+                      total: exam.stats.activeSections,
+                    })}
+                  </>
+                )}
+              </Badge>
+            )}
+        </div>
 
         {exam.isNew && (
           <div className="absolute top-3 right-3 z-10">

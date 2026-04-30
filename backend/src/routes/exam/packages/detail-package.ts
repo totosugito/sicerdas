@@ -16,6 +16,7 @@ import { EnumContentType, EnumEventStatus } from "../../../db/schema/enum/enum-a
 import { CONFIG } from "../../../config/app-constant.ts";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
+import { EnumExamPackageUserStatus } from "../../../db/schema/exam/enums.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const PackageDetailResponse = Type.Object({
@@ -54,6 +55,8 @@ const PackageDetailResponse = Type.Object({
       disliked: Type.Boolean(),
       rating: Type.Number(),
       bookmarked: Type.Boolean(),
+      status: Type.Enum(EnumExamPackageUserStatus),
+      completedSectionsCount: Type.Number(),
       viewCount: Type.Number(),
     }),
   ),
@@ -143,6 +146,8 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
           disliked: examPackageInteractions.disliked,
           userRating: examPackageInteractions.rating,
           bookmarked: examPackageInteractions.bookmarked,
+          interactionStatus: examPackageInteractions.status,
+          completedSectionsCount: examPackageInteractions.completedSectionsCount,
           userViewCount: examPackageInteractions.viewCount,
           isNew: app.versionCache.get(EnumContentType.EXAM)
             ? sql<boolean>`${examPackages.versionId} = ${app.versionCache.get(EnumContentType.EXAM)}`.as(
@@ -298,6 +303,14 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
                   : 0,
               bookmarked:
                 pkg.bookmarked !== undefined && pkg.bookmarked !== null ? pkg.bookmarked : false,
+              status:
+                pkg.interactionStatus !== undefined && pkg.interactionStatus !== null
+                  ? pkg.interactionStatus
+                  : EnumExamPackageUserStatus.NOT_STARTED,
+              completedSectionsCount:
+                pkg.completedSectionsCount !== undefined && pkg.completedSectionsCount !== null
+                  ? pkg.completedSectionsCount
+                  : 0,
               viewCount:
                 pkg.userViewCount !== undefined && pkg.userViewCount !== null
                   ? pkg.userViewCount

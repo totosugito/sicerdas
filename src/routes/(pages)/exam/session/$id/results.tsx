@@ -18,12 +18,14 @@ import { useState, useMemo } from "react";
 import { useSessionQuestion } from "@/api/exam-sessions";
 import { LayoutGrid, List as ListIcon, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useAppTranslation } from "@/lib/i18n-typed";
 
 export const Route = createFileRoute("/(pages)/exam/session/$id/results")({
   component: SessionResultsComponent,
 });
 
 function SessionResultsComponent() {
+  const { t } = useAppTranslation();
   const { id: sessionId } = Route.useParams();
   const [selectedReviewId, setSelectedReviewId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -134,10 +136,20 @@ function SessionResultsComponent() {
             <div className="flex flex-col md:flex-row">
               <div className="flex-1 p-8 bg-primary/5 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-primary/10">
                 <span className="text-sm font-bold uppercase tracking-widest text-primary/60 mb-1">
-                  Skor Akhir
+                  {t(($) => $.exam.sessions.results.finalScore)}
                 </span>
                 <div className="text-7xl font-black text-primary mb-2">{Math.round(score)}</div>
-                <div className="text-sm font-medium text-muted-foreground">Skala 0 - 100</div>
+                <div className="text-sm font-medium text-muted-foreground">
+                  {t(($) => $.exam.sessions.results.scaleInfo)}
+                </div>
+                {session.earnedPoints !== null && session.maxPoints !== null && (
+                  <div className="mt-3 text-xs font-black uppercase tracking-wider text-primary/70 bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20 animate-in fade-in slide-in-from-bottom-1 duration-500">
+                    {t(($) => $.exam.sessions.results.pointsInfo, {
+                      earned: session.earnedPoints,
+                      max: session.maxPoints,
+                    })}
+                  </div>
+                )}
               </div>
               <div className="flex-[1.5] p-8 grid grid-cols-2 gap-6">
                 <div className="space-y-1">

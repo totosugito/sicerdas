@@ -24,6 +24,8 @@ const SessionDetailsResponse = Type.Object({
       elapsedSeconds: Type.Number(),
       isTimerActive: Type.Boolean(),
       score: Type.Union([Type.Number(), Type.Null()]),
+      earnedPoints: Type.Union([Type.Number(), Type.Null()]),
+      maxPoints: Type.Union([Type.Number(), Type.Null()]),
     }),
     grid: Type.Array(
       Type.Object({
@@ -120,6 +122,8 @@ const detailsSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
             elapsedSeconds: session.elapsedSeconds,
             isTimerActive: session.isTimerActive,
             score: session.score !== null ? Number(session.score) : null,
+            earnedPoints: session.earnedPoints !== null ? Number(session.earnedPoints) : null,
+            maxPoints: session.maxPoints !== null ? Number(session.maxPoints) : null,
           },
           grid,
         },

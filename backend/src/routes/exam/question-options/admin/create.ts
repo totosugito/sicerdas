@@ -14,6 +14,7 @@ import {
   replaceBlockNoteUrls,
   resolveBlockNoteUrls,
 } from "../../../../utils/blocknote-utils.ts";
+import { ScoringService } from "../../../../services/exam/scoring-service.ts";
 
 const QuestionOptionResponseItem = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -124,6 +125,9 @@ const createQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
           })
           .where(eq(examQuestionOptions.id, newOption.id));
       }
+
+      // Sync Question Max Score
+      await ScoringService.syncQuestionMaxScore(questionId);
 
       return reply.status(201).send({
         success: true,

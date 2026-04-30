@@ -12,6 +12,7 @@ import {
 import { type InferInsertModel, type InferSelectModel } from "drizzle-orm";
 import { users } from "../user/users.ts";
 import { examPackages } from "./packages.ts";
+import { PgEnumExamPackageUserStatus, EnumExamPackageUserStatus } from "./enums.ts";
 
 /**
  * User Exam Package Interactions
@@ -49,6 +50,12 @@ export const examPackageInteractions = pgTable(
     rating: numeric("rating", { precision: 3, scale: 2 }).default("0.00"),
     bookmarked: boolean("bookmarked").default(false),
     viewCount: integer("view_count").default(0),
+
+    // Progress Tracking
+    status: PgEnumExamPackageUserStatus("status")
+      .default(EnumExamPackageUserStatus.NOT_STARTED)
+      .notNull(),
+    completedSectionsCount: integer("completed_sections_count").default(0).notNull(),
 
     // Flexible data storage
     extra: jsonb("extra").$type<Record<string, unknown>>().default({}),

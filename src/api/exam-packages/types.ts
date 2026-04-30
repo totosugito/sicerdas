@@ -1,3 +1,5 @@
+import { EnumExamPackageUserStatus } from "backend/src/db/schema/exam/enums";
+
 export interface ExamPackage {
   id: string;
   title: string;
@@ -34,6 +36,8 @@ export interface ExamPackage {
     disliked: boolean;
     rating: number;
     bookmarked: boolean;
+    status: (typeof EnumExamPackageUserStatus)[keyof typeof EnumExamPackageUserStatus];
+    completedSectionsCount: number;
     viewCount?: number;
   };
   createdAt: string;

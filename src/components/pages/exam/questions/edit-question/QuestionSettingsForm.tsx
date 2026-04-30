@@ -192,7 +192,8 @@ export function QuestionSettingsForm({
       name: "maxScore",
       label: t(($) => $.exam.questions.form.maxScore.label),
       placeholder: t(($) => $.exam.questions.form.maxScore.placeholder),
-      required: true,
+      required: false,
+      disabled: true,
     },
     scoringStrategy: {
       type: "select",
