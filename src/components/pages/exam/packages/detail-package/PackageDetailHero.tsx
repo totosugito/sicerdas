@@ -33,7 +33,7 @@ export const PackageDetailHero = ({
       <div className="relative flex flex-col gap-8 lg:flex-row">
         {/* Left Column: Thumbnail (Hero Header on Mobile) */}
         <div className="shrink-0 -mx-6 -mt-6 lg:m-0">
-          <div className="group relative w-full overflow-hidden rounded-t-[22px] bg-muted shadow-sm lg:rounded-2xl lg:shadow-lg lg:w-[240px]">
+          <div className="group relative w-full max-h-[280px] overflow-hidden rounded-t-[22px] bg-muted shadow-sm lg:rounded-2xl lg:shadow-lg lg:w-[240px] lg:max-h-none">
             {imageError || !pkg.thumbnail ? (
               <div className="flex aspect-video items-center justify-center bg-accent/30 lg:aspect-[4/3]">
                 <ImageOff className="h-12 w-12 text-muted-foreground/40" />
@@ -42,7 +42,7 @@ export const PackageDetailHero = ({
               <img
                 src={pkg.thumbnail}
                 alt={pkg.title}
-                className="aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-110 lg:aspect-[4/3]"
+                className="aspect-video w-full max-h-[280px] object-cover transition-transform duration-700 group-hover:scale-110 lg:aspect-[4/3] lg:max-h-none"
                 onError={() => setImageError(true)}
               />
             )}
