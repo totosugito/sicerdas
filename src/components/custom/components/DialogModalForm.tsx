@@ -50,8 +50,8 @@ export const DialogModalForm = ({
     content: <div />,
     textConfirm: "Yes",
     textCancel: "No",
-    onConfirmClick: () => {},
-    onCancelClick: () => {},
+    onConfirmClick: () => { },
+    onCancelClick: () => { },
     modal: true,
     defaultValue: {},
     child: null,
@@ -76,8 +76,8 @@ export const DialogModalForm = ({
   const form = useForm({
     resolver: modal.schema
       ? zodResolver(
-          (modal.schema instanceof z.ZodType ? modal.schema : z.object(modal.schema)) as any,
-        )
+        (modal.schema instanceof z.ZodType ? modal.schema : z.object(modal.schema)) as any,
+      )
       : undefined,
     defaultValues: modal.defaultValue,
   });
@@ -121,7 +121,7 @@ export const DialogModalForm = ({
             className="flex flex-col h-full flex-1 overflow-y-auto"
             schema={modal?.schema}
           >
-            <div className={"flex flex-col h-full flex-1 overflow-y-auto"}>
+            <div className={"flex flex-col flex-1"}>
               {modal?.child &&
                 modal?.content &&
                 cloneElement<DialogContentProps>(
@@ -141,7 +141,7 @@ export const DialogModalForm = ({
                   className={cn(
                     "min-w-[80px]",
                     modal?.variant === "confirm" &&
-                      "bg-emerald-600 hover:bg-emerald-700 text-white",
+                    "bg-emerald-600 hover:bg-emerald-700 text-white",
                   )}
                   variant={modal?.variant === "destructive" ? "destructive" : "default"}
                   type="submit"

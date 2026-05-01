@@ -13,6 +13,7 @@ import {
   processBlockNoteFiles,
   replaceBlockNoteUrls,
   resolveBlockNoteUrls,
+  stripBlockNoteUrls,
 } from "../../../../utils/blocknote-utils.ts";
 
 const QuestionSolutionResponseItem = Type.Object({
@@ -107,7 +108,7 @@ const createQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .returning();
 
       // Process uploaded files if any
-      let finalContent = content || [];
+      let finalContent = content ? stripBlockNoteUrls(content) : [];
 
       if (files.length > 0) {
         const urlMap = await processBlockNoteFiles(

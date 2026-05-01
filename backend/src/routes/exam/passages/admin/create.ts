@@ -13,6 +13,7 @@ import {
   processBlockNoteFiles,
   replaceBlockNoteUrls,
   resolveBlockNoteUrls,
+  stripBlockNoteUrls,
 } from "../../../../utils/blocknote-utils.ts";
 
 const PassageResponseItem = Type.Object({
@@ -105,7 +106,7 @@ const createPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
         .returning();
 
       // Process uploaded files if any
-      let finalContent = content || [];
+      let finalContent = content ? stripBlockNoteUrls(content) : [];
 
       if (files.length > 0) {
         const urlMap = await processBlockNoteFiles(

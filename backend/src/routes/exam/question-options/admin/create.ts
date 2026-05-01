@@ -13,6 +13,7 @@ import {
   processBlockNoteFiles,
   replaceBlockNoteUrls,
   resolveBlockNoteUrls,
+  stripBlockNoteUrls,
 } from "../../../../utils/blocknote-utils.ts";
 import { syncQuestionMaxScore } from "../../../../services/exam/index.ts";
 
@@ -104,7 +105,7 @@ const createQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .returning();
 
       // Process uploaded files if any
-      let finalContent = content || [];
+      let finalContent = content ? stripBlockNoteUrls(content) : [];
 
       if (files.length > 0) {
         const urlMap = await processBlockNoteFiles(

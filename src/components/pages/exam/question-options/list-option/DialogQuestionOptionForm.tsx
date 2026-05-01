@@ -30,10 +30,19 @@ const FormOption = ({ values, form }: any) => {
   }, [isCorrect, score, form]);
 
   return (
-    <div className="flex flex-col gap-6 w-full">
-      <ControlForm form={form} item={values.content} showMessage={false} />
-      <ControlForm form={form} item={values.isCorrect} showMessage={false} />
+    <div className="flex flex-col gap-4 w-full py-1">
+      <div className="flex-1">
+        <ControlForm
+          form={form}
+          item={values.content}
+          showMessage={false}
+          wrapperClassName="flex-1"
+        />
+      </div>
+      {/* <div className="flex flex-col gap-4 bg-muted/30 p-4 rounded-xl border border-dashed"> */}
       <ControlForm form={form} item={values.score} showMessage={false} />
+      <ControlForm form={form} item={values.isCorrect} showMessage={false} />
+      {/* </div> */}
     </div>
   );
 };
@@ -83,7 +92,7 @@ export const DialogQuestionOptionForm = ({
       name: "content",
       label: t(($) => $.exam.options.form.content.label),
       placeholder: t(($) => $.exam.options.form.content.placeholder),
-      wrapperClassName: "min-h-[300px]",
+      minHeight: "300px",
       required: true,
       uploadFile,
     },

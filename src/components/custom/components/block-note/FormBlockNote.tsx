@@ -126,7 +126,43 @@ export const FormBlockNote = ({
     editor.isEditable = !disabled;
   }, [editor, disabled]);
 
+  // Fix for mouse scroll not working in BlockNote menus when inside a Radix Dialog.
+  // This is because Radix UI's scroll lock intercepts wheel events on the body/window.
+  // We use a MutationObserver to attach an onWheel handler that stops propagation 
+  // to every BlockNote menu as it's added to the DOM (since they are portalled).
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    const attachWheelStop = (el: HTMLElement) => {
+      el.addEventListener("wheel", (e) => e.stopPropagation(), { passive: true });
+    };
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement) {
+            // Target the suggestion menu and other portalled menus
+            const menus = node.matches(".bn-suggestion-menu, .bn-side-menu, .bn-formatting-toolbar, .bn-drag-handle-menu")
+              ? [node]
+              : Array.from(node.querySelectorAll(".bn-suggestion-menu, .bn-side-menu, .bn-formatting-toolbar, .bn-drag-handle-menu"));
+
+            menus.forEach((m) => attachWheelStop(m as HTMLElement));
+          }
+        });
+      });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Also try to find already existing menus
+    document.querySelectorAll(".bn-suggestion-menu, .bn-side-menu, .bn-formatting-toolbar, .bn-drag-handle-menu")
+      .forEach((m) => attachWheelStop(m as HTMLElement));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
+
     <FormField
       control={form.control}
       name={item.name}
@@ -139,7 +175,7 @@ export const FormBlockNote = ({
           <FormControl>
             <div
               className={cn(
-                "border rounded-md bg-background flex-1 overflow-hidden transition-all",
+                "border rounded-md bg-background flex-1 overflow-y-auto transition-all",
                 disabled && "opacity-60 bg-muted cursor-not-allowed",
                 className,
               )}

@@ -14,8 +14,10 @@
 .alert-wrapper {
   width: 100%;
   display: flex;
-  align-items: center; /* Centered align as per official example */
-  padding: 0.5rem 0.75rem; /* More compact per official example but still premium */
+  align-items: center;
+  /* Centered align as per official example */
+  padding: 0.5rem 0.75rem;
+  /* More compact per official example but still premium */
   gap: 0.75rem;
   border-width: 1px;
   border-style: solid;
@@ -150,6 +152,7 @@
     opacity: 0;
     transform: translateY(4px) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -174,4 +177,46 @@
 
 .dark .alert-type-item:hover {
   background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* 
+  Fix for BlockNote menus (slash menu, side menu, etc.) inside Radix UI Dialog.
+  Radix UI Dialog adds 'pointer-events: none' to the body when modal=true.
+  BlockNote portals its menus to the body, making them non-interactive.
+*/
+.bn-suggestion-menu,
+.bn-side-menu,
+.bn-drag-handle-menu,
+.bn-formatting-toolbar,
+[data-radix-popper-content-wrapper] {
+  pointer-events: auto !important;
+  z-index: 9999 !important;
+}
+
+/* Ensure the suggestion menu list is scrollable and receives wheel events */
+.bn-suggestion-menu {
+  max-height: 500px !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  /* Allow mouse wheel events to work even when body scroll is locked */
+  touch-action: pan-y;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.bn-suggestion-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bn-suggestion-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bn-suggestion-menu::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 20px;
+}
+
+.bn-suggestion-menu::-webkit-scrollbar-thumb:hover {
+  background-color: var(--muted-foreground);
 }

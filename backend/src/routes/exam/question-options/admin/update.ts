@@ -14,6 +14,7 @@ import {
   replaceBlockNoteUrls,
   cleanupBlockNoteFiles,
   resolveBlockNoteUrls,
+  stripBlockNoteUrls,
 } from "../../../../utils/blocknote-utils.ts";
 import { syncQuestionMaxScore } from "../../../../services/exam/index.ts";
 
@@ -110,7 +111,7 @@ const updateQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       // Process uploaded files if any
-      let finalContent = content ?? (existingOption.content as any[]);
+      let finalContent = content ? stripBlockNoteUrls(content) : (existingOption.content as any[]);
       const targetQuestionId = questionId || existingOption.questionId;
 
       if (files.length > 0) {

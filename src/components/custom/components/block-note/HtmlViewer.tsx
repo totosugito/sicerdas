@@ -2,6 +2,7 @@ import parse, { domToReact } from 'html-react-parser';
 import katex from 'katex';
 import "katex/dist/katex.min.css";
 import { alertTypes, getAlertStyles, AlertType } from './lib/alert-utils';
+import "@/assets/custom-blocknote.css";
 
 function renderMath(equation: string) {
     if (!equation) return '';
@@ -33,11 +34,11 @@ export default function HtmlViewer({ html, className }: { html: string; classNam
                 const styles = getAlertStyles(type);
 
                 return (
-                    <div className={`alert-viewer flex items-start gap-4 p-4 my-4 rounded-xl border shadow-sm transition-all ${styles.wrapper}`}>
-                        <div className="flex-shrink-0 pt-0.5">
-                            <Icon className={`${styles.iconClassName} ${styles.icon}`} />
+                    <div className={`alert-wrapper shadow-sm my-4 ${styles.wrapper}`} data-type={type}>
+                        <div className="alert-icon-container">
+                            <Icon size={styles.iconSize} className={`alert-icon ${styles.icon}`} />
                         </div>
-                        <div className="alert-content-container flex-1 prose-sm dark:prose-invert">
+                        <div className="alert-content inline-content prose-sm dark:prose-invert">
                             {domToReact(domNode.children, options)}
                         </div>
                     </div>

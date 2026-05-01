@@ -14,6 +14,7 @@ import {
   replaceBlockNoteUrls,
   cleanupBlockNoteFiles,
   resolveBlockNoteUrls,
+  stripBlockNoteUrls,
 } from "../../../../utils/blocknote-utils.ts";
 
 const UpdateQuestionSolutionParams = Type.Object({
@@ -110,7 +111,7 @@ const updateQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       // Process uploaded files if any
-      let finalContent = content ?? (existingSolution.content as any[]);
+      let finalContent = content ? stripBlockNoteUrls(content) : (existingSolution.content as any[]);
       const targetQuestionId = questionId || existingSolution.questionId;
 
       if (files.length > 0) {
