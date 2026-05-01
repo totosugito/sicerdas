@@ -6,6 +6,7 @@ import fastifyStatic from "@fastify/static";
 import i18n from "fastify-i18n";
 import { defaultLocale } from "./locales/locales.ts";
 import fs from "fs";
+import envConfig from "./config/env.config.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -53,6 +54,19 @@ export async function buildApp(options?: FastifyServerOptions) {
     },
   });
 
+  // Helper to prevent logging massive payloads (e.g., file uploads or huge arrays)
+  const getSafeBody = (req: any) => {
+    if (!req.body) return undefined;
+    const contentType = req.headers["content-type"] || "";
+    if (contentType.includes("multipart/form-data")) return "[MULTIPART REDACTED]";
+    try {
+      const stringified = JSON.stringify(req.body);
+      return stringified.length > 1000 ? "[BODY TOO LARGE]" : req.body;
+    } catch {
+      return "[UNSERIALIZABLE BODY]";
+    }
+  };
+
   // Set error handler
   server.setErrorHandler((error, request, reply) => {
     // Type guard to check if error has expected properties
@@ -61,23 +75,28 @@ export async function buildApp(options?: FastifyServerOptions) {
     ): err is { statusCode?: number; code?: number; message?: string } =>
       err !== null && typeof err === "object";
 
-    // Skip logging 401 Unauthorized errors as they're expected behavior
-    if (isErrorWithProps(error) && error.statusCode !== 401) {
-      server.log.error(
-        {
-          err: error,
-          request: {
-            method: request.method,
-            url: request.url,
-            query: request.query,
-            params: request.params,
-          },
-        },
-        "Unhandled error occurred",
-      );
-    }
-
     const statusCode = isErrorWithProps(error) ? (error.statusCode ?? error.code ?? 500) : 500;
+
+    // Skip logging 401 Unauthorized and 403 Forbidden errors as they're expected behavior
+    if (statusCode !== 401 && statusCode !== 403) {
+      const logPayload = {
+        err: error,
+        userId: (request as any).session?.user?.id,
+        request: {
+          method: request.method,
+          url: request.url,
+          query: request.query,
+          params: request.params,
+          body: getSafeBody(request),
+        },
+      };
+
+      if (statusCode >= 400 && statusCode < 500) {
+        server.log.warn(logPayload, "Client error occurred");
+      } else {
+        server.log.error(logPayload, "Server error occurred");
+      }
+    }
 
     reply.code(statusCode);
 
@@ -100,11 +119,13 @@ export async function buildApp(options?: FastifyServerOptions) {
     (request, reply) => {
       request.log.warn(
         {
+          userId: (request as any).session?.user?.id,
           request: {
             method: request.method,
             url: request.url,
             query: request.query,
             params: request.params,
+            body: getSafeBody(request),
           },
         },
         "Resource not found",
@@ -115,6 +136,28 @@ export async function buildApp(options?: FastifyServerOptions) {
       return { message: "Not Found" };
     },
   );
+
+  // Track slow requests
+  server.addHook("onResponse", (request, reply, done) => {
+    const responseTime = reply.elapsedTime;
+    if (responseTime > (envConfig.log.slowThreshold ?? 500)) {
+      server.log.warn(
+        {
+          responseTime,
+          userId: (request as any).session?.user?.id,
+          request: {
+            method: request.method,
+            url: request.url,
+            query: request.query,
+            params: request.params,
+            body: getSafeBody(request),
+          },
+        },
+        "Slow request detected",
+      );
+    }
+    done();
+  });
 
   return server;
 }

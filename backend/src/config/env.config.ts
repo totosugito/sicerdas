@@ -38,6 +38,14 @@ export const schema = Type.Object({
   EXAM_ANSWERS_RETENTION_DAYS: Type.Number({ default: 365 }),
   // Inactivity period before an IN_PROGRESS session is auto-abandoned
   EXAM_STALE_SESSION_DAYS: Type.Number({ default: 30 }),
+  // Log directory for pino-roll
+  LOG_DIR: Type.String({ default: "/logs/" }),
+  // Save log to file
+  LOG_SAVE_TO_FILE: Type.Boolean({ default: false }),
+  // Days to keep the logs before deleting them
+  LOG_RETENTION_DAYS: Type.Number({ default: 14 }),
+  // Threshold in ms to log slow requests
+  LOG_SLOW_RESPONSE_THRESHOLD: Type.Number({ default: 500 }),
 });
 
 // Delete only keys defined in schema from process.env
@@ -60,6 +68,11 @@ export default {
   version: env.VERSION ?? "0.0.0",
   log: {
     level: env.LOG_LEVEL,
+    relativePath: "..",
+    dir: env.LOG_DIR,
+    saveToFile: env.LOG_SAVE_TO_FILE,
+    retentionDays: env.LOG_RETENTION_DAYS,
+    slowThreshold: env.LOG_SLOW_RESPONSE_THRESHOLD,
   },
   server: {
     cookiePrefix: env.COOKIE_PREFIX,
