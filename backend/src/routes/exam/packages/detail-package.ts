@@ -13,7 +13,7 @@ import { and, eq, sql, desc } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getPackageThumbnailUrl } from "../../../utils/exam-utils.ts";
 import { EnumContentType, EnumEventStatus } from "../../../db/schema/enum/enum-app.ts";
-import { CONFIG } from "../../../config/app-constant.ts";
+import config from "../../../config/env.config.ts";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumExamPackageUserStatus } from "../../../db/schema/exam/enums.ts";
@@ -230,7 +230,7 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
         const now = new Date();
         if (
           !lastEvent ||
-          now.getTime() - lastEvent.createdAt.getTime() > CONFIG.CONTENT_COUNTER_WINDOW_MS
+          now.getTime() - lastEvent.createdAt.getTime() > config.limits.contentCounterWindowMs
         ) {
           // Log history
           await db.insert(appEventHistory).values({

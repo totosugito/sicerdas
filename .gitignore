@@ -18,4 +18,5 @@ test
 scripts/venv
 skills
 uploads
+logs
 .vite-hooks
