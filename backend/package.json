@@ -30,7 +30,7 @@
     "db:init_user": "cross-env NODE_ENV=development ts-node src/scripts/init/jobs/init-user.ts --trace-warnings"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1038.0",
+    "@aws-sdk/client-s3": "^3.1040.0",
     "@blocknote/server-util": "^0.49.0",
     "@fastify/autoload": "^6.3.1",
     "@fastify/compress": "^8.3.1",
@@ -44,7 +44,7 @@
     "@fastify/type-provider-typebox": "^6.1.0",
     "@fastify/under-pressure": "^9.0.3",
     "@getbrevo/brevo": "^5.0.4",
-    "@scalar/fastify-api-reference": "^1.53.1",
+    "@scalar/fastify-api-reference": "^1.55.1",
     "@sinclair/typebox": "^0.34.49",
     "better-auth": "^1.6.9",
     "close-with-grace": "^2.5.0",
@@ -62,8 +62,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.13",
-    "@commitlint/cli": "^20.5.2",
-    "@commitlint/config-conventional": "^20.5.0",
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3",
     "@types/node": "^25.6.0",
     "@types/pg": "^8.20.0",
     "c8": "^11.0.0",

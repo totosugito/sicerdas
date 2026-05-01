@@ -12,6 +12,20 @@ export default defineConfig({
   staged: {
     "*": "vp check --fix",
   },
+  lint: {
+    plugins: ["oxc", "typescript", "unicorn", "react"],
+    categories: {
+      correctness: "warn",
+    },
+    rules: {
+      "no-unused-vars": "error",
+    },
+    options: {
+      typeAware: true,
+      typeCheck: true,
+    },
+    ignorePatterns: ["dist/**"],
+  },
   plugins: [
     tanstackRouter({
       target: "react",
@@ -57,11 +71,6 @@ export default defineConfig({
         },
       },
     },
-    // rolldownOptions: {
-    //   output: {
-    //     codeSplitting: true,
-    //   },
-    // },
   },
   define: {
     __BUILD_VERSION__: JSON.stringify(
