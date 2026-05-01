@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useCbtStore } from "@/stores/useCbtStore";
 import { CheckCircle2, XCircle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 import { QuestionData, PassageData, OptionData, EvaluationData } from "@/api/exam-sessions";
+import { HtmlViewer } from "@/components/custom/components/block-note";
 
 interface CbtQuestionViewProps {
   question: QuestionData;
@@ -79,17 +79,14 @@ export const CbtQuestionView: React.FC<CbtQuestionViewProps> = ({
       {passage && (
         <div className="mb-8 p-5 bg-muted/30 rounded-xl border border-border/50">
           {passage.title && <h3 className="font-semibold text-lg mb-4">{passage.title}</h3>}
-          <div
-            className="prose dark:prose-invert max-w-none text-base"
-            dangerouslySetInnerHTML={{ __html: passage.htmlContent }}
-          />
+          <HtmlViewer html={passage.htmlContent} className="prose dark:prose-invert max-w-none text-base" />
         </div>
       )}
 
       <div className="mb-8">
-        <div
-          className="prose dark:prose-invert max-w-none text-lg leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: question.htmlContent }}
+        <HtmlViewer
+          html={question.htmlContent}
+          className="prose dark:prose-invert max-w-none leading-relaxed"
         />
       </div>
 
@@ -109,18 +106,17 @@ export const CbtQuestionView: React.FC<CbtQuestionViewProps> = ({
               className={`relative flex items-start gap-4 p-4 rounded-xl border transition-all duration-200 ${getOptionStyles(option.id)}`}
             >
               <div
-                className={`flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full border font-semibold ${
-                  isSelected
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-background text-foreground border-border"
-                }`}
+                className={`flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full border font-semibold ${isSelected
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-background text-foreground border-border"
+                  }`}
               >
                 {letters[index] || "?"}
               </div>
 
-              <div
+              <HtmlViewer
+                html={option.htmlContent}
                 className="prose dark:prose-invert max-w-none flex-1 pt-1"
-                dangerouslySetInnerHTML={{ __html: option.htmlContent }}
               />
 
               {mode === "study" &&
@@ -168,9 +164,9 @@ export const CbtQuestionView: React.FC<CbtQuestionViewProps> = ({
                     </span>
                     <span className="font-medium">{sol.title}</span>
                   </div>
-                  <div
+                  <HtmlViewer
+                    html={sol.htmlContent}
                     className="prose dark:prose-invert max-w-none bg-muted/20 p-4 rounded-lg border border-border/50"
-                    dangerouslySetInnerHTML={{ __html: sol.htmlContent }}
                   />
                 </div>
               ))}

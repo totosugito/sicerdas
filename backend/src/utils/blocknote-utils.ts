@@ -6,6 +6,87 @@ import env from "../config/env.config.ts";
 import { createUniqueFileName } from "./my-utils.ts";
 import type { UploadedFile } from "../types/file.ts";
 import { ServerBlockNoteEditor } from "@blocknote/server-util";
+import {
+  BlockNoteSchema,
+  defaultBlockSpecs,
+  createBlockSpec,
+  defaultProps,
+} from "@blocknote/core";
+
+// Define the custom Math block for the server
+const MathBlock = createBlockSpec(
+  {
+    type: "math",
+    propSchema: {
+      textAlignment: defaultProps.textAlignment,
+      textColor: defaultProps.textColor,
+      equation: {
+        default: "",
+      },
+      fontSize: {
+        default: 18,
+      },
+    },
+    content: "none",
+  },
+  {
+    render: (block) => {
+      const wrapper = document.createElement("div");
+      wrapper.setAttribute("data-type", "math");
+      wrapper.setAttribute("class", "math-block");
+      wrapper.setAttribute("data-equation", block.props.equation);
+      wrapper.setAttribute("data-font-size", block.props.fontSize.toString());
+      wrapper.style.textAlign = block.props.textAlignment;
+      wrapper.style.fontSize = `${block.props.fontSize}px`;
+      // Wrap in $$ for KaTeX auto-renderers on the frontend
+      wrapper.textContent = `$$${block.props.equation}$$`;
+      return {
+        dom: wrapper,
+      };
+    },
+  },
+);
+
+// Define the custom Alert block for the server
+const AlertBlock = createBlockSpec(
+  {
+    type: "alert",
+    propSchema: {
+      textAlignment: defaultProps.textAlignment,
+      textColor: defaultProps.textColor,
+      type: {
+        default: "info",
+        values: ["info", "warning", "success", "error"],
+      },
+    },
+    content: "inline",
+  },
+  {
+    render: (block) => {
+      const wrapper = document.createElement("div");
+      wrapper.setAttribute("data-type", "alert");
+      wrapper.setAttribute("data-alert-type", block.props.type);
+      
+      const content = document.createElement("div");
+      content.setAttribute("class", "alert-content");
+      wrapper.appendChild(content);
+
+      return {
+        dom: wrapper,
+        contentDOM: content,
+      };
+    },
+  },
+);
+
+// Create the schema with custom blocks
+const schema = BlockNoteSchema.create({
+  blockSpecs: {
+    ...defaultBlockSpecs,
+    math: MathBlock(),
+    alert: AlertBlock(),
+  },
+});
 
 /**
  * Generates the relative URL for a BlockNote file
@@ -248,14 +329,71 @@ export const resolveBlockNoteUrls = (
 };
 
 /**
+ * Strips public URLs back to relative paths in BlockNote content for storage
+ */
+export const stripBlockNoteUrls = (
+  content: any[] | null | undefined,
+  types: string[] = ["image"],
+): any[] => {
+  if (!content || !Array.isArray(content) || content.length === 0) return [];
+
+  const downloadsMark = env.server.uploadsDir;
+  const baseUrl = env.server.baseUrl;
+
+  const traverse = (blocks: any[]): any[] => {
+    return blocks.map((block) => {
+      let newBlock = { ...block };
+
+      if (
+        types.includes(block.type) &&
+        block.props?.url &&
+        typeof block.props.url === "string" &&
+        !block.props.url.startsWith("blob:")
+      ) {
+        let url = block.props.url;
+
+        // 1. Strip baseUrl if present
+        if (baseUrl && url.startsWith(baseUrl)) {
+          url = url.substring(baseUrl.length);
+        }
+
+        // 2. Strip uploadsDir if present (handle both /uploads/ and uploads/)
+        const normalizedMark = downloadsMark.replace(/^\/+/, "").replace(/\/+$/, "");
+        const urlWithoutLeadingSlash = url.replace(/^\/+/, "");
+
+        if (urlWithoutLeadingSlash.startsWith(normalizedMark)) {
+          url = urlWithoutLeadingSlash.substring(normalizedMark.length);
+        }
+
+        // Ensure no leading slash in the final relative path
+        url = url.replace(/^\/+/, "");
+
+        newBlock.props = {
+          ...newBlock.props,
+          url: url,
+        };
+      }
+
+      if (block.children && Array.isArray(block.children)) {
+        newBlock.children = traverse(block.children);
+      }
+
+      return newBlock;
+    });
+  };
+
+  return traverse(content);
+};
+
+/**
  * Utility to convert BlockNote JSON structure to HTML string using @blocknote/core.
  */
 export const blocknoteToHtml = async (content: any[] | null | undefined): Promise<string> => {
   if (!content || !Array.isArray(content) || content.length === 0) return "";
 
   try {
-    const editor = ServerBlockNoteEditor.create();
-    return await editor.blocksToFullHTML(content);
+    const editor = ServerBlockNoteEditor.create({ schema });
+    return await editor.blocksToHTMLLossy(content);
   } catch (error) {
     console.error("Error converting blocknote to html", error);
     return "";

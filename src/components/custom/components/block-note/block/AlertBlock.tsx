@@ -1,36 +1,8 @@
 import React from "react";
 import { defaultProps } from "@blocknote/core";
 import { createReactBlockSpec } from "@blocknote/react";
-import { Info, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 import * as Popover from "@radix-ui/react-popover";
-
-// The types of alerts that users can choose from.
-export const alertTypes = [
-  {
-    id: "info",
-    label: "Info",
-    icon: Info,
-    color: "blue",
-  },
-  {
-    id: "warning",
-    label: "Warning",
-    icon: AlertTriangle,
-    color: "amber",
-  },
-  {
-    id: "success",
-    label: "Success",
-    icon: CheckCircle2,
-    color: "green",
-  },
-  {
-    id: "error",
-    label: "Error",
-    icon: XCircle,
-    color: "red",
-  },
-] as const;
+import { alertTypes, getAlertStyles, AlertType } from "../lib/alert-utils";
 
 export const AlertBlock = createReactBlockSpec(
   {
@@ -48,11 +20,13 @@ export const AlertBlock = createReactBlockSpec(
   {
     render: (props) => {
       const { block, editor, contentRef } = props;
-      const currentType = alertTypes.find((t) => t.id === block.props.type) || alertTypes[0];
+      const type = block.props.type as AlertType;
+      const currentType = alertTypes.find((t) => t.id === type) || alertTypes[0];
       const Icon = currentType.icon;
+      const styles = getAlertStyles(type);
 
       return (
-        <div className="alert-wrapper" data-type={block.props.type}>
+        <div className={`alert-wrapper shadow-sm ${styles.wrapper}`} data-type={type}>
           {/* Interactive Icon with Popover for type switching */}
           <Popover.Root>
             <Popover.Trigger asChild>
@@ -61,7 +35,7 @@ export const AlertBlock = createReactBlockSpec(
                 title="Change alert type"
                 contentEditable={false}
               >
-                <Icon size={24} className="alert-icon" />
+                <Icon size={styles.iconSize} className={`alert-icon ${styles.icon}`} />
               </div>
             </Popover.Trigger>
 
@@ -70,32 +44,25 @@ export const AlertBlock = createReactBlockSpec(
                 <div className="px-3 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-b mb-1">
                   Alert Type
                 </div>
-                {alertTypes.map((type) => {
-                  const TypeIcon = type.icon;
+                {alertTypes.map((typeOption) => {
+                  const TypeIcon = typeOption.icon;
+                  const optionStyles = getAlertStyles(typeOption.id);
                   return (
                     <div
-                      key={type.id}
+                      key={typeOption.id}
                       className="alert-type-item"
                       onClick={() => {
                         editor.updateBlock(block, {
                           type: "alert",
-                          props: { ...block.props, type: type.id },
+                          props: { ...block.props, type: typeOption.id },
                         });
                       }}
                     >
                       <TypeIcon
                         size={16}
-                        className={
-                          type.id === "info"
-                            ? "text-blue-500"
-                            : type.id === "warning"
-                              ? "text-amber-500"
-                              : type.id === "success"
-                                ? "text-green-500"
-                                : "text-red-500"
-                        }
+                        className={optionStyles.icon}
                       />
-                      <span>{type.label}</span>
+                      <span>{typeOption.label}</span>
                     </div>
                   );
                 })}

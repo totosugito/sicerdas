@@ -248,7 +248,15 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             educationGradeId: q.educationGradeId,
             educationGradeName: (q as any).educationGradeName,
             isActive: q.isActive,
-            variableFormulas: q.variableFormulas as any,
+            variableFormulas:
+              q.variableFormulas &&
+              typeof q.variableFormulas === "object" &&
+              Object.keys(q.variableFormulas).length > 0
+                ? {
+                    variables: (q.variableFormulas as any).variables || [],
+                    solutions: (q.variableFormulas as any).solutions || {},
+                  }
+                : null,
             totalOptions: q.totalOptions,
             tags: (q as any).tags as { id: string; name: string }[],
             createdAt: q.createdAt.toISOString(),

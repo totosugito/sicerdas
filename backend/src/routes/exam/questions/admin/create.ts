@@ -15,7 +15,11 @@ import {
   EnumScoringStrategy,
 } from "../../../../db/schema/exam/enums.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
-import { processBlockNoteFiles, replaceBlockNoteUrls } from "../../../../utils/blocknote-utils.ts";
+import {
+  processBlockNoteFiles,
+  replaceBlockNoteUrls,
+  stripBlockNoteUrls,
+} from "../../../../utils/blocknote-utils.ts";
 import { syncPassage } from "../../../../services/exam/index.ts";
 
 const VariableFormulasType = Type.Optional(
@@ -146,12 +150,20 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             requiredTier: requiredTier !== undefined ? requiredTier : "free",
             educationGradeId:
               educationGradeId === null ||
-              educationGradeId === 0 ||
-              (educationGradeId as any) === ""
+                educationGradeId === 0 ||
+                (educationGradeId as any) === ""
                 ? null
                 : Number(educationGradeId),
             isActive: isActive !== undefined ? isActive : true,
-            variableFormulas,
+            variableFormulas:
+              variableFormulas &&
+              typeof variableFormulas === "object" &&
+              Object.keys(variableFormulas).length > 0
+                ? {
+                    variables: variableFormulas.variables || [],
+                    solutions: variableFormulas.solutions || {},
+                  }
+                : null,
             createdByUserId: userId,
           })
           .returning();
@@ -165,8 +177,8 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       // Process uploaded files if any
-      let finalContent = content || [];
-      let finalReasonContent = reasonContent || [];
+      let finalContent = content ? stripBlockNoteUrls(content) : [];
+      let finalReasonContent = reasonContent ? stripBlockNoteUrls(reasonContent) : [];
 
       if (files.length > 0) {
         const urlMap = await processBlockNoteFiles(

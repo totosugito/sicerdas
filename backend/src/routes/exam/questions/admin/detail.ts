@@ -202,6 +202,15 @@ const getQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         message: t(($) => $.exam.questions.list.success),
         data: {
           ...question,
+          variableFormulas:
+            question.variableFormulas &&
+            typeof question.variableFormulas === "object" &&
+            Object.keys(question.variableFormulas).length > 0
+              ? {
+                  variables: (question.variableFormulas as any).variables || [],
+                  solutions: (question.variableFormulas as any).solutions || {},
+                }
+              : null,
           content: resolveBlockNoteUrls(question.content as any[]),
           reasonContent: resolveBlockNoteUrls(question.reasonContent as any[]),
           createdAt: question.createdAt.toISOString(),

@@ -55,6 +55,7 @@
     "echarts": "^6.0.0",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.38.0",
+    "html-react-parser": "^6.0.1",
     "i18next": "^26.0.8",
     "input-otp": "^1.4.2",
     "json-edit-react": "^1.29.0",

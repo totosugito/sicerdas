@@ -22,6 +22,7 @@ import {
   replaceBlockNoteUrls,
   cleanupBlockNoteFiles,
   resolveBlockNoteUrls,
+  stripBlockNoteUrls,
 } from "../../../../utils/blocknote-utils.ts";
 
 const VariableFormulasType = Type.Optional(
@@ -155,8 +156,10 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       // Process uploaded files if any
-      let finalContent = content ?? existingQuestion.content;
-      let finalReasonContent = reasonContent ?? existingQuestion.reasonContent;
+      let finalContent = content ? stripBlockNoteUrls(content) : existingQuestion.content;
+      let finalReasonContent = reasonContent
+        ? stripBlockNoteUrls(reasonContent)
+        : existingQuestion.reasonContent;
 
       if (files.length > 0) {
         const urlMap = await processBlockNoteFiles(
@@ -197,7 +200,23 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             : Number(educationGradeId);
       }
       if (isActive !== undefined) updatePayload.isActive = isActive;
-      if (variableFormulas !== undefined) updatePayload.variableFormulas = variableFormulas;
+
+      if (variableFormulas !== undefined) {
+        if (
+          variableFormulas &&
+          typeof variableFormulas === "object" &&
+          Object.keys(variableFormulas).length > 0
+        ) {
+          // Normalize: ensure required 'variables' property exists
+          updatePayload.variableFormulas = {
+            variables: variableFormulas.variables || [],
+            solutions: variableFormulas.solutions || {},
+          };
+        } else {
+          // Treat empty objects or other falsy values as null
+          updatePayload.variableFormulas = null;
+        }
+      }
 
       const [updatedQuestion] = await db.transaction(async (tx) => {
         const [result] = await tx
