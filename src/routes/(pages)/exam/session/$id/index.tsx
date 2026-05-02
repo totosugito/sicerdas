@@ -7,25 +7,46 @@ import {
   useSaveAnswer,
   useSubmitSession,
 } from "@/api/exam-sessions";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { CreateContentReport } from "@/components/pages/layout/CreateContentReport";
+import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
 import {
   CbtHeader,
   CbtNavigationGrid,
   GridItemStatus,
   CbtQuestionView,
   CbtAnswerPad,
+  CbtSummary,
 } from "@/components/pages/exam/sessions/cbt";
 import { useQueryClient } from "@tanstack/react-query";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppRoute } from "@/constants/app-route";
 import { showNotifError } from "@/lib/show-notif";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+} from "@/components/ui/drawer";
+
+type ExamSessionSearch = {
+  q?: string;
+};
 
 export const Route = createFileRoute("/(pages)/exam/session/$id/")({
+  validateSearch: (search: Record<string, unknown>): ExamSessionSearch => {
+    return {
+      q: search.q as string | undefined,
+    };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const { id: sessionId } = Route.useParams();
+  const { q } = Route.useSearch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -41,7 +62,9 @@ function RouteComponent() {
     resetAll,
   } = useCbtStore();
 
+  const user = useAuthStore((state) => state.user);
   const [isMobileGridOpen, setIsMobileGridOpen] = useState(false);
+  const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
 
   // APIs
   const { data: detailsRes, isLoading: isLoadingDetails } = useSessionDetails(sessionId);
@@ -65,11 +88,30 @@ function RouteComponent() {
   useEffect(() => {
     if (details && !activeQuestionId) {
       setElapsedSeconds(details.session.elapsedSeconds);
-      // set active question to first unanswered, or just first question
-      const firstUnanswered = details.grid.find((q) => !q.isAnswered);
-      setActiveQuestionId(firstUnanswered?.questionId || details.grid[0].questionId);
+
+      // If q exists in URL and is valid, use it as initial active question
+      const isValidQ = q && details.grid.some((item) => item.questionId === q);
+
+      if (isValidQ) {
+        setActiveQuestionId(q);
+      } else {
+        // set active question to first unanswered, or just first question
+        const firstUnanswered = details.grid.find((q) => !q.isAnswered);
+        setActiveQuestionId(firstUnanswered?.questionId || details.grid[0].questionId);
+      }
     }
-  }, [details, activeQuestionId, setElapsedSeconds, setActiveQuestionId]);
+  }, [details, activeQuestionId, setElapsedSeconds, setActiveQuestionId, q]);
+
+  // Sync activeQuestionId to URL
+  useEffect(() => {
+    if (activeQuestionId && activeQuestionId !== q) {
+      navigate({
+        to: ".",
+        search: (prev: ExamSessionSearch) => ({ ...prev, q: activeQuestionId }),
+        replace: true,
+      });
+    }
+  }, [activeQuestionId, q, navigate]);
 
   // Timer Tick
   useEffect(() => {
@@ -206,26 +248,36 @@ function RouteComponent() {
   const hasAnswered = activeGridItem?.isAnswered || activeGridItem?.isDoubtful || false;
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-50px)] bg-background overflow-hidden font-sans">
-      <CbtHeader
-        title={details.package?.title || "Sesi Ujian"}
-        mode={details.session.mode as "study" | "tryout"}
-        onSubmit={handleSubmit}
-        isSubmitting={submitSessionMutation.isPending}
-        showSubmit={details.session.status === "in_progress"}
-        onGoToResult={() =>
-          navigate({
-            to: AppRoute.exam.results.url,
-            params: { id: sessionId },
-          })
-        }
-      />
+    <div className="flex flex-col h-[calc(100dvh-50px)] bg-slate-50 dark:bg-slate-950 overflow-hidden font-sans relative">
+      <div className="pt-4 px-4 md:px-6 w-full max-w-7xl mx-auto flex-shrink-0">
+        <CbtHeader
+          title={details.package?.title || "Sesi Ujian"}
+          subtitle={details.section?.title}
+          mode={details.session.mode as "study" | "tryout"}
+          onSubmit={handleSubmit}
+          isSubmitting={submitSessionMutation.isPending}
+          showSubmit={details.session.status === "in_progress"}
+          onGoToResult={() =>
+            navigate({
+              to: AppRoute.exam.results.url,
+              params: { id: sessionId },
+            })
+          }
+          onExit={() =>
+            navigate({
+              to: AppRoute.exam.packages.detail.url,
+              params: { id: details.session.packageId },
+            })
+          }
+          onReport={() => setIsReportDialogOpen(true)}
+        />
+      </div>
 
-      <div className="flex flex-1 overflow-hidden relative">
+      <div className="flex flex-1 overflow-hidden relative p-4 md:p-6 gap-6 max-w-7xl mx-auto w-full">
         {/* Main Content Area */}
-        <div className="flex-1 overflow-y-auto pb-32">
+        <div className="flex-1">
           {isLoadingQuestion || !questionData ? (
-            <div className="flex h-full items-center justify-center animate-pulse text-muted-foreground">
+            <div className="flex h-full items-center justify-center animate-pulse text-muted-foreground bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
               Memuat soal...
             </div>
           ) : (
@@ -245,27 +297,42 @@ function RouteComponent() {
         </div>
 
         {/* Desktop Sidebar */}
-        <div className="hidden md:block w-[320px] flex-shrink-0">
+        <div className="hidden md:flex flex-col gap-6 w-[320px] flex-shrink-0">
           <CbtNavigationGrid
             items={gridItems}
             mode={details.session.mode as "study" | "tryout"}
             onQuestionSelect={setActiveQuestionId}
             onToggleDoubtful={handleToggleDoubtful}
           />
+
+          {questionData && (
+            <div className="flex flex-col gap-4">
+              <CbtAnswerPad
+                options={questionData.options}
+                selectedOptionId={questionData.selectedOptionId}
+                evaluation={questionData.evaluation}
+                mode={details.session.mode as "study" | "tryout"}
+                hasAnswered={hasAnswered}
+                onOptionSelect={handleOptionSelect}
+                onPrevious={handlePrevious}
+                onNext={handleNext}
+                isFirst={isFirst}
+                isLast={isLast}
+                layout="vertical"
+              />
+              <CbtSummary items={gridItems} mode={details.session.mode as "study" | "tryout"} />
+            </div>
+          )}
         </div>
 
-        {/* Mobile Sidebar Overlay */}
-        {isMobileGridOpen && (
-          <div className="md:hidden fixed inset-0 z-50 flex justify-end bg-background/80 backdrop-blur-sm">
-            <div className="w-[85%] max-w-sm h-full shadow-2xl relative animate-in slide-in-from-right-full">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-2 -left-12 bg-background/50 backdrop-blur"
-                onClick={() => setIsMobileGridOpen(false)}
-              >
-                <X className="w-5 h-5" />
-              </Button>
+        {/* Mobile Navigation Drawer */}
+        <Drawer open={isMobileGridOpen} onOpenChange={setIsMobileGridOpen}>
+          <DrawerContent className="max-h-[85vh]">
+            <DrawerHeader className="sr-only">
+              <DrawerTitle>Navigasi Soal</DrawerTitle>
+              <DrawerDescription>Pilih soal untuk melihatnya</DrawerDescription>
+            </DrawerHeader>
+            <div className="overflow-y-auto p-4">
               <CbtNavigationGrid
                 items={gridItems}
                 mode={details.session.mode as "study" | "tryout"}
@@ -274,37 +341,56 @@ function RouteComponent() {
                   setIsMobileGridOpen(false);
                 }}
                 onToggleDoubtful={handleToggleDoubtful}
+                isMobile={true}
               />
             </div>
+          </DrawerContent>
+        </Drawer>
+      </div>
+
+      {/* Mobile Answer Pad */}
+      <div className="md:hidden absolute bottom-0 left-0 right-0 w-full z-40 pointer-events-none pb-4 px-4">
+        {questionData && (
+          <div className="pointer-events-auto w-full">
+            <CbtAnswerPad
+              options={questionData.options}
+              selectedOptionId={questionData.selectedOptionId}
+              evaluation={questionData.evaluation}
+              mode={details.session.mode as "study" | "tryout"}
+              hasAnswered={hasAnswered}
+              onOptionSelect={handleOptionSelect}
+              onPrevious={handlePrevious}
+              onNext={handleNext}
+              isFirst={isFirst}
+              isLast={isLast}
+              layout="horizontal"
+            />
           </div>
         )}
       </div>
 
-      {/* Answer Pad */}
-      {questionData && (
-        <CbtAnswerPad
-          options={questionData.options}
-          selectedOptionId={questionData.selectedOptionId}
-          evaluation={questionData.evaluation}
-          mode={details.session.mode as "study" | "tryout"}
-          hasAnswered={hasAnswered}
-          onOptionSelect={handleOptionSelect}
-          onPrevious={handlePrevious}
-          onNext={handleNext}
-          isFirst={isFirst}
-          isLast={isLast}
-        />
-      )}
-
-      {/* Mobile Grid Toggle */}
-      <div className="md:hidden fixed bottom-24 right-4 z-40">
+      {/* Mobile Grid Toggle - Adjusted position so it doesn't overlap the floating Answer Pad */}
+      <div className="md:hidden fixed top-20 right-4 z-40">
         <Button
-          className="rounded-full shadow-xl w-12 h-12 p-0"
+          className="rounded-full shadow-lg border border-slate-200 dark:border-slate-800 w-12 h-12 p-0 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
           onClick={() => setIsMobileGridOpen(true)}
         >
-          <Menu className="w-6 h-6" />
+          <Menu className="w-5 h-5" />
         </Button>
       </div>
+
+      <CreateContentReport
+        isOpen={isReportDialogOpen}
+        onOpenChange={setIsReportDialogOpen}
+        data={{
+          contentType: EnumContentType.EXAM,
+          referenceId: activeQuestionId || details.session.packageId,
+          title: `Sesi Ujian - Soal ${activeGridItem?.order || 1}`,
+          name: user?.user?.name || "",
+          email: user?.user?.email || "",
+        }}
+      />
     </div>
   );
 }
+

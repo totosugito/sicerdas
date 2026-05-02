@@ -69,6 +69,7 @@ export const CreateContentReport = ({ isOpen, onOpenChange, data }: CreateConten
             name: "reason",
             label: t($ => $.contentReport.field.reason),
             placeholder: t($ => $.contentReport.field.reason_placeholder),
+            required: true,
             options: Object.values(EnumReportReason).map((reason) => ({
                 value: reason,
                 label: t($ => $.contentReport.reportReason[reason as keyof typeof $.contentReport.reportReason]),

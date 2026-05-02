@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+export type CbtFontSize = "sm" | "base" | "lg" | "xl";
+
 interface CbtState {
   elapsedSeconds: number;
   activeQuestionId: string | null;
@@ -7,6 +9,7 @@ interface CbtState {
   connectionError: boolean;
   isTimerActive: boolean;
   draftOptionId: string | null;
+  fontSize: CbtFontSize;
 
   setElapsedSeconds: (seconds: number) => void;
   incrementElapsedSeconds: () => void;
@@ -15,6 +18,7 @@ interface CbtState {
   setConnectionError: (error: boolean) => void;
   setIsTimerActive: (active: boolean) => void;
   setDraftOptionId: (id: string | null) => void;
+  setFontSize: (size: CbtFontSize) => void;
   resetAll: () => void;
 }
 
@@ -25,6 +29,7 @@ const defaultState = {
   connectionError: false,
   isTimerActive: true,
   draftOptionId: null,
+  fontSize: "base" as CbtFontSize,
 };
 
 export const useCbtStore = create<CbtState>((set) => ({
@@ -37,5 +42,6 @@ export const useCbtStore = create<CbtState>((set) => ({
   setConnectionError: (error) => set({ connectionError: error }),
   setIsTimerActive: (active) => set({ isTimerActive: active }),
   setDraftOptionId: (id) => set({ draftOptionId: id }),
+  setFontSize: (size) => set({ fontSize: size }),
   resetAll: () => set(defaultState),
 }));

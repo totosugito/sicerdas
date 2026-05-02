@@ -1,22 +1,24 @@
 import React from "react";
 import { useCbtStore } from "@/stores/useCbtStore";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-
-export type GridItemStatus = "unanswered" | "answered" | "doubtful" | "correct" | "wrong";
+import { cn } from "@/lib/utils";
+import { HelpCircle, CheckCircle2 } from "lucide-react";
+import { ExamStatus, EXAM_STATUS_STYLES, ExamSessionMode, EXAM_STATUS_GROUPS, EnumExamStatus } from "@/constants/exam-var";
+import { useAppTranslation } from "@/lib/i18n-typed";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
 
 export interface GridItem {
   questionId: string;
   order: number;
-  status: GridItemStatus;
+  status: ExamStatus;
 }
 
 interface CbtNavigationGridProps {
   items: GridItem[];
-  mode: "study" | "tryout";
+  mode: ExamSessionMode;
   onQuestionSelect: (questionId: string) => void;
   onToggleDoubtful: (questionId: string, isDoubtful: boolean) => void;
+  isMobile?: boolean;
 }
 
 export const CbtNavigationGrid: React.FC<CbtNavigationGridProps> = ({
@@ -24,85 +26,112 @@ export const CbtNavigationGrid: React.FC<CbtNavigationGridProps> = ({
   mode,
   onQuestionSelect,
   onToggleDoubtful,
+  isMobile = false,
 }) => {
   const { activeQuestionId } = useCbtStore();
+  const { t } = useAppTranslation();
 
-  const getButtonVariant = (status: GridItemStatus) => {
-    switch (status) {
-      case "correct":
-        return "bg-green-500 hover:bg-green-600 text-white border-transparent";
-      case "wrong":
-        return "bg-red-500 hover:bg-red-600 text-white border-transparent";
-      case "doubtful":
-        return "bg-yellow-400 hover:bg-yellow-500 text-black border-transparent";
-      case "answered":
-        return "bg-primary hover:bg-primary/90 text-primary-foreground border-transparent";
-      default:
-        return "bg-secondary hover:bg-secondary/80 text-secondary-foreground border-border";
+  const getButtonStyles = (status: ExamStatus, isActive: boolean) => {
+    const base = "relative transition-all duration-200 font-medium text-sm rounded-lg border-2 flex items-center justify-center aspect-square p-0";
+    const styles = EXAM_STATUS_STYLES[status];
+
+    if (isActive) {
+      return cn(
+        base,
+        styles.bg,
+        status === EnumExamStatus.UNANSWERED ? "text-primary" : styles.text,
+        "border-primary shadow-lg shadow-primary/15 font-bold"
+      );
     }
+
+    return cn(base, styles.bg, styles.text, styles.border);
   };
 
   const activeItem = items.find((item) => item.questionId === activeQuestionId);
 
   return (
-    <div className="flex flex-col h-full bg-card border-l border-border/40 p-4 w-full md:w-[320px]">
-      <div className="mb-4 pb-4 border-b border-border/40">
-        <h3 className="font-semibold text-lg mb-2">Navigasi Soal</h3>
-        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-secondary border border-border"></div> Belum
-            Dijawab
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-primary"></div> Sudah Dijawab
-          </div>
-          {mode === "tryout" && (
-            <div className="flex items-center gap-1">
-              <div className="w-3 h-3 rounded-full bg-yellow-400"></div> Ragu-ragu
+    <Card className={cn(
+      "overflow-hidden flex flex-col w-full md:w-[320px] py-0 gap-0",
+      isMobile ? "h-full" : "h-fit max-h-[calc(100vh-12rem)]"
+    )}>
+      <CardHeader className="py-3 px-6 border-b flex flex-row items-center !pb-3">
+        <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+          {t($ => $.exam.sessions.cbt.navigation.title)}
+        </CardTitle>
+      </CardHeader>
+
+      <CardContent className="flex flex-col gap-4 overflow-hidden">
+        <div className="pb-1 grid grid-cols-5 gap-3 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
+          {items.map((item) => {
+            const isActive = activeQuestionId === item.questionId;
+            return (
+              <button
+                key={item.questionId}
+                className={getButtonStyles(item.status, isActive)}
+                onClick={() => onQuestionSelect(item.questionId)}
+              >
+                {item.order}
+                {item.status === EnumExamStatus.DOUBTFUL && !isActive && (
+                  <div className={cn(
+                    "absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-slate-900",
+                    EXAM_STATUS_STYLES.doubtful.dot
+                  )} />
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex flex-col gap-5 pt-5 border-t">
+          {mode === EnumExamSessionMode.TRYOUT && activeItem && (
+            <div
+              className={cn(
+                "flex items-center p-4 rounded-xl border transition-all duration-300 cursor-pointer",
+                activeItem.status === "doubtful"
+                  ? EXAM_STATUS_STYLES.doubtful.active
+                  : "bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800"
+              )}
+              onClick={() => onToggleDoubtful(activeItem.questionId, activeItem.status !== "doubtful")}
+            >
+              <div className="flex items-center gap-3 w-full">
+                <div className={cn(
+                  "w-5 h-5 rounded-md border flex items-center justify-center transition-colors",
+                  activeItem.status === EnumExamStatus.DOUBTFUL
+                    ? cn(EXAM_STATUS_STYLES.doubtful.dot, EXAM_STATUS_STYLES.doubtful.border, "text-black")
+                    : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700"
+                )}>
+                  {activeItem.status === EnumExamStatus.DOUBTFUL && <CheckCircle2 className="w-3.5 h-3.5" />}
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-bold">{t($ => $.exam.sessions.cbt.navigation.doubtful)}</p>
+                  <p className="text-xs opacity-70">{t($ => $.exam.sessions.cbt.navigation.doubtfulDesc)}</p>
+                </div>
+                <HelpCircle className={cn(
+                  "w-4 h-4 opacity-40",
+                  activeItem.status === EnumExamStatus.DOUBTFUL && "animate-pulse"
+                )} />
+              </div>
             </div>
           )}
-          {mode === "study" && (
-            <>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-full bg-green-500"></div> Benar
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div> Salah
-              </div>
-            </>
-          )}
-        </div>
-      </div>
 
-      <div className="grid grid-cols-5 gap-2 overflow-y-auto pb-4">
-        {items.map((item) => (
-          <Button
-            key={item.questionId}
-            variant="outline"
-            className={`w-full aspect-square p-0 ${getButtonVariant(item.status)} ${
-              activeQuestionId === item.questionId
-                ? "ring-2 ring-ring ring-offset-2 ring-offset-background"
-                : ""
-            }`}
-            onClick={() => onQuestionSelect(item.questionId)}
-          >
-            {item.order}
-          </Button>
-        ))}
-      </div>
-
-      {mode === "tryout" && activeItem && (
-        <div className="mt-auto pt-4 border-t border-border/40 flex items-center space-x-2">
-          <Checkbox
-            id="ragu-ragu"
-            checked={activeItem.status === "doubtful"}
-            onCheckedChange={(checked) => onToggleDoubtful(activeItem.questionId, !!checked)}
-          />
-          <Label htmlFor="ragu-ragu" className="text-sm font-medium cursor-pointer">
-            Tandai Ragu-ragu
-          </Label>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
+            {[
+              ...EXAM_STATUS_GROUPS.common,
+              ...(mode === EnumExamSessionMode.TRYOUT ? EXAM_STATUS_GROUPS.tryout : []),
+              ...(mode === EnumExamSessionMode.STUDY ? EXAM_STATUS_GROUPS.study : [])
+            ].map((status) => (
+              <div key={status} className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                <div className={cn(
+                  "w-2.5 h-2.5 rounded-full border-2",
+                  EXAM_STATUS_STYLES[status].border,
+                  status !== EnumExamStatus.UNANSWERED && EXAM_STATUS_STYLES[status].bg
+                )}></div>
+                <span>{t(($: any) => $.exam.sessions.cbt.navigation.status[status])}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      )}
-    </div>
+      </CardContent>
+    </Card>
   );
 };

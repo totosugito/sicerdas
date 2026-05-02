@@ -5,6 +5,8 @@ import { db } from "../../../db/db-pool.ts";
 import { examSessions } from "../../../db/schema/exam/sessions.ts";
 import { examSessionAnswers } from "../../../db/schema/exam/session-answers.ts";
 import { examQuestions } from "../../../db/schema/exam/questions.ts";
+import { examPackages } from "../../../db/schema/exam/packages.ts";
+import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
 import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
 import { eq, and } from "drizzle-orm";
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
@@ -19,6 +21,7 @@ const SessionDetailsResponse = Type.Object({
   data: Type.Object({
     session: Type.Object({
       id: Type.String({ format: "uuid" }),
+      packageId: Type.String({ format: "uuid" }),
       status: Type.Enum(EnumExamSessionStatus),
       mode: Type.Enum(EnumExamSessionMode),
       elapsedSeconds: Type.Number(),
@@ -37,6 +40,12 @@ const SessionDetailsResponse = Type.Object({
         questionContent: Type.Union([Type.Array(Type.Any()), Type.Null()]),
       }),
     ),
+    package: Type.Optional(Type.Object({
+      title: Type.String(),
+    })),
+    section: Type.Optional(Type.Object({
+      title: Type.String(),
+    })),
   }),
 });
 
@@ -68,15 +77,23 @@ const detailsSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
       const { id } = request.params;
 
       // 1. Fetch the session
-      const [session] = await db
-        .select()
+      const [sessionData] = await db
+        .select({
+          session: examSessions,
+          packageTitle: examPackages.title,
+          sectionTitle: examPackageSections.title,
+        })
         .from(examSessions)
+        .innerJoin(examPackages, eq(examSessions.packageId, examPackages.id))
+        .innerJoin(examPackageSections, eq(examSessions.sectionId, examPackageSections.id))
         .where(and(eq(examSessions.id, id), eq(examSessions.userId, userId)))
         .limit(1);
 
-      if (!session) {
+      if (!sessionData) {
         return reply.notFound(t(($) => $.exam.sessions.errors.notFound));
       }
+
+      const { session, packageTitle, sectionTitle } = sessionData;
 
       // 2. Fetch the grid (answers)
       const answers = await db
@@ -117,6 +134,7 @@ const detailsSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         data: {
           session: {
             id: session.id,
+            packageId: session.packageId,
             status: session.status,
             mode: session.mode,
             elapsedSeconds: session.elapsedSeconds,
@@ -125,6 +143,8 @@ const detailsSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
             earnedPoints: session.earnedPoints !== null ? Number(session.earnedPoints) : null,
             maxPoints: session.maxPoints !== null ? Number(session.maxPoints) : null,
           },
+          package: { title: packageTitle },
+          section: { title: sectionTitle },
           grid,
         },
       });
