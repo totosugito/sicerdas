@@ -2,13 +2,11 @@ import * as React from "react";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { AuthContext, AuthProps } from "@/types/auth";
 import { authClient } from "@/lib/auth-client";
-import { useAppStore } from "@/stores/useAppStore";
 
 const AuthContextTag = React.createContext<AuthContext | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const authStore = useAuthStore((state) => state);
-  const appStore = useAppStore((state) => state);
   const [user, setUser] = React.useState<AuthProps | null>(authStore.user);
 
   const [loading, setLoading] = React.useState(true);
@@ -16,7 +14,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = React.useCallback(async () => {
     authStore.logout();
-    appStore.resetAll();
     setUser(null);
   }, []);
 

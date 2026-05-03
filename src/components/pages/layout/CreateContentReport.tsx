@@ -136,6 +136,7 @@ export const CreateContentReport = ({ isOpen, onOpenChange, data }: CreateConten
                 modal={{
                     title: t($ => $.contentReport.create.success_title),
                     desc: t($ => $.contentReport.create.success_desc),
+                    textCancel: "",
                     iconType: "success",
                     textConfirm: t($ => $.labels.close),
                     onConfirmClick: () => {

@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { APP_CONFIG } from "@/constants/config";
 import { AuthProps } from "@/types/auth";
+import { useCbtStore } from "./useCbtStore";
+import { useAppStore } from "./useAppStore";
 
 type Store = {
   user: AuthProps | null;
@@ -22,7 +24,11 @@ export const useAuthStore = create<Store>()(
       // Auth slice
       user: null,
       login: (user) => set({ user }),
-      logout: () => set({ user: null, theme: "light", language: "id", openSideMenu: false }),
+      logout: () => {
+        useCbtStore.getState().resetAll();
+        useAppStore.getState().resetAll();
+        set({ user: null, theme: "light", language: "id", openSideMenu: false });
+      },
 
       // Theme slice
       theme: "light",

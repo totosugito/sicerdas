@@ -1,14 +1,20 @@
 import React, { useState } from "react";
 import { useCbtStore } from "@/stores/useCbtStore";
-import { CheckCircle2, XCircle, Eye } from "lucide-react";
+import { CheckCircle2, XCircle, Eye, Flag, Type, Check } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { QuestionData, PassageData, OptionData, EvaluationData } from "@/api/exam-sessions";
 import { HtmlViewer } from "@/components/custom/components/block-note";
 
 import { ExamSessionMode, EXAM_STATUS_STYLES, EnumExamStatus } from "@/constants/exam-var";
-import { HelpCircle, LayoutGrid } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CbtSolutionView } from "./CbtSolutionView";
 import { EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
@@ -23,6 +29,7 @@ interface CbtQuestionViewProps {
   questionOrder: number;
   totalQuestions: number;
   onOptionSelect: (optionId: string) => void;
+  onReport?: () => void;
   allowDirectOptionSelect?: boolean;
 }
 
@@ -36,11 +43,19 @@ export const CbtQuestionView: React.FC<CbtQuestionViewProps> = ({
   questionOrder,
   totalQuestions,
   onOptionSelect,
+  onReport,
   allowDirectOptionSelect = false,
 }) => {
   const { t } = useAppTranslation();
-  const { isSaving, fontSize, draftOptionId } = useCbtStore();
+  const { isSaving, fontSize, setFontSize, draftOptionId } = useCbtStore();
   const [showSolution, setShowSolution] = useState(false);
+
+  const fontSizes: { label: string; value: any }[] = [
+    { label: t($ => $.exam.sessions.cbt.question.fontSizes.sm), value: "sm" },
+    { label: t($ => $.exam.sessions.cbt.question.fontSizes.base), value: "base" },
+    { label: t($ => $.exam.sessions.cbt.question.fontSizes.lg), value: "lg" },
+    { label: t($ => $.exam.sessions.cbt.question.fontSizes.xl), value: "xl" },
+  ];
 
   const textSizes = {
     sm: "text-sm [&_*]:!text-sm",
@@ -109,23 +124,63 @@ export const CbtQuestionView: React.FC<CbtQuestionViewProps> = ({
   const letters = ["A", "B", "C", "D", "E"];
 
   return (
-    <Card className="flex flex-col w-full max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-hidden py-0 gap-0">
-      <CardHeader className="py-3 px-4 border-b flex flex-row items-center justify-between !pb-3">
-        <div className="flex items-center gap-2 px-1">
-          <HelpCircle className="w-4 h-4 text-muted-foreground" />
-          <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-            {t($ => $.exam.sessions.cbt.question.title)} {questionOrder} <span className="lowercase font-normal opacity-70">{t($ => $.exam.sessions.cbt.question.of)}</span> {totalQuestions}
+    <Card className="flex flex-col w-full animate-in fade-in slide-in-from-bottom-4 duration-500 py-0 gap-0">
+      <CardHeader className="py-3 border-b flex flex-row items-center justify-between !pb-3">
+        <div className="flex items-center gap-2">
+          <CardTitle className="flex items-baseline gap-1 tracking-tight">
+            <span className="text-xs font-bold text-muted-foreground uppercase">
+              {t($ => $.exam.sessions.cbt.question.title)}
+            </span>
+            <span className="text-xl font-black text-foreground tabular-nums leading-none mx-0.5">
+              {questionOrder}
+            </span>
+            <span className="text-sm font-medium text-muted-foreground/60 lowercase">
+              {t($ => $.exam.sessions.cbt.question.of)} {totalQuestions}
+            </span>
           </CardTitle>
         </div>
         <div className="flex items-center gap-3">
           {isSaving && (
-            <span className="text-[10px] font-bold text-primary/70 uppercase tracking-tighter animate-pulse">{t($ => $.exam.sessions.cbt.question.saving)}</span>
+            <span className="text-xs font-bold text-primary/70 uppercase tracking-tighter animate-pulse">{t($ => $.exam.sessions.cbt.question.saving)}</span>
           )}
+
+          <div className="flex items-center gap-1">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-muted-foreground h-8 w-8" title={t($ => $.exam.sessions.cbt.question.fontSize)}>
+                  <Type className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                {fontSizes.map((size) => (
+                  <DropdownMenuItem
+                    key={size.value}
+                    onClick={() => setFontSize(size.value)}
+                    className="flex items-center justify-between"
+                  >
+                    {size.label}
+                    {fontSize === size.value && <Check className="w-4 h-4 ml-2 text-primary" />}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {onReport && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onReport}
+                className="text-muted-foreground hover:text-destructive hover:bg-destructive/5 h-8 w-8"
+                title={t($ => $.exam.sessions.cbt.question.report)}
+              >
+                <Flag className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
         </div>
       </CardHeader>
 
       <CardContent className="">
-
         {passage && (
           <div className="mb-10 p-6 md:p-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 shadow-inner">
             {passage.title && (
@@ -134,13 +189,13 @@ export const CbtQuestionView: React.FC<CbtQuestionViewProps> = ({
                 {passage.title}
               </h3>
             )}
-            <HtmlViewer html={passage.htmlContent} className={`prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 ${textSizeClass}`} />
+            <HtmlViewer html={passage.htmlContent} className={textSizeClass} />
           </div>
         )}
 
         <HtmlViewer
           html={question.htmlContent}
-          className={`prose dark:prose-invert max-w-none leading-relaxed text-slate-800 dark:text-slate-200 font-medium ${textSizeClass}`}
+          className={textSizeClass}
         />
 
         <div className="relative py-6">
@@ -216,6 +271,7 @@ export const CbtQuestionView: React.FC<CbtQuestionViewProps> = ({
         <CbtSolutionView
           evaluation={evaluation!}
           showSolution={showSolution}
+          onHide={() => setShowSolution(false)}
           textSizeClass={textSizeClass}
         />
       </CardContent>

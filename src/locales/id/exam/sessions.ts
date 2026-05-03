@@ -38,6 +38,14 @@ export default {
     accuracy: "Akurasi",
   },
   cbt: {
+    header: {
+      submitting: "Mengirim...",
+      submitExam: "Selesai Ujian",
+      finishStudy: "Selesai Belajar",
+      viewResult: "Lihat Hasil",
+      exit: "Keluar",
+      timerStudy: "Belajar",
+    },
     summary: {
       title: "Ringkasan",
       correct: "Benar",
@@ -70,9 +78,32 @@ export default {
       of: "dari",
       options: "Pilihan Jawaban",
       viewSolution: "Lihat Pembahasan",
+      hideSolution: "Sembunyikan Pembahasan",
       solution: "Pembahasan",
       noSolution: "Tidak ada pembahasan tersedia untuk soal ini.",
       saving: "Menyimpan...",
-    }
+      fontSize: "Ukuran Teks",
+      report: "Laporkan Soal",
+      selectSolution: "Pilih tipe pembahasan untuk melihat",
+      fontSizes: {
+        sm: "Kecil",
+        base: "Normal",
+        lg: "Besar",
+        xl: "Sangat Besar",
+      }
+    },
+    session: {
+      confirmSubmit: "Apakah Anda yakin ingin menyelesaikan ujian ini?",
+      submitError: "Gagal menyelesaikan ujian. Silakan coba lagi.",
+      loadingEngine: "Memuat Engine Ujian...",
+      loadingEngineDesc: "Mohon tunggu sejenak, kami sedang mempersiapkan ujian untuk Anda.",
+      loadingQuestion: "Memuat soal...",
+      loadingQuestionDesc: "Sedang mengambil data soal dan pilihan jawaban.",
+      defaultTitle: "Sesi Ujian",
+      mobileNavDesc: "Pilih soal untuk melihatnya",
+      reportTitle: "Sesi Ujian - Soal {{order}}",
+      loadError: "Gagal Memuat Sesi",
+      loadErrorDesc: "Terjadi kendala saat mengambil data sesi ujian Anda. Pastikan koneksi internet stabil atau coba lagi nanti.",
+    },
   },
 };

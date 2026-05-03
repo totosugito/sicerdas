@@ -1,8 +1,10 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 export type CbtFontSize = "sm" | "base" | "lg" | "xl";
 
 interface CbtState {
+  sessionId: string | null;
   elapsedSeconds: number;
   activeQuestionId: string | null;
   isSaving: boolean;
@@ -11,6 +13,7 @@ interface CbtState {
   draftOptionId: string | null;
   fontSize: CbtFontSize;
 
+  setSessionId: (id: string | null) => void;
   setElapsedSeconds: (seconds: number) => void;
   incrementElapsedSeconds: () => void;
   setActiveQuestionId: (id: string) => void;
@@ -23,6 +26,7 @@ interface CbtState {
 }
 
 const defaultState = {
+  sessionId: null,
   elapsedSeconds: 0,
   activeQuestionId: null,
   isSaving: false,
@@ -32,16 +36,25 @@ const defaultState = {
   fontSize: "base" as CbtFontSize,
 };
 
-export const useCbtStore = create<CbtState>((set) => ({
-  ...defaultState,
+export const useCbtStore = create<CbtState>()(
+  persist(
+    (set) => ({
+      ...defaultState,
 
-  setElapsedSeconds: (seconds) => set({ elapsedSeconds: seconds }),
-  incrementElapsedSeconds: () => set((state) => ({ elapsedSeconds: state.elapsedSeconds + 1 })),
-  setActiveQuestionId: (id) => set({ activeQuestionId: id }),
-  setIsSaving: (isSaving) => set({ isSaving }),
-  setConnectionError: (error) => set({ connectionError: error }),
-  setIsTimerActive: (active) => set({ isTimerActive: active }),
-  setDraftOptionId: (id) => set({ draftOptionId: id }),
-  setFontSize: (size) => set({ fontSize: size }),
-  resetAll: () => set(defaultState),
-}));
+      setSessionId: (id) => set({ sessionId: id }),
+      setElapsedSeconds: (seconds) => set({ elapsedSeconds: seconds }),
+      incrementElapsedSeconds: () => set((state) => ({ elapsedSeconds: state.elapsedSeconds + 1 })),
+      setActiveQuestionId: (id) => set({ activeQuestionId: id }),
+      setIsSaving: (isSaving) => set({ isSaving }),
+      setConnectionError: (error) => set({ connectionError: error }),
+      setIsTimerActive: (active) => set({ isTimerActive: active }),
+      setDraftOptionId: (id) => set({ draftOptionId: id }),
+      setFontSize: (size) => set({ fontSize: size }),
+      resetAll: () => set(defaultState),
+    }),
+    {
+      name: "cbt-session-storage",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);

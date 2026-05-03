@@ -310,11 +310,11 @@ body {
 }
 
 .page-full {
-  @apply flex flex-col flex-1 w-full items-center p-6
+  @apply flex flex-col flex-1 w-full items-center p-6 gap-6
 }
 
 .page-container {
-  @apply flex flex-col flex-1 w-full items-center p-6 max-w-7xl mx-auto
+  @apply flex flex-col flex-1 w-full items-center p-6 max-w-7xl mx-auto gap-6
 }
 
 .page-container-no-top {

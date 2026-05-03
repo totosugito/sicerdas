@@ -18,8 +18,9 @@ import {
   CbtAnswerPad,
   CbtSummary,
 } from "@/components/pages/exam/sessions/cbt";
+import { LoadingView } from "@/components/app/LoadingView";
 import { useQueryClient } from "@tanstack/react-query";
-import { Menu } from "lucide-react";
+import { Menu, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppRoute } from "@/constants/app-route";
 import { showNotifError } from "@/lib/show-notif";
@@ -30,6 +31,10 @@ import {
   DrawerTitle,
   DrawerDescription,
 } from "@/components/ui/drawer";
+import { ErrorPageDetails } from "@/components/app/ErrorPageDetails";
+import { EnumExamSessionMode, EnumExamSessionStatus } from "backend/src/db/schema/exam/enums";
+import { EnumExamStatus, ExamSessionMode } from "@/constants/exam-var";
+import { useAppTranslation } from "@/lib/i18n-typed";
 
 type ExamSessionSearch = {
   q?: string;
@@ -45,12 +50,15 @@ export const Route = createFileRoute("/(pages)/exam/session/$id/")({
 });
 
 function RouteComponent() {
+  const { t } = useAppTranslation();
   const { id: sessionId } = Route.useParams();
   const { q } = Route.useSearch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const {
+    sessionId: storeSessionId,
+    setSessionId,
     elapsedSeconds,
     setElapsedSeconds,
     incrementElapsedSeconds,
@@ -67,7 +75,13 @@ function RouteComponent() {
   const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
 
   // APIs
-  const { data: detailsRes, isLoading: isLoadingDetails } = useSessionDetails(sessionId);
+  const {
+    data: detailsRes,
+    isLoading: isLoadingDetails,
+    isError: isErrorDetails,
+    error: errorDetails,
+    refetch: refetchDetails,
+  } = useSessionDetails(sessionId);
   const details = detailsRes?.data;
 
   const { data: questionRes, isLoading: isLoadingQuestion } = useSessionQuestion(
@@ -81,26 +95,36 @@ function RouteComponent() {
 
   // Initialization & Reset
   useEffect(() => {
-    resetAll();
     return () => resetAll();
-  }, [sessionId, resetAll]);
+  }, [resetAll]);
 
   useEffect(() => {
-    if (details && !activeQuestionId) {
-      setElapsedSeconds(details.session.elapsedSeconds);
+    if (details) {
+      // If we are entering a DIFFERENT session, initialize from API
+      if (storeSessionId !== sessionId) {
+        setSessionId(sessionId);
+        setElapsedSeconds(details.session.elapsedSeconds);
 
-      // If q exists in URL and is valid, use it as initial active question
-      const isValidQ = q && details.grid.some((item) => item.questionId === q);
-
-      if (isValidQ) {
-        setActiveQuestionId(q);
-      } else {
-        // set active question to first unanswered, or just first question
-        const firstUnanswered = details.grid.find((q) => !q.isAnswered);
-        setActiveQuestionId(firstUnanswered?.questionId || details.grid[0].questionId);
+        const isValidQ = q && details.grid.some((item) => item.questionId === q);
+        if (isValidQ) {
+          setActiveQuestionId(q);
+        } else {
+          const firstUnanswered = details.grid.find((q) => !q.isAnswered);
+          setActiveQuestionId(firstUnanswered?.questionId || details.grid[0].questionId);
+        }
+      }
+      // If it's the SAME session (refresh), just ensure question is set
+      else if (!activeQuestionId) {
+        const isValidQ = q && details.grid.some((item) => item.questionId === q);
+        if (isValidQ) {
+          setActiveQuestionId(q);
+        } else {
+          const firstUnanswered = details.grid.find((q) => !q.isAnswered);
+          setActiveQuestionId(firstUnanswered?.questionId || details.grid[0].questionId);
+        }
       }
     }
-  }, [details, activeQuestionId, setElapsedSeconds, setActiveQuestionId, q]);
+  }, [details, sessionId, storeSessionId, setElapsedSeconds, setSessionId, setActiveQuestionId, q, activeQuestionId]);
 
   // Sync activeQuestionId to URL
   useEffect(() => {
@@ -115,7 +139,7 @@ function RouteComponent() {
 
   // Timer Tick
   useEffect(() => {
-    if (!isTimerActive || !details || details.session.status === "completed") return;
+    if (!isTimerActive || !details || details.session.status === EnumExamSessionStatus.COMPLETED) return;
 
     const interval = setInterval(() => {
       incrementElapsedSeconds();
@@ -167,7 +191,7 @@ function RouteComponent() {
   };
 
   const handleSubmit = () => {
-    if (confirm("Apakah Anda yakin ingin menyelesaikan ujian ini?")) {
+    if (confirm(t(($) => $.exam.sessions.cbt.session.confirmSubmit))) {
       submitSessionMutation.mutate(sessionId, {
         onSuccess: () => {
           // Re-fetch details to switch to completed mode
@@ -180,17 +204,43 @@ function RouteComponent() {
         },
         onError: (err: any) => {
           showNotifError({
-            message: err.message || "Gagal menyelesaikan ujian. Silakan coba lagi.",
+            message: err.message || t(($) => $.exam.sessions.cbt.session.submitError),
           });
         },
       });
     }
   };
 
+  if (isErrorDetails || (detailsRes && !detailsRes.success)) {
+    return (
+      <ErrorPageDetails
+        icon={AlertCircle}
+        title={t(($) => $.exam.sessions.cbt.session.loadError)}
+        description={
+          detailsRes?.message ||
+          (errorDetails as any)?.message ||
+          t(($) => $.exam.sessions.cbt.session.loadErrorDesc)
+        }
+        onRetry={() => refetchDetails()}
+        onBack={() =>
+          navigate({
+            to: AppRoute.exam.exams.url,
+          })
+        }
+        retryLabel={t(($) => $.labels.retry)}
+        backLabel={t(($) => $.exam.packages.detail.backToList)}
+      />
+    );
+  }
+
   if (isLoadingDetails || !details) {
     return (
-      <div className="flex h-screen items-center justify-center font-semibold text-lg text-muted-foreground animate-pulse">
-        Memuat Engine Ujian...
+      <div className="flex h-screen w-full items-center justify-center bg-slate-50/50 dark:bg-slate-950/50 p-6">
+        <LoadingView
+          title={t(($) => $.exam.sessions.cbt.session.loadingEngine)}
+          message={t(($) => $.exam.sessions.cbt.session.loadingEngineDesc)}
+          className="max-w-md border-none shadow-none bg-transparent backdrop-blur-none"
+        />
       </div>
     );
   }
@@ -204,7 +254,7 @@ function RouteComponent() {
 
     // Auto-save draft if any (only in tryout mode as study mode is one-shot)
     if (
-      details.session.mode === "tryout" &&
+      details.session.mode === EnumExamSessionMode.TRYOUT &&
       draftOptionId &&
       draftOptionId !== questionData?.selectedOptionId
     ) {
@@ -219,7 +269,7 @@ function RouteComponent() {
 
     // Auto-save draft if any (only in tryout mode as study mode is one-shot)
     if (
-      details.session.mode === "tryout" &&
+      details.session.mode === EnumExamSessionMode.TRYOUT &&
       draftOptionId &&
       draftOptionId !== questionData?.selectedOptionId
     ) {
@@ -231,11 +281,11 @@ function RouteComponent() {
 
   // Convert Grid items for UI
   const gridItems = details.grid.map((item) => {
-    let status: GridItemStatus = "unanswered";
-    if (item.isCorrect === true) status = "correct";
-    else if (item.isCorrect === false) status = "wrong";
-    else if (item.isDoubtful) status = "doubtful";
-    else if (item.isAnswered) status = "answered";
+    let status: GridItemStatus = EnumExamStatus.UNANSWERED;
+    if (item.isCorrect === true) status = EnumExamStatus.CORRECT;
+    else if (item.isCorrect === false) status = EnumExamStatus.WRONG;
+    else if (item.isDoubtful) status = EnumExamStatus.DOUBTFUL;
+    else if (item.isAnswered) status = EnumExamStatus.ANSWERED;
 
     return {
       questionId: item.questionId,
@@ -248,15 +298,15 @@ function RouteComponent() {
   const hasAnswered = activeGridItem?.isAnswered || activeGridItem?.isDoubtful || false;
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-50px)] bg-slate-50 dark:bg-slate-950 overflow-hidden font-sans relative">
-      <div className="pt-4 px-4 md:px-6 w-full max-w-7xl mx-auto flex-shrink-0">
+    <div className="page-container">
+      <div className="w-full">
         <CbtHeader
-          title={details.package?.title || "Sesi Ujian"}
+          title={details.package?.title || t(($) => $.exam.sessions.cbt.session.defaultTitle)}
           subtitle={details.section?.title}
-          mode={details.session.mode as "study" | "tryout"}
+          mode={details.session.mode as ExamSessionMode}
           onSubmit={handleSubmit}
           isSubmitting={submitSessionMutation.isPending}
-          showSubmit={details.session.status === "in_progress"}
+          showSubmit={details.session.status === EnumExamSessionStatus.IN_PROGRESS}
           onGoToResult={() =>
             navigate({
               to: AppRoute.exam.results.url,
@@ -269,17 +319,18 @@ function RouteComponent() {
               params: { id: details.session.packageId },
             })
           }
-          onReport={() => setIsReportDialogOpen(true)}
         />
       </div>
 
-      <div className="flex flex-1 overflow-hidden relative p-4 md:p-6 gap-6 max-w-7xl mx-auto w-full">
+      <div className="flex flex-1 relative gap-6 w-full">
         {/* Main Content Area */}
         <div className="flex-1">
           {isLoadingQuestion || !questionData ? (
-            <div className="flex h-full items-center justify-center animate-pulse text-muted-foreground bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-              Memuat soal...
-            </div>
+            <LoadingView
+              title={t(($) => $.exam.sessions.cbt.session.loadingQuestion)}
+              message={t(($) => $.exam.sessions.cbt.session.loadingQuestionDesc)}
+              className="min-h-[400px] lg:min-h-[600px]"
+            />
           ) : (
             <CbtQuestionView
               key={questionData.question.id}
@@ -288,10 +339,11 @@ function RouteComponent() {
               options={questionData.options}
               evaluation={questionData.evaluation}
               selectedOptionId={questionData.selectedOptionId}
-              mode={details.session.mode as "study" | "tryout"}
+              mode={details.session.mode as ExamSessionMode}
               questionOrder={(currentIndex >= 0 ? currentIndex : 0) + 1}
               totalQuestions={details.grid.length}
               onOptionSelect={handleOptionSelect}
+              onReport={() => setIsReportDialogOpen(true)}
             />
           )}
         </div>
@@ -300,7 +352,7 @@ function RouteComponent() {
         <div className="hidden md:flex flex-col gap-6 w-[320px] flex-shrink-0">
           <CbtNavigationGrid
             items={gridItems}
-            mode={details.session.mode as "study" | "tryout"}
+            mode={details.session.mode as ExamSessionMode}
             onQuestionSelect={setActiveQuestionId}
             onToggleDoubtful={handleToggleDoubtful}
           />
@@ -311,7 +363,7 @@ function RouteComponent() {
                 options={questionData.options}
                 selectedOptionId={questionData.selectedOptionId}
                 evaluation={questionData.evaluation}
-                mode={details.session.mode as "study" | "tryout"}
+                mode={details.session.mode as ExamSessionMode}
                 hasAnswered={hasAnswered}
                 onOptionSelect={handleOptionSelect}
                 onPrevious={handlePrevious}
@@ -320,7 +372,7 @@ function RouteComponent() {
                 isLast={isLast}
                 layout="vertical"
               />
-              <CbtSummary items={gridItems} mode={details.session.mode as "study" | "tryout"} />
+              <CbtSummary items={gridItems} mode={details.session.mode as ExamSessionMode} />
             </div>
           )}
         </div>
@@ -329,13 +381,13 @@ function RouteComponent() {
         <Drawer open={isMobileGridOpen} onOpenChange={setIsMobileGridOpen}>
           <DrawerContent className="max-h-[85vh]">
             <DrawerHeader className="sr-only">
-              <DrawerTitle>Navigasi Soal</DrawerTitle>
-              <DrawerDescription>Pilih soal untuk melihatnya</DrawerDescription>
+              <DrawerTitle>{t(($) => $.exam.sessions.cbt.navigation.title)}</DrawerTitle>
+              <DrawerDescription>{t(($) => $.exam.sessions.cbt.session.mobileNavDesc)}</DrawerDescription>
             </DrawerHeader>
             <div className="overflow-y-auto p-4">
               <CbtNavigationGrid
                 items={gridItems}
-                mode={details.session.mode as "study" | "tryout"}
+                mode={details.session.mode as ExamSessionMode}
                 onQuestionSelect={(id) => {
                   setActiveQuestionId(id);
                   setIsMobileGridOpen(false);
@@ -356,7 +408,7 @@ function RouteComponent() {
               options={questionData.options}
               selectedOptionId={questionData.selectedOptionId}
               evaluation={questionData.evaluation}
-              mode={details.session.mode as "study" | "tryout"}
+              mode={details.session.mode as ExamSessionMode}
               hasAnswered={hasAnswered}
               onOptionSelect={handleOptionSelect}
               onPrevious={handlePrevious}
@@ -385,7 +437,9 @@ function RouteComponent() {
         data={{
           contentType: EnumContentType.EXAM,
           referenceId: activeQuestionId || details.session.packageId,
-          title: `Sesi Ujian - Soal ${activeGridItem?.order || 1}`,
+          title: t(($) => $.exam.sessions.cbt.session.reportTitle, {
+            order: activeGridItem?.order || 1,
+          }),
           name: user?.user?.name || "",
           email: user?.user?.email || "",
         }}

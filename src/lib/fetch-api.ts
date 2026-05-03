@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useAppStore } from "@/stores/useAppStore";
 import { APP_CONFIG } from "@/constants/config";
 
 export const axiosInstance = axios.create({});
@@ -10,11 +9,9 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear auth store (you can import directly or trigger a logout function)
+      // Clear auth store (this also resets appStore and cbtStore via centralized logout)
       const authStore = useAuthStore.getState();
-      const appStore = useAppStore.getState();
       authStore.logout();
-      appStore.resetAll();
 
       // Redirect to public page
       window.location.href = APP_CONFIG.path.defaultPublic;
