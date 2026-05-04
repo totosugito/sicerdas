@@ -36,6 +36,34 @@ export default {
     scaleInfo: "Skala 0 - 100",
     pointsInfo: "{{earned}} / {{max}} Points",
     accuracy: "Akurasi",
+    loadingTitle: "Memuat Hasil...",
+    loadingDesc: "Mohon tunggu sejenak, kami sedang menyiapkan ringkasan performa Anda.",
+    title: "Hasil Ujian",
+    description: "Selamat! Anda telah menyelesaikan sesi ini. Berikut adalah ringkasan performa Anda.",
+    reviewTitle: "Tinjauan Soal",
+    reviewDetail: "Detail Review Soal",
+    closeReview: "Tutup Review",
+    stats: {
+      correct: "Benar",
+      wrong: "Salah",
+      skipped: "Dilewati",
+      time: "Waktu",
+    },
+    actions: {
+      list: "Daftar Ujian",
+      engine: "Engine Ujian",
+      new: "Ujian Baru",
+    },
+    review: {
+      grid: "Grid",
+      list: "List",
+      searchPlaceholder: "Cari kata kunci soal atau nomor...",
+      emptySearch: "Tidak ada soal yang sesuai dengan pencarian Anda.",
+      button: "Review",
+      loadDetail: "Gagal Memuat Detail Soal",
+      loadDetailDesc: "Terjadi kesalahan saat mengambil data pembahasan soal.",
+      retry: "Coba Lagi",
+    },
   },
   cbt: {
     header: {
@@ -87,6 +115,8 @@ export default {
       saving: "Menyimpan...",
       fontSize: "Ukuran Teks",
       report: "Laporkan Soal",
+      loadingSolutionTitle: "Memuat Pembahasan",
+      loadingSolutionDesc: "Sedang mengambil data detail dan kunci jawaban...",
       selectSolution: "Pilih tipe pembahasan untuk melihat",
       fontSizes: {
         sm: "Kecil",
