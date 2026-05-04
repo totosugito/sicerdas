@@ -191,24 +191,31 @@ function RouteComponent() {
   };
 
   const handleSubmit = () => {
-    if (confirm(t(($) => $.exam.sessions.cbt.session.confirmSubmit))) {
-      submitSessionMutation.mutate(sessionId, {
-        onSuccess: () => {
-          // Re-fetch details to switch to completed mode
-          queryClient.invalidateQueries({ queryKey: ["exam-session", sessionId] });
-          // Navigate to results page
-          navigate({
-            to: AppRoute.exam.results.url,
-            params: { id: sessionId },
-          });
-        },
-        onError: (err: any) => {
-          showNotifError({
-            message: err.message || t(($) => $.exam.sessions.cbt.session.submitError),
-          });
-        },
+    // Sync timer one last time before submitting
+    if (activeQuestionId) {
+      saveAnswerMutation.mutate({
+        sessionId,
+        questionId: activeQuestionId,
+        elapsedSeconds,
       });
     }
+
+    submitSessionMutation.mutate(sessionId, {
+      onSuccess: () => {
+        // Re-fetch details to switch to completed mode
+        queryClient.invalidateQueries({ queryKey: ["exam-session", sessionId] });
+        // Navigate to results page
+        navigate({
+          to: AppRoute.exam.results.url,
+          params: { id: sessionId },
+        });
+      },
+      onError: (err: any) => {
+        showNotifError({
+          message: err.message || t(($) => $.exam.sessions.cbt.session.submitError),
+        });
+      },
+    });
   };
 
   if (isErrorDetails || (detailsRes && !detailsRes.success)) {
@@ -305,6 +312,7 @@ function RouteComponent() {
           subtitle={details.section?.title}
           mode={details.session.mode as ExamSessionMode}
           onSubmit={handleSubmit}
+          items={gridItems}
           isSubmitting={submitSessionMutation.isPending}
           showSubmit={details.session.status === EnumExamSessionStatus.IN_PROGRESS}
           onGoToResult={() =>
@@ -313,12 +321,30 @@ function RouteComponent() {
               params: { id: sessionId },
             })
           }
-          onExit={() =>
-            navigate({
-              to: AppRoute.exam.packages.detail.url,
-              params: { id: details.session.packageId },
-            })
-          }
+          onExit={() => {
+            if (activeQuestionId) {
+              saveAnswerMutation.mutate(
+                {
+                  sessionId,
+                  questionId: activeQuestionId,
+                  elapsedSeconds,
+                },
+                {
+                  onSettled: () => {
+                    navigate({
+                      to: AppRoute.exam.packages.detail.url,
+                      params: { id: details.session.packageId },
+                    });
+                  },
+                },
+              );
+            } else {
+              navigate({
+                to: AppRoute.exam.packages.detail.url,
+                params: { id: details.session.packageId },
+              });
+            }
+          }}
         />
       </div>
 

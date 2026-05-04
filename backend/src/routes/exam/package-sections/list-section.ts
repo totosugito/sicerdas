@@ -96,7 +96,11 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
           })
           .from(examSessions)
           .where(eq(examSessions.userId, userId))
-          .orderBy(examSessions.sectionId, desc(examSessions.createdAt))
+          .orderBy(
+            examSessions.sectionId,
+            sql`CASE WHEN ${examSessions.status} = ${EnumExamSessionStatus.IN_PROGRESS} THEN 0 ELSE 1 END`,
+            desc(examSessions.createdAt),
+          )
           .as("latest");
 
         // 2. Best tryout score per section

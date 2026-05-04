@@ -13,7 +13,7 @@ export default {
     tryoutDesc: "Simulasi ujian sungguhan. Skor & pembahasan muncul di akhir.",
   },
   history: {
-    title: "Riwayat Percobaan",
+    title: "Riwayat",
     empty: "Belum ada riwayat percobaan untuk sub-test ini.",
     success: "Riwayat berhasil diambil",
   },
@@ -45,6 +45,7 @@ export default {
       viewResult: "Lihat Hasil",
       exit: "Keluar",
       timerStudy: "Belajar",
+      timerExam: "Ujian",
     },
     summary: {
       title: "Ringkasan",
@@ -53,6 +54,8 @@ export default {
       unanswered: "Belum Dijawab",
       answered: "Dijawab",
       doubtful: "Ragu-ragu",
+      unansweredCount: "{{count}} Soal belum dijawab",
+      doubtfulCount: "{{count}} Soal ragu-ragu",
     },
     navigation: {
       title: "Navigasi Soal",
@@ -94,6 +97,8 @@ export default {
     },
     session: {
       confirmSubmit: "Apakah Anda yakin ingin menyelesaikan ujian ini?",
+      confirmExit: "Keluar dari Ujian?",
+      confirmExitDesc: "Pengerjaan Anda telah tersimpan secara otomatis. Anda dapat melanjutkan ujian ini kapan saja nanti.",
       submitError: "Gagal menyelesaikan ujian. Silakan coba lagi.",
       loadingEngine: "Memuat Engine Ujian...",
       loadingEngineDesc: "Mohon tunggu sejenak, kami sedang mempersiapkan ujian untuk Anda.",

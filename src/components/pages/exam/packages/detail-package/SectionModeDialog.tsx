@@ -76,31 +76,37 @@ export const SectionModeDialog = ({
 
   const dialogContent = (
     <Tabs defaultValue="start" className="w-full">
-      <TabsList className="grid w-full grid-cols-2 mb-4 bg-muted/50 p-1 rounded-xl">
+      <TabsList className="flex w-full h-auto p-0 bg-transparent border-none rounded-none mb-2 justify-start gap-3">
         <TabsTrigger
           value="start"
-          className="rounded-lg py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          className="group flex items-center justify-center gap-2.5 px-6 py-3 rounded-2xl border border-muted-foreground/10 bg-transparent hover:bg-muted/50 data-[state=active]:bg-primary/5 data-[state=active]:text-primary data-[state=active]:border-primary/50 data-[state=active]:shadow-sm transition-all duration-300 active:scale-95"
         >
-          <Sparkles className="mr-2 h-4 w-4" />
-          {t(($) => $.exam.sessions.start.chooseMode)}
+          <Sparkles className="h-5 w-5 transition-transform group-hover:scale-110" />
+          <span className="text-sm font-bold tracking-tight">
+            {t(($) => $.exam.sessions.start.chooseMode)}
+          </span>
         </TabsTrigger>
         <TabsTrigger
           value="history"
-          className="rounded-lg py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          className="group flex items-center justify-center gap-2.5 px-6 py-3 rounded-2xl border border-muted-foreground/10 bg-transparent hover:bg-muted/50 data-[state=active]:bg-primary/5 data-[state=active]:text-primary data-[state=active]:border-primary/50 data-[state=active]:shadow-sm transition-all duration-300 active:scale-95"
         >
-          <Clock className="mr-2 h-4 w-4" />
-          {t(($) => $.exam.sessions.history.title)}
+          <Clock className="h-5 w-5 transition-transform group-hover:rotate-12" />
+          <span className="text-sm font-bold tracking-tight">
+            {t(($) => $.exam.sessions.history.title)}
+          </span>
           {meta && meta.total > 0 && (
-            <Badge variant="secondary" className="ml-1.5 h-4 min-w-4 px-1 text-[10px]">
+            <Badge
+              className="h-5 min-w-[20px] justify-center px-1 text-[10px] bg-muted group-data-[state=active]:bg-primary group-data-[state=active]:text-primary-foreground transition-all border-none font-black shadow-sm"
+            >
               {meta.total}
             </Badge>
           )}
         </TabsTrigger>
       </TabsList>
 
-      <div className="max-h-[60vh] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
+      <div className="max-h-[50vh] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
         {/* Start New / Continue Tab */}
-        <TabsContent value="start" className="space-y-4 focus-visible:outline-none">
+        <TabsContent value="start" className="mt-0 space-y-4 focus-visible:outline-none">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* Study Mode Card */}
             <div
@@ -203,11 +209,11 @@ export const SectionModeDialog = ({
               <Loader2 className="h-6 w-6 animate-spin text-primary" />
             </div>
           ) : history.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-0">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                {/* <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                   {t(($) => $.exam.sessions.history.title)}
-                </span>
+                </span> */}
                 {meta && meta.totalPages > 1 && (
                   <div className="flex items-center gap-1.5">
                     <Button
@@ -238,7 +244,7 @@ export const SectionModeDialog = ({
                 {history.map((item) => (
                   <button
                     key={item.id}
-                    className="group flex w-full items-center justify-between rounded-xl border bg-card p-3 text-left transition-all hover:border-primary/30 hover:bg-primary/5 active:scale-[0.98]"
+                    className="cursor-pointer group flex w-full items-center justify-between rounded-xl border bg-card p-3 text-left transition-all hover:border-primary/30 hover:bg-primary/5 active:scale-[0.98]"
                     onClick={() => {
                       onOpenChange(false);
                       const isCompleted = item.status === EnumExamSessionStatus.COMPLETED;

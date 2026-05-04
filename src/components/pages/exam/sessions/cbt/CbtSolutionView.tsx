@@ -71,7 +71,7 @@ export const CbtSolutionView: React.FC<CbtSolutionViewProps> = ({
       </div>
 
       {evaluation.solutions?.length > 0 ? (
-        <div className="space-y-6">
+        <div className="space-y-6 mt-4">
           {evaluation.solutions.length > 1 && (
             <div className="flex flex-wrap gap-2 py-4 border-b border-slate-100 dark:border-slate-800/50 mb-6">
               {evaluation.solutions.map((sol) => (
@@ -105,8 +105,8 @@ export const CbtSolutionView: React.FC<CbtSolutionViewProps> = ({
           )}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-12 px-6 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/20 text-muted-foreground animate-in fade-in zoom-in duration-500">
-          <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4">
+        <div className="flex flex-col items-center justify-center py-12 px-6 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/20 text-muted-foreground animate-in fade-in zoom-in duration-500 my-4">
+          <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
             <Sparkles className="w-6 h-6 opacity-20" />
           </div>
           <p className="text-sm font-medium italic">

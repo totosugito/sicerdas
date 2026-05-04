@@ -120,7 +120,7 @@ export const PackageSectionAccordion = ({ sections, onTakeExam }: PackageSection
                             </span>
                           </div>
                           {section.userMode && (
-                            <div className="flex items-center gap-1.5 border-l pl-3 text-amber-500/80">
+                            <div className="flex items-center gap-1.5 border-l pl-3 text-yellow-600">
                               <span>
                                 {section.userMode === "study"
                                   ? t(($) => $.exam.sessions.mode.study)
