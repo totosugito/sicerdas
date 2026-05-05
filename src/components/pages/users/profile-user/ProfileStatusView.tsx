@@ -2,6 +2,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, User } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { PageTitle } from "@/components/app";
 
 interface ProfileLoadingViewProps {
@@ -23,19 +24,19 @@ export function ProfileLoadingView({ isLoading = true }: ProfileLoadingViewProps
       <div className="grid md:grid-cols-[220px_minmax(0px,_1fr)] max-w-6xl gap-x-6 w-full">
         {/* Navigation Tabs Skeleton */}
         <div className="md:col-span-1 w-full">
-          <div className="bg-card border rounded-xl p-4 space-y-2">
+          <Card className="p-4 gap-2">
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
-          </div>
+          </Card>
         </div>
 
         {/* Main Content Skeleton */}
         <div className="w-full">
           <div className="flex flex-col gap-6">
             {/* Profile info skeleton */}
-            <div className="bg-card border rounded-xl p-6">
+            <Card className="p-6">
               <div className="flex flex-col gap-6">
                 <div className="flex flex-row gap-6">
                   <Skeleton className="w-24 h-24 rounded-full" />
@@ -50,7 +51,7 @@ export function ProfileLoadingView({ isLoading = true }: ProfileLoadingViewProps
                   <Skeleton className="h-10 w-24" />
                 </div>
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </div>
@@ -77,12 +78,12 @@ export function ProfileErrorView({ isError = true }: ProfileErrorViewProps) {
       <div className="grid md:grid-cols-[220px_minmax(0px,_1fr)] max-w-6xl gap-x-6 w-full">
         {/* Navigation Tabs Skeleton */}
         <div className="md:col-span-1 w-full">
-          <div className="bg-card border rounded-xl p-4 space-y-4">
+          <Card className="p-4 gap-4">
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
-          </div>
+          </Card>
         </div>
 
         {/* Error Content */}

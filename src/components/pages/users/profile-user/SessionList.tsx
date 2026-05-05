@@ -166,13 +166,13 @@ export function SessionList({
 
   if (isLoading) {
     return (
-      <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full">
-        <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
-          <CardTitle className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight">
+      <Card className="w-full">
+        <CardHeader className="border-b">
+          <CardTitle>
             {t(($) => $.user.profile.sessions.title)}
           </CardTitle>
         </CardHeader>
-        <CardContent className="px-6 py-4 space-y-4">
+        <CardContent>
           {[...Array(3)].map((_, i) => (
             <div key={i} className="flex items-center gap-4 p-4 min-h-[72px] justify-between">
               <div className="flex items-center gap-4 w-full">
@@ -192,9 +192,9 @@ export function SessionList({
 
   if (isError) {
     return (
-      <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full">
-        <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
-          <CardTitle className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight">
+      <Card className="w-full">
+        <CardHeader className="border-b">
+          <CardTitle>
             {t(($) => $.user.profile.sessions.title)}
           </CardTitle>
         </CardHeader>
@@ -227,107 +227,105 @@ export function SessionList({
     <>
       {confirmationModal && <DialogModal modal={confirmationModal} />}
 
-      <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full">
-        <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
-          <CardTitle className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight">
+      <Card className="w-full">
+        <CardHeader className="border-b">
+          <CardTitle>
             {t(($) => $.user.profile.sessions.title)}
           </CardTitle>
         </CardHeader>
-        <CardContent className="px-6 pb-0 space-y-6 w-full">
-          <div className="space-y-6">
-            {/* Current Session Section */}
-            {currentSession && (
-              <section>
-                <h3 className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight tracking-[-0.015em] px-1 pb-3">
-                  {t(($) => $.user.profile.sessions.currentSession)}
+        <CardContent>
+          {/* Current Session Section */}
+          {currentSession && (
+            <section>
+              <h3 className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight tracking-[-0.015em] px-1 pb-3">
+                {t(($) => $.user.profile.sessions.currentSession)}
+              </h3>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 min-h-[72px] justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-green-500/30">
+                <div className="flex items-center gap-4 w-full">
+                  <div className="flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 shrink-0 size-12">
+                    <Globe className="text-primary dark:text-primary-foreground h-6 w-6" />
+                  </div>
+                  <div className="flex flex-col justify-center">
+                    <p className="text-[#212529] dark:text-white text-base font-medium leading-normal line-clamp-1">
+                      {getDeviceName(currentSession.userAgent)} •{" "}
+                      {getBrowserName(currentSession.userAgent)}
+                    </p>
+                    <p className="text-[#6C757D] dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">
+                      {currentSession.ipAddress
+                        ? `${t(($) => $.user.profile.sessions.ipAddress)}: ${currentSession.ipAddress}`
+                        : t(($) => $.user.profile.sessions.unknownLocation)}
+                      {formatDateDistance(currentSession.createdAt, i18n.language) &&
+                        ` - ${formatDateDistance(currentSession.createdAt, i18n.language)}`}
+                    </p>
+                  </div>
+                </div>
+                <div className="shrink-0 ml-auto sm:ml-0">
+                  <div className="flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-700 dark:bg-green-500/20 dark:text-green-300 rounded-full text-xs font-medium">
+                    <div className="size-2 rounded-full bg-green-500"></div>
+                    <span>{t(($) => $.user.profile.sessions.thisDevice)}</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Other Sessions Section */}
+          {otherSessions && otherSessions.length > 0 && (
+            <section>
+              <div className="flex flex-row justify-between items-center pb-3">
+                <h3 className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight tracking-[-0.015em] px-1">
+                  {t(($) => $.user.profile.sessions.otherSessions)}
                 </h3>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 min-h-[72px] justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-green-500/30">
-                  <div className="flex items-center gap-4 w-full">
-                    <div className="flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 shrink-0 size-12">
-                      <Globe className="text-primary dark:text-primary-foreground h-6 w-6" />
-                    </div>
-                    <div className="flex flex-col justify-center">
-                      <p className="text-[#212529] dark:text-white text-base font-medium leading-normal line-clamp-1">
-                        {getDeviceName(currentSession.userAgent)} •{" "}
-                        {getBrowserName(currentSession.userAgent)}
-                      </p>
-                      <p className="text-[#6C757D] dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">
-                        {currentSession.ipAddress
-                          ? `${t(($) => $.user.profile.sessions.ipAddress)}: ${currentSession.ipAddress}`
-                          : t(($) => $.user.profile.sessions.unknownLocation)}
-                        {formatDateDistance(currentSession.createdAt, i18n.language) &&
-                          ` - ${formatDateDistance(currentSession.createdAt, i18n.language)}`}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="shrink-0 ml-auto sm:ml-0">
-                    <div className="flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-700 dark:bg-green-500/20 dark:text-green-300 rounded-full text-xs font-medium">
-                      <div className="size-2 rounded-full bg-green-500"></div>
-                      <span>{t(($) => $.user.profile.sessions.thisDevice)}</span>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            )}
+                <Button variant="destructive" size="sm" onClick={handleRevokeAllClick}>
+                  {t(($) => $.user.profile.sessions.revokeAll)}
+                </Button>
+              </div>
+              <div className="space-y-4">
+                {otherSessions.map((session) => {
+                  const DeviceIcon = getDeviceIcon(session.userAgent);
+                  const deviceName = getDeviceName(session.userAgent);
+                  const browserName = getBrowserName(session.userAgent);
+                  const timeAgo = formatDateDistance(session.createdAt, i18n.language);
 
-            {/* Other Sessions Section */}
-            {otherSessions && otherSessions.length > 0 && (
-              <section>
-                <div className="flex flex-row justify-between items-center pb-3">
-                  <h3 className="text-slate-900 dark:text-slate-100 text-lg font-semibold leading-tight tracking-[-0.015em] px-1">
-                    {t(($) => $.user.profile.sessions.otherSessions)}
-                  </h3>
-                  <Button variant="destructive" size="sm" onClick={handleRevokeAllClick}>
-                    {t(($) => $.user.profile.sessions.revokeAll)}
-                  </Button>
-                </div>
-                <div className="space-y-4">
-                  {otherSessions.map((session) => {
-                    const DeviceIcon = getDeviceIcon(session.userAgent);
-                    const deviceName = getDeviceName(session.userAgent);
-                    const browserName = getBrowserName(session.userAgent);
-                    const timeAgo = formatDateDistance(session.createdAt, i18n.language);
-
-                    return (
-                      <div
-                        key={session.id}
-                        className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 min-h-[72px] justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg"
-                      >
-                        <div className="flex items-center gap-4 w-full">
-                          <div className="flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 shrink-0 size-12">
-                            <DeviceIcon className="text-primary dark:text-primary-foreground h-6 w-6" />
-                          </div>
-                          <div className="flex flex-col justify-center">
-                            <p className="text-[#212529] dark:text-white text-base font-medium leading-normal line-clamp-1">
-                              {deviceName} • {browserName}
-                            </p>
-                            <p className="text-[#6C757D] dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">
-                              {session.ipAddress
-                                ? `${t(($) => $.user.profile.sessions.ipAddress)}: ${session.ipAddress}`
-                                : t(($) => $.user.profile.sessions.unknownLocation)}
-                              {timeAgo && ` - ${timeAgo}`}
-                            </p>
-                          </div>
+                  return (
+                    <div
+                      key={session.id}
+                      className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 min-h-[72px] justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg"
+                    >
+                      <div className="flex items-center gap-4 w-full">
+                        <div className="flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 shrink-0 size-12">
+                          <DeviceIcon className="text-primary dark:text-primary-foreground h-6 w-6" />
                         </div>
-                        <div className="shrink-0 ml-auto sm:ml-0">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
-                            onClick={() => {
-                              handleRevokeClick(session.token);
-                            }}
-                          >
-                            {t(($) => $.user.profile.sessions.logout)}
-                          </Button>
+                        <div className="flex flex-col justify-center">
+                          <p className="text-[#212529] dark:text-white text-base font-medium leading-normal line-clamp-1">
+                            {deviceName} • {browserName}
+                          </p>
+                          <p className="text-[#6C757D] dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">
+                            {session.ipAddress
+                              ? `${t(($) => $.user.profile.sessions.ipAddress)}: ${session.ipAddress}`
+                              : t(($) => $.user.profile.sessions.unknownLocation)}
+                            {timeAgo && ` - ${timeAgo}`}
+                          </p>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
-          </div>
+                      <div className="shrink-0 ml-auto sm:ml-0">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
+                          onClick={() => {
+                            handleRevokeClick(session.token);
+                          }}
+                        >
+                          {t(($) => $.user.profile.sessions.logout)}
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
         </CardContent>
       </Card>
     </>

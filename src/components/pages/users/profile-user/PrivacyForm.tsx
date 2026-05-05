@@ -77,9 +77,9 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
   };
 
   return (
-    <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full pb-0">
-      <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
-        <CardTitle className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight">
+    <Card className="w-full">
+      <CardHeader className="border-b">
+        <CardTitle>
           {t(($) => $.user.profile.privacy.title)}
         </CardTitle>
       </CardHeader>
@@ -92,7 +92,7 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
           errorClassName="mx-6"
           error={error}
         >
-          <CardContent className="pb-6 space-y-6 w-full">
+          <CardContent>
             <ControlForm
               form={form}
               item={formItems.emailNotifications}
@@ -100,7 +100,7 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
               wrapperClassName="rounded-lg border p-4"
             />
           </CardContent>
-          <CardFooter className="p-6 flex justify-end items-center gap-4 bg-slate-50 dark:bg-slate-900 rounded-b-xl border-t border-slate-200 dark:border-slate-800">
+          <CardFooter className="justify-end gap-4 border-t">
             <Button type="button" variant="outline" onClick={() => form.reset()}>
               {t(($) => $.labels.cancel)}
             </Button>

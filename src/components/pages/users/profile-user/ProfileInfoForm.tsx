@@ -144,9 +144,9 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
     const hasChanges = form.formState.isDirty || hasImageChanged;
 
     return (
-      <Card className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-none w-full pb-0">
-        <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
-          <CardTitle className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight">
+      <Card className="w-full">
+        <CardHeader className="border-b">
+          <CardTitle>
             {t(($) => $.user.profile.information.title)}
           </CardTitle>
         </CardHeader>
@@ -159,7 +159,7 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
             errorClassName="mx-6"
             error={error}
           >
-            <CardContent className="px-6 pb-6 space-y-6 w-full">
+            <CardContent>
               <div className="flex flex-col items-center gap-6 md:flex-row">
                 <div className="flex flex-col items-center gap-3">
                   <div className="">
@@ -208,7 +208,7 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
 
               <ControlForm form={form} item={formItems.bio} showMessage={false} />
             </CardContent>
-            <CardFooter className="p-6 flex justify-end items-center gap-4 bg-slate-50 dark:bg-slate-900 rounded-b-xl border-t border-slate-200 dark:border-slate-800">
+            <CardFooter className="justify-end gap-4 border-t">
               <Button
                 type="button"
                 variant="outline"
