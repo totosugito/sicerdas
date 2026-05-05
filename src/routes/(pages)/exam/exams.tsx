@@ -13,6 +13,7 @@ import {
   PackageSearchBar,
   PackageSortSelector,
 } from "@/components/pages/exam/exams";
+import { Card, CardContent } from "@/components/ui/card";
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from "@/components/custom/table";
 import { useAppStore } from "@/stores/useAppStore";
@@ -168,15 +169,17 @@ function RouteComponent() {
     <div className="flex flex-col flex-1 w-full px-6 pb-6">
       <div className="flex flex-col lg:flex-row gap-6 pt-6">
         <aside className="hidden lg:block w-70 flex-shrink-0">
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
-            <PackageFilter
-              selectedFilters={selectedFilters}
-              onFilterChange={handleFilterChange}
-              autoSubmit={true}
-              filterData={filterParamsQuery.data}
-              idPrefix="sidebar"
-            />
-          </div>
+          <Card>
+            <CardContent className="p-5">
+              <PackageFilter
+                selectedFilters={selectedFilters}
+                onFilterChange={handleFilterChange}
+                autoSubmit={true}
+                filterData={filterParamsQuery.data}
+                idPrefix="sidebar"
+              />
+            </CardContent>
+          </Card>
         </aside>
 
         {/* Exam List Content */}
@@ -266,7 +269,7 @@ function RouteComponent() {
                 pageIndex={currentPage - 1}
                 setPageIndex={(newPageIndex) => handlePageChange(newPageIndex + 1)}
                 pageSize={urlLimit ?? pageStore.limit ?? 12}
-                setPageSize={() => {}}
+                setPageSize={() => { }}
                 rowsCount={totalExams}
                 paginationData={{
                   page: currentPage,

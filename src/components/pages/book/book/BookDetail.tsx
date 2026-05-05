@@ -45,7 +45,7 @@ export const BookDetail = ({
 
   return (
     <div className="w-full">
-      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* Left Column - Cover */}
         <div className="flex-shrink-0 w-full lg:w-[400px]">
           <Card className="w-full relative group overflow-hidden aspect-[2/3] max-h-[350px] lg:max-h-none">

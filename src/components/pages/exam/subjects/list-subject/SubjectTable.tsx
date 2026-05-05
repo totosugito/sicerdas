@@ -10,7 +10,6 @@ import {
 import { LongText } from "@/components/custom/components";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +21,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { string_to_locale_date } from "@/lib/my-utils";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface SubjectTableProps {
   data: ListSubjectResponse;
@@ -97,13 +98,26 @@ export function SubjectTable({
       ),
       cell: ({ row }) => {
         const isActive = row.getValue("isActive") as boolean;
+        const colorClass = isActive
+          ? "bg-emerald-500/10 text-emerald-600 border-emerald-200 dark:border-emerald-900/50 dark:text-emerald-400"
+          : "bg-red-500/10 text-red-600 border-red-200 dark:border-red-900/50 dark:text-red-400";
+
+        const dotColor = isActive ? "bg-emerald-500" : "bg-red-500";
+        const label = isActive
+          ? t(($) => $.exam.subjects.table.status.active)
+          : t(($) => $.exam.subjects.table.status.inactive);
+
         return (
           <div className="flex justify-center">
-            <Badge variant={isActive ? "success" : "secondary"}>
-              {isActive
-                ? t(($) => $.exam.subjects.table.status.active)
-                : t(($) => $.exam.subjects.table.status.inactive)}
-            </Badge>
+            <div
+              className={cn(
+                "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider",
+                colorClass,
+              )}
+            >
+              <span className={cn("h-1.5 w-1.5 rounded-full", dotColor)} />
+              <span>{label}</span>
+            </div>
           </div>
         );
       },
@@ -218,26 +232,28 @@ export function SubjectTable({
   });
 
   return (
-    <div className="flex flex-col gap-4 border border-border rounded-lg bg-card">
-      <div className={"flex flex-row gap-2 justify-between px-4 pt-6"}>
-        <div></div>
-        <div className={"flex flex-row gap-2 max-w-sm"}>
+    <Card className="overflow-hidden">
+      <CardHeader className="flex flex-col sm:flex-row justify-between bg-muted/30 border-b border-border space-y-0">
+        <div className="flex items-center gap-2"></div>
+        <div className={"flex flex-row gap-2 w-full sm:max-w-sm"}>
           <DataTableFilter
             table={table}
             searchPlaceholder={t(($) => $.exam.subjects.table.search)}
-            className="min-w-sm"
+            className="w-full"
             searchOnEnter={true}
-          ></DataTableFilter>
+          />
         </div>
-      </div>
-      <DataTable
-        table={table}
-        paginationData={paginationData}
-        totalRowCount={paginationData?.total || 0}
-        showSideBorders={false}
-        showZebraStriping={true}
-        defaultNoResultText={t(($) => $.exam.subjects.table.noResult)}
-      />
-    </div>
+      </CardHeader>
+      <CardContent className="p-0 mt-2">
+        <DataTable
+          table={table}
+          paginationData={paginationData}
+          totalRowCount={paginationData?.total || 0}
+          showSideBorders={false}
+          showZebraStriping={true}
+          defaultNoResultText={t(($) => $.exam.subjects.table.noResult)}
+        />
+      </CardContent>
+    </Card>
   );
 }

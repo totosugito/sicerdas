@@ -8,6 +8,7 @@ import { AppRoute } from "@/constants/app-route";
 import { Heart, HelpCircle, Layers, CheckCircle2, PlayCircle } from "lucide-react";
 import { EnumExamPackageUserStatus } from "backend/src/db/schema/exam/enums";
 import { getGradeColor } from "@/lib/exam-utils";
+import { Card } from "@/components/ui/card";
 
 interface PackageCardProps {
   exams: ExamPackage[];
@@ -51,9 +52,9 @@ const PackageCardView = ({ exam, viewMode }: PackageCardViewProps) => {
   };
 
   return (
-    <div
+    <Card
       className={cn(
-        "group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-xl hover:border-primary/40 transition-all duration-500 overflow-hidden flex",
+        "group hover:shadow-xl hover:border-primary/40 transition-all duration-500 overflow-hidden flex",
         isListView ? "flex-col sm:flex-row min-h-[180px]" : "flex-col h-full",
       )}
     >
@@ -201,6 +202,6 @@ const PackageCardView = ({ exam, viewMode }: PackageCardViewProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
