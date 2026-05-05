@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Monitor, RotateCcw } from "lucide-react";
+import { LayoutGrid, BookOpen, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppRoute } from "@/constants/app-route";
 import { useAppTranslation } from "@/lib/i18n-typed";
@@ -8,41 +8,46 @@ import { cn } from "@/lib/utils";
 
 interface ResultsActionsProps {
   sessionId: string;
+  packageId?: string;
 }
 
-export const ResultsActions: React.FC<ResultsActionsProps> = ({ sessionId }) => {
+export const ResultsActions: React.FC<ResultsActionsProps> = ({ sessionId, packageId }) => {
   const { t } = useAppTranslation();
 
-  const buttonBaseClass = "w-full gap-2 transition-all duration-300";
+  const buttonBaseClass = "w-full sm:w-auto gap-2.5 transition-all duration-300 bg-background/80 backdrop-blur hover:bg-background/100 border-border/50 font-bold px-5";
 
   return (
-    <div className="flex flex-col md:flex-row gap-4">
-      <Link to={AppRoute.exam.exams.url} className="flex-1">
+    <>
+      <Link to={AppRoute.exam.exams.url}>
         <Button
           variant="outline"
           className={cn(buttonBaseClass)}
         >
-          <ArrowLeft className="w-4 h-4" />
+          <LayoutGrid className="w-4 h-4 text-primary/70" />
           {t(($) => $.exam.sessions.results.actions.list)}
         </Button>
       </Link>
-      <Link to={AppRoute.exam.session.url} params={{ id: sessionId }} className="flex-1">
-        <Button
-          variant="secondary"
-          className={cn(buttonBaseClass)}
+      
+      {packageId && (
+        <Link to={AppRoute.exam.packages.detail.url} params={{ id: packageId }}>
+          <Button
+            variant="outline"
+            className={cn(buttonBaseClass)}
+          >
+            <BookOpen className="w-4 h-4 text-primary/70" />
+            {t(($) => $.exam.packages.detail.title)}
+          </Button>
+        </Link>
+      )}
+
+      <Link to={AppRoute.exam.session.url} params={{ id: sessionId }}>
+        <Button 
+          className={cn("w-full sm:w-auto gap-2.5 bg-primary text-primary-foreground shadow-elevated hover:bg-primary/90 border-0 font-bold px-6")}
         >
-          <Monitor className="w-4 h-4" />
+          <Eye className="w-4.5 h-4.5" />
           {t(($) => $.exam.sessions.results.actions.engine)}
         </Button>
       </Link>
-      <Link to={AppRoute.exam.exams.url} className="flex-1">
-        <Button 
-          className={cn(buttonBaseClass)}
-        >
-          <RotateCcw className="w-4 h-4" />
-          {t(($) => $.exam.sessions.results.actions.new)}
-        </Button>
-      </Link>
-    </div>
+    </>
   );
 };

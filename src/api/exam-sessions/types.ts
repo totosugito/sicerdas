@@ -81,7 +81,11 @@ export interface ExamSessionGridItem {
 export interface ExamSessionDetails {
   session: ExamSession & { elapsedSeconds: number; isTimerActive: boolean };
   grid: ExamSessionGridItem[];
-  package?: { title: string };
+  package?: { 
+    id: string;
+    title: string;
+    grade?: { name: string | null };
+  };
   section?: { title: string };
 }
 

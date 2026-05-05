@@ -9,6 +9,7 @@ import { examPackages } from "../../../db/schema/exam/packages.ts";
 import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
 import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
 import { eq, and } from "drizzle-orm";
+import { educationGrades } from "../../../db/schema/education/index.ts";
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
@@ -41,7 +42,11 @@ const SessionDetailsResponse = Type.Object({
       }),
     ),
     package: Type.Optional(Type.Object({
+      id: Type.String({ format: "uuid" }),
       title: Type.String(),
+      grade: Type.Optional(Type.Object({
+        name: Type.Union([Type.String(), Type.Null()]),
+      })),
     })),
     section: Type.Optional(Type.Object({
       title: Type.String(),
@@ -82,10 +87,12 @@ const detailsSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
           session: examSessions,
           packageTitle: examPackages.title,
           sectionTitle: examPackageSections.title,
+          gradeName: educationGrades.name,
         })
         .from(examSessions)
         .innerJoin(examPackages, eq(examSessions.packageId, examPackages.id))
         .innerJoin(examPackageSections, eq(examSessions.sectionId, examPackageSections.id))
+        .leftJoin(educationGrades, eq(examPackages.educationGradeId, educationGrades.id))
         .where(and(eq(examSessions.id, id), eq(examSessions.userId, userId)))
         .limit(1);
 
@@ -93,7 +100,7 @@ const detailsSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         return reply.notFound(t(($) => $.exam.sessions.errors.notFound));
       }
 
-      const { session, packageTitle, sectionTitle } = sessionData;
+      const { session, packageTitle, sectionTitle, gradeName } = sessionData;
 
       // 2. Fetch the grid (answers)
       const answers = await db
@@ -143,7 +150,11 @@ const detailsSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
             earnedPoints: session.earnedPoints !== null ? Number(session.earnedPoints) : null,
             maxPoints: session.maxPoints !== null ? Number(session.maxPoints) : null,
           },
-          package: { title: packageTitle },
+          package: { 
+            id: session.packageId,
+            title: packageTitle,
+            grade: { name: gradeName ?? null }
+          },
           section: { title: sectionTitle },
           grid,
         },

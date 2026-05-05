@@ -83,14 +83,28 @@ html {
   --shadow-soft: 0 4px 20px -2px oklch(0.347 0.023 249.2 / 0.08);
   --shadow-medium: 0 10px 40px -5px oklch(0.347 0.023 249.2 / 0.12);
   --shadow-glow: 0 0 40px oklch(0.587 0.135 230.9 / 0.15);
+  --shadow-elevated: 0 10px 20px -5px oklch(0.347 0.023 249.2 / 0.12), 0 4px 6px -2px oklch(0.347 0.023 249.2 / 0.12);
 
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, oklch(0.587 0.135 230.9) 0%, oklch(0.725 0.112 196.8) 100%);
   --gradient-accent: linear-gradient(135deg, oklch(0.772 0.123 202.1) 0%, oklch(0.825 0.135 230.9) 100%);
   --gradient-background: linear-gradient(180deg, oklch(0.972 0.034 249.2) 0%, oklch(0.942 0.042 239.2) 100%);
+  --gradient-hero: linear-gradient(135deg, oklch(0.98 0.01 230.9) 0%, oklch(1 0 0) 100%);
 
   /* Transitions */
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --primary-soft: oklch(0.587 0.135 230.9 / 0.1);
+  --primary-glow: oklch(0.587 0.135 230.9 / 0.3);
+
+  --success-soft: oklch(0.627 0.15 145 / 0.1);
+  --success: oklch(0.627 0.15 145);
+
+  --destructive-soft: oklch(0.753 0.142 29.2 / 0.1);
+  --destructive: oklch(0.753 0.142 29.2);
+
+  --warning-soft: oklch(0.85 0.15 80 / 0.1);
+  --warning: oklch(0.85 0.15 80);
 
   /* Misc */
   --tracking-normal: 0em;
@@ -113,6 +127,16 @@ html {
   --primary: oklch(0.5 0.15 230.9);
   --primary-foreground: oklch(0.95 0.02 239.2);
   --primary-hover: oklch(0.4 0.15 230.9);
+  --primary-soft: oklch(0.5 0.15 230.9 / 0.15);
+  --primary-glow: oklch(0.5 0.15 230.9 / 0.4);
+
+  --success: oklch(0.65 0.15 145);
+  --success-soft: oklch(0.65 0.15 145 / 0.15);
+
+  --warning: oklch(0.75 0.15 80);
+  --warning-soft: oklch(0.75 0.15 80 / 0.15);
+
+  --destructive-soft: oklch(0.7 0.16 29.2 / 0.15);
 
   --secondary: oklch(0.25 0.02 249.2);
   --secondary-foreground: oklch(0.9 0.02 239.2);
@@ -182,6 +206,10 @@ html {
   /* Radius */
   --radius: 0.75rem;
 
+  --primary-soft: oklch(0.5 0.15 230.9 / 0.15);
+  --primary-glow: oklch(0.5 0.15 230.9 / 0.4);
+  --gradient-hero: linear-gradient(135deg, oklch(0.18 0.03 230.9) 0%, oklch(0.15 0.03 249.2) 100%);
+
   /* Misc */
   --tracking-normal: 0em;
   --spacing: 0.25rem;
@@ -247,9 +275,33 @@ html {
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
 
-  --gradient-primary: var(--gradient-primary);
-  --gradient-accent: var(--gradient-accent);
-  --gradient-background: var(--gradient-background);
+  --background-image-gradient-primary: var(--gradient-primary);
+  --background-image-gradient-accent: var(--gradient-accent);
+  --background-image-gradient-background: var(--gradient-background);
+  --background-image-gradient-hero: var(--gradient-hero);
+
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-glow: var(--primary-glow);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-destructive: var(--destructive);
+  --color-destructive-soft: var(--destructive-soft);
+
+  --shadow-elevated: var(--shadow-elevated);
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scale-in {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  --animate-fade-in: fade-in 0.6s ease-out forwards;
+  --animate-scale-in: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 
@@ -313,12 +365,24 @@ body {
   @apply flex flex-col flex-1 w-full items-center p-6 gap-6
 }
 
+.page-full-no-pad {
+  @apply flex flex-col flex-1 w-full items-center gap-6
+}
+
 .page-container {
   @apply flex flex-col flex-1 w-full items-center p-6 max-w-7xl mx-auto gap-6
 }
 
 .page-container-no-top {
   @apply flex flex-col flex-1 w-full items-center pb-6 px-6 max-w-7xl mx-auto
+}
+
+.bg-gradient-card {
+  background: linear-gradient(135deg, oklch(1 0 0) 0%, oklch(0.98 0.01 249.2) 100%);
+}
+
+.dark .bg-gradient-card {
+  background: linear-gradient(135deg, oklch(0.2 0.025 249.2) 0%, oklch(0.18 0.03 249.2) 100%);
 }
 
 .new-badge {

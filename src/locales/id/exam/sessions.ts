@@ -51,7 +51,7 @@ export default {
     },
     actions: {
       list: "Daftar Ujian",
-      engine: "Engine Ujian",
+      engine: "Review Hasil",
       new: "Ujian Baru",
     },
     review: {

@@ -14,6 +14,7 @@ import {
   ResultsQuestionReview,
   QuestionReviewSection,
 } from "@/components/pages/exam/sessions/results";
+import { cn } from "@/lib/utils";
 
 type ResultsSearch = {
   view?: "grid" | "list";
@@ -143,17 +144,18 @@ function SessionResultsComponent() {
   };
 
   return (
-    <div className="page-container">
+    <div className={cn("page-full-no-pad", "max-w-7xl mx-auto px-6")}>
       <ResultsHeader
         title={t(($) => $.exam.sessions.results.title)}
         description={t(($) => $.exam.sessions.results.description)}
         packageTitle={pkg?.title}
         sectionTitle={section?.title}
-      />
+        gradeName={pkg?.grade?.name ?? undefined}
+      >
+        <ResultsActions sessionId={sessionId} packageId={pkg?.id} />
+      </ResultsHeader>
 
-      <div className="w-full space-y-8">
-        <ResultsActions sessionId={sessionId} />
-
+      <div className="w-full space-y-6">
         <ResultsScoreCard
           score={score}
           correctCount={correctCount}
