@@ -48,6 +48,8 @@ import {
 import { EnumUserRole } from "backend/src/db/schema/user/types";
 import { cn } from "@/lib/utils";
 
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+
 interface UserTableProps {
   data: ListUsersResponse;
   isLoading: boolean;
@@ -306,12 +308,8 @@ export function UserTable({
   });
 
   return (
-    <div className="flex flex-col gap-4 border border-border rounded-lg bg-card shadow-sm overflow-hidden">
-      <div
-        className={
-          "flex flex-col sm:flex-row gap-4 justify-between px-4 py-4 bg-muted/30 border-b border-border"
-        }
-      >
+    <Card className="overflow-hidden">
+      <CardHeader className="flex flex-col sm:flex-row justify-between bg-muted/30 border-b border-border space-y-0">
         <div className="flex items-center gap-2">
           <Faceted value={roles} onValueChange={(val) => setRoles(val || [])} multiple={true}>
             <FacetedTrigger asChild>
@@ -353,15 +351,17 @@ export function UserTable({
             searchOnEnter={true}
           />
         </div>
-      </div>
-      <DataTable
-        table={table}
-        paginationData={paginationData}
-        totalRowCount={paginationData?.total || 0}
-        showSideBorders={false}
-        showZebraStriping={true}
-        defaultNoResultText={t(($) => $.user.management.table.noData)}
-      />
-    </div>
+      </CardHeader>
+      <CardContent className="p-0 mt-2">
+        <DataTable
+          table={table}
+          paginationData={paginationData}
+          totalRowCount={paginationData?.total || 0}
+          showSideBorders={false}
+          showZebraStriping={true}
+          defaultNoResultText={t(($) => $.user.management.table.noData)}
+        />
+      </CardContent>
+    </Card>
   );
 }

@@ -9,6 +9,7 @@ import { FormWithDetector } from "@/components/custom/components";
 import { CreateVersionRequest } from "@/api/version";
 import { EnumContentStatus, EnumContentType } from "backend/src/db/schema/enum/enum-app";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 type VersionFormProps = {
   defaultValues?: Partial<CreateVersionRequest>;
@@ -145,37 +146,39 @@ export function VersionForm({ defaultValues, onSubmit, isPending }: VersionFormP
   return (
     <Form {...form}>
       <FormWithDetector form={form} onSubmit={onFormSubmit} schema={formSchema}>
-        <div className="border border-border rounded-lg bg-card p-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ControlForm form={form} item={formConfig.name} showMessage={false} />
-            <ControlForm form={form} item={formConfig.dataType} showMessage={false} />
-          </div>
+        <Card>
+          <CardContent className="space-y-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <ControlForm form={form} item={formConfig.name} showMessage={false} />
+              <ControlForm form={form} item={formConfig.dataType} showMessage={false} />
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ControlForm form={form} item={formConfig.appVersion} showMessage={false} />
-            <ControlForm form={form} item={formConfig.dbVersion} showMessage={false} />
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <ControlForm form={form} item={formConfig.appVersion} showMessage={false} />
+              <ControlForm form={form} item={formConfig.dbVersion} showMessage={false} />
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ControlForm form={form} item={formConfig.status} showMessage={false} />
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <ControlForm form={form} item={formConfig.status} showMessage={false} />
+            </div>
 
-          <ControlForm form={form} item={formConfig.note} />
+            <ControlForm form={form} item={formConfig.note} />
 
-          <div className="flex justify-end gap-3 pt-6 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => form.reset()}
-              disabled={isPending}
-            >
-              {t(($) => $.labels.cancel)}
-            </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? t(($) => $.labels.saving) : t(($) => $.labels.save)}
-            </Button>
-          </div>
-        </div>
+            <div className="flex justify-end gap-3 pt-6 border-t">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => form.reset()}
+                disabled={isPending}
+              >
+                {t(($) => $.labels.cancel)}
+              </Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? t(($) => $.labels.saving) : t(($) => $.labels.save)}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </FormWithDetector>
     </Form>
   );

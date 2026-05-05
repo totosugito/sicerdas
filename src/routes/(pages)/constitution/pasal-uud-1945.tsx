@@ -134,92 +134,97 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      {/* Hero Section */}
-      <section className="relative py-6">
-        <div className="flex flex-col gap-2 mx-auto text-center">
-          <div className="mb-6 flex justify-center">
-            <div className="p-4 rounded-full shadow-sm transform hover:scale-110 transition-transform duration-300">
-              <img src="/constitution/images/ic_pancasila.png" alt="UUD 1945" className="w-24 h-24" />
+      <Card className="overflow-hidden">
+        <CardHeader className="bg-muted/30 border-b">
+          {/* Hero Section */}
+          <section className="relative py-6">
+            <div className="flex flex-col gap-2 mx-auto text-center">
+              <div className="mb-6 flex justify-center">
+                <div className="p-4 rounded-full shadow-sm transform hover:scale-110 transition-transform duration-300">
+                  <img src="/constitution/images/ic_pancasila.png" alt="UUD 1945" className="w-24 h-24" />
+                </div>
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
+                {t($ => $.constitution.uud1945.title)}
+              </h1>
+              <p className="text-lg text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
+                {t($ => $.constitution.uud1945.description)}
+              </p>
+              <div className="flex items-center justify-center gap-4 flex-wrap">
+                <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
+                  {t($ => $.constitution.uud1945.articleCount, { count: counts.pasal })}
+                </Badge>
+                <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
+                  {t($ => $.constitution.uud1945.transitionalProvisionCount, { count: counts.aturanPeralihan })}
+                </Badge>
+                <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
+                  {t($ => $.constitution.uud1945.additionalProvisionCount, { count: counts.aturanTambahan })}
+                </Badge>
+              </div>
             </div>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-            {t($ => $.constitution.uud1945.title)}
-          </h1>
-          <p className="text-lg text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
-            {t($ => $.constitution.uud1945.description)}
-          </p>
-          <div className="flex items-center justify-center gap-4 flex-wrap">
-            <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
-              {t($ => $.constitution.uud1945.articleCount, { count: counts.pasal })}
-            </Badge>
-            <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
-              {t($ => $.constitution.uud1945.transitionalProvisionCount, { count: counts.aturanPeralihan })}
-            </Badge>
-            <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
-              {t($ => $.constitution.uud1945.additionalProvisionCount, { count: counts.aturanTambahan })}
-            </Badge>
-          </div>
-        </div>
-      </section>
+          </section>
+        </CardHeader>
+
+        <CardContent className="pt-4">
+          {/* Search Section */}
+          <section className="py-0">
+            <div className="mx-auto">
+              <div className="flex flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <Input
+                    type="text"
+                    placeholder={t($ => $.constitution.uud1945.searchPlaceholder)}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="px-12 h-10 text-lg border-2 border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 dark:border-gray-700 dark:focus:border-red-500 dark:focus:ring-red-900/30 dark:bg-gray-800 dark:text-white"
+                  />
+                  {searchTerm && (
+                    <Button
+                      onClick={clearSearch}
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors dark:hover:text-red-400"
+                    >
+                      <X className="w-5 h-5" />
+                    </Button>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={toggleExpandAll}
+                    size="lg"
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center gap-2 dark:bg-red-700 dark:hover:bg-red-800"
+                  >
+                    {expandedAll ? (
+                      <>
+                        <ChevronUp className="w-4 h-4" />
+                        {t($ => $.constitution.uud1945.closeAll)}
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-4 h-4" />
+                        {t($ => $.constitution.uud1945.openAll)}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+              {searchTerm && (
+                <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+                  <Trans
+                    i18nKey="constitution.uud1945.foundResult"
+                    values={{ ayatCount: searchSummary.ayatCount, pasalCount: searchSummary.pasalCount }}
+                    components={{ 1: <span className="font-semibold text-red-600 dark:text-red-400" />, 3: <span className="font-semibold text-red-600 dark:text-red-400" /> }}
+                  />
+                </p>
+              )}
+            </div>
+          </section>
+        </CardContent>
+      </Card>
 
       <div className='flex flex-col gap-6 w-full'>
-        <Separator className="dark:bg-gray-700" />
-
-        {/* Search Section */}
-        <section className="py-0">
-          <div className="mx-auto">
-            <div className="flex flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <Input
-                  type="text"
-                  placeholder={t($ => $.constitution.uud1945.searchPlaceholder)}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="px-12 h-10 text-lg border-2 border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 dark:border-gray-700 dark:focus:border-red-500 dark:focus:ring-red-900/30 dark:bg-gray-800 dark:text-white"
-                />
-                {searchTerm && (
-                  <Button
-                    onClick={clearSearch}
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors dark:hover:text-red-400"
-                  >
-                    <X className="w-5 h-5" />
-                  </Button>
-                )}
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  onClick={toggleExpandAll}
-                  size="lg"
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center gap-2 dark:bg-red-700 dark:hover:bg-red-800"
-                >
-                  {expandedAll ? (
-                    <>
-                      <ChevronUp className="w-4 h-4" />
-                      {t($ => $.constitution.uud1945.closeAll)}
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="w-4 h-4" />
-                      {t($ => $.constitution.uud1945.openAll)}
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-            {searchTerm && (
-              <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
-                <Trans
-                  i18nKey="constitution.uud1945.foundResult"
-                  values={{ ayatCount: searchSummary.ayatCount, pasalCount: searchSummary.pasalCount }}
-                  components={{ 1: <span className="font-semibold text-red-600 dark:text-red-400" />, 3: <span className="font-semibold text-red-600 dark:text-red-400" /> }}
-                />
-              </p>
-            )}
-          </div>
-        </section>
 
         {/* Content Section */}
         <section className="">
@@ -282,7 +287,7 @@ function RouteComponent() {
                           </div>
                         </div>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className='pt-0 pb-6'>
                         <Accordion key={`${pasal.title}-${expandedAll}`} type="multiple" className="w-full" defaultValue={expandedAll ? [`ayat-${pasal.title}`] : []}>
                           <AccordionItem value={`ayat-${pasal.title}`} className="border-none">
                             <AccordionTrigger className="text-red-700 hover:text-red-800 font-semibold hover:no-underline py-0 dark:text-red-400 dark:hover:text-red-300">

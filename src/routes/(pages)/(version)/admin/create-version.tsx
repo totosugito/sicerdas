@@ -37,14 +37,12 @@ function AdminVersionsCreatePage() {
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      <div className="flex items-center gap-4">
-        <PageTitle
-          title={t(($) => $.labels.add) + " " + t(($) => $.version.title)}
-          description={<span>{t(($) => $.version.form.name.placeholder)}</span>}
-          showBack
-          backTo={AppRoute.app.version.admin.list.url}
-        />
-      </div>
+      <PageTitle
+        title={t(($) => $.labels.add) + " " + t(($) => $.version.title)}
+        description={t(($) => $.version.form.name.placeholder)}
+        showBack
+        backTo={AppRoute.app.version.admin.list.url}
+      />
 
       <VersionForm onSubmit={onSubmit} isPending={createMutation.isPending} />
     </div>

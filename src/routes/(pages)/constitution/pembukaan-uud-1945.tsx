@@ -1,5 +1,6 @@
 import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import { Card, CardContent } from "@/components/ui/card"
 
 export const Route = createFileRoute('/(pages)/constitution/pembukaan-uud-1945')({
   component: RouteComponent,
@@ -16,40 +17,42 @@ function RouteComponent() {
 
   return (
     <div className="flex gap-6 w-full">
-      <div className="bg-white dark:bg-slate-800 p-6 rounded-lg w-full">
+      <Card className="w-full">
+        <CardContent>
 
-        {/* Hero Section */}
-        <section className="relative pb-10">
-          <div className="flex flex-col mx-auto text-center gap-2">
-            <div className="mb-6 flex justify-center">
-              <div className="p-4 rounded-full shadow-sm transform hover:scale-110 transition-transform duration-300">
-                <img
-                  src="/constitution/images/ic_pancasila.png"
-                  alt="Pancasila Symbol"
-                  className="w-24 h-24 object-contain"
-                />
+          {/* Hero Section */}
+          <section className="relative pb-10">
+            <div className="flex flex-col mx-auto text-center gap-2">
+              <div className="mb-6 flex justify-center">
+                <div className="p-4 rounded-full shadow-sm transform hover:scale-110 transition-transform duration-300">
+                  <img
+                    src="/constitution/images/ic_pancasila.png"
+                    alt="Pancasila Symbol"
+                    className="w-24 h-24 object-contain"
+                  />
+                </div>
               </div>
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
+                UNDANG-UNDANG DASAR
+              </h1>
+              <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2 dark:text-gray-200">
+                NEGARA REPUBLIK INDONESIA TAHUN 1945
+              </h2>
+              <h3 className="text-2xl sm:text-3xl font-bold mt-5">
+                PEMBUKAAN
+              </h3>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-              UNDANG-UNDANG DASAR
-            </h1>
-            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2 dark:text-gray-200">
-              NEGARA REPUBLIK INDONESIA TAHUN 1945
-            </h2>
-            <h3 className="text-2xl sm:text-3xl font-bold mt-5">
-              PEMBUKAAN
-            </h3>
-          </div>
-        </section>
+          </section>
 
-        <div className="flex flex-col gap-6">
-          {preambleData.map((paragraph, index) => (
-            <p key={index} className="text-slate-800 dark:text-slate-200 text-base md:text-lg leading-relaxed">
-              {paragraph}
-            </p>
-          ))}
-        </div>
-      </div>
+          <div className="flex flex-col gap-6">
+            {preambleData.map((paragraph, index) => (
+              <p key={index} className="text-slate-800 dark:text-slate-200 text-base md:text-lg leading-relaxed">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

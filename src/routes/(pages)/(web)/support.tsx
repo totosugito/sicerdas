@@ -1,7 +1,8 @@
-import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useAppTranslation } from '@/lib/i18n-typed'
 import { APP_CONFIG } from '@/constants/config'
+import PageTitle from '@/components/app/PageTitle'
+import { Card, CardContent } from '@/components/ui/card'
 
 export const Route = createFileRoute('/(pages)/(web)/support')({
   component: RouteComponent,
@@ -12,17 +13,13 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black leading-tight tracking-[-0.033em]">
-          {t($ => $.web.support.title)}
-        </h1>
-        <p className="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">
-          {t($ => $.web.support.description)}
-        </p>
-      </div>
+      <PageTitle
+        title={t($ => $.web.support.title)}
+        description={t($ => $.web.support.description)}
+      />
 
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
-        <div className="flex flex-col gap-8">
+      <Card>
+        <CardContent className="flex flex-col gap-8">
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
               {t($ => $.web.support.gettingStarted.title)}
@@ -60,8 +57,8 @@ function RouteComponent() {
               {t($ => $.web.support.feedback.content)}
             </p>
           </section>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

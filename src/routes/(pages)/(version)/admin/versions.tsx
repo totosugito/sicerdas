@@ -77,18 +77,18 @@ function AdminVersionsPage() {
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      <div className="flex justify-between items-start">
-        <PageTitle
-          title={t(($) => $.version.title)}
-          description={<span>{t(($) => $.version.menu)}</span>}
-        />
-        <Button asChild className="flex-shrink-0 gap-1.5 shadow-sm">
-          <Link to={AppRoute.app.version.admin.create.url}>
-            <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">{t(($) => $.labels.add)}</span>
-          </Link>
-        </Button>
-      </div>
+      <PageTitle
+        title={t(($) => $.version.title)}
+        description={t(($) => $.version.menu)}
+        extra={
+          <Button asChild className="flex-shrink-0 gap-1.5 shadow-sm">
+            <Link to={AppRoute.app.version.admin.create.url}>
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">{t(($) => $.labels.add)}</span>
+            </Link>
+          </Button>
+        }
+      />
 
       <VersionTable
         data={data as ListVersionResponse}

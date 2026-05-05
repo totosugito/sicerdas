@@ -71,14 +71,12 @@ function EditVersionPage() {
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      <div className="flex items-center gap-4">
-        <PageTitle
-          title={t(($) => $.version.edit.title)}
-          description={<span>{t(($) => $.version.edit.description)}</span>}
-          showBack
-          backTo={AppRoute.app.version.admin.list.url}
-        />
-      </div>
+      <PageTitle
+        title={t(($) => $.version.edit.title)}
+        description={t(($) => $.version.edit.description)}
+        showBack
+        backTo={AppRoute.app.version.admin.list.url}
+      />
 
       <VersionForm
         defaultValues={initialValues}

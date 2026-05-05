@@ -25,6 +25,7 @@ import { blocknote_to_text } from "@/lib/blocknote-utils";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { LongText } from "@/components/custom/components";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 interface VersionTableProps {
   data: ListVersionResponse | undefined;
@@ -285,10 +286,10 @@ export function VersionTable({
   });
 
   return (
-    <div className="flex flex-col gap-4 border border-border rounded-lg bg-card shadow-sm overflow-hidden">
-      <div className={"flex flex-row gap-2 justify-between px-4 pt-6"}>
+    <Card className="overflow-hidden">
+      <CardHeader className="flex flex-col sm:flex-row justify-between bg-muted/30 border-b border-border space-y-0">
         <div />
-        <div className={"flex flex-row gap-2 w-full max-w-sm"}>
+        <div className={"flex flex-row gap-2 w-full sm:max-w-sm"}>
           <DataTableFilter
             table={table}
             searchPlaceholder={t(($) => $.version.table.search)}
@@ -296,15 +297,17 @@ export function VersionTable({
             searchOnEnter={true}
           />
         </div>
-      </div>
-      <DataTable
-        table={table}
-        paginationData={paginationData}
-        totalRowCount={paginationData?.total || 0}
-        showSideBorders={false}
-        showZebraStriping={true}
-        defaultNoResultText={t(($) => $.version.table.noResult)}
-      />
-    </div>
+      </CardHeader>
+      <CardContent className="p-0 mt-2">
+        <DataTable
+          table={table}
+          paginationData={paginationData}
+          totalRowCount={paginationData?.total || 0}
+          showSideBorders={false}
+          showZebraStriping={true}
+          defaultNoResultText={t(($) => $.version.table.noResult)}
+        />
+      </CardContent>
+    </Card>
   );
 }

@@ -114,8 +114,8 @@ export function createRowNumberColumn<T>({
           {paginationData
             ? (paginationData.page - 1) * paginationData.limit + row.index + 1
             : table.getState().pagination.pageIndex * table.getState().pagination.pageSize +
-              row.index +
-              1}
+            row.index +
+            1}
         </div>
       );
     },
@@ -324,7 +324,7 @@ export function DataTable<TData>({
         </Table>
       </div>
       {showPagination && (
-        <div className={cn("flex flex-col gap-2 px-4 pb-6", styles?.pagination?.default)}>
+        <div className={cn("flex flex-col gap-2 px-6 pb-6 pt-2", styles?.pagination?.default)}>
           <DataTablePagination
             pageIndex={table.getState().pagination.pageIndex}
             setPageIndex={table.setPageIndex}

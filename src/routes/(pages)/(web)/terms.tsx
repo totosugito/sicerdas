@@ -1,7 +1,8 @@
-import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useAppTranslation } from '@/lib/i18n-typed'
 import { APP_CONFIG } from '@/constants/config'
+import PageTitle from '@/components/app/PageTitle'
+import { Card, CardContent } from '@/components/ui/card'
 
 export const Route = createFileRoute('/(pages)/(web)/terms')({
   component: RouteComponent,
@@ -12,20 +13,18 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black leading-tight tracking-[-0.033em]">
-          {t($ => $.web.terms.title)}
-        </h1>
-        <p className="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">
-          {t($ => $.web.terms.description)}
-        </p>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">
-          {t($ => $.web.terms.updated, { date: "25 November 2025" })}
-        </p>
-      </div>
+      <PageTitle
+        title={t($ => $.web.terms.title)}
+        description={
+          <div className="flex flex-col gap-1">
+            <p>{t($ => $.web.terms.description)}</p>
+            <p className="text-xs">{t($ => $.web.terms.updated, { date: "25 November 2025" })}</p>
+          </div>
+        }
+      />
 
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
-        <div className="flex flex-col gap-6">
+      <Card>
+        <CardContent className="flex flex-col gap-6">
           <section>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
               {t($ => $.web.terms.acceptance.title)}
@@ -111,8 +110,8 @@ function RouteComponent() {
               </p>
             </div>
           </section>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
