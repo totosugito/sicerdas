@@ -8,7 +8,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { UseFormReturn } from "react-hook-form";
 import { useListSubjectSimple } from "@/api/exam-subjects";
 import { useListPassageSimple } from "@/api/exam-passages";
-import { useListTier } from "@/api/app-tier";
+import { useListTier } from "@/api/tier";
 import { useListGradeSimple } from "@/api/education-grade";
 import { EnumDifficultyLevel, EnumQuestionType } from "@/api/exam-questions/types";
 

@@ -4,7 +4,7 @@ import { z } from "zod";
 import React from "react";
 import { ControlForm } from "@/components/custom/forms";
 import { EnumSolutionType } from "@/api/exam-questions/types";
-import { useListTier } from "@/api/app-tier";
+import { useListTier } from "@/api/tier";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
 import { ExamQuestionSolution } from "@/api/exam-question-solutions";
 

@@ -2,8 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { PageTitle } from "@/components/app";
-import { CreateTierForm } from "@/components/pages/app-tier/create-tier";
-import { useCreateTier, CreateTierRequest } from "@/api/app-tier/admin/create-tier";
+import { CreateTierForm } from "@/components/pages/tier/create-tier";
+import { useCreateTier, CreateTierRequest } from "@/api/tier/admin/create-tier";
 import { showNotifSuccess } from "@/lib/show-notif";
 import { AppRoute } from "@/constants/app-route";
 
@@ -22,12 +22,12 @@ function CreateTierPage() {
     createMutation.mutate(data, {
       onSuccess: (response) => {
         showNotifSuccess({
-          message: response.message || t(($) => $.appTier.create.messages.success),
+          message: response.message || t(($) => $.tier.create.messages.success),
         });
         navigate({ to: AppRoute.app.tier.admin.list.url });
       },
       onError: (error: any) => {
-        setError(error.message || t(($) => $.appTier.create.messages.error));
+        setError(error.message || t(($) => $.tier.create.messages.error));
       },
     });
   };
@@ -39,8 +39,8 @@ function CreateTierPage() {
   return (
     <div className="flex flex-col w-full space-y-6">
       <PageTitle
-        title={t(($) => $.appTier.create.pageTitle)}
-        description={<span>{t(($) => $.appTier.create.description)}</span>}
+        title={t(($) => $.tier.create.pageTitle)}
+        description={<span>{t(($) => $.tier.create.description)}</span>}
         showBack
         backTo={AppRoute.app.tier.admin.list.url}
       />

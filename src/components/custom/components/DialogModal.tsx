@@ -56,13 +56,13 @@ export type DialogModalProps = {
   classNameInfoSection?: string;
   variantSubmit?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
   variantCancel?:
-    | "default"
-    | "destructive"
-    | "outline"
-    | "secondary"
-    | "ghost"
-    | "link"
-    | "subtle-destructive";
+  | "default"
+  | "destructive"
+  | "outline"
+  | "secondary"
+  | "ghost"
+  | "link"
+  | "subtle-destructive";
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   trigger?: React.ReactNode;
@@ -214,7 +214,7 @@ export function DialogModal({
               className={cn(
                 "rounded-lg border p-3.5 text-center transition-all",
                 THEMES[(config.infoContainerVariant || "info") as keyof typeof THEMES]?.infoClass ||
-                  THEMES.info.infoClass,
+                THEMES.info.infoClass,
                 config.infoContainerClassName,
                 classNameInfoSection,
               )}
@@ -267,7 +267,7 @@ export function DialogModal({
               <AlertDialogCancel
                 className={cn(
                   buttonVariants({ variant: variantCancel }),
-                  "flex-1 h-10 border-slate-200 dark:border-slate-800",
+                  "flex-1 border-slate-200 dark:border-slate-800",
                   classNameCancel,
                 )}
                 onClick={config.onCancelClick}
@@ -279,7 +279,7 @@ export function DialogModal({
               <AlertDialogAction
                 className={cn(
                   buttonVariants({ variant: variantSubmit }),
-                  "flex-1 h-10 shadow-lg transition-all",
+                  "flex-1 shadow-lg transition-all",
                   variantSubmit === "default" && !isDestructive && "shadow-primary/20",
                   isDestructive && "shadow-destructive/20",
                   classNameConfirm,

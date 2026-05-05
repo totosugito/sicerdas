@@ -13,15 +13,15 @@ export const TierEmptyState = () => {
         <Inbox className="h-8 w-8 text-muted-foreground/50" />
       </div>
       <h3 className="text-lg font-semibold mb-2 tracking-tight">
-        {t(($) => $.appTier.list.noDataTitle)}
+        {t(($) => $.tier.list.noDataTitle)}
       </h3>
       <p className="text-muted-foreground max-w-sm mx-auto mb-6 text-sm">
-        {t(($) => $.appTier.list.noDataDescription)}
+        {t(($) => $.tier.list.noDataDescription)}
       </p>
       <Button asChild>
         <Link to={AppRoute.app.tier.admin.create.url} className="gap-2">
           <Plus className="h-4 w-4" />
-          {t(($) => $.appTier.list.createButton)}
+          {t(($) => $.tier.list.createButton)}
         </Link>
       </Button>
     </div>

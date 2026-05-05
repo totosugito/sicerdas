@@ -10,7 +10,7 @@ import {
 } from "@/api/exam-question-solutions";
 import { EnumSolutionType } from "@/api/exam-questions/types";
 import { useQueryClient } from "@tanstack/react-query";
-import { useListTier } from "@/api/app-tier";
+import { useListTier } from "@/api/tier";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { blocknote_to_text, prepare_blocknote_submission } from "@/lib/blocknote-utils";
 

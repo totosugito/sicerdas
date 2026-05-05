@@ -1,6 +1,6 @@
-import { TierList, TierListSkeleton, TierEmptyState } from "@/components/pages/app-tier/list-tier";
+import { TierList, TierListSkeleton, TierEmptyState } from "@/components/pages/tier/list-tier";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useListTier, useDeleteTier, useUpdateTier, AppTier } from "@/api/app-tier";
+import { useListTier, useDeleteTier, useUpdateTier, AppTier } from "@/api/tier";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useEffect, useState } from "react";
@@ -59,7 +59,7 @@ function AdminTierPricingPage() {
         setTierToDelete(null);
       },
       onError: (error: any) => {
-        showNotifError({ message: error.message || t(($) => $.appTier.list.deleteError) });
+        showNotifError({ message: error.message || t(($) => $.tier.list.deleteError) });
         setShowDeleteDialog(false);
         setTierToDelete(null);
       },
@@ -92,11 +92,11 @@ function AdminTierPricingPage() {
           ),
         )
           .then((success: any) => {
-            showNotifSuccess({ message: success.message || t(($) => $.appTier.list.orderSuccess) });
+            showNotifSuccess({ message: success.message || t(($) => $.tier.list.orderSuccess) });
             queryClient.invalidateQueries({ queryKey: ["admin-app-tier-list"] });
           })
           .catch((error: any) => {
-            showNotifError({ message: error.message || t(($) => $.appTier.list.orderError) });
+            showNotifError({ message: error.message || t(($) => $.tier.list.orderError) });
             queryClient.invalidateQueries({ queryKey: ["admin-app-tier-list"] });
           });
 
@@ -110,8 +110,8 @@ function AdminTierPricingPage() {
       <div className="flex flex-col w-full space-y-4">
         <div className="flex justify-between items-start">
           <PageTitle
-            title={t(($) => $.appTier.list.pageTitle)}
-            description={<span>{t(($) => $.appTier.list.description)}</span>}
+            title={t(($) => $.tier.list.pageTitle)}
+            description={<span>{t(($) => $.tier.list.description)}</span>}
           />
         </div>
         <TierListSkeleton />
@@ -123,14 +123,14 @@ function AdminTierPricingPage() {
     <div className="flex flex-col w-full space-y-4">
       <div className="flex justify-between items-start">
         <PageTitle
-          title={t(($) => $.appTier.list.pageTitle)}
-          description={<span>{t(($) => $.appTier.list.description)}</span>}
+          title={t(($) => $.tier.list.pageTitle)}
+          description={<span>{t(($) => $.tier.list.description)}</span>}
         />
         {items.length > 0 && (
           <Button asChild className="flex-shrink-0 gap-1.5 shadow-sm">
             <Link to={AppRoute.app.tier.admin.create.url} className="gap-2">
               <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">{t(($) => $.appTier.list.createButton)}</span>
+              <span className="hidden sm:inline">{t(($) => $.tier.list.createButton)}</span>
             </Link>
           </Button>
         )}
@@ -151,20 +151,20 @@ function AdminTierPricingPage() {
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
-          title: t(($) => $.appTier.list.deleteDialog.title, { name: tierToDelete?.name }),
-          desc: t(($) => $.appTier.list.deleteDialog.description),
+          title: t(($) => $.tier.list.deleteDialog.title, { name: tierToDelete?.name }),
+          desc: t(($) => $.tier.list.deleteDialog.description),
           variant: "destructive",
           iconType: "error",
           headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
           showInfoSection: true,
-          infoTitle: t(($) => $.appTier.list.deleteDialog.infoTitle),
+          infoTitle: t(($) => $.tier.list.deleteDialog.infoTitle),
           infoItems: [
-            { text: t(($) => $.appTier.list.deleteDialog.consequence1) },
-            { text: t(($) => $.appTier.list.deleteDialog.consequence2) },
-            { text: t(($) => $.appTier.list.deleteDialog.consequence3) },
+            { text: t(($) => $.tier.list.deleteDialog.consequence1) },
+            { text: t(($) => $.tier.list.deleteDialog.consequence2) },
+            { text: t(($) => $.tier.list.deleteDialog.consequence3) },
           ],
-          textCancel: t(($) => $.appTier.list.deleteDialog.cancel),
-          textConfirm: t(($) => $.appTier.list.deleteDialog.confirm),
+          textCancel: t(($) => $.tier.list.deleteDialog.cancel),
+          textConfirm: t(($) => $.tier.list.deleteDialog.confirm),
           onConfirmClick: confirmDelete,
           onCancelClick: () => {
             setShowDeleteDialog(false);

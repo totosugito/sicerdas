@@ -14,11 +14,11 @@ export const AppApi = {
     emailHasOtp: APP_URL_API + "/auth/email-has-otp",
     getSession: APP_URL_API + "/auth/get-session",
   },
-  appTier: {
+  tier: {
     admin: {
-      create: APP_URL_API + "/app-tier/admin/create-tier",
-      list: APP_URL_API + "/app-tier/admin/list-tier",
-      crud: APP_URL_API + "/app-tier/admin",
+      create: APP_URL_API + "/tier/admin/create-tier",
+      list: APP_URL_API + "/tier/admin/list-tier",
+      crud: APP_URL_API + "/tier/admin",
     },
     list: APP_URL_API + "/app-tier",
   },

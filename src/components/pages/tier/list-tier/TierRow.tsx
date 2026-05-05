@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { AppTier } from "@/api/app-tier";
+import { AppTier } from "@/api/tier";
 import { Link } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { AppRoute } from "@/constants/app-route";
@@ -38,22 +38,21 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative rounded-xl border bg-card p-4 transition-all mb-4 ${
-        tier.isPopular
-          ? isDragging
-            ? "shadow-lg opacity-90 z-10 border-amber-500 dark:border-amber-400 ring-2 ring-amber-500/20 dark:ring-amber-400/30"
-            : "border-amber-500/50 dark:border-amber-400/60 hover:border-amber-500 dark:hover:border-amber-400 shadow-md shadow-amber-500/10 dark:shadow-amber-400/20 hover:shadow-lg hover:shadow-amber-500/20 dark:hover:shadow-amber-400/30"
-          : isDragging
-            ? "shadow-lg opacity-90 z-10 border-primary"
-            : "hover:border-primary/30 hover:shadow-sm"
-      }`}
+      className={`group relative rounded-xl border bg-card p-4 transition-all mb-4 ${tier.isPopular
+        ? isDragging
+          ? "shadow-lg opacity-90 z-10 border-amber-500 dark:border-amber-400 ring-2 ring-amber-500/20 dark:ring-amber-400/30"
+          : "border-amber-500/50 dark:border-amber-400/60 hover:border-amber-500 dark:hover:border-amber-400 shadow-md shadow-amber-500/10 dark:shadow-amber-400/20 hover:shadow-lg hover:shadow-amber-500/20 dark:hover:shadow-amber-400/30"
+        : isDragging
+          ? "shadow-lg opacity-90 z-10 border-primary"
+          : "hover:border-primary/30 hover:shadow-sm"
+        }`}
     >
       {/* Popular Badge */}
       {tier.isPopular && (
         <div className="absolute -top-2 -right-2 z-10">
           <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 dark:from-amber-400 dark:to-yellow-400 text-white dark:text-gray-900 border-0 shadow-md dark:shadow-lg dark:shadow-amber-400/30 px-2 py-0.5 text-xs font-semibold flex items-center gap-1">
             <Star className="w-3 h-3 fill-current" />
-            {t(($) => $.appTier.list.popular)}
+            {t(($) => $.tier.list.popular)}
           </Badge>
         </div>
       )}
@@ -114,13 +113,13 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                 <Popover>
                   <PopoverTrigger asChild>
                     <button className="inline-flex items-center gap-1 text-xs bg-muted text-muted-foreground hover:bg-muted/80 rounded-full px-2.5 py-0.5 transition-colors">
-                      +{remainingFeatures.length} {t(($) => $.appTier.list.moreFeatures)}
+                      +{remainingFeatures.length} {t(($) => $.tier.list.moreFeatures)}
                     </button>
                   </PopoverTrigger>
                   <PopoverContent className="w-80" align="start">
                     <div className="space-y-2">
                       <h4 className="font-semibold text-sm">
-                        {t(($) => $.appTier.list.allFeatures)}
+                        {t(($) => $.tier.list.allFeatures)}
                       </h4>
                       <div className="flex flex-wrap gap-1.5">
                         {tier.features.map((f) => (
@@ -147,13 +146,13 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
               {tier.limits.chatAi.max_tokens
                 ? to_decimal_formatted(tier.limits.chatAi.max_tokens, 0)
                 : "N/A"}{" "}
-              {t(($) => $.appTier.list.tokens)}
+              {t(($) => $.tier.list.tokens)}
             </span>
             <span className="flex items-center gap-1">
               <MessageSquare className="w-3.5 h-3.5" />
               {isUnlimited
-                ? t(($) => $.appTier.list.unlimited)
-                : `${tier.limits.chatAi.daily_messages ?? "N/A"}${t(($) => $.appTier.list.perDay)}`}
+                ? t(($) => $.tier.list.unlimited)
+                : `${tier.limits.chatAi.daily_messages ?? "N/A"}${t(($) => $.tier.list.perDay)}`}
             </span>
           </div>
         </div>
@@ -168,7 +167,7 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                 : "text-xs px-2"
             }
           >
-            {tier.isActive ? t(($) => $.appTier.list.active) : t(($) => $.appTier.list.inactive)}
+            {tier.isActive ? t(($) => $.tier.list.active) : t(($) => $.tier.list.inactive)}
           </Badge>
 
           <div className="flex items-center gap-1">

@@ -93,7 +93,7 @@ export const useAdminNav = () => {
           title: "ADMIN",
           items: [
             {
-              title: t(($) => $.appTier.title),
+              title: t(($) => $.tier.title),
               url: AppRoute.app.tier.admin.list.url,
               icon: DollarSign,
             },

@@ -30,7 +30,7 @@ import { Loader2, X } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useListSubjectSimple } from "@/api/exam-subjects";
 import { useListGradeSimple } from "@/api/education-grade";
-import { useListTier } from "@/api/app-tier";
+import { useListTier } from "@/api/tier";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";

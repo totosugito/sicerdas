@@ -21,7 +21,7 @@ export const useUpdateTier = () => {
             const { slug, ...body } = data;
             const response = await fetchApi({
                 method: "PATCH",
-                url: `${AppApi.appTier.admin.crud}/${slug}`,
+                url: `${AppApi.tier.admin.crud}/${slug}`,
                 body: body,
                 withCredentials: true,
             });

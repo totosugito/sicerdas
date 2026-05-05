@@ -1,4 +1,4 @@
-import { AppTier } from '@/api/app-tier';
+import { AppTier } from '@/api/tier';
 import { DndContext, closestCenter, DragEndEvent, SensorDescriptor, SensorOptions } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { TierRow } from './TierRow';

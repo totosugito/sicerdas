@@ -9,7 +9,7 @@ import { FormWithDetector } from "@/components/custom/components";
 import { CreateVersionRequest } from "@/api/version";
 import { EnumContentStatus, EnumContentType } from "backend/src/db/schema/enum/enum-app";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 type VersionFormProps = {
   defaultValues?: Partial<CreateVersionRequest>;
@@ -146,8 +146,8 @@ export function VersionForm({ defaultValues, onSubmit, isPending }: VersionFormP
   return (
     <Form {...form}>
       <FormWithDetector form={form} onSubmit={onFormSubmit} schema={formSchema}>
-        <Card>
-          <CardContent className="space-y-0">
+        <Card className="pb-0 gap-0">
+          <CardContent className="">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <ControlForm form={form} item={formConfig.name} showMessage={false} />
               <ControlForm form={form} item={formConfig.dataType} showMessage={false} />
@@ -163,21 +163,21 @@ export function VersionForm({ defaultValues, onSubmit, isPending }: VersionFormP
             </div>
 
             <ControlForm form={form} item={formConfig.note} />
-
-            <div className="flex justify-end gap-3 pt-6 border-t">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => form.reset()}
-                disabled={isPending}
-              >
-                {t(($) => $.labels.cancel)}
-              </Button>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? t(($) => $.labels.saving) : t(($) => $.labels.save)}
-              </Button>
-            </div>
           </CardContent>
+
+          <CardFooter className="flex justify-end items-center gap-3 bg-muted/30 border-t [.border-t]:pb-6">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => form.reset()}
+              disabled={isPending}
+            >
+              {t(($) => $.labels.cancel)}
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? t(($) => $.labels.saving) : t(($) => $.labels.save)}
+            </Button>
+          </CardFooter>
         </Card>
       </FormWithDetector>
     </Form>

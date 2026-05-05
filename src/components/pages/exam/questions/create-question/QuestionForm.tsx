@@ -9,7 +9,7 @@ import { ControlForm } from "@/components/custom/forms";
 import { FormWithDetector } from "@/components/custom/components";
 import { useListSubjectSimple } from "@/api/exam-subjects";
 import { useListPassageSimple } from "@/api/exam-passages";
-import { useListTier } from "@/api/app-tier";
+import { useListTier } from "@/api/tier";
 import { useListGradeSimple } from "@/api/education-grade";
 import {
   QuestionFormValues,

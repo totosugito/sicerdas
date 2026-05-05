@@ -28,7 +28,7 @@ export const useCreateTier = () => {
         mutationFn: async (data: CreateTierRequest) => {
             const response = await fetchApi({
                 method: "POST",
-                url: AppApi.appTier.admin.create,
+                url: AppApi.tier.admin.create,
                 body: data,
                 withCredentials: true,
             });

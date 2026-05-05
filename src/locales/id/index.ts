@@ -9,10 +9,10 @@ import book from "./book";
 import report from "./layout/content-report";
 import constitution from "./constitution";
 import exam from "./exam";
-import appTier from "./app-tier";
 import user from "./user";
 import education from "./education";
 import version from "./version";
+import tier from "./tier";
 
 const localeId = {
   translation: {
@@ -26,7 +26,7 @@ const localeId = {
     book: book,
     contentReport: report,
     constitution: constitution,
-    appTier: appTier,
+    tier: tier,
     exam: exam,
     user: user,
     education: education,

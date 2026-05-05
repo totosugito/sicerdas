@@ -15,7 +15,7 @@ import { UploadCloud, Trash2, Zap, Info } from "lucide-react";
 
 // Hooks for dropdowns
 import { useListCategorySimple } from "@/api/education-categories";
-import { useListTier } from "@/api/app-tier";
+import { useListTier } from "@/api/tier";
 import { useListGradeSimple } from "@/api/education-grade";
 import { useListVersionSimple } from "@/api/version/list-version-simple";
 import { EnumContentType } from "backend/src/db/schema/enum/enum-app";

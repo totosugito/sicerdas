@@ -1,25 +1,24 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { AppTier } from "../types";
+import { AppTier } from "./types";
 
-export type ListTierResponse = {
+export type PublicAppTierResponse = {
     success: boolean;
     message: string;
     data: AppTier[];
 };
 
-export const useListTier = () => {
+export const usePublicAppTier = () => {
     return useQuery({
-        queryKey: ["admin-app-tier-list"],
-        staleTime: 5 * 60 * 1000,
+        queryKey: ["public-app-tier"],
         queryFn: async () => {
             const response = await fetchApi({
                 method: "GET",
-                url: AppApi.appTier.admin.list,
+                url: AppApi.tier.list,
                 withCredentials: true,
             });
-            return response as ListTierResponse;
+            return response as PublicAppTierResponse;
         },
     });
 };

@@ -13,7 +13,6 @@ import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
 import {
   CbtHeader,
   CbtNavigationGrid,
-  GridItemStatus,
   CbtQuestionView,
   CbtAnswerPad,
   CbtSummary,
@@ -33,7 +32,7 @@ import {
 } from "@/components/ui/drawer";
 import { ErrorPageDetails } from "@/components/app/ErrorPageDetails";
 import { EnumExamSessionMode, EnumExamSessionStatus } from "backend/src/db/schema/exam/enums";
-import { EnumExamStatus, ExamSessionMode } from "@/constants/exam-var";
+import { EnumExamStatus, ExamSessionMode, ExamStatus } from "@/constants/exam-var";
 import { useAppTranslation } from "@/lib/i18n-typed";
 
 type ExamSessionSearch = {
@@ -288,7 +287,7 @@ function RouteComponent() {
 
   // Convert Grid items for UI
   const gridItems = details.grid.map((item) => {
-    let status: GridItemStatus = EnumExamStatus.UNANSWERED;
+    let status: ExamStatus = EnumExamStatus.UNANSWERED;
     if (item.isCorrect === true) status = EnumExamStatus.CORRECT;
     else if (item.isCorrect === false) status = EnumExamStatus.WRONG;
     else if (item.isDoubtful) status = EnumExamStatus.DOUBTFUL;
