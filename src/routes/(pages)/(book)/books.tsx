@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { z } from "zod";
 import { Trans } from "react-i18next";
 import { useBookList, useBookFilterParams, BookListItem, BookListResponse } from "@/api/book";
-import { BookOpen, LayoutGrid, ListIcon } from "lucide-react";
+import { LayoutGrid, ListIcon } from "lucide-react";
 import { showNotifError } from "@/lib/show-notif";
 import {
   BooksSkeleton,
@@ -13,6 +13,7 @@ import {
   BookSortSelector,
   BooksEmptyState,
 } from "@/components/pages/book/list";
+import { Card, CardContent } from "@/components/ui/card";
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from "@/components/custom/table";
 import { useAppStore } from "@/stores/useAppStore";
@@ -205,15 +206,17 @@ function RouteComponent() {
     <div className="flex flex-col flex-1 w-full px-6 pb-6">
       <div className="flex flex-col lg:flex-row gap-6 pt-6">
         <aside className="hidden lg:block w-70 flex-shrink-0">
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
-            <BookFilter
-              selectedFilters={selectedFilters}
-              onFilterChange={handleFilterChange}
-              autoSubmit={true}
-              filterData={filterParamsQuery.data}
-              idPrefix="sidebar"
-            />
-          </div>
+          <Card>
+            <CardContent className="p-5">
+              <BookFilter
+                selectedFilters={selectedFilters}
+                onFilterChange={handleFilterChange}
+                autoSubmit={true}
+                filterData={filterParamsQuery.data}
+                idPrefix="sidebar"
+              />
+            </CardContent>
+          </Card>
         </aside>
 
         {/* Book List Content */}
@@ -300,7 +303,7 @@ function RouteComponent() {
                 pageIndex={currentPage - 1}
                 setPageIndex={(newPageIndex) => handlePageChange(newPageIndex + 1)}
                 pageSize={12}
-                setPageSize={() => {}}
+                setPageSize={() => { }}
                 rowsCount={totalBooks}
                 paginationData={{
                   page: currentPage,

@@ -71,26 +71,41 @@ export const SamplePages = ({ book }: { book: BookDetil }) => {
 
   return (
     <>
-      <Card className="w-full p-6 gap-4">
-        <CardHeader className="p-0">
-          <CardTitle className="text-xl flex items-center">
-            <Image className="w-5 h-5 mr-2" />
-            {t(($) => $.book.detail.samplePages)}
+      <Card className="w-full overflow-hidden">
+        <CardHeader className="bg-muted/30 border-b px-6 py-4">
+          <CardTitle className="text-lg font-bold flex items-center gap-2.5">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Image className="w-5 h-5 text-primary" />
+            </div>
+            <span>{t(($) => $.book.detail.samplePages)}</span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-0">
-          <div className="flex flex-row flex-wrap gap-4">
+        <CardContent className="p-6">
+          <div className="flex flex-row flex-wrap gap-6 justify-center sm:justify-start">
             {samplePages.map(
               (pageUrl: { xs: string; lg: string }, index: number) =>
                 !invalidIndices.has(index) && (
-                  <div key={index} className="group">
-                    <div className="w-36 h-42 overflow-hidden rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+                  <div key={index} className="group relative">
+                    <div
+                      className="w-32 sm:w-40 aspect-[3/4] overflow-hidden rounded-xl border border-border/60 bg-white dark:bg-slate-900 shadow-sm hover:shadow-xl hover:border-primary/40 transition-all duration-500 cursor-pointer relative"
+                      onClick={() => setSelectedIndex(index)}
+                    >
                       <SamplePageThumbnail
                         src={pageUrl.xs}
                         alt={`Page ${index + 1} of ${book.title}`}
-                        onClick={() => setSelectedIndex(index)}
                         onLoadError={() => handleImageError(index)}
                       />
+                      <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-500" />
+                      <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md p-1.5 rounded-lg shadow-lg border border-primary/20">
+                          <Image className="w-3.5 h-3.5 text-primary" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-2 text-center">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                         {t(($) => $.book.info.pages)} {index + 1}
+                      </span>
                     </div>
                   </div>
                 ),
@@ -106,40 +121,49 @@ export const SamplePages = ({ book }: { book: BookDetil }) => {
         <DialogContent
           showCloseButton={false}
           aria-describedby={undefined}
-          className="w-full p-0 border-none shadow-none sm:max-w-[80vh] bg-transparent"
+          className="max-w-[95vw] sm:max-w-[90vw] md:max-w-[85vw] lg:max-w-[1200px] p-0 border-none shadow-none bg-transparent"
         >
-          <DialogTitle className="sr-only"></DialogTitle>
-          <div className="flex items-center justify-center w-full gap-4 w-full px-8">
+          <DialogTitle className="sr-only">{t(($) => $.book.detail.samplePageViewer)}</DialogTitle>
+          <div className="flex items-center justify-center w-full gap-4 px-4 md:px-8">
             {selectedIndex !== null && samplePages[selectedIndex] && (
               <>
                 <button
                   disabled={!hasPrev()}
                   onClick={handlePrev}
-                  className="p-2 bg-black/50 hover:bg-black/70 dark:bg-white/50 dark:hover:bg-white/70 text-white rounded-full disabled:opacity-0 transition-opacity shrink-0"
+                  className="group/btn p-3 md:p-4 bg-slate-900/60 hover:bg-slate-900/80 backdrop-blur-md text-white rounded-full border border-white/10 disabled:opacity-0 transition-all duration-300 hover:scale-110 active:scale-95 shadow-xl shrink-0"
                 >
-                  <ChevronLeft className="w-8 h-8" />
+                  <ChevronLeft className="w-6 h-6 md:w-8 md:h-8 group-hover/btn:-translate-x-0.5 transition-transform" />
                 </button>
 
-                <div className="relative">
+                <div className="relative max-h-[90vh] overflow-hidden rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10 bg-slate-900/50 backdrop-blur-sm">
                   <img
                     src={samplePages[selectedIndex].lg}
                     alt={`Page ${selectedIndex + 1}`}
-                    className="h-[70vh] w-full object-cover rounded-lg shadow-2xl"
+                    className="max-h-[90vh] w-auto object-contain select-none transition-all duration-500"
                   />
-                  <button
-                    onClick={() => setSelectedIndex(null)}
-                    className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                  
+                  <div className="absolute top-4 right-4 z-50">
+                    <button
+                      onClick={() => setSelectedIndex(null)}
+                      className="p-2.5 bg-slate-900/60 hover:bg-slate-900/80 backdrop-blur-md text-white rounded-xl border border-white/10 transition-all duration-300 hover:rotate-90 shadow-xl"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50">
+                    <div className="px-4 py-2 bg-slate-900/60 backdrop-blur-md text-white rounded-full border border-white/10 text-xs font-bold tracking-widest uppercase shadow-xl">
+                      {selectedIndex + 1} / {samplePages.length}
+                    </div>
+                  </div>
                 </div>
 
                 <button
                   disabled={!hasNext()}
                   onClick={handleNext}
-                  className="p-2 bg-black/50 hover:bg-black/70 dark:bg-white/50 dark:hover:bg-white/70 text-white rounded-full disabled:opacity-0 transition-opacity shrink-0"
+                  className="group/btn p-3 md:p-4 bg-slate-900/60 hover:bg-slate-900/80 backdrop-blur-md text-white rounded-full border border-white/10 disabled:opacity-0 transition-all duration-300 hover:scale-110 active:scale-95 shadow-xl shrink-0"
                 >
-                  <ChevronRight className="w-8 h-8" />
+                  <ChevronRight className="w-6 h-6 md:w-8 md:h-8 group-hover/btn:translate-x-0.5 transition-transform" />
                 </button>
               </>
             )}
@@ -158,7 +182,7 @@ function SamplePageThumbnail({
 }: {
   src: string;
   alt: string;
-  onClick: () => void;
+  onClick?: () => void;
   onLoadError?: () => void;
 }) {
   const [error, setError] = useState(false);
@@ -175,12 +199,13 @@ function SamplePageThumbnail({
     <img
       src={src}
       alt={alt}
-      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
+      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out cursor-pointer"
       onError={() => {
         setError(true);
         onLoadError?.();
       }}
       onClick={onClick}
+      loading="lazy"
     />
   );
 }

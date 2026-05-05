@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { Card } from "@/components/ui/card";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, BookOpen, FileText, Heart, Star, Download, Flag, ImageOff } from "lucide-react";
-import { formatFileSize, to_decimal_formatted, to_decimal_compact } from "@/lib/my-utils";
+import { formatFileSize, to_decimal_formatted } from "@/lib/my-utils";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { SamplePages } from "./SamplePages";
 import { BookDetailInfoCard } from "./BookDetailInfoCard";
@@ -47,62 +48,60 @@ export const BookDetail = ({
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
         {/* Left Column - Cover */}
         <div className="flex-shrink-0 w-full lg:w-[400px]">
-          <div className="">
-            <div className="w-full relative group rounded-2xl shadow-2xl overflow-hidden bg-white dark:bg-slate-900 aspect-[2/3] max-h-[350px] lg:max-h-none border border-slate-200 dark:border-slate-800">
-              {imageError ? (
-                <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800/50 cursor-default">
-                  <ImageOff className="w-20 h-20 text-slate-400 dark:text-slate-600" />
-                </div>
-              ) : (
-                <img
-                  src={book.cover.lg}
-                  alt={`Cover of ${book.title}`}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  onError={() => setImageError(true)}
-                />
-              )}
-              <div className="absolute inset-0 ring-1 ring-inset ring-black/10 dark:ring-white/10 rounded-2xl pointer-events-none" />
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col gap-3 mt-6">
-              <Button onClick={onRead} className="w-full">
-                <BookOpen className="w-5 h-5 mr-2" />
-                {t(($) => $.book.detail.readOnline)}
-              </Button>
-              <div className="grid grid-cols-3 gap-3">
-                <Button onClick={onDownload} variant="outline" className="w-full">
-                  <Download className="w-5 h-5 mr-2" />
-                  {t(($) => $.labels.download)}
-                </Button>
-                <Button
-                  onClick={onToggleFavorite}
-                  variant="outline"
-                  className={cn(
-                    "w-full",
-                    isFavorite
-                      ? "text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
-                      : "text-slate-600 dark:text-slate-400",
-                  )}
-                >
-                  <Heart className={cn("w-5 h-5 mr-2", isFavorite && "fill-current")} />
-                  {t(($) => $.labels.favorites)}
-                </Button>
-                <Button
-                  onClick={onReport}
-                  variant="outline"
-                  className="w-full border border-slate-200 dark:border-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400"
-                >
-                  <Flag className="w-5 h-5 mr-2" />
-                  {t(($) => $.labels.report)}
-                </Button>
+          <Card className="w-full relative group overflow-hidden aspect-[2/3] max-h-[350px] lg:max-h-none">
+            {imageError ? (
+              <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800/50 cursor-default">
+                <ImageOff className="w-20 h-20 text-slate-400 dark:text-slate-600" />
               </div>
+            ) : (
+              <img
+                src={book.cover.lg}
+                alt={`Cover of ${book.title}`}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                onError={() => setImageError(true)}
+              />
+            )}
+            <div className="absolute inset-0 ring-1 ring-inset ring-black/10 dark:ring-white/10 rounded-2xl pointer-events-none" />
+          </Card>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col gap-3 mt-6">
+            <Button onClick={onRead} className="w-full">
+              <BookOpen className="w-5 h-5 mr-2" />
+              {t(($) => $.book.detail.readOnline)}
+            </Button>
+            <div className="grid grid-cols-3 gap-3">
+              <Button onClick={onDownload} variant="outline" className="w-full">
+                <Download className="w-5 h-5 mr-2" />
+                {t(($) => $.labels.download)}
+              </Button>
+              <Button
+                onClick={onToggleFavorite}
+                variant="outline"
+                className={cn(
+                  "w-full",
+                  isFavorite
+                    ? "text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
+                    : "text-slate-600 dark:text-slate-400",
+                )}
+              >
+                <Heart className={cn("w-5 h-5 mr-2", isFavorite && "fill-current")} />
+                {t(($) => $.labels.favorites)}
+              </Button>
+              <Button
+                onClick={onReport}
+                variant="outline"
+                className="w-full border border-slate-200 dark:border-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400"
+              >
+                <Flag className="w-5 h-5 mr-2" />
+                {t(($) => $.labels.report)}
+              </Button>
             </div>
           </div>
         </div>
 
         {/* Right Column - Details */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 flex flex-col gap-6">
           <div className="flex flex-col gap-6">
             {/* Header Info */}
             <div>
@@ -229,10 +228,10 @@ export const BookDetail = ({
                 })}
               />
             </div>
-
-            {/* Sample Pages */}
-            <SamplePages book={book} />
           </div>
+
+          {/* Sample Pages */}
+          <SamplePages book={book} />
         </div>
       </div>
     </div>

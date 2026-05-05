@@ -64,26 +64,23 @@ export const BookSearchBar = ({
 
   return (
     <div
-      className={`p-2 rounded-xl border shadow-sm flex flex-col sm:flex-row gap-2 transition-colors duration-200 ${
-        localSearchTerm
+      className={`p-2 rounded-xl border shadow-sm flex flex-col sm:flex-row gap-2 transition-colors duration-200 ${localSearchTerm
           ? "bg-primary/5 border-primary/20"
           : "bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800"
-      }`}
+        }`}
     >
       <div className="relative flex-1">
         <Search
-          className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${
-            localSearchTerm ? "text-primary" : "text-slate-400"
-          }`}
+          className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${localSearchTerm ? "text-primary" : "text-slate-400"
+            }`}
         />
         <Input
           placeholder={t(($) => $.book.searchPlaceholder)}
           value={localSearchTerm}
           onChange={(e) => setLocalSearchTerm(e.target.value)}
           onKeyDown={handleKeyDown}
-          className={`h-8 pl-10 pr-8 border-0 bg-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-slate-400 ${
-            localSearchTerm ? "text-primary font-medium" : ""
-          }`}
+          className={`h-8 pl-10 pr-8 border-0 bg-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-slate-400 ${localSearchTerm ? "text-primary font-medium" : ""
+            }`}
         />
         {/* Clear button - only show when there's text in the input */}
         {localSearchTerm && localSearchTerm.length > 0 && (
@@ -108,7 +105,7 @@ export const BookSearchBar = ({
                 {t(($) => $.labels.filter)}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[300px] px-4">
+            <PopoverContent className="w-[300px] p-5">
               <BookFilter
                 selectedFilters={selectedFilters}
                 onFilterChange={(filters: { categories: number[]; groups: number[] }) => {

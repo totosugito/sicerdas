@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { string_to_locale_date } from "@/lib/my-utils";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 interface GradeTableProps {
   data: ListEducationGradeResponse;
@@ -231,26 +232,28 @@ export function GradeTable({
   });
 
   return (
-    <div className="flex flex-col gap-4 border border-border rounded-lg bg-card">
-      <div className={"flex flex-row gap-2 justify-between px-4 pt-6"}>
+    <Card className="overflow-hidden">
+      <CardHeader className="flex flex-col sm:flex-row justify-between bg-muted/30 border-b border-border space-y-0">
         <div></div>
-        <div className={"flex flex-row gap-2 max-w-sm"}>
+        <div className={"flex flex-row gap-2 w-full sm:max-w-sm"}>
           <DataTableFilter
             table={table}
             searchPlaceholder={t(($) => $.education.grade.table.search)}
-            className="min-w-sm"
+            className="w-full"
             searchOnEnter={true}
-          ></DataTableFilter>
+          />
         </div>
-      </div>
-      <DataTable
-        table={table}
-        paginationData={paginationData}
-        totalRowCount={paginationData?.total || 0}
-        showSideBorders={false}
-        showZebraStriping={true}
-        defaultNoResultText={t(($) => $.education.grade.table.noResult)}
-      />
-    </div>
+      </CardHeader>
+      <CardContent className="p-0 mt-2">
+        <DataTable
+          table={table}
+          paginationData={paginationData}
+          totalRowCount={paginationData?.total || 0}
+          showSideBorders={false}
+          showZebraStriping={true}
+          defaultNoResultText={t(($) => $.education.grade.table.noResult)}
+        />
+      </CardContent>
+    </Card>
   );
 }

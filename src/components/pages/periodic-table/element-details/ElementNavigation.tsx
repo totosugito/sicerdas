@@ -43,42 +43,42 @@ const ElementNavigation = ({ previous, next, theme, elementStyle }: ElementNavig
 
     return (
         <div className={cn("flex items-center pt-1 pb-0.5 px-0.5 rounded-none", elementStyle)}>
-            <div className="flex items-center w-full bg-card p-1 rounded-none">
-            <div className="flex flex-1">
-                {previous && (<div
-                    className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
-                    onClick={handlePrevElement}
-                >
-                    <ChevronLeft className="h-4 w-4" />
+            <div className="flex items-center w-full bg-card p-1 rounded-none px-4">
+                <div className="flex flex-1">
+                    {previous && (<div
+                        className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
+                        onClick={handlePrevElement}
+                    >
+                        <ChevronLeft className="h-4 w-4" />
 
-                    <div className="flex items-center gap-2">
-                        <span className="font-mono">{previous.atomicNumber}</span>
-                        <div className={cn("flex h-3 w-3 rounded-full items-center justify-center", prevSymbol || "")}>
-                            <div className={cn("h-2.5 w-2.5 rounded-full border border-2", prevSymbol || "")}></div>
+                        <div className="flex items-center gap-2">
+                            <span className="font-mono">{previous.atomicNumber}</span>
+                            <div className={cn("flex h-3 w-3 rounded-full items-center justify-center", prevSymbol || "")}>
+                                <div className={cn("h-2.5 w-2.5 rounded-full border border-2", prevSymbol || "")}></div>
+                            </div>
+                            <span className="">{previous.atomicName.toUpperCase()}</span>
                         </div>
-                        <span className="">{previous.atomicName.toUpperCase()}</span>
-                    </div>
 
-                </div>)}
-            </div>
-            <div className="h-8 w-px bg-border" />
+                    </div>)}
+                </div>
+                <div className="h-8 w-px bg-border" />
 
-            <div className="flex flex-1 items-center justify-end">
-                {next && (<div
-                    className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
-                    onClick={handleNextElement}
-                >
-                    <div className="flex items-center gap-2">
-                        <span className="">{next.atomicName.toUpperCase()}</span>
-                        <div className={cn("flex h-3 w-3 rounded-full items-center justify-center", nextSymbol || "")}>
-                            <div className={cn("h-2.5 w-2.5 rounded-full border border-2", nextSymbol || "")}></div>
+                <div className="flex flex-1 items-center justify-end">
+                    {next && (<div
+                        className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
+                        onClick={handleNextElement}
+                    >
+                        <div className="flex items-center gap-2">
+                            <span className="">{next.atomicName.toUpperCase()}</span>
+                            <div className={cn("flex h-3 w-3 rounded-full items-center justify-center", nextSymbol || "")}>
+                                <div className={cn("h-2.5 w-2.5 rounded-full border border-2", nextSymbol || "")}></div>
+                            </div>
+                            <span className="font-mono">{next.atomicNumber}</span>
                         </div>
-                        <span className="font-mono">{next.atomicNumber}</span>
-                    </div>
-                    <ChevronRight className="h-4 w-4" />
-                </div>)}
+                        <ChevronRight className="h-4 w-4" />
+                    </div>)}
+                </div>
             </div>
-        </div>
         </div>
     );
 };

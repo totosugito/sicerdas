@@ -138,9 +138,8 @@ export const PeriodicTable = ({ elements, theme = 'theme1' }: PeriodicTableProps
   // Dynamic cellSize and gap are calculated above with useMemo
 
   return (
-    <div className="space-y-4">
-      <PeriodicTableHeader totalElements={elements.length} />
-      <div className="space-y-4 px-4">
+    <div className="space-y-4 py-6">
+      <div className="space-y-4 px-6">
         <div className="flex w-full justify-center items-center">
           <div className="px-0 flex w-full gap-4" style={{ width: `${tableWidth}px` }}>
             <div className="w-full">

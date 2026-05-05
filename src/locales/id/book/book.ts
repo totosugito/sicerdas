@@ -57,6 +57,7 @@ export default {
     noDescription: "Tidak ada deskripsi tersedia untuk buku ini.",
     samplePages: "Contoh Halaman",
     samplePagesDesc: "Contoh halaman dari buku ini.",
+    samplePageViewer: "Penampil Contoh Halaman",
     downloadError: "Gagal mengunduh buku. Mencoba membuka langsung...",
     pdfViewer: "Penampil PDF",
   },

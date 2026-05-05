@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { BookListItem } from "@/api/book";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { Card } from "@/components/ui/card";
 
 import { useNavigate, Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
@@ -61,9 +62,9 @@ const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
   };
 
   return (
-    <div
+    <Card
       className={cn(
-        "group bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden",
+        "group hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden",
         isListView ? "flex flex-row h-auto min-h-[160px]" : "flex flex-col h-full",
       )}
     >
@@ -133,6 +134,6 @@ const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
           <span className="text-xs font-medium text-slate-400">{book.publishedYear}</span>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };

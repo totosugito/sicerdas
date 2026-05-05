@@ -1,4 +1,3 @@
-import { useAppTranslation } from '@/lib/i18n-typed';
 import { IsotopeCard } from './IsotopeCard';
 
 interface IsotopeData {
@@ -66,8 +65,6 @@ const parseIsotopeData = (
 };
 
 export function ElementIsotope({ atomColor, atomicSymbol, knownIsotopes, isotopes }: ElementIsotopeProps) {
-  const { t } = useAppTranslation();
-
   const atomicIsotopes = parseIsotopeData(knownIsotopes, isotopes);
 
   return (

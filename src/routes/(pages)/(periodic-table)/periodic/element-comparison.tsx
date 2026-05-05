@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Search, FileSearch } from 'lucide-react'
 import { useAppTranslation } from '@/lib/i18n-typed'
+import { Card, CardContent } from '@/components/ui/card'
 
 // Import components from the element-comparison directory
 import {
@@ -150,33 +151,35 @@ function RouteComponent() {
       <ElementComparisonHeader />
 
       {/* Search and Controls Section */}
-      <div className="bg-card border rounded-xl p-6 shadow-sm mb-8">
-        {/* Search Bar */}
-        <SearchBar
-          searchTerm={searchTerm}
-          onSearchTermChange={setSearchTerm}
-          placeholder={t($ => $.periodicTable.elementComparison.searchBar.placeholder)}
-        />
-
-        {/* Controls */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="text-sm text-muted-foreground">
-            {searchTerm ?
-              t($ => $.periodicTable.elementComparison.elementsFoundMatching, { count: sortedElements.length, term: searchTerm }) :
-              t($ => $.periodicTable.elementComparison.elementsFound, { count: sortedElements.length })
-            }
-          </div>
-
-          <SortingControls
-            propertyDefinitions={propertyDefinitions}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-            onSortByChange={setSortByAndKeepDirection}
-            onSortDirectionChange={setSortDirection}
-            sortType={sortType}
+      <Card className="mb-8">
+        <CardContent>
+          {/* Search Bar */}
+          <SearchBar
+            searchTerm={searchTerm}
+            onSearchTermChange={setSearchTerm}
+            placeholder={t($ => $.periodicTable.elementComparison.searchBar.placeholder)}
           />
-        </div>
-      </div>
+
+          {/* Controls */}
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="text-sm text-muted-foreground font-medium">
+              {searchTerm ?
+                t($ => $.periodicTable.elementComparison.elementsFoundMatching, { count: sortedElements.length, term: searchTerm }) :
+                t($ => $.periodicTable.elementComparison.elementsFound, { count: sortedElements.length })
+              }
+            </div>
+
+            <SortingControls
+              propertyDefinitions={propertyDefinitions}
+              sortBy={sortBy}
+              sortDirection={sortDirection}
+              onSortByChange={setSortByAndKeepDirection}
+              onSortDirectionChange={setSortDirection}
+              sortType={sortType}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Element List with Progress Bars */}
       <div className="space-y-4">
