@@ -95,7 +95,9 @@ export const AppApi = {
       user: {
         bookmark: APP_URL_API + "/exam/packages/user/bookmark",
         rating: APP_URL_API + "/exam/packages/user/rating",
+        favorites: APP_URL_API + "/exam/packages/user/favorites",
       },
+
       list: APP_URL_API + "/exam/packages/list",
       detail: APP_URL_API + "/exam/packages/detail/:id",
       filterParams: APP_URL_API + "/exam/packages/filter-params",
@@ -179,6 +181,7 @@ export const AppApi = {
       global: APP_URL_API + "/exam/user-stats/global",
       subjects: APP_URL_API + "/exam/user-stats/subjects",
       tags: APP_URL_API + "/exam/user-stats/tags",
+      activity: APP_URL_API + "/exam/user-stats/activity",
     },
   },
   education: {

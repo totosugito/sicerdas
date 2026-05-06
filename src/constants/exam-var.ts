@@ -113,3 +113,17 @@ export const EXAM_STATUS_GROUPS = {
   tryout: [EnumExamStatus.DOUBTFUL] as ExamStatus[],
   study: [EnumExamStatus.CORRECT, EnumExamStatus.WRONG] as ExamStatus[],
 };
+
+export const EXAM_MODE_STYLES: Record<ExamSessionMode, { bg: string; text: string; border: string }> = {
+  [EnumExamSessionMode.STUDY]: {
+    bg: "bg-blue-50 dark:bg-blue-900/20",
+    text: "text-blue-600 dark:text-blue-400",
+    border: "border-blue-200 dark:border-blue-800",
+  },
+  [EnumExamSessionMode.TRYOUT]: {
+    bg: "bg-purple-50 dark:bg-purple-900/20",
+    text: "text-purple-600 dark:text-purple-400",
+    border: "border-purple-200 dark:border-purple-800",
+  },
+};
+

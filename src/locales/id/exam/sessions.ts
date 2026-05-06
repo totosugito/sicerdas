@@ -12,9 +12,13 @@ export default {
     tryout: "Mode Tryout",
     tryoutDesc: "Simulasi ujian sungguhan. Skor & pembahasan muncul di akhir.",
   },
+  modeLabel: {
+    study: "Belajar",
+    tryout: "Tryout",
+  },
   history: {
     title: "Riwayat",
-    empty: "Belum ada riwayat percobaan untuk sub-test ini.",
+    empty: "Belum ada riwayat latihan soal.",
     success: "Riwayat berhasil diambil",
   },
   active: {
@@ -142,8 +146,9 @@ export default {
     },
   },
   dashboard: {
-    title: "Dashboard Ujian",
-    description: "Pantau progres belajar dan performa ujian Anda secara keseluruhan.",
+    title: "Dashboard User",
+    description: "Pantau progres belajar dan performa Anda secara keseluruhan.",
+    badge: "Dashboard Performa User",
     stats: {
       totalExams: "Total Ujian",
       totalExamsDesc: "Ujian yang telah diikuti",
@@ -152,17 +157,55 @@ export default {
       accuracy: "Tingkat Akurasi",
       accuracyDesc: "Rasio jawaban benar",
       totalCorrect: "Total Benar",
+      totalCorrectDesc: "Dari {{count}} soal",
       totalWrong: "Total Salah",
     },
     charts: {
       subjectPerformance: "Performa Per Subjek",
       subjectPerformanceDesc: "Akurasi Anda di setiap mata pelajaran",
+      activityHistory: "Statistik Aktivitas",
+      activityHistoryDesc: "Pantau progres pengerjaan soal harian kamu",
+      activityRange: {
+        last7Days: "7 Hari",
+        last14Days: "14 Hari",
+        last30Days: "30 Hari",
+      },
       recentActivity: "Aktivitas Terbaru",
       recentActivityDesc: "Sesi ujian yang Anda kerjakan baru-baru ini",
+      seeAll: "Lihat Semua",
+      loadingTitle: "Menganalisis Performa",
+      loadingMessage: "Mohon tunggu, kami sedang menyusun data performa per subjek untuk Anda.",
+      activityLoadingTitle: "Memuat Aktivitas...",
+      activityLoadingMessage: "Kami sedang menyiapkan data statistik kamu",
     },
+    favorites: {
+      title: "Paket Favorit",
+      description: "Akses cepat ke paket soal yang Anda simpan.",
+      empty: "Belum ada paket favorit.",
+      emptyDesc: "Simpan paket soal yang menarik bagi Anda untuk akses cepat di sini.",
+      removeConfirm: "Hapus dari Favorit?",
+      removeConfirmDesc: "Apakah Anda yakin ingin menghapus paket soal ini dari daftar favorit Anda?",
+      removeAction: "Ya, Hapus",
+      cancelAction: "Batal",
+    },
+
+
+    recentActivity: {
+      noScore: "Tanpa Skor",
+      review: "Review",
+      resume: "Lanjut",
+    },
+    radarChart: {
+      noData: "Tidak ada data subjek tersedia",
+      seriesName: "Akurasi Subjek",
+      dataName: "Tingkat Akurasi (%)",
+    },
+
     empty: {
       noStats: "Belum ada statistik yang tersedia.",
       noStatsDesc: "Selesaikan setidaknya satu ujian untuk melihat performa Anda di sini.",
+      noActivity: "Belum Ada Aktivitas",
+      noActivityDesc: "Selesaikan ujian pertama kamu untuk melihat statistik aktivitas harian.",
       startExam: "Mulai Ujian Pertama",
     },
   },

@@ -32,6 +32,8 @@ const AllHistoryResponse = Type.Object({
         packageTitle: Type.String(),
         sectionTitle: Type.String(),
         packageId: Type.String({ format: "uuid" }),
+        earnedPoints: Type.Union([Type.Number(), Type.Null()]),
+        maxPoints: Type.Union([Type.Number(), Type.Null()]),
       }),
     ),
     meta: Type.Object({
@@ -92,6 +94,8 @@ const allSessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
           packageTitle: examPackages.title,
           sectionTitle: examPackageSections.title,
           packageId: examSessions.packageId,
+          earnedPoints: examSessions.earnedPoints,
+          maxPoints: examSessions.maxPoints,
         })
         .from(examSessions)
         .innerJoin(examPackages, eq(examSessions.packageId, examPackages.id))
@@ -110,6 +114,8 @@ const allSessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             startTime: h.startTime.toISOString(),
             endTime: h.endTime?.toISOString() ?? null,
             score: h.score !== null ? Number(h.score) : null,
+            earnedPoints: h.earnedPoints !== null ? Number(h.earnedPoints) : null,
+            maxPoints: h.maxPoints !== null ? Number(h.maxPoints) : null,
           })) as any,
           meta: {
             total,

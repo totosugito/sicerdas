@@ -18,6 +18,7 @@ const GlobalStatsResponse = Type.Object({
       totalCorrectAnswers: Type.Number(),
       totalWrongAnswers: Type.Number(),
       averageScore: Type.String(),
+      accuracyRate: Type.String(),
       lastActiveAt: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
       updatedAt: Type.String({ format: "date-time" }),
     }),
@@ -53,11 +54,16 @@ const getGlobalStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
         });
       }
 
+      const accuracyRate = stats.totalQuestionsAnswered > 0
+        ? ((stats.totalCorrectAnswers / stats.totalQuestionsAnswered) * 100).toFixed(2)
+        : "0";
+
       return reply.status(200).send({
         success: true,
         message: t(($) => $.exam.user_stats.global.success),
         data: {
           ...stats,
+          accuracyRate,
           lastActiveAt: stats.lastActiveAt?.toISOString() || null,
           updatedAt: stats.updatedAt.toISOString(),
         },

@@ -1,4 +1,6 @@
-import { EnumExamPackageUserStatus } from "backend/src/db/schema/exam/enums";
+import { EnumExamPackageUserStatus as UserStatusValues } from "backend/src/db/schema/exam/enums";
+
+export type EnumExamPackageUserStatus = (typeof UserStatusValues)[keyof typeof UserStatusValues];
 
 export interface ExamPackage {
   id: string;
@@ -36,7 +38,7 @@ export interface ExamPackage {
     disliked: boolean;
     rating: number;
     bookmarked: boolean;
-    status: (typeof EnumExamPackageUserStatus)[keyof typeof EnumExamPackageUserStatus];
+    status: EnumExamPackageUserStatus;
     completedSectionsCount: number;
     viewCount?: number;
   };

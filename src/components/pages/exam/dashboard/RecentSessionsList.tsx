@@ -1,12 +1,15 @@
 import { AllSessionHistoryResponse } from "@/api/exam-sessions/history";
+import { EnumExamSessionStatus, EnumExamSessionMode } from "@/api/exam-sessions/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AppRoute } from "@/constants/app-route";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
-import { CheckCircle2, XCircle, Clock, ChevronRight, AlertCircle } from "lucide-react";
-import { format } from "date-fns";
+import { CheckCircle2, XCircle, Clock, ChevronRight, Activity } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { string_to_locale_date } from "@/lib/my-utils";
+import { EXAM_MODE_STYLES } from "@/constants/exam-var";
 
 interface RecentSessionsListProps {
   history: AllSessionHistoryResponse["data"];
@@ -14,13 +17,27 @@ interface RecentSessionsListProps {
 }
 
 export const RecentSessionsList = ({ history, isLoading }: RecentSessionsListProps) => {
-  const { t } = useAppTranslation();
+  const { t, i18n } = useAppTranslation();
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="h-20 bg-slate-100 dark:bg-slate-800 animate-pulse rounded-xl" />
+      <div className="divide-y divide-slate-100 dark:divide-slate-800">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex items-center gap-4 px-6 py-5">
+            <Skeleton className="w-10 h-10 rounded-full flex-shrink-0" />
+            <div className="flex-1 space-y-2">
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-3 w-16 rounded-md" />
+                <Skeleton className="h-3 w-12 rounded-md" />
+              </div>
+              <Skeleton className="h-4 w-3/4 rounded-md" />
+              <Skeleton className="h-3 w-1/2 rounded-md" />
+            </div>
+            <div className="flex flex-col items-end gap-2">
+              <Skeleton className="h-6 w-12 rounded-md" />
+              <Skeleton className="h-3 w-16 rounded-md" />
+            </div>
+          </div>
         ))}
       </div>
     );
@@ -28,95 +45,109 @@ export const RecentSessionsList = ({ history, isLoading }: RecentSessionsListPro
 
   if (history.items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center bg-slate-50 dark:bg-slate-900/50 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800">
-        <AlertCircle className="w-12 h-12 text-slate-300 dark:text-slate-700 mb-4" />
-        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+      <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+        <div className="relative mb-6">
+          <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
+          <div className="relative w-20 h-20 bg-gradient-to-br from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 dark:border-primary/80 shadow-xl shadow-primary/5">
+            <Activity className="w-10 h-10 text-primary" />
+          </div>
+        </div>
+        <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
           {t(($) => $.exam.sessions.history.empty)}
         </h3>
-        <p className="text-sm text-slate-500 max-w-[250px]">
-          Start your first exam to see your history here.
+        <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[280px] mt-2 font-medium leading-relaxed">
+          {t(($) => $.exam.sessions.dashboard.empty.noStatsDesc)}
         </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="divide-y divide-slate-100 dark:divide-slate-800 -mx-2">
       {history.items.map((session) => (
-        <div
+        <Link
           key={session.id}
-          className="group relative flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:shadow-lg hover:border-primary/20 transition-all duration-300"
+          to={session.status === EnumExamSessionStatus.COMPLETED ? AppRoute.exam.results.url : AppRoute.exam.session.url}
+          params={{ id: session.id }}
+          className="group flex items-center gap-4 px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all duration-200"
         >
           <div className="flex-shrink-0">
             <div
               className={cn(
-                "w-12 h-12 rounded-xl flex items-center justify-center",
-                session.status === "completed"
+                "w-11 h-11 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
+                session.status === EnumExamSessionStatus.COMPLETED
                   ? "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400"
-                  : session.status === "in_progress"
-                  ? "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"
-                  : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                  : session.status === EnumExamSessionStatus.IN_PROGRESS
+                    ? "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"
+                    : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
               )}
             >
-              {session.status === "completed" ? (
-                <CheckCircle2 className="w-6 h-6" />
-              ) : session.status === "in_progress" ? (
-                <Clock className="w-6 h-6" />
+              {session.status === EnumExamSessionStatus.COMPLETED ? (
+                <CheckCircle2 className="w-5 h-5" />
+              ) : session.status === EnumExamSessionStatus.IN_PROGRESS ? (
+                <Clock className="w-5 h-5" />
               ) : (
-                <XCircle className="w-6 h-6" />
+                <XCircle className="w-5 h-5" />
               )}
             </div>
           </div>
 
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-0.5">
-              <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0">
-                {session.mode}
+            <div className="flex items-center gap-2 mb-1">
+              <Badge
+                variant="outline"
+                className={cn(
+                  "text-[9px] font-black uppercase tracking-widest px-2 py-0 border-[1.5px]",
+                  EXAM_MODE_STYLES[session.mode].bg,
+                  EXAM_MODE_STYLES[session.mode].text,
+                  EXAM_MODE_STYLES[session.mode].border
+                )}
+              >
+                {session.mode === EnumExamSessionMode.STUDY
+                  ? t(($) => $.exam.sessions.modeLabel.study)
+                  : t(($) => $.exam.sessions.modeLabel.tryout)}
               </Badge>
-              <span className="text-[10px] font-bold text-muted-foreground">
-                {format(new Date(session.startTime), "PPP p")}
+              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tight">
+                {string_to_locale_date(i18n.language, session.startTime)}
               </span>
             </div>
-            <h4 className="text-sm font-black text-slate-900 dark:text-white truncate">
+            <h4 className="text-[15px] font-bold text-slate-900 dark:text-white truncate leading-tight group-hover:text-primary transition-colors">
               {session.packageTitle}
             </h4>
-            <p className="text-xs text-muted-foreground truncate">
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate mt-0.5">
               {session.sectionTitle}
             </p>
           </div>
 
           <div className="text-right shrink-0">
             {session.score !== null ? (
-              <div className="mb-1">
-                <span className="text-xl font-black text-primary">
-                  {Math.round(session.score)}
-                </span>
-                <span className="text-[10px] font-bold text-muted-foreground ml-1">
-                  / 100
-                </span>
+              <div className="flex flex-col items-end">
+                <div className="flex items-baseline gap-0.5">
+                  <span className="text-2xl font-black text-primary leading-none">
+                    {Math.round(session.score)}
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-400 leading-none">
+                    / 100
+                  </span>
+                </div>
+                <div className="flex items-center text-[10px] font-black text-primary uppercase tracking-widest mt-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
+                  {t(($) => $.exam.sessions.dashboard.recentActivity.review)}
+                  <ChevronRight className="w-3 h-3 ml-0.5" />
+                </div>
               </div>
             ) : (
-              <div className="mb-1">
-                <span className="text-xs font-bold text-muted-foreground italic">
-                  No Score
+              <div className="flex flex-col items-end">
+                <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">
+                  {t(($) => $.exam.sessions.dashboard.recentActivity.noScore)}
                 </span>
+                <div className="flex items-center text-[10px] font-black text-amber-500 uppercase tracking-widest mt-2 transition-all duration-300 group-hover:translate-x-1">
+                  {t(($) => $.exam.sessions.dashboard.recentActivity.resume)}
+                  <ChevronRight className="w-3 h-3 ml-0.5 transition-transform duration-300 group-hover:translate-x-1" />
+                </div>
               </div>
             )}
-            <Link
-              to={session.status === "completed" ? AppRoute.exam.results.url : AppRoute.exam.session.url}
-              params={{ id: session.id }}
-            >
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-7 text-[10px] font-bold uppercase tracking-wider px-2 group-hover:bg-primary group-hover:text-white transition-colors"
-              >
-                {session.status === "completed" ? "Review" : "Resume"}
-                <ChevronRight className="w-3 h-3 ml-1" />
-              </Button>
-            </Link>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );

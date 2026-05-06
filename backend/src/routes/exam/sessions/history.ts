@@ -29,6 +29,8 @@ const HistoryResponse = Type.Object({
         totalCorrect: Type.Number(),
         totalWrong: Type.Number(),
         totalSkipped: Type.Number(),
+        earnedPoints: Type.Union([Type.Number(), Type.Null()]),
+        maxPoints: Type.Union([Type.Number(), Type.Null()]),
       }),
     ),
     meta: Type.Object({
@@ -98,6 +100,8 @@ const sessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
           totalCorrect: examSessions.totalCorrect,
           totalWrong: examSessions.totalWrong,
           totalSkipped: examSessions.totalSkipped,
+          earnedPoints: examSessions.earnedPoints,
+          maxPoints: examSessions.maxPoints,
         })
         .from(examSessions)
         .where(baseConditions)
@@ -114,6 +118,8 @@ const sessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             startTime: h.startTime.toISOString(),
             endTime: h.endTime?.toISOString() ?? null,
             score: h.score !== null ? Number(h.score) : null,
+            earnedPoints: h.earnedPoints !== null ? Number(h.earnedPoints) : null,
+            maxPoints: h.maxPoints !== null ? Number(h.maxPoints) : null,
           })) as any,
           meta: {
             total,

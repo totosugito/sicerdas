@@ -42,3 +42,7 @@ export type { BookmarkPackageRequest, BookmarkPackageResponse } from "./user/boo
 
 export { useRatePackage } from "./user/rate-package";
 export type { RatePackageRequest, RatePackageResponse } from "./user/rate-package";
+
+export { useFavoritePackages } from "./user/list-favorites";
+export type { FavoritePackage, FavoritePackagesResponse } from "./user/list-favorites";
+

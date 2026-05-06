@@ -1,42 +1,77 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useGlobalStats, useSubjectStats } from "@/api/exam-user-stats";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { useGlobalStats, useSubjectStats, useActivityStats } from "@/api/exam-user-stats";
 import { useAllSessionHistory } from "@/api/exam-sessions/history";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { StatsCard } from "@/components/pages/exam/dashboard/StatsCard";
-import { SubjectRadarChart } from "@/components/pages/exam/dashboard/SubjectRadarChart";
-import { RecentSessionsList } from "@/components/pages/exam/dashboard/RecentSessionsList";
-import { 
-  Trophy, 
-  Target, 
-  CheckCircle, 
-  BarChart3, 
+import {
+  StatsCard,
+  SubjectRadarChart,
+  ActivityBarChart,
+  RecentSessionsList,
+  FavoritePackagesList
+} from "@/components/pages/exam/dashboard";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Trophy,
+  Target,
+  CheckCircle,
   Activity,
-  Rocket
+  Rocket,
+  Clock,
+  Bookmark
 } from "lucide-react";
+import { LoadingView } from "@/components/app/LoadingView";
 import { Button } from "@/components/ui/button";
 import { AppRoute } from "@/constants/app-route";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { z } from "zod";
+
+const dashboardSearchSchema = z.object({
+  days: z.number().optional().catch(7),
+});
 
 export const Route = createFileRoute("/(pages)/exam/dashboard")({
+  validateSearch: (search) => dashboardSearchSchema.parse(search),
   component: ExamDashboardComponent,
 });
 
+type DashboardSearch = z.infer<typeof dashboardSearchSchema>;
+
 function ExamDashboardComponent() {
   const { t } = useAppTranslation();
+  const search = useSearch({ from: Route.id });
+  const navigate = useNavigate({ from: Route.id });
+  const activityDays = search.days ?? 7;
 
   const { data: globalStatsRes, isLoading: isLoadingGlobal } = useGlobalStats();
   const { data: subjectStatsRes, isLoading: isLoadingSubjects } = useSubjectStats();
   const { data: historyRes, isLoading: isLoadingHistory } = useAllSessionHistory({ limit: 5 });
 
   const globalStats = globalStatsRes?.data;
-  const subjectStats = subjectStatsRes?.data || [];
+  const subjectStats = subjectStatsRes?.data?.items || [];
   const history = historyRes?.data;
 
   const totalQuestions = globalStats?.totalQuestionsAnswered || 0;
-  const correctRate = totalQuestions > 0 
-    ? Math.round((globalStats?.totalCorrectAnswers || 0) / totalQuestions * 100) 
-    : 0;
+  const correctRate = Math.round(parseFloat(globalStats?.accuracyRate || "0"));
+
+  const handleDaysChange = (value: string) => {
+    navigate({
+      search: (prev: DashboardSearch) => ({ ...prev, days: parseInt(value) }),
+    });
+  };
 
   if (!isLoadingGlobal && !globalStats) {
     return (
@@ -58,12 +93,12 @@ function ExamDashboardComponent() {
   }
 
   return (
-    <div className="page-container space-y-8 pb-12">
+    <div className="page-container-no-top">
       {/* Header / Hero */}
-      <div className="relative overflow-hidden rounded-3xl bg-slate-900 text-white p-8 lg:p-12 shadow-2xl shadow-slate-200 dark:shadow-none">
+      <div className="relative overflow-hidden rounded-xl bg-slate-900 text-white p-8 lg:p-12 shadow-2xl shadow-slate-200 dark:shadow-none w-full">
         <div className="relative z-10 max-w-2xl">
           <Badge className="bg-primary hover:bg-primary text-white border-none px-3 py-1 mb-4 rounded-full font-bold uppercase tracking-widest text-[10px]">
-             User Performance Dashboard
+            {t(($) => $.exam.sessions.dashboard.badge)}
           </Badge>
           <h1 className="text-4xl lg:text-5xl font-black mb-4 tracking-tight leading-[1.1]">
             {t(($) => $.exam.sessions.dashboard.title)}
@@ -79,7 +114,7 @@ function ExamDashboardComponent() {
       </div>
 
       {/* Quick Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
         <StatsCard
           title={t(($) => $.exam.sessions.dashboard.stats.totalExams)}
           value={globalStats?.totalExamsTaken || 0}
@@ -105,58 +140,145 @@ function ExamDashboardComponent() {
           title={t(($) => $.exam.sessions.dashboard.stats.totalCorrect)}
           value={globalStats?.totalCorrectAnswers || 0}
           icon={Activity}
-          description={`Dari ${totalQuestions} soal`}
+          description={t(($) => $.exam.sessions.dashboard.stats.totalCorrectDesc, { count: totalQuestions })}
           iconClassName="bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400"
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Radar Chart Section */}
-        <div className="lg:col-span-7 flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-black flex items-center gap-2">
-                <div className="w-2 h-8 bg-primary rounded-full" />
-                {t(($) => $.exam.sessions.dashboard.charts.subjectPerformance)}
-              </h2>
-              <p className="text-sm text-muted-foreground font-medium mt-1">
-                {t(($) => $.exam.sessions.dashboard.charts.subjectPerformanceDesc)}
-              </p>
-            </div>
-          </div>
-          <div className="flex-1 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-8 min-h-[450px] shadow-sm">
-            {isLoadingSubjects ? (
-              <div className="w-full h-full flex items-center justify-center">
-                <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch mt-2">
+        {/* Radar Chart Card */}
+        <Card className="rounded-3xl border-slate-100 dark:border-slate-800 shadow-sm flex flex-col overflow-hidden gap-0">
+          <CardHeader className="pb-4 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100/50 dark:border-slate-800/50">
+            <div className="flex items-center gap-4">
+              <div className="w-1.5 h-8 bg-primary rounded-full shadow-sm" />
+              <div>
+                <CardTitle className="text-xl font-bold tracking-tight">
+                  {t(($) => $.exam.sessions.dashboard.charts.subjectPerformance)}
+                </CardTitle>
+                <CardDescription className="text-sm font-medium opacity-80">
+                  {t(($) => $.exam.sessions.dashboard.charts.subjectPerformanceDesc)}
+                </CardDescription>
               </div>
+            </div>
+          </CardHeader>
+          <CardContent className="flex-1 min-h-[400px]">
+            {isLoadingSubjects ? (
+              <LoadingView
+                title={t(($) => $.exam.sessions.dashboard.charts.loadingTitle)}
+                message={t(($) => $.exam.sessions.dashboard.charts.loadingMessage)}
+                className="h-full border-0 bg-transparent shadow-none"
+              />
             ) : (
               <SubjectRadarChart stats={subjectStats} className="h-full w-full" />
             )}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        {/* Recent Activity Section */}
-        <div className="lg:col-span-5 flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-black flex items-center gap-2">
-                <div className="w-2 h-8 bg-blue-600 rounded-full" />
-                {t(($) => $.exam.sessions.dashboard.charts.recentActivity)}
-              </h2>
-              <p className="text-sm text-muted-foreground font-medium mt-1">
-                {t(($) => $.exam.sessions.dashboard.charts.recentActivityDesc)}
-              </p>
+        {/* Activity Bar Chart Card */}
+        <Card className="rounded-3xl border-slate-100 dark:border-slate-800 shadow-sm flex flex-col overflow-hidden gap-0">
+          <CardHeader className="pb-4 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100/50 dark:border-slate-800/50">
+            <div className="flex flex-row items-center justify-between w-full">
+              <div className="flex items-center gap-4">
+                <div className="w-1.5 h-8 bg-indigo-500 rounded-full shadow-sm" />
+                <div>
+                  <CardTitle className="text-xl font-bold tracking-tight">
+                    {t(($) => $.exam.sessions.dashboard.charts.activityHistory)}
+                  </CardTitle>
+                  <CardDescription className="text-sm font-medium opacity-80">
+                    {t(($) => $.exam.sessions.dashboard.charts.activityHistoryDesc)}
+                  </CardDescription>
+                </div>
+              </div>
+              <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                <Select
+                  value={activityDays.toString()}
+                  onValueChange={handleDaysChange}
+                >
+                  <SelectTrigger className="w-[130px] h-8 border-0 bg-transparent shadow-none font-bold focus:ring-0 text-xs px-3">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-slate-100 dark:border-slate-800 shadow-xl">
+                    <SelectItem value="7" className="rounded-lg font-medium text-xs">
+                      {t(($) => $.exam.sessions.dashboard.charts.activityRange.last7Days)}
+                    </SelectItem>
+                    <SelectItem value="14" className="rounded-lg font-medium text-xs">
+                      {t(($) => $.exam.sessions.dashboard.charts.activityRange.last14Days)}
+                    </SelectItem>
+                    <SelectItem value="30" className="rounded-lg font-medium text-xs">
+                      {t(($) => $.exam.sessions.dashboard.charts.activityRange.last30Days)}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <Link to={AppRoute.exam.exams.url}>
-              <Button variant="outline" size="sm" className="rounded-full font-bold">
-                See All
-              </Button>
-            </Link>
-          </div>
-          <div className="flex-1">
-            {history && <RecentSessionsList history={history} isLoading={isLoadingHistory} />}
-          </div>
-        </div>
+          </CardHeader>
+          <CardContent className="flex-1 min-h-[400px]">
+            <ActivityBarChart days={activityDays} className="h-full w-full" />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Lists Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
+        {/* Recent Activity Card */}
+        <Card className="rounded-3xl border-slate-100 dark:border-slate-800 shadow-sm flex flex-col overflow-hidden">
+          <CardHeader className="bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100/50 dark:border-slate-800/50">
+            <div className="flex flex-row items-center justify-between w-full">
+              <div className="flex items-center gap-4">
+                <div className="w-1.5 h-8 bg-blue-600 rounded-full shadow-sm" />
+                <div>
+                  <CardTitle className="text-xl font-bold tracking-tight">
+                    {t(($) => $.exam.sessions.dashboard.charts.recentActivity)}
+                  </CardTitle>
+                  <CardDescription className="text-sm font-medium opacity-80">
+                    {t(($) => $.exam.sessions.dashboard.charts.recentActivityDesc)}
+                  </CardDescription>
+                </div>
+              </div>
+              <Link to={AppRoute.exam.history.url}>
+                <Button variant="outline" size="sm" className="rounded-full font-bold bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
+                  {t(($) => $.exam.sessions.dashboard.charts.seeAll)}
+                </Button>
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent className="flex-1 p-0">
+            {history && (
+              <RecentSessionsList
+                history={{ ...history, items: history.items.slice(0, 4) }}
+                isLoading={isLoadingHistory}
+              />
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Favorite Packages Card */}
+        <Card className="rounded-3xl border-slate-100 dark:border-slate-800 shadow-sm flex flex-col overflow-hidden">
+          <CardHeader className="bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100/50 dark:border-slate-800/50">
+            <div className="flex flex-row items-center justify-between w-full">
+              <div className="flex items-center gap-4">
+                <div className="w-1.5 h-8 bg-amber-500 rounded-full shadow-sm" />
+                <div>
+                  <CardTitle className="text-xl font-bold tracking-tight">
+                    {t(($) => $.exam.sessions.dashboard.favorites.title)}
+                  </CardTitle>
+                  <CardDescription className="text-sm font-medium opacity-80">
+                    {t(($) => $.exam.sessions.dashboard.favorites.description)}
+                  </CardDescription>
+                </div>
+              </div>
+              <Link to={AppRoute.exam.favorites.url}>
+                <Button variant="outline" size="sm" className="rounded-full font-bold bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
+                  {t(($) => $.exam.sessions.dashboard.charts.seeAll)}
+                </Button>
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent className="flex-1 p-0">
+            <FavoritePackagesList limit={4} />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

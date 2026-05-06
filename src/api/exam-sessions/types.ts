@@ -1,7 +1,9 @@
 import { EnumExamSessionStatus, EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
+export { EnumExamSessionStatus, EnumExamSessionMode };
 
 export type ExamSessionStatus = (typeof EnumExamSessionStatus)[keyof typeof EnumExamSessionStatus];
 export type ExamSessionMode = (typeof EnumExamSessionMode)[keyof typeof EnumExamSessionMode];
+
 
 export interface ExamSession {
   id: string;

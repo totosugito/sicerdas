@@ -166,7 +166,7 @@ function RouteComponent() {
   };
 
   return (
-    <div className="flex flex-col flex-1 w-full px-6 pb-6">
+    <div className="page-container-no-top">
       <div className="flex flex-col lg:flex-row gap-6 pt-6">
         <aside className="hidden lg:block w-70 flex-shrink-0">
           <Card>

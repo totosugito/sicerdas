@@ -1,67 +1,9 @@
-import { AppApi } from "@/constants/app-api";
-import { fetchApi } from "@/lib/fetch-api";
-import { useQuery } from "@tanstack/react-query";
-import type { GlobalStats, SubjectStats, TagStats } from "./types";
-
-export interface GlobalStatsResponse {
-  success: boolean;
-  message: string;
-  data: GlobalStats | null;
-}
-
-export interface SubjectStatsResponse {
-  success: boolean;
-  message: string;
-  data: SubjectStats[];
-}
-
-export interface TagStatsResponse {
-  success: boolean;
-  message: string;
-  data: TagStats[];
-}
-
-export const useGlobalStats = () => {
-  return useQuery({
-    queryKey: ["exam-user-stats-global"],
-    queryFn: async () => {
-      const url = AppApi.exam.userStats.global;
-      const response = await fetchApi({
-        method: "GET",
-        url,
-        withCredentials: true,
-      });
-      return response as GlobalStatsResponse;
-    },
-  });
-};
-
-export const useSubjectStats = () => {
-  return useQuery({
-    queryKey: ["exam-user-stats-subjects"],
-    queryFn: async () => {
-      const url = AppApi.exam.userStats.subjects;
-      const response = await fetchApi({
-        method: "GET",
-        url,
-        withCredentials: true,
-      });
-      return response as SubjectStatsResponse;
-    },
-  });
-};
-
-export const useTagStats = () => {
-  return useQuery({
-    queryKey: ["exam-user-stats-tags"],
-    queryFn: async () => {
-      const url = AppApi.exam.userStats.tags;
-      const response = await fetchApi({
-        method: "GET",
-        url,
-        withCredentials: true,
-      });
-      return response as TagStatsResponse;
-    },
-  });
-};
+export type { GlobalStats, SubjectStats, TagStats } from "./types";
+export { useGlobalStats } from "./global-stats";
+export type { GlobalStatsResponse } from "./global-stats";
+export { useSubjectStats } from "./subject-stats";
+export type { SubjectStatsResponse } from "./subject-stats";
+export { useTagStats } from "./tag-stats";
+export type { TagStatsResponse } from "./tag-stats";
+export { useActivityStats } from "./activity-stats";
+export type { ActivityStatsResponse } from "./activity-stats";

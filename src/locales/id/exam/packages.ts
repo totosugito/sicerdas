@@ -10,6 +10,12 @@ export default {
     selected: "{{count}} dari 5 bintang",
     prompt: "Pilih rating",
   },
+  bookmark: {
+    updated: "Status favorit diperbarui",
+    success: "Berhasil menyimpan ke favorit",
+    removed: "Berhasil menghapus dari favorit",
+    noChange: "Status favorit tidak berubah",
+  },
   detail: {
     title: "Detail Paket",
     description: "Lihat detail paket ujian, kurikulum, dan statistik interaksi.",
