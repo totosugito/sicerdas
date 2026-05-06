@@ -141,4 +141,29 @@ export default {
       loadErrorDesc: "Terjadi kendala saat mengambil data sesi ujian Anda. Pastikan koneksi internet stabil atau coba lagi nanti.",
     },
   },
+  dashboard: {
+    title: "Dashboard Ujian",
+    description: "Pantau progres belajar dan performa ujian Anda secara keseluruhan.",
+    stats: {
+      totalExams: "Total Ujian",
+      totalExamsDesc: "Ujian yang telah diikuti",
+      avgScore: "Skor Rata-rata",
+      avgScoreDesc: "Dari seluruh sesi selesai",
+      accuracy: "Tingkat Akurasi",
+      accuracyDesc: "Rasio jawaban benar",
+      totalCorrect: "Total Benar",
+      totalWrong: "Total Salah",
+    },
+    charts: {
+      subjectPerformance: "Performa Per Subjek",
+      subjectPerformanceDesc: "Akurasi Anda di setiap mata pelajaran",
+      recentActivity: "Aktivitas Terbaru",
+      recentActivityDesc: "Sesi ujian yang Anda kerjakan baru-baru ini",
+    },
+    empty: {
+      noStats: "Belum ada statistik yang tersedia.",
+      noStatsDesc: "Selesaikan setidaknya satu ujian untuk melihat performa Anda di sini.",
+      startExam: "Mulai Ujian Pertama",
+    },
+  },
 };

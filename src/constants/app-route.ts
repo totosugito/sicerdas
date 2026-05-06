@@ -88,6 +88,7 @@ export const AppRoute = {
     exams: { url: "/exam/exams" },
     session: { url: "/exam/session/$id" },
     results: { url: "/exam/session/$id/results" },
+    dashboard: { url: "/exam/dashboard" },
   },
   education: {
     categories: {

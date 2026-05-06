@@ -172,7 +172,13 @@ export const AppApi = {
       saveAnswer: APP_URL_API + "/exam/sessions/save-answer",
       submit: APP_URL_API + "/exam/sessions/submit/:id",
       history: APP_URL_API + "/exam/sessions/history",
+      allHistory: APP_URL_API + "/exam/sessions/all",
       abandon: APP_URL_API + "/exam/sessions/abandon/:id",
+    },
+    userStats: {
+      global: APP_URL_API + "/exam/user-stats/global",
+      subjects: APP_URL_API + "/exam/user-stats/subjects",
+      tags: APP_URL_API + "/exam/user-stats/tags",
     },
   },
   education: {

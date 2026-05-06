@@ -138,6 +138,11 @@ export function useAppMenu() {
   const quizMenu = useMemo<MenuItem[]>(
     () => [
       {
+        title: t(($) => $.exam.sessions.dashboard.title),
+        to: AppRoute.exam.dashboard.url,
+        description: t(($) => $.exam.sessions.dashboard.description),
+      },
+      {
         title: t(($) => $.landing.navbar.quiz.semester),
         to: AppRoute.exam.exams.url,
         search: { category: "ujian-semester" },

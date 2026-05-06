@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { Moon, Sun, Monitor, User, LogOut } from "lucide-react";
+import { Moon, Sun, Monitor, User, LogOut, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -254,6 +254,12 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to={AppRoute.exam.dashboard.url}>
+                    <Trophy className="mr-2 h-4 w-4" />
+                    {t(($) => $.exam.sessions.dashboard.title)}
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to={AppRoute.users.user.profile.url}>
                     <User className="mr-2 h-4 w-4" />

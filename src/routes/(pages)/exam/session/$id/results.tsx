@@ -144,7 +144,7 @@ function SessionResultsComponent() {
   };
 
   return (
-    <div className={cn("page-full-no-pad", "max-w-7xl mx-auto px-6")}>
+    <div className={cn("page-container-no-top")}>
       <ResultsHeader
         title={t(($) => $.exam.sessions.results.title)}
         description={t(($) => $.exam.sessions.results.description)}

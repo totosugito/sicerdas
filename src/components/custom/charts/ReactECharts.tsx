@@ -5,8 +5,8 @@ import { getInstanceByDom, init, use } from "echarts/core";
 import { cn } from "@/lib/utils";
 
 import { CanvasRenderer } from "echarts/renderers";
-import { BarChart, LineChart, ScatterChart, FunnelChart } from "echarts/charts";
-import { GridComponent, LegendComponent, TitleComponent, ToolboxComponent, TooltipComponent, GraphicComponent } from "echarts/components";
+import { BarChart, LineChart, ScatterChart, FunnelChart, RadarChart } from "echarts/charts";
+import { GridComponent, LegendComponent, TitleComponent, ToolboxComponent, TooltipComponent, GraphicComponent, RadarComponent } from "echarts/components";
 import { useTheme } from "@/lib/theme-provider";
 
 use([
@@ -15,12 +15,14 @@ use([
   LineChart,
   BarChart,
   FunnelChart,
+  RadarChart,
   GridComponent,
   TooltipComponent,
   TitleComponent,
   GraphicComponent,
-  ToolboxComponent, // A group of utility tools, which includes export, data view, dynamic type switching, data area zooming, and reset.
-  CanvasRenderer, // If you only need to use the canvas rendering mode, the bundle will not include the SVGRenderer module, which is not needed.
+  ToolboxComponent,
+  RadarComponent,
+  CanvasRenderer,
 ]);
 
 type EChartsEventHandlers = {

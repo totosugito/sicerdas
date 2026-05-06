@@ -44,3 +44,38 @@ export const useSessionHistory = (
     enabled: !!packageId && !!sectionId,
   });
 };
+export interface AllSessionHistoryResponse {
+  success: boolean;
+  message: string;
+  data: {
+    items: (ExamHistoryItem & { packageTitle: string; sectionTitle: string; packageId: string })[];
+    meta: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  };
+}
+
+export const useAllSessionHistory = (
+  params: { page?: number; limit?: number } = { page: 1, limit: 10 },
+) => {
+  return useQuery({
+    queryKey: ["exam-all-session-history", params.page, params.limit],
+    queryFn: async () => {
+      const url = AppApi.exam.sessions.allHistory;
+
+      const response = await fetchApi({
+        method: "POST",
+        url,
+        body: {
+          page: params.page,
+          limit: params.limit,
+        },
+        withCredentials: true,
+      });
+      return response as AllSessionHistoryResponse;
+    },
+  });
+};
