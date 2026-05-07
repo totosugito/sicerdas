@@ -20,7 +20,7 @@ const favoritesSearchSchema = z.object({
 
 type FavoritesSearch = z.infer<typeof favoritesSearchSchema>;
 
-export const Route = createFileRoute("/(pages)/exam/favorites")({
+export const Route = createFileRoute("/(pages)/user/favorites")({
   validateSearch: (search) => favoritesSearchSchema.parse(search),
   component: FavoritesRouteComponent,
 });

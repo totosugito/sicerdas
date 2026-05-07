@@ -88,9 +88,6 @@ export const AppRoute = {
     exams: { url: "/exam/exams" },
     session: { url: "/exam/session/$id" },
     results: { url: "/exam/session/$id/results" },
-    history: { url: "/exam/history" },
-    favorites: { url: "/exam/favorites" },
-    dashboard: { url: "/exam/dashboard" },
   },
   education: {
     categories: {
@@ -111,14 +108,14 @@ export const AppRoute = {
       },
     },
   },
-  users: {
+  user: {
     admin: {
       list: { url: "/users/admin/list-users" },
     },
-    user: {
-      profile: { url: "/users/user/profile" },
-    },
-    dashboard: { url: "/admin/dashboard" },
+    profile: { url: "/user/profile" },
+    history: { url: "/user/history" },
+    favorites: { url: "/user/favorites" },
+    dashboard: { url: "/user/dashboard" },
     chatAi: {
       models: { url: "/admin/chat-ai/models" },
     },

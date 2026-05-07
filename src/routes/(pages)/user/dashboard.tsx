@@ -8,7 +8,7 @@ import {
   ActivityBarChart,
   RecentSessionsList,
   FavoritePackagesList
-} from "@/components/pages/exam/dashboard";
+} from "@/components/pages/user/dashboard";
 import {
   Card,
   CardContent,
@@ -43,7 +43,7 @@ const dashboardSearchSchema = z.object({
   days: z.number().optional().catch(7),
 });
 
-export const Route = createFileRoute("/(pages)/exam/dashboard")({
+export const Route = createFileRoute("/(pages)/user/dashboard")({
   validateSearch: (search) => dashboardSearchSchema.parse(search),
   component: ExamDashboardComponent,
 });
@@ -146,7 +146,7 @@ function ExamDashboardComponent() {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch mt-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
         {/* Radar Chart Card */}
         <Card className="rounded-3xl border-slate-100 dark:border-slate-800 shadow-sm flex flex-col overflow-hidden gap-0">
           <CardHeader className="pb-4 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100/50 dark:border-slate-800/50">
@@ -236,7 +236,7 @@ function ExamDashboardComponent() {
                   </CardDescription>
                 </div>
               </div>
-              <Link to={AppRoute.exam.history.url}>
+              <Link to={AppRoute.user.history.url}>
                 <Button variant="outline" size="sm" className="rounded-full font-bold bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
                   {t(($) => $.exam.sessions.dashboard.charts.seeAll)}
                 </Button>
@@ -268,7 +268,7 @@ function ExamDashboardComponent() {
                   </CardDescription>
                 </div>
               </div>
-              <Link to={AppRoute.exam.favorites.url}>
+              <Link to={AppRoute.user.favorites.url}>
                 <Button variant="outline" size="sm" className="rounded-full font-bold bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
                   {t(($) => $.exam.sessions.dashboard.charts.seeAll)}
                 </Button>

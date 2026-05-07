@@ -14,11 +14,11 @@ import {
   DialogUserResetPassword,
   DialogUserBan,
   DialogUserAvatar,
-} from "@/components/pages/users/list-users";
+} from "@/components/pages/user/list-users";
 import { PaginationData } from "@/components/custom/table";
 import { z } from "zod";
 
-export const Route = createFileRoute("/(pages)/users/admin/list-users")({
+export const Route = createFileRoute("/(pages)/user/admin/list-users")({
   validateSearch: z.object({
     page: z.number().min(1).optional().catch(undefined),
     limit: z.number().min(5).optional().catch(undefined),

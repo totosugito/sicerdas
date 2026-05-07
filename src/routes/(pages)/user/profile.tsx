@@ -1,5 +1,5 @@
 import React from "react";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useForm } from "react-hook-form";
@@ -19,7 +19,7 @@ import {
   ProfileInfoFormRef,
   ProfileLoadingView,
   ProfileErrorView,
-} from "@/components/pages/users/profile-user";
+} from "@/components/pages/user/profile";
 import {
   useUserProfileQuery,
   useUpdateUserProfileMutation,
@@ -43,7 +43,7 @@ const profileSearchSchema = z.object({
   page: z.string().optional().catch("profile"),
 });
 
-export const Route = createFileRoute("/(pages)/users/user/profile")({
+export const Route = createFileRoute("/(pages)/user/profile")({
   component: RouteComponent,
   validateSearch: profileSearchSchema,
 });
@@ -339,82 +339,84 @@ function RouteComponent() {
   }
 
   return (
-    <div className="flex flex-col gap-6 w-full">
-      <PageTitle
-        title={t(($) => $.user.profile.title)}
-        description={<span>{t(($) => $.user.profile.description)}</span>}
-      />
-      <Tabs value={currentTab} onValueChange={handleTabChange}>
-        <div className="grid md:grid-cols-[220px_minmax(0px,_1fr)] max-w-6xl gap-x-6 w-full ">
-          {/* Navigation Tabs */}
-          <div className="md:col-span-1 w-full">
-            <TabNavigation />
-          </div>
+    <div className="page-container">
+      <div className="flex flex-col gap-6 w-full">
+        <PageTitle
+          title={t(($) => $.user.profile.title)}
+          description={<span>{t(($) => $.user.profile.description)}</span>}
+        />
+        <Tabs value={currentTab} onValueChange={handleTabChange}>
+          <div className="grid md:grid-cols-[220px_minmax(0px,_1fr)] w-full gap-0 md:gap-6">
+            {/* Navigation Tabs */}
+            <div className="md:col-span-1 w-full">
+              <TabNavigation />
+            </div>
 
-          {/* Tab Content - Set to same width */}
-          <div className="w-full">
-            {/* Profile Tab */}
-            <TabsContent value="profile" className="mt-0 w-full">
-              <ProfileInfoForm
-                ref={profileInfoFormRef}
-                form={profileForm}
-                onSubmit={onProfileFormSubmit}
-                error={profileUpdateError}
-              />
-            </TabsContent>
-
-            {/* Personal Info Tab */}
-            <TabsContent value="personal" className="mt-0 w-full">
-              <PersonalInfoForm
-                form={personalInfoForm}
-                onSubmit={onPersonalInfoSubmit}
-                error={personalInfoUpdateError}
-              />
-            </TabsContent>
-
-            {/* Security Tab */}
-            <TabsContent value="security" className="mt-0 w-full">
-              <div className="flex flex-col gap-6">
-                {userProfile?.data &&
-                (userProfile.data.providerId === "email" ||
-                  userProfile.data.providerId === "credential") ? (
-                  <SecurityForm
-                    form={securityForm}
-                    onSubmit={onSecuritySubmit}
-                    error={securityUpdateError}
-                  />
-                ) : (
-                  <div className="p-4 text-center">
-                    <p className="text-muted-foreground">
-                      {t(($) => $.user.profile.security.notAvailable)}
-                    </p>
-                  </div>
-                )}
-
-                {/* show session list */}
-                <SessionList
-                  sessions={sessions?.data as UserSession[]}
-                  isLoading={sessionsLoading}
-                  isError={sessionsError}
-                  currentToken={authUser?.token || null}
-                  refetch={refetchSessions}
-                  onRevokeSession={handleRevokeSession}
-                  onRevokeAllSessions={handleRevokeAllSessions}
+            {/* Tab Content - Set to same width */}
+            <div className="w-full">
+              {/* Profile Tab */}
+              <TabsContent value="profile" className="mt-0 w-full">
+                <ProfileInfoForm
+                  ref={profileInfoFormRef}
+                  form={profileForm}
+                  onSubmit={onProfileFormSubmit}
+                  error={profileUpdateError}
                 />
-              </div>
-            </TabsContent>
+              </TabsContent>
 
-            {/* Privacy Tab */}
-            <TabsContent value="privacy" className="mt-0 w-full">
-              <PrivacyForm
-                form={privacyForm}
-                onSubmit={onPrivacySubmit}
-                error={privacyUpdateError}
-              />
-            </TabsContent>
+              {/* Personal Info Tab */}
+              <TabsContent value="personal" className="mt-0 w-full">
+                <PersonalInfoForm
+                  form={personalInfoForm}
+                  onSubmit={onPersonalInfoSubmit}
+                  error={personalInfoUpdateError}
+                />
+              </TabsContent>
+
+              {/* Security Tab */}
+              <TabsContent value="security" className="mt-0 w-full">
+                <div className="flex flex-col gap-6">
+                  {userProfile?.data &&
+                    (userProfile.data.providerId === "email" ||
+                      userProfile.data.providerId === "credential") ? (
+                    <SecurityForm
+                      form={securityForm}
+                      onSubmit={onSecuritySubmit}
+                      error={securityUpdateError}
+                    />
+                  ) : (
+                    <div className="p-4 text-center">
+                      <p className="text-muted-foreground">
+                        {t(($) => $.user.profile.security.notAvailable)}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* show session list */}
+                  <SessionList
+                    sessions={sessions?.data as UserSession[]}
+                    isLoading={sessionsLoading}
+                    isError={sessionsError}
+                    currentToken={authUser?.token || null}
+                    refetch={refetchSessions}
+                    onRevokeSession={handleRevokeSession}
+                    onRevokeAllSessions={handleRevokeAllSessions}
+                  />
+                </div>
+              </TabsContent>
+
+              {/* Privacy Tab */}
+              <TabsContent value="privacy" className="mt-0 w-full">
+                <PrivacyForm
+                  form={privacyForm}
+                  onSubmit={onPrivacySubmit}
+                  error={privacyUpdateError}
+                />
+              </TabsContent>
+            </div>
           </div>
-        </div>
-      </Tabs>
+        </Tabs>
+      </div>
     </div>
   );
 }

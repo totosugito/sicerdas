@@ -99,7 +99,7 @@ export const useAdminNav = () => {
             },
             {
               title: t(($) => $.user.title),
-              url: AppRoute.users.admin.list.url,
+              url: AppRoute.user.admin.list.url,
               icon: HiOutlineUsers,
             },
             {

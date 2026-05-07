@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { useAllSessionHistory } from "@/api/exam-sessions/history";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { RecentSessionsList } from "@/components/pages/exam/dashboard";
+import { RecentSessionsList } from "@/components/pages/user/dashboard";
 import { DataTablePagination } from "@/components/custom/table";
 import { History, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ const historySearchSchema = z.object({
 
 type HistorySearch = z.infer<typeof historySearchSchema>;
 
-export const Route = createFileRoute("/(pages)/exam/history")({
+export const Route = createFileRoute("/(pages)/user/history")({
   validateSearch: (search) => historySearchSchema.parse(search),
   component: HistoryRouteComponent,
 });
@@ -45,7 +45,7 @@ function HistoryRouteComponent() {
   };
 
   return (
-    <div className="page-container py-8  w-full">
+    <div className="page-container py-8 w-full">
       <div className="flex flex-col gap-8 w-full">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

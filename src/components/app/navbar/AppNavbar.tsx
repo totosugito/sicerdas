@@ -110,7 +110,7 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
         <div className="flex flex-row gap-4 items-center">
           {isShowSidebar ? (
             <>
-              <SidebarTrigger variant={"outline"} onClick={() => {}} />
+              <SidebarTrigger variant={"outline"} onClick={() => { }} />
               <Separator orientation={"vertical"} className={"h-6"} style={{ height: "20px" }} />
             </>
           ) : (
@@ -255,13 +255,13 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to={AppRoute.exam.dashboard.url}>
+                  <Link to={AppRoute.user.dashboard.url}>
                     <Trophy className="mr-2 h-4 w-4" />
                     {t(($) => $.exam.sessions.dashboard.title)}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to={AppRoute.users.user.profile.url}>
+                  <Link to={AppRoute.user.profile.url}>
                     <User className="mr-2 h-4 w-4" />
                     {t(($) => $.labels.profile)}
                   </Link>
