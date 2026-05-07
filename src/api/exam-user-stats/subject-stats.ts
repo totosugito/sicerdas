@@ -18,7 +18,7 @@ export interface SubjectStatsResponse {
 }
 
 export const useSubjectStats = (
-  params: { page?: number; limit?: number; sortBy?: string; order?: "asc" | "desc" } = { page: 1, limit: 10 }
+  params: { days?: number; page?: number; limit?: number; sortBy?: string; order?: "asc" | "desc" } = { page: 1, limit: 10 }
 ) => {
   return useQuery({
     queryKey: ["exam-user-stats-subjects", params],

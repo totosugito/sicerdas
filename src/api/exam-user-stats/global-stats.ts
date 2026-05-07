@@ -9,11 +9,14 @@ export interface GlobalStatsResponse {
   data: GlobalStats | null;
 }
 
-export const useGlobalStats = () => {
+export const useGlobalStats = (params?: { days?: number }) => {
   return useQuery({
-    queryKey: ["exam-user-stats-global"],
+    queryKey: ["exam-user-stats-global", params],
     queryFn: async () => {
-      const url = AppApi.exam.userStats.global;
+      let url = AppApi.exam.userStats.global;
+      if (params?.days) {
+        url += `?days=${params.days}`;
+      }
       const response = await fetchApi({
         method: "GET",
         url,

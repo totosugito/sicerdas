@@ -1,6 +1,6 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export type BookListItem = {
   id: number;
@@ -52,10 +52,23 @@ export type BookListResponse = {
   };
 };
 
-export const useBookList = () => {
-  return useMutation({
-    mutationKey: ["book-list"],
-    mutationFn: async (body: Record<string, any>) => {
+export type BookListRequest = {
+  category?: number[];
+  group?: number[];
+  grade?: number[];
+  search?: string;
+  isBookmarked?: boolean;
+  isHistory?: boolean;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  page?: number;
+  limit?: number;
+};
+
+export const useBookList = (body: BookListRequest = {}) => {
+  return useQuery({
+    queryKey: ["book-list", body],
+    queryFn: async () => {
       const response = await fetchApi({
         method: "POST",
         url: `${AppApi.book.list}`,

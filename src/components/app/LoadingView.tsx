@@ -6,17 +6,20 @@ interface LoadingViewProps {
     title?: string;
     message?: string;
     className?: string;
+    fullPage?: boolean;
 }
 
 export function LoadingView({
     title = "Memuat Data",
     message = "Mohon tunggu sejenak, kami sedang mengambil informasi untuk Anda.",
     className,
+    fullPage = false,
 }: LoadingViewProps) {
     return (
         <div
             className={cn(
                 "relative group flex flex-col items-center justify-center w-full min-h-[400px] border border-border/40 rounded-3xl bg-background/50 backdrop-blur-xl shadow-sm gap-6 p-8 overflow-hidden",
+                fullPage && "fixed inset-0 z-[100] h-screen min-h-screen rounded-none bg-background",
                 className
             )}
         >

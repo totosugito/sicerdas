@@ -25,16 +25,16 @@ export const StatsCard = ({
   trend,
 }: StatsCardProps) => {
   return (
-    <Card className={cn("overflow-hidden border-none shadow-md", className)}>
+    <Card className={cn("shadow-sm", className)}>
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
               {title}
             </p>
-            <h3 className="text-3xl font-black tracking-tight">{value}</h3>
+            <h3 className="text-2xl font-bold tracking-tight">{value}</h3>
             {description && (
-              <p className="text-xs text-muted-foreground font-medium">
+              <p className="text-[11px] text-muted-foreground font-medium">
                 {description}
               </p>
             )}
@@ -42,10 +42,10 @@ export const StatsCard = ({
               <div className="flex items-center gap-1 mt-1">
                 <span
                   className={cn(
-                    "text-xs font-bold px-1.5 py-0.5 rounded-full",
+                    "text-[10px] font-bold px-2 py-0.5 rounded-full",
                     trend.isPositive
-                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                      : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                      ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                      : "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400"
                   )}
                 >
                   {trend.value}
@@ -55,11 +55,11 @@ export const StatsCard = ({
           </div>
           <div
             className={cn(
-              "p-3 rounded-2xl bg-primary/10 text-primary transition-transform duration-500 group-hover:scale-110",
+              "p-3 rounded-xl bg-primary/10 text-primary",
               iconClassName
             )}
           >
-            <Icon className="w-6 h-6" />
+            <Icon className="w-5 h-5" />
           </div>
         </div>
       </CardContent>

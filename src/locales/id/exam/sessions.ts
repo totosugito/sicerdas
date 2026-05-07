@@ -146,9 +146,15 @@ export default {
     },
   },
   dashboard: {
-    title: "Dashboard User",
+    title: "Dashboard",
     description: "Pantau progres belajar dan performa Anda secara keseluruhan.",
     badge: "Dashboard Performa User",
+    tabs: {
+      overview: "Ringkasan",
+      assessments: "Ujian",
+      library: "Buku",
+      activity: "Aktivitas",
+    },
     stats: {
       totalExams: "Total Ujian",
       totalExamsDesc: "Ujian yang telah diikuti",
@@ -160,6 +166,9 @@ export default {
       totalCorrectDesc: "Dari {{count}} soal",
       totalWrong: "Total Salah",
     },
+    recentHighlights: "Sorotan Terbaru",
+    recentHighlightsDesc: "Pencapaian belajar terakhir Anda",
+    latestExams: "Ujian Terbaru",
     charts: {
       subjectPerformance: "Performa Per Subjek",
       subjectPerformanceDesc: "Akurasi Anda di setiap mata pelajaran",

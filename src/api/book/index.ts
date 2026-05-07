@@ -7,3 +7,4 @@ export {
   useBookFilterParams,
 } from "./book-filter-params";
 export { useUpdateBookRating } from "./update-rating";
+export { useUpdateBookmark } from "./book-bookmark";

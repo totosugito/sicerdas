@@ -23,6 +23,10 @@ export default {
       5: "Luar Biasa",
     },
   },
+  bookmark: {
+    noChange: "Status bookmark tidak berubah",
+    updated: "Status bookmark berhasil diperbarui",
+  },
   info: {
     pages: "Halaman",
     published: "Diterbitkan",
@@ -60,5 +64,24 @@ export default {
     samplePageViewer: "Penampil Contoh Halaman",
     downloadError: "Gagal mengunduh buku. Mencoba membuka langsung...",
     pdfViewer: "Penampil PDF",
+  },
+  dashboard: {
+    favorites: {
+      title: "Buku Favorit",
+      description: "Koleksi buku yang Anda simpan untuk dibaca nanti.",
+      empty: "Belum ada buku favorit",
+      emptyDesc: "Simpan buku yang Anda sukai agar mudah ditemukan di sini.",
+      removeConfirm: "Hapus dari Favorit?",
+      removeConfirmDesc: "Apakah Anda yakin ingin menghapus buku ini dari daftar favorit Anda?",
+      removeAction: "Ya, Hapus",
+      cancelAction: "Batal",
+    },
+    history: {
+      title: "Terakhir Dibaca",
+      description: "Lanjutkan membaca buku yang baru saja Anda buka.",
+      empty: "Belum ada riwayat baca",
+      emptyDesc: "Mulai membaca buku untuk melihat riwayat aktivitas Anda di sini.",
+      lastRead: "Terakhir dibaca {{time}}",
+    },
   },
 };

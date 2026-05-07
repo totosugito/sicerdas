@@ -23,9 +23,11 @@ const BookListQuery = Type.Object({
   group: Type.Optional(Type.Array(Type.Number())),
   grade: Type.Optional(Type.Array(Type.Number())),
   search: Type.Optional(Type.String({ description: "Search term for book title or author" })),
+  isBookmarked: Type.Optional(Type.Boolean({ description: "Filter by bookmarked books (requires login)" })),
+  isHistory: Type.Optional(Type.Boolean({ description: "Filter by books viewed by user (requires login)" })),
   sortBy: Type.Optional(
     Type.String({
-      description: "Sort field: createdAt, title, rating, viewCount",
+      description: "Sort field: createdAt, title, rating, viewCount, updatedAt",
       default: "createdAt",
     }),
   ),
@@ -127,6 +129,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         group,
         grade,
         search,
+        isBookmarked,
+        isHistory,
         sortBy = "createdAt",
         sortOrder = "desc",
         page = 1,
@@ -214,7 +218,6 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         conditions.push(or(ilike(books.title, searchTerm), ilike(books.author, searchTerm)));
       }
 
-      // Add filter conditions if they exist
       if (category?.length) {
         // Only use the first category if multiple categories are provided
         const categoryFilter = category.length > 1 ? [category[0]] : category;
@@ -236,6 +239,22 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             conditions.push(inArray(educationGrades.id, grade));
           }
         }
+      }
+
+      // Add user-specific filters
+      if (isLoggedIn && userId) {
+        if (isBookmarked) {
+          conditions.push(eq(bookInteractions.bookmarked, true));
+        }
+        if (isHistory) {
+          conditions.push(sql`${bookInteractions.viewCount} > 0`);
+        }
+      } else if (isBookmarked || isHistory) {
+        // If user is not logged in but tries to filter by favorites or history
+        return reply.status(401).send({
+          success: false,
+          message: t(($) => $.auth.unauthorized),
+        });
       }
 
       // Build base query with joins
@@ -291,6 +310,14 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             order === "asc"
               ? queryWithWhere.orderBy(bookEventStats.bookmarkCount)
               : queryWithWhere.orderBy(desc(bookEventStats.bookmarkCount));
+          break;
+        case "updatedAt":
+          query =
+            order === "asc"
+              ? queryWithWhere.orderBy(isLoggedIn ? bookInteractions.updatedAt : books.updatedAt)
+              : queryWithWhere.orderBy(
+                  desc(isLoggedIn ? bookInteractions.updatedAt : books.updatedAt),
+                );
           break;
         case "createdAt":
         default:
