@@ -1,12 +1,11 @@
 import { useBookList } from "@/api/book";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, ChevronRight, Clock } from "lucide-react";
+import { BookOpen, ChevronRight, Clock, GraduationCap } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { formatDistanceToNow } from "date-fns";
-import { id } from "date-fns/locale";
+import { getBookDetailId } from "@/lib/book-utils";
 
 interface RecentBooksListProps {
   limit?: number;
@@ -14,7 +13,7 @@ interface RecentBooksListProps {
 
 export const RecentBooksList = ({ limit }: RecentBooksListProps) => {
   const { t } = useAppTranslation();
-  
+
   const { data: res, isLoading } = useBookList({
     isHistory: true,
     sortBy: "updatedAt",
@@ -67,7 +66,7 @@ export const RecentBooksList = ({ limit }: RecentBooksListProps) => {
         <Link
           key={book.id}
           to={AppRoute.book.detail.url}
-          params={{ id: book.id }}
+          params={{ id: getBookDetailId(book.bookId, book.title) }}
           className="group flex items-center gap-4 px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all duration-200"
         >
           <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 flex-shrink-0 border border-slate-200 dark:border-slate-700 transition-transform duration-300 group-hover:scale-105">
@@ -86,15 +85,15 @@ export const RecentBooksList = ({ limit }: RecentBooksListProps) => {
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest h-4 px-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700">
+              <Badge variant="outline" className="text-xs font-black uppercase tracking-widest h-5 px-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700">
                 {book.category.name}
               </Badge>
-              <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
-                <Clock className="w-2.5 h-2.5" />
-                {formatDistanceToNow(new Date(book.updatedAt), { addSuffix: true, locale: id })}
+              <span className="text-xs font-bold text-slate-400 flex items-center gap-1">
+                <GraduationCap className="w-3 h-3" />
+                {book.grade.name}
               </span>
             </div>
-            <h4 className="text-[15px] font-bold text-slate-900 dark:text-white truncate group-hover:text-amber-500 transition-colors leading-tight">
+            <h4 className="text-base font-bold text-slate-900 dark:text-white truncate group-hover:text-primary transition-colors leading-tight">
               {book.title}
             </h4>
             <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1 truncate">
@@ -102,7 +101,7 @@ export const RecentBooksList = ({ limit }: RecentBooksListProps) => {
             </p>
           </div>
 
-          <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-amber-500 transition-colors" />
+          <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors" />
         </Link>
       ))}
     </div>

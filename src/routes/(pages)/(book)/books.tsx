@@ -54,26 +54,39 @@ function RouteComponent() {
   type ViewMode = (typeof EnumViewMode)[keyof typeof EnumViewMode]["value"];
 
   const [searchTerm, setSearchTerm] = useState(urlSearch ?? pageStore.search ?? "");
-  const [books, setBooks] = useState<BookListItem[]>([]);
   const [currentPage, setCurrentPage] = useState(urlPage ?? pageStore.page ?? 1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalBooks, setTotalBooks] = useState(0);
-
-  const selectedFilters = {
-    categories: urlCategory ?? pageStore.category ?? [0],
-    groups: urlGroup ?? pageStore.group ?? [],
-    grades: urlGrade ?? pageStore.grade ?? [],
-  };
   const [sortBy, setSortBy] = useState(urlSortBy ?? pageStore.sortBy ?? "createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
     urlSortOrder ?? pageStore.sortOrder ?? "desc",
   );
 
   const [viewMode, setViewMode] = useState<ViewMode>(pageStore.viewMode ?? EnumViewMode.grid.value);
-  const [isLoading, setIsLoading] = useState(true);
 
-  const bookListMutation = useBookList();
+  const selectedFilters = {
+    categories: urlCategory ?? pageStore.category ?? [0],
+    groups: urlGroup ?? pageStore.group ?? [],
+    grades: urlGrade ?? pageStore.grade ?? [],
+  };
+
+  const bookListQuery = useBookList({
+    page: currentPage,
+    limit: urlLimit ?? pageStore.limit ?? 12,
+    search: searchTerm.trim() || undefined,
+    category: selectedFilters.categories.length > 0 ? selectedFilters.categories : undefined,
+    group: selectedFilters.groups.length > 0 ? selectedFilters.groups : undefined,
+    grade: selectedFilters.grades && selectedFilters.grades.length > 0 ? selectedFilters.grades : undefined,
+    sortBy,
+    sortOrder,
+  });
+
   const filterParamsQuery = useBookFilterParams();
+
+  const isLoading = bookListQuery.isLoading;
+  const isError = bookListQuery.isError;
+  const response = bookListQuery.data;
+  const books = response?.data?.items || [];
+  const totalPages = response?.data?.meta?.totalPages || 0;
+  const totalBooks = response?.data?.meta?.total || 0;
 
   const updateUrlParams = (
     newPage?: number,
@@ -95,40 +108,6 @@ function RouteComponent() {
       },
       replace: true,
     });
-  };
-
-  const loadBooks = async (
-    page: number = 1,
-    search: string = "",
-    filters = selectedFilters,
-    sort: { sortBy: string; sortOrder: "asc" | "desc" } = { sortBy, sortOrder },
-  ) => {
-    setIsLoading(true);
-    try {
-      const response = (await bookListMutation.mutateAsync({
-        page,
-        limit: urlLimit || 12,
-        search: search.trim() || undefined,
-        category: filters.categories.length > 0 ? filters.categories : undefined,
-        group: filters.groups.length > 0 ? filters.groups : undefined,
-        grade: filters.grades && filters.grades.length > 0 ? filters.grades : undefined,
-        sortBy: sort.sortBy,
-        sortOrder: sort.sortOrder,
-      })) as BookListResponse;
-
-      if (response.success) {
-        setBooks(response.data.items);
-        setTotalPages(response.data.meta.totalPages);
-        setTotalBooks(response.data.meta.total);
-        setCurrentPage(response.data.meta.page);
-      } else {
-        showNotifError({ message: t(($) => $.book.failedToLoadBooks) });
-      }
-    } catch (error) {
-      showNotifError({ message: t(($) => $.book.errorLoadingBooks) });
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   useEffect(() => {
@@ -153,20 +132,15 @@ function RouteComponent() {
       sortOrder: effectiveSortOrder,
     });
 
-    loadBooks(
-      effectivePage,
-      effectiveSearch,
-      {
-        categories: effectiveCategories,
-        groups: effectiveGroups,
-        grades: effectiveGrades,
-      },
-      {
-        sortBy: effectiveSortBy,
-        sortOrder: effectiveSortOrder,
-      },
-    );
-  }, [urlPage, urlSearch, urlCategory, urlGroup, urlGrade, urlSortBy, urlSortOrder]);
+    setCurrentPage(effectivePage);
+    setSearchTerm(effectiveSearch);
+    setSortBy(effectiveSortBy);
+    setSortOrder(effectiveSortOrder);
+
+    if (isError) {
+      showNotifError({ message: t(($) => $.book.errorLoadingBooks) });
+    }
+  }, [urlPage, urlSearch, urlCategory, urlGroup, urlGrade, urlSortBy, urlSortOrder, isError]);
 
   const handleSearch = (term: string = searchTerm) => {
     updateUrlParams(1, term);
@@ -230,7 +204,7 @@ function RouteComponent() {
               searchTerm={searchTerm}
               onSearchTermChange={setSearchTerm}
               onSearch={handleSearch}
-              isSearchDisabled={bookListMutation.isPending}
+              isSearchDisabled={isLoading}
               filterData={filterParamsQuery.data}
               selectedFilters={selectedFilters}
               onFilterChange={handleFilterChange}
@@ -313,7 +287,7 @@ function RouteComponent() {
                 }}
                 showPageSize={false}
                 showPageLabel={false}
-                disabled={bookListMutation.isPending}
+                disabled={isLoading}
                 onPaginationChange={(paginationData) => {
                   handlePageChange(paginationData.page);
                 }}

@@ -8,7 +8,6 @@ import {
   OverviewTab,
   AssessmentsTab,
   LibraryTab,
-  ActivityTab,
   DashboardHero
 } from "@/components/pages/user/dashboard";
 import {
@@ -21,7 +20,6 @@ import {
   Trophy,
   Book,
   LayoutGrid,
-  History,
   Rocket
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,7 +28,7 @@ import { AppRoute } from "@/constants/app-route";
 import { z } from "zod";
 
 export const dashboardSearchSchema = z.object({
-  tab: z.enum(["overview", "assessments", "library", "activity"]).optional().catch("overview"),
+  tab: z.enum(["overview", "assessments", "library"]).optional().catch("overview"),
   days: z.number().optional().catch(7),
 });
 
@@ -146,13 +144,6 @@ function ExamDashboardComponent() {
                 <Book className="w-4 h-4 transition-transform data-[state=active]:scale-110" />
                 {t(($) => $.exam.sessions.dashboard.tabs.library)}
               </TabsTrigger>
-              <TabsTrigger
-                value="activity"
-                className="px-6 py-2.5 rounded-xl font-bold text-sm transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary data-[state=active]:shadow-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 gap-2"
-              >
-                <History className="w-4 h-4 transition-transform data-[state=active]:scale-110" />
-                {t(($) => $.exam.sessions.dashboard.tabs.activity)}
-              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -185,13 +176,6 @@ function ExamDashboardComponent() {
             <LibraryTab />
           </TabsContent>
 
-          {/* --- ACTIVITY TAB --- */}
-          <TabsContent value="activity">
-            <ActivityTab
-              history={history}
-              bookHistory={bookHistory}
-            />
-          </TabsContent>
         </Tabs>
       </div>
     </div>

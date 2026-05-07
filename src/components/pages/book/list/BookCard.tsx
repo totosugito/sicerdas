@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 
 import { useNavigate, Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
+import { getBookDetailId } from "@/lib/book-utils";
 
 interface BookCardProps {
   books: BookListItem[];
@@ -49,15 +50,10 @@ const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
 
   const navigate = useNavigate();
 
-  const slug = book.title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)+/g, "");
-
   const handleBookClick = () => {
     navigate({
       to: AppRoute.book.detail.url,
-      params: { id: `${book.bookId}-${slug}` },
+      params: { id: getBookDetailId(book.bookId, book.title) },
     });
   };
 
@@ -110,7 +106,7 @@ const BookCardView = ({ book, viewMode }: BookCardViewProps) => {
         >
           <Link
             to={AppRoute.book.detail.url}
-            params={{ id: `${book.bookId}-${slug}` }}
+            params={{ id: getBookDetailId(book.bookId, book.title) }}
             className="cursor-pointer"
           >
             {book.title}
