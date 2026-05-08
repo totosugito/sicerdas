@@ -61,8 +61,12 @@ export const AppApi = {
     crud: APP_URL_API + "/book",
     filterParams: APP_URL_API + "/book/filter-params",
     proxyPdf: APP_URL_API + "/book/proxy-pdf",
-    bookmark: APP_URL_API + "/book/bookmark",
-    rating: APP_URL_API + "/book/rating",
+    user: {
+      bookmark: APP_URL_API + "/book/user/bookmark",
+      rating: APP_URL_API + "/book/user/rating",
+      favorites: APP_URL_API + "/book/user/favorites",
+      history: APP_URL_API + "/book/user/history",
+    },
     updateDownload: APP_URL_API + "/book/update-download",
   },
   periodicTable: {

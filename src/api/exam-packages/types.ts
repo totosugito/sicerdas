@@ -23,9 +23,9 @@ export interface ExamPackage {
     name: string | null;
   };
   stats: {
-    totalSections: number;
+    totalSections?: number;
     activeSections: number;
-    totalQuestions: number;
+    totalQuestions?: number;
     activeQuestions: number;
     viewCount: number;
     likeCount: number;

@@ -12,7 +12,8 @@ export interface FavoritePackage {
   thumbnail: string | null;
   stats: {
     rating: number;
-    totalQuestions: number;
+    activeQuestions: number;
+    activeSections: number;
   };
   userInteraction: {
     status: EnumExamPackageUserStatus;
@@ -46,5 +47,6 @@ export const useFavoritePackages = (params?: { page?: number; pageSize?: number 
       });
       return response as FavoritePackagesResponse;
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };

@@ -51,13 +51,13 @@ export const PackageDetailInfo = ({ pkg }: PackageDetailInfoProps) => {
         <InfoCard
           icon={LayoutGrid}
           label={t(($) => $.exam.sections.shortTitle)}
-          value={`${pkg.stats.totalSections} ${t(($) => $.exam.sections.sectionsCount)}`}
+          value={`${pkg.stats.activeSections} ${t(($) => $.exam.sections.sectionsCount)}`}
           colorClass="bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
         />
         <InfoCard
           icon={HelpCircle}
           label={t(($) => $.exam.questions.testQuestions)}
-          value={`${pkg.stats.totalQuestions} ${t(($) => $.exam.packages.detail.questions)}`}
+          value={`${pkg.stats.activeQuestions} ${t(($) => $.exam.packages.detail.questions)}`}
           colorClass="bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
         />
         <InfoCard

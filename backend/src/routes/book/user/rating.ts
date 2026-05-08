@@ -1,13 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
-import { db } from "../../db/db-pool.ts";
-import { books, bookEventStats, bookInteractions } from "../../db/schema/book/index.ts";
+import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
+import { db } from "../../../db/db-pool.ts";
+import { books, bookEventStats, bookInteractions } from "../../../db/schema/book/index.ts";
 import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { fromNodeHeaders } from "better-auth/node";
-import { getAuthInstance } from "../../decorators/auth.decorator.ts";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
+import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const UpdateRatingRequest = Type.Object({
   bookId: Type.Number(),
@@ -26,12 +24,12 @@ const UpdateRatingResponse = Type.Object({
   }),
 });
 
-const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
+const userRatingRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
     url: "/rating",
     method: "POST",
     schema: {
-      tags: ["V1/Book"],
+      tags: ["V1/Book/User"],
       summary: "Update book rating",
       description: "Set a rating for a specific book",
       body: UpdateRatingRequest,
@@ -52,16 +50,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       reply: FastifyReply,
     ): Promise<typeof UpdateRatingResponse.static> {
       const { t } = getTypedI18n(req);
-      const session = await getAuthInstance(app).api.getSession({
-        headers: fromNodeHeaders(req.headers),
-      });
-      const user = session?.user;
-
-      if (!user) {
-        return reply.unauthorized(t(($) => $.auth.unauthorized));
-      }
-
-      const userId = user.id;
+      const userId = (req as any).session.user.id;
       const { bookId, rating } = req.body;
 
       // Find the book UUID based on the integer bookId
@@ -181,4 +170,4 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   });
 };
 
-export default protectedRoute;
+export default userRatingRoute;

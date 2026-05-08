@@ -57,8 +57,6 @@ export type BookListRequest = {
   group?: number[];
   grade?: number[];
   search?: string;
-  isBookmarked?: boolean;
-  isHistory?: boolean;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
   page?: number;

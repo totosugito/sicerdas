@@ -1,6 +1,6 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import type { ExamHistoryItem } from "./types";
 
 export interface SessionHistoryResponse {
@@ -42,8 +42,10 @@ export const useSessionHistory = (
       return response as SessionHistoryResponse;
     },
     enabled: !!packageId && !!sectionId,
+    staleTime: 1 * 60 * 1000, // 1 minute
   });
 };
+
 export interface AllSessionHistoryResponse {
   success: boolean;
   message: string;
@@ -60,8 +62,9 @@ export interface AllSessionHistoryResponse {
 
 export const useAllSessionHistory = (
   params: { page?: number; limit?: number } = { page: 1, limit: 10 },
+  options: Partial<UseQueryOptions<AllSessionHistoryResponse, Error>> = {}
 ) => {
-  return useQuery({
+  return useQuery<AllSessionHistoryResponse>({
     queryKey: ["exam-all-session-history", params.page, params.limit],
     queryFn: async () => {
       const url = AppApi.exam.sessions.allHistory;
@@ -77,5 +80,7 @@ export const useAllSessionHistory = (
       });
       return response as AllSessionHistoryResponse;
     },
+    staleTime: 1 * 60 * 1000, // 1 minute
+    ...options,
   });
 };

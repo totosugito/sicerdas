@@ -23,7 +23,8 @@ const FavoritePackageResponseItem = Type.Object({
   thumbnail: Type.Union([Type.String(), Type.Null()]),
   stats: Type.Object({
     rating: Type.Number(),
-    totalQuestions: Type.Number(),
+    activeQuestions: Type.Number(),
+    activeSections: Type.Number(),
   }),
   userInteraction: Type.Object({
     status: Type.Union([
@@ -57,7 +58,7 @@ const listFavoritesRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: "List user's bookmarked exam packages",
       querystring: Type.Object({
         page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
-        pageSize: Type.Optional(Type.Number({ minimum: 1, maximum: 100, default: 10 })),
+        pageSize: Type.Optional(Type.Number({ minimum: 1, maximum: 20, default: 5 })),
       }),
       response: {
         200: FavoritePackagesResponse,
@@ -95,7 +96,8 @@ const listFavoritesRoute: FastifyPluginAsyncTypebox = async (app) => {
           id: examPackages.id,
           title: examPackages.title,
           thumbnail: examPackages.thumbnail,
-          totalQuestions: examPackages.totalQuestions,
+          activeQuestions: examPackages.activeQuestions,
+          activeSections: examPackages.activeSections,
           categoryName: educationCategories.name,
           rating: examPackageEventStats.rating,
           status: examPackageInteractions.status,
@@ -123,7 +125,8 @@ const listFavoritesRoute: FastifyPluginAsyncTypebox = async (app) => {
           thumbnail: getPackageThumbnailUrl(item.thumbnail),
           stats: {
             rating: item.rating !== null ? parseFloat(item.rating.toString()) : 0,
-            totalQuestions: item.totalQuestions,
+            activeQuestions: item.activeQuestions,
+            activeSections: item.activeSections,
           },
           userInteraction: {
             status: item.status,

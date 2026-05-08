@@ -203,6 +203,7 @@ export default {
       noScore: "Tanpa Skor",
       review: "Review",
       resume: "Lanjut",
+      statusInProgress: "Sedang Berjalan",
     },
     radarChart: {
       noData: "Tidak ada data subjek tersedia",

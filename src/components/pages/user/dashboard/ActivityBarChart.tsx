@@ -8,6 +8,9 @@ import { format, parseISO } from "date-fns";
 import { id } from "date-fns/locale";
 import { LoadingView } from "@/components/app/LoadingView";
 
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Activity } from "lucide-react";
+
 interface ActivityBarChartProps {
   days?: number;
   className?: string;
@@ -22,6 +25,7 @@ export const ActivityBarChart = ({ days = 7, className }: ActivityBarChartProps)
   const stats = activityStatsRes?.data || [];
 
   const options = useMemo(() => {
+    // ... (options logic remains same)
     if (stats.length === 0) return null;
 
     const displayData = stats;
@@ -108,6 +112,7 @@ export const ActivityBarChart = ({ days = 7, className }: ActivityBarChartProps)
           type: "bar",
           stack: "total",
           barWidth: "35%",
+          barMaxWidth: 24,
           data: correctData,
           itemStyle: {
             color: isDark ? "#4ade80" : "#22c55e",
@@ -123,6 +128,7 @@ export const ActivityBarChart = ({ days = 7, className }: ActivityBarChartProps)
           name: t(($) => $.exam.sessions.results.stats.wrong),
           type: "bar",
           stack: "total",
+          barMaxWidth: 24,
           data: wrongData,
           itemStyle: {
             color: isDark ? "#fb7185" : "#ef4444",
@@ -138,31 +144,52 @@ export const ActivityBarChart = ({ days = 7, className }: ActivityBarChartProps)
     };
   }, [stats, isDark, t]);
 
-  if (isLoading) {
-    return (
-      <LoadingView
-        title={t(($) => $.exam.sessions.dashboard.charts.activityLoadingTitle)}
-        message={t(($) => $.exam.sessions.dashboard.charts.activityLoadingMessage)}
-        className="h-full border-0 bg-transparent shadow-none"
-      />
-    );
-  }
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <LoadingView
+          title={t(($) => $.exam.sessions.dashboard.charts.activityLoadingTitle)}
+          message={t(($) => $.exam.sessions.dashboard.charts.activityLoadingMessage)}
+          className="h-[280px] border-0 bg-transparent shadow-none"
+        />
+      );
+    }
 
-  if (stats.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full text-center p-8">
-        <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center mb-4 border border-slate-100 dark:border-slate-800">
-          <BarChart3 className="w-8 h-8 text-slate-300 dark:text-slate-600" />
+    if (stats.length === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center h-[280px] text-center p-8">
+          <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center mb-4 border border-slate-100 dark:border-slate-800">
+            <BarChart3 className="w-8 h-8 text-slate-300 dark:text-slate-600" />
+          </div>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+            {t(($) => $.exam.sessions.dashboard.empty.noActivity)}
+          </h3>
+          <p className="text-sm text-muted-foreground max-w-[280px]">
+            {t(($) => $.exam.sessions.dashboard.empty.noActivityDesc)}
+          </p>
         </div>
-        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
-          {t(($) => $.exam.sessions.dashboard.empty.noActivity)}
-        </h3>
-        <p className="text-sm text-muted-foreground max-w-[280px]">
-          {t(($) => $.exam.sessions.dashboard.empty.noActivityDesc)}
-        </p>
-      </div>
-    );
-  }
+      );
+    }
 
-  return <ReactECharts options={options} series={options?.series} className={className} />;
+    return <ReactECharts options={options} series={options?.series} className={className || "h-[280px] w-full"} />;
+  };
+
+  return (
+    <Card className="shadow-sm overflow-hidden">
+      <CardHeader className="bg-muted/10 border-b">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-indigo-500/10 rounded-lg flex items-center justify-center">
+            <Activity className="w-5 h-5 text-indigo-500" />
+          </div>
+          <div>
+            <CardTitle className="text-lg font-bold">{t(($) => $.exam.sessions.dashboard.charts.activityHistory)}</CardTitle>
+            <CardDescription className="text-xs font-medium">{t(($) => $.exam.sessions.dashboard.charts.activityHistoryDesc)}</CardDescription>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="p-6 pt-4">
+        {renderContent()}
+      </CardContent>
+    </Card>
+  );
 };

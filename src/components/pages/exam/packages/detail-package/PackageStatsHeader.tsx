@@ -47,7 +47,9 @@ export function PackageStatsHeader({ pkg, isLoading }: PackageStatsHeaderProps) 
     },
     {
       label: t(($) => $.exam.packages.table.columns.questions),
-      value: `${pkg.stats.activeQuestions} / ${pkg.stats.totalQuestions}`,
+      value: pkg.stats.totalQuestions !== undefined 
+        ? `${pkg.stats.activeQuestions} / ${pkg.stats.totalQuestions}`
+        : pkg.stats.activeQuestions,
       icon: <Trophy className="h-5 w-5 text-purple-500" />,
       color: "purple",
     },

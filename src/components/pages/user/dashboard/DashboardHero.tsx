@@ -5,7 +5,6 @@ import {
   AvatarFallback,
   AvatarImage
 } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -64,13 +63,17 @@ export function DashboardHero({
               <SelectTrigger className="w-[160px] bg-transparent border-none text-slate-700 dark:text-slate-200 font-bold text-sm h-10 focus:ring-0">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-primary" />
-                  <span>Last {activityDays} Days</span>
+                  <span>
+                    {activityDays === 7 && t(($) => $.exam.sessions.dashboard.charts.activityRange.last7Days)}
+                    {activityDays === 14 && t(($) => $.exam.sessions.dashboard.charts.activityRange.last14Days)}
+                    {activityDays === 30 && t(($) => $.exam.sessions.dashboard.charts.activityRange.last30Days)}
+                  </span>
                 </div>
               </SelectTrigger>
               <SelectContent className="rounded-2xl shadow-2xl border-slate-200 dark:border-slate-800">
-                <SelectItem value="7">Last 7 Days</SelectItem>
-                <SelectItem value="30">Last 30 Days</SelectItem>
-                <SelectItem value="90">Last 90 Days</SelectItem>
+                <SelectItem value="7">{t(($) => $.exam.sessions.dashboard.charts.activityRange.last7Days)}</SelectItem>
+                <SelectItem value="14">{t(($) => $.exam.sessions.dashboard.charts.activityRange.last14Days)}</SelectItem>
+                <SelectItem value="30">{t(($) => $.exam.sessions.dashboard.charts.activityRange.last30Days)}</SelectItem>
               </SelectContent>
             </Select>
           </div>

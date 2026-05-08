@@ -8,13 +8,15 @@ import React from 'react'
 interface LocalePaginationProps {
   currentPage: number
   totalPages: number
-  onPageChange: (page: number) => void
+  onPageChange: (page: number) => void,
+  className?: string;
 }
 
 export function LocalePagination({
   currentPage,
   totalPages,
-  onPageChange
+  onPageChange,
+  className = "mt-8"
 }: LocalePaginationProps) {
   const { t } = useAppTranslation()
 
@@ -85,7 +87,7 @@ export function LocalePagination({
   );
 
   return (
-    <div className="mt-8">
+    <div className={className}>
       <Pagination>
         <PaginationContent>
           <PaginationItem>

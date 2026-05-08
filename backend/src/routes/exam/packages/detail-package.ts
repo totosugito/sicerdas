@@ -29,9 +29,7 @@ const PackageDetailResponse = Type.Object({
   requiredTier: Type.Union([Type.String(), Type.Null()]),
   isActive: Type.Boolean(),
   stats: Type.Object({
-    totalSections: Type.Number(),
     activeSections: Type.Number(),
-    totalQuestions: Type.Number(),
     activeQuestions: Type.Number(),
     rating: Type.Number(),
     viewCount: Type.Number(),
@@ -119,9 +117,7 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
           thumbnail: examPackages.thumbnail,
           requiredTier: examPackages.requiredTier,
           isActive: examPackages.isActive,
-          totalSections: examPackages.totalSections,
           activeSections: examPackages.activeSections,
-          totalQuestions: examPackages.totalQuestions,
           activeQuestions: examPackages.activeQuestions,
           versionId: examPackages.versionId,
           createdAt: examPackages.createdAt,
@@ -188,9 +184,7 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
         requiredTier: pkg.requiredTier,
         isActive: pkg.isActive,
         stats: {
-          totalSections: pkg.totalSections,
           activeSections: pkg.activeSections,
-          totalQuestions: pkg.totalQuestions,
           activeQuestions: pkg.activeQuestions,
           rating:
             pkg.ratingCount && pkg.ratingCount > 0

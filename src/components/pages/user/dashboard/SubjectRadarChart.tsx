@@ -5,6 +5,9 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { useMemo } from "react";
 import { PieChart } from "lucide-react";
 
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Target } from "lucide-react";
+
 interface SubjectRadarChartProps {
   stats: SubjectStats[];
   className?: string;
@@ -16,6 +19,7 @@ export const SubjectRadarChart = ({ stats, className }: SubjectRadarChartProps) 
   const isDark = theme === "dark";
 
   const options = useMemo(() => {
+    // ... (options logic remains same)
     // Radar charts require at least 3 indicators to render a polygon.
     // If we have fewer than 3 subjects, we switch to a bar chart for better visualization.
     if (stats.length > 0 && stats.length < 3) {
@@ -63,6 +67,7 @@ export const SubjectRadarChart = ({ stats, className }: SubjectRadarChartProps) 
             type: "bar",
             data: stats.map((s) => parseFloat(s.accuracyRate)),
             barWidth: stats.length === 1 ? "20%" : "40%",
+            barMaxWidth: 24,
             itemStyle: {
               color: "#3b82f6",
               borderRadius: [0, 8, 8, 0],
@@ -141,25 +146,44 @@ export const SubjectRadarChart = ({ stats, className }: SubjectRadarChartProps) 
         },
       ],
     };
-  }, [stats, isDark]);
+  }, [stats, isDark, t]);
 
-
-  if (stats.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full text-center p-8">
-        <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center mb-4 border border-slate-100 dark:border-slate-800">
-          <PieChart className="w-8 h-8 text-slate-300 dark:text-slate-600" />
+  const renderContent = () => {
+    if (stats.length === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center h-[320px] text-center p-8">
+          <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center mb-4 border border-slate-100 dark:border-slate-800">
+            <PieChart className="w-8 h-8 text-slate-300 dark:text-slate-600" />
+          </div>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+            {t(($) => $.exam.sessions.dashboard.radarChart.noData)}
+          </h3>
+          <p className="text-sm text-muted-foreground max-w-[280px]">
+            {t(($) => $.exam.sessions.dashboard.empty.noStatsDesc)}
+          </p>
         </div>
-        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
-          {t(($) => $.exam.sessions.dashboard.radarChart.noData)}
-        </h3>
-        <p className="text-sm text-muted-foreground max-w-[280px]">
-          {t(($) => $.exam.sessions.dashboard.empty.noStatsDesc)}
-        </p>
-      </div>
-    );
-  }
+      );
+    }
 
-  return <ReactECharts options={options} series={options.series} className={className} />;
+    return <ReactECharts options={options} series={options.series} className={className || "h-[320px] w-full"} />;
+  };
 
+  return (
+    <Card className="shadow-sm overflow-hidden">
+      <CardHeader className="bg-muted/10 border-b">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center">
+            <Target className="w-5 h-5 text-amber-600" />
+          </div>
+          <div>
+            <CardTitle className="text-lg font-bold">{t(($) => $.exam.sessions.dashboard.charts.subjectPerformance)}</CardTitle>
+            <CardDescription className="text-xs font-medium">{t(($) => $.exam.sessions.dashboard.charts.subjectPerformanceDesc)}</CardDescription>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="px-6 py-8">
+        {renderContent()}
+      </CardContent>
+    </Card>
+  );
 };

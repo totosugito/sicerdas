@@ -2,12 +2,12 @@ import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
 
-export type UpdateRatingRequest = {
+export type RateBookRequest = {
   bookId: number;
   rating: number;
 };
 
-export type UpdateRatingResponse = {
+export type RateBookResponse = {
   success: boolean;
   message: string;
   data: {
@@ -19,17 +19,17 @@ export type UpdateRatingResponse = {
   };
 };
 
-export const useUpdateBookRating = () => {
+export const useRateBook = () => {
   return useMutation({
     mutationKey: ["update-book-rating"],
-    mutationFn: async (data: UpdateRatingRequest) => {
+    mutationFn: async (data: RateBookRequest) => {
       const response = await fetchApi({
         method: "POST",
-        url: AppApi.book.rating,
+        url: AppApi.book.user.rating,
         body: data,
         withCredentials: true,
       });
-      return response as UpdateRatingResponse;
+      return response as RateBookResponse;
     },
   });
 };

@@ -113,8 +113,6 @@ export const AppRoute = {
       list: { url: "/users/admin/list-users" },
     },
     profile: { url: "/user/profile" },
-    history: { url: "/user/history" },
-    favorites: { url: "/user/favorites" },
     dashboard: { url: "/user/dashboard" },
     chatAi: {
       models: { url: "/admin/chat-ai/models" },

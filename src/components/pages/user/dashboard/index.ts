@@ -6,6 +6,3 @@ export { ActivityBarChart } from "./ActivityBarChart";
 export { FavoriteBooksList } from "./FavoriteBooksList";
 export { RecentBooksList } from "./RecentBooksList";
 export { DashboardHero } from "./DashboardHero";
-export { OverviewTab } from "./OverviewTab";
-export { AssessmentsTab } from "./AssessmentsTab";
-export { LibraryTab } from "./LibraryTab";

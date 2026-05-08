@@ -1,7 +1,6 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { useBookDetail } from "@/api/book/book-detail";
-import { useUpdateBookRating } from "@/api/book/update-rating";
+import { useBookDetail, useRateBook, useBookmarkBook } from "@/api/book";
 import { BookDetail } from "@/components/pages/book/book/BookDetail";
 import { BookDetailSkeleton } from "@/components/pages/book/book/BookDetailSkeleton";
 import { ErrorPageDetails, PageTitle } from "@/components/app";
@@ -13,7 +12,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { CreateContentReport } from "@/components/pages/layout/CreateContentReport";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
-import { useUpdateBookmark } from "@/api/book/book-bookmark";
+
 import { useUpdateDownload, UpdateDownloadResponse } from "@/api/book/update-download";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
 import { DialogModal } from "@/components/custom/components";
@@ -46,9 +45,9 @@ function RouteComponent() {
   const { id } = Route.useParams();
   const bookId = id.split("-")[0];
   const { data, isLoading, isError } = useBookDetail(bookId);
-  const { mutate: updateBookmark } = useUpdateBookmark();
+  const { mutate: updateBookmark } = useBookmarkBook();
   const { mutate: updateDownload } = useUpdateDownload();
-  const { mutateAsync: updateRating } = useUpdateBookRating();
+  const { mutateAsync: updateRating } = useRateBook();
   const queryClient = useQueryClient();
   const { t } = useAppTranslation();
   const { user } = useAuth();

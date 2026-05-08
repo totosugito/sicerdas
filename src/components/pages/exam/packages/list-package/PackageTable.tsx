@@ -163,17 +163,20 @@ export function PackageTable({
       ),
       cell: ({ row }) => {
         const pkg = row.original;
-        const inactive = Math.max(0, pkg.stats.totalSections - pkg.stats.activeSections);
         return (
           <div className="flex justify-center flex-col items-center gap-1">
             <div className="flex items-center gap-1.5">
               <Badge variant="success" className="px-1.5 py-0 h-5 text-[10px]">
                 {pkg.stats.activeSections}
               </Badge>
-              <span className="text-[10px] text-muted-foreground">/</span>
-              <Badge variant="secondary" className="px-1.5 py-0 h-5 text-[10px] opacity-70">
-                {inactive}
-              </Badge>
+              {pkg.stats.totalSections !== undefined && (
+                <>
+                  <span className="text-[10px] text-muted-foreground">/</span>
+                  <Badge variant="secondary" className="px-1.5 py-0 h-5 text-[10px] opacity-70">
+                    {Math.max(0, pkg.stats.totalSections - pkg.stats.activeSections)}
+                  </Badge>
+                </>
+              )}
             </div>
           </div>
         );
@@ -192,17 +195,20 @@ export function PackageTable({
       ),
       cell: ({ row }) => {
         const pkg = row.original;
-        const inactive = Math.max(0, pkg.stats.totalQuestions - pkg.stats.activeQuestions);
         return (
           <div className="flex justify-center flex-col items-center gap-1">
             <div className="flex items-center gap-1.5">
               <Badge variant="success" className="px-1.5 py-0 h-5 text-[10px]">
                 {pkg.stats.activeQuestions}
               </Badge>
-              <span className="text-[10px] text-muted-foreground">/</span>
-              <Badge variant="secondary" className="px-1.5 py-0 h-5 text-[10px] opacity-70">
-                {inactive}
-              </Badge>
+              {pkg.stats.totalQuestions !== undefined && (
+                <>
+                  <span className="text-[10px] text-muted-foreground">/</span>
+                  <Badge variant="secondary" className="px-1.5 py-0 h-5 text-[10px] opacity-70">
+                    {Math.max(0, pkg.stats.totalQuestions - pkg.stats.activeQuestions)}
+                  </Badge>
+                </>
+              )}
             </div>
           </div>
         );

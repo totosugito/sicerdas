@@ -2,7 +2,6 @@ import React from "react";
 import { ExamPackage } from "@/api/exam-packages";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Clock,
@@ -173,10 +172,14 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
                 <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
                   {pkg.stats.activeSections}
                 </span>
-                <span className="text-xs text-muted-foreground">/</span>
-                <span className="text-sm font-semibold text-slate-500">
-                  {pkg.stats.totalSections - pkg.stats.activeSections}
-                </span>
+                {pkg.stats.totalSections !== undefined && (
+                  <>
+                    <span className="text-xs text-muted-foreground">/</span>
+                    <span className="text-sm font-semibold text-slate-500">
+                      {pkg.stats.totalSections - pkg.stats.activeSections}
+                    </span>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -190,10 +193,14 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
                 <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
                   {pkg.stats.activeQuestions}
                 </span>
-                <span className="text-xs text-muted-foreground">/</span>
-                <span className="text-sm font-semibold text-slate-500">
-                  {pkg.stats.totalQuestions - pkg.stats.activeQuestions}
-                </span>
+                {pkg.stats.totalQuestions !== undefined && (
+                  <>
+                    <span className="text-xs text-muted-foreground">/</span>
+                    <span className="text-sm font-semibold text-slate-500">
+                      {pkg.stats.totalQuestions - pkg.stats.activeQuestions}
+                    </span>
+                  </>
+                )}
               </div>
             </div>
           </div>
