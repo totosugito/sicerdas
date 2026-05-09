@@ -312,6 +312,9 @@ function RouteComponent() {
           mode={details.session.mode as ExamSessionMode}
           onSubmit={handleSubmit}
           items={gridItems}
+          durationSeconds={
+            details.section?.durationMinutes ? details.section.durationMinutes * 60 : undefined
+          }
           isSubmitting={submitSessionMutation.isPending}
           showSubmit={details.session.status === EnumExamSessionStatus.IN_PROGRESS}
           onGoToResult={() =>

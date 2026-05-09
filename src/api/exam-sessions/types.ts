@@ -88,7 +88,7 @@ export interface ExamSessionDetails {
     title: string;
     grade?: { name: string | null };
   };
-  section?: { title: string };
+  section?: { title: string; durationMinutes: number | null };
 }
 
 export interface StartSessionRequest {
