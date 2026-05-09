@@ -47,6 +47,7 @@
     "@getbrevo/brevo": "^5.0.4",
     "@scalar/fastify-api-reference": "^1.55.1",
     "@sinclair/typebox": "^0.34.49",
+    "axios": "^1.16.0",
     "better-auth": "^1.6.9",
     "close-with-grace": "^2.5.0",
     "date-fns": "^4.1.0",

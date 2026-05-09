@@ -287,7 +287,7 @@ function RouteComponent() {
               <LazyPDFViewer
                 key={showViewer ? `visible-${book.bookId}` : "hidden"}
                 config={{
-                  src: book.pdf,
+                  src: book.pdf.includes("?") ? `${book.pdf}&cors=1` : `${book.pdf}?cors=1`,
                   disabledCategories: ["panel-comment", "shapes", "redaction", "security"],
                   scroll: {
                     defaultStrategy: ScrollStrategyVertical,

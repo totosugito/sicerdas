@@ -29,7 +29,7 @@ const auth = betterAuth({
     provider: "pg",
     usePlural: true,
   }),
-  baseURL: envConfig.server.baseUrl,
+  baseURL: envConfig.server.apiUrl,
   basePath: "/api/auth",
   plugins: [
     admin(),

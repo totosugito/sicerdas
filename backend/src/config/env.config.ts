@@ -25,6 +25,7 @@ export const schema = Type.Object({
   FRONTEND_URL: Type.String({ default: "http://localhost:5573" }),
   COOKIE_PREFIX: Type.String({ default: "cookie" }),
   BETTER_AUTH_SECRET: Type.String({ default: "secret" }),
+  BETTER_AUTH_URL: Type.Optional(Type.String()),
   GOOGLE_CLIENT_ID: Type.Optional(Type.String()),
   GOOGLE_CLIENT_SECRET: Type.Optional(Type.String()),
   BREVO_API_KEY: Type.Optional(Type.String()),
@@ -95,6 +96,7 @@ export default {
     host: env.HOST,
     port: env.PORT,
     frontendUrl: env.FRONTEND_URL,
+    apiUrl: env.BETTER_AUTH_URL || `http://${env.HOST === "0.0.0.0" ? "127.0.0.1" : env.HOST}:${env.PORT}`.replace(/([^:]\/)\/+/g, "$1"),
     // base url for the uploads path (e.g. https://storage.sicerdas.com)
     baseUrl: env.USE_S3_STORAGE
       ? env.S3_PUBLIC_URL
