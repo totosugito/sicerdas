@@ -19,7 +19,7 @@ import {
 } from "@/components/pages/exam/sessions/cbt";
 import { LoadingView } from "@/components/app/LoadingView";
 import { useQueryClient } from "@tanstack/react-query";
-import { Menu, AlertCircle } from "lucide-react";
+import { Menu, AlertCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppRoute } from "@/constants/app-route";
 import { showNotifError } from "@/lib/show-notif";
@@ -29,6 +29,8 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
 } from "@/components/ui/drawer";
 import { ErrorPageDetails } from "@/components/app/ErrorPageDetails";
 import { EnumExamSessionMode, EnumExamSessionStatus } from "backend/src/db/schema/exam/enums";
@@ -407,21 +409,22 @@ function RouteComponent() {
 
         {/* Mobile Navigation Drawer */}
         <Drawer open={isMobileGridOpen} onOpenChange={setIsMobileGridOpen}>
-          <DrawerContent className="max-h-[85vh]">
+          <DrawerContent className="max-h-[85vh]" overlayClassName="bg-black/10">
             <DrawerHeader className="sr-only">
               <DrawerTitle>{t(($) => $.exam.sessions.cbt.navigation.title)}</DrawerTitle>
               <DrawerDescription>{t(($) => $.exam.sessions.cbt.session.mobileNavDesc)}</DrawerDescription>
             </DrawerHeader>
-            <div className="overflow-y-auto p-4">
+            <div className="overflow-y-auto">
               <CbtNavigationGrid
                 items={gridItems}
                 mode={details.session.mode as ExamSessionMode}
                 onQuestionSelect={(id) => {
                   setActiveQuestionId(id);
-                  setIsMobileGridOpen(false);
+                  // Not closing automatically anymore to allow quick jumps
                 }}
                 onToggleDoubtful={handleToggleDoubtful}
                 isMobile={true}
+                onClose={() => setIsMobileGridOpen(false)}
               />
             </div>
           </DrawerContent>

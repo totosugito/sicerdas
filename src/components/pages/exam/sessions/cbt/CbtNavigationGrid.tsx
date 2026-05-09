@@ -5,6 +5,8 @@ import { HelpCircle, CheckCircle2 } from "lucide-react";
 import { ExamStatus, EXAM_STATUS_STYLES, ExamSessionMode, EXAM_STATUS_GROUPS, EnumExamStatus } from "@/constants/exam-var";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 import { EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
 
 export interface GridItem {
@@ -19,6 +21,7 @@ interface CbtNavigationGridProps {
   onQuestionSelect: (questionId: string) => void;
   onToggleDoubtful: (questionId: string, isDoubtful: boolean) => void;
   isMobile?: boolean;
+  onClose?: () => void;
 }
 
 export const CbtNavigationGrid: React.FC<CbtNavigationGridProps> = ({
@@ -27,6 +30,7 @@ export const CbtNavigationGrid: React.FC<CbtNavigationGridProps> = ({
   onQuestionSelect,
   onToggleDoubtful,
   isMobile = false,
+  onClose,
 }) => {
   const { activeQuestionId } = useCbtStore();
   const { t } = useAppTranslation();
@@ -54,13 +58,25 @@ export const CbtNavigationGrid: React.FC<CbtNavigationGridProps> = ({
 
   return (
     <Card className={cn(
-      "overflow-hidden flex flex-col w-full md:w-[320px] py-0 gap-0",
-      isMobile ? "h-full" : "h-fit max-h-[calc(100vh-12rem)]"
+      "flex flex-col w-full md:w-[320px] py-0 gap-0",
+      isMobile 
+        ? "h-full border-none shadow-none bg-transparent overflow-visible" 
+        : "h-fit max-h-[calc(100vh-12rem)] overflow-hidden"
     )}>
-      <CardHeader className="py-3 px-6 border-b flex flex-row items-center !pb-3">
-        <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-widest w-full text-center">
+      <CardHeader className="py-3 px-6 border-b flex flex-row items-center justify-between !pb-3">
+        <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex-1 text-center pl-6">
           {t($ => $.exam.sessions.cbt.navigation.title)}
         </CardTitle>
+        {onClose && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="h-8 w-8 rounded-full"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </CardHeader>
 
       <CardContent className="flex flex-col gap-4 overflow-hidden p-4 md:p-6">
