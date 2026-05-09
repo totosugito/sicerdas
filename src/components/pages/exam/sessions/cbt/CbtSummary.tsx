@@ -29,7 +29,7 @@ export const CbtSummary: React.FC<CbtSummaryProps> = ({ items, mode, className }
   return (
     <Card className={cn("overflow-hidden py-0 gap-0", className)}>
       <CardHeader className="py-3 px-6 border-b flex flex-row items-center !pb-3">
-        <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+        <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-widest w-full text-center">
           {t($ => $.exam.sessions.cbt.summary.title)}
         </CardTitle>
       </CardHeader>

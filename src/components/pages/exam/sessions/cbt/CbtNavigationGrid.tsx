@@ -32,7 +32,10 @@ export const CbtNavigationGrid: React.FC<CbtNavigationGridProps> = ({
   const { t } = useAppTranslation();
 
   const getButtonStyles = (status: ExamStatus, isActive: boolean) => {
-    const base = "relative transition-all duration-200 font-medium text-sm rounded-lg border-2 flex items-center justify-center aspect-square p-0";
+    const base = cn(
+      "relative transition-all duration-200 font-medium rounded-lg border flex items-center justify-center aspect-square p-0",
+      "text-xs md:text-sm md:border-2"
+    );
     const styles = EXAM_STATUS_STYLES[status];
 
     if (isActive) {
@@ -55,13 +58,16 @@ export const CbtNavigationGrid: React.FC<CbtNavigationGridProps> = ({
       isMobile ? "h-full" : "h-fit max-h-[calc(100vh-12rem)]"
     )}>
       <CardHeader className="py-3 px-6 border-b flex flex-row items-center !pb-3">
-        <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+        <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-widest w-full text-center">
           {t($ => $.exam.sessions.cbt.navigation.title)}
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-4 overflow-hidden">
-        <div className="pb-1 grid grid-cols-5 gap-3 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
+      <CardContent className="flex flex-col gap-4 overflow-hidden p-4 md:p-6">
+        <div className={cn(
+          "pb-1 grid overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800",
+          "grid-cols-8 sm:grid-cols-10 md:grid-cols-5 gap-1.5 md:gap-3"
+        )}>
           {items.map((item) => {
             const isActive = activeQuestionId === item.questionId;
             return (
@@ -86,7 +92,7 @@ export const CbtNavigationGrid: React.FC<CbtNavigationGridProps> = ({
           {mode === EnumExamSessionMode.TRYOUT && activeItem && (
             <div
               className={cn(
-                "flex items-center p-4 rounded-xl border transition-all duration-300 cursor-pointer",
+                "flex items-center p-3 md:p-4 rounded-xl border transition-all duration-300 cursor-pointer",
                 activeItem.status === "doubtful"
                   ? EXAM_STATUS_STYLES.doubtful.active
                   : "bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800"

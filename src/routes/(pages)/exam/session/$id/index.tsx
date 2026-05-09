@@ -429,7 +429,7 @@ function RouteComponent() {
       </div>
 
       {/* Mobile Answer Pad */}
-      <div className="md:hidden absolute bottom-0 left-0 right-0 w-full z-40 pointer-events-none pb-4 px-4">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 w-full z-40 pointer-events-none pb-4 px-4">
         {questionData && (
           <div className="pointer-events-auto w-full">
             <CbtAnswerPad
@@ -449,10 +449,13 @@ function RouteComponent() {
         )}
       </div>
 
-      {/* Mobile Grid Toggle - Adjusted position so it doesn't overlap the floating Answer Pad */}
-      <div className="md:hidden fixed top-20 right-4 z-40">
+      {/* Spacer for mobile fixed bottom bar to prevent content overlap */}
+      <div className="h-45 md:hidden" />
+
+      {/* Mobile Grid Toggle - Vertically centered on the right edge */}
+      <div className="md:hidden fixed top-1/2 right-0 -translate-y-1/2 z-40">
         <Button
-          className="rounded-full shadow-lg border border-slate-200 dark:border-slate-800 w-12 h-12 p-0 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
+          className="rounded-l-full shadow-2xl border border-slate-200 dark:border-slate-800 w-10 h-14 p-0 pl-1.5 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
           onClick={() => setIsMobileGridOpen(true)}
         >
           <Menu className="w-5 h-5" />

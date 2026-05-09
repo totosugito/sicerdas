@@ -49,7 +49,7 @@ export const CbtAnswerPad: React.FC<CbtAnswerPadProps> = ({
 
   const header = (
     <CardHeader className="py-3 px-6 border-b flex flex-row items-center !pb-3">
-      <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+      <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-widest w-full text-center">
         {t($ => $.exam.sessions.cbt.answer.title)}
       </CardTitle>
     </CardHeader>
@@ -166,30 +166,33 @@ export const CbtAnswerPad: React.FC<CbtAnswerPadProps> = ({
 
   return (
     <Card className={cn(
-      "w-full overflow-hidden py-0 gap-0 transition-all duration-300",
-      layout === "vertical" ? "h-fit" : "pointer-events-auto shadow-2xl"
+      "w-full overflow-hidden transition-all duration-300",
+      layout === "vertical"
+        ? "h-fit"
+        : "fixed bottom-0 left-0 right-0 z-40 shadow-2xl rounded-t-3xl rounded-b-none border-t border-x-0"
     )}>
       <div className={cn(layout === "horizontal" && "max-w-4xl mx-auto flex flex-col gap-0")}>
         {header}
-        <CardContent className={cn(
-          "flex flex-col",
-          layout === "vertical" ? "gap-4" : "md:p-6 gap-5"
-        )}>
-          {confirmButton}
-
+        <CardContent className="p-4 md:p-6">
           {layout === "vertical" ? (
             <>
+              {confirmButton}
               {renderOptions()}
-              <div className="flex items-center justify-between gap-2 border-t pt-4 mt-2">
+              <div className="flex items-center justify-between gap-2 border-t border-slate-100 dark:border-slate-800 pt-4 mt-1">
                 {prevButton}
                 {nextButton}
               </div>
             </>
           ) : (
-            <div className="flex items-center justify-between gap-4">
-              {prevButton}
-              {renderOptions()}
-              {nextButton}
+            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+              <div className="flex items-center justify-center w-full md:w-auto md:flex-1 gap-4 md:gap-8 order-2 md:order-1">
+                {prevButton}
+                {renderOptions()}
+                {nextButton}
+              </div>
+              <div className="w-full md:w-auto order-1 md:order-2">
+                {confirmButton}
+              </div>
             </div>
           )}
         </CardContent>

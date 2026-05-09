@@ -81,7 +81,7 @@ export const ResultsScoreCard: React.FC<ResultsScoreCardProps> = ({
             {t(($) => $.exam.sessions.results.finalScore)}
           </p>
 
-          <div className="relative my-6 flex h-44 w-44 items-center justify-center">
+          <div className="relative my-6 flex h-36 w-44 items-center justify-center">
             <svg className="absolute inset-0 -rotate-90" viewBox="0 0 160 160">
               <circle cx="80" cy="80" r={radius} stroke="var(--primary-soft)" strokeWidth="12" fill="none" />
               <circle
@@ -111,14 +111,14 @@ export const ResultsScoreCard: React.FC<ResultsScoreCardProps> = ({
             </div>
           </div>
 
-          {earnedPoints !== null && earnedPoints !== undefined && maxPoints !== null && maxPoints !== undefined && (
+          {/* {earnedPoints !== null && earnedPoints !== undefined && maxPoints !== null && maxPoints !== undefined && (
             <Badge className="bg-primary/15 text-primary border-0 hover:bg-primary/20 px-4 py-1.5 font-black text-[10px] tracking-widest uppercase">
               {t(($) => $.exam.sessions.results.pointsInfo, {
                 earned: earnedPoints,
                 max: maxPoints,
               })}
             </Badge>
-          )}
+          )} */}
         </div>
       </Card>
 

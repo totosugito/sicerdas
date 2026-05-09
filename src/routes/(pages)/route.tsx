@@ -1,7 +1,7 @@
 import { AppNavbar } from '@/components/app'
 import { Footer } from '@/components/pages/landing'
-import { createFileRoute, Outlet } from '@tanstack/react-router'
-import { useState, useEffect } from 'react'
+import { createFileRoute, Outlet, useLocation } from '@tanstack/react-router'
+import { useState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { ChevronUp } from 'lucide-react'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
@@ -19,6 +19,14 @@ function RouteComponent() {
     const [showGoToTop, setShowGoToTop] = useState(false)
     const { user, openSideMenu, setOpenSideMenu } = useAuthStore()
     const adminNav = useAdminNav()
+    const location = useLocation()
+    
+    const isExamSession = useMemo(() => {
+        const path = location.pathname
+        return path.includes('/exam/session/') && !path.includes('/results')
+    }, [location.pathname])
+
+    const showSidebar = useMemo(() => isShowSidebar(user), [user])
 
     useEffect(() => {
         const handleScroll = () => {
@@ -43,23 +51,21 @@ function RouteComponent() {
     }
 
     let webNav: Record<string, any> = {};
-    if (isShowSidebar(user)) {
+    if (showSidebar) {
         webNav = adminNav;
     }
 
     return (
         <SidebarProvider open={openSideMenu} onOpenChange={setOpenSideMenu}>
-            {isShowSidebar(user) && <AppSidebar navItems={webNav as SidebarData} />}
+            {showSidebar && <AppSidebar navItems={webNav as SidebarData} />}
             <SidebarInset>
                 <div className="flex flex-col min-h-screen w-full bg-background">
-                    <AppNavbar isShowSidebar={isShowSidebar(user)} />
-                    <>
-                        <Outlet />
-                    </>
-                    <Footer />
+                    <AppNavbar isShowSidebar={showSidebar} />
+                    <Outlet />
+                    {!isExamSession && <Footer />}
 
                     {/* Go to Top Button */}
-                    {showGoToTop && (
+                    {!isExamSession && showGoToTop && (
                         <Button
                             onClick={scrollToTop}
                             className="fixed bottom-8 right-8 z-50 rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300"

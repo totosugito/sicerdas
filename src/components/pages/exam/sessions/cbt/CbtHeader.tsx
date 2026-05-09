@@ -109,9 +109,9 @@ export const CbtHeader: React.FC<CbtHeaderProps> = ({
               className={cn(
                 "group relative flex items-center gap-3 px-4 py-2 rounded-2xl border font-mono transition-all duration-500",
                 mode === EnumExamSessionMode.TRYOUT &&
-                durationSeconds &&
-                durationSeconds - elapsedSeconds > 0 &&
-                durationSeconds - elapsedSeconds < 300
+                  durationSeconds &&
+                  durationSeconds - elapsedSeconds > 0 &&
+                  durationSeconds - elapsedSeconds < 300
                   ? "bg-red-50/80 dark:bg-red-950/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/30 shadow-[0_0_20px_rgba(220,38,38,0.08)] animate-pulse"
                   : "bg-slate-100/50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/50 text-slate-700 dark:text-slate-300 backdrop-blur-sm",
               )}
@@ -175,7 +175,7 @@ export const CbtHeader: React.FC<CbtHeaderProps> = ({
                 size="sm"
                 onClick={() => setIsModalOpen(true)}
                 disabled={isSubmitting}
-                className="rounded-xl px-5 font-bold shadow-sm"
+                className="px-5 font-bold shadow-sm"
               >
                 {isSubmitting
                   ? t(($) => $.exam.sessions.cbt.header.submitting)
@@ -188,7 +188,7 @@ export const CbtHeader: React.FC<CbtHeaderProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={onGoToResult}
-                className="rounded-xl border-primary text-primary hover:bg-primary/5 font-bold"
+                className="border-primary text-primary hover:bg-primary/5 font-bold"
               >
                 {t(($) => $.exam.sessions.cbt.header.viewResult)}
               </Button>
