@@ -8,9 +8,9 @@ export const APP_CONFIG = {
     name: "SiCerdas",
     description: "SiCerdas",
     logo: AppLogo,
-    version: "1.0.0",
+    version: __BUILD_VERSION__,
     uploadDirs: "/uploads/", // don't change this
-    mailTo: "totosugito@gmail.com",
+    mailTo: "support@sicerdas.com",
     discord: "https://discord.gg/fahimedu",
     playStore: "https://play.google.com/store/apps/details?id=fahim_edu.bse",
     youtubeChannel: "https://www.youtube.com/@fahim_edu",

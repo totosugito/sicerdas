@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useAppTranslation } from '@/lib/i18n-typed'
 import PageTitle from '@/components/app/PageTitle'
 import { Card, CardContent } from '@/components/ui/card'
+import { APP_CONFIG } from '@/constants/config'
 
 export const Route = createFileRoute('/(pages)/(web)/faq')({
   component: RouteComponent,
@@ -29,7 +30,7 @@ function RouteComponent() {
     },
     {
       question: t($ => $.web.faq.questions.supportContact.question),
-      answer: t($ => $.web.faq.questions.supportContact.answer)
+      answer: t($ => $.web.faq.questions.supportContact.answer, { email: APP_CONFIG.app.mailTo })
     }
   ]
 

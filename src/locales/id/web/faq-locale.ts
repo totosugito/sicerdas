@@ -20,7 +20,7 @@ export default {
     },
     supportContact: {
       question: "Bagaimana cara menghubungi kami ?",
-      answer: "Anda dapat menghubungi tim dukungan kami melalui email di totosugito@gmail.com atau melalui formulir kontak di halaman Dukungan."
+      answer: "Anda dapat menghubungi tim dukungan kami melalui email di {{email}} atau melalui formulir kontak di halaman Dukungan."
     }
   }
 }

@@ -99,7 +99,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       // Use Fastify's built-in inject method to call the better-auth API
       const response = await app.inject({
         method: "POST",
-        url: "/api/auth/forget-password/email-otp",
+        url: "/api/auth/email-otp/request-password-reset",
         payload: JSON.stringify({
           email: email,
         }),
