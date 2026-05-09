@@ -105,7 +105,7 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
   };
 
   return (
-    <header className="sticky top-0 z-50 px-4 py-1 bg-card/70 flex h-12 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-10 backdrop-blur-xl ">
+    <header className="sticky top-0 z-50 px-4 py-1 bg-card/70 flex h-12 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 backdrop-blur-xl ">
       <div className="flex items-center justify-between w-full">
         <div className="flex flex-row gap-4 items-center">
           {isShowSidebar ? (
@@ -114,7 +114,7 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
               <Separator orientation={"vertical"} className={"h-6"} style={{ height: "20px" }} />
             </>
           ) : (
-            <AppLogo disableColapsed={isAdmin(user) && isShowSidebar} />
+            <AppLogo disableCollapsed={isAdmin(user) && isShowSidebar} />
           )}
         </div>
 

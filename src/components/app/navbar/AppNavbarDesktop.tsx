@@ -24,15 +24,15 @@ export function AppNavbarDesktop() {
     return (
         <div className="hidden lg:flex items-center gap-1">
             <NavigationMenu>
-                <NavigationMenuList>
+                <NavigationMenuList className="gap-1">
                     {/* Books Menu */}
                     <NavigationMenuItem>
-                        <NavigationMenuTrigger className="text-base bg-transparent">
-                            <BookOpen className="w-4 h-4 mr-2" />
+                        <NavigationMenuTrigger className="text-sm font-bold bg-transparent rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-all px-3 py-1.5 h-9">
+                            <BookOpen className="w-4 h-4 mr-2 text-slate-500" />
                             {t($ => $.landing.navbar.books.title)}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
-                            <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
+                            <ul className="grid w-[500px] gap-1 p-3 md:grid-cols-2">
                                 {booksMenu.map((item: MenuItem) => (
                                     <ListItem
                                         key={item.title}
@@ -49,12 +49,12 @@ export function AppNavbarDesktop() {
 
                     {/* Constitution Menu */}
                     <NavigationMenuItem>
-                        <NavigationMenuTrigger className="text-base bg-transparent">
-                            <Shield className="w-4 h-4 mr-2" />
+                        <NavigationMenuTrigger className="text-sm font-bold bg-transparent rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-all px-3 py-1.5 h-9">
+                            <Shield className="w-4 h-4 mr-2 text-slate-500" />
                             {t($ => $.landing.navbar.constitution.title)}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
-                            <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
+                            <ul className="grid w-[500px] gap-1 p-3 md:grid-cols-2">
                                 {constitutionMenu.map((item: MenuItem) => (
                                     <ListItem
                                         key={item.title}
@@ -70,12 +70,12 @@ export function AppNavbarDesktop() {
 
                     {/* Periodic Table */}
                     <NavigationMenuItem>
-                        <NavigationMenuTrigger className="text-base bg-transparent">
-                            <FlaskConical className="w-4 h-4 mr-2" />
+                        <NavigationMenuTrigger className="text-sm font-bold bg-transparent rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-all px-3 py-1.5 h-9">
+                            <FlaskConical className="w-4 h-4 mr-2 text-slate-500" />
                             {t($ => $.landing.navbar.periodicTable.title)}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
-                            <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
+                            <ul className="grid w-[500px] gap-1 p-3 md:grid-cols-2">
                                 {tablePeriodicMenu.map((item: MenuItem) => (
                                     <ListItem
                                         key={item.title}
@@ -92,17 +92,18 @@ export function AppNavbarDesktop() {
 
                     {/* Quiz Menu */}
                     <NavigationMenuItem>
-                        <NavigationMenuTrigger className="text-base bg-transparent">
-                            <Trophy className="h-4 w-4 mr-2" />
+                        <NavigationMenuTrigger className="text-sm font-bold bg-transparent rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-all px-3 py-1.5 h-9">
+                            <Trophy className="h-4 w-4 mr-2 text-slate-500" />
                             {t($ => $.landing.navbar.quiz.title)}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
-                            <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
+                            <ul className="grid w-[500px] gap-1 p-3 md:grid-cols-2">
                                 {quizMenu.map((item: MenuItem) => (
                                     <ListItem
                                         key={item.title}
                                         title={item.title}
                                         to={item.to}
+                                        search={item.search}
                                     >
                                         {item.description}
                                     </ListItem>
@@ -130,13 +131,15 @@ const ListItem = ({ className, title, children, to, params, search, ...props }: 
                     params={params}
                     search={search}
                     className={cn(
-                        "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                        "group block select-none space-y-1 rounded-lg p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800/40 focus:bg-slate-50 dark:focus:bg-slate-800/40",
                         className
                     )}
                     {...props}
                 >
-                    <div className="text-sm font-medium leading-none">{title}</div>
-                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                    <div className="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors leading-none">
+                        {title}
+                    </div>
+                    <p className="line-clamp-2 text-[12px] leading-snug text-slate-500 dark:text-slate-400 font-medium mt-1">
                         {children}
                     </p>
                 </Link>

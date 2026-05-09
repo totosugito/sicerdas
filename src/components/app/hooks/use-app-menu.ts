@@ -5,8 +5,8 @@ import { AppRoute } from "@/constants/app-route";
 export interface MenuItem {
   title: string;
   to: string;
-  params?: Record<string, string>;
-  search?: Record<string, string>;
+  params?: Record<string, any>;
+  search?: Record<string, any>;
   description: string;
 }
 
@@ -18,48 +18,49 @@ export function useAppMenu() {
       {
         title: t(($) => $.landing.navbar.books.latestBooks),
         to: AppRoute.book.books.url,
+        search: { category: [0] },
         description: t(($) => $.landing.navbar.books.descriptions.latestBooks),
       },
       {
         title: t(($) => $.landing.navbar.books.curriculum2006),
         to: AppRoute.book.books.url,
-        search: { category: "[1]" },
+        search: { category: [1] },
         description: t(($) => $.landing.navbar.books.descriptions.curriculum2006),
       },
       {
         title: t(($) => $.landing.navbar.books.curriculum2013),
         to: AppRoute.book.books.url,
-        search: { category: "[2]" },
+        search: { category: [2] },
         description: t(($) => $.landing.navbar.books.descriptions.curriculum2013),
       },
       {
         title: t(($) => $.landing.navbar.books.curriculumMerdeka),
         to: AppRoute.book.books.url,
-        search: { category: "[3]" },
+        search: { category: [3] },
         description: t(($) => $.landing.navbar.books.descriptions.curriculumMerdeka),
       },
       {
         title: t(($) => $.landing.navbar.books.educationBooks),
         to: AppRoute.book.books.url,
-        search: { category: "[4]" },
+        search: { category: [4] },
         description: t(($) => $.landing.navbar.books.descriptions.educationBooks),
       },
       {
         title: t(($) => $.landing.navbar.books.translationBooks),
         to: AppRoute.book.books.url,
-        search: { category: "[5]" },
+        search: { category: [5] },
         description: t(($) => $.landing.navbar.books.descriptions.translationBooks),
       },
       {
         title: t(($) => $.landing.navbar.books.computerBooks),
         to: AppRoute.book.books.url,
-        search: { category: "[6]" },
+        search: { category: [6] },
         description: t(($) => $.landing.navbar.books.descriptions.computerBooks),
       },
       {
         title: t(($) => $.landing.navbar.books.literatureBooks),
         to: AppRoute.book.books.url,
-        search: { category: "[7]" },
+        search: { category: [7] },
         description: t(($) => $.landing.navbar.books.descriptions.literatureBooks),
       },
     ],
@@ -140,13 +141,13 @@ export function useAppMenu() {
       {
         title: t(($) => $.landing.navbar.quiz.semester),
         to: AppRoute.exam.exams.url,
-        search: { category: "ujian-semester" },
+        search: { categoryKey: "ujian-semester" },
         description: t(($) => $.landing.navbar.quiz.descriptions.semester),
       },
       {
         title: t(($) => $.landing.navbar.quiz.subjects),
         to: AppRoute.exam.exams.url,
-        search: { category: "kuis-mata-pelajaran" },
+        search: { categoryKey: "kuis-mata-pelajaran" },
         description: t(($) => $.landing.navbar.quiz.descriptions.subjects),
       },
       {
