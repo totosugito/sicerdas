@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useFavoriteBooks, useBookmarkBook } from "@/api/book";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Badge } from "@/components/ui/badge";
-import { Bookmark, BookOpen, X, ChevronRight, GraduationCap } from "lucide-react";
+import { Bookmark, BookOpen, X, ChevronRight, GraduationCap, Eye, Download } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
@@ -52,6 +52,7 @@ export const BooksFavoriteList = ({ page, onPageChange, limit }: BooksFavoriteLi
       {
         onSuccess: (data) => {
           queryClient.invalidateQueries({ queryKey: ["book-favorites"] });
+          queryClient.invalidateQueries({ queryKey: ["book-user-stats"] });
           showNotifSuccess({ message: data.message });
         },
       }
@@ -141,6 +142,20 @@ export const BooksFavoriteList = ({ page, onPageChange, limit }: BooksFavoriteLi
               <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1 truncate">
                 {book.author}
               </p>
+
+              <div className="flex items-center gap-3 mt-2">
+                <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+                  <Eye className="w-3 h-3" />
+                  <span>{book.stats.viewCount} {t(($) => $.book.dashboard.stats.views)}</span>
+                </div>
+
+                {book.stats.isDownloaded && (
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-500 uppercase tracking-tight bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
+                    <Download className="w-3 h-3" />
+                    <span>{t(($) => $.book.dashboard.stats.downloaded)}</span>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center gap-2">

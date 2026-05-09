@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useGlobalStats, useSubjectStats } from "@/api/exam-user-stats";
 import { useAllSessionHistory } from "@/api/exam-sessions/all";
-import { useFavoriteBooks, useBookHistory } from "@/api/book";
+import { useFavoriteBooks, useBookHistory, useBookStats } from "@/api/book";
 import { useAuth } from "@/hooks/use-auth";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { EnumExamSessionStatus } from "@/api/exam-sessions/types";
@@ -11,7 +11,10 @@ import {
   Book,
   Bookmark,
   LayoutGrid,
-  Rocket
+  Rocket,
+  Percent,
+  FileText,
+  Download
 } from "lucide-react";
 import {
   DashboardHero,
@@ -21,7 +24,9 @@ import {
   BooksFavoriteList,
   SubjectRadarChart,
   ActivityBarChart,
-  StatsCard
+  StatsCard,
+  OverviewStats,
+  StatsBook
 } from "@/components/pages/user/dashboard";
 import {
   Tabs,
@@ -101,6 +106,10 @@ function ExamDashboardComponent() {
     page: bookFavPage
   }, {
     enabled: activeTab === "overview" || activeTab === "library"
+  });
+
+  const { data: bookStatsRes } = useBookStats({ 
+    enabled: activeTab === "overview" || activeTab === "library" 
   });
 
   const handleTabChange = (value: string) => {
@@ -204,36 +213,12 @@ function ExamDashboardComponent() {
           {/* --- OVERVIEW TAB --- */}
           <TabsContent value="overview" className="space-y-6 mt-0 animate-in fade-in duration-300">
             {/* Quick Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-              <StatsCard
-                title={t(($) => $.exam.sessions.dashboard.stats.totalExams)}
-                value={globalStats?.totalExamsTaken || 0}
-                icon={Trophy}
-                description={t(($) => $.exam.sessions.dashboard.stats.totalExamsDesc)}
-                iconClassName="bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-              />
-              <StatsCard
-                title={t(($) => $.exam.sessions.dashboard.stats.avgScore)}
-                value={globalStats ? Math.round(parseFloat(globalStats.averageScore)) : 0}
-                icon={Target}
-                description={t(($) => $.exam.sessions.dashboard.stats.avgScoreDesc)}
-                iconClassName="bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
-              />
-              <StatsCard
-                title={t(($) => $.book.dashboard.history.title)}
-                value={bookHistoryRes?.pagination?.total || 0}
-                icon={Book}
-                description={t(($) => $.book.dashboard.history.description)}
-                iconClassName="bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"
-              />
-              <StatsCard
-                title={t(($) => $.book.dashboard.favorites.title)}
-                value={bookFavoritesRes?.pagination?.total || 0}
-                icon={Bookmark}
-                description={t(($) => $.book.dashboard.favorites.description)}
-                iconClassName="bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400"
-              />
-            </div>
+            <OverviewStats
+              totalExamsTaken={globalStats?.totalExamsTaken}
+              accuracyRate={globalStats?.accuracyRate}
+              totalQuestionsAnswered={globalStats?.totalQuestionsAnswered}
+              totalMaterialsRead={bookHistoryRes?.pagination?.total}
+            />
 
             {/* Engagement Summary Chart */}
             <ActivityBarChart days={activityDays} />
@@ -273,6 +258,13 @@ function ExamDashboardComponent() {
 
           {/* --- LIBRARY TAB --- */}
           <TabsContent value="library" className="mt-0 outline-none space-y-6 animate-in fade-in duration-300">
+            {/* Library Collection Summary */}
+            <StatsBook
+              totalFavorites={bookStatsRes?.data?.totalFavorites}
+              totalMaterialsRead={bookStatsRes?.data?.totalMaterialsRead}
+              totalDownloads={bookStatsRes?.data?.totalDownloads}
+            />
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <BooksRecentList 
                 page={bookRecentPage} 

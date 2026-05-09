@@ -18,3 +18,4 @@ export {
   type HistoryBook,
   type HistoryBooksResponse,
 } from "./user/list-history";
+export { useBookStats, type BookStats, type BookStatsResponse } from "./user/stats";

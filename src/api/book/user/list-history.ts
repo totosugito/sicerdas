@@ -21,6 +21,8 @@ export interface HistoryBook {
   stats: {
     rating: number;
     viewCount: number;
+    downloadCount: number;
+    isDownloaded: boolean;
   };
   viewedAt: string;
 }

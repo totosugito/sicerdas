@@ -77,11 +77,16 @@ export default {
       cancelAction: "Batal",
     },
     history: {
-      title: "Terakhir Dibaca",
+      title: "Dibaca",
       description: "Lanjutkan membaca buku yang baru saja Anda buka.",
       empty: "Belum ada riwayat baca",
       emptyDesc: "Mulai membaca buku untuk melihat riwayat aktivitas Anda di sini.",
       lastRead: "Terakhir dibaca {{time}}",
+    },
+    stats: {
+      offlineAccess: "Di Unduh",
+      views: "Dilihat",
+      downloaded: "Diunduh",
     },
   },
 };

@@ -21,6 +21,9 @@ export interface FavoriteBook {
   stats: {
     rating: number;
     bookmarkCount: number;
+    viewCount: number;
+    downloadCount: number;
+    isDownloaded: boolean;
   };
   bookmarkedAt: string;
 }

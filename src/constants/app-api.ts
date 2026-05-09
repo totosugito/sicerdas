@@ -66,6 +66,7 @@ export const AppApi = {
       rating: APP_URL_API + "/book/user/rating",
       favorites: APP_URL_API + "/book/user/favorites",
       history: APP_URL_API + "/book/user/history",
+      stats: APP_URL_API + "/book/user/stats",
     },
     updateDownload: APP_URL_API + "/book/update-download",
   },

@@ -34,6 +34,8 @@ const HistoryBookResponseItem = Type.Object({
   stats: Type.Object({
     rating: Type.Number(),
     viewCount: Type.Number(),
+    downloadCount: Type.Number(),
+    isDownloaded: Type.Boolean(),
   }),
   viewedAt: Type.String({ format: "date-time" }),
 });
@@ -103,7 +105,9 @@ const listHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
             name: educationGrades.name,
           },
           rating: bookEventStats.rating,
-          viewCount: bookInteractions.viewCount,
+          viewCount: bookEventStats.viewCount,
+          downloadCount: bookEventStats.downloadCount,
+          isDownloaded: sql<boolean>`${bookInteractions.downloadCount} > 0`,
           viewedAt: bookInteractions.updatedAt,
         })
         .from(bookInteractions)
@@ -133,6 +137,8 @@ const listHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
           stats: {
             rating: item.rating !== null ? parseFloat(item.rating.toString()) : 0,
             viewCount: item.viewCount ?? 0,
+            downloadCount: item.downloadCount ?? 0,
+            isDownloaded: !!item.isDownloaded,
           },
           viewedAt: item.viewedAt.toISOString(),
         })),
