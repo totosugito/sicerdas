@@ -169,7 +169,19 @@ const auth = betterAuth({
   },
 
   advanced: {
-    cookiePrefix: envConfig.server.cookiePrefix, // the data cookies saved on client side will be prefixed with this prefix
+    cookiePrefix: envConfig.server.cookiePrefix,
+    cookies: {
+      sessionToken: {
+        attributes: {
+          domain: envConfig.server.frontendUrl.includes(".") ? `.${envConfig.server.frontendUrl}` : undefined,
+        },
+      },
+      state: {
+        attributes: {
+          domain: envConfig.server.frontendUrl.includes(".") ? `.${envConfig.server.frontendUrl}` : undefined,
+        },
+      },
+    },
     database: {
       generateId: false,
     },
