@@ -1,4 +1,4 @@
-import { AllSessionHistoryResponse } from "@/api/exam-sessions/history";
+import { AllSessionHistoryResponse } from "@/api/exam-sessions/all";
 import { EnumExamSessionStatus, EnumExamSessionMode } from "@/api/exam-sessions/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,19 +13,23 @@ import { EXAM_MODE_STYLES } from "@/constants/exam-var";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { LocalePagination } from "@/components/custom/components/LocalePagination";
 
-interface RecentSessionsListProps {
+interface SessionsRecentListProps {
   history?: AllSessionHistoryResponse["data"];
   isLoading?: boolean;
   page?: number;
   onPageChange?: (page: number) => void;
+  title?: string;
+  description?: string;
 }
 
-export const RecentSessionsList = ({
+export const SessionsRecentList = ({
   history,
   isLoading,
   page,
-  onPageChange
-}: RecentSessionsListProps) => {
+  onPageChange,
+  title,
+  description
+}: SessionsRecentListProps) => {
   const { t, i18n } = useAppTranslation();
 
   const renderContent = () => {
@@ -184,8 +188,12 @@ export const RecentSessionsList = ({
             <History className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <CardTitle className="text-lg font-bold">{t(($) => $.exam.sessions.dashboard.charts.activityHistory)}</CardTitle>
-            <CardDescription className="text-xs font-medium">{t(($) => $.exam.sessions.dashboard.charts.activityHistoryDesc)}</CardDescription>
+            <CardTitle className="text-lg font-bold">
+              {title || t(($) => $.exam.sessions.dashboard.charts.recentActivity)}
+            </CardTitle>
+            <CardDescription className="text-xs font-medium">
+              {description || t(($) => $.exam.sessions.dashboard.charts.recentActivityDesc)}
+            </CardDescription>
           </div>
         </div>
       </CardHeader>

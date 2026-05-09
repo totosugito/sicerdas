@@ -7,20 +7,25 @@ import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { getBookDetailId } from "@/lib/book-utils";
 import { Button } from "@/components/ui/button";
+import { getGradeColor } from "@/lib/exam-utils";
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { History } from "lucide-react";
 
-interface RecentBooksListProps {
+import { LocalePagination } from "@/components/custom/components/LocalePagination";
+
+interface BooksRecentListProps {
+  page?: number;
+  onPageChange?: (page: number) => void;
   limit?: number;
 }
 
-export const RecentBooksList = ({ limit }: RecentBooksListProps) => {
+export const BooksRecentList = ({ page = 1, onPageChange, limit = 5 }: BooksRecentListProps) => {
   const { t } = useAppTranslation();
 
   const { data: res, isLoading } = useBookHistory({
-    pageSize: limit || 5,
-    page: 1
+    pageSize: limit,
+    page: page
   });
 
   const recentBooks = res?.data || [];
@@ -97,7 +102,7 @@ export const RecentBooksList = ({ limit }: RecentBooksListProps) => {
                 <Badge variant="outline" className="text-xs font-black uppercase tracking-widest h-5 px-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700">
                   {book.category.name}
                 </Badge>
-                <span className="text-xs font-bold text-slate-400 flex items-center gap-1">
+                <span className={`text-xs font-bold flex items-center gap-1 ${getGradeColor(book.grade.name).replace("bg-", "text-")}`}>
                   <GraduationCap className="w-3 h-3" />
                   {book.grade.name}
                 </span>
@@ -114,13 +119,26 @@ export const RecentBooksList = ({ limit }: RecentBooksListProps) => {
           </Link>
         ))}
 
-        <Link
-          to={AppRoute.book.books.url}
-          className="flex items-center justify-center py-4 text-xs font-black uppercase tracking-widest text-primary hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all duration-200"
-        >
-          {t(($) => $.book.detail.backToBooks)}
-          <ChevronRight className="w-3 h-3 ml-1" />
-        </Link>
+        {res?.pagination && res.pagination.totalPages > 1 && onPageChange && (
+          <div className="p-4 bg-slate-50/50 dark:bg-slate-800/20 border-t border-slate-100 dark:border-slate-800">
+            <LocalePagination
+              currentPage={page}
+              totalPages={res.pagination.totalPages}
+              onPageChange={onPageChange}
+              className="mt-0"
+            />
+          </div>
+        )}
+
+        {!onPageChange && (
+          <Link
+            to={AppRoute.book.books.url}
+            className="flex items-center justify-center py-4 text-xs font-black uppercase tracking-widest text-primary hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all duration-200"
+          >
+            {t(($) => $.book.detail.backToBooks)}
+            <ChevronRight className="w-3 h-3 ml-1" />
+          </Link>
+        )}
       </div>
     );
   };
@@ -128,15 +146,20 @@ export const RecentBooksList = ({ limit }: RecentBooksListProps) => {
   return (
     <Card className="shadow-sm overflow-hidden">
       <CardHeader className="bg-muted/10 border-b">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center">
-            <History className="w-5 h-5 text-amber-500" />
+        <Link to={AppRoute.book.books.url} className="group block">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
+                <History className="w-5 h-5 text-amber-500" />
+              </div>
+              <div>
+                <CardTitle className="text-lg font-bold group-hover:text-primary transition-colors">{t(($) => $.book.dashboard.history.title)}</CardTitle>
+                <CardDescription className="text-xs font-medium">{t(($) => $.book.dashboard.history.description)}</CardDescription>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-primary transition-all group-hover:translate-x-1" />
           </div>
-          <div>
-            <CardTitle className="text-lg font-bold">{t(($) => $.book.dashboard.history.title)}</CardTitle>
-            <CardDescription className="text-xs font-medium">{t(($) => $.book.dashboard.history.description)}</CardDescription>
-          </div>
-        </div>
+        </Link>
       </CardHeader>
       <CardContent className="p-0">
         {renderContent()}

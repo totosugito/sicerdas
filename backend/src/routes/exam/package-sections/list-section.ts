@@ -24,7 +24,7 @@ const SectionResponseItem = Type.Object({
   order: Type.Number(),
   userStatus: Type.Union([Type.Enum(EnumExamSessionStatus), Type.Null()]),
   userMode: Type.Union([Type.Enum(EnumExamSessionMode), Type.Null()]),
-  bestTryoutScore: Type.Union([Type.Number(), Type.Null()]),
+  bestTryoutScore: Type.Union([Type.Number(), Type.String(), Type.Null()]),
 });
 
 const ListSectionsResponse = Type.Object({
@@ -107,7 +107,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
         const bestScores = db
           .select({
             sectionId: examSessions.sectionId,
-            score: sql<number>`MAX(${examSessions.score})`.as("score"),
+            score: sql<number>`MAX(${examSessions.score})::float`.as("score"),
           })
           .from(examSessions)
           .where(

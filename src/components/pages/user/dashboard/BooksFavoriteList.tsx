@@ -1,38 +1,40 @@
 import { useState, useEffect } from "react";
-import { useFavoritePackages, useBookmarkPackage } from "@/api/exam-packages";
+import { useFavoriteBooks, useBookmarkBook } from "@/api/book";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Badge } from "@/components/ui/badge";
-import { Star, Bookmark, BookOpen, X, ChevronRight } from "lucide-react";
+import { Bookmark, BookOpen, X, ChevronRight, GraduationCap } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { toast } from "sonner";
+import { showNotifSuccess } from "@/lib/show-notif";
+import { getBookDetailId } from "@/lib/book-utils";
 import { DialogModal } from "@/components/custom/components/DialogModal";
 import { useQueryClient } from "@tanstack/react-query";
 import { LocalePagination } from "@/components/custom/components/LocalePagination";
+import { getGradeColor } from "@/lib/exam-utils";
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
-interface FavoritePackagesListProps {
+interface BooksFavoriteListProps {
   page: number;
   onPageChange: (page: number) => void;
   limit?: number;
 }
 
-export const FavoritePackagesList = ({ page, onPageChange, limit }: FavoritePackagesListProps) => {
+export const BooksFavoriteList = ({ page, onPageChange, limit }: BooksFavoriteListProps) => {
   const { t } = useAppTranslation();
   const queryClient = useQueryClient();
 
-  const { data: res, isLoading } = useFavoritePackages({
-    page: page,
-    pageSize: 5
+  const { data: res, isLoading } = useFavoriteBooks({
+    pageSize: 5,
+    page: page
   });
 
-  const { mutate: toggleBookmark } = useBookmarkPackage();
+  const { mutate: toggleBookmark } = useBookmarkBook();
   const favorites = res?.data || [];
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const selectedPackage = favorites.find((p) => p.id === deleteId);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const selectedBook = favorites.find((b) => b.bookId === deleteId);
 
   // Handle page adjustment after deletion
   useEffect(() => {
@@ -44,19 +46,20 @@ export const FavoritePackagesList = ({ page, onPageChange, limit }: FavoritePack
     }
   }, [isLoading, res, page, onPageChange]);
 
-  const handleRemove = (packageId: string) => {
+  const handleRemove = (bookId: number) => {
     toggleBookmark(
-      { packageId, bookmarked: false },
+      { bookId, bookmarked: false },
       {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["exam-packages-favorites"] });
-          toast.success(t(($) => $.exam.packages.bookmark.updated));
+        onSuccess: (data) => {
+          queryClient.invalidateQueries({ queryKey: ["book-favorites"] });
+          showNotifSuccess({ message: data.message });
         },
       }
     );
   };
 
   const renderContent = () => {
+    // ... (renderContent logic remains same)
     if (isLoading) {
       return (
         <div className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -85,29 +88,34 @@ export const FavoritePackagesList = ({ page, onPageChange, limit }: FavoritePack
             </div>
           </div>
           <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
-            {t(($) => $.exam.sessions.dashboard.favorites.empty)}
+            {t(($) => $.book.dashboard.favorites.empty)}
           </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[280px] mt-2 font-medium leading-relaxed">
-            {t(($) => $.exam.sessions.dashboard.favorites.emptyDesc)}
+          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[280px] mt-2 mb-6 font-medium leading-relaxed">
+            {t(($) => $.book.dashboard.favorites.emptyDesc)}
           </p>
+          <Link to={AppRoute.book.books.url}>
+            <Button variant="outline" className="px-8 transition-all duration-300">
+              {t(($) => $.book.detail.backToBooks)}
+            </Button>
+          </Link>
         </div>
       );
     }
 
     return (
       <div className="divide-y divide-slate-100 dark:divide-slate-800">
-        {favorites.map((pkg) => (
+        {favorites.map((book) => (
           <Link
-            key={pkg.id}
-            to={AppRoute.exam.packages.detail.url}
-            params={{ id: pkg.id }}
+            key={book.id}
+            to={AppRoute.book.detail.url}
+            params={{ id: getBookDetailId(book.bookId, book.title) }}
             className="group flex items-center gap-4 px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all duration-200"
           >
             <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 flex-shrink-0 border border-slate-200 dark:border-slate-700 transition-transform duration-300 group-hover:scale-105">
-              {pkg.thumbnail ? (
+              {book.cover?.xs ? (
                 <img
-                  src={pkg.thumbnail}
-                  alt={pkg.title}
+                  src={book.cover.xs}
+                  alt={book.title}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -119,23 +127,19 @@ export const FavoritePackagesList = ({ page, onPageChange, limit }: FavoritePack
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest h-4 px-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700">
-                  {pkg.category.name}
+                <Badge variant="outline" className="text-xs font-black uppercase tracking-widest h-5 px-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700">
+                  {book.category.name}
                 </Badge>
-                {pkg.stats.rating > 0 && (
-                  <div className="flex items-center gap-1 text-[10px] font-black text-amber-500">
-                    <Star className="w-2.5 h-2.5 fill-amber-500" />
-                    {pkg.stats.rating.toFixed(1)}
-                  </div>
-                )}
+                <span className={`text-xs font-bold flex items-center gap-1 ${getGradeColor(book.grade.name).replace("bg-", "text-")}`}>
+                  <GraduationCap className="w-3 h-3" />
+                  {book.grade.name}
+                </span>
               </div>
-              <h4 className="text-[15px] font-bold text-slate-900 dark:text-white truncate group-hover:text-primary transition-colors leading-tight">
-                {pkg.title}
+              <h4 className="text-base font-bold text-slate-900 dark:text-white truncate group-hover:text-primary transition-colors leading-tight">
+                {book.title}
               </h4>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
-                <span>{pkg.stats.activeSections} {t(($) => $.exam.sections.sectionsCount)}</span>
-                <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
-                <span>{t(($) => $.exam.sections.questions, { count: pkg.stats.activeQuestions })}</span>
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1 truncate">
+                {book.author}
               </p>
             </div>
 
@@ -147,7 +151,7 @@ export const FavoritePackagesList = ({ page, onPageChange, limit }: FavoritePack
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setDeleteId(pkg.id);
+                  setDeleteId(book.bookId);
                 }}
               >
                 <X className="w-4 h-4" />
@@ -173,14 +177,14 @@ export const FavoritePackagesList = ({ page, onPageChange, limit }: FavoritePack
 
   return (
     <Card className="shadow-sm overflow-hidden">
-      <CardHeader className="bg-muted/10 border-b flex flex-row items-center justify-between">
+      <CardHeader className="bg-muted/10 border-b">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center">
             <Bookmark className="w-5 h-5 text-amber-500" />
           </div>
           <div>
-            <CardTitle className="text-lg font-bold">{t(($) => $.exam.sessions.dashboard.favorites.title)}</CardTitle>
-            <CardDescription className="text-xs font-medium">{t(($) => $.exam.sessions.dashboard.favorites.description)}</CardDescription>
+            <CardTitle className="text-lg font-bold">{t(($) => $.book.dashboard.favorites.title)}</CardTitle>
+            <CardDescription className="text-xs font-medium">{t(($) => $.book.dashboard.favorites.description)}</CardDescription>
           </div>
         </div>
       </CardHeader>
@@ -192,14 +196,14 @@ export const FavoritePackagesList = ({ page, onPageChange, limit }: FavoritePack
         open={!!deleteId}
         onOpenChange={(open) => !open && setDeleteId(null)}
         modal={{
-          title: t(($) => $.exam.sessions.dashboard.favorites.removeConfirm),
-          desc: t(($) => $.exam.sessions.dashboard.favorites.removeConfirmDesc),
-          textConfirm: t(($) => $.exam.sessions.dashboard.favorites.removeAction),
-          textCancel: t(($) => $.exam.sessions.dashboard.favorites.cancelAction),
+          title: t(($) => $.book.dashboard.favorites.removeConfirm),
+          desc: t(($) => $.book.dashboard.favorites.removeConfirmDesc),
+          textConfirm: t(($) => $.book.dashboard.favorites.removeAction),
+          textCancel: t(($) => $.book.dashboard.favorites.cancelAction),
           iconType: "error",
           variant: "destructive",
-          showInfoSection: !!selectedPackage,
-          infoItems: selectedPackage ? [{ text: selectedPackage.title }] : [],
+          showInfoSection: !!selectedBook,
+          infoItems: selectedBook ? [{ text: selectedBook.title }] : [],
           onConfirmClick: () => {
             if (deleteId) handleRemove(deleteId);
             setDeleteId(null);

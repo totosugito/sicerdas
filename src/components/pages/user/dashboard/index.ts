@@ -1,8 +1,8 @@
-export { RecentSessionsList } from "./RecentSessionsList";
+export { SessionsRecentList } from "./SessionsRecentList";
 export { StatsCard } from "./StatsCard";
 export { SubjectRadarChart } from "./SubjectRadarChart";
-export { FavoritePackagesList } from "./FavoritePackagesList";
+export { PackagesFavoriteList } from "./PackagesFavoriteList";
 export { ActivityBarChart } from "./ActivityBarChart";
-export { FavoriteBooksList } from "./FavoriteBooksList";
-export { RecentBooksList } from "./RecentBooksList";
+export { BooksFavoriteList } from "./BooksFavoriteList";
+export { BooksRecentList } from "./BooksRecentList";
 export { DashboardHero } from "./DashboardHero";

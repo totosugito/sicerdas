@@ -10,15 +10,11 @@ import { Clock, LayoutGrid, PlayCircle, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMemo } from "react";
 import { EnumExamSessionStatus } from "@/constants/app-enum";
+import { EnumExamSessionMode } from "@/api/exam-sessions/types";
 
 interface PackageSectionAccordionProps {
   sections: ExamPackageSection[];
   onTakeExam?: (sectionId: string, sectionTitle: string) => void;
-}
-
-interface Chapter {
-  name: string;
-  sections: ExamPackageSection[];
 }
 
 export const PackageSectionAccordion = ({ sections, onTakeExam }: PackageSectionAccordionProps) => {
@@ -119,10 +115,10 @@ export const PackageSectionAccordion = ({ sections, onTakeExam }: PackageSection
                               {section.totalQuestions} {t(($) => $.exam.packages.detail.questions)}
                             </span>
                           </div>
-                          {section.userMode && (
+                          {section.userMode && section.userStatus === EnumExamSessionStatus.IN_PROGRESS && (
                             <div className="flex items-center gap-1.5 border-l pl-3 text-yellow-600">
                               <span>
-                                {section.userMode === "study"
+                                {section.userMode === EnumExamSessionMode.STUDY
                                   ? t(($) => $.exam.sessions.mode.study)
                                   : t(($) => $.exam.sessions.mode.tryout)}
                               </span>
@@ -138,7 +134,7 @@ export const PackageSectionAccordion = ({ sections, onTakeExam }: PackageSection
                           <div className="flex items-center gap-2.5 rounded-lg bg-primary/5 px-3 py-1.5 text-primary ring-1 ring-primary/10 transition-colors group-hover:bg-primary/10">
                             <Trophy className="h-3.5 w-3.5 shrink-0" />
                             <div className="flex flex-col items-end">
-                              <span className="text-[10px] leading-none uppercase font-black text-primary/60 tracking-tight">
+                              <span className="text-[10px] uppercase font-black text-primary/60 tracking-tight">
                                 {t(($) => $.exam.sessions.bestScore)}
                               </span>
                               <span className="text-base font-black leading-none">

@@ -5,13 +5,15 @@ import { db } from "../../../db/db-pool.ts";
 import { examSessions } from "../../../db/schema/exam/sessions.ts";
 import { examPackages } from "../../../db/schema/exam/packages.ts";
 import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
-import { eq, desc, sql } from "drizzle-orm";
+import { EnumExamSessionStatus } from "../../../db/schema/exam/enums.ts";
+import { eq, desc, sql, and } from "drizzle-orm";
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const AllHistoryBody = Type.Object({
   page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
   limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
+  status: Type.Optional(Type.Enum(EnumExamSessionStatus)),
 });
 
 const AllHistoryResponse = Type.Object({
@@ -64,11 +66,14 @@ const allSessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
     ) {
       const { t } = getTypedI18n(request);
       const userId = (request as any).session.user.id;
-      const { page = 1, limit = 10 } = request.body;
+      const { page = 1, limit = 10, status } = request.body;
 
       const offset = (page - 1) * limit;
 
-      const baseConditions = eq(examSessions.userId, userId);
+      const baseConditions = and(
+        eq(examSessions.userId, userId),
+        status ? eq(examSessions.status, status) : undefined,
+      );
 
       // 1. Get Total Count
       const [countResult] = await db

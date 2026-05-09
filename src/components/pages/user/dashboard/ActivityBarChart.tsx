@@ -54,13 +54,60 @@ export const ActivityBarChart = ({ days = 7, className }: ActivityBarChartProps)
         axisPointer: {
           type: "shadow"
         },
-        backgroundColor: isDark ? "#1e293b" : "#fff",
-        borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)",
+        backgroundColor: "transparent",
+        borderWidth: 0,
+        shadowBlur: 0,
+        padding: 0,
+        extraCssText: "box-shadow: none !important; border: none !important;",
         textStyle: {
-          color: isDark ? "#f1f5f9" : "#1e293b"
+          fontFamily: "Inter, sans-serif",
         },
-        borderRadius: 12,
-        padding: [10, 14]
+        formatter: (params: any) => {
+          if (!params || params.length === 0) return "";
+          const idx = params[0].dataIndex;
+          const s = stats[idx];
+          if (!s) return "";
+
+          let dateStr = s.date;
+          try {
+            dateStr = format(parseISO(s.date), "EEEE, dd MMMM yyyy", { locale: id });
+          } catch (e) {
+            console.error("Error formatting date", e);
+          }
+
+          return `
+            <div class="flex flex-col gap-2 p-3 rounded-md border bg-popover/95 shadow-xl min-w-[220px] text-xs backdrop-blur-sm">
+              <div class="font-black text-sm text-popover-foreground border-b pb-2 mb-1">${dateStr}</div>
+              <div class="space-y-1.5">
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                    <span class="text-muted-foreground font-medium">${t(($) => $.exam.sessions.results.stats.correct)}</span>
+                  </div>
+                  <span class="font-bold text-emerald-500">${s.totalCorrect}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                    <span class="text-muted-foreground font-medium">${t(($) => $.exam.sessions.results.stats.wrong)}</span>
+                  </div>
+                  <span class="font-bold text-red-500">${s.totalWrong}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-slate-400"></div>
+                    <span class="text-muted-foreground font-medium">${t(($) => $.exam.sessions.dashboard.stats.totalQuestions)}</span>
+                  </div>
+                  <span class="font-bold text-popover-foreground">${s.totalQuestions}</span>
+                </div>
+                <div class="flex justify-between items-center pt-2 border-t border-border mt-1">
+                  <span class="text-muted-foreground font-black uppercase tracking-wider text-[10px]">${t(($) => $.exam.sessions.dashboard.stats.totalExams)}</span>
+                  <span class="font-black text-indigo-500 text-sm">${s.totalSessions}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }
       },
       legend: {
         data: [

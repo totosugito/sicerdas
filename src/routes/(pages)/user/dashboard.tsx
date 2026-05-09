@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useGlobalStats, useSubjectStats } from "@/api/exam-user-stats";
-import { useAllSessionHistory } from "@/api/exam-sessions/history";
+import { useAllSessionHistory } from "@/api/exam-sessions/all";
 import { useFavoriteBooks, useBookHistory } from "@/api/book";
 import { useAuth } from "@/hooks/use-auth";
 import { useAppTranslation } from "@/lib/i18n-typed";
@@ -10,17 +10,15 @@ import {
   Target,
   Book,
   Bookmark,
-  TrendingUp,
-  Activity,
   LayoutGrid,
   Rocket
 } from "lucide-react";
 import {
   DashboardHero,
-  RecentSessionsList,
-  FavoritePackagesList,
-  RecentBooksList,
-  FavoriteBooksList,
+  SessionsRecentList,
+  PackagesFavoriteList,
+  BooksRecentList,
+  BooksFavoriteList,
   SubjectRadarChart,
   ActivityBarChart,
   StatsCard
@@ -40,6 +38,7 @@ export const dashboardSearchSchema = z.object({
   tab: z.enum(["overview", "assessments", "library"]).optional().catch("overview"),
   days: z.number().optional().catch(7),
   bookFavPage: z.number().optional().catch(1),
+  bookRecentPage: z.number().optional().catch(1),
   assessmentPage: z.number().optional().catch(1),
   packageFavPage: z.number().optional().catch(1),
 });
@@ -59,27 +58,39 @@ function ExamDashboardComponent() {
   const activeTab = search.tab || "overview";
   const activityDays = search.days || 7;
   const bookFavPage = search.bookFavPage || 1;
+  const bookRecentPage = search.bookRecentPage || 1;
   const assessmentPage = search.assessmentPage || 1;
   const packageFavPage = search.packageFavPage || 1;
 
   // Data Fetching
-  const { data: globalStatsRes } = useGlobalStats({ days: activityDays }, { enabled: activeTab === "overview" });
+  const { data: globalStatsRes } = useGlobalStats({ enabled: activeTab === "overview" });
   const globalStats = globalStatsRes?.data;
 
   const { data: subjectStatsRes } = useSubjectStats({ days: activityDays }, { enabled: activeTab === "overview" });
   const subjectStats = subjectStatsRes?.data?.items || [];
 
+  // Active Sessions (Overview Tab)
+  const { data: activeSessionsRes, isLoading: isLoadingActiveSessions } = useAllSessionHistory({
+    limit: 5,
+    page: 1,
+    status: EnumExamSessionStatus.IN_PROGRESS
+  }, {
+    enabled: activeTab === "overview" || activeTab === "library"
+  });
+  const activeSessions = activeSessionsRes?.data;
+
+  // Session History (Assessments Tab)
   const { data: historyRes, isLoading: isLoadingHistory } = useAllSessionHistory({
     limit: 5,
     page: assessmentPage
   }, {
-    enabled: activeTab === "overview" || activeTab === "assessments"
+    enabled: activeTab === "assessments"
   });
   const history = historyRes?.data;
 
   const { data: bookHistoryRes, isLoading: isLoadingBookHistory } = useBookHistory({
     pageSize: 5,
-    page: 1
+    page: bookRecentPage
   }, {
     enabled: activeTab === "overview" || activeTab === "library"
   });
@@ -107,6 +118,12 @@ function ExamDashboardComponent() {
   const handleBookFavPageChange = (page: number) => {
     navigate({
       search: (prev: DashboardSearch) => ({ ...prev, bookFavPage: page }),
+    });
+  };
+  
+  const handleBookRecentPageChange = (page: number) => {
+    navigate({
+      search: (prev: DashboardSearch) => ({ ...prev, bookRecentPage: page }),
     });
   };
 
@@ -226,14 +243,11 @@ function ExamDashboardComponent() {
               <SubjectRadarChart stats={subjectStats} />
 
               {/* Recent Highlights - Active Sessions */}
-              <RecentSessionsList
-                history={history ? {
-                  ...history,
-                  items: history.items
-                    .filter(s => s.status === EnumExamSessionStatus.IN_PROGRESS)
-                    .slice(0, 5)
-                } : undefined}
-                isLoading={isLoadingHistory}
+              <SessionsRecentList
+                history={activeSessions}
+                isLoading={isLoadingActiveSessions}
+                title={t(($) => $.exam.sessions.active.title)}
+                description={t(($) => $.exam.sessions.dashboard.charts.recentActivityDesc)}
               />
             </div>
           </TabsContent>
@@ -241,14 +255,16 @@ function ExamDashboardComponent() {
           {/* --- ASSESSMENTS TAB --- */}
           <TabsContent value="assessments" className="mt-0 outline-none space-y-6 animate-in fade-in duration-300">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <RecentSessionsList
+              <SessionsRecentList
                 history={history}
                 isLoading={isLoadingHistory}
                 page={assessmentPage}
                 onPageChange={handleAssessmentPageChange}
+                title={t(($) => $.exam.sessions.dashboard.charts.recentActivity)}
+                description={t(($) => $.exam.sessions.dashboard.charts.recentActivityDesc)}
               />
 
-              <FavoritePackagesList
+              <PackagesFavoriteList
                 page={packageFavPage}
                 onPageChange={handlePackageFavPageChange}
               />
@@ -258,8 +274,11 @@ function ExamDashboardComponent() {
           {/* --- LIBRARY TAB --- */}
           <TabsContent value="library" className="mt-0 outline-none space-y-6 animate-in fade-in duration-300">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <RecentBooksList />
-              <FavoriteBooksList page={bookFavPage} onPageChange={handleBookFavPageChange} />
+              <BooksRecentList 
+                page={bookRecentPage} 
+                onPageChange={handleBookRecentPageChange} 
+              />
+              <BooksFavoriteList page={bookFavPage} onPageChange={handleBookFavPageChange} />
             </div>
           </TabsContent>
 
