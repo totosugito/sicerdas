@@ -83,6 +83,10 @@ export default {
       emptyDesc: "Mulai membaca buku untuk melihat riwayat aktivitas Anda di sini.",
       lastRead: "Terakhir dibaca {{time}}",
     },
+    book: {
+      bookRead: "Buku Dibaca",
+      bookReadDesc: "Buku yang dibaca.",
+    },
     stats: {
       offlineAccess: "Di Unduh",
       views: "Dilihat",

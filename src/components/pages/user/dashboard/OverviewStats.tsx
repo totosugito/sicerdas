@@ -1,9 +1,9 @@
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { 
-  Trophy, 
-  Percent, 
-  FileText, 
-  Book 
+import {
+  Trophy,
+  Percent,
+  FileText,
+  Book
 } from "lucide-react";
 import { StatsCard } from "./StatsCard";
 
@@ -42,14 +42,14 @@ export const OverviewStats = ({
         title={t(($) => $.exam.sessions.dashboard.stats.totalQuestions)}
         value={totalQuestionsAnswered}
         icon={FileText}
-        description={t(($) => $.exam.sessions.dashboard.empty.noStatsDesc)}
+        description={t(($) => $.exam.sessions.dashboard.stats.totalQuestionsDesc)}
         iconClassName="bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"
       />
       <StatsCard
-        title={t(($) => $.book.dashboard.history.title)}
+        title={t(($) => $.book.dashboard.book.bookRead)}
         value={totalMaterialsRead}
         icon={Book}
-        description={t(($) => $.book.dashboard.history.description)}
+        description={t(($) => $.book.dashboard.book.bookReadDesc)}
         iconClassName="bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
       />
     </div>

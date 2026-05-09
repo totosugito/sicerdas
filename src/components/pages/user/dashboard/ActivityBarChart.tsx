@@ -29,7 +29,7 @@ export const ActivityBarChart = ({ days = 7, className }: ActivityBarChartProps)
     if (stats.length === 0) return null;
 
     const displayData = stats;
-    
+
     const dates = displayData.map((s) => {
       try {
         return format(parseISO(s.date), "dd MMM", { locale: id });
@@ -204,21 +204,24 @@ export const ActivityBarChart = ({ days = 7, className }: ActivityBarChartProps)
 
     if (stats.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center h-[280px] text-center p-8">
-          <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center mb-4 border border-slate-100 dark:border-slate-800">
-            <BarChart3 className="w-8 h-8 text-slate-300 dark:text-slate-600" />
+        <div className="flex flex-col items-center justify-center py-12 px-6 text-center min-h-[280px]">
+          <div className="relative mb-6">
+            <div className="absolute inset-0 bg-indigo-500/20 blur-3xl rounded-full" />
+            <div className="relative w-20 h-20 bg-gradient-to-br from-indigo-100 to-indigo-50 dark:from-indigo-900/40 dark:to-indigo-900/20 rounded-3xl flex items-center justify-center border border-indigo-200/50 dark:border-indigo-700/30 shadow-xl shadow-indigo-500/10">
+              <BarChart3 className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
+            </div>
           </div>
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+          <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
             {t(($) => $.exam.sessions.dashboard.empty.noActivity)}
           </h3>
-          <p className="text-sm text-muted-foreground max-w-[280px]">
+          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[280px] mt-2 font-medium leading-relaxed">
             {t(($) => $.exam.sessions.dashboard.empty.noActivityDesc)}
           </p>
         </div>
       );
     }
 
-    return <ReactECharts options={options} series={options?.series} className={className || "h-[280px] w-full"} />;
+    return <ReactECharts options={options} series={options?.series} className={className || "h-[320px] w-full"} />;
   };
 
   return (

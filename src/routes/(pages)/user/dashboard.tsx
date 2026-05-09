@@ -1,21 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useGlobalStats, useSubjectStats } from "@/api/exam-user-stats";
 import { useAllSessionHistory } from "@/api/exam-sessions/all";
-import { useFavoriteBooks, useBookHistory, useBookStats } from "@/api/book";
+import { useBookHistory, useBookStats } from "@/api/book";
+import { useUserProfileQuery } from "@/api/users/user/details-user";
 import { useAuth } from "@/hooks/use-auth";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { EnumExamSessionStatus } from "@/api/exam-sessions/types";
 import {
   Trophy,
-  Target,
   Book,
-  Bookmark,
   LayoutGrid,
-  Rocket,
-  Percent,
-  FileText,
-  Download
+  Clock
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
 import {
   DashboardHero,
   SessionsRecentList,
@@ -24,7 +26,6 @@ import {
   BooksFavoriteList,
   SubjectRadarChart,
   ActivityBarChart,
-  StatsCard,
   OverviewStats,
   StatsBook
 } from "@/components/pages/user/dashboard";
@@ -34,9 +35,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Link } from "@tanstack/react-router";
-import { AppRoute } from "@/constants/app-route";
 import { z } from "zod";
 
 export const dashboardSearchSchema = z.object({
@@ -71,6 +69,9 @@ function ExamDashboardComponent() {
   const { data: globalStatsRes } = useGlobalStats({ enabled: activeTab === "overview" });
   const globalStats = globalStatsRes?.data;
 
+  const { data: profileRes } = useUserProfileQuery();
+  const profile = profileRes?.data;
+
   const { data: subjectStatsRes } = useSubjectStats({ days: activityDays }, { enabled: activeTab === "overview" });
   const subjectStats = subjectStatsRes?.data?.items || [];
 
@@ -93,23 +94,15 @@ function ExamDashboardComponent() {
   });
   const history = historyRes?.data;
 
-  const { data: bookHistoryRes, isLoading: isLoadingBookHistory } = useBookHistory({
+  const { data: bookHistoryRes } = useBookHistory({
     pageSize: 5,
     page: bookRecentPage
   }, {
     enabled: activeTab === "overview" || activeTab === "library"
   });
-  const bookHistory = bookHistoryRes?.data || [];
 
-  const { data: bookFavoritesRes } = useFavoriteBooks({
-    pageSize: 5,
-    page: bookFavPage
-  }, {
+  const { data: bookStatsRes } = useBookStats({
     enabled: activeTab === "overview" || activeTab === "library"
-  });
-
-  const { data: bookStatsRes } = useBookStats({ 
-    enabled: activeTab === "overview" || activeTab === "library" 
   });
 
   const handleTabChange = (value: string) => {
@@ -129,7 +122,7 @@ function ExamDashboardComponent() {
       search: (prev: DashboardSearch) => ({ ...prev, bookFavPage: page }),
     });
   };
-  
+
   const handleBookRecentPageChange = (page: number) => {
     navigate({
       search: (prev: DashboardSearch) => ({ ...prev, bookRecentPage: page }),
@@ -148,30 +141,6 @@ function ExamDashboardComponent() {
     });
   };
 
-  // Derived Stats
-  const totalQuestions = subjectStats.reduce((acc, curr) => acc + curr.totalQuestionsAnswered, 0);
-  const correctRate = totalQuestions > 0
-    ? Math.round((subjectStats.reduce((acc, curr) => acc + curr.totalCorrect, 0) / totalQuestions) * 100)
-    : 0;
-
-  if (!isLoadingHistory && !isLoadingBookHistory && (!history || history.items.length === 0) && bookHistory.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-        <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6 animate-bounce">
-          <Rocket className="w-12 h-12 text-primary" />
-        </div>
-        <h2 className="text-3xl font-black mb-2">{t(($) => $.exam.sessions.dashboard.empty.noStats)}</h2>
-        <p className="text-slate-500 max-w-md mb-8">
-          {t(($) => $.exam.sessions.dashboard.empty.noStatsDesc)}
-        </p>
-        <Link to={AppRoute.exam.exams.url}>
-          <Button size="lg" className="rounded-full px-8 font-bold shadow-lg shadow-primary/20">
-            {t(($) => $.exam.sessions.dashboard.empty.startExam)}
-          </Button>
-        </Link>
-      </div>
-    );
-  }
 
   return (
     <div className="page-container">
@@ -179,8 +148,7 @@ function ExamDashboardComponent() {
         {/* --- DASHBOARD HERO --- */}
         <DashboardHero
           user={user}
-          activityDays={activityDays}
-          handleDaysChange={handleDaysChange}
+          profile={profile}
         />
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-2">
@@ -219,6 +187,32 @@ function ExamDashboardComponent() {
               totalQuestionsAnswered={globalStats?.totalQuestionsAnswered}
               totalMaterialsRead={bookHistoryRes?.pagination?.total}
             />
+
+            {/* Activity Filter */}
+            <div className="flex items-center justify-end gap-3 mb-4">
+              <span className="text-[12px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                {t(($) => $.exam.sessions.dashboard.charts.period)}
+              </span>
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 p-1 rounded-xl flex items-center shadow-md hover:shadow-lg transition-all duration-200">
+                <Select value={activityDays.toString()} onValueChange={handleDaysChange}>
+                  <SelectTrigger className="w-[160px] bg-transparent border-none text-slate-900 dark:text-slate-100 font-bold text-sm h-8 focus:ring-0">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-primary" />
+                      <span>
+                        {activityDays === 7 && t(($) => $.exam.sessions.dashboard.charts.activityRange.last7Days)}
+                        {activityDays === 14 && t(($) => $.exam.sessions.dashboard.charts.activityRange.last14Days)}
+                        {activityDays === 30 && t(($) => $.exam.sessions.dashboard.charts.activityRange.last30Days)}
+                      </span>
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl shadow-2xl border-slate-200 dark:border-slate-800">
+                    <SelectItem value="7" className="font-medium">{t(($) => $.exam.sessions.dashboard.charts.activityRange.last7Days)}</SelectItem>
+                    <SelectItem value="14" className="font-medium">{t(($) => $.exam.sessions.dashboard.charts.activityRange.last14Days)}</SelectItem>
+                    <SelectItem value="30" className="font-medium">{t(($) => $.exam.sessions.dashboard.charts.activityRange.last30Days)}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
             {/* Engagement Summary Chart */}
             <ActivityBarChart days={activityDays} />
@@ -266,9 +260,9 @@ function ExamDashboardComponent() {
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <BooksRecentList 
-                page={bookRecentPage} 
-                onPageChange={handleBookRecentPageChange} 
+              <BooksRecentList
+                page={bookRecentPage}
+                onPageChange={handleBookRecentPageChange}
               />
               <BooksFavoriteList page={bookFavPage} onPageChange={handleBookFavPageChange} />
             </div>

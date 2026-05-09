@@ -147,6 +147,7 @@ export default {
   },
   dashboard: {
     title: "Dashboard",
+    welcome: "Selamat Datang",
     description: "Pantau progres belajar dan performa Anda secara keseluruhan.",
     badge: "Dashboard Performa User",
     tabs: {
@@ -166,11 +167,14 @@ export default {
       totalCorrectDesc: "Dari {{count}} soal",
       totalWrong: "Total Salah",
       totalQuestions: "Total Soal",
+      totalQuestionsDesc: "Total Soal yang dijawab",
+      gradeLabel: "Kelas",
     },
     recentHighlights: "Sorotan Terbaru",
     recentHighlightsDesc: "Pencapaian belajar terakhir Anda",
     latestExams: "Ujian Terbaru",
     charts: {
+      period: "Periode",
       subjectPerformance: "Performa Per Subjek",
       subjectPerformanceDesc: "Akurasi Anda di setiap mata pelajaran",
       activityHistory: "Statistik Aktivitas",

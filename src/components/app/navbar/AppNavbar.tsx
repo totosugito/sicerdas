@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { Moon, Sun, Monitor, User, LogOut, Trophy } from "lucide-react";
+import { Moon, Sun, Monitor, LogOut, LayoutDashboard, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -255,21 +255,21 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to={AppRoute.user.dashboard.url}>
-                    <Trophy className="mr-2 h-4 w-4" />
-                    {t(($) => $.exam.sessions.dashboard.title)}
+                  <Link to={AppRoute.user.dashboard.url} className="cursor-pointer">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    <span>{t(($) => $.exam.sessions.dashboard.title)}</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to={AppRoute.user.profile.url}>
-                    <User className="mr-2 h-4 w-4" />
-                    {t(($) => $.labels.profile)}
+                  <Link to={AppRoute.user.profile.url} className="cursor-pointer">
+                    <UserCircle className="mr-2 h-4 w-4" />
+                    <span>{t(($) => $.labels.profile)}</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={onLogoutClick}>
+                <DropdownMenuItem onClick={onLogoutClick} className="cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
-                  {t(($) => $.labels.logout)}
+                  <span>{t(($) => $.labels.logout)}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -65,11 +65,11 @@ export const BooksRecentList = ({ page = 1, onPageChange, limit = 5 }: BooksRece
           <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[280px] mt-2 mb-6 font-medium leading-relaxed">
             {t(($) => $.book.dashboard.history.emptyDesc)}
           </p>
-          <Link to={AppRoute.book.books.url}>
+          {/* <Link to={AppRoute.book.books.url}>
             <Button variant="outline" className="px-8 transition-all duration-300">
               {t(($) => $.book.detail.backToBooks)}
             </Button>
-          </Link>
+          </Link> */}
         </div>
       );
     }
@@ -113,13 +113,13 @@ export const BooksRecentList = ({ page = 1, onPageChange, limit = 5 }: BooksRece
               <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1 truncate">
                 {book.author}
               </p>
-              
+
               <div className="flex items-center gap-3 mt-2">
                 <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-tight">
                   <Eye className="w-3 h-3" />
                   <span>{book.stats.viewCount} {t(($) => $.book.dashboard.stats.views)}</span>
                 </div>
-                
+
                 {book.stats.isDownloaded && (
                   <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-500 uppercase tracking-tight bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
                     <Download className="w-3 h-3" />

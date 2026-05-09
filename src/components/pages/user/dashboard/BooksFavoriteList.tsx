@@ -94,11 +94,11 @@ export const BooksFavoriteList = ({ page, onPageChange, limit }: BooksFavoriteLi
           <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[280px] mt-2 mb-6 font-medium leading-relaxed">
             {t(($) => $.book.dashboard.favorites.emptyDesc)}
           </p>
-          <Link to={AppRoute.book.books.url}>
+          {/* <Link to={AppRoute.book.books.url}>
             <Button variant="outline" className="px-8 transition-all duration-300">
               {t(($) => $.book.detail.backToBooks)}
             </Button>
-          </Link>
+          </Link> */}
         </div>
       );
     }
