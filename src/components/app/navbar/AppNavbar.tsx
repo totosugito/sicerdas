@@ -106,7 +106,7 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
 
   return (
     <header className="sticky top-0 z-50 px-4 py-1 bg-card/70 flex h-12 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 backdrop-blur-xl ">
-      <div className="flex items-center justify-between w-full">
+      <div className={cn("navbar-size", "flex items-center justify-between w-full")}>
         <div className="flex flex-row gap-4 items-center">
           {isShowSidebar ? (
             <>
@@ -114,7 +114,7 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
               <Separator orientation={"vertical"} className={"h-6"} style={{ height: "20px" }} />
             </>
           ) : (
-            <AppLogo disableCollapsed={isAdmin(user) && isShowSidebar} />
+            <AppLogo disableCollapsed={/*isAdmin(user) &&*/ isShowSidebar} />
           )}
         </div>
 
@@ -254,12 +254,12 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
+                {/* <DropdownMenuItem asChild>
                   <Link to={AppRoute.user.dashboard.url} className="cursor-pointer">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     <span>{t(($) => $.exam.sessions.dashboard.title)}</span>
                   </Link>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem asChild>
                   <Link to={AppRoute.user.profile.url} className="cursor-pointer">
                     <UserCircle className="mr-2 h-4 w-4" />

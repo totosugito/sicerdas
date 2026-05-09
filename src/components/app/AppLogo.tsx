@@ -13,8 +13,8 @@ const AppLogo = ({ disableCollapsed = false, className, onClick }: Props) => {
   // If we want to skip sidebar-dependent logic (e.g. in Navbar or Footer)
   if (disableCollapsed) {
     return (
-      <Link 
-        to="/" 
+      <Link
+        to="/"
         onClick={onClick}
         className={cn("flex items-center gap-2 group", className)}
       >
@@ -35,15 +35,15 @@ const AppLogo = ({ disableCollapsed = false, className, onClick }: Props) => {
     const isCollapsed = (state === "collapsed");
 
     return (
-      <Link 
-        to="/" 
+      <Link
+        to="/"
         onClick={onClick}
         className={cn("flex items-center gap-2 group", className)}
       >
         <div className={cn("flex items-center justify-center rounded-full bg-card shadow-sm", isCollapsed ? "p-[2px]" : "p-[3px]")} >
           <img src={APP_CONFIG?.app?.logo} width={isCollapsed ? 22 : 26} height={isCollapsed ? 22 : 26} alt={APP_CONFIG?.app?.name} />
         </div>
-        {!isCollapsed && (
+        {isCollapsed && (
           <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
             {APP_CONFIG?.app?.name}
           </span>
@@ -53,8 +53,8 @@ const AppLogo = ({ disableCollapsed = false, className, onClick }: Props) => {
   } catch {
     // If used outside SidebarProvider and disableCollapsed is false
     return (
-      <Link 
-        to="/" 
+      <Link
+        to="/"
         onClick={onClick}
         className={cn("flex items-center gap-2 group", className)}
       >

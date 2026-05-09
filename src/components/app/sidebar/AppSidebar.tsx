@@ -23,7 +23,7 @@ function AppSidebar({ navItems, ...props }: { navItems: SidebarData }) {
       {...props}
     >
       <SidebarHeader className="bg-sidebar border-b border-sidebar-border/30 py-2">
-        <AppLogo disableCollapsed={true} />
+        <AppLogo disableCollapsed={false} />
       </SidebarHeader>
 
       <SidebarContent className={cn(

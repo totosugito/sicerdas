@@ -70,12 +70,12 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
                 {t(($) => $.landing.hero.exploreBooks)}
               </Button>
             </Link>
-            <Link to={AppRoute.exam.exams.url}>
+            {/* <Link to={AppRoute.exam.exams.url}>
               <Button variant="outline" className="gap-2">
                 <Trophy className="h-5 w-5" />
                 {t(($) => $.landing.hero.takeQuiz)}
               </Button>
-            </Link>
+            </Link> */}
           </motion.div>
         </motion.div>
       </div>

@@ -61,12 +61,12 @@ export function AppNavbarMobile({ isOpen, setIsOpen }: AppNavbarMobileProps) {
             Icon: FlaskConical,
             items: tablePeriodicMenu,
         },
-        {
-            id: 'quiz',
-            title: t($ => $.landing.navbar.quiz.title),
-            Icon: Trophy,
-            items: quizMenu,
-        },
+        // {
+        //     id: 'quiz',
+        //     title: t($ => $.landing.navbar.quiz.title),
+        //     Icon: Trophy,
+        //     items: quizMenu,
+        // },
     ]
 
     return (

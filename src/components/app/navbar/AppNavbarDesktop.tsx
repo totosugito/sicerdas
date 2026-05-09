@@ -91,7 +91,7 @@ export function AppNavbarDesktop() {
                     </NavigationMenuItem>
 
                     {/* Quiz Menu */}
-                    <NavigationMenuItem>
+                    {/* <NavigationMenuItem>
                         <NavigationMenuTrigger className="text-sm font-bold bg-transparent rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-all px-3 py-1.5 h-9">
                             <Trophy className="h-4 w-4 mr-2 text-slate-500" />
                             {t($ => $.landing.navbar.quiz.title)}
@@ -110,7 +110,7 @@ export function AppNavbarDesktop() {
                                 ))}
                             </ul>
                         </NavigationMenuContent>
-                    </NavigationMenuItem>
+                    </NavigationMenuItem> */}
                 </NavigationMenuList>
             </NavigationMenu>
         </div>
