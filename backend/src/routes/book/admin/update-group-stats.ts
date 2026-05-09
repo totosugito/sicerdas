@@ -52,7 +52,7 @@ const adminRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (existingGroup.length === 0) {
         return reply.status(404).send({
           success: false,
-          message: t($ => $.admin.book.groupStats.notFound),
+          message: t($ => $.book.groupStats.notFound),
           data: null
         });
       }
@@ -99,7 +99,7 @@ const adminRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t($ => $.admin.book.groupStats.updateSuccess),
+        message: t($ => $.book.groupStats.updateSuccess),
         data: {
           groupId: updatedStats[0].bookGroupId,
           bookTotal: updatedStats[0].bookTotal,

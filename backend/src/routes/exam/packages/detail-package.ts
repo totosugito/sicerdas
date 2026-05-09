@@ -9,14 +9,14 @@ import {
 } from "../../../db/schema/exam/index.ts";
 import { educationCategories, educationGrades } from "../../../db/schema/education/index.ts";
 import { appEventHistory } from "../../../db/schema/app/app-event-history.ts";
-import { and, eq, sql, desc } from "drizzle-orm";
+import { and, eq, sql, desc, or } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getPackageThumbnailUrl } from "../../../utils/exam-utils.ts";
 import { EnumContentType, EnumEventStatus } from "../../../db/schema/enum/enum-app.ts";
 import config from "../../../config/env.config.ts";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
-import { EnumExamPackageUserStatus } from "../../../db/schema/exam/enums.ts";
+import { EnumExamPackageUserStatus, EnumExamType } from "../../../db/schema/exam/enums.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const PackageDetailResponse = Type.Object({
@@ -164,7 +164,16 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
               )
             : sql`FALSE`,
         )
-        .where(and(eq(examPackages.id, id), eq(examPackages.isActive, true)));
+        .where(
+          and(
+            eq(examPackages.id, id),
+            eq(examPackages.isActive, true),
+            or(
+              eq(examPackages.examType, EnumExamType.OFFICIAL),
+              userId ? eq(examPackages.createdByUserId, userId) : sql`FALSE`,
+            ),
+          ),
+        );
 
       const result = await baseQuery;
 

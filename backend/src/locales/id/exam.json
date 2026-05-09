@@ -145,6 +145,10 @@
       "bookmark": {
         "updated": "Bookmark berhasil diperbarui",
         "noChange": "Status bookmark tidak berubah"
+      },
+      "generateCustom": {
+        "success": "Latihan kustom berhasil dibuat",
+        "noQuestions": "Tidak ada soal yang ditemukan untuk tag dan jenjang yang dipilih."
       }
     },
     "package_sections": {

@@ -101,6 +101,8 @@ export const AppApi = {
         bookmark: APP_URL_API + "/exam/packages/user/bookmark",
         rating: APP_URL_API + "/exam/packages/user/rating",
         favorites: APP_URL_API + "/exam/packages/user/favorites",
+        generateCustom: APP_URL_API + "/exam/packages/user/generate-custom",
+        listCustom: APP_URL_API + "/exam/packages/user/list-custom",
       },
 
       list: APP_URL_API + "/exam/packages/list",

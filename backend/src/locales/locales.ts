@@ -1,6 +1,4 @@
-import adminBook from "./id/admin-book.json" with { type: "json" };
-import admin from "./id/admin.json" with { type: "json" };
-import appTier from "./id/app-tier.json" with { type: "json" };
+import tier from "./id/tier.json" with { type: "json" };
 import auth from "./id/auth.json" with { type: "json" };
 import book from "./id/book.json" with { type: "json" };
 import chatAi from "./id/chat-ai.json" with { type: "json" };
@@ -13,11 +11,7 @@ import user from "./id/user.json" with { type: "json" };
 import version from "./id/version.json" with { type: "json" };
 
 const idMessages = {
-  admin: {
-    ...adminBook.admin,
-    ...admin.admin,
-  },
-  ...appTier,
+  ...tier,
   ...auth,
   ...book,
   ...chatAi,

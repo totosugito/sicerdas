@@ -3,7 +3,7 @@ import { Type } from "@sinclair/typebox";
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { db } from "../../../db/db-pool.ts";
 import { bookInteractions } from "../../../db/schema/book/index.ts";
-import { and, eq, sql, sum } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 

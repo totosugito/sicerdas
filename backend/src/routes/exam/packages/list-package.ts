@@ -15,7 +15,7 @@ import { getPackageThumbnailUrl } from "../../../utils/exam-utils.ts";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
-import { EnumExamPackageUserStatus } from "../../../db/schema/exam/enums.ts";
+import { EnumExamPackageUserStatus, EnumExamType } from "../../../db/schema/exam/enums.ts";
 
 const PackageListQuery = Type.Object({
   categoryId: Type.Optional(Type.String({ format: "uuid" })),
@@ -141,6 +141,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       conditions.push(eq(examPackages.isActive, true));
       conditions.push(gt(examPackages.activeSections, 0));
       conditions.push(gt(examPackages.activeQuestions, 0));
+      conditions.push(eq(examPackages.examType, EnumExamType.OFFICIAL));
 
       if (search && search.trim() !== "") {
         const searchTerm: string = `%${search.trim().toLowerCase()}%`;

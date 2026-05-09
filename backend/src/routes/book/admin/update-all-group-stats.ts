@@ -94,7 +94,7 @@ const adminRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t($ => $.admin.book.groupStats.updateAllSuccess),
+        message: t($ => $.book.groupStats.updateAllSuccess),
         data: results
       });
     })

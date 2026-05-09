@@ -1,5 +1,9 @@
 {
   "user": {
+    "hook": {
+      "unauthorized": "Anda harus masuk untuk mengakses sumber daya ini.",
+      "forbidden": "Anda tidak memiliki izin untuk mengakses sumber daya ini."
+    },
     "profile": {
       "title": "Profil Pengguna",
       "description": "Kelola pengaturan dan preferensi akun Anda.",

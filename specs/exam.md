@@ -60,6 +60,7 @@ All tables are prefixed with `exam_` within PostgreSQL but are stripped off the 
   - **High-End Authoring**: The admin editor for packages utilizes a **Standalone Page Router** with a **Dual-View Preview**.
   - **Hero View**: Displays the full original image to ensure content/text visibility.
   - **Student Card Preview**: A 16:9 simulated preview simulating exactly how the student will see the package on their dashboard.
+  - **Custom Practice Generation**: For `custom_practice` types, packages are generated via `POST /api/exam/packages/user/generate-custom`. They are private to the creator (`createdByUserId`) and used for targeted remedial study.
 - 10. **`exam_package_sections`**: Divides an exam package into logical sub-tests (e.g., Literasi Bahasa, Penalaran Matematika). Includes an optional `groupName` (e.g., "SKD" or "Basic Arithmetic") and a denormalized **`maxScore`** field representing the sum of all question weights in that section.
 - 11. **`exam_package_questions`**: Junction table that glues questions to an `exam_package`. It mandates a link to a `sectionId` (to enforce standardized package structures and prevent mixed-state bugs) and enforces the default sequence ordering of the questions.
 

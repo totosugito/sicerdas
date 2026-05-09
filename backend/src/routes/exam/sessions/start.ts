@@ -9,8 +9,8 @@ import { examPackageQuestions } from "../../../db/schema/exam/package-questions.
 import { examSessionAnswers } from "../../../db/schema/exam/session-answers.ts";
 import { examQuestions } from "../../../db/schema/exam/questions.ts";
 import { examQuestionOptions } from "../../../db/schema/exam/question-options.ts";
-import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
-import { eq, and, inArray } from "drizzle-orm";
+import { EnumExamSessionStatus, EnumExamSessionMode, EnumExamType } from "../../../db/schema/exam/enums.ts";
+import { eq, and, inArray, or } from "drizzle-orm";
 import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { shuffleArray } from "../../../utils/my-utils.ts";
@@ -69,6 +69,10 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
             eq(examPackageSections.packageId, packageId),
             eq(examPackageSections.isActive, true),
             eq(examPackages.isActive, true),
+            or(
+              eq(examPackages.examType, EnumExamType.OFFICIAL),
+              eq(examPackages.createdByUserId, userId),
+            ),
           ),
         )
         .limit(1);

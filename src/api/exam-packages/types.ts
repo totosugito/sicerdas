@@ -75,3 +75,51 @@ export interface FilterParamsItem {
 export interface ExamFilterParamsResponse extends ExamPackageResponse {
   data: FilterParamsItem[];
 }
+
+export interface GenerateCustomRequest {
+  categoryId: string;
+  educationGradeId: number;
+  tagIds: string[];
+  limit?: number;
+  packageTitle?: string;
+  sectionTitle?: string;
+}
+
+export interface GenerateCustomResponse extends ExamPackageResponse {
+  data: {
+    packageId: string;
+    sectionId: string;
+  };
+}
+
+export interface CustomPracticeItem {
+  id: string;
+  title: string;
+  thumbnail: string | null;
+  durationMinutes: number;
+  stats: {
+    activeQuestions: number;
+    activeSections: number;
+  };
+  category: {
+    name: string;
+  };
+  grade: {
+    name: string;
+  };
+  userInteraction: {
+    status: EnumExamPackageUserStatus;
+    completedSectionsCount: number;
+  };
+  createdAt: string;
+}
+
+export interface ListCustomPackagesResponse extends ExamPackageResponse {
+  data: CustomPracticeItem[];
+  pagination: {
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}

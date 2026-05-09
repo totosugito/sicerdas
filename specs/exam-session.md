@@ -130,3 +130,19 @@ It dynamically adjusts behavior based on `session.mode`:
 - Displays the final calculated score, time taken, and accuracy breakdown.
 - Contains a "Review Mode" allowing the user to click through the exam again and read all `exam_question_solutions`.
 - (If `isAnswersPurged === true`, shows a warning banner that detailed review is unavailable).
+---
+
+## 6. Custom Practice Generation Flow
+
+To support adaptive learning, users can generate "Custom Practices" targeting their specific weaknesses (tags).
+
+**Process:**
+1.  **Selection:** The frontend identifies weak tags (e.g., via `accuracyRate` in `exam_user_stats_tag`).
+2.  **Generation API (`POST /api/exam/packages/user/generate-custom`)**:
+    - Frontend sends `categoryId`, `educationGradeId`, `tagIds[]`, `limit`, and optional `packageTitle`/`sectionTitle`.
+    - Backend selects random questions matching the grade and tags.
+    - Backend creates a private `exam_package` with `examType: 'custom_practice'`.
+    - Returns `packageId` and `sectionId`.
+3.  **Start Exam:** The frontend immediately calls `POST /api/exam/sessions/user/start` with the returned IDs to begin the session.
+4.  **Review:** Custom practices appear in the user's History, just like official tryouts, but are excluded from the global public package listing.
+
