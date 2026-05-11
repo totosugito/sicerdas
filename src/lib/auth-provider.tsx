@@ -2,12 +2,10 @@ import * as React from 'react'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { AuthProps } from '@/types/auth'
 import { authClient } from "@/lib/auth-client";
-import { useAppStore } from "@/stores/useAppStore";
 import { AuthContextTag } from './auth-context'
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const authStore = useAuthStore((state) => state)
-  const appStore = useAppStore((state) => state)
   const [user, setUser] = React.useState<AuthProps | null>(authStore.user)
 
   const [loading, setLoading] = React.useState(true)
@@ -15,7 +13,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = React.useCallback(async () => {
     authStore.logout()
-    appStore.resetAll();
     setUser(null)
   }, [])
 
@@ -41,7 +38,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(userData)
         } else {
           authStore.logout()
-          appStore.resetAll();
           setUser(null)
         }
       } catch (error) {
