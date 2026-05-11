@@ -1,0 +1,27 @@
+name: 'bse'
+description: 'Buku Sekolah Elektronik'
+publish_to: 'none'
+
+version: 06.05.21+37
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter_intl:
+  enabled: true
+
+flutter:
+  uses-material-design: true
+  generate: true
+
