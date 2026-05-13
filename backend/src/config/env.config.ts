@@ -26,7 +26,9 @@ export const schema = Type.Object({
   COOKIE_PREFIX: Type.String({ default: "cookie" }),
   BETTER_AUTH_SECRET: Type.String({ default: "secret" }),
   BETTER_AUTH_URL: Type.Optional(Type.String()),
-  GOOGLE_CLIENT_ID: Type.Optional(Type.String()),
+  GOOGLE_WEB_CLIENT_ID: Type.Optional(Type.String()),
+  GOOGLE_IOS_CLIENT_ID: Type.Optional(Type.String()),
+  GOOGLE_ANDROID_CLIENT_ID: Type.Optional(Type.String()),
   GOOGLE_CLIENT_SECRET: Type.Optional(Type.String()),
   BREVO_API_KEY: Type.Optional(Type.String()),
   NO_REPLY_EMAIL: Type.Optional(Type.String()),
@@ -101,9 +103,9 @@ export default {
     baseUrl: env.USE_S3_STORAGE
       ? env.S3_PUBLIC_URL
       : `http://${env.HOST === "0.0.0.0" ? "127.0.0.1" : env.HOST}:${env.PORT}`.replace(
-          /([^:]\/)\/+/g,
-          "$1",
-        ),
+        /([^:]\/)\/+/g,
+        "$1",
+      ),
     uploadsRelativePath: env.USE_S3_STORAGE ? "" : "..",
     uploadsDir: env.UPLOAD_DIR,
     uploadsUserDir: "users",
@@ -124,11 +126,15 @@ export default {
       env.HOST,
       `${env.PROTOCOL}://${env.HOST}:${env.PORT}`,
       `${env.PROTOCOL}://${env.FRONTEND_URL}`,
+      "http://10.0.2.2:5550",
+      "fahim-edu-bse://*",
     ],
   },
   oauth: {
     google: {
-      clientId: env.GOOGLE_CLIENT_ID,
+      webClientId: env.GOOGLE_WEB_CLIENT_ID,
+      iosClientId: env.GOOGLE_IOS_CLIENT_ID,
+      androidClientId: env.GOOGLE_ANDROID_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },

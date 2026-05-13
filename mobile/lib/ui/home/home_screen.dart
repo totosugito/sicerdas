@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import '../../core/auth/auth_notifier.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -14,7 +15,11 @@ class HomeScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(),
+              _buildHeader(context, ref),
+              if (!ref.watch(authStateProvider)) ...[
+                const SizedBox(height: 24),
+                _buildAuthCTA(ref),
+              ],
               const SizedBox(height: 24),
               _buildQuickAccessGrid(context),
               const SizedBox(height: 24),
@@ -26,7 +31,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -48,8 +53,31 @@ class HomeScreen extends ConsumerWidget {
                 //   onChanged: (v) {},
                 // ),
                 IconButton(
-                  icon: const Icon(Icons.person_outline),
-                  onPressed: () {},
+                  icon: Icon(
+                    ref.watch(authStateProvider) ? Icons.person : Icons.person_outline,
+                    color: ref.watch(authStateProvider) ? Colors.blue : null,
+                  ),
+                  onPressed: () async {
+                    if (ref.read(authStateProvider)) {
+                      // Already logged in, maybe show profile or logout
+                      final logout = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Logout'),
+                          content: const Text('Are you sure you want to logout?'),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+                            TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Logout')),
+                          ],
+                        ),
+                      );
+                      if (logout == true) {
+                        await ref.read(authStateProvider.notifier).signOut();
+                      }
+                    } else {
+                      await ref.read(authStateProvider.notifier).signIn();
+                    }
+                  },
                 ),
               ],
             ),
@@ -154,6 +182,37 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildAuthCTA(WidgetRef ref) {
+    return ShadCard(
+      padding: const EdgeInsets.all(20),
+      backgroundColor: Colors.blue.withOpacity(0.05),
+      border: ShadBorder.all(color: Colors.blue.withOpacity(0.2)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Selamat Datang!',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Masuk untuk mengakses semua fitur dan sinkronisasi data belajar Anda.',
+            style: TextStyle(color: Colors.grey),
+          ),
+          const SizedBox(height: 16),
+          ShadButton(
+            onPressed: () => ref.read(authStateProvider.notifier).signIn(),
+            leading: const Padding(
+              padding: EdgeInsets.only(right: 8.0),
+              child: Icon(Icons.login, size: 16),
+            ),
+            child: const Text('Masuk dengan Google'),
+          ),
+        ],
+      ),
     );
   }
 }

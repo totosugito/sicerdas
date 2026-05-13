@@ -106,7 +106,11 @@ const auth = betterAuth({
   socialProviders: {
     google: {
       prompt: "select_account",
-      clientId: envConfig.oauth?.google?.clientId || "",
+      clientId: [
+        envConfig.oauth?.google?.webClientId || "",
+        envConfig.oauth?.google?.androidClientId || "",
+        envConfig.oauth?.google?.iosClientId || "",
+      ].filter((id) => id !== "") as string[],
       clientSecret: envConfig.oauth?.google?.clientSecret || "",
     },
   },
@@ -185,6 +189,7 @@ const auth = betterAuth({
     database: {
       generateId: false,
     },
+    useSecureCookies: false,
   },
   trustedOrigins: envConfig.server.trustedOrigins,
   secret: envConfig.server.secretKey,

@@ -45,5 +45,6 @@ app.*.map.json
 /android/app/release
 /android/.kotlin
 /android/gradle/*.jar
+/android/build
 pubspec.lock
 lib/l10n/gen_l10n

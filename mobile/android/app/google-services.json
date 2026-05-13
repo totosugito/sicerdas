@@ -1,0 +1,64 @@
+{
+  "project_info": {
+    "project_number": "11816434001",
+    "firebase_url": "https://fahimedubse.firebaseio.com",
+    "project_id": "fahimedubse",
+    "storage_bucket": "fahimedubse.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11816434001:android:2cde8deddeb552385ffb70",
+        "android_client_info": {
+          "package_name": "fahim_edu.bse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "11816434001-9l2gbe35v3o2396t8h8fnmlehu36j14p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "fahim_edu.bse",
+            "certificate_hash": "39bd6c5631cb100f4aac675633127bbfa7ab080f"
+          }
+        },
+        {
+          "client_id": "11816434001-e6f63dlvej3i00tqlt1kioaj91no2q2i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "fahim_edu.bse",
+            "certificate_hash": "3fca2767f51e58e4fd4d58a864fb6bd3eac9c86f"
+          }
+        },
+        {
+          "client_id": "11816434001-je835960pivncpbsbldmtoeom9r7eoa5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2g6r2LbB-FKoogt5UVAU_OOTol-kKYFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "11816434001-je835960pivncpbsbldmtoeom9r7eoa5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "11816434001-mn55bo3e3dc5ump7s5u31e9ejsld1krk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "fahimedu.bse.appBse"
+              }
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-1499065961898758~1538442816"
+    }
+  ],
+  "configuration_version": "1"
+}
