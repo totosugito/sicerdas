@@ -7,8 +7,8 @@ import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/providers/settings_provider.dart';
 import 'core/config/env_config.dart';
-import 'l10n/gen_l10n/bse2_localizations.dart';
-import 'ui/home/home_screen.dart';
+import 'core/providers/dio_provider.dart';
+import 'l10n/gen_l10n/app_localizations.dart';
 import 'ui/main_layout.dart';
 
 void main() async {
@@ -16,6 +16,9 @@ void main() async {
 
   // Initialize shared preferences
   final sharedPrefs = await SharedPreferences.getInstance();
+  
+  // Initialize Dio and Cookies
+  final dio = await createDioInstance();
 
   // Set global logger level - disables logs in release mode
   Logger.level = kReleaseMode ? Level.off : Level.debug;
@@ -23,7 +26,13 @@ void main() async {
   // Initialize according to Flutter Authors' example
   await GoogleSignIn.instance.initialize(serverClientId: EnvConfig.googleWebClientId);
 
-  runApp(ProviderScope(overrides: [sharedPreferencesProvider.overrideWithValue(sharedPrefs)], child: const MyApp()));
+  runApp(ProviderScope(
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+      dioProvider.overrideWithValue(dio),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends ConsumerWidget {
@@ -85,9 +94,11 @@ class MyApp extends ConsumerWidget {
       ),
       themeMode: settings.themeMode,
       locale: settings.locale,
-      localizationsDelegates: Bse2Localizations.localizationsDelegates,
-      supportedLocales: Bse2Localizations.supportedLocales,
-      home: const MainLayout(),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Builder(
+        builder: (context) => const MainLayout(),
+      ),
     );
   }
 }

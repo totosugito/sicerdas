@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/providers/navigation_provider.dart';
-import '../l10n/gen_l10n/bse2_localizations.dart';
+import '../l10n/gen_l10n/app_localizations.dart';
 import 'home/home_screen.dart';
 import 'placeholder_screens.dart';
+import 'profile/profile_screen.dart';
 
 class MainLayout extends ConsumerWidget {
   const MainLayout({super.key});
@@ -11,7 +12,7 @@ class MainLayout extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(navigationProvider);
-    final l10n = Bse2Localizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     final List<Widget> screens = [
       const HomeScreen(),
@@ -28,7 +29,7 @@ class MainLayout extends ConsumerWidget {
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
         onDestinationSelected: (index) {
-          ref.read(navigationProvider.notifier).state = index;
+          ref.read(navigationProvider.notifier).setIndex(index);
         },
         destinations: [
           NavigationDestination(

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../../l10n/gen_l10n/bse2_localizations.dart';
+import '../../../l10n/gen_l10n/app_localizations.dart';
 
 class LatestBooksSection extends StatelessWidget {
   const LatestBooksSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final l10n = Bse2Localizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final theme = ShadTheme.of(context);
 
     // Mock data for demo
@@ -83,7 +83,7 @@ class _BookCard extends StatelessWidget {
   final String author;
   final String imageUrl;
   final bool isNew;
-  final Bse2Localizations l10n;
+  final AppLocalizations l10n;
 
   const _BookCard({
     required this.title,

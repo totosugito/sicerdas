@@ -1,133 +1,114 @@
 import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:logger/logger.dart';
-import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../config/env_config.dart';
-
-final authServiceProvider = Provider<AuthService>((ref) {
-  return AuthService();
-});
+import '../providers/settings_provider.dart';
+import '../providers/dio_provider.dart';
+import '../auth/auth_notifier.dart';
+import '../models/user_model.dart';
 
 class AuthService {
+  final Dio _dio;
+  final SharedPreferences _prefs;
   final _logger = Logger(printer: PrettyPrinter(methodCount: 0));
-  Dio? _dio;
-  PersistCookieJar? _cookieJar;
 
-  Future<Dio> get dio async {
-    if (_dio == null) {
-      await _init();
-    }
-    return _dio!;
-  }
+  static const String _authKey = 'is_authenticated';
+  static const String _userKey = 'cached_user';
 
-  Future<void> _init() async {
-    final appDocDir = await getApplicationDocumentsDirectory();
-    _cookieJar = PersistCookieJar(storage: FileStorage("${appDocDir.path}/.cookies/"));
+  AuthService(this._dio, this._prefs);
 
-    _dio = Dio(BaseOptions(baseUrl: EnvConfig.apiUrl, connectTimeout: const Duration(seconds: 10), receiveTimeout: const Duration(seconds: 10)));
-
-    _dio!.interceptors.add(CookieManager(_cookieJar!));
-
-    // Add logger for debugging
-    if (!kReleaseMode) {
-      _dio!.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            _logger.d('[${options.method}] ${options.baseUrl}${options.path}');
-            if (options.data != null) {
-              _logger.d('Payload: ${options.data}');
-            }
-            return handler.next(options);
-          },
-          onResponse: (response, handler) {
-            _logger.i('[${response.statusCode}] ${response.requestOptions.path}');
-            if (response.data != null) {
-              _logger.d('Response: ${response.data}');
-            }
-            return handler.next(response);
-          },
-          onError: (DioException e, handler) {
-            _logger.e('[${e.response?.statusCode}] ${e.requestOptions.path}');
-            if (e.response?.data != null) {
-              _logger.e('Error Data: ${e.response?.data}');
-            }
-            return handler.next(e);
-          },
-        ),
-      );
+  Future<bool> checkAuthStatus() async {
+    try {
+      final response = await _dio.get('/api/auth/get-session');
+      final isAuthenticated = response.statusCode == 200 && response.data != null;
+      
+      if (isAuthenticated && response.data['user'] != null) {
+        // 💾 Cache user data
+        final user = UserModel.fromMap(response.data['user']);
+        await _prefs.setString(_userKey, user.toJson());
+      }
+      
+      await _prefs.setBool(_authKey, isAuthenticated);
+      return isAuthenticated;
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        return _prefs.getBool(_authKey) ?? false;
+      }
+      await _prefs.setBool(_authKey, false);
+      return false;
+    } catch (e) {
+      return false;
     }
   }
 
   Future<bool> signInWithGoogle() async {
     try {
-      // Use the instance initialized in main()
-      final googleSignIn = GoogleSignIn.instance;
+      final googleUser = await GoogleSignIn.instance.authenticate();
+      final googleAuth = googleUser.authentication;
+      final idToken = googleAuth.idToken;
 
-      // Use the modern authenticate() method from the official example
-      final GoogleSignInAccount googleUser = await googleSignIn.authenticate();
+      if (idToken == null) return false;
 
-      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
-      final String? idToken = googleAuth.idToken;
-
-      if (idToken == null) {
-        _logger.e('Failed to get ID Token from Google');
-        return false;
-      }
-
-      _logger.i('Sending ID Token to backend...');
-
-      // Send the idToken to Better Auth
-      final dioInstance = await dio;
-      final response = await dioInstance.post(
+      final response = await _dio.post(
         '/api/auth/sign-in/social',
         data: {
           'provider': 'google',
           'idToken': {'token': idToken},
           'callbackURL': EnvConfig.apiUrl,
         },
-        options: Options(headers: {'Content-Type': 'application/json', 'Origin': EnvConfig.apiUrl}),
       );
 
-      if (response.statusCode == 200) {
-        _logger.i('Login successful, checking session...');
-        return await checkAuthStatus();
+      final success = response.statusCode == 200;
+      if (success && response.data['user'] != null) {
+        // 💾 Cache user data
+        final user = UserModel.fromMap(response.data['user']);
+        await _prefs.setString(_userKey, user.toJson());
+        await _prefs.setBool(_authKey, true);
       }
-
-      _logger.e('Backend login failed: ${response.statusCode}');
-      if (response.data != null) {
-        _logger.e('Response data: ${response.data}');
-      }
-      return false;
+      return success;
     } catch (e) {
-      if (e is DioException && e.response != null) {
-        _logger.e('Dio Error Data: ${e.response?.data}');
-      }
-      _logger.e('Auth error', error: e);
+      _logger.e('Error during Google Sign-In: $e');
       return false;
     }
   }
 
-  Future<bool> checkAuthStatus() async {
+  UserModel? getCachedUser() {
+    final userJson = _prefs.getString(_userKey);
+    if (userJson == null) return null;
     try {
-      final dioInstance = await dio;
-      final response = await dioInstance.get('/api/auth/get-session', options: Options(headers: {'Origin': EnvConfig.apiUrl}));
-      return response.statusCode == 200 && response.data != null;
+      return UserModel.fromJson(userJson);
     } catch (e) {
-      return false;
+      return null;
     }
   }
 
   Future<void> signOut() async {
     try {
-      final dioInstance = await dio;
-      await dioInstance.post('/api/auth/sign-out', options: Options(headers: {'Origin': EnvConfig.apiUrl}));
-      await _cookieJar?.deleteAll();
+      await _dio.post('/api/auth/sign-out', data: {});
     } catch (e) {
-      _logger.e('Sign out error', error: e);
+      _logger.e('Error during Sign-Out: $e');
+    } finally {
+      await _prefs.setBool(_authKey, false);
+      await _prefs.remove(_userKey); // Clear user cache on logout
+      await GoogleSignIn.instance.signOut();
     }
   }
 }
+
+final authServiceProvider = Provider<AuthService>((ref) {
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return AuthService(ref.watch(dioProvider), prefs);
+});
+
+// A provider to easily access the current user across the app
+final currentUserProvider = Provider<UserModel?>((ref) {
+  final authService = ref.watch(authServiceProvider);
+  final isAuthenticated = ref.watch(authStateProvider);
+  
+  if (!isAuthenticated) return null;
+  return authService.getCachedUser();
+});

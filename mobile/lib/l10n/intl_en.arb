@@ -28,5 +28,17 @@
   "navHome": "Home",
   "navBooks": "Books",
   "navDictionary": "Dictionary",
-  "navProfile": "Profile"
+  "navProfile": "Profile",
+  "offlineMessage": "You are currently offline. Some features may be limited.",
+  "accountSettings": "Account Settings",
+  "helpSupport": "Help & Support",
+  "privacyPolicy": "Privacy Policy",
+  "notLoggedIn": "You are not logged in",
+  "goodMorning": "Good Morning,",
+  "goodAfternoon": "Good Afternoon,",
+  "goodEvening": "Good Evening,",
+  "goodNight": "Good Night,",
+  "aboutSection": "Information",
+  "appVersion": "App Version",
+  "madeBy": "Made with ❤️ by Sicerdas"
 }

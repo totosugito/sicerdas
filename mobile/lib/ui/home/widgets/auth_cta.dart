@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../core/auth/auth_notifier.dart';
-import '../../../l10n/gen_l10n/bse2_localizations.dart';
+import '../../../l10n/gen_l10n/app_localizations.dart';
 
 class AuthCTA extends ConsumerWidget {
   const AuthCTA({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = Bse2Localizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return ShadCard(
       padding: const EdgeInsets.all(20),
-      backgroundColor: Colors.blue.withOpacity(0.05),
-      border: ShadBorder.all(color: Colors.blue.withOpacity(0.2)),
+      backgroundColor: Colors.blue.withValues(alpha: 0.05),
+      border: ShadBorder.all(color: Colors.blue.withValues(alpha: 0.2)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

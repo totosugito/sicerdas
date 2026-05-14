@@ -28,5 +28,17 @@
   "navHome": "Beranda",
   "navBooks": "Buku",
   "navDictionary": "Kamus",
-  "navProfile": "Profil"
+  "navProfile": "Profil",
+  "offlineMessage": "Anda sedang offline. Beberapa fitur mungkin terbatas.",
+  "accountSettings": "Pengaturan Akun",
+  "helpSupport": "Bantuan & Dukungan",
+  "privacyPolicy": "Kebijakan Privasi",
+  "notLoggedIn": "Anda belum masuk",
+  "goodMorning": "Selamat Pagi,",
+  "goodAfternoon": "Selamat Siang,",
+  "goodEvening": "Selamat Sore,",
+  "goodNight": "Selamat Malam,",
+  "aboutSection": "Informasi",
+  "appVersion": "Versi Aplikasi",
+  "madeBy": "Dibuat dengan ❤️ oleh Sicerdas"
 }
