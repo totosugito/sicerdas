@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:logger/logger.dart';
+import 'package:flutter/foundation.dart';
 import '../config/env_config.dart';
 
 final authServiceProvider = Provider<AuthService>((ref) {
@@ -12,9 +13,7 @@ final authServiceProvider = Provider<AuthService>((ref) {
 });
 
 class AuthService {
-  final _logger = Logger(
-    printer: PrettyPrinter(methodCount: 0),
-  );
+  final _logger = Logger(printer: PrettyPrinter(methodCount: 0));
   Dio? _dio;
   PersistCookieJar? _cookieJar;
 
@@ -27,30 +26,47 @@ class AuthService {
 
   Future<void> _init() async {
     final appDocDir = await getApplicationDocumentsDirectory();
-    _cookieJar = PersistCookieJar(
-      storage: FileStorage("${appDocDir.path}/.cookies/"),
-    );
-    
-    _dio = Dio(BaseOptions(
-      baseUrl: EnvConfig.apiUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-    ));
-    
+    _cookieJar = PersistCookieJar(storage: FileStorage("${appDocDir.path}/.cookies/"));
+
+    _dio = Dio(BaseOptions(baseUrl: EnvConfig.apiUrl, connectTimeout: const Duration(seconds: 10), receiveTimeout: const Duration(seconds: 10)));
+
     _dio!.interceptors.add(CookieManager(_cookieJar!));
-    
+
     // Add logger for debugging
-    _dio!.interceptors.add(LogInterceptor(
-      requestBody: true,
-      responseBody: true,
-    ));
+    if (!kReleaseMode) {
+      _dio!.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            _logger.d('[${options.method}] ${options.baseUrl}${options.path}');
+            if (options.data != null) {
+              _logger.d('Payload: ${options.data}');
+            }
+            return handler.next(options);
+          },
+          onResponse: (response, handler) {
+            _logger.i('[${response.statusCode}] ${response.requestOptions.path}');
+            if (response.data != null) {
+              _logger.d('Response: ${response.data}');
+            }
+            return handler.next(response);
+          },
+          onError: (DioException e, handler) {
+            _logger.e('[${e.response?.statusCode}] ${e.requestOptions.path}');
+            if (e.response?.data != null) {
+              _logger.e('Error Data: ${e.response?.data}');
+            }
+            return handler.next(e);
+          },
+        ),
+      );
+    }
   }
 
   Future<bool> signInWithGoogle() async {
     try {
       // Use the instance initialized in main()
       final googleSignIn = GoogleSignIn.instance;
-      
+
       // Use the modern authenticate() method from the official example
       final GoogleSignInAccount googleUser = await googleSignIn.authenticate();
 
@@ -70,24 +86,17 @@ class AuthService {
         '/api/auth/sign-in/social',
         data: {
           'provider': 'google',
-          'idToken': {
-            'token': idToken,
-          },
-          'callbackURL': 'http://10.0.2.2:5550',
+          'idToken': {'token': idToken},
+          'callbackURL': EnvConfig.apiUrl,
         },
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Origin': 'http://10.0.2.2:5550',
-          },
-        ),
+        options: Options(headers: {'Content-Type': 'application/json', 'Origin': EnvConfig.apiUrl}),
       );
 
       if (response.statusCode == 200) {
         _logger.i('Login successful, checking session...');
         return await checkAuthStatus();
       }
-      
+
       _logger.e('Backend login failed: ${response.statusCode}');
       if (response.data != null) {
         _logger.e('Response data: ${response.data}');
@@ -105,14 +114,7 @@ class AuthService {
   Future<bool> checkAuthStatus() async {
     try {
       final dioInstance = await dio;
-      final response = await dioInstance.get(
-        '/api/auth/get-session',
-        options: Options(
-          headers: {
-            'Origin': 'http://10.0.2.2:5550',
-          },
-        ),
-      );
+      final response = await dioInstance.get('/api/auth/get-session', options: Options(headers: {'Origin': EnvConfig.apiUrl}));
       return response.statusCode == 200 && response.data != null;
     } catch (e) {
       return false;
@@ -122,14 +124,7 @@ class AuthService {
   Future<void> signOut() async {
     try {
       final dioInstance = await dio;
-      await dioInstance.post(
-        '/api/auth/sign-out',
-        options: Options(
-          headers: {
-            'Origin': 'http://10.0.2.2:5550',
-          },
-        ),
-      );
+      await dioInstance.post('/api/auth/sign-out', options: Options(headers: {'Origin': EnvConfig.apiUrl}));
       await _cookieJar?.deleteAll();
     } catch (e) {
       _logger.e('Sign out error', error: e);

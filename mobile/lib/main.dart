@@ -2,40 +2,92 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart';
+import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'core/providers/settings_provider.dart';
 import 'core/config/env_config.dart';
 import 'l10n/gen_l10n/bse2_localizations.dart';
 import 'ui/home/home_screen.dart';
+import 'ui/main_layout.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize according to Flutter Authors' example
-  await GoogleSignIn.instance.initialize(
-    serverClientId: EnvConfig.googleWebClientId,
-  );
+  // Initialize shared preferences
+  final sharedPrefs = await SharedPreferences.getInstance();
 
-  runApp(const ProviderScope(child: MyApp()));
+  // Set global logger level - disables logs in release mode
+  Logger.level = kReleaseMode ? Level.off : Level.debug;
+
+  // Initialize according to Flutter Authors' example
+  await GoogleSignIn.instance.initialize(serverClientId: EnvConfig.googleWebClientId);
+
+  runApp(ProviderScope(overrides: [sharedPreferencesProvider.overrideWithValue(sharedPrefs)], child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+
     return ShadApp(
       title: 'BSE App',
       theme: ShadThemeData(
         brightness: Brightness.light,
-        colorScheme: const ShadZincColorScheme.light(),
+        colorScheme: const ShadZincColorScheme.light().copyWith(
+          background: const Color(0xFFF8F9FA),
+          foreground: const Color(0xFF444D55),
+          card: Colors.white,
+          cardForeground: const Color(0xFF444D55),
+          popover: Colors.white,
+          popoverForeground: const Color(0xFF444D55),
+          primary: const Color(0xFF1D87E5),
+          primaryForeground: Colors.white,
+          secondary: const Color(0xFFE9ECEF),
+          secondaryForeground: const Color(0xFF444D55),
+          muted: const Color(0xFFE9ECEF),
+          mutedForeground: const Color(0xFF90969A),
+          accent: const Color(0xFFE2E8F0),
+          accentForeground: const Color(0xFF444D55),
+          destructive: const Color(0xFFEF4444),
+          destructiveForeground: Colors.white,
+          border: const Color(0xFFDEE2E6),
+          input: const Color(0xFFE9ECEF),
+          ring: const Color(0xFF1D87E5),
+        ),
       ),
       darkTheme: ShadThemeData(
         brightness: Brightness.dark,
-        colorScheme: const ShadZincColorScheme.dark(),
+        colorScheme: const ShadZincColorScheme.dark().copyWith(
+          background: const Color(0xFF1A1C1E),
+          foreground: const Color(0xFFF1F3F5),
+          card: const Color(0xFF212529),
+          cardForeground: const Color(0xFFE9ECEF),
+          popover: const Color(0xFF212529),
+          popoverForeground: const Color(0xFFE9ECEF),
+          primary: const Color(0xFF1D87E5),
+          primaryForeground: const Color(0xFFF1F3F5),
+          secondary: const Color(0xFF2C3136),
+          secondaryForeground: const Color(0xFFE9ECEF),
+          muted: const Color(0xFF2C3136),
+          mutedForeground: const Color(0xFFADB5BD),
+          accent: const Color(0xFF343A40),
+          accentForeground: const Color(0xFFE9ECEF),
+          destructive: const Color(0xFFF87171),
+          destructiveForeground: const Color(0xFFF1F3F5),
+          border: const Color(0xFF343A40),
+          input: const Color(0xFF2C3136),
+          ring: const Color(0xFF1D87E5),
+        ),
       ),
-      themeMode: ThemeMode.system,
+      themeMode: settings.themeMode,
+      locale: settings.locale,
       localizationsDelegates: Bse2Localizations.localizationsDelegates,
       supportedLocales: Bse2Localizations.supportedLocales,
-      home: const HomeScreen(),
+      home: const MainLayout(),
     );
   }
 }

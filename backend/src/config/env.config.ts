@@ -26,16 +26,20 @@ export const schema = Type.Object({
   COOKIE_PREFIX: Type.String({ default: "cookie" }),
   BETTER_AUTH_SECRET: Type.String({ default: "secret" }),
   BETTER_AUTH_URL: Type.Optional(Type.String()),
+
+  // google settings
   GOOGLE_WEB_CLIENT_ID: Type.Optional(Type.String()),
   GOOGLE_IOS_CLIENT_ID: Type.Optional(Type.String()),
   GOOGLE_ANDROID_CLIENT_ID: Type.Optional(Type.String()),
   GOOGLE_CLIENT_SECRET: Type.Optional(Type.String()),
+
+  // email settings
   BREVO_API_KEY: Type.Optional(Type.String()),
   NO_REPLY_EMAIL: Type.Optional(Type.String()),
   NO_REPLY_EMAIL_NAME: Type.Optional(Type.String()),
-  UPLOAD_DIR: Type.String({ default: "/uploads/" }),
 
   // s3 storage settings
+  UPLOAD_DIR: Type.String({ default: "/uploads/" }),
   USE_S3_STORAGE: Type.Boolean({ default: false }),
   S3_BUCKET_NAME: Type.Optional(Type.String({ default: "si-cerdas" })),
   S3_ACCESS_KEY_ID: Type.Optional(Type.String()),
@@ -43,10 +47,14 @@ export const schema = Type.Object({
   S3_ENDPOINT: Type.Optional(Type.String()),
   S3_PUBLIC_URL: Type.Optional(Type.String()),
   S3_REGION: Type.Optional(Type.String()),
+
+  // exam settins
   // Retention period for detailed exam answers (purged by daily cron)
   EXAM_ANSWERS_RETENTION_DAYS: Type.Number({ default: 365 }),
   // Inactivity period before an IN_PROGRESS session is auto-abandoned
   EXAM_STALE_SESSION_DAYS: Type.Number({ default: 30 }),
+
+  // log settings
   // Log directory for pino-roll
   LOG_DIR: Type.String({ default: "/logs/" }),
   // Save log to file
@@ -55,6 +63,8 @@ export const schema = Type.Object({
   LOG_RETENTION_DAYS: Type.Number({ default: 14 }),
   // Threshold in ms to log slow requests
   LOG_SLOW_RESPONSE_THRESHOLD: Type.Number({ default: 500 }),
+
+  // global settings
   // Time window for tracking guest events
   GUEST_EVENT_WINDOW_MS: Type.Number({ default: 6 * 60 * 60 * 1000 }),
   // Max password reset requests allowed in the window

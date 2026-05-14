@@ -1,0 +1,65 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class SettingsState {
+  final ThemeMode themeMode;
+  final Locale locale;
+
+  SettingsState({
+    required this.themeMode,
+    required this.locale,
+  });
+
+  SettingsState copyWith({
+    ThemeMode? themeMode,
+    Locale? locale,
+  }) {
+    return SettingsState(
+      themeMode: themeMode ?? this.themeMode,
+      locale: locale ?? this.locale,
+    );
+  }
+}
+
+// Provider for SharedPreferences - initialized in main()
+final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
+  throw UnimplementedError();
+});
+
+class SettingsNotifier extends Notifier<SettingsState> {
+  static const _themeKey = 'theme_mode';
+  static const _localeKey = 'locale';
+
+  @override
+  SettingsState build() {
+    final prefs = ref.watch(sharedPreferencesProvider);
+
+    // Load saved theme
+    final themeIndex = prefs.getInt(_themeKey);
+    final themeMode = themeIndex != null ? ThemeMode.values[themeIndex] : ThemeMode.system;
+
+    // Load saved locale
+    final languageCode = prefs.getString(_localeKey) ?? 'id';
+    final locale = Locale(languageCode);
+
+    return SettingsState(
+      themeMode: themeMode,
+      locale: locale,
+    );
+  }
+
+  void setThemeMode(ThemeMode mode) {
+    state = state.copyWith(themeMode: mode);
+    ref.read(sharedPreferencesProvider).setInt(_themeKey, mode.index);
+  }
+
+  void setLocale(Locale locale) {
+    state = state.copyWith(locale: locale);
+    ref.read(sharedPreferencesProvider).setString(_localeKey, locale.languageCode);
+  }
+}
+
+final settingsProvider = NotifierProvider<SettingsNotifier, SettingsState>(() {
+  return SettingsNotifier();
+});
