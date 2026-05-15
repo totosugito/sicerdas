@@ -2,6 +2,7 @@
   "version": {
     "listSuccess": "Daftar versi berhasil diambil.",
     "detailSuccess": "Detail versi berhasil diambil.",
+    "latestSuccess": "Versi terbaru berhasil diambil.",
     "notFound": "Versi tidak ditemukan.",
     "create": {
       "success": "Versi berhasil dibuat.",

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../l10n/gen_l10n/app_localizations.dart';
+import '../../core/services/version_service.dart';
+import '../widgets/confirmation_dialog.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -99,33 +101,113 @@ class SettingsScreen extends ConsumerWidget {
                 ],
               ),
             ),
+
+            const SizedBox(height: 32),
+
+            // Danger Zone Section
+            _buildSectionTitle(context, l10n.settingsDangerZone, isDanger: true),
+            const SizedBox(height: 12),
+            ShadCard(
+              child: Column(
+                children: [
+                  _buildSettingItem(
+                    context,
+                    icon: LucideIcons.databaseBackup,
+                    title: l10n.settingsResetLibrary,
+                    subtitle: l10n.settingsResetLibraryDescription,
+                    isDanger: true,
+                    onTap: () => _showResetConfirmation(context, ref),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 32),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title) {
-    final theme = ShadTheme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(left: 4.0),
-      child: Text(title.toUpperCase(), style: theme.textTheme.muted.copyWith(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 1.2)),
+  void _showResetConfirmation(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    
+    ConfirmationDialog.show(
+      context,
+      icon: LucideIcons.triangleAlert,
+      title: l10n.settingsResetLibrary,
+      description: l10n.settingsResetLibraryConfirm,
+      confirmLabel: l10n.settingsResetAction,
+      cancelLabel: l10n.cancel,
+      onConfirm: () async {
+        Navigator.of(context).pop(); // Close dialog
+        Navigator.of(context).pop(); // Go back to profile/main
+        await ref.read(versionServiceProvider).resetDatabase();
+      },
     );
   }
 
-  Widget _buildSettingItem(BuildContext context, {required IconData icon, required String title, Widget? trailing}) {
+  Widget _buildSectionTitle(BuildContext context, String title, {bool isDanger = false}) {
     final theme = ShadTheme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Row(
-        children: [
-          Icon(icon, color: theme.colorScheme.primary, size: 20),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(title, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
-          ),
-          if (trailing != null) trailing,
-        ],
+      padding: const EdgeInsets.only(left: 4.0),
+      child: Text(
+        title.toUpperCase(), 
+        style: theme.textTheme.muted.copyWith(
+          fontSize: 12, 
+          fontWeight: FontWeight.w700, 
+          letterSpacing: 1.2,
+          color: isDanger ? theme.colorScheme.destructive : null,
+        )
+      ),
+    );
+  }
+
+  Widget _buildSettingItem(
+    BuildContext context, {
+    required IconData icon, 
+    required String title, 
+    String? subtitle,
+    Widget? trailing,
+    bool isDanger = false,
+    VoidCallback? onTap,
+  }) {
+    final theme = ShadTheme.of(context);
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
+        child: Row(
+          children: [
+            Icon(
+              icon, 
+              color: isDanger ? theme.colorScheme.destructive : theme.colorScheme.primary, 
+              size: 20
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title, 
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500, 
+                      fontSize: 15,
+                      color: isDanger ? theme.colorScheme.destructive : null,
+                    )
+                  ),
+                  if (subtitle != null)
+                    Text(
+                      subtitle,
+                      style: theme.textTheme.muted.copyWith(fontSize: 12),
+                    ),
+                ],
+              ),
+            ),
+            trailing ?? const SizedBox.shrink(),
+          ],
+        ),
       ),
     );
   }

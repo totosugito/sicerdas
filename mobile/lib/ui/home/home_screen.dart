@@ -23,13 +23,10 @@ class HomeScreen extends ConsumerWidget {
             children: [
               const HomeHeader(),
               const OfflineBanner(),
-              if (!isLoggedIn) ...[
-                const SizedBox(height: 24),
-                const AuthCTA(),
-              ],
-              const SizedBox(height: 24),
+              if (!isLoggedIn) ...[const SizedBox(height: 16), const AuthCTA()],
+              const SizedBox(height: 16),
               const QuickAccessGrid(),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               const LatestBooksSection(),
             ],
           ),

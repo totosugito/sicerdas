@@ -6,6 +6,7 @@ import '../../core/auth/auth_notifier.dart';
 import '../../core/auth/auth_service.dart';
 import '../../l10n/gen_l10n/app_localizations.dart';
 import '../settings/settings_screen.dart';
+import '../widgets/confirmation_dialog.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -162,25 +163,18 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   void _handleLogout(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
-    showShadDialog(
-      context: context,
-      builder: (context) => ShadDialog(
-        title: Text(l10n.logout),
-        description: Text(l10n.logoutConfirm),
-        actions: [
-          ShadButton.outline(
-            child: Text(l10n.cancel),
-            onPressed: () => Navigator.pop(context),
-          ),
-          ShadButton.destructive(
-            child: Text(l10n.logout),
-            onPressed: () async {
-              Navigator.pop(context);
-              await ref.read(authStateProvider.notifier).signOut();
-            },
-          ),
-        ],
-      ),
+    ConfirmationDialog.show(
+      context,
+      icon: LucideIcons.logOut,
+      title: l10n.logout,
+      description: l10n.logoutConfirm,
+      confirmLabel: l10n.logout,
+      cancelLabel: l10n.cancel,
+      isDestructive: true,
+      onConfirm: () async {
+        Navigator.pop(context);
+        await ref.read(authStateProvider.notifier).signOut();
+      },
     );
   }
 }

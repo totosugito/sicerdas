@@ -3,11 +3,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../config/env_config.dart';
-import '../providers/settings_provider.dart';
 import '../providers/dio_provider.dart';
-import '../auth/auth_notifier.dart';
+import '../providers/settings_provider.dart';
 import '../models/user_model.dart';
+import '../network/api_endpoints.dart';
+import 'auth_notifier.dart';
 
 class AuthService {
   final Dio _dio;
@@ -21,7 +21,7 @@ class AuthService {
 
   Future<bool> checkAuthStatus() async {
     try {
-      final response = await _dio.get('/api/auth/get-session');
+      final response = await _dio.get(ApiEndpoints.getSession);
       final isAuthenticated = response.statusCode == 200 && response.data != null;
       
       if (isAuthenticated && response.data['user'] != null) {
@@ -54,11 +54,10 @@ class AuthService {
       if (idToken == null) return false;
 
       final response = await _dio.post(
-        '/api/auth/sign-in/social',
+        ApiEndpoints.signInSocial,
         data: {
           'provider': 'google',
           'idToken': {'token': idToken},
-          'callbackURL': EnvConfig.apiUrl,
         },
       );
 
@@ -88,7 +87,7 @@ class AuthService {
 
   Future<void> signOut() async {
     try {
-      await _dio.post('/api/auth/sign-out', data: {});
+      await _dio.post(ApiEndpoints.signOut, data: {});
     } catch (e) {
       _logger.e('Error during Sign-Out: $e');
     } finally {

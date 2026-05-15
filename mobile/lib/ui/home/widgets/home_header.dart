@@ -8,45 +8,43 @@ import '../../settings/settings_screen.dart';
 class HomeHeader extends ConsumerWidget {
   const HomeHeader({super.key});
 
-  String _getTimeBasedGreeting(AppLocalizations l10n) {
-    final hour = DateTime.now().hour;
-    if (hour >= 5 && hour < 11) return l10n.goodMorning;
-    if (hour >= 11 && hour < 15) return l10n.goodAfternoon;
-    if (hour >= 15 && hour < 18) return l10n.goodEvening;
-    return l10n.goodNight;
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final theme = ShadTheme.of(context);
     final currentUser = ref.watch(currentUserProvider);
-    final greeting = currentUser != null ? _getTimeBasedGreeting(l10n) : l10n.helloStudent;
+    final greeting = l10n.hello;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start, // Top alignment for a cleaner look
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(greeting, style: theme.textTheme.muted.copyWith(fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.2)),
-                  const SizedBox(height: 1),
-                  Text(
-                    currentUser?.name ?? "Student",
-                    style: theme.textTheme.h3.copyWith(
-                      fontWeight: FontWeight.w800, // Extra bold for better presence
-                      letterSpacing: -0.8, // Tighter tracking for a premium feel
-                      color: theme.colorScheme.foreground,
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '$greeting, ',
+                      style: theme.textTheme.muted.copyWith(
+                        fontSize: 16, 
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+                    TextSpan(
+                      text: currentUser?.name ?? l10n.student,
+                      style: theme.textTheme.large.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: theme.colorScheme.foreground,
+                      ),
+                    ),
+                  ],
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             Row(
