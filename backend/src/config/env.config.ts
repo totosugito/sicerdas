@@ -73,6 +73,11 @@ export const schema = Type.Object({
   PASSWORD_RESET_RATE_LIMIT_WINDOW_MS: Type.Number({ default: 60 * 60 * 1000 }),
   // Time window for content access counting
   CONTENT_COUNTER_WINDOW_MS: Type.Number({ default: 24 * 60 * 60 * 1000 }),
+
+  // ads settings
+  IS_ADS_TEST: Type.Boolean({ default: false }),
+  ADS_DELAY_COUNTER: Type.Number({ default: 50 }),
+  ADS_DELAY_TIME_IN_SEC: Type.Number({ default: 1800 }),
 });
 
 // Delete only keys defined in schema from process.env
@@ -175,5 +180,17 @@ export default {
     passwordResetRateLimitWindowMs: env.PASSWORD_RESET_RATE_LIMIT_WINDOW_MS,
     /** Time window for content access counting */
     contentCounterWindowMs: env.CONTENT_COUNTER_WINDOW_MS,
+  },
+  ads: {
+    isAdsTest: env.IS_ADS_TEST,
+    delayCounter: env.ADS_DELAY_COUNTER,
+    delayTimeInSec: env.ADS_DELAY_TIME_IN_SEC,
+    android: {
+      provider: "admob",
+      bannerId: env.IS_ADS_TEST ? "ca-app-pub-1499065961898758/9439356495" : "ca-app-pub-3940256099942544/6300978111",
+      interstitialId: env.IS_ADS_TEST ? "ca-app-pub-1499065961898758/2472870697" : "ca-app-pub-3940256099942544/1033173712",
+      rewardedId: env.IS_ADS_TEST ? "ca-app-pub-1499065961898758/3424623195" : "ca-app-pub-3940256099942544/5224354917",
+      nativeId: env.IS_ADS_TEST ? "ca-app-pub-1499065961898758/4185407614" : "ca-app-pub-3940256099942544/2247696110",
+    }
   },
 };

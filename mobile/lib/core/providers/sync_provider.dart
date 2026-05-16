@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../database/database.dart';
 import 'database_provider.dart';
 
 enum SyncStatus { idle, syncing, success, error }
@@ -10,19 +9,9 @@ class SyncState {
   final bool isInitialSync;
   final int booksAdded;
 
-  SyncState({
-    required this.status,
-    this.errorKey,
-    required this.isInitialSync,
-    this.booksAdded = 0,
-  });
+  SyncState({required this.status, this.errorKey, required this.isInitialSync, this.booksAdded = 0});
 
-  SyncState copyWith({
-    SyncStatus? status,
-    String? errorKey,
-    bool? isInitialSync,
-    int? booksAdded,
-  }) {
+  SyncState copyWith({SyncStatus? status, String? errorKey, bool? isInitialSync, int? booksAdded}) {
     return SyncState(
       status: status ?? this.status,
       errorKey: errorKey ?? this.errorKey,
