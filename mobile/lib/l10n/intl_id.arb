@@ -81,5 +81,40 @@
   "hello": "Halo",
   "welcome": "Selamat Datang!",
   "signInMessage": "Masuk untuk mengakses koleksi buku lengkap dan fitur kustom.",
-  "cancel": "Batal"
+  "cancel": "Batal",
+  "searchPlaceholder": "Cari berdasarkan judul atau penulis...",
+  "noBooksFound": "Tidak ada buku yang sesuai dengan filter Anda.",
+  "filterTitle": "Filter",
+  "filterCategory": "Kategori",
+  "filterGroup": "Kelompok",
+  "filterGrade": "Kelas",
+  "filterApply": "Terapkan Filter",
+  "filterClearAll": "Hapus Semua",
+  "filterActiveCount": "{count} filter aktif",
+  "@filterActiveCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browseGroups": "Telusuri Kelompok",
+  "noCategoriesFound": "Kategori tidak ditemukan.",
+  "noGroupsInCategory": "Tidak ada kelompok dalam kategori ini",
+  "localLibraryCollection": "Koleksi Perpustakaan Lokal",
+  "sortBy": "Urutkan berdasarkan",
+  "sortByTitle": "Judul",
+  "sortByPages": "Halaman",
+  "sortBySize": "Ukuran",
+  "sortByYear": "Tahun",
+  "unknownAuthor": "Penulis Tidak Diketahui",
+  "pagesCount": "{count} hal",
+  "@pagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchHintDetail": "Cari judul atau penulis..."
 }

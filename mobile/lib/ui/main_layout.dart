@@ -4,6 +4,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../core/providers/navigation_provider.dart';
 import '../l10n/gen_l10n/app_localizations.dart';
 import 'home/home_screen.dart';
+import 'books/books_screen.dart';
 import 'placeholder_screens.dart';
 import 'profile/profile_screen.dart';
 import '../core/services/version_service.dart';

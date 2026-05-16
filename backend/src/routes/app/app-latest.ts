@@ -3,7 +3,8 @@ import { Type, type Static } from "@sinclair/typebox";
 import { appVersion } from "../../db/schema/app/app-version.ts";
 import { books } from "../../db/schema/book/books.ts";
 import { bookGroup } from "../../db/schema/book/group.ts";
-import { educationGrades, educationCategories } from "../../db/schema/education/index.ts";
+import { educationGrades } from "../../db/schema/education/index.ts";
+import { bookCategory } from "../../db/schema/book/category.ts";
 import { bookGroupStats } from "../../db/schema/book/group-stats.ts";
 import { db } from "../../db/db-pool.ts";
 import { and, gt, eq, asc } from "drizzle-orm";
@@ -39,9 +40,9 @@ const GradeItem = Type.Object({
 });
 
 const CategoryItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
+  id: Type.Number(),
   name: Type.String(),
-  key: Type.String(),
+  key: Type.String(), // Mapping from 'code'
   description: Type.Union([Type.String(), Type.Null()]),
 });
 
@@ -56,20 +57,17 @@ const GroupItem = Type.Object({
 });
 
 const SettingsItem = Type.Object({
-  adsDelayCounter: Type.Number(),
-  adsDelayTimeInSec: Type.Number(),
   cloudUrl: Type.String(),
-  adsUnitAndroid: Type.Object({
-    adsProvider: Type.String(),
-    banner: Type.String(),
-    rewards: Type.String(),
-    interstitial: Type.String(),
-    native: Type.String(),
-  }),
-  msg: Type.Object({
-    variant: Type.String(),
-    title: Type.String(),
-    message: Type.String(),
+  ads: Type.Object({
+    adsDelayCounter: Type.Number(),
+    adsDelayTimeInSec: Type.Number(),
+    adsUnitAndroid: Type.Object({
+      adsProvider: Type.String(),
+      banner: Type.String(),
+      rewards: Type.String(),
+      interstitial: Type.String(),
+      native: Type.String(),
+    }),
   }),
   license: Type.Object({
     showAds: Type.Boolean(),
@@ -216,12 +214,12 @@ export default async function appLatestRoute(app: FastifyInstance) {
 
         allCategories = await db
           .select({
-            id: educationCategories.id,
-            name: educationCategories.name,
-            key: educationCategories.key,
-            description: educationCategories.description,
+            id: bookCategory.id,
+            name: bookCategory.name,
+            key: bookCategory.code,
+            description: bookCategory.desc,
           })
-          .from(educationCategories);
+          .from(bookCategory);
 
         bookGroups = await db
           .select({
@@ -265,20 +263,17 @@ export default async function appLatestRoute(app: FastifyInstance) {
           categories: allCategories,
           groups: bookGroups,
           settings: {
-            adsDelayCounter: envConfig.ads.delayCounter,
-            adsDelayTimeInSec: envConfig.ads.delayTimeInSec,
             cloudUrl: envConfig.server.s3Storage.publicUrl,
-            adsUnitAndroid: {
-              adsProvider: envConfig.ads.android.provider,
-              banner: envConfig.ads.android.bannerId,
-              rewards: envConfig.ads.android.rewardedId,
-              interstitial: envConfig.ads.android.interstitialId,
-              native: envConfig.ads.android.nativeId,
-            },
-            msg: {
-              variant: "",
-              title: "",
-              message: "",
+            ads: {
+              adsDelayCounter: envConfig.ads.delayCounter,
+              adsDelayTimeInSec: envConfig.ads.delayTimeInSec,
+              adsUnitAndroid: {
+                adsProvider: envConfig.ads.android.provider,
+                banner: envConfig.ads.android.bannerId,
+                rewards: envConfig.ads.android.rewardedId,
+                interstitial: envConfig.ads.android.interstitialId,
+                native: envConfig.ads.android.nativeId,
+              }
             },
             license: {
               showAds: showAds,

@@ -81,5 +81,40 @@
   "hello": "Hello",
   "welcome": "Welcome!",
   "signInMessage": "Sign in to access the full book collection and custom features.",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "searchPlaceholder": "Search by title or author...",
+  "noBooksFound": "No books found matches your filter.",
+  "filterTitle": "Filters",
+  "filterCategory": "Category",
+  "filterGroup": "Group",
+  "filterGrade": "Grade",
+  "filterApply": "Apply Filters",
+  "filterClearAll": "Clear All",
+  "filterActiveCount": "{count} filters active",
+  "@filterActiveCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browseGroups": "Browse Groups",
+  "noCategoriesFound": "No categories found.",
+  "noGroupsInCategory": "No groups in this category",
+  "localLibraryCollection": "Local Library Collection",
+  "sortBy": "Sort by",
+  "sortByTitle": "Title",
+  "sortByPages": "Pages",
+  "sortBySize": "Size",
+  "sortByYear": "Year",
+  "unknownAuthor": "Unknown Author",
+  "pagesCount": "{count} p",
+  "@pagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchHintDetail": "Search titles or authors..."
 }
