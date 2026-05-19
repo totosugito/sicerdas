@@ -6,6 +6,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../../core/database/database.dart';
 import '../../../../core/utils/book_utils.dart';
 import '../../../../core/providers/settings_provider.dart';
+import 'book_detail_sheet.dart';
 
 class BookListItem extends ConsumerWidget {
   final BookWithMetadata item;
@@ -17,6 +18,15 @@ class BookListItem extends ConsumerWidget {
   Category get category => item.category;
   EducationGrade get grade => item.grade;
 
+  void _showBookDetail(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => BookDetailSheet(item: item),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
@@ -26,7 +36,7 @@ class BookListItem extends ConsumerWidget {
 
     final coverUrl = BookUtils.getBookCoverUrl(baseUrl: cloudUrl, bookId: book.bookId);
 
-    // Premium Shadcn-style Gradient
+    // Placeholder gradient
     final List<Color> thumbnailGradient = [theme.colorScheme.muted, theme.colorScheme.secondary];
 
     return Padding(
@@ -34,69 +44,81 @@ class BookListItem extends ConsumerWidget {
       child: Container(
         decoration: BoxDecoration(
           color: theme.colorScheme.card,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: theme.colorScheme.border.withValues(alpha: 0.5), width: 0.8),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: theme.colorScheme.border.withValues(alpha: isDark ? 0.4 : 0.15), width: 0.8),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
-              blurRadius: 10,
+              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
+              blurRadius: 16,
               offset: const Offset(0, 4),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                // TODO: Preview book
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Modern 2:3 Thumbnail with Real Image
-                    _buildThumbnail(theme, isDark, thumbnailGradient, coverUrl),
-                    const SizedBox(width: 16),
-                    // Content Column
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            book.title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.p.copyWith(fontSize: 14, fontWeight: FontWeight.bold, height: 1.25, color: theme.colorScheme.foreground),
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Modern 2:3 Thumbnail directly (no backing plate)
+                GestureDetector(
+                  onTap: () => _showBookDetail(context),
+                  behavior: HitTestBehavior.opaque,
+                  child: _buildThumbnail(theme, isDark, thumbnailGradient, coverUrl),
+                ),
+                const SizedBox(width: 14),
+                // Content Column
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () => _showBookDetail(context),
+                        behavior: HitTestBehavior.opaque,
+                        child: Text(
+                          book.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.p.copyWith(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            height: 1.2,
+                            letterSpacing: -0.3,
+                            color: theme.colorScheme.foreground,
                           ),
-                          const SizedBox(height: 2),
+                        ),
+                      ),
+                      const SizedBox(height: 3),
                           Text(
                             book.author ?? l10n.unknownAuthor,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.muted.copyWith(fontSize: 12, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.italic,
+                              color: isDark ? theme.colorScheme.foreground.withValues(alpha: 0.85) : const Color(0xFF475569),
+                            ),
                           ),
-                          const SizedBox(height: 1),
+                          const SizedBox(height: 2),
                           Text(
                             '${category.name} • ${grade.name}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.muted.copyWith(fontSize: 11, color: theme.colorScheme.mutedForeground.withValues(alpha: 0.8)),
+                            style: TextStyle(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w400,
+                              color: isDark ? theme.colorScheme.foreground.withValues(alpha: 0.65) : const Color(0xFF64748B),
+                            ),
                           ),
-                          const SizedBox(height: 6),
-                          // Ultra-Thin Minimalist Divider
-                          Container(height: 0.5, color: theme.colorScheme.border.withValues(alpha: 0.5)),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 8),
                           // Modernized Metadata & Actions
-                          _buildFooter(theme, l10n),
+                          _buildFooter(theme, l10n, isDark),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
+              ],
             ),
           ),
         ),
@@ -107,13 +129,19 @@ class BookListItem extends ConsumerWidget {
   Widget _buildThumbnail(ShadThemeData theme, bool isDark, List<Color> gradient, String imageUrl) {
     return Container(
       width: 60,
-      height: 90, // 2:3 Aspect Ratio
+      height: 90, // Clean 2:3 Aspect Ratio for direct book cover artwork
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 4, offset: const Offset(2, 2))],
+        borderRadius: BorderRadius.circular(6),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(6),
         child: imageUrl.isEmpty
             ? _buildPlaceholder(theme, isDark, gradient)
             : CachedNetworkImage(
@@ -154,12 +182,12 @@ class BookListItem extends ConsumerWidget {
           Positioned(left: 0, top: 0, bottom: 0, width: 3, child: Container(color: Colors.black.withValues(alpha: 0.1))),
           Center(
             child: icon != null
-                ? Icon(icon, color: foregroundColor, size: 32)
+                ? Icon(icon, color: foregroundColor, size: 28)
                 : Text(
                     book.title.substring(0, 1).toUpperCase(),
                     style: TextStyle(
                       color: foregroundColor,
-                      fontSize: 24,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                       shadows: isDark ? [const Shadow(color: Colors.black26, offset: Offset(0, 1), blurRadius: 2)] : null,
                     ),
@@ -170,53 +198,78 @@ class BookListItem extends ConsumerWidget {
     );
   }
 
-  Widget _buildFooter(ShadThemeData theme, AppLocalizations l10n) {
+  Widget _buildFooter(ShadThemeData theme, AppLocalizations l10n, bool isDark) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildMetaItem(Icons.auto_stories_outlined, l10n.pagesCount(book.totalPages), theme),
-            const SizedBox(width: 8),
-            _buildMetaItem(Icons.data_usage_rounded, '${(book.size / 1024 / 1024).toStringAsFixed(1)} MB', theme),
-            if (book.publishedYear.isNotEmpty) ...[const SizedBox(width: 8), _buildMetaItem(Icons.calendar_today_rounded, book.publishedYear, theme)],
+            _buildMetaItem(Icons.menu_book_outlined, l10n.pagesCount(book.totalPages), theme, isDark),
+            const SizedBox(width: 12),
+            _buildMetaItem(Icons.sync, '${(book.size / 1024 / 1024).toStringAsFixed(1)} MB', theme, isDark),
+            if (book.publishedYear.isNotEmpty) ...[
+              const SizedBox(width: 12),
+              _buildMetaItem(Icons.calendar_today_outlined, book.publishedYear, theme, isDark),
+            ],
           ],
         ),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildActionButton(icon: Icons.chrome_reader_mode_rounded, color: theme.colorScheme.mutedForeground, onPressed: () {}),
-            const SizedBox(width: 6),
-            _buildActionButton(icon: Icons.file_download_outlined, color: theme.colorScheme.mutedForeground, onPressed: () {}),
+            _buildActionButton(
+              icon: Icons.menu_book_outlined,
+              color: isDark ? theme.colorScheme.foreground.withValues(alpha: 0.85) : const Color(0xFF64748B),
+              onPressed: () {},
+            ),
+            const SizedBox(width: 14),
+            _buildActionButton(
+              icon: Icons.file_download_outlined,
+              color: isDark ? theme.colorScheme.foreground.withValues(alpha: 0.85) : const Color(0xFF64748B),
+              onPressed: () {},
+            ),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildMetaItem(IconData icon, String text, ShadThemeData theme) {
+  Widget _buildMetaItem(IconData icon, String text, ShadThemeData theme, bool isDark) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 12, color: theme.colorScheme.mutedForeground.withValues(alpha: 0.6)),
-        const SizedBox(width: 4),
-        Text(text, style: theme.textTheme.muted.copyWith(fontSize: 10, fontWeight: FontWeight.w600, letterSpacing: 0.2)),
+        Icon(
+          icon,
+          size: 14,
+          color: isDark ? theme.colorScheme.foreground.withValues(alpha: 0.6) : const Color(0xFF64748B),
+        ),
+        const SizedBox(width: 5),
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+            color: isDark ? theme.colorScheme.foreground.withValues(alpha: 0.65) : const Color(0xFF64748B),
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildActionButton({required IconData icon, required Color color, required VoidCallback onPressed, bool isPrimary = false}) {
-    return Container(
-      width: 32,
+  Widget _buildActionButton({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onPressed,
+  }) {
+    return SizedBox(
+      width: 24,
       height: 24,
-      decoration: BoxDecoration(color: isPrimary ? color.withValues(alpha: 0.1) : Colors.transparent, borderRadius: BorderRadius.circular(8)),
       child: ShadButton.ghost(
-        width: 32,
+        width: 24,
         height: 24,
         padding: EdgeInsets.zero,
         onPressed: onPressed,
-        child: Icon(icon, size: 18, color: isPrimary ? color : color.withValues(alpha: 1.0)),
+        child: Icon(icon, size: 20, color: color),
       ),
     );
   }

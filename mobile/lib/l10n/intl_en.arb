@@ -116,5 +116,12 @@
       }
     }
   },
-  "searchHintDetail": "Search titles or authors..."
+  "searchHintDetail": "Search titles or authors...",
+  "detailInformation": "Detail Information",
+  "totalPagesLabel": "Total Pages",
+  "fileSizeLabel": "File Size",
+  "publishedYearLabel": "Published Year",
+  "statusLabel": "Status",
+  "downloadBookAction": "Download Book",
+  "readNowAction": "Read Now"
 }

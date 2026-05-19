@@ -116,5 +116,12 @@
       }
     }
   },
-  "searchHintDetail": "Cari judul atau penulis..."
+  "searchHintDetail": "Cari judul atau penulis...",
+  "detailInformation": "Informasi Detail",
+  "totalPagesLabel": "Jumlah Halaman",
+  "fileSizeLabel": "Ukuran File",
+  "publishedYearLabel": "Tahun Terbit",
+  "statusLabel": "Status",
+  "downloadBookAction": "Unduh Buku",
+  "readNowAction": "Baca Sekarang"
 }

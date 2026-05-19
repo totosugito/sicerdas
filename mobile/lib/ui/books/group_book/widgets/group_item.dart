@@ -30,12 +30,7 @@ class GroupItem extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8.0),
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => GroupDetailScreen(group: group),
-            ),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (context) => GroupDetailScreen(group: group)));
         },
         borderRadius: BorderRadius.circular(12),
         child: Container(
@@ -43,10 +38,7 @@ class GroupItem extends StatelessWidget {
           decoration: BoxDecoration(
             color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05),
-              width: 1,
-            ),
+            border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05), width: 1),
           ),
           child: Row(
             children: [
@@ -62,12 +54,7 @@ class GroupItem extends StatelessWidget {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      group.name,
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                    ),
-                  ],
+                  children: [Text(group.name, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))],
                 ),
               ),
               Container(
@@ -80,18 +67,10 @@ class GroupItem extends StatelessWidget {
                 ),
                 child: Text(
                   '${group.bookTotal ?? 0}',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w800,
-                    color: color,
-                  ),
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: color),
                 ),
               ),
-              Icon(
-                Icons.chevron_right_rounded,
-                size: 18,
-                color: theme.textTheme.muted.color?.withValues(alpha: 0.5),
-              ),
+              Icon(Icons.chevron_right_rounded, size: 18, color: theme.textTheme.muted.color?.withValues(alpha: 0.5)),
               const SizedBox(width: 8),
             ],
           ),

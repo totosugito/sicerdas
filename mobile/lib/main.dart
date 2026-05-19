@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -5,6 +6,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'core/providers/settings_provider.dart';
 import 'core/config/env_config.dart';
 import 'core/providers/dio_provider.dart';
@@ -14,9 +17,30 @@ import 'ui/main_layout.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize Firebase
+  await Firebase.initializeApp();
+
+  // Configure Firebase Crashlytics
+  if (kDebugMode) {
+    // Force disable Crashlytics collection while doing development
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+  } else {
+    // Enable Crashlytics collection in release/profile mode
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  }
+
+  // Pass all uncaught "fatal" errors from the framework to Crashlytics
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
   // Initialize shared preferences
   final sharedPrefs = await SharedPreferences.getInstance();
-  
+
   // Initialize Dio and Cookies
   final dio = await createDioInstance();
 
@@ -26,13 +50,7 @@ void main() async {
   // Initialize according to Flutter Authors' example
   await GoogleSignIn.instance.initialize(serverClientId: EnvConfig.googleWebClientId);
 
-  runApp(ProviderScope(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(sharedPrefs),
-      dioProvider.overrideWithValue(dio),
-    ],
-    child: const MyApp(),
-  ));
+  runApp(ProviderScope(overrides: [sharedPreferencesProvider.overrideWithValue(sharedPrefs), dioProvider.overrideWithValue(dio)], child: const MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
@@ -96,9 +114,7 @@ class MyApp extends ConsumerWidget {
       locale: settings.locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: Builder(
-        builder: (context) => const MainLayout(),
-      ),
+      home: Builder(builder: (context) => const MainLayout()),
     );
   }
 }
