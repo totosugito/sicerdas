@@ -1,7 +1,7 @@
 import * as React from "react";
 import {addDays, format} from "date-fns";
 import {CalendarIcon} from "lucide-react";
-import {DateRange} from "react-day-picker";
+import {DateRange} from "@daypicker/react";
 
 import {cn} from "@/lib/utils";
 import {Button} from "@/components/ui/button";

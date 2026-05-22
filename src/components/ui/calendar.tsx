@@ -7,11 +7,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import * as React from "react"
 import {
     DayPicker,
-    labelNext,
-    labelPrevious,
     useDayPicker,
     type DayPickerProps,
-} from "react-day-picker"
+} from "@daypicker/react"
 
 export type CalendarProps = DayPickerProps & {
     /**
@@ -86,8 +84,8 @@ function Calendar({
 
     const _monthsClassName = cn("relative flex", props.monthsClassName)
     const _monthCaptionClassName = cn(
-        "relative mx-10 flex h-7 items-center justify-center",
-        props.monthCaptionClassName
+        "relative flex items-center justify-center pt-1",
+        props.captionClassName || props.monthCaptionClassName
     )
     const _weekdaysClassName = cn("flex flex-row", props.weekdaysClassName)
     const _weekdayClassName = cn(
@@ -95,10 +93,6 @@ function Calendar({
         props.weekdayClassName
     )
     const _monthClassName = cn("w-full", props.monthClassName)
-    const _captionClassName = cn(
-        "relative flex items-center justify-center pt-1",
-        props.captionClassName
-    )
     const _captionLabelClassName = cn(
         "truncate text-sm font-medium",
         props.captionLabelClassName
@@ -177,7 +171,6 @@ function Calendar({
                 weekdays: _weekdaysClassName,
                 weekday: _weekdayClassName,
                 month: _monthClassName,
-                caption: _captionClassName,
                 caption_label: _captionLabelClassName,
                 button_next: _buttonNextClassName,
                 button_previous: _buttonPreviousClassName,
@@ -351,7 +344,7 @@ function Nav({
                         ? `Go to the previous ${
                             displayYears.to - displayYears.from + 1
                         } years`
-                        : labelPrevious(previousMonth)
+                        : (previousMonth ? `Go to previous month, ${previousMonth.toLocaleString("default", { month: "long", year: "numeric" })}` : "Go to previous month")
                 }
                 onClick={handlePreviousClick}
             >
@@ -367,7 +360,7 @@ function Nav({
                 aria-label={
                     navView === "years"
                         ? `Go to the next ${displayYears.to - displayYears.from + 1} years`
-                        : labelNext(nextMonth)
+                        : (nextMonth ? `Go to next month, ${nextMonth.toLocaleString("default", { month: "long", year: "numeric" })}` : "Go to next month")
                 }
                 onClick={handleNextClick}
             >

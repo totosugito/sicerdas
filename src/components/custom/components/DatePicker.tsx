@@ -1,12 +1,12 @@
 "use client";
 
-import {Calendar} from "@/components/ui/calendar";
+import { Calendar } from "@/components/ui/calendar";
 import * as React from "react";
-import "react-day-picker/style.css";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
-import {Button} from "@/components/ui/button";
-import {CalendarIcon} from "lucide-react";
-import {addYears} from "date-fns";
+import "@daypicker/react/style.css";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { CalendarIcon } from "lucide-react";
+import { addYears } from "date-fns";
 
 import {
   Select,
@@ -15,10 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {DropdownNavProps, DropdownProps} from "react-day-picker";
-import {Input} from "@/components/ui/input";
-import {useTypedDate} from "@/lib/react-typed-date";
-import {cn} from "@/lib/utils";
+import { DropdownNavProps, DropdownProps } from "@daypicker/react";
+import { Input } from "@/components/ui/input";
+import { useTypedDate } from "@/lib/react-typed-date";
+import { cn } from "@/lib/utils";
 
 type DatePickerProps = {
   value: Date;
@@ -28,9 +28,9 @@ type DatePickerProps = {
 };
 
 
-export default function DatePicker({value, ...props}: DatePickerProps) {
+export default function DatePicker({ value, ...props }: DatePickerProps) {
   // const [date, setDate] = React.useState<Date>(new Date(value))
-  const {inputProps} = useTypedDate({
+  const { inputProps } = useTypedDate({
     value: value || undefined,
     onChange: (e: any) => {
       props.onChange(e);
@@ -52,12 +52,12 @@ export default function DatePicker({value, ...props}: DatePickerProps) {
 
   return (
     <div className={"relative"}>
-      <Input {...inputProps} className={cn("w-full", props?.className)} disabled={props?.disabled}/>
+      <Input {...inputProps} className={cn("w-full", props?.className)} disabled={props?.disabled} />
       <Popover>
         <PopoverTrigger asChild>
           <Button type={"button"} variant={"link"} disabled={props?.disabled}
-                  className="absolute inset-y-0 right-0 flex items-center text-muted-foreground">
-            <CalendarIcon className="h-4 w-4"/>
+            className="absolute inset-y-0 right-0 flex items-center text-muted-foreground">
+            <CalendarIcon className="h-4 w-4" />
           </Button>
 
         </PopoverTrigger>
@@ -93,7 +93,7 @@ export default function DatePicker({value, ...props}: DatePickerProps) {
                     }}
                   >
                     <SelectTrigger className="h-8 first:grow">
-                      <SelectValue/>
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent
                       className="max-h-[min(26rem,var(--radix-select-content-available-height))]">
