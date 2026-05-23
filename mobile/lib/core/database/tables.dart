@@ -1,5 +1,5 @@
 export 'tables/app_versions.dart';
-export 'tables/categories.dart';
-export 'tables/education_grades.dart';
-export 'tables/book_groups.dart';
-export 'tables/books.dart';
+export 'tables/book/categories.dart';
+export 'tables/book/education_grades.dart';
+export 'tables/book/book_groups.dart';
+export 'tables/book/books.dart';

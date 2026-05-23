@@ -151,14 +151,17 @@ class ProfileScreen extends ConsumerWidget {
     required VoidCallback onTap,
   }) {
     final theme = ShadTheme.of(context);
-    return ListTile(
-      leading: Icon(icon, color: theme.colorScheme.primary, size: 20),
-      title: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.w500),
+    return Material(
+      type: MaterialType.transparency,
+      child: ListTile(
+        leading: Icon(icon, color: theme.colorScheme.primary, size: 20),
+        title: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.w500),
+        ),
+        trailing: const Icon(LucideIcons.chevronRight, size: 16),
+        onTap: onTap,
       ),
-      trailing: const Icon(LucideIcons.chevronRight, size: 16),
-      onTap: onTap,
     );
   }
 

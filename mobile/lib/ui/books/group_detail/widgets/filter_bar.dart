@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../../l10n/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,48 +6,123 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../group_detail_screen.dart';
 import '../../../../core/database/database.dart';
 
-class FilterBar extends ConsumerWidget {
+class FilterBar extends ConsumerStatefulWidget {
   final int groupId;
   const FilterBar({super.key, required this.groupId});
+
+  @override
+  ConsumerState<FilterBar> createState() => _FilterBarState();
+}
+
+class _FilterBarState extends ConsumerState<FilterBar> {
+  late final TextEditingController _controller;
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    final filter = ref.read(groupDetailFilterProvider);
+    _controller = TextEditingController(text: filter.search);
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _clearSearch() {
+    _controller.clear();
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    ref.read(groupDetailFilterProvider.notifier).updateSearch('');
+    setState(() {});
+  }
 
   void _showFilterSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _FilterSheet(groupId: groupId),
+      builder: (context) => _FilterSheet(groupId: widget.groupId),
     );
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
-    final filter = ref.watch(groupDetailFilterProvider);
-    final notifier = ref.read(groupDetailFilterProvider.notifier);
 
-    final activeFilters = (filter.gradeIds.isNotEmpty ? 1 : 0) + (filter.sortBy != 'title' ? 1 : 0) + (filter.descending ? 1 : 0);
+    // Listen for filter changes from elsewhere (e.g. clear all in sheet) and sync controller
+    ref.listen<GroupDetailFilter>(groupDetailFilterProvider, (previous, next) {
+      if (next.search != _controller.text) {
+        _controller.text = next.search;
+        setState(() {}); // Rebuild to update clear button visibility
+      }
+    });
+
+    final filter = ref.watch(groupDetailFilterProvider);
+    final activeFilters =
+        (filter.gradeIds.isNotEmpty ? 1 : 0) +
+        (filter.sortBy != 'version' ? 1 : 0) +
+        (!filter.descending ? 1 : 0);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
       decoration: BoxDecoration(
         color: theme.colorScheme.background,
-        boxShadow: [if (!isDark) BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4))],
+        boxShadow: [
+          if (!isDark)
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.02),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+        ],
       ),
       child: Row(
         children: [
           Expanded(
             child: ShadInput(
+              controller: _controller,
               placeholder: Text(l10n.searchHintDetail),
               leading: Padding(
                 padding: const EdgeInsets.only(right: 8),
-                child: Icon(Icons.search_rounded, size: 18, color: theme.colorScheme.mutedForeground),
+                child: Icon(
+                  Icons.search_rounded,
+                  size: 18,
+                  color: theme.colorScheme.mutedForeground,
+                ),
               ),
-              initialValue: filter.search,
-              onChanged: (val) => notifier.updateSearch(val),
+              trailing: _controller.text.isNotEmpty
+                  ? GestureDetector(
+                      onTap: _clearSearch,
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 18,
+                        color: theme.colorScheme.mutedForeground,
+                      ),
+                    )
+                  : null,
+              onChanged: (val) {
+                setState(
+                  () {},
+                ); // Rebuild to update clear button visibility immediately
+                if (_debounce?.isActive ?? false) _debounce!.cancel();
+                _debounce = Timer(const Duration(milliseconds: 400), () {
+                  ref
+                      .read(groupDetailFilterProvider.notifier)
+                      .updateSearch(val);
+                });
+              },
               decoration: ShadDecoration(
-                border: ShadBorder.all(color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05), width: 1),
+                border: ShadBorder.all(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.1)
+                      : Colors.black.withValues(alpha: 0.05),
+                  width: 1,
+                ),
               ),
             ),
           ),
@@ -59,7 +135,11 @@ class FilterBar extends ConsumerWidget {
               height: 42,
               padding: EdgeInsets.zero,
               onPressed: () => _showFilterSheet(context),
-              child: Icon(Icons.tune_rounded, size: 20, color: theme.colorScheme.primary),
+              child: Icon(
+                Icons.tune_rounded,
+                size: 20,
+                color: theme.colorScheme.primary,
+              ),
             ),
           ),
         ],
@@ -97,7 +177,9 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
         final availableIds = next.value.map((e) => e.id).toSet();
 
         // 1. Clean pending filter (local to sheet)
-        final validPendingIds = pendingFilter.gradeIds.where((id) => availableIds.contains(id)).toList();
+        final validPendingIds = pendingFilter.gradeIds
+            .where((id) => availableIds.contains(id))
+            .toList();
         if (validPendingIds.length != pendingFilter.gradeIds.length) {
           setState(() {
             pendingFilter = pendingFilter.copyWith(gradeIds: validPendingIds);
@@ -106,19 +188,34 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
 
         // 2. Clean global filter (affects background list)
         final globalFilter = ref.read(groupDetailFilterProvider);
-        final validGlobalIds = globalFilter.gradeIds.where((id) => availableIds.contains(id)).toList();
+        final validGlobalIds = globalFilter.gradeIds
+            .where((id) => availableIds.contains(id))
+            .toList();
         if (validGlobalIds.length != globalFilter.gradeIds.length) {
-          ref.read(groupDetailFilterProvider.notifier).updateAll(globalFilter.copyWith(gradeIds: validGlobalIds));
+          ref
+              .read(groupDetailFilterProvider.notifier)
+              .updateAll(globalFilter.copyWith(gradeIds: validGlobalIds));
         }
       }
     });
 
     return Container(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 24, top: 12, left: 24, right: 24),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).padding.bottom + 24,
+        top: 12,
+        left: 24,
+        right: 24,
+      ),
       decoration: BoxDecoration(
         color: theme.colorScheme.background,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 20, offset: const Offset(0, -5))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
+          ),
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -128,7 +225,10 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
             child: Container(
               width: 40,
               height: 4,
-              decoration: BoxDecoration(color: theme.colorScheme.border, borderRadius: BorderRadius.circular(2)),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
           ),
           const SizedBox(height: 20),
@@ -136,11 +236,15 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(l10n.filterTitle, style: theme.textTheme.h4),
-              if (pendingFilter.gradeIds.isNotEmpty || pendingFilter.sortBy != 'title' || pendingFilter.descending)
+              if (pendingFilter.gradeIds.isNotEmpty ||
+                  pendingFilter.sortBy != 'version' ||
+                  !pendingFilter.descending)
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      pendingFilter = GroupDetailFilter(search: pendingFilter.search);
+                      pendingFilter = GroupDetailFilter(
+                        search: pendingFilter.search,
+                      );
                     });
                   },
                   child: Text(l10n.filterClearAll),
@@ -150,7 +254,10 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
           const SizedBox(height: 24),
 
           // Grade Filter (Multi-select)
-          Text(l10n.filterGrade, style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            l10n.filterGrade,
+            style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 12),
           gradesAsync.when(
             data: (grades) {
@@ -168,7 +275,9 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                     },
                   ),
                   ...grades.map((grade) {
-                    final isSelected = pendingFilter.gradeIds.contains(grade.id);
+                    final isSelected = pendingFilter.gradeIds.contains(
+                      grade.id,
+                    );
                     return _FilterToggleChip(
                       label: grade.name,
                       selected: isSelected,
@@ -180,7 +289,9 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                           } else {
                             newIds.add(grade.id);
                           }
-                          pendingFilter = pendingFilter.copyWith(gradeIds: newIds);
+                          pendingFilter = pendingFilter.copyWith(
+                            gradeIds: newIds,
+                          );
                         });
                       },
                     );
@@ -195,35 +306,59 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
           const SizedBox(height: 24),
 
           // Sort By
-          Text(l10n.sortBy, style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            l10n.sortBy,
+            style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 12),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
               _SortChip(
+                label: l10n.sortByVersion,
+                icon: Icons.update_rounded,
+                selected: pendingFilter.sortBy == 'version',
+                onTap: () => setState(
+                  () =>
+                      pendingFilter = pendingFilter.copyWith(sortBy: 'version'),
+                ),
+              ),
+              _SortChip(
                 label: l10n.sortByTitle,
                 icon: Icons.sort_by_alpha_rounded,
                 selected: pendingFilter.sortBy == 'title',
-                onTap: () => setState(() => pendingFilter = pendingFilter.copyWith(sortBy: 'title')),
+                onTap: () => setState(
+                  () => pendingFilter = pendingFilter.copyWith(sortBy: 'title'),
+                ),
               ),
               _SortChip(
                 label: l10n.sortByYear,
                 icon: Icons.calendar_today_rounded,
                 selected: pendingFilter.sortBy == 'publishedYear',
-                onTap: () => setState(() => pendingFilter = pendingFilter.copyWith(sortBy: 'publishedYear')),
+                onTap: () => setState(
+                  () => pendingFilter = pendingFilter.copyWith(
+                    sortBy: 'publishedYear',
+                  ),
+                ),
               ),
               _SortChip(
                 label: l10n.sortByPages,
                 icon: Icons.auto_stories_rounded,
                 selected: pendingFilter.sortBy == 'totalPages',
-                onTap: () => setState(() => pendingFilter = pendingFilter.copyWith(sortBy: 'totalPages')),
+                onTap: () => setState(
+                  () => pendingFilter = pendingFilter.copyWith(
+                    sortBy: 'totalPages',
+                  ),
+                ),
               ),
               _SortChip(
                 label: l10n.sortBySize,
                 icon: Icons.storage_rounded,
                 selected: pendingFilter.sortBy == 'size',
-                onTap: () => setState(() => pendingFilter = pendingFilter.copyWith(sortBy: 'size')),
+                onTap: () => setState(
+                  () => pendingFilter = pendingFilter.copyWith(sortBy: 'size'),
+                ),
               ),
             ],
           ),
@@ -234,14 +369,28 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Order', style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                l10n.orderLabel,
+                style: theme.textTheme.small.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               Row(
                 children: [
-                  Text(pendingFilter.descending ? 'Descending' : 'Ascending', style: theme.textTheme.muted.copyWith(fontSize: 12)),
+                  Text(
+                    pendingFilter.descending
+                        ? l10n.orderDescending
+                        : l10n.orderAscending,
+                    style: theme.textTheme.muted.copyWith(fontSize: 12),
+                  ),
                   const SizedBox(width: 12),
                   Switch(
                     value: pendingFilter.descending,
-                    onChanged: (val) => setState(() => pendingFilter = pendingFilter.copyWith(descending: val)),
+                    onChanged: (val) => setState(
+                      () => pendingFilter = pendingFilter.copyWith(
+                        descending: val,
+                      ),
+                    ),
                     activeTrackColor: theme.colorScheme.primary,
                   ),
                 ],
@@ -253,7 +402,9 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
           ShadButton(
             width: double.infinity,
             onPressed: () {
-              ref.read(groupDetailFilterProvider.notifier).updateAll(pendingFilter);
+              ref
+                  .read(groupDetailFilterProvider.notifier)
+                  .updateAll(pendingFilter);
               Navigator.pop(context);
             },
             child: Text(l10n.filterApply),
@@ -269,7 +420,11 @@ class _FilterToggleChip extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _FilterToggleChip({required this.label, required this.selected, required this.onTap});
+  const _FilterToggleChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -280,7 +435,9 @@ class _FilterToggleChip extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? theme.colorScheme.primary : theme.colorScheme.muted.withValues(alpha: 0.5),
+          color: selected
+              ? theme.colorScheme.primary
+              : theme.colorScheme.muted.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
@@ -288,7 +445,9 @@ class _FilterToggleChip extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: selected ? FontWeight.bold : FontWeight.w500,
-            color: selected ? theme.colorScheme.primaryForeground : theme.colorScheme.foreground,
+            color: selected
+                ? theme.colorScheme.primaryForeground
+                : theme.colorScheme.foreground,
           ),
         ),
       ),
@@ -302,7 +461,12 @@ class _SortChip extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _SortChip({required this.label, required this.icon, required this.selected, required this.onTap});
+  const _SortChip({
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -313,21 +477,36 @@ class _SortChip extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: selected ? theme.colorScheme.primary.withValues(alpha: 0.1) : Colors.transparent,
+          color: selected
+              ? theme.colorScheme.primary.withValues(alpha: 0.1)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: selected ? theme.colorScheme.primary : theme.colorScheme.border, width: 1.5),
+          border: Border.all(
+            color: selected
+                ? theme.colorScheme.primary
+                : theme.colorScheme.border,
+            width: 1.5,
+          ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: selected ? theme.colorScheme.primary : theme.colorScheme.mutedForeground),
+            Icon(
+              icon,
+              size: 16,
+              color: selected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.mutedForeground,
+            ),
             const SizedBox(width: 8),
             Text(
               label,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: selected ? FontWeight.bold : FontWeight.w500,
-                color: selected ? theme.colorScheme.primary : theme.colorScheme.mutedForeground,
+                color: selected
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.mutedForeground,
               ),
             ),
           ],

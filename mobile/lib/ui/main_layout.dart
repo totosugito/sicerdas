@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../core/providers/navigation_provider.dart';
 import '../l10n/gen_l10n/app_localizations.dart';
@@ -21,9 +24,95 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      ref.read(syncProvider.notifier).checkInitial();
+    Future.microtask(() async {
+      final success = await _initAppDirectory();
+      if (success && mounted) {
+        ref.read(syncProvider.notifier).checkInitial();
+      }
     });
+  }
+
+  Future<bool> _initAppDirectory() async {
+    final status = await _createAppDirectory(
+      parentDir: "BSE",
+      childDir: const ["Books", "Kamus"],
+    );
+
+    if (!status && mounted) {
+      final theme = ShadTheme.of(context);
+      final l10n = AppLocalizations.of(context)!;
+
+      showShadDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => ShadDialog(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 320),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  LucideIcons.alertTriangle,
+                  size: 32,
+                  color: theme.colorScheme.destructive,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.errorTitle,
+                  style: theme.textTheme.large.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.errorCreateAppDir,
+                  style: theme.textTheme.muted.copyWith(fontSize: 14),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ShadButton.destructive(
+                  width: double.infinity,
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(l10n.close),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return status;
+  }
+
+  Future<bool> _createAppDirectory({
+    required String parentDir,
+    required List<String> childDir,
+  }) async {
+    try {
+      final dataDir = await getExternalStorageDirectory();
+      if (dataDir == null) return false;
+
+      // create parent directory
+      final parentPath = p.join(dataDir.path, parentDir);
+      final parentDirectory = Directory(parentPath);
+      if (!await parentDirectory.exists()) {
+        await parentDirectory.create(recursive: true);
+      }
+
+      // create child directories
+      for (final child in childDir) {
+        final childPath = p.join(parentPath, child);
+        final childDirectory = Directory(childPath);
+        if (!await childDirectory.exists()) {
+          await childDirectory.create(recursive: true);
+        }
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   @override
@@ -35,7 +124,9 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
 
     // 🚀 Background Sync Feedback
     ref.listen(syncProvider, (previous, next) {
-      if (next.status == SyncStatus.success && !next.isInitialSync && next.booksAdded > 0) {
+      if (next.status == SyncStatus.success &&
+          !next.isInitialSync &&
+          next.booksAdded > 0) {
         ShadToaster.of(context).show(
           ShadToast(
             title: Text(l10n.badgeNew),
@@ -86,7 +177,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
             ],
           ),
         ),
-        
+
         // ✨ Shadcn UI Sync Overlay ✨
         if (syncState.isInitialSync)
           Container(
@@ -106,7 +197,9 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                           const SizedBox(height: 16),
                           Text(
                             l10n.syncInitialDownloadTitle,
-                            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w700),
+                            style: theme.textTheme.large.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
@@ -118,7 +211,9 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                           const SizedBox(height: 24),
                           ShadButton(
                             width: double.infinity,
-                            onPressed: () => ref.read(versionServiceProvider).checkAndSync(force: true),
+                            onPressed: () => ref
+                                .read(versionServiceProvider)
+                                .checkAndSync(force: true),
                             child: Text(l10n.syncDownloadNow),
                           ),
                         ] else if (syncState.status == SyncStatus.syncing) ...[
@@ -126,7 +221,9 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                           const SizedBox(height: 16),
                           Text(
                             l10n.syncPreparingData,
-                            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w700),
+                            style: theme.textTheme.large.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
@@ -138,29 +235,38 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                           const SizedBox(height: 24),
                           const ShadProgress(),
                         ] else if (syncState.status == SyncStatus.success) ...[
-                          const Icon(LucideIcons.circleCheck, size: 32, color: Colors.green),
+                          const Icon(
+                            LucideIcons.circleCheck,
+                            size: 32,
+                            color: Colors.green,
+                          ),
                           const SizedBox(height: 16),
                           Text(
                             l10n.syncSuccessMessage(syncState.booksAdded),
-                            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w700),
+                            style: theme.textTheme.large.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 24),
                           ShadButton(
                             width: double.infinity,
-                            onPressed: () => ref.read(syncProvider.notifier).reset(),
+                            onPressed: () =>
+                                ref.read(syncProvider.notifier).reset(),
                             child: Text(l10n.close),
                           ),
                         ] else if (syncState.status == SyncStatus.error) ...[
                           Icon(
-                            LucideIcons.wifiOff, 
-                            size: 32, 
-                            color: theme.colorScheme.destructive
+                            LucideIcons.wifiOff,
+                            size: 32,
+                            color: theme.colorScheme.destructive,
                           ),
                           const SizedBox(height: 16),
                           Text(
                             l10n.syncConnectionRequired,
-                            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w700),
+                            style: theme.textTheme.large.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
@@ -172,7 +278,9 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                           const SizedBox(height: 24),
                           ShadButton(
                             width: double.infinity,
-                            onPressed: () => ref.read(versionServiceProvider).checkAndSync(force: true),
+                            onPressed: () => ref
+                                .read(versionServiceProvider)
+                                .checkAndSync(force: true),
                             child: Text(l10n.syncTryAgain),
                           ),
                         ],
@@ -188,7 +296,8 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
   }
 
   String _getSyncErrorMessage(AppLocalizations l10n, String? key) {
-    if (key == 'syncInternetRequiredMessage') return l10n.syncInternetRequiredMessage;
+    if (key == 'syncInternetRequiredMessage')
+      return l10n.syncInternetRequiredMessage;
     if (key == 'syncFailedMessage') return l10n.syncFailedMessage;
     return l10n.syncFailedMessage;
   }

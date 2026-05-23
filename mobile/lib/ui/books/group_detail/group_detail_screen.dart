@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:drift/drift.dart' as drift;
 import '../../../l10n/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -14,9 +15,19 @@ class GroupDetailFilter {
   final bool descending;
   final List<int> gradeIds;
 
-  GroupDetailFilter({this.search = '', this.sortBy = 'title', this.descending = false, this.gradeIds = const []});
+  GroupDetailFilter({
+    this.search = '',
+    this.sortBy = 'version',
+    this.descending = true,
+    this.gradeIds = const [],
+  });
 
-  GroupDetailFilter copyWith({String? search, String? sortBy, bool? descending, List<int>? gradeIds}) {
+  GroupDetailFilter copyWith({
+    String? search,
+    String? sortBy,
+    bool? descending,
+    List<int>? gradeIds,
+  }) {
     return GroupDetailFilter(
       search: search ?? this.search,
       sortBy: sortBy ?? this.sortBy,
@@ -34,23 +45,57 @@ class GroupDetailNotifier extends Notifier<GroupDetailFilter> {
   void updateAll(GroupDetailFilter newFilter) => state = newFilter;
 }
 
-final groupDetailFilterProvider = NotifierProvider<GroupDetailNotifier, GroupDetailFilter>(GroupDetailNotifier.new);
+final groupDetailFilterProvider =
+    NotifierProvider<GroupDetailNotifier, GroupDetailFilter>(
+      GroupDetailNotifier.new,
+    );
 
-final groupGradesProvider = StreamProvider.family<List<EducationGrade>, int>((ref, groupId) {
+final groupGradesProvider = StreamProvider.family<List<EducationGrade>, int>((
+  ref,
+  groupId,
+) {
   return ref.watch(databaseProvider).watchGradesByGroup(groupId);
 });
 
-final groupBooksProvider = StreamProvider.family<List<BookWithMetadata>, int>((ref, groupId) {
+final latestBookVersionIdProvider = StreamProvider<int?>((ref) {
+  final db = ref.watch(databaseProvider);
+  return (db.select(db.appVersions)
+        ..where((t) => t.dataType.equals('book') & t.status.equals('published'))
+        ..orderBy([
+          (t) => drift.OrderingTerm(
+            expression: t.id,
+            mode: drift.OrderingMode.desc,
+          ),
+        ])
+        ..limit(1))
+      .watch()
+      .map((list) => list.firstOrNull?.id);
+});
+
+final groupBooksProvider = StreamProvider.family<List<BookWithMetadata>, int>((
+  ref,
+  groupId,
+) {
   final db = ref.watch(databaseProvider);
   final filter = ref.watch(groupDetailFilterProvider);
+  final latestVersionId = ref.watch(latestBookVersionIdProvider).value;
 
-  return db.watchFilteredBooks(
-    groupId: groupId,
-    gradeIds: filter.gradeIds.isEmpty ? null : filter.gradeIds,
-    search: filter.search,
-    sortBy: filter.sortBy,
-    descending: filter.descending,
-  );
+  return db
+      .watchFilteredBooks(
+        groupId: groupId,
+        gradeIds: filter.gradeIds.isEmpty ? null : filter.gradeIds,
+        search: filter.search,
+        sortBy: filter.sortBy,
+        descending: filter.descending,
+      )
+      .map((books) {
+        return books.map((b) {
+          return b.copyWith(
+            isNew:
+                latestVersionId != null && b.book.versionId == latestVersionId,
+          );
+        }).toList();
+      });
 });
 
 class GroupDetailScreen extends ConsumerWidget {
@@ -68,12 +113,14 @@ class GroupDetailScreen extends ConsumerWidget {
       if (next is AsyncData<List<EducationGrade>>) {
         final availableIds = next.value.map((e) => e.id).toSet();
         final currentFilter = ref.read(groupDetailFilterProvider);
-        final validGradeIds = currentFilter.gradeIds.where((id) => availableIds.contains(id)).toList();
+        final validGradeIds = currentFilter.gradeIds
+            .where((id) => availableIds.contains(id))
+            .toList();
 
         if (validGradeIds.length != currentFilter.gradeIds.length) {
-          ref.read(groupDetailFilterProvider.notifier).updateAll(
-            currentFilter.copyWith(gradeIds: validGradeIds),
-          );
+          ref
+              .read(groupDetailFilterProvider.notifier)
+              .updateAll(currentFilter.copyWith(gradeIds: validGradeIds));
         }
       }
     });
@@ -87,26 +134,42 @@ class GroupDetailScreen extends ConsumerWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text(group.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, letterSpacing: -0.5))],
+                children: [
+                  Text(
+                    group.name,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                ],
               ),
             ),
             booksAsync.when(
               data: (books) => Container(
                 margin: const EdgeInsets.only(right: 16),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.2)),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.2),
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.library_books_rounded, size: 12, color: theme.colorScheme.primary),
-                    const SizedBox(width: 4),
                     Text(
                       '${books.length}${group.bookTotal != null ? " / ${group.bookTotal}" : ""}',
-                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.primary,
+                      ),
                     ),
                   ],
                 ),
@@ -132,9 +195,18 @@ class GroupDetailScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.library_books_rounded, size: 48, color: theme.colorScheme.mutedForeground.withValues(alpha: 0.5)),
+                        Icon(
+                          Icons.library_books_rounded,
+                          size: 48,
+                          color: theme.colorScheme.mutedForeground.withValues(
+                            alpha: 0.5,
+                          ),
+                        ),
                         const SizedBox(height: 12),
-                        Text(AppLocalizations.of(context)!.noBooksFound, style: theme.textTheme.muted),
+                        Text(
+                          AppLocalizations.of(context)!.noBooksFound,
+                          style: theme.textTheme.muted,
+                        ),
                       ],
                     ),
                   );

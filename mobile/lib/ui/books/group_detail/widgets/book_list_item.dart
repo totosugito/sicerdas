@@ -34,10 +34,16 @@ class BookListItem extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final cloudUrl = ref.watch(cloudUrlProvider);
 
-    final coverUrl = BookUtils.getBookCoverUrl(baseUrl: cloudUrl, bookId: book.bookId);
+    final coverUrl = BookUtils.getBookCoverUrl(
+      baseUrl: cloudUrl,
+      bookId: book.bookId,
+    );
 
     // Placeholder gradient
-    final List<Color> thumbnailGradient = [theme.colorScheme.muted, theme.colorScheme.secondary];
+    final List<Color> thumbnailGradient = [
+      theme.colorScheme.muted,
+      theme.colorScheme.secondary,
+    ];
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -45,7 +51,12 @@ class BookListItem extends ConsumerWidget {
         decoration: BoxDecoration(
           color: theme.colorScheme.card,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: theme.colorScheme.border.withValues(alpha: isDark ? 0.4 : 0.15), width: 0.8),
+          border: Border.all(
+            color: theme.colorScheme.border.withValues(
+              alpha: isDark ? 0.4 : 0.15,
+            ),
+            width: 0.8,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
@@ -65,7 +76,12 @@ class BookListItem extends ConsumerWidget {
                 GestureDetector(
                   onTap: () => _showBookDetail(context),
                   behavior: HitTestBehavior.opaque,
-                  child: _buildThumbnail(theme, isDark, thumbnailGradient, coverUrl),
+                  child: _buildThumbnail(
+                    theme,
+                    isDark,
+                    thumbnailGradient,
+                    coverUrl,
+                  ),
                 ),
                 const SizedBox(width: 14),
                 // Content Column
@@ -76,48 +92,87 @@ class BookListItem extends ConsumerWidget {
                       GestureDetector(
                         onTap: () => _showBookDetail(context),
                         behavior: HitTestBehavior.opaque,
-                        child: Text(
-                          book.title,
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              if (item.isNew) ...[
+                                WidgetSpan(
+                                  alignment: PlaceholderAlignment.middle,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(right: 6),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                      vertical: 1.5,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.primary
+                                          .withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      'NEW',
+                                      style: TextStyle(
+                                        fontSize: 8.5,
+                                        fontWeight: FontWeight.bold,
+                                        color: theme.colorScheme.primary,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              TextSpan(
+                                text: book.title,
+                                style: theme.textTheme.p.copyWith(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  height: 1.2,
+                                  letterSpacing: -0.3,
+                                  color: theme.colorScheme.foreground,
+                                ),
+                              ),
+                            ],
+                          ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.p.copyWith(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            height: 1.2,
-                            letterSpacing: -0.3,
-                            color: theme.colorScheme.foreground,
-                          ),
                         ),
                       ),
                       const SizedBox(height: 3),
-                          Text(
-                            book.author ?? l10n.unknownAuthor,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.italic,
-                              color: isDark ? theme.colorScheme.foreground.withValues(alpha: 0.85) : const Color(0xFF475569),
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            '${category.name} • ${grade.name}',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w400,
-                              color: isDark ? theme.colorScheme.foreground.withValues(alpha: 0.65) : const Color(0xFF64748B),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          // Modernized Metadata & Actions
-                          _buildFooter(theme, l10n, isDark),
-                        ],
+                      Text(
+                        book.author ?? l10n.unknownAuthor,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.italic,
+                          color: isDark
+                              ? theme.colorScheme.foreground.withValues(
+                                  alpha: 0.85,
+                                )
+                              : const Color(0xFF475569),
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${category.name} • ${grade.name}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w400,
+                          color: isDark
+                              ? theme.colorScheme.foreground.withValues(
+                                  alpha: 0.65,
+                                )
+                              : const Color(0xFF64748B),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      // Modernized Metadata & Actions
+                      _buildFooter(theme, l10n, isDark),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -126,7 +181,12 @@ class BookListItem extends ConsumerWidget {
     );
   }
 
-  Widget _buildThumbnail(ShadThemeData theme, bool isDark, List<Color> gradient, String imageUrl) {
+  Widget _buildThumbnail(
+    ShadThemeData theme,
+    bool isDark,
+    List<Color> gradient,
+    String imageUrl,
+  ) {
     return Container(
       width: 60,
       height: 90, // Clean 2:3 Aspect Ratio for direct book cover artwork
@@ -147,19 +207,36 @@ class BookListItem extends ConsumerWidget {
             : CachedNetworkImage(
                 imageUrl: imageUrl,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => _buildPlaceholder(theme, isDark, gradient),
-                errorWidget: (context, url, error) => _buildPlaceholder(theme, isDark, gradient, icon: Icons.broken_image_rounded),
+                placeholder: (context, url) =>
+                    _buildPlaceholder(theme, isDark, gradient),
+                errorWidget: (context, url, error) => _buildPlaceholder(
+                  theme,
+                  isDark,
+                  gradient,
+                  icon: Icons.broken_image_rounded,
+                ),
               ),
       ),
     );
   }
 
-  Widget _buildPlaceholder(ShadThemeData theme, bool isDark, List<Color> gradient, {IconData? icon}) {
-    final foregroundColor = isDark ? Colors.white.withValues(alpha: 0.8) : theme.colorScheme.mutedForeground;
+  Widget _buildPlaceholder(
+    ShadThemeData theme,
+    bool isDark,
+    List<Color> gradient, {
+    IconData? icon,
+  }) {
+    final foregroundColor = isDark
+        ? Colors.white.withValues(alpha: 0.8)
+        : theme.colorScheme.mutedForeground;
 
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: gradient, begin: Alignment.topLeft, end: Alignment.bottomRight),
+        gradient: LinearGradient(
+          colors: gradient,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
       ),
       child: Stack(
         children: [
@@ -179,7 +256,13 @@ class BookListItem extends ConsumerWidget {
             ),
           ),
           // Simple Spine Line
-          Positioned(left: 0, top: 0, bottom: 0, width: 3, child: Container(color: Colors.black.withValues(alpha: 0.1))),
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 3,
+            child: Container(color: Colors.black.withValues(alpha: 0.1)),
+          ),
           Center(
             child: icon != null
                 ? Icon(icon, color: foregroundColor, size: 28)
@@ -189,7 +272,15 @@ class BookListItem extends ConsumerWidget {
                       color: foregroundColor,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      shadows: isDark ? [const Shadow(color: Colors.black26, offset: Offset(0, 1), blurRadius: 2)] : null,
+                      shadows: isDark
+                          ? [
+                              const Shadow(
+                                color: Colors.black26,
+                                offset: Offset(0, 1),
+                                blurRadius: 2,
+                              ),
+                            ]
+                          : null,
                     ),
                   ),
           ),
@@ -205,12 +296,27 @@ class BookListItem extends ConsumerWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildMetaItem(Icons.menu_book_outlined, l10n.pagesCount(book.totalPages), theme, isDark),
+            _buildMetaItem(
+              Icons.auto_stories_outlined,
+              l10n.pagesCount(book.totalPages),
+              theme,
+              isDark,
+            ),
             const SizedBox(width: 12),
-            _buildMetaItem(Icons.sync, '${(book.size / 1024 / 1024).toStringAsFixed(1)} MB', theme, isDark),
+            _buildMetaItem(
+              Icons.storage_outlined,
+              BookUtils.formatFileSize(book.size),
+              theme,
+              isDark,
+            ),
             if (book.publishedYear.isNotEmpty) ...[
               const SizedBox(width: 12),
-              _buildMetaItem(Icons.calendar_today_outlined, book.publishedYear, theme, isDark),
+              _buildMetaItem(
+                Icons.calendar_today_outlined,
+                book.publishedYear,
+                theme,
+                isDark,
+              ),
             ],
           ],
         ),
@@ -219,13 +325,17 @@ class BookListItem extends ConsumerWidget {
           children: [
             _buildActionButton(
               icon: Icons.menu_book_outlined,
-              color: isDark ? theme.colorScheme.foreground.withValues(alpha: 0.85) : const Color(0xFF64748B),
+              color: isDark
+                  ? theme.colorScheme.foreground.withValues(alpha: 0.85)
+                  : const Color(0xFF64748B),
               onPressed: () {},
             ),
             const SizedBox(width: 14),
             _buildActionButton(
               icon: Icons.file_download_outlined,
-              color: isDark ? theme.colorScheme.foreground.withValues(alpha: 0.85) : const Color(0xFF64748B),
+              color: isDark
+                  ? theme.colorScheme.foreground.withValues(alpha: 0.85)
+                  : const Color(0xFF64748B),
               onPressed: () {},
             ),
           ],
@@ -234,14 +344,21 @@ class BookListItem extends ConsumerWidget {
     );
   }
 
-  Widget _buildMetaItem(IconData icon, String text, ShadThemeData theme, bool isDark) {
+  Widget _buildMetaItem(
+    IconData icon,
+    String text,
+    ShadThemeData theme,
+    bool isDark,
+  ) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
           icon,
           size: 14,
-          color: isDark ? theme.colorScheme.foreground.withValues(alpha: 0.6) : const Color(0xFF64748B),
+          color: isDark
+              ? theme.colorScheme.foreground.withValues(alpha: 0.6)
+              : const Color(0xFF64748B),
         ),
         const SizedBox(width: 5),
         Text(
@@ -249,7 +366,9 @@ class BookListItem extends ConsumerWidget {
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w500,
-            color: isDark ? theme.colorScheme.foreground.withValues(alpha: 0.65) : const Color(0xFF64748B),
+            color: isDark
+                ? theme.colorScheme.foreground.withValues(alpha: 0.65)
+                : const Color(0xFF64748B),
           ),
         ),
       ],

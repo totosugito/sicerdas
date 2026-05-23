@@ -98,7 +98,7 @@
       }
     }
   },
-  "browseGroups": "Telusuri Kelompok",
+  "browseGroups": "Kelompok Buku",
   "noCategoriesFound": "Kategori tidak ditemukan.",
   "noGroupsInCategory": "Tidak ada kelompok dalam kategori ini",
   "localLibraryCollection": "Koleksi Perpustakaan Lokal",
@@ -107,6 +107,7 @@
   "sortByPages": "Halaman",
   "sortBySize": "Ukuran",
   "sortByYear": "Tahun",
+  "sortByVersion": "Terbaru",
   "unknownAuthor": "Penulis Tidak Diketahui",
   "pagesCount": "{count} hal",
   "@pagesCount": {
@@ -122,6 +123,12 @@
   "fileSizeLabel": "Ukuran File",
   "publishedYearLabel": "Tahun Terbit",
   "statusLabel": "Status",
+  "bookIdLabel": "ID Buku",
   "downloadBookAction": "Unduh Buku",
-  "readNowAction": "Baca Sekarang"
+  "readNowAction": "Baca Sekarang",
+  "orderLabel": "Urutan",
+  "orderDescending": "Menurun",
+  "orderAscending": "Menaik",
+  "errorTitle": "Kesalahan",
+  "errorCreateAppDir": "Gagal membuat direktori aplikasi yang diperlukan. Aplikasi mungkin tidak berfungsi dengan benar tanpa izin penyimpanan."
 }

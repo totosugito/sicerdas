@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'app_versions.dart';
+import '../app_versions.dart';
 import 'categories.dart';
 
 @TableIndex(name: 'book_groups_category_idx', columns: {#categoryId})

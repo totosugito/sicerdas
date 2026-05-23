@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'app_versions.dart';
+import '../app_versions.dart';
 import 'book_groups.dart';
 import 'education_grades.dart';
 

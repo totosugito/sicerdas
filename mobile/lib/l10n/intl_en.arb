@@ -107,6 +107,7 @@
   "sortByPages": "Pages",
   "sortBySize": "Size",
   "sortByYear": "Year",
+  "sortByVersion": "Latest",
   "unknownAuthor": "Unknown Author",
   "pagesCount": "{count} p",
   "@pagesCount": {
@@ -122,6 +123,12 @@
   "fileSizeLabel": "File Size",
   "publishedYearLabel": "Published Year",
   "statusLabel": "Status",
+  "bookIdLabel": "Book ID",
   "downloadBookAction": "Download Book",
-  "readNowAction": "Read Now"
+  "readNowAction": "Read Now",
+  "orderLabel": "Order",
+  "orderDescending": "Descending",
+  "orderAscending": "Ascending",
+  "errorTitle": "Error",
+  "errorCreateAppDir": "Failed to create the required application directories. The application might not function properly without storage permissions."
 }
