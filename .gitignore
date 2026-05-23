@@ -21,3 +21,5 @@ uploads
 logs
 .vite-hooks
 test
+bun.lock
+bugreport*

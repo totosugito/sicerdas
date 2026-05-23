@@ -130,13 +130,6 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error, d
                 { value: "annually", label: t($ => $.tier.create.form.billingCycleOptions.annually) },
             ],
         },
-        {
-            name: "timeStart",
-            label: "date",
-            placeholder: "pilih date",
-            description: "coba pilih",
-            type: "date",
-        }
     ];
 
     return (
