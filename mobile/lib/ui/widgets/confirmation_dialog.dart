@@ -5,7 +5,8 @@ class ConfirmationDialog extends StatelessWidget {
   final IconData icon;
   final Color? iconColor;
   final String title;
-  final String description;
+  final String? description;
+  final Widget? descriptionWidget;
   final String confirmLabel;
   final String? cancelLabel;
   final VoidCallback onConfirm;
@@ -16,7 +17,8 @@ class ConfirmationDialog extends StatelessWidget {
     required this.icon,
     this.iconColor,
     required this.title,
-    required this.description,
+    this.description,
+    this.descriptionWidget,
     required this.confirmLabel,
     this.cancelLabel,
     required this.onConfirm,
@@ -45,8 +47,8 @@ class ConfirmationDialog extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            Text(
-              description,
+            descriptionWidget ?? Text(
+              description ?? '',
               style: theme.textTheme.muted.copyWith(fontSize: 14),
               textAlign: TextAlign.center,
             ),
@@ -79,7 +81,8 @@ class ConfirmationDialog extends StatelessWidget {
     required IconData icon,
     Color? iconColor,
     required String title,
-    required String description,
+    String? description,
+    Widget? descriptionWidget,
     required String confirmLabel,
     String? cancelLabel,
     required VoidCallback onConfirm,
@@ -92,6 +95,7 @@ class ConfirmationDialog extends StatelessWidget {
         iconColor: iconColor,
         title: title,
         description: description,
+        descriptionWidget: descriptionWidget,
         confirmLabel: confirmLabel,
         cancelLabel: cancelLabel,
         onConfirm: onConfirm,

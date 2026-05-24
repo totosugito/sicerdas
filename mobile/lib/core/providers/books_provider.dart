@@ -1,8 +1,11 @@
+import 'dart:io';
+import 'package:path/path.dart' as p;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart';
 import '../database/database.dart';
 import 'database_provider.dart';
 import 'settings_provider.dart';
+import '../utils/book_utils.dart';
 
 class BooksFilter {
   final String search;
@@ -176,4 +179,42 @@ class CategoryExpansionNotifier extends Notifier<Map<int, bool>> {
 
 final categoryExpansionProvider = NotifierProvider.autoDispose<CategoryExpansionNotifier, Map<int, bool>>(() {
   return CategoryExpansionNotifier();
+});
+
+class DownloadedBookIdsNotifier extends AsyncNotifier<Set<int>> {
+  @override
+  Future<Set<int>> build() async {
+    final rootDir = await BookUtils.getBookRootDir();
+    final dir = Directory(rootDir);
+    if (!await dir.exists()) {
+      return {};
+    }
+    final files = dir.listSync();
+    final ids = <int>{};
+    for (final file in files) {
+      if (file is File && file.path.endsWith('.pdf')) {
+        final filename = p.basename(file.path);
+        final prefix = filename.split('_').first;
+        final id = int.tryParse(prefix);
+        if (id != null) {
+          ids.add(id);
+        }
+      }
+    }
+    return ids;
+  }
+
+  void addId(int id) {
+    final current = state.value ?? {};
+    state = AsyncValue.data({...current, id});
+  }
+
+  void removeId(int id) {
+    final current = state.value ?? {};
+    state = AsyncValue.data(current.where((x) => x != id).toSet());
+  }
+}
+
+final downloadedBookIdsProvider = AsyncNotifierProvider<DownloadedBookIdsNotifier, Set<int>>(() {
+  return DownloadedBookIdsNotifier();
 });

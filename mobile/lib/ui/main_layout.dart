@@ -7,11 +7,12 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../core/providers/navigation_provider.dart';
 import '../l10n/gen_l10n/app_localizations.dart';
 import 'home/home_screen.dart';
-import 'books/books_screen.dart';
+import 'books/book_screen/books_screen.dart';
 import 'placeholder_screens.dart';
 import 'profile/profile_screen.dart';
 import '../core/services/version_service.dart';
 import '../core/providers/sync_provider.dart';
+import '../core/config/app_constants.dart';
 
 class MainLayout extends ConsumerStatefulWidget {
   const MainLayout({super.key});
@@ -34,8 +35,8 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
 
   Future<bool> _initAppDirectory() async {
     final status = await _createAppDirectory(
-      parentDir: "BSE",
-      childDir: const ["Books", "Kamus"],
+      parentDir: AppConstants.appDirParent,
+      childDir: const [AppConstants.appDirBooks, AppConstants.appDirKamus],
     );
 
     if (!status && mounted) {
@@ -296,9 +297,12 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
   }
 
   String _getSyncErrorMessage(AppLocalizations l10n, String? key) {
-    if (key == 'syncInternetRequiredMessage')
+    if (key == 'syncInternetRequiredMessage') {
       return l10n.syncInternetRequiredMessage;
-    if (key == 'syncFailedMessage') return l10n.syncFailedMessage;
+    }
+    if (key == 'syncFailedMessage') {
+      return l10n.syncFailedMessage;
+    }
     return l10n.syncFailedMessage;
   }
 }

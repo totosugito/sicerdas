@@ -132,5 +132,32 @@
   "errorTitle": "Kesalahan",
   "errorCreateAppDir": "Gagal membuat direktori aplikasi yang diperlukan. Aplikasi mungkin tidak berfungsi dengan benar tanpa izin penyimpanan.",
   "collapseAll": "Sembunyikan Semua",
-  "expandAll": "Tampilkan Semua"
+  "expandAll": "Tampilkan Semua",
+  "deleteBookConfirmTitle": "Hapus Buku",
+  "deleteBookConfirmMessage": "Apakah Anda yakin ingin menghapus \"{title}\" dari penyimpanan lokal?",
+  "@deleteBookConfirmMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteAction": "Hapus",
+  "deleteBookSuccess": "Buku berhasil dihapus dari penyimpanan.",
+  "downloadStarted": "Memulai pengunduhan buku...",
+  "downloadFailed": "Gagal mengunduh",
+  "downloadFailedNoUrl": "Tidak dapat mengambil URL buku dari server.",
+  "downloadSuccess": "Buku berhasil diunduh!",
+  "downloadFailedNoFile": "Gagal mengunduh file PDF.",
+  "deleteBookConfirmPrefix": "Apakah Anda yakin ingin menghapus ",
+  "deleteBookConfirmSuffix": " dari penyimpanan lokal?",
+  "filterAll": "Semua",
+  "errorLoadingCategories": "Gagal memuat kategori",
+  "errorLoadingGroups": "Gagal memuat kelompok",
+  "errorLoadingGrades": "Gagal memuat kelas",
+  "successTitle": "Sukses",
+  "infoTitle": "Informasi",
+  "textCopied": "Teks berhasil disalin",
+  "textNotFound": "Teks tidak ditemukan",
+  "searchText": "Cari teks..."
 }

@@ -132,5 +132,32 @@
   "errorTitle": "Error",
   "errorCreateAppDir": "Failed to create the required application directories. The application might not function properly without storage permissions.",
   "collapseAll": "Collapse All",
-  "expandAll": "Expand All"
+  "expandAll": "Expand All",
+  "deleteBookConfirmTitle": "Delete Book",
+  "deleteBookConfirmMessage": "Are you sure you want to delete \"{title}\" from local storage?",
+  "@deleteBookConfirmMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteAction": "Delete",
+  "deleteBookSuccess": "Book successfully deleted from storage.",
+  "downloadStarted": "Starting book download...",
+  "downloadFailed": "Failed to download",
+  "downloadFailedNoUrl": "Could not retrieve the book URL from server.",
+  "downloadSuccess": "Book successfully downloaded!",
+  "downloadFailedNoFile": "Failed to download PDF file.",
+  "deleteBookConfirmPrefix": "Are you sure you want to delete ",
+  "deleteBookConfirmSuffix": " from local storage?",
+  "filterAll": "All",
+  "errorLoadingCategories": "Error loading categories",
+  "errorLoadingGroups": "Error loading groups",
+  "errorLoadingGrades": "Error loading grades",
+  "successTitle": "Success",
+  "infoTitle": "Information",
+  "textCopied": "Text successfully copied",
+  "textNotFound": "Text not found",
+  "searchText": "Search text..."
 }

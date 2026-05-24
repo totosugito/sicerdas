@@ -9,8 +9,11 @@ import '../../../../core/utils/book_utils.dart';
 import '../../../../core/providers/settings_provider.dart';
 import '../../../widgets/new_badge.dart';
 import 'book_detail_sheet.dart';
-import '../../pdf_viewer_screen.dart';
+import '../../../pdf_viewer/pdf_viewer_screen.dart';
 import '../../../../core/services/book_service.dart';
+import '../../../../core/providers/books_provider.dart';
+import '../../../widgets/confirmation_dialog.dart';
+import '../../../../core/utils/toast_utils.dart';
 
 class BookListItem extends ConsumerWidget {
   final BookWithMetadata item;
@@ -33,25 +36,13 @@ class BookListItem extends ConsumerWidget {
 
   Future<void> _downloadBook(BuildContext context, WidgetRef ref) async {
     final bookService = ref.read(bookServiceProvider);
-
-    if (await book.isLocalFileExist()) {
-      if (context.mounted) {
-        ShadToaster.of(context).show(
-          ShadToast(
-            title: Text(book.title),
-            description: const Text("Buku sudah diunduh (Offline)"),
-          ),
-        );
-      }
-      return;
-    }
+    final l10n = AppLocalizations.of(context)!;
 
     if (context.mounted) {
-      ShadToaster.of(context).show(
-        ShadToast(
-          title: Text(book.title),
-          description: const Text("Memulai pengunduhan buku..."),
-        ),
+      ToastUtils.showInfo(
+        context,
+        title: book.title,
+        message: l10n.downloadStarted,
       );
     }
 
@@ -62,66 +53,86 @@ class BookListItem extends ConsumerWidget {
 
     if (pdfUrl == null) {
       if (context.mounted) {
-        ShadToaster.of(context).show(
-          ShadToast.destructive(
-            title: const Text("Gagal mengunduh"),
-            description: const Text(
-              "Tidak dapat mengambil URL buku dari server.",
-            ),
-          ),
+        ToastUtils.showError(
+          context,
+          title: l10n.downloadFailed,
+          message: l10n.downloadFailedNoUrl,
         );
       }
       return;
     }
 
-    final file = await bookService.downloadBookPdf(
-      book: book,
-      pdfUrl: pdfUrl,
-    );
+    final file = await bookService.downloadBookPdf(book: book, pdfUrl: pdfUrl);
 
     if (context.mounted) {
       if (file != null) {
-        ShadToaster.of(context).show(
-          ShadToast(
-            title: Text(book.title),
-            description: const Text("Buku berhasil diunduh!"),
-          ),
+        ref.read(downloadedBookIdsProvider.notifier).addId(book.bookId);
+        ToastUtils.showSuccess(
+          context,
+          title: book.title,
+          message: l10n.downloadSuccess,
         );
       } else {
-        ShadToaster.of(context).show(
-          ShadToast.destructive(
-            title: const Text("Gagal mengunduh"),
-            description: const Text("Gagal mengunduh file PDF."),
-          ),
+        ToastUtils.showError(
+          context,
+          title: l10n.downloadFailed,
+          message: l10n.downloadFailedNoFile,
         );
       }
     }
   }
 
+  Future<void> _deleteBook(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = ShadTheme.of(context);
+
+    ConfirmationDialog.show(
+      context,
+      icon: Icons.delete_outline,
+      title: l10n.deleteBookConfirmTitle,
+      descriptionWidget: Text.rich(
+        TextSpan(
+          style: theme.textTheme.muted.copyWith(fontSize: 14),
+          children: [
+            TextSpan(text: l10n.deleteBookConfirmPrefix),
+            TextSpan(
+              text: book.title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.foreground,
+              ),
+            ),
+            TextSpan(text: l10n.deleteBookConfirmSuffix),
+          ],
+        ),
+        textAlign: TextAlign.center,
+      ),
+      confirmLabel: l10n.deleteAction,
+      cancelLabel: l10n.cancel,
+      onConfirm: () async {
+        Navigator.of(context).pop();
+        final success = await book.deleteLocalFile();
+        if (success && context.mounted) {
+          ref.read(downloadedBookIdsProvider.notifier).removeId(book.bookId);
+          ToastUtils.showSuccess(
+            context,
+            title: book.title,
+            message: l10n.deleteBookSuccess,
+          );
+        }
+      },
+    );
+  }
+
   Future<void> _readBook(BuildContext context) async {
-    if (await book.isLocalFileExist()) {
-      final filePath = await book.getLocalFileName();
-      if (context.mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PdfViewerScreen(
-              filePath: filePath,
-              title: book.title,
-            ),
-          ),
-        );
-      }
-    } else {
-      if (context.mounted) {
-        ShadToaster.of(context).show(
-          ShadToast.destructive(
-            title: const Text("Buku belum diunduh"),
-            description: const Text(
-              "Silakan unduh buku terlebih dahulu untuk membaca secara offline.",
-            ),
-          ),
-        );
-      }
+    final filePath = await book.getLocalFileName();
+    if (context.mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) =>
+              PdfViewerScreen(filePath: filePath, title: book.title),
+        ),
+      );
     }
   }
 
@@ -375,6 +386,9 @@ class BookListItem extends ConsumerWidget {
     AppLocalizations l10n,
     bool isDark,
   ) {
+    final downloadedIds = ref.watch(downloadedBookIdsProvider).value ?? {};
+    final isDownloaded = downloadedIds.contains(book.bookId);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -408,21 +422,29 @@ class BookListItem extends ConsumerWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildActionButton(
-              icon: Icons.menu_book_outlined,
-              color: isDark
-                  ? theme.colorScheme.foreground.withValues(alpha: 0.85)
-                  : const Color(0xFF64748B),
-              onPressed: () => _readBook(context),
-            ),
-            const SizedBox(width: 14),
-            _buildActionButton(
-              icon: Icons.file_download_outlined,
-              color: isDark
-                  ? theme.colorScheme.foreground.withValues(alpha: 0.85)
-                  : const Color(0xFF64748B),
-              onPressed: () => _downloadBook(context, ref),
-            ),
+            if (isDownloaded) ...[
+              _buildActionButton(
+                icon: Icons.menu_book_outlined,
+                color: isDark
+                    ? theme.colorScheme.foreground.withValues(alpha: 0.85)
+                    : const Color(0xFF64748B),
+                onPressed: () => _readBook(context),
+              ),
+              const SizedBox(width: 14),
+              _buildActionButton(
+                icon: Icons.delete_outline,
+                color: theme.colorScheme.destructive,
+                onPressed: () => _deleteBook(context, ref),
+              ),
+            ] else ...[
+              _buildActionButton(
+                icon: Icons.file_download_outlined,
+                color: isDark
+                    ? theme.colorScheme.foreground.withValues(alpha: 0.85)
+                    : const Color(0xFF64748B),
+                onPressed: () => _downloadBook(context, ref),
+              ),
+            ],
           ],
         ),
       ],

@@ -3,6 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import '../database/database.dart';
 import 'my_utils.dart';
+import '../config/app_constants.dart';
 
 class BookUtils {
   static String getBookCoverUrl({
@@ -42,6 +43,18 @@ class BookUtils {
     }
     return '${size.toStringAsFixed(1)} ${suffixes[i]}';
   }
+
+  static Future<String> getBookRootDir() async {
+    final dataDir = await getExternalStorageDirectory();
+    final parentPath = dataDir != null
+        ? dataDir.path
+        : (await getApplicationDocumentsDirectory()).path;
+    final booksDir = Directory(p.join(parentPath, AppConstants.appDirParent, AppConstants.appDirBooks));
+    if (!await booksDir.exists()) {
+      await booksDir.create(recursive: true);
+    }
+    return "${booksDir.path}${Platform.pathSeparator}";
+  }
 }
 
 extension BookExtension on Book {
@@ -52,20 +65,8 @@ extension BookExtension on Book {
     return "${filePrefix}_$textTitle";
   }
 
-  Future<String> getBookRootDir() async {
-    final dataDir = await getExternalStorageDirectory();
-    final parentPath = dataDir != null
-        ? dataDir.path
-        : (await getApplicationDocumentsDirectory()).path;
-    final booksDir = Directory(p.join(parentPath, 'BSE', 'Books'));
-    if (!await booksDir.exists()) {
-      await booksDir.create(recursive: true);
-    }
-    return "${booksDir.path}${Platform.pathSeparator}";
-  }
-
   Future<String> getLocalFileName({String ext = '.pdf'}) async {
-    final bookRootDir = await getBookRootDir();
+    final bookRootDir = await BookUtils.getBookRootDir();
     if (bookRootDir.isEmpty) {
       return "";
     }
@@ -77,5 +78,19 @@ extension BookExtension on Book {
   Future<bool> isLocalFileExist() async {
     final fileName = await getLocalFileName();
     return MyUtils.isFileExist(fileName);
+  }
+
+  Future<bool> deleteLocalFile() async {
+    try {
+      final fileName = await getLocalFileName();
+      final file = File(fileName);
+      if (await file.exists()) {
+        await file.delete();
+        return true;
+      }
+    } catch (e) {
+      // Log/handle error
+    }
+    return false;
   }
 }
