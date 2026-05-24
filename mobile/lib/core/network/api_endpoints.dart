@@ -10,6 +10,8 @@ class ApiEndpoints {
   // Books
   static const String listBook = '/api/book/list-book';
   static const String detailBook = '/api/book/detail-book';
+  static const String bookInfo = '/api/app/book-info';
+  static const String updateDownload = '/api/book/update-download';
 
   // Exams (Future)
   static const String listExam = '/api/exam/list-exam';

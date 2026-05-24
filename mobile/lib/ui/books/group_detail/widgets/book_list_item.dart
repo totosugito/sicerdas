@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
 import '../../../../l10n/gen_l10n/app_localizations.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../../core/database/database.dart';
@@ -8,6 +9,8 @@ import '../../../../core/utils/book_utils.dart';
 import '../../../../core/providers/settings_provider.dart';
 import '../../../widgets/new_badge.dart';
 import 'book_detail_sheet.dart';
+import '../../pdf_viewer_screen.dart';
+import '../../../../core/services/book_service.dart';
 
 class BookListItem extends ConsumerWidget {
   final BookWithMetadata item;
@@ -26,6 +29,100 @@ class BookListItem extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       builder: (context) => BookDetailSheet(item: item),
     );
+  }
+
+  Future<void> _downloadBook(BuildContext context, WidgetRef ref) async {
+    final bookService = ref.read(bookServiceProvider);
+
+    if (await book.isLocalFileExist()) {
+      if (context.mounted) {
+        ShadToaster.of(context).show(
+          ShadToast(
+            title: Text(book.title),
+            description: const Text("Buku sudah diunduh (Offline)"),
+          ),
+        );
+      }
+      return;
+    }
+
+    if (context.mounted) {
+      ShadToaster.of(context).show(
+        ShadToast(
+          title: Text(book.title),
+          description: const Text("Memulai pengunduhan buku..."),
+        ),
+      );
+    }
+
+    final pdfUrl = await bookService.getBookPdfUrl(
+      bookId: book.bookId,
+      totalPages: book.totalPages,
+    );
+
+    if (pdfUrl == null) {
+      if (context.mounted) {
+        ShadToaster.of(context).show(
+          ShadToast.destructive(
+            title: const Text("Gagal mengunduh"),
+            description: const Text(
+              "Tidak dapat mengambil URL buku dari server.",
+            ),
+          ),
+        );
+      }
+      return;
+    }
+
+    final file = await bookService.downloadBookPdf(
+      book: book,
+      pdfUrl: pdfUrl,
+    );
+
+    if (context.mounted) {
+      if (file != null) {
+        ShadToaster.of(context).show(
+          ShadToast(
+            title: Text(book.title),
+            description: const Text("Buku berhasil diunduh!"),
+          ),
+        );
+      } else {
+        ShadToaster.of(context).show(
+          ShadToast.destructive(
+            title: const Text("Gagal mengunduh"),
+            description: const Text("Gagal mengunduh file PDF."),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _readBook(BuildContext context) async {
+    if (await book.isLocalFileExist()) {
+      final filePath = await book.getLocalFileName();
+      if (context.mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PdfViewerScreen(
+              filePath: filePath,
+              title: book.title,
+            ),
+          ),
+        );
+      }
+    } else {
+      if (context.mounted) {
+        ShadToaster.of(context).show(
+          ShadToast.destructive(
+            title: const Text("Buku belum diunduh"),
+            description: const Text(
+              "Silakan unduh buku terlebih dahulu untuk membaca secara offline.",
+            ),
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -151,7 +248,7 @@ class BookListItem extends ConsumerWidget {
                       ),
                       const SizedBox(height: 8),
                       // Modernized Metadata & Actions
-                      _buildFooter(theme, l10n, isDark),
+                      _buildFooter(context, ref, theme, l10n, isDark),
                     ],
                   ),
                 ),
@@ -271,7 +368,13 @@ class BookListItem extends ConsumerWidget {
     );
   }
 
-  Widget _buildFooter(ShadThemeData theme, AppLocalizations l10n, bool isDark) {
+  Widget _buildFooter(
+    BuildContext context,
+    WidgetRef ref,
+    ShadThemeData theme,
+    AppLocalizations l10n,
+    bool isDark,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -310,7 +413,7 @@ class BookListItem extends ConsumerWidget {
               color: isDark
                   ? theme.colorScheme.foreground.withValues(alpha: 0.85)
                   : const Color(0xFF64748B),
-              onPressed: () {},
+              onPressed: () => _readBook(context),
             ),
             const SizedBox(width: 14),
             _buildActionButton(
@@ -318,7 +421,7 @@ class BookListItem extends ConsumerWidget {
               color: isDark
                   ? theme.colorScheme.foreground.withValues(alpha: 0.85)
                   : const Color(0xFF64748B),
-              onPressed: () {},
+              onPressed: () => _downloadBook(context, ref),
             ),
           ],
         ),

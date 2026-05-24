@@ -7,6 +7,7 @@ import '../../../../core/utils/book_utils.dart';
 import '../../../../core/providers/settings_provider.dart';
 import '../../../../l10n/gen_l10n/app_localizations.dart';
 
+
 class BookDetailSheet extends ConsumerWidget {
   final BookWithMetadata item;
 
@@ -15,6 +16,7 @@ class BookDetailSheet extends ConsumerWidget {
   Book get book => item.book;
   Category get category => item.category;
   EducationGrade get grade => item.grade;
+
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -215,48 +217,7 @@ class BookDetailSheet extends ConsumerWidget {
             ),
           ),
 
-          const SizedBox(height: 16),
 
-          // Actions Row (sticky bottom)
-          Row(
-            children: [
-              Expanded(
-                child: ShadButton.outline(
-                  onPressed: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.file_download_outlined,
-                        size: 18,
-                        color: theme.colorScheme.foreground,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(l10n.downloadBookAction),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ShadButton(
-                  onPressed: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.menu_book_outlined,
-                        size: 18,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(l10n.readNowAction),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );
