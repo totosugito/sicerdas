@@ -11,15 +11,31 @@ class GroupBookScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final categoriesAsync = ref.watch(categoriesProvider);
+    final categoriesAsync = ref.watch(categoriesWithGroupsProvider);
     final allGroupsAsync = ref.watch(allGroupsProvider);
+    final expandAll = ref.watch(groupBookExpandAllProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.browseGroups, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        title: Text(
+          l10n.browseGroups,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
         elevation: 0,
         backgroundColor: Colors.transparent,
         foregroundColor: ShadTheme.of(context).colorScheme.foreground,
+        actions: [
+          IconButton(
+            icon: Icon(
+              expandAll ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+            ),
+            tooltip: expandAll ? l10n.collapseAll : l10n.expandAll,
+            onPressed: () {
+              ref.read(groupBookExpandAllProvider.notifier).toggle();
+              ref.read(categoryExpansionProvider.notifier).resetAll();
+            },
+          ),
+        ],
       ),
       body: categoriesAsync.when(
         data: (categories) => allGroupsAsync.when(
@@ -33,8 +49,10 @@ class GroupBookScreen extends ConsumerWidget {
               itemCount: categories.length,
               itemBuilder: (context, index) {
                 final category = categories[index];
-                final categoryGroups = groups.where((g) => g.categoryId == category.id).toList();
-                
+                final categoryGroups = groups
+                    .where((g) => g.group.categoryId == category.id)
+                    .toList();
+
                 return CategoryCard(
                   category: category,
                   groups: categoryGroups,

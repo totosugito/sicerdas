@@ -6,6 +6,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../../core/database/database.dart';
 import '../../../../core/utils/book_utils.dart';
 import '../../../../core/providers/settings_provider.dart';
+import '../../../widgets/new_badge.dart';
 import 'book_detail_sheet.dart';
 
 class BookListItem extends ConsumerWidget {
@@ -96,28 +97,9 @@ class BookListItem extends ConsumerWidget {
                           TextSpan(
                             children: [
                               if (item.isNew) ...[
-                                WidgetSpan(
+                                const WidgetSpan(
                                   alignment: PlaceholderAlignment.middle,
-                                  child: Container(
-                                    margin: const EdgeInsets.only(right: 6),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 4,
-                                      vertical: 1.5,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: theme.colorScheme.primary
-                                          .withValues(alpha: 0.15),
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Text(
-                                      'NEW',
-                                      style: TextStyle(
-                                        fontSize: 8.5,
-                                        fontWeight: FontWeight.bold,
-                                        color: theme.colorScheme.primary,
-                                      ),
-                                    ),
-                                  ),
+                                  child: NewBadge(),
                                 ),
                               ],
                               TextSpan(

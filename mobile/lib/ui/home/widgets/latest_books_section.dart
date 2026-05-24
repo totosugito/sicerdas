@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../l10n/gen_l10n/app_localizations.dart';
+import '../../widgets/new_badge.dart';
 
 class LatestBooksSection extends StatelessWidget {
   const LatestBooksSection({super.key});
@@ -122,23 +123,12 @@ class _BookCard extends StatelessWidget {
                   ),
                 ),
                 if (isNew)
-                  Positioned(
+                  const Positioned(
                     top: 12,
                     left: 12,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.red[600],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        l10n.badgeNew,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    child: NewBadge(
+                      useSolidRed: true,
+                      margin: EdgeInsets.zero,
                     ),
                   ),
               ],

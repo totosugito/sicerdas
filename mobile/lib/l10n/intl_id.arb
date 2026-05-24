@@ -130,5 +130,7 @@
   "orderDescending": "Menurun",
   "orderAscending": "Menaik",
   "errorTitle": "Kesalahan",
-  "errorCreateAppDir": "Gagal membuat direktori aplikasi yang diperlukan. Aplikasi mungkin tidak berfungsi dengan benar tanpa izin penyimpanan."
+  "errorCreateAppDir": "Gagal membuat direktori aplikasi yang diperlukan. Aplikasi mungkin tidak berfungsi dengan benar tanpa izin penyimpanan.",
+  "collapseAll": "Sembunyikan Semua",
+  "expandAll": "Tampilkan Semua"
 }

@@ -130,5 +130,7 @@
   "orderDescending": "Descending",
   "orderAscending": "Ascending",
   "errorTitle": "Error",
-  "errorCreateAppDir": "Failed to create the required application directories. The application might not function properly without storage permissions."
+  "errorCreateAppDir": "Failed to create the required application directories. The application might not function properly without storage permissions.",
+  "collapseAll": "Collapse All",
+  "expandAll": "Expand All"
 }

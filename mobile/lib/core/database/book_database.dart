@@ -6,13 +6,21 @@ extension BookDatabaseExtension on AppDatabase {
 
   Future<void> upsertCategories(List<Category> categoryList) async {
     await batch((batch) {
-      batch.insertAll(categories, categoryList, mode: InsertMode.insertOrReplace);
+      batch.insertAll(
+        categories,
+        categoryList,
+        mode: InsertMode.insertOrReplace,
+      );
     });
   }
 
   Future<void> upsertGrades(List<EducationGrade> gradeList) async {
     await batch((batch) {
-      batch.insertAll(educationGrades, gradeList, mode: InsertMode.insertOrReplace);
+      batch.insertAll(
+        educationGrades,
+        gradeList,
+        mode: InsertMode.insertOrReplace,
+      );
     });
   }
 
@@ -24,7 +32,10 @@ extension BookDatabaseExtension on AppDatabase {
 
   // --- Book Helpers ---
 
-  Future<void> replaceBooksForVersion(int versionId, List<Book> newBooks) async {
+  Future<void> replaceBooksForVersion(
+    int versionId,
+    List<Book> newBooks,
+  ) async {
     await transaction(() async {
       await (delete(books)..where((t) => t.versionId.equals(versionId))).go();
       await batch((batch) {
@@ -51,17 +62,20 @@ extension BookDatabaseExtension on AppDatabase {
     final query = select(books).join([
       innerJoin(bookGroups, bookGroups.id.equalsExp(books.bookGroupId)),
       innerJoin(categories, categories.id.equalsExp(bookGroups.categoryId)),
-      innerJoin(educationGrades, educationGrades.id.equalsExp(books.educationGradeId)),
+      innerJoin(
+        educationGrades,
+        educationGrades.id.equalsExp(books.educationGradeId),
+      ),
     ]);
-    
+
     if (search != null && search.isNotEmpty) {
       query.where(books.title.contains(search) | books.author.contains(search));
     }
-    
+
     if (groupId != null) {
       query.where(books.bookGroupId.equals(groupId));
     }
-    
+
     if (gradeIds != null && gradeIds.isNotEmpty) {
       query.where(books.educationGradeId.isIn(gradeIds));
     }
@@ -72,8 +86,8 @@ extension BookDatabaseExtension on AppDatabase {
           expression: sortBy == 'pages'
               ? books.totalPages
               : (sortBy == 'size'
-                  ? books.size
-                  : (sortBy == 'version' ? books.versionId : books.title)),
+                    ? books.size
+                    : (sortBy == 'version' ? books.versionId : books.title)),
           mode: descending ? OrderingMode.desc : OrderingMode.asc,
         ),
       ]);
@@ -92,6 +106,25 @@ extension BookDatabaseExtension on AppDatabase {
 
   // --- Metadata Stream Helpers ---
   Stream<List<Category>> watchCategories() => select(categories).watch();
+  Stream<List<Category>> watchCategoriesWithGroups() {
+    final query =
+        select(categories).join([
+            innerJoin(
+              bookGroups,
+              bookGroups.categoryId.equalsExp(categories.id),
+            ),
+          ])
+          ..where(
+            bookGroups.status.equals(ContentStatus.published.name) &
+                bookGroups.bookTotal.isBiggerThan(const Constant(0)),
+          )
+          ..groupBy([categories.id]);
+
+    return query.watch().map((rows) {
+      return rows.map((row) => row.readTable(categories)).toList();
+    });
+  }
+
   Stream<List<EducationGrade>> watchGrades() => select(educationGrades).watch();
   Stream<List<BookGroup>> watchGroups({int? categoryId}) {
     final query = select(bookGroups);
@@ -102,11 +135,15 @@ extension BookDatabaseExtension on AppDatabase {
   }
 
   Stream<List<EducationGrade>> watchGradesByGroup(int groupId) {
-    final query = select(educationGrades).join([
-      innerJoin(books, books.educationGradeId.equalsExp(educationGrades.id)),
-    ])
-      ..where(books.bookGroupId.equals(groupId))
-      ..groupBy([educationGrades.id]);
+    final query =
+        select(educationGrades).join([
+            innerJoin(
+              books,
+              books.educationGradeId.equalsExp(educationGrades.id),
+            ),
+          ])
+          ..where(books.bookGroupId.equals(groupId))
+          ..groupBy([educationGrades.id]);
 
     return query.watch().map((rows) {
       return rows.map((row) => row.readTable(educationGrades)).toList();

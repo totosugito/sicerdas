@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:drift/drift.dart' as drift;
 import '../../../l10n/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../core/database/database.dart';
 import '../../../core/providers/database_provider.dart';
+import '../../../core/providers/books_provider.dart';
 import 'widgets/book_list_item.dart';
 import 'widgets/filter_bar.dart';
 
@@ -57,20 +57,7 @@ final groupGradesProvider = StreamProvider.family<List<EducationGrade>, int>((
   return ref.watch(databaseProvider).watchGradesByGroup(groupId);
 });
 
-final latestBookVersionIdProvider = StreamProvider<int?>((ref) {
-  final db = ref.watch(databaseProvider);
-  return (db.select(db.appVersions)
-        ..where((t) => t.dataType.equals('book') & t.status.equals('published'))
-        ..orderBy([
-          (t) => drift.OrderingTerm(
-            expression: t.id,
-            mode: drift.OrderingMode.desc,
-          ),
-        ])
-        ..limit(1))
-      .watch()
-      .map((list) => list.firstOrNull?.id);
-});
+
 
 final groupBooksProvider = StreamProvider.family<List<BookWithMetadata>, int>((
   ref,

@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 import 'tables.dart';
 
 export 'book_database.dart';
+export 'tables.dart';
 
 part 'database.g.dart';
 
@@ -35,9 +36,9 @@ class AppDatabase extends _$AppDatabase {
     return into(appVersions).insertOnConflictUpdate(version);
   }
 
-  Future<AppVersion?> getLatestVersion(String dataType) {
+  Future<AppVersion?> getLatestVersion(ContentType dataType) {
     return (select(appVersions)
-          ..where((t) => t.dataType.equals(dataType))
+          ..where((t) => t.dataType.equals(dataType.name))
           ..orderBy([(t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc)])
           ..limit(1))
         .getSingleOrNull();

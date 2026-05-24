@@ -7,7 +7,7 @@ import { educationGrades } from "../../db/schema/education/index.ts";
 import { bookCategory } from "../../db/schema/book/category.ts";
 import { bookGroupStats } from "../../db/schema/book/group-stats.ts";
 import { db } from "../../db/db-pool.ts";
-import { and, gt, eq, asc } from "drizzle-orm";
+import { and, gt, eq, asc, sql } from "drizzle-orm";
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import { EnumContentStatus } from "../../db/schema/enum/enum-app.ts";
@@ -53,6 +53,7 @@ const GroupItem = Type.Object({
   name: Type.String(),
   shortName: Type.String(),
   desc: Type.Union([Type.String(), Type.Null()]),
+  status: Type.String(),
   bookTotal: Type.Union([Type.Number(), Type.Null()]),
 });
 
@@ -229,7 +230,8 @@ export default async function appLatestRoute(app: FastifyInstance) {
             name: bookGroup.name,
             shortName: bookGroup.shortName,
             desc: bookGroup.desc,
-            bookTotal: bookGroupStats.bookTotal,
+            status: bookGroup.status,
+            bookTotal: sql<number>`coalesce(${bookGroupStats.bookTotal}, 0)`.mapWith(Number),
           })
           .from(bookGroup)
           .leftJoin(bookGroupStats, eq(bookGroupStats.bookGroupId, bookGroup.id))

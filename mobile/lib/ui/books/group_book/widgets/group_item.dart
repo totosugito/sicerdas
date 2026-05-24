@@ -1,36 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../../core/database/database.dart';
+import '../../../../core/providers/books_provider.dart';
 import '../../group_detail/group_detail_screen.dart';
+import '../../../widgets/new_badge.dart';
 
 class GroupItem extends StatelessWidget {
-  final BookGroup group;
-  final int itemIndex;
+  final BookGroupWithMetadata group;
+  final Color color;
 
-  const GroupItem({super.key, required this.group, required this.itemIndex});
-
-  static final List<Color> _itemColors = [
-    const Color(0xFF6366F1), // Indigo
-    const Color(0xFFF59E0B), // Amber
-    const Color(0xFFEC4899), // Rose
-    const Color(0xFF10B981), // Emerald
-    const Color(0xFF3B82F6), // Blue
-    const Color(0xFF8B5CF6), // Violet
-    const Color(0xFFF43F5E), // Rose
-    const Color(0xFF06B6D4), // Cyan
-  ];
+  const GroupItem({super.key, required this.group, required this.color});
 
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final color = _itemColors[itemIndex % _itemColors.length];
+    final isNew = group.isNew;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => GroupDetailScreen(group: group)));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => GroupDetailScreen(group: group.group)));
         },
         borderRadius: BorderRadius.circular(12),
         child: Container(
@@ -54,7 +44,24 @@ class GroupItem extends StatelessWidget {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Text(group.name, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))],
+                  children: [
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          if (isNew) ...[
+                            const WidgetSpan(
+                              alignment: PlaceholderAlignment.middle,
+                              child: NewBadge(),
+                            ),
+                          ],
+                          TextSpan(
+                            text: group.group.name,
+                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Container(
@@ -66,7 +73,7 @@ class GroupItem extends StatelessWidget {
                   border: Border.all(color: color.withValues(alpha: 0.2)),
                 ),
                 child: Text(
-                  '${group.bookTotal ?? 0}',
+                  '${group.group.bookTotal ?? 0}',
                   style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: color),
                 ),
               ),

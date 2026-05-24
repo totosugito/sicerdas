@@ -120,6 +120,10 @@ class VersionService {
             shortName: g['shortName'],
             desc: g['desc'],
             bookTotal: g['bookTotal'],
+            status: ContentStatus.values.firstWhere(
+              (e) => e.name == g['status'],
+              orElse: () => ContentStatus.published,
+            ),
           )).toList());
         }
 
@@ -130,8 +134,14 @@ class VersionService {
               id: vJson['id'],
               appVersion: vJson['appVersion'],
               dbVersion: vJson['dbVersion'],
-              dataType: vJson['dataType'],
-              status: vJson['status'],
+              dataType: ContentType.values.firstWhere(
+                (e) => e.name == vJson['dataType'],
+                orElse: () => ContentType.other,
+              ),
+              status: ContentStatus.values.firstWhere(
+                (e) => e.name == vJson['status'],
+                orElse: () => ContentStatus.published,
+              ),
               name: vJson['name'] ?? '',
               htmlNote: vJson['htmlNote'] ?? '',
               extra: (vJson['extra'] ?? {}).toString(), 
@@ -153,7 +163,10 @@ class VersionService {
               publishedYear: b['publishedYear'],
               totalPages: b['totalPages'] ?? 0,
               size: b['size'] ?? 0,
-              status: b['status'],
+              status: ContentStatus.values.firstWhere(
+                (e) => e.name == b['status'],
+                orElse: () => ContentStatus.published,
+              ),
               bookGroupId: b['bookGroupId'],
               educationGradeId: b['educationGradeId'],
             )).toList();

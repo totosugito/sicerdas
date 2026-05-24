@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:drift/drift.dart';
 import '../database/database.dart';
 import 'database_provider.dart';
+import 'settings_provider.dart';
 
 class BooksFilter {
   final String search;
@@ -71,6 +73,10 @@ final categoriesProvider = StreamProvider<List<Category>>((ref) {
   return ref.watch(databaseProvider).watchCategories();
 });
 
+final categoriesWithGroupsProvider = StreamProvider<List<Category>>((ref) {
+  return ref.watch(databaseProvider).watchCategoriesWithGroups();
+});
+
 final gradesProvider = StreamProvider<List<EducationGrade>>((ref) {
   return ref.watch(databaseProvider).watchGrades();
 });
@@ -80,7 +86,94 @@ final groupsProvider = StreamProvider<List<BookGroup>>((ref) {
   return ref.watch(databaseProvider).watchGroups(categoryId: filter.categoryId);
 });
 
-final allGroupsProvider = StreamProvider<List<BookGroup>>((ref) {
+class BookGroupWithMetadata {
+  final BookGroup group;
+  final bool isNew;
+
+  BookGroupWithMetadata({
+    required this.group,
+    this.isNew = false,
+  });
+}
+
+final latestBookVersionIdProvider = StreamProvider<int?>((ref) {
   final db = ref.watch(databaseProvider);
-  return (db.select(db.bookGroups)).watch();
+  return (db.select(db.appVersions)
+        ..where((t) => t.dataType.equals(ContentType.book.name) & t.status.equals(ContentStatus.published.name))
+        ..orderBy([
+          (t) => OrderingTerm(
+            expression: t.id,
+            mode: OrderingMode.desc,
+          ),
+        ])
+        ..limit(1))
+      .watch()
+      .map((list) => list.firstOrNull?.id);
+});
+
+final allGroupsProvider = StreamProvider<List<BookGroupWithMetadata>>((ref) {
+  final db = ref.watch(databaseProvider);
+  final latestVersionId = ref.watch(latestBookVersionIdProvider).value;
+
+  final groupsStream = (db.select(db.bookGroups)
+        ..where((t) =>
+            t.status.equals(ContentStatus.published.name) &
+            t.bookTotal.isBiggerThan(Constant(0))))
+      .watch();
+
+  return groupsStream.map((groups) {
+    return groups.map((g) {
+      return BookGroupWithMetadata(
+        group: g,
+        isNew: latestVersionId != null && g.versionId == latestVersionId,
+      );
+    }).toList();
+  });
+});
+
+class GroupBookExpandAllNotifier extends Notifier<bool> {
+  static const _key = 'expand_all_groups';
+
+  @override
+  bool build() {
+    final prefs = ref.watch(sharedPreferencesProvider);
+    return prefs.getBool(_key) ?? true;
+  }
+
+  void toggle() {
+    final newValue = !state;
+    state = newValue;
+    ref.read(sharedPreferencesProvider).setBool(_key, newValue);
+  }
+
+  void setExpanded(bool value) {
+    state = value;
+    ref.read(sharedPreferencesProvider).setBool(_key, value);
+  }
+}
+
+final groupBookExpandAllProvider = NotifierProvider<GroupBookExpandAllNotifier, bool>(() {
+  return GroupBookExpandAllNotifier();
+});
+
+class CategoryExpansionNotifier extends Notifier<Map<int, bool>> {
+  @override
+  Map<int, bool> build() {
+    return {};
+  }
+
+  void setExpanded(int categoryId, bool isExpanded) {
+    state = {
+      ...state,
+      categoryId: isExpanded,
+    };
+  }
+
+  void resetAll() {
+    state = {};
+  }
+}
+
+final categoryExpansionProvider = NotifierProvider.autoDispose<CategoryExpansionNotifier, Map<int, bool>>(() {
+  return CategoryExpansionNotifier();
 });
