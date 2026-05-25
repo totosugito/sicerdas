@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -7,7 +8,6 @@ import '../../../../core/utils/book_utils.dart';
 import '../../../../core/providers/settings_provider.dart';
 import '../../../../l10n/gen_l10n/app_localizations.dart';
 
-
 class BookDetailSheet extends ConsumerWidget {
   final BookWithMetadata item;
 
@@ -16,7 +16,6 @@ class BookDetailSheet extends ConsumerWidget {
   Book get book => item.book;
   Category get category => item.category;
   EducationGrade get grade => item.grade;
-
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -216,8 +215,6 @@ class BookDetailSheet extends ConsumerWidget {
               ),
             ),
           ),
-
-
         ],
       ),
     );
@@ -296,6 +293,17 @@ class BookDetailSheet extends ConsumerWidget {
     AppLocalizations l10n,
     bool isDark,
   ) {
+    final localSizeFuture = Future(() async {
+      try {
+        final filePath = await book.getLocalFileName();
+        final file = File(filePath);
+        if (await file.exists()) {
+          return await file.length();
+        }
+      } catch (_) {}
+      return null;
+    });
+
     return Column(
       children: [
         Row(
@@ -309,11 +317,20 @@ class BookDetailSheet extends ConsumerWidget {
               ),
             ),
             Expanded(
-              child: _buildInfoItem(
-                l10n.fileSizeLabel,
-                BookUtils.formatFileSize(book.size),
-                Icons.storage_outlined,
-                isDark,
+              child: FutureBuilder<int?>(
+                future: localSizeFuture,
+                builder: (context, snapshot) {
+                  final localSize = snapshot.data;
+                  final sizeText = localSize != null
+                      ? '${BookUtils.formatFileSize(localSize)} / ${BookUtils.formatFileSize(book.size)}'
+                      : BookUtils.formatFileSize(book.size);
+                  return _buildInfoItem(
+                    l10n.fileSizeLabel,
+                    sizeText,
+                    Icons.storage_outlined,
+                    isDark,
+                  );
+                },
               ),
             ),
           ],

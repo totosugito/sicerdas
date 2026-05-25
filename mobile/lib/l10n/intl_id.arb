@@ -20,6 +20,18 @@
   "badgeNew": "NEW",
   "navHome": "Beranda",
   "navBooks": "Buku",
+  "library": "Perpustakaan",
+  "booksCount": "{count, plural, =1{{countText} buku} other{{countText} buku}}",
+  "@booksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
   "navDictionary": "Kamus",
   "navProfile": "Profil",
   "settings": "Pengaturan",
@@ -31,8 +43,8 @@
   "dark": "Gelap",
   "language": "Bahasa",
   "selectLanguage": "Pilih Bahasa",
-  "indonesian": "Bahasa Indonesia",
-  "english": "Bahasa Inggris",
+  "indonesian": "Indonesia",
+  "english": "Inggris",
   "offlineMessage": "Anda sedang offline. Beberapa fitur mungkin terbatas.",
   "accountSettings": "Pengaturan Akun",
   "helpSupport": "Bantuan & Dukungan",
@@ -51,7 +63,7 @@
   "latestBooks": "Buku Terbaru",
   "aboutSection": "Informasi",
   "appVersion": "Versi Aplikasi",
-  "madeBy": "Dibuat dengan ❤️ oleh Sicerdas",
+  "madeBy": "Dibuat dengan ❤️ oleh SiCerdas.com",
   "syncPreparingData": "Menyiapkan Data...",
   "syncWaitMessage": "Mohon tunggu sebentar selagi kami menyiapkan koleksi buku untuk Anda.",
   "syncConnectionRequired": "Koneksi Diperlukan",

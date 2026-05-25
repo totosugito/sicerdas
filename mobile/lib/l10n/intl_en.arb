@@ -20,6 +20,18 @@
   "badgeNew": "NEW",
   "navHome": "Home",
   "navBooks": "Books",
+  "library": "Library",
+  "booksCount": "{count, plural, =1{{countText} book} other{{countText} books}}",
+  "@booksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
   "navDictionary": "Dictionary",
   "navProfile": "Profile",
   "settings": "Settings",
@@ -51,7 +63,7 @@
   "latestBooks": "Latest Books",
   "aboutSection": "Information",
   "appVersion": "App Version",
-  "madeBy": "Made with ❤️ by Sicerdas",
+  "madeBy": "Made with ❤️ by SiCerdas.com",
   "syncPreparingData": "Preparing Data...",
   "syncWaitMessage": "Please wait a moment while we prepare our book collection for you.",
   "syncConnectionRequired": "Connection Required",

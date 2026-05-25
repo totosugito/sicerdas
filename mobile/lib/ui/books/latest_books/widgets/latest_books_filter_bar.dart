@@ -3,25 +3,24 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../group_detail_screen.dart';
+import '../latest_books_screen.dart';
 import '../../../../core/database/database.dart';
 
-class FilterBar extends ConsumerStatefulWidget {
-  final int groupId;
-  const FilterBar({super.key, required this.groupId});
+class LatestBooksFilterBar extends ConsumerStatefulWidget {
+  const LatestBooksFilterBar({super.key});
 
   @override
-  ConsumerState<FilterBar> createState() => _FilterBarState();
+  ConsumerState<LatestBooksFilterBar> createState() => _LatestBooksFilterBarState();
 }
 
-class _FilterBarState extends ConsumerState<FilterBar> {
+class _LatestBooksFilterBarState extends ConsumerState<LatestBooksFilterBar> {
   late final TextEditingController _controller;
   Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-    final filter = ref.read(groupDetailFilterProvider);
+    final filter = ref.read(latestBooksFilterProvider);
     _controller = TextEditingController(text: filter.search);
   }
 
@@ -35,7 +34,7 @@ class _FilterBarState extends ConsumerState<FilterBar> {
   void _clearSearch() {
     _controller.clear();
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    ref.read(groupDetailFilterProvider.notifier).updateSearch('');
+    ref.read(latestBooksFilterProvider.notifier).updateSearch('');
     setState(() {});
   }
 
@@ -44,7 +43,7 @@ class _FilterBarState extends ConsumerState<FilterBar> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _FilterSheet(groupId: widget.groupId),
+      builder: (context) => const _FilterSheet(),
     );
   }
 
@@ -54,15 +53,14 @@ class _FilterBarState extends ConsumerState<FilterBar> {
     final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
 
-    // Listen for filter changes from elsewhere (e.g. clear all in sheet) and sync controller
-    ref.listen<GroupDetailFilter>(groupDetailFilterProvider, (previous, next) {
+    ref.listen<LatestBooksFilter>(latestBooksFilterProvider, (previous, next) {
       if (next.search != _controller.text) {
         _controller.text = next.search;
-        setState(() {}); // Rebuild to update clear button visibility
+        setState(() {});
       }
     });
 
-    final filter = ref.watch(groupDetailFilterProvider);
+    final filter = ref.watch(latestBooksFilterProvider);
     final activeFilters =
         (filter.gradeIds.isNotEmpty ? 1 : 0) +
         (filter.sortBy != 'version' ? 1 : 0) +
@@ -106,13 +104,11 @@ class _FilterBarState extends ConsumerState<FilterBar> {
                     )
                   : null,
               onChanged: (val) {
-                setState(
-                  () {},
-                ); // Rebuild to update clear button visibility immediately
+                setState(() {});
                 if (_debounce?.isActive ?? false) _debounce!.cancel();
                 _debounce = Timer(const Duration(milliseconds: 400), () {
                   ref
-                      .read(groupDetailFilterProvider.notifier)
+                      .read(latestBooksFilterProvider.notifier)
                       .updateSearch(val);
                 });
               },
@@ -149,34 +145,31 @@ class _FilterBarState extends ConsumerState<FilterBar> {
 }
 
 class _FilterSheet extends ConsumerStatefulWidget {
-  final int groupId;
-  const _FilterSheet({required this.groupId});
+  const _FilterSheet();
 
   @override
   ConsumerState<_FilterSheet> createState() => _FilterSheetState();
 }
 
 class _FilterSheetState extends ConsumerState<_FilterSheet> {
-  late GroupDetailFilter pendingFilter;
+  late LatestBooksFilter pendingFilter;
 
   @override
   void initState() {
     super.initState();
-    pendingFilter = ref.read(groupDetailFilterProvider);
+    pendingFilter = ref.read(latestBooksFilterProvider);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final gradesAsync = ref.watch(groupGradesProvider(widget.groupId));
+    final gradesAsync = ref.watch(latestBooksGradesProvider);
 
-    // Automatically clear invalid grades from filters (both pending and global)
-    ref.listen(groupGradesProvider(widget.groupId), (previous, next) {
+    ref.listen(latestBooksGradesProvider, (previous, next) {
       if (next is AsyncData<List<EducationGrade>>) {
         final availableIds = next.value.map((e) => e.id).toSet();
 
-        // 1. Clean pending filter (local to sheet)
         final validPendingIds = pendingFilter.gradeIds
             .where((id) => availableIds.contains(id))
             .toList();
@@ -186,14 +179,13 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
           });
         }
 
-        // 2. Clean global filter (affects background list)
-        final globalFilter = ref.read(groupDetailFilterProvider);
+        final globalFilter = ref.read(latestBooksFilterProvider);
         final validGlobalIds = globalFilter.gradeIds
             .where((id) => availableIds.contains(id))
             .toList();
         if (validGlobalIds.length != globalFilter.gradeIds.length) {
           ref
-              .read(groupDetailFilterProvider.notifier)
+              .read(latestBooksFilterProvider.notifier)
               .updateAll(globalFilter.copyWith(gradeIds: validGlobalIds));
         }
       }
@@ -242,7 +234,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      pendingFilter = GroupDetailFilter(
+                      pendingFilter = LatestBooksFilter(
                         search: pendingFilter.search,
                       );
                     });
@@ -253,7 +245,6 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
           ),
           const SizedBox(height: 24),
 
-          // Grade Filter (Multi-select)
           Text(
             l10n.filterGrade,
             style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold),
@@ -305,7 +296,6 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
 
           const SizedBox(height: 24),
 
-          // Sort By
           Text(
             l10n.sortBy,
             style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold),
@@ -365,7 +355,6 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
 
           const SizedBox(height: 24),
 
-          // Order Toggle
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -403,7 +392,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
             width: double.infinity,
             onPressed: () {
               ref
-                  .read(groupDetailFilterProvider.notifier)
+                  .read(latestBooksFilterProvider.notifier)
                   .updateAll(pendingFilter);
               Navigator.pop(context);
             },

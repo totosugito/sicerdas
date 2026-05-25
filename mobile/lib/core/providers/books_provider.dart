@@ -214,3 +214,27 @@ class DownloadedBookIdsNotifier extends AsyncNotifier<Set<int>> {
 final downloadedBookIdsProvider = AsyncNotifierProvider<DownloadedBookIdsNotifier, Set<int>>(() {
   return DownloadedBookIdsNotifier();
 });
+
+enum BooksViewType { grid, list }
+
+class BooksViewTypeNotifier extends Notifier<BooksViewType> {
+  static const _key = 'books_view_type';
+
+  @override
+  BooksViewType build() {
+    final prefs = ref.watch(sharedPreferencesProvider);
+    final isList = prefs.getBool(_key) ?? false;
+    return isList ? BooksViewType.list : BooksViewType.grid;
+  }
+
+  void toggle() {
+    final next = state == BooksViewType.grid ? BooksViewType.list : BooksViewType.grid;
+    state = next;
+    ref.read(sharedPreferencesProvider).setBool(_key, next == BooksViewType.list);
+  }
+}
+
+final booksViewTypeProvider = NotifierProvider<BooksViewTypeNotifier, BooksViewType>(() {
+  return BooksViewTypeNotifier();
+});
+

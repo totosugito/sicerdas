@@ -57,6 +57,7 @@ extension BookDatabaseExtension on AppDatabase {
     int? groupId,
     List<int>? groupIds,
     List<int>? gradeIds,
+    int? versionId,
     String? sortBy, // title, pages, size, version
     bool descending = false,
   }) {
@@ -83,6 +84,10 @@ extension BookDatabaseExtension on AppDatabase {
 
     if (gradeIds != null && gradeIds.isNotEmpty) {
       query.where(books.educationGradeId.isIn(gradeIds));
+    }
+
+    if (versionId != null) {
+      query.where(books.versionId.equals(versionId));
     }
 
     if (sortBy != null) {

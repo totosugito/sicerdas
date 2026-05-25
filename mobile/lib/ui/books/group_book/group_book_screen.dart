@@ -4,6 +4,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../core/providers/books_provider.dart';
 import '../../../l10n/gen_l10n/app_localizations.dart';
 import 'widgets/category_card.dart';
+import '../latest_books/latest_books_screen.dart';
 
 class GroupBookScreen extends ConsumerWidget {
   const GroupBookScreen({super.key});
@@ -15,11 +16,46 @@ class GroupBookScreen extends ConsumerWidget {
     final allGroupsAsync = ref.watch(allGroupsProvider);
     final expandAll = ref.watch(groupBookExpandAllProvider);
 
+    final totalBookCount = allGroupsAsync.value?.fold<int>(
+      0,
+      (sum, g) => sum + (g.group.bookTotal ?? 0),
+    );
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          l10n.browseGroups,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        title: Text.rich(
+          TextSpan(
+            text: l10n.browseGroups,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            children: [
+              if (totalBookCount != null) ...[
+                const WidgetSpan(child: SizedBox(width: 8)),
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: ShadTheme.of(context).colorScheme.muted,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      l10n.booksCount(totalBookCount, '$totalBookCount'),
+                      style: ShadTheme.of(context).textTheme.small.copyWith(
+                        color: ShadTheme.of(
+                          context,
+                        ).colorScheme.mutedForeground,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -46,9 +82,125 @@ class GroupBookScreen extends ConsumerWidget {
 
             return ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              itemCount: categories.length,
+              itemCount: categories.length + 1,
               itemBuilder: (context, index) {
-                final category = categories[index];
+                if (index == 0) {
+                  final theme = ShadTheme.of(context);
+                  final isDark = theme.brightness == Brightness.dark;
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LatestBooksScreen(),
+                          ),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: isDark
+                                ? [
+                                    theme.colorScheme.primary.withValues(
+                                      alpha: 0.15,
+                                    ),
+                                    theme.colorScheme.primary.withValues(
+                                      alpha: 0.05,
+                                    ),
+                                  ]
+                                : [
+                                    theme.colorScheme.primary.withValues(
+                                      alpha: 0.08,
+                                    ),
+                                    theme.colorScheme.primary.withValues(
+                                      alpha: 0.03,
+                                    ),
+                                  ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: theme.colorScheme.primary.withValues(
+                              alpha: 0.25,
+                            ),
+                            width: 1.2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.colorScheme.primary.withValues(
+                                alpha: isDark ? 0.0 : 0.05,
+                              ),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.primary.withValues(
+                                  alpha: 0.15,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.star_rounded,
+                                color: theme.colorScheme.primary,
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    l10n.latestBooks,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w800,
+                                      color: isDark
+                                          ? Colors.white
+                                          : theme.colorScheme.primary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    l10n.seeAll,
+                                    style: theme.textTheme.muted.copyWith(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 16,
+                              color: theme.colorScheme.primary.withValues(
+                                alpha: 0.7,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                final category = categories[index - 1];
                 final categoryGroups = groups
                     .where((g) => g.group.categoryId == category.id)
                     .toList();
@@ -56,16 +208,65 @@ class GroupBookScreen extends ConsumerWidget {
                 return CategoryCard(
                   category: category,
                   groups: categoryGroups,
-                  index: index,
+                  index: index - 1,
                 );
               },
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, _) => Center(child: Text('Error: $err')),
+          error: (err, _) =>
+              _buildErrorView(context, l10n.errorLoadingGroups, err.toString()),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => _buildErrorView(
+          context,
+          l10n.errorLoadingCategories,
+          err.toString(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorView(BuildContext context, String message, String details) {
+    final theme = ShadTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              size: 48,
+              color: theme.colorScheme.destructive,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.errorTitle,
+              style: theme.textTheme.large.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              message,
+              style: theme.textTheme.muted,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              details,
+              style: theme.textTheme.small.copyWith(
+                color: theme.colorScheme.mutedForeground.withValues(alpha: 0.7),
+                fontSize: 11,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
   }

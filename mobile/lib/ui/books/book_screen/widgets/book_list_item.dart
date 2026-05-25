@@ -182,49 +182,36 @@ class BookListItem extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Modern 2:3 Thumbnail directly (no backing plate)
-                GestureDetector(
-                  onTap: () => _showBookDetail(context),
-                  behavior: HitTestBehavior.opaque,
-                  child: _buildThumbnail(
-                    theme,
-                    isDark,
-                    thumbnailGradient,
-                    coverUrl,
-                  ),
-                ),
+                _buildThumbnail(theme, isDark, thumbnailGradient, coverUrl),
                 const SizedBox(width: 14),
                 // Content Column
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        onTap: () => _showBookDetail(context),
-                        behavior: HitTestBehavior.opaque,
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              if (item.isNew) ...[
-                                const WidgetSpan(
-                                  alignment: PlaceholderAlignment.middle,
-                                  child: NewBadge(),
-                                ),
-                              ],
-                              TextSpan(
-                                text: book.title,
-                                style: theme.textTheme.p.copyWith(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1.2,
-                                  letterSpacing: -0.3,
-                                  color: theme.colorScheme.foreground,
-                                ),
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            if (item.isNew) ...[
+                              const WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: NewBadge(),
                               ),
                             ],
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                            TextSpan(
+                              text: book.title,
+                              style: theme.textTheme.p.copyWith(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                height: 1.2,
+                                letterSpacing: -0.3,
+                                color: theme.colorScheme.foreground,
+                              ),
+                            ),
+                          ],
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 3),
                       Text(
@@ -257,8 +244,36 @@ class BookListItem extends ConsumerWidget {
                               : const Color(0xFF64748B),
                         ),
                       ),
+                      const SizedBox(height: 6),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildMetaItem(
+                            Icons.auto_stories_outlined,
+                            l10n.pagesCount(book.totalPages),
+                            theme,
+                            isDark,
+                          ),
+                          const SizedBox(width: 12),
+                          _buildMetaItem(
+                            Icons.storage_outlined,
+                            BookUtils.formatFileSize(book.size),
+                            theme,
+                            isDark,
+                          ),
+                          if (book.publishedYear.isNotEmpty) ...[
+                            const SizedBox(width: 12),
+                            _buildMetaItem(
+                              Icons.calendar_today_outlined,
+                              book.publishedYear,
+                              theme,
+                              isDark,
+                            ),
+                          ],
+                        ],
+                      ),
                       const SizedBox(height: 8),
-                      // Modernized Metadata & Actions
+                      // Modernized Actions
                       _buildFooter(context, ref, theme, l10n, isDark),
                     ],
                   ),
@@ -278,8 +293,8 @@ class BookListItem extends ConsumerWidget {
     String imageUrl,
   ) {
     return Container(
-      width: 60,
-      height: 90, // Clean 2:3 Aspect Ratio for direct book cover artwork
+      width: 76,
+      height: 114, // Clean 2:3 Aspect Ratio for direct book cover artwork
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
         boxShadow: [
@@ -389,65 +404,44 @@ class BookListItem extends ConsumerWidget {
     final downloadedIds = ref.watch(downloadedBookIdsProvider).value ?? {};
     final isDownloaded = downloadedIds.contains(book.bookId);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildMetaItem(
-              Icons.auto_stories_outlined,
-              l10n.pagesCount(book.totalPages),
-              theme,
-              isDark,
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildActionButton(
+            icon: Icons.info_outline_rounded,
+            color: isDark
+                ? theme.colorScheme.foreground.withValues(alpha: 0.85)
+                : const Color(0xFF64748B),
+            onPressed: () => _showBookDetail(context),
+          ),
+          const SizedBox(width: 14),
+          if (isDownloaded) ...[
+            _buildActionButton(
+              icon: Icons.menu_book_outlined,
+              color: isDark
+                  ? theme.colorScheme.foreground.withValues(alpha: 0.85)
+                  : const Color(0xFF64748B),
+              onPressed: () => _readBook(context),
             ),
-            const SizedBox(width: 12),
-            _buildMetaItem(
-              Icons.storage_outlined,
-              BookUtils.formatFileSize(book.size),
-              theme,
-              isDark,
+            const SizedBox(width: 14),
+            _buildActionButton(
+              icon: Icons.delete_outline,
+              color: theme.colorScheme.destructive,
+              onPressed: () => _deleteBook(context, ref),
             ),
-            if (book.publishedYear.isNotEmpty) ...[
-              const SizedBox(width: 12),
-              _buildMetaItem(
-                Icons.calendar_today_outlined,
-                book.publishedYear,
-                theme,
-                isDark,
-              ),
-            ],
+          ] else ...[
+            _buildActionButton(
+              icon: Icons.file_download_outlined,
+              color: isDark
+                  ? theme.colorScheme.foreground.withValues(alpha: 0.85)
+                  : const Color(0xFF64748B),
+              onPressed: () => _downloadBook(context, ref),
+            ),
           ],
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (isDownloaded) ...[
-              _buildActionButton(
-                icon: Icons.menu_book_outlined,
-                color: isDark
-                    ? theme.colorScheme.foreground.withValues(alpha: 0.85)
-                    : const Color(0xFF64748B),
-                onPressed: () => _readBook(context),
-              ),
-              const SizedBox(width: 14),
-              _buildActionButton(
-                icon: Icons.delete_outline,
-                color: theme.colorScheme.destructive,
-                onPressed: () => _deleteBook(context, ref),
-              ),
-            ] else ...[
-              _buildActionButton(
-                icon: Icons.file_download_outlined,
-                color: isDark
-                    ? theme.colorScheme.foreground.withValues(alpha: 0.85)
-                    : const Color(0xFF64748B),
-                onPressed: () => _downloadBook(context, ref),
-              ),
-            ],
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 

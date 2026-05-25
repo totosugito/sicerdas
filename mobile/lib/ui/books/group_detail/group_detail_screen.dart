@@ -5,7 +5,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../core/database/database.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/books_provider.dart';
-import 'widgets/book_list_item.dart';
+import '../book_screen/widgets/book_list_item.dart';
 import 'widgets/filter_bar.dart';
 
 // Local state for GroupDetail filtering

@@ -28,50 +28,78 @@ class ConfirmationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return ShadDialog(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 320),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
+      useSafeArea: false,
+      constraints: const BoxConstraints(maxWidth: 340),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color:
+                  (isDestructive
+                          ? theme.colorScheme.destructive
+                          : theme.colorScheme.primary)
+                      .withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
               icon,
-              size: 32,
-              color: iconColor ?? (isDestructive ? theme.colorScheme.destructive : theme.colorScheme.primary),
+              size: 28,
+              color:
+                  iconColor ??
+                  (isDestructive
+                      ? theme.colorScheme.destructive
+                      : theme.colorScheme.primary),
             ),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w700),
-              textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            title,
+            style: theme.textTheme.large.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
             ),
-            const SizedBox(height: 8),
-            descriptionWidget ?? Text(
-              description ?? '',
-              style: theme.textTheme.muted.copyWith(fontSize: 14),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            isDestructive
-                ? ShadButton.destructive(
-                    width: double.infinity,
-                    onPressed: onConfirm,
-                    child: Text(confirmLabel),
-                  )
-                : ShadButton(
-                    width: double.infinity,
-                    onPressed: onConfirm,
-                    child: Text(confirmLabel),
-                  ),
-            const SizedBox(height: 4),
-            ShadButton.ghost(
-              width: double.infinity,
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(cancelLabel ?? 'Cancel'),
-            ),
-          ],
-        ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          descriptionWidget ??
+              Text(
+                description ?? '',
+                style: theme.textTheme.muted.copyWith(
+                  fontSize: 14,
+                  color: isDark ? Colors.white70 : Colors.black54,
+                ),
+                textAlign: TextAlign.center,
+              ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Expanded(
+                child: ShadButton.outline(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(cancelLabel ?? 'Cancel'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: isDestructive
+                    ? ShadButton.destructive(
+                        onPressed: onConfirm,
+                        child: Text(confirmLabel),
+                      )
+                    : ShadButton(
+                        onPressed: onConfirm,
+                        child: Text(confirmLabel),
+                      ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

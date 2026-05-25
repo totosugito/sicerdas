@@ -10,18 +10,25 @@ import '../../../../core/utils/toast_utils.dart';
 import '../../../../l10n/gen_l10n/app_localizations.dart';
 import '../../../widgets/confirmation_dialog.dart';
 import '../../../pdf_viewer/pdf_viewer_screen.dart';
+import 'book_detail_sheet.dart';
 
 class BookItem extends ConsumerWidget {
   final BookWithMetadata item;
 
-  const BookItem({
-    super.key,
-    required this.item,
-  });
+  const BookItem({super.key, required this.item});
 
   Book get book => item.book;
   Category get category => item.category;
   EducationGrade get grade => item.grade;
+
+  void _showBookDetail(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => BookDetailSheet(item: item),
+    );
+  }
 
   Future<void> _readBook(BuildContext context) async {
     final filePath = await book.getLocalFileName();
@@ -80,6 +87,7 @@ class BookItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final cloudUrl = ref.watch(cloudUrlProvider);
     final coverUrl = BookUtils.getBookCoverUrl(
       baseUrl: cloudUrl,
@@ -148,14 +156,60 @@ class BookItem extends ConsumerWidget {
                           width: 1,
                         ),
                       ),
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        icon: Icon(
-                          Icons.delete_outline,
-                          color: theme.colorScheme.destructive,
-                          size: 18,
+                      child: ClipOval(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: PopupMenuButton<String>(
+                            padding: EdgeInsets.zero,
+                            icon: Icon(
+                              Icons.more_vert_rounded,
+                              color: theme.colorScheme.foreground,
+                              size: 18,
+                            ),
+                            onSelected: (value) {
+                              if (value == 'info') {
+                                _showBookDetail(context);
+                              } else if (value == 'delete') {
+                                _deleteBook(context, ref);
+                              }
+                            },
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 'info',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.info_outline_rounded,
+                                      size: 18,
+                                      color: theme.colorScheme.foreground,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(l10n.detailInformation),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.delete_outline_rounded,
+                                      size: 18,
+                                      color: theme.colorScheme.destructive,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      l10n.deleteAction,
+                                      style: TextStyle(
+                                        color: theme.colorScheme.destructive,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        onPressed: () => _deleteBook(context, ref),
                       ),
                     ),
                   ),
@@ -163,26 +217,14 @@ class BookItem extends ConsumerWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    book.title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.small.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    book.author ?? '',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.muted,
-                  ),
-                ],
+              padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12.0),
+              child: Text(
+                book.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.small.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],

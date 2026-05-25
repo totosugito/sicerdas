@@ -25,6 +25,7 @@ class SettingsScreen extends ConsumerWidget {
             _buildSectionTitle(context, l10n.appearance),
             const SizedBox(height: 12),
             ShadCard(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Column(
                 children: [
                   _buildSettingItem(
@@ -36,7 +37,9 @@ class SettingsScreen extends ConsumerWidget {
                       initialValue: settings.themeMode,
                       onChanged: (value) {
                         if (value != null) {
-                          ref.read(settingsProvider.notifier).setThemeMode(value);
+                          ref
+                              .read(settingsProvider.notifier)
+                              .setThemeMode(value);
                         }
                       },
                       selectedOptionBuilder: (context, value) {
@@ -50,9 +53,18 @@ class SettingsScreen extends ConsumerWidget {
                         }
                       },
                       options: [
-                        ShadOption(value: ThemeMode.system, child: Text(l10n.system)),
-                        ShadOption(value: ThemeMode.light, child: Text(l10n.light)),
-                        ShadOption(value: ThemeMode.dark, child: Text(l10n.dark)),
+                        ShadOption(
+                          value: ThemeMode.system,
+                          child: Text(l10n.system),
+                        ),
+                        ShadOption(
+                          value: ThemeMode.light,
+                          child: Text(l10n.light),
+                        ),
+                        ShadOption(
+                          value: ThemeMode.dark,
+                          child: Text(l10n.dark),
+                        ),
                       ],
                     ),
                   ),
@@ -70,11 +82,37 @@ class SettingsScreen extends ConsumerWidget {
                         }
                       },
                       selectedOptionBuilder: (context, value) {
-                        return Text(value.languageCode == 'id' ? l10n.indonesian : l10n.english);
+                        final isId = value.languageCode == 'id';
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(isId ? '🇮🇩' : '🇬🇧'),
+                            const SizedBox(width: 8),
+                            Text(isId ? l10n.indonesian : l10n.english),
+                          ],
+                        );
                       },
                       options: [
-                        ShadOption(value: const Locale('id'), child: Text(l10n.indonesian)),
-                        ShadOption(value: const Locale('en'), child: Text(l10n.english)),
+                        ShadOption(
+                          value: const Locale('id'),
+                          child: Row(
+                            children: [
+                              const Text('🇮🇩'),
+                              const SizedBox(width: 8),
+                              Text(l10n.indonesian),
+                            ],
+                          ),
+                        ),
+                        ShadOption(
+                          value: const Locale('en'),
+                          child: Row(
+                            children: [
+                              const Text('🇬🇧'),
+                              const SizedBox(width: 8),
+                              Text(l10n.english),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -88,16 +126,24 @@ class SettingsScreen extends ConsumerWidget {
             _buildSectionTitle(context, l10n.aboutSection),
             const SizedBox(height: 12),
             ShadCard(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Column(
                 children: [
                   _buildSettingItem(
                     context,
                     icon: LucideIcons.info,
                     title: l10n.appVersion,
-                    trailing: const Text("1.0.0", style: TextStyle(color: Colors.grey)),
+                    trailing: const Text(
+                      "1.0.0",
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ),
                   const Divider(height: 1),
-                  _buildSettingItem(context, icon: LucideIcons.heart, title: l10n.madeBy),
+                  _buildSettingItem(
+                    context,
+                    icon: LucideIcons.heart,
+                    title: l10n.madeBy,
+                  ),
                 ],
               ),
             ),
@@ -105,9 +151,14 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 32),
 
             // Danger Zone Section
-            _buildSectionTitle(context, l10n.settingsDangerZone, isDanger: true),
+            _buildSectionTitle(
+              context,
+              l10n.settingsDangerZone,
+              isDanger: true,
+            ),
             const SizedBox(height: 12),
             ShadCard(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Column(
                 children: [
                   _buildSettingItem(
@@ -130,7 +181,7 @@ class SettingsScreen extends ConsumerWidget {
 
   void _showResetConfirmation(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     ConfirmationDialog.show(
       context,
       icon: LucideIcons.triangleAlert,
@@ -146,26 +197,30 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title, {bool isDanger = false}) {
+  Widget _buildSectionTitle(
+    BuildContext context,
+    String title, {
+    bool isDanger = false,
+  }) {
     final theme = ShadTheme.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 4.0),
       child: Text(
-        title.toUpperCase(), 
+        title.toUpperCase(),
         style: theme.textTheme.muted.copyWith(
-          fontSize: 12, 
-          fontWeight: FontWeight.w700, 
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
           letterSpacing: 1.2,
           color: isDanger ? theme.colorScheme.destructive : null,
-        )
+        ),
       ),
     );
   }
 
   Widget _buildSettingItem(
     BuildContext context, {
-    required IconData icon, 
-    required String title, 
+    required IconData icon,
+    required String title,
     String? subtitle,
     Widget? trailing,
     bool isDanger = false,
@@ -175,14 +230,17 @@ class SettingsScreen extends ConsumerWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 52),
+        padding: const EdgeInsets.symmetric(vertical: 6.0),
         child: Row(
           children: [
             Icon(
-              icon, 
-              color: isDanger ? theme.colorScheme.destructive : theme.colorScheme.primary, 
-              size: 20
+              icon,
+              color: isDanger
+                  ? theme.colorScheme.destructive
+                  : theme.colorScheme.primary,
+              size: 20,
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -190,12 +248,12 @@ class SettingsScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title, 
+                    title,
                     style: TextStyle(
-                      fontWeight: FontWeight.w500, 
+                      fontWeight: FontWeight.w500,
                       fontSize: 15,
                       color: isDanger ? theme.colorScheme.destructive : null,
-                    )
+                    ),
                   ),
                   if (subtitle != null)
                     Text(
