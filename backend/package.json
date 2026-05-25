@@ -18,16 +18,16 @@
   },
   "type": "module",
   "scripts": {
-    "start": "pnpm build && cross-env NODE_ENV=production node dist/server.js",
-    "dev": "cross-env NODE_ENV=development node --watch src/server.ts | pino-pretty --colorize",
+    "start": "bun run build && cross-env NODE_ENV=production bun dist/server.js",
+    "dev": "cross-env NODE_ENV=development bun --watch src/server.ts | pino-pretty --colorize",
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:drop": "drizzle-kit drop",
     "db:push_dev": "cross-env NODE_ENV=development drizzle-kit push",
-    "db:init_all": "cross-env NODE_ENV=development ts-node src/scripts/init/run-inital-data.ts --trace-warnings",
-    "db:schedule": "cross-env NODE_ENV=development ts-node src/scripts/schedule/daily/daily.ts --trace-warnings",
-    "db:init_user": "cross-env NODE_ENV=development ts-node src/scripts/init/jobs/init-user.ts --trace-warnings"
+    "db:init_all": "cross-env NODE_ENV=development bun src/scripts/init/run-inital-data.ts --trace-warnings",
+    "db:schedule": "cross-env NODE_ENV=development bun src/scripts/schedule/daily/daily.ts --trace-warnings",
+    "db:init_user": "cross-env NODE_ENV=development bun src/scripts/init/jobs/init-user.ts --trace-warnings"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1053.0",

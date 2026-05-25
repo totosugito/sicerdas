@@ -9,42 +9,35 @@ import '../utils/book_utils.dart';
 
 class BooksFilter {
   final String search;
-  final int? groupId;
-  final List<int>? gradeIds;
-  final int? categoryId;
+  final List<int>? groupIds;
 
   final String? sortBy;
   final bool descending;
 
   BooksFilter({
     this.search = '',
-    this.groupId,
-    this.gradeIds,
-    this.categoryId,
+    this.groupIds,
     this.sortBy,
     this.descending = false,
   });
 
   BooksFilter copyWith({
     String? search,
-    int? groupId,
-    List<int>? gradeIds,
-    int? categoryId,
+    List<int>? groupIds,
     String? sortBy,
     bool? descending,
+    bool clearGroupIds = false,
   }) {
     return BooksFilter(
       search: search ?? this.search,
-      groupId: groupId ?? this.groupId,
-      gradeIds: gradeIds ?? this.gradeIds,
-      categoryId: categoryId ?? this.categoryId,
+      groupIds: clearGroupIds ? null : (groupIds ?? this.groupIds),
       sortBy: sortBy ?? this.sortBy,
       descending: descending ?? this.descending,
     );
   }
 
   BooksFilter clearFilters() {
-    return BooksFilter(search: search, groupId: groupId);
+    return BooksFilter(search: search, groupIds: groupIds);
   }
 }
 
@@ -65,8 +58,7 @@ final filteredBooksProvider = StreamProvider<List<BookWithMetadata>>((ref) {
 
   return db.watchFilteredBooks(
     search: filter.search,
-    groupId: filter.groupId,
-    gradeIds: filter.gradeIds,
+    groupIds: filter.groupIds,
     sortBy: filter.sortBy,
     descending: filter.descending,
   );
@@ -84,9 +76,13 @@ final gradesProvider = StreamProvider<List<EducationGrade>>((ref) {
   return ref.watch(databaseProvider).watchGrades();
 });
 
-final groupsProvider = StreamProvider<List<BookGroup>>((ref) {
-  final filter = ref.watch(booksFilterProvider);
-  return ref.watch(databaseProvider).watchGroups(categoryId: filter.categoryId);
+
+
+
+final localGroupsProvider = StreamProvider<List<BookGroup>>((ref) {
+  final downloadedIds = ref.watch(downloadedBookIdsProvider).value ?? {};
+  final db = ref.watch(databaseProvider);
+  return db.watchGroupsForBookIds(downloadedIds.toList());
 });
 
 class BookGroupWithMetadata {

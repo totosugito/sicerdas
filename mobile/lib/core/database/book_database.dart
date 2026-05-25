@@ -55,6 +55,7 @@ extension BookDatabaseExtension on AppDatabase {
   Stream<List<BookWithMetadata>> watchFilteredBooks({
     String? search,
     int? groupId,
+    List<int>? groupIds,
     List<int>? gradeIds,
     String? sortBy, // title, pages, size, version
     bool descending = false,
@@ -74,6 +75,10 @@ extension BookDatabaseExtension on AppDatabase {
 
     if (groupId != null) {
       query.where(books.bookGroupId.equals(groupId));
+    }
+
+    if (groupIds != null && groupIds.isNotEmpty) {
+      query.where(books.bookGroupId.isIn(groupIds));
     }
 
     if (gradeIds != null && gradeIds.isNotEmpty) {
@@ -149,6 +154,29 @@ extension BookDatabaseExtension on AppDatabase {
       return rows.map((row) => row.readTable(educationGrades)).toList();
     });
   }
+
+
+
+  Stream<List<BookGroup>> watchGroupsForBookIds(List<int> bookIds, {int? categoryId}) {
+    if (bookIds.isEmpty) {
+      return Stream.value([]);
+    }
+    final query = select(bookGroups).join([
+      innerJoin(books, books.bookGroupId.equalsExp(bookGroups.id)),
+    ])..where(books.bookId.isIn(bookIds));
+    
+    if (categoryId != null) {
+      query.where(bookGroups.categoryId.equals(categoryId));
+    }
+    
+    query.groupBy([bookGroups.id]);
+
+    return query.watch().map((rows) {
+      return rows.map((row) => row.readTable(bookGroups)).toList();
+    });
+  }
+
+
 }
 
 class BookWithMetadata {
