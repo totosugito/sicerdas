@@ -5,6 +5,8 @@ import '../../../core/providers/books_provider.dart';
 import '../../../l10n/gen_l10n/app_localizations.dart';
 import 'widgets/category_card.dart';
 import '../latest_books/latest_books_screen.dart';
+import '../../widgets/error_view.dart';
+import '../../widgets/loading_view.dart';
 
 class GroupBookScreen extends ConsumerWidget {
   const GroupBookScreen({super.key});
@@ -15,6 +17,7 @@ class GroupBookScreen extends ConsumerWidget {
     final categoriesAsync = ref.watch(categoriesWithGroupsProvider);
     final allGroupsAsync = ref.watch(allGroupsProvider);
     final expandAll = ref.watch(groupBookExpandAllProvider);
+    final latestBooksAsync = ref.watch(unfilteredLatestBooksStreamProvider);
 
     final totalBookCount = allGroupsAsync.value?.fold<int>(
       0,
@@ -80,11 +83,15 @@ class GroupBookScreen extends ConsumerWidget {
               return Center(child: Text(l10n.noCategoriesFound));
             }
 
+            final showLatest =
+                latestBooksAsync.value != null &&
+                latestBooksAsync.value!.isNotEmpty;
+
             return ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              itemCount: categories.length + 1,
+              itemCount: categories.length + (showLatest ? 1 : 0),
               itemBuilder: (context, index) {
-                if (index == 0) {
+                if (showLatest && index == 0) {
                   final theme = ShadTheme.of(context);
                   final isDark = theme.brightness == Brightness.dark;
 
@@ -186,6 +193,36 @@ class GroupBookScreen extends ConsumerWidget {
                                 ],
                               ),
                             ),
+                            latestBooksAsync.when(
+                              data: (books) => Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 4,
+                                ),
+                                margin: const EdgeInsets.only(right: 8),
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.primary.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: theme.colorScheme.primary.withValues(
+                                      alpha: 0.2,
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  '${books.length}',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w800,
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                              loading: () => const SizedBox(),
+                              error: (_, _) => const SizedBox(),
+                            ),
                             Icon(
                               Icons.arrow_forward_ios_rounded,
                               size: 16,
@@ -200,7 +237,8 @@ class GroupBookScreen extends ConsumerWidget {
                   );
                 }
 
-                final category = categories[index - 1];
+                final categoryIndex = showLatest ? index - 1 : index;
+                final category = categories[categoryIndex];
                 final categoryGroups = groups
                     .where((g) => g.group.categoryId == category.id)
                     .toList();
@@ -208,64 +246,21 @@ class GroupBookScreen extends ConsumerWidget {
                 return CategoryCard(
                   category: category,
                   groups: categoryGroups,
-                  index: index - 1,
+                  index: categoryIndex,
                 );
               },
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, _) =>
-              _buildErrorView(context, l10n.errorLoadingGroups, err.toString()),
+          loading: () => const LoadingView(),
+          error: (err, _) => ErrorView(
+            message: l10n.errorLoadingGroups,
+            details: err.toString(),
+          ),
         ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => _buildErrorView(
-          context,
-          l10n.errorLoadingCategories,
-          err.toString(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildErrorView(BuildContext context, String message, String details) {
-    final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline_rounded,
-              size: 48,
-              color: theme.colorScheme.destructive,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.errorTitle,
-              style: theme.textTheme.large.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              message,
-              style: theme.textTheme.muted,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              details,
-              style: theme.textTheme.small.copyWith(
-                color: theme.colorScheme.mutedForeground.withValues(alpha: 0.7),
-                fontSize: 11,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+        loading: () => const LoadingView(),
+        error: (err, _) => ErrorView(
+          message: l10n.errorLoadingCategories,
+          details: err.toString(),
         ),
       ),
     );

@@ -28,6 +28,7 @@ class HomeScreen extends ConsumerWidget {
               const QuickAccessGrid(),
               const SizedBox(height: 16),
               const LatestBooksSection(),
+              const SizedBox(height: 6),
             ],
           ),
         ),

@@ -8,6 +8,8 @@ import '../../../../core/providers/database_provider.dart';
 import '../../../../core/providers/books_provider.dart';
 import '../book_screen/widgets/book_list_item.dart';
 import 'widgets/latest_books_filter_bar.dart';
+import '../../widgets/error_view.dart';
+import '../../widgets/loading_view.dart';
 
 class LatestBooksFilter {
   final String search;
@@ -17,8 +19,8 @@ class LatestBooksFilter {
 
   LatestBooksFilter({
     this.search = '',
-    this.sortBy = 'version',
-    this.descending = true,
+    this.sortBy = 'title',
+    this.descending = false,
     this.gradeIds = const [],
   });
 
@@ -55,11 +57,15 @@ final latestBooksGradesProvider = StreamProvider<List<EducationGrade>>((ref) {
   final latestVersion = ref.watch(latestBookVersionIdProvider).value;
   if (latestVersion == null) return Stream.value([]);
 
-  final query = db.select(db.educationGrades).join([
-    innerJoin(db.books, db.books.educationGradeId.equalsExp(db.educationGrades.id)),
-  ])
-    ..where(db.books.versionId.equals(latestVersion))
-    ..groupBy([db.educationGrades.id]);
+  final query =
+      db.select(db.educationGrades).join([
+          innerJoin(
+            db.books,
+            db.books.educationGradeId.equalsExp(db.educationGrades.id),
+          ),
+        ])
+        ..where(db.books.versionId.equals(latestVersion))
+        ..groupBy([db.educationGrades.id]);
 
   return query.watch().map((rows) {
     return rows.map((row) => row.readTable(db.educationGrades)).toList();
@@ -85,6 +91,15 @@ final latestBooksStreamProvider = StreamProvider<List<BookWithMetadata>>((ref) {
       });
 });
 
+final unfilteredLatestBooksStreamProvider =
+    StreamProvider<List<BookWithMetadata>>((ref) {
+      final db = ref.watch(databaseProvider);
+      final latestVersion = ref.watch(latestBookVersionIdProvider).value;
+      if (latestVersion == null) return Stream.value([]);
+
+      return db.watchFilteredBooks(versionId: latestVersion);
+    });
+
 class LatestBooksScreen extends ConsumerWidget {
   const LatestBooksScreen({super.key});
 
@@ -92,6 +107,7 @@ class LatestBooksScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
     final booksAsync = ref.watch(latestBooksStreamProvider);
+    final unfilteredAsync = ref.watch(unfilteredLatestBooksStreamProvider);
     final l10n = AppLocalizations.of(context)!;
 
     ref.listen(latestBooksGradesProvider, (previous, next) {
@@ -121,6 +137,42 @@ class LatestBooksScreen extends ConsumerWidget {
             letterSpacing: -0.5,
           ),
         ),
+        actions: [
+          booksAsync.when(
+            data: (books) {
+              final totalCount = unfilteredAsync.value?.length ?? books.length;
+              return Container(
+                margin: const EdgeInsets.only(right: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.2),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${books.length} / $totalCount',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+            loading: () => const SizedBox.shrink(),
+            error: (err, stack) => const SizedBox.shrink(),
+          ),
+        ],
         centerTitle: false,
         elevation: 0,
         backgroundColor: theme.colorScheme.background,
@@ -145,10 +197,7 @@ class LatestBooksScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        Text(
-                          l10n.noBooksFound,
-                          style: theme.textTheme.muted,
-                        ),
+                        Text(l10n.noBooksFound, style: theme.textTheme.muted),
                       ],
                     ),
                   );
@@ -167,8 +216,11 @@ class LatestBooksScreen extends ConsumerWidget {
                   ),
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, _) => Center(child: Text('Error: $err')),
+              loading: () => const LoadingView(),
+              error: (err, _) => ErrorView(
+                message: l10n.errorGeneric,
+                details: err.toString(),
+              ),
             ),
           ),
         ],

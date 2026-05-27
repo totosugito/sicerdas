@@ -93,142 +93,130 @@ class BookItem extends ConsumerWidget {
       baseUrl: cloudUrl,
       bookId: book.bookId,
     );
+    final isDark = theme.brightness == Brightness.dark;
+    final coverBgColor = isDark ? Colors.grey[850]! : Colors.grey[200]!;
 
     return GestureDetector(
       onTap: () => _readBook(context),
-      child: ShadCard(
-        padding: EdgeInsets.zero,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(8),
-                      ),
-                      child: coverUrl.isEmpty
-                          ? Container(
-                              color: theme.colorScheme.muted,
-                              child: Center(
-                                child: Icon(
-                                  Icons.book,
-                                  size: 48,
-                                  color: theme.colorScheme.mutedForeground,
-                                ),
-                              ),
-                            )
-                          : CachedNetworkImage(
-                              imageUrl: coverUrl,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => Container(
-                                color: theme.colorScheme.muted,
-                                child: const Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => Container(
-                                color: theme.colorScheme.muted,
-                                child: Center(
-                                  child: Icon(
-                                    Icons.broken_image_rounded,
-                                    size: 48,
-                                    color: theme.colorScheme.mutedForeground,
-                                  ),
-                                ),
-                              ),
-                            ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.popover.withValues(alpha: 0.9),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: theme.colorScheme.border,
-                          width: 1,
-                        ),
-                      ),
-                      child: ClipOval(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: PopupMenuButton<String>(
-                            padding: EdgeInsets.zero,
-                            icon: Icon(
-                              Icons.more_vert_rounded,
-                              color: theme.colorScheme.foreground,
-                              size: 18,
-                            ),
-                            onSelected: (value) {
-                              if (value == 'info') {
-                                _showBookDetail(context);
-                              } else if (value == 'delete') {
-                                _deleteBook(context, ref);
-                              }
-                            },
-                            itemBuilder: (context) => [
-                              PopupMenuItem(
-                                value: 'info',
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.info_outline_rounded,
-                                      size: 18,
-                                      color: theme.colorScheme.foreground,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(l10n.detailInformation),
-                                  ],
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 'delete',
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.delete_outline_rounded,
-                                      size: 18,
-                                      color: theme.colorScheme.destructive,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      l10n.deleteAction,
-                                      style: TextStyle(
-                                        color: theme.colorScheme.destructive,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: coverUrl.isEmpty
+                    ? Container(
+                        color: coverBgColor,
+                        child: Center(
+                          child: Icon(
+                            Icons.book,
+                            size: 48,
+                            color: theme.colorScheme.mutedForeground,
+                          ),
+                        ),
+                      )
+                    : CachedNetworkImage(
+                        imageUrl: coverUrl,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: isDark ? Colors.grey[850] : Colors.grey[100],
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: coverBgColor,
+                          child: Center(
+                            child: Icon(
+                              Icons.broken_image_rounded,
+                              size: 48,
+                              color: theme.colorScheme.mutedForeground,
+                            ),
+                          ),
+                        ),
+                      ),
+              ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12.0),
-              child: Text(
-                book.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.small.copyWith(
-                  fontWeight: FontWeight.bold,
+          ),
+          Positioned(
+            top: 8,
+            right: 8,
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.popover.withValues(alpha: 0.9),
+                shape: BoxShape.circle,
+                border: Border.all(color: theme.colorScheme.border, width: 1),
+              ),
+              child: ClipOval(
+                child: Material(
+                  color: Colors.transparent,
+                  child: PopupMenuButton<String>(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(
+                      Icons.more_vert_rounded,
+                      color: theme.colorScheme.foreground,
+                      size: 18,
+                    ),
+                    onSelected: (value) {
+                      if (value == 'info') {
+                        _showBookDetail(context);
+                      } else if (value == 'delete') {
+                        _deleteBook(context, ref);
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: 'info',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.info_outline_rounded,
+                              size: 18,
+                              color: theme.colorScheme.foreground,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(l10n.detailInformation),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.delete_outline_rounded,
+                              size: 18,
+                              color: theme.colorScheme.destructive,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              l10n.deleteAction,
+                              style: TextStyle(
+                                color: theme.colorScheme.destructive,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

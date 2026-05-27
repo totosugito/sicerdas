@@ -4,6 +4,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../../core/providers/books_provider.dart';
 import '../../../../core/database/database.dart';
 import '../../../../l10n/gen_l10n/app_localizations.dart';
+import '../../../widgets/loading_view.dart';
 
 class FilterSheet extends ConsumerStatefulWidget {
   const FilterSheet({super.key});
@@ -29,6 +30,9 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
     final groupsAsync = ref.watch(localGroupsProvider);
 
     return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+      ),
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).padding.bottom + 16,
         top: 12,
@@ -39,78 +43,110 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          // Drag handle at top
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.border,
-                borderRadius: BorderRadius.circular(2),
+          SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Drag handle at top
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.border,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Sheet Title
+                Text(
+                  l10n.filterTitle,
+                  style: theme.textTheme.h4.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.foreground,
+                  ),
+                ),
+                const SizedBox(height: 24),
+    
+                // Group Filter
+                Text(
+                  l10n.filterGroup,
+                  style: theme.textTheme.large.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: theme.colorScheme.foreground,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                groupsAsync.when(
+                  data: (items) {
+                    final sortedItems = List<BookGroup>.from(items)
+                      ..sort((a, b) => a.name.compareTo(b.name));
+                    return _FilterChipsMultiselect<int>(
+                      items: sortedItems.map((e) => e.id).toList(),
+                      labels: sortedItems.map((e) => e.name).toList(),
+                      selectedValues: _localGroupIds ?? [],
+                      onSelectedChanged: (vals) {
+                        setState(() {
+                          _localGroupIds = vals.isEmpty ? null : vals;
+                        });
+                      },
+                    );
+                  },
+                  loading: () => const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: LoadingView(size: 24),
+                  ),
+                  error: (_, _) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(
+                      l10n.errorLoadingGroups,
+                      style: theme.textTheme.muted.copyWith(
+                        color: theme.colorScheme.destructive,
+                      ),
+                    ),
+                  ),
+                ),
+    
+                const SizedBox(height: 24),
+                ShadButton(
+                  width: double.infinity,
+                  onPressed: () {
+                    ref
+                        .read(booksFilterProvider.notifier)
+                        .update(
+                          (state) => state.copyWith(
+                            groupIds: _localGroupIds,
+                            clearGroupIds: _localGroupIds == null,
+                          ),
+                        );
+                    Navigator.pop(context);
+                  },
+                  child: Text(l10n.filterApply),
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: ShadButton.ghost(
+              width: 32,
+              height: 32,
+              padding: EdgeInsets.zero,
+              onPressed: () => Navigator.pop(context),
+              child: Icon(
+                Icons.close_rounded,
+                size: 20,
+                color: theme.colorScheme.mutedForeground,
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          // Sheet Title
-          Text(
-            l10n.filterTitle,
-            style: theme.textTheme.h4.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.colorScheme.foreground,
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // Group Filter
-          Text(
-            l10n.filterGroup,
-            style: theme.textTheme.large.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-              color: theme.colorScheme.foreground,
-            ),
-          ),
-          const SizedBox(height: 12),
-          groupsAsync.when(
-            data: (items) {
-              final sortedItems = List<BookGroup>.from(items)
-                ..sort((a, b) => a.name.compareTo(b.name));
-              return _FilterChipsMultiselect<int>(
-                items: sortedItems.map((e) => e.id).toList(),
-                labels: sortedItems.map((e) => e.name).toList(),
-                selectedValues: _localGroupIds ?? [],
-                onSelectedChanged: (vals) {
-                  setState(() {
-                    _localGroupIds = vals.isEmpty ? null : vals;
-                  });
-                },
-              );
-            },
-            loading: () => const LinearProgressIndicator(),
-            error: (_, _) => Text(l10n.errorLoadingGroups),
-          ),
-
-          const SizedBox(height: 24),
-          ShadButton(
-            width: double.infinity,
-            onPressed: () {
-              ref
-                  .read(booksFilterProvider.notifier)
-                  .update(
-                    (state) => state.copyWith(
-                      groupIds: _localGroupIds,
-                      clearGroupIds: _localGroupIds == null,
-                    ),
-                  );
-              Navigator.pop(context);
-            },
-            child: Text(l10n.filterApply),
-          ),
-          const SizedBox(height: 16),
         ],
       ),
     );

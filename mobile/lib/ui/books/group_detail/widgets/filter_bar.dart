@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../group_detail_screen.dart';
 import '../../../../core/database/database.dart';
+import '../../../widgets/loading_view.dart';
 
 class FilterBar extends ConsumerStatefulWidget {
   final int groupId;
@@ -200,6 +201,9 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
     });
 
     return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+      ),
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).padding.bottom + 24,
         top: 12,
@@ -217,197 +221,242 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
           ),
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.border,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(l10n.filterTitle, style: theme.textTheme.h4),
-              if (pendingFilter.gradeIds.isNotEmpty ||
-                  pendingFilter.sortBy != 'version' ||
-                  !pendingFilter.descending)
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      pendingFilter = GroupDetailFilter(
-                        search: pendingFilter.search,
-                      );
-                    });
-                  },
-                  child: Text(l10n.filterClearAll),
-                ),
-            ],
-          ),
-          const SizedBox(height: 24),
-
-          // Grade Filter (Multi-select)
-          Text(
-            l10n.filterGrade,
-            style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-          gradesAsync.when(
-            data: (grades) {
-              return Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _FilterToggleChip(
-                    label: l10n.seeAll,
-                    selected: pendingFilter.gradeIds.isEmpty,
-                    onTap: () {
-                      setState(() {
-                        pendingFilter = pendingFilter.copyWith(gradeIds: []);
-                      });
-                    },
+          SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.border,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
-                  ...grades.map((grade) {
-                    final isSelected = pendingFilter.gradeIds.contains(
-                      grade.id,
-                    );
-                    return _FilterToggleChip(
-                      label: grade.name,
-                      selected: isSelected,
-                      onTap: () {
-                        setState(() {
-                          final newIds = List<int>.from(pendingFilter.gradeIds);
-                          if (isSelected) {
-                            newIds.remove(grade.id);
-                          } else {
-                            newIds.add(grade.id);
-                          }
-                          pendingFilter = pendingFilter.copyWith(
-                            gradeIds: newIds,
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(l10n.filterTitle, style: theme.textTheme.h4),
+                    if (pendingFilter.gradeIds.isNotEmpty ||
+                        pendingFilter.sortBy != 'version' ||
+                        !pendingFilter.descending)
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            pendingFilter = GroupDetailFilter(
+                              search: pendingFilter.search,
+                            );
+                          });
+                        },
+                        child: Text(l10n.filterClearAll),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+
+                // Grade Filter (Multi-select)
+                Text(
+                  l10n.filterGrade,
+                  style: theme.textTheme.small.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                gradesAsync.when(
+                  data: (grades) {
+                    return Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _FilterToggleChip(
+                          label: l10n.seeAll,
+                          selected: pendingFilter.gradeIds.isEmpty,
+                          onTap: () {
+                            setState(() {
+                              pendingFilter = pendingFilter.copyWith(
+                                gradeIds: [],
+                              );
+                            });
+                          },
+                        ),
+                        ...grades.map((grade) {
+                          final isSelected = pendingFilter.gradeIds.contains(
+                            grade.id,
                           );
-                        });
-                      },
+                          return _FilterToggleChip(
+                            label: grade.name,
+                            selected: isSelected,
+                            onTap: () {
+                              setState(() {
+                                final newIds = List<int>.from(
+                                  pendingFilter.gradeIds,
+                                );
+                                if (isSelected) {
+                                  newIds.remove(grade.id);
+                                } else {
+                                  newIds.add(grade.id);
+                                }
+                                pendingFilter = pendingFilter.copyWith(
+                                  gradeIds: newIds,
+                                );
+                              });
+                            },
+                          );
+                        }),
+                      ],
                     );
-                  }),
-                ],
-              );
-            },
-            loading: () => const LinearProgressIndicator(),
-            error: (err, stack) => Text('Error: $err'),
-          ),
-
-          const SizedBox(height: 24),
-
-          // Sort By
-          Text(
-            l10n.sortBy,
-            style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              _SortChip(
-                label: l10n.sortByVersion,
-                icon: Icons.update_rounded,
-                selected: pendingFilter.sortBy == 'version',
-                onTap: () => setState(
-                  () =>
-                      pendingFilter = pendingFilter.copyWith(sortBy: 'version'),
-                ),
-              ),
-              _SortChip(
-                label: l10n.sortByTitle,
-                icon: Icons.sort_by_alpha_rounded,
-                selected: pendingFilter.sortBy == 'title',
-                onTap: () => setState(
-                  () => pendingFilter = pendingFilter.copyWith(sortBy: 'title'),
-                ),
-              ),
-              _SortChip(
-                label: l10n.sortByYear,
-                icon: Icons.calendar_today_rounded,
-                selected: pendingFilter.sortBy == 'publishedYear',
-                onTap: () => setState(
-                  () => pendingFilter = pendingFilter.copyWith(
-                    sortBy: 'publishedYear',
+                  },
+                  loading: () => const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: LoadingView(size: 24),
                   ),
-                ),
-              ),
-              _SortChip(
-                label: l10n.sortByPages,
-                icon: Icons.auto_stories_rounded,
-                selected: pendingFilter.sortBy == 'totalPages',
-                onTap: () => setState(
-                  () => pendingFilter = pendingFilter.copyWith(
-                    sortBy: 'totalPages',
-                  ),
-                ),
-              ),
-              _SortChip(
-                label: l10n.sortBySize,
-                icon: Icons.storage_rounded,
-                selected: pendingFilter.sortBy == 'size',
-                onTap: () => setState(
-                  () => pendingFilter = pendingFilter.copyWith(sortBy: 'size'),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 24),
-
-          // Order Toggle
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                l10n.orderLabel,
-                style: theme.textTheme.small.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Row(
-                children: [
-                  Text(
-                    pendingFilter.descending
-                        ? l10n.orderDescending
-                        : l10n.orderAscending,
-                    style: theme.textTheme.muted.copyWith(fontSize: 12),
-                  ),
-                  const SizedBox(width: 12),
-                  Switch(
-                    value: pendingFilter.descending,
-                    onChanged: (val) => setState(
-                      () => pendingFilter = pendingFilter.copyWith(
-                        descending: val,
+                  error: (err, stack) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(
+                      '${l10n.errorGeneric}: $err',
+                      style: theme.textTheme.muted.copyWith(
+                        color: theme.colorScheme.destructive,
                       ),
                     ),
-                    activeTrackColor: theme.colorScheme.primary,
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
 
-          const SizedBox(height: 24),
-          ShadButton(
-            width: double.infinity,
-            onPressed: () {
-              ref
-                  .read(groupDetailFilterProvider.notifier)
-                  .updateAll(pendingFilter);
-              Navigator.pop(context);
-            },
-            child: Text(l10n.filterApply),
+                const SizedBox(height: 24),
+
+                // Sort By
+                Text(
+                  l10n.sortBy,
+                  style: theme.textTheme.small.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _SortChip(
+                      label: l10n.sortByVersion,
+                      icon: Icons.update_rounded,
+                      selected: pendingFilter.sortBy == 'version',
+                      onTap: () => setState(
+                        () => pendingFilter = pendingFilter.copyWith(
+                          sortBy: 'version',
+                        ),
+                      ),
+                    ),
+                    _SortChip(
+                      label: l10n.sortByTitle,
+                      icon: Icons.sort_by_alpha_rounded,
+                      selected: pendingFilter.sortBy == 'title',
+                      onTap: () => setState(
+                        () => pendingFilter = pendingFilter.copyWith(
+                          sortBy: 'title',
+                        ),
+                      ),
+                    ),
+                    _SortChip(
+                      label: l10n.sortByYear,
+                      icon: Icons.calendar_today_rounded,
+                      selected: pendingFilter.sortBy == 'publishedYear',
+                      onTap: () => setState(
+                        () => pendingFilter = pendingFilter.copyWith(
+                          sortBy: 'publishedYear',
+                        ),
+                      ),
+                    ),
+                    _SortChip(
+                      label: l10n.sortByPages,
+                      icon: Icons.auto_stories_rounded,
+                      selected: pendingFilter.sortBy == 'totalPages',
+                      onTap: () => setState(
+                        () => pendingFilter = pendingFilter.copyWith(
+                          sortBy: 'totalPages',
+                        ),
+                      ),
+                    ),
+                    _SortChip(
+                      label: l10n.sortBySize,
+                      icon: Icons.storage_rounded,
+                      selected: pendingFilter.sortBy == 'size',
+                      onTap: () => setState(
+                        () => pendingFilter = pendingFilter.copyWith(
+                          sortBy: 'size',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+
+                // Order Toggle
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      l10n.orderLabel,
+                      style: theme.textTheme.small.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          pendingFilter.descending
+                              ? l10n.orderDescending
+                              : l10n.orderAscending,
+                          style: theme.textTheme.muted.copyWith(fontSize: 12),
+                        ),
+                        const SizedBox(width: 12),
+                        Switch(
+                          value: pendingFilter.descending,
+                          onChanged: (val) => setState(
+                            () => pendingFilter = pendingFilter.copyWith(
+                              descending: val,
+                            ),
+                          ),
+                          activeTrackColor: theme.colorScheme.primary,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+                ShadButton(
+                  width: double.infinity,
+                  onPressed: () {
+                    ref
+                        .read(groupDetailFilterProvider.notifier)
+                        .updateAll(pendingFilter);
+                    Navigator.pop(context);
+                  },
+                  child: Text(l10n.filterApply),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: ShadButton.ghost(
+              width: 32,
+              height: 32,
+              padding: EdgeInsets.zero,
+              onPressed: () => Navigator.pop(context),
+              child: Icon(
+                Icons.close_rounded,
+                size: 20,
+                color: theme.colorScheme.mutedForeground,
+              ),
+            ),
           ),
         ],
       ),

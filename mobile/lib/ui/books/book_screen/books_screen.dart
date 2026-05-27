@@ -9,6 +9,8 @@ import '../group_book/group_book_screen.dart';
 import 'widgets/book_item.dart';
 import 'widgets/filter_sheet.dart';
 import 'widgets/book_list_item.dart';
+import '../../widgets/error_view.dart';
+import '../../widgets/loading_view.dart';
 
 class BooksScreen extends ConsumerWidget {
   const BooksScreen({super.key});
@@ -20,6 +22,7 @@ class BooksScreen extends ConsumerWidget {
     final filter = ref.watch(booksFilterProvider);
     final downloadedIdsAsync = ref.watch(downloadedBookIdsProvider);
     final viewType = ref.watch(booksViewTypeProvider);
+    final theme = ShadTheme.of(context);
 
     final localBooksAsync = booksAsync.when(
       data: (books) => downloadedIdsAsync.when(
@@ -94,7 +97,7 @@ class BooksScreen extends ConsumerWidget {
                 ),
               );
             },
-            child: const Icon(Icons.add),
+            child: Icon(Icons.add, color: theme.colorScheme.mutedForeground),
           ),
           ShadButton.ghost(
             width: 40,
@@ -105,6 +108,7 @@ class BooksScreen extends ConsumerWidget {
               viewType == BooksViewType.grid
                   ? Icons.view_list_rounded
                   : Icons.grid_view_rounded,
+              color: theme.colorScheme.mutedForeground,
             ),
           ),
           ShadButton.ghost(
@@ -115,7 +119,10 @@ class BooksScreen extends ConsumerWidget {
             child: Badge(
               label: Text('${_countActiveFilters(filter)}'),
               isLabelVisible: _countActiveFilters(filter) > 0,
-              child: const Icon(Icons.filter_list),
+              child: Icon(
+                Icons.filter_list,
+                color: theme.colorScheme.mutedForeground,
+              ),
             ),
           ),
         ],
@@ -159,8 +166,8 @@ class BooksScreen extends ConsumerWidget {
                 }
                 return GridView.builder(
                   padding: const EdgeInsets.all(16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 180,
                     childAspectRatio: 0.7,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
@@ -172,9 +179,11 @@ class BooksScreen extends ConsumerWidget {
                   },
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) =>
-                  Center(child: Text('${l10n.errorTitle}: $err')),
+              loading: () => const LoadingView(),
+              error: (err, _) => ErrorView(
+                message: l10n.errorGeneric,
+                details: err.toString(),
+              ),
             ),
           ),
         ],
@@ -190,6 +199,7 @@ class BooksScreen extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) => const FilterSheet(),
     );
   }

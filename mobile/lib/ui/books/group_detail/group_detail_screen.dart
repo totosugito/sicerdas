@@ -8,6 +8,9 @@ import '../../../core/providers/books_provider.dart';
 import '../book_screen/widgets/book_list_item.dart';
 import 'widgets/filter_bar.dart';
 
+import '../../widgets/error_view.dart';
+import '../../widgets/loading_view.dart';
+
 // Local state for GroupDetail filtering
 class GroupDetailFilter {
   final String search;
@@ -212,8 +215,11 @@ class GroupDetailScreen extends ConsumerWidget {
                   ),
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, _) => Center(child: Text('Error: $err')),
+              loading: () => const LoadingView(),
+              error: (err, _) => ErrorView(
+                message: AppLocalizations.of(context)!.errorGeneric,
+                details: err.toString(),
+              ),
             ),
           ),
         ],

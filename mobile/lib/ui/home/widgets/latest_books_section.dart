@@ -1,38 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../l10n/gen_l10n/app_localizations.dart';
-import '../../widgets/new_badge.dart';
+import '../../../core/database/database.dart';
+import '../../../core/providers/database_provider.dart';
+import '../../../core/providers/books_provider.dart';
+import '../../../core/providers/settings_provider.dart';
+import '../../../core/utils/book_utils.dart';
+import '../../books/latest_books/latest_books_screen.dart';
+import '../../books/book_screen/widgets/book_detail_sheet.dart';
+import '../../widgets/error_view.dart';
+import '../../widgets/loading_view.dart';
 
-class LatestBooksSection extends StatelessWidget {
+final homeLatestBooksProvider = StreamProvider<List<BookWithMetadata>>((ref) {
+  final db = ref.watch(databaseProvider);
+  final latestVersion = ref.watch(latestBookVersionIdProvider).value;
+  if (latestVersion == null) return Stream.value([]);
+
+  return db.watchFilteredBooks(versionId: latestVersion).map((books) {
+    return books.take(10).map((b) => b.copyWith(isNew: true)).toList();
+  });
+});
+
+class LatestBooksSection extends ConsumerWidget {
   const LatestBooksSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final theme = ShadTheme.of(context);
-
-    // Mock data for demo
-    final books = [
-      {
-        'title': 'Fisika Modern',
-        'author': 'Dr. Santoso',
-        'image': 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=300',
-        'isNew': true,
-      },
-      {
-        'title': 'Sastra Indonesia',
-        'author': 'Budi Utomo',
-        'image': 'https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=300',
-        'isNew': true,
-      },
-      {
-        'title': 'Matematika Dasar',
-        'author': 'Prof. Ahmad',
-        'image': 'https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=300',
-        'isNew': false,
-      },
-    ];
+    final booksAsync = ref.watch(homeLatestBooksProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,12 +43,26 @@ class LatestBooksSection extends StatelessWidget {
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LatestBooksScreen(),
+                  ),
+                );
+              },
               child: Row(
                 children: [
-                  Text(l10n.seeAll, style: TextStyle(color: theme.colorScheme.primary)),
+                  Text(
+                    l10n.seeAll,
+                    style: TextStyle(color: theme.colorScheme.primary),
+                  ),
                   const SizedBox(width: 4),
-                  Icon(Icons.arrow_forward, size: 16, color: theme.colorScheme.primary),
+                  Icon(
+                    Icons.arrow_forward,
+                    size: 16,
+                    color: theme.colorScheme.primary,
+                  ),
                 ],
               ),
             ),
@@ -58,20 +70,42 @@ class LatestBooksSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 280,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: books.length,
-            itemBuilder: (context, index) {
-              final book = books[index];
-              return _BookCard(
-                title: book['title'] as String,
-                author: book['author'] as String,
-                imageUrl: book['image'] as String,
-                isNew: book['isNew'] as bool,
-                l10n: l10n,
+          height: 256,
+          child: booksAsync.when(
+            data: (books) {
+              if (books.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.library_books_rounded,
+                        size: 40,
+                        color: theme.colorScheme.mutedForeground.withValues(
+                          alpha: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(l10n.noBooksFound, style: theme.textTheme.muted),
+                    ],
+                  ),
+                );
+              }
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.only(bottom: 12, top: 4),
+                itemCount: books.length,
+                itemBuilder: (context, index) {
+                  final item = books[index];
+                  return _BookCard(item: item, l10n: l10n);
+                },
               );
             },
+            loading: () => const LoadingView(),
+            error: (err, _) => ErrorView(
+              message: l10n.errorGeneric,
+              details: err.toString(),
+            ),
           ),
         ),
       ],
@@ -79,81 +113,69 @@ class LatestBooksSection extends StatelessWidget {
   }
 }
 
-class _BookCard extends StatelessWidget {
-  final String title;
-  final String author;
-  final String imageUrl;
-  final bool isNew;
+class _BookCard extends ConsumerWidget {
+  final BookWithMetadata item;
   final AppLocalizations l10n;
 
-  const _BookCard({
-    required this.title,
-    required this.author,
-    required this.imageUrl,
-    required this.isNew,
-    required this.l10n,
-  });
+  const _BookCard({required this.item, required this.l10n});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 160,
-      margin: const EdgeInsets.only(right: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: CachedNetworkImage(
-                    imageUrl: imageUrl,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
-                    placeholder: (context, url) => Container(
-                      color: Colors.grey[200],
-                      child: const Center(child: CircularProgressIndicator()),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      color: Colors.grey[200],
-                      child: const Icon(Icons.book, color: Colors.grey),
-                    ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = ShadTheme.of(context);
+    final cloudUrl = ref.watch(cloudUrlProvider);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final coverUrl = BookUtils.getBookCoverUrl(
+      baseUrl: cloudUrl,
+      bookId: item.book.bookId,
+    );
+
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) => BookDetailSheet(item: item),
+        );
+      },
+      child: Container(
+        width: 160,
+        margin: const EdgeInsets.only(right: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: coverUrl.isEmpty
+              ? Container(
+                  color: isDark ? Colors.grey[850] : Colors.grey[200],
+                  child: const Center(
+                    child: Icon(Icons.book, color: Colors.grey),
+                  ),
+                )
+              : CachedNetworkImage(
+                  imageUrl: coverUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                  placeholder: (context, url) => Container(
+                    color: isDark ? Colors.grey[850] : Colors.grey[100],
+                    child: const LoadingView(size: 24),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: isDark ? Colors.grey[850] : Colors.grey[100],
+                    child: const Icon(Icons.book, color: Colors.grey),
                   ),
                 ),
-                if (isNew)
-                  const Positioned(
-                    top: 12,
-                    left: 12,
-                    child: NewBadge(
-                      useSolidRed: true,
-                      margin: EdgeInsets.zero,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Text(
-            author,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.grey[600],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

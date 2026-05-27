@@ -8,7 +8,6 @@ import '../../settings/settings_screen.dart';
 class HomeHeader extends ConsumerWidget {
   const HomeHeader({super.key});
 
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
@@ -30,7 +29,7 @@ class HomeHeader extends ConsumerWidget {
                     TextSpan(
                       text: '$greeting, ',
                       style: theme.textTheme.muted.copyWith(
-                        fontSize: 16, 
+                        fontSize: 16,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -54,7 +53,12 @@ class HomeHeader extends ConsumerWidget {
                 _HeaderIconButton(
                   icon: LucideIcons.settings,
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SettingsScreen(),
+                      ),
+                    );
                   },
                 ),
               ],
@@ -76,10 +80,8 @@ class _HeaderIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
     return ShadIconButton.ghost(
-      icon: Icon(icon, size: 20, color: theme.colorScheme.primary),
+      icon: Icon(icon, size: 20, color: theme.colorScheme.mutedForeground),
       onPressed: onPressed,
-      // Adding a subtle hover/press decoration would happen here if supported,
-      // but ghost buttons already have it.
     );
   }
 }

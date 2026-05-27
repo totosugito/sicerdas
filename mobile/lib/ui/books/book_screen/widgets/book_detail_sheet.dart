@@ -34,6 +34,9 @@ class BookDetailSheet extends ConsumerWidget {
     ];
 
     return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+      ),
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).padding.bottom + 16,
         top: 12,
@@ -51,167 +54,188 @@ class BookDetailSheet extends ConsumerWidget {
           ),
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          // Drag handle at top
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.border,
-                borderRadius: BorderRadius.circular(2),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Drag handle at top
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
               ),
-            ),
-          ),
-          const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-          // Scrollable content area to prevent overflow
-          Flexible(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Book details header (centered cover & titles)
-                  Center(
-                    child: Column(
-                      children: [
-                        // Large cover art with drop shadow
-                        Container(
-                          width: 110,
-                          height: 165, // Enforces clean 2:3 aspect ratio
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(
-                                  alpha: isDark ? 0.4 : 0.15,
-                                ),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: coverUrl.isEmpty
-                                ? _buildLargePlaceholder(
-                                    theme,
-                                    isDark,
-                                    placeholderGradient,
-                                  )
-                                : CachedNetworkImage(
-                                    imageUrl: coverUrl,
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) =>
-                                        _buildLargePlaceholder(
-                                          theme,
-                                          isDark,
-                                          placeholderGradient,
-                                        ),
-                                    errorWidget: (context, url, error) =>
-                                        _buildLargePlaceholder(
-                                          theme,
-                                          isDark,
-                                          placeholderGradient,
-                                          icon: Icons.broken_image_rounded,
-                                        ),
+              // Scrollable content area to prevent overflow
+              Flexible(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Book details header (centered cover & titles)
+                      Center(
+                        child: Column(
+                          children: [
+                            // Large cover art with drop shadow
+                            Container(
+                              width: 110,
+                              height: 165, // Enforces clean 2:3 aspect ratio
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(
+                                      alpha: isDark ? 0.4 : 0.15,
+                                    ),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 6),
                                   ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Book Title
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            book.title,
-                            style: theme.textTheme.h4.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: theme.colorScheme.foreground,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-
-                        // Author
-                        Text(
-                          book.author ?? l10n.unknownAuthor,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            color: isDark
-                                ? theme.colorScheme.foreground.withValues(
-                                    alpha: 0.85,
-                                  )
-                                : const Color(0xFF475569),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-
-                        // Category & Grade Tags
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primary.withValues(
-                              alpha: isDark ? 0.15 : 0.06,
-                            ),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: theme.colorScheme.primary.withValues(
-                                alpha: isDark ? 0.25 : 0.1,
+                                ],
                               ),
-                              width: 0.8,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: coverUrl.isEmpty
+                                    ? _buildLargePlaceholder(
+                                        theme,
+                                        isDark,
+                                        placeholderGradient,
+                                      )
+                                    : CachedNetworkImage(
+                                        imageUrl: coverUrl,
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) =>
+                                            _buildLargePlaceholder(
+                                              theme,
+                                              isDark,
+                                              placeholderGradient,
+                                            ),
+                                        errorWidget: (context, url, error) =>
+                                            _buildLargePlaceholder(
+                                              theme,
+                                              isDark,
+                                              placeholderGradient,
+                                              icon: Icons.broken_image_rounded,
+                                            ),
+                                      ),
+                              ),
                             ),
-                          ),
-                          child: Text(
-                            '${category.name} • ${grade.name}',
-                            style: TextStyle(
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w600,
-                              color: theme.colorScheme.primary,
+                            const SizedBox(height: 16),
+
+                            // Book Title
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: Text(
+                                book.title,
+                                style: theme.textTheme.h4.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: theme.colorScheme.foreground,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                          ),
+                            const SizedBox(height: 4),
+
+                            // Author
+                            Text(
+                              book.author ?? l10n.unknownAuthor,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.italic,
+                                color: isDark
+                                    ? theme.colorScheme.foreground.withValues(
+                                        alpha: 0.85,
+                                      )
+                                    : const Color(0xFF475569),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+
+                            // Category & Grade Tags
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.primary.withValues(
+                                  alpha: isDark ? 0.15 : 0.06,
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: theme.colorScheme.primary.withValues(
+                                    alpha: isDark ? 0.25 : 0.1,
+                                  ),
+                                  width: 0.8,
+                                ),
+                              ),
+                              child: Text(
+                                '${category.name} • ${grade.name}',
+                                style: TextStyle(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w600,
+                                  color: theme.colorScheme.primary,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
+                      ),
+                      const SizedBox(height: 24),
 
-                  // Divider
-                  Container(
-                    height: 0.5,
-                    color: theme.colorScheme.border.withValues(
-                      alpha: isDark ? 0.4 : 0.2,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+                      // Divider
+                      Container(
+                        height: 0.5,
+                        color: theme.colorScheme.border.withValues(
+                          alpha: isDark ? 0.4 : 0.2,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
 
-                  // Metadata section
-                  Text(
-                    l10n.detailInformation,
-                    style: theme.textTheme.large.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: theme.colorScheme.foreground,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
+                      // Metadata section
+                      Text(
+                        l10n.detailInformation,
+                        style: theme.textTheme.large.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: theme.colorScheme.foreground,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
 
-                  // Neat Info Grid
-                  _buildInfoGrid(context, theme, l10n, isDark),
-                  const SizedBox(height: 16),
-                ],
+                      // Neat Info Grid
+                      _buildInfoGrid(context, theme, l10n, isDark),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: ShadButton.ghost(
+              width: 32,
+              height: 32,
+              padding: EdgeInsets.zero,
+              onPressed: () => Navigator.pop(context),
+              child: Icon(
+                Icons.close_rounded,
+                size: 20,
+                color: theme.colorScheme.mutedForeground,
               ),
             ),
           ),
