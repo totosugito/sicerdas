@@ -8,8 +8,9 @@ import '../../../core/providers/dio_provider.dart';
 import '../../../core/network/api_endpoints.dart';
 import '../../../l10n/gen_l10n/app_localizations.dart';
 import '../../../core/providers/settings_provider.dart';
-import '../widgets/periodic_cell.dart';
-import '../widgets/periodic_table_layout.dart';
+import 'widgets/periodic_cell.dart';
+import 'widgets/periodic_table_layout.dart';
+import 'widgets/element_styles.dart';
 
 enum PeriodicSyncStatus { checking, notDownloaded, downloading, success, error }
 
@@ -172,63 +173,6 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
     super.dispose();
   }
 
-  Color _getGroupColor(String group, bool isDark) {
-    switch (group) {
-      case 'alkali_metals':
-        return isDark ? const Color(0xFF991B1B) : const Color(0xFFFEE2E2);
-      case 'alkaline_earth_metals':
-        return isDark ? const Color(0xFF9A3412) : const Color(0xFFFFEDD5);
-      case 'transition_metals':
-        return isDark ? const Color(0xFF854D0E) : const Color(0xFFFEF9C3);
-      case 'post_transition_metals':
-        return isDark ? const Color(0xFF1E3A8A) : const Color(0xFFDBEAFE);
-      case 'metalloids':
-        return isDark ? const Color(0xFF115E59) : const Color(0xFFCCFBF1);
-      case 'othernonmetals':
-      case 'other_nonmetals':
-        return isDark ? const Color(0xFF065F46) : const Color(0xFFD1FAE5);
-      case 'halogens':
-        return isDark ? const Color(0xFF5B21B6) : const Color(0xFFEDE9FE);
-      case 'noble_gases':
-        return isDark ? const Color(0xFF86198F) : const Color(0xFFFDF4FF);
-      case 'lanthanoids':
-        return isDark ? const Color(0xFF9D174D) : const Color(0xFFFCE7F3);
-      case 'actinoids':
-        return isDark ? const Color(0xFF9F1239) : const Color(0xFFFFE4E6);
-      default:
-        return isDark ? const Color(0xFF27272A) : const Color(0xFFF4F4F5);
-    }
-  }
-
-  Color _getGroupTextColor(String group, bool isDark) {
-    if (isDark) return Colors.white;
-    switch (group) {
-      case 'alkali_metals':
-        return const Color(0xFF991B1B);
-      case 'alkaline_earth_metals':
-        return const Color(0xFF9A3412);
-      case 'transition_metals':
-        return const Color(0xFF854D0E);
-      case 'post_transition_metals':
-        return const Color(0xFF1E3A8A);
-      case 'metalloids':
-        return const Color(0xFF115E59);
-      case 'othernonmetals':
-      case 'other_nonmetals':
-        return const Color(0xFF065F46);
-      case 'halogens':
-        return const Color(0xFF5B21B6);
-      case 'noble_gases':
-        return const Color(0xFF86198F);
-      case 'lanthanoids':
-        return const Color(0xFF9D174D);
-      case 'actinoids':
-        return const Color(0xFF9F1239);
-      default:
-        return const Color(0xFF3F3F46);
-    }
-  }
-
   String _formatGroupName(String group) {
     return group
         .replaceAll('_', ' ')
@@ -292,34 +236,35 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
                 child: Row(
                   children: [
                     // Symbol Badge
-                    Container(
-                      width: 64,
-                      height: 64,
-                      decoration: BoxDecoration(
-                        color: _getGroupColor(
+                    Builder(
+                      builder: (context) {
+                        final isDark = theme.brightness == Brightness.dark;
+                        final elStyle = getElementStyle(
                           element.atomicGroup,
-                          theme.brightness == Brightness.dark,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: _getGroupTextColor(
-                            element.atomicGroup,
-                            theme.brightness == Brightness.dark,
-                          ).withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          element.atomicSymbol,
-                          style: theme.textTheme.h3.copyWith(
-                            color: _getGroupTextColor(
-                              element.atomicGroup,
-                              theme.brightness == Brightness.dark,
+                          'theme1',
+                          isDark: isDark,
+                        );
+                        return Container(
+                          width: 64,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            color: elStyle.background,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: elStyle.text.withValues(alpha: 0.3),
                             ),
-                            fontWeight: FontWeight.bold,
                           ),
-                        ),
-                      ),
+                          child: Center(
+                            child: Text(
+                              element.atomicSymbol,
+                              style: theme.textTheme.h3.copyWith(
+                                color: elStyle.text,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -339,9 +284,12 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
                         ],
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(LucideIcons.x),
+                    ShadButton.ghost(
+                      width: 40,
+                      height: 40,
+                      padding: EdgeInsets.zero,
                       onPressed: () => Navigator.pop(context),
+                      child: const Icon(LucideIcons.x, size: 18),
                     ),
                   ],
                 ),
@@ -411,35 +359,32 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
                         for (var key in properties.keys)
                           if (properties[key] != null &&
                               properties[key].toString().isNotEmpty)
-                            Container(
+                            SizedBox(
                               width:
                                   MediaQuery.of(context).size.width / 2.3 - 24,
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.muted.withValues(
-                                  alpha: 0.3,
+                              child: ShadCard(
+                                padding: const EdgeInsets.all(12),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      key.replaceAll('_', ' ').toUpperCase(),
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color:
+                                            theme.colorScheme.mutedForeground,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      properties[key].toString(),
+                                      style: theme.textTheme.small.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    key.replaceAll('_', ' ').toUpperCase(),
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                      color: theme.colorScheme.mutedForeground,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    properties[key].toString(),
-                                    style: theme.textTheme.small.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
                       ],
@@ -558,7 +503,11 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
     );
   }
 
-  Widget _buildListView(List<PeriodicElement> elements, bool isDark, String periodicTheme) {
+  Widget _buildListView(
+    List<PeriodicElement> elements,
+    bool isDark,
+    String periodicTheme,
+  ) {
     final filtered = elements.where((element) {
       if (_searchQuery.isEmpty) return true;
       return element.atomicName.toLowerCase().contains(_searchQuery) ||
@@ -579,34 +528,55 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
       itemBuilder: (context, index) {
         final element = filtered[index];
 
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          elevation: 0,
-          color: theme.colorScheme.muted.withValues(alpha: 0.2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: ListTile(
-            leading: SizedBox(
-              width: 44,
-              height: 44,
-              child: PeriodicCell(
-                element: element,
-                cellSize: 40,
-                isSearchActive: false,
-                isSearchMatch: true,
-                theme: periodicTheme,
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: ShadCard(
+            padding: EdgeInsets.zero,
+            child: InkWell(
+              onTap: () => _showElementDetails(element),
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 44,
+                      height: 44,
+                      child: PeriodicCell(
+                        element: element,
+                        cellSize: 40,
+                        isSearchActive: false,
+                        isSearchMatch: true,
+                        theme: periodicTheme,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            element.atomicName,
+                            style: theme.textTheme.list.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            '${_formatGroupName(element.atomicGroup)} • Atomic No. ${element.atomicNumber}',
+                            style: theme.textTheme.muted,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(LucideIcons.chevronRight, size: 16),
+                  ],
+                ),
               ),
             ),
-            title: Text(
-              element.atomicName,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-            subtitle: Text(
-              '${_formatGroupName(element.atomicGroup)} • Atomic No. ${element.atomicNumber}',
-            ),
-            trailing: const Icon(LucideIcons.chevronRight),
-            onTap: () => _showElementDetails(element),
           ),
         );
       },
@@ -649,9 +619,7 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
               icon: const Icon(LucideIcons.palette),
               initialValue: periodicTheme,
               onSelected: (value) {
-                ref
-                    .read(settingsProvider.notifier)
-                    .setPeriodicTheme(value);
+                ref.read(settingsProvider.notifier).setPeriodicTheme(value);
               },
               itemBuilder: (context) => [
                 PopupMenuItem(
@@ -701,7 +669,11 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
                           theme: periodicTheme,
                           onElementTap: _showElementDetails,
                         )
-                      : _buildListView(syncState.elements, isDark, periodicTheme),
+                      : _buildListView(
+                          syncState.elements,
+                          isDark,
+                          periodicTheme,
+                        ),
                 ),
               ],
             ),

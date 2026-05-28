@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/database/database.dart';
+import '../../../../core/database/database.dart';
 import 'periodic_cell.dart';
 
 class PeriodicTableLayout extends StatelessWidget {
@@ -68,7 +68,8 @@ class PeriodicTableLayout extends StatelessWidget {
     bool isSearchMatch = false;
 
     if (element != null) {
-      isSearchMatch = element.atomicName.toLowerCase().contains(searchQuery) ||
+      isSearchMatch =
+          element.atomicName.toLowerCase().contains(searchQuery) ||
           element.atomicSymbol.toLowerCase().contains(searchQuery) ||
           element.atomicNumber.toString().contains(searchQuery);
     }
