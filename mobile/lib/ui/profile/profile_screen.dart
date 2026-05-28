@@ -7,6 +7,7 @@ import '../../core/auth/auth_service.dart';
 import '../../l10n/gen_l10n/app_localizations.dart';
 import '../settings/settings_screen.dart';
 import '../widgets/confirmation_dialog.dart';
+import '../auth/sign_in_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -19,10 +20,7 @@ class ProfileScreen extends ConsumerWidget {
     final theme = ShadTheme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.navProfile),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.navProfile), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -49,7 +47,9 @@ class ProfileScreen extends ConsumerWidget {
                           ? CachedNetworkImage(
                               imageUrl: currentUser!.image!,
                               fit: BoxFit.cover,
-                              placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
                               errorWidget: (context, url, error) => Icon(
                                 LucideIcons.user,
                                 size: 50,
@@ -66,13 +66,12 @@ class ProfileScreen extends ConsumerWidget {
                   const SizedBox(height: 16),
                   Text(
                     currentUser?.name ?? l10n.notLoggedIn,
-                    style: theme.textTheme.h4.copyWith(fontWeight: FontWeight.bold),
+                    style: theme.textTheme.h4.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   if (currentUser != null)
-                    Text(
-                      currentUser.email,
-                      style: theme.textTheme.muted,
-                    ),
+                    Text(currentUser.email, style: theme.textTheme.muted),
                 ],
               ),
             ),
@@ -96,7 +95,9 @@ class ProfileScreen extends ConsumerWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => const SettingsScreen(),
+                        ),
                       );
                     },
                   ),
@@ -134,8 +135,15 @@ class ProfileScreen extends ConsumerWidget {
                 width: double.infinity,
                 child: ShadButton(
                   leading: const Icon(LucideIcons.logIn, size: 18),
-                  child: Text(l10n.signInWithGoogle),
-                  onPressed: () => ref.read(authStateProvider.notifier).signIn(),
+                  child: Text(l10n.loginButton),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SignInScreen(),
+                      ),
+                    );
+                  },
                 ),
               ),
           ],
@@ -155,17 +163,18 @@ class ProfileScreen extends ConsumerWidget {
       type: MaterialType.transparency,
       child: ListTile(
         leading: Icon(icon, color: theme.colorScheme.primary, size: 20),
-        title: Text(
-          title,
-          style: const TextStyle(fontWeight: FontWeight.w500),
-        ),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
         trailing: const Icon(LucideIcons.chevronRight, size: 16),
         onTap: onTap,
       ),
     );
   }
 
-  void _handleLogout(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
+  void _handleLogout(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) {
     ConfirmationDialog.show(
       context,
       icon: LucideIcons.logOut,

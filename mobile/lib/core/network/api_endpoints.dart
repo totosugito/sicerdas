@@ -6,6 +6,8 @@ class ApiEndpoints {
   static const String getSession = '/api/auth/get-session';
   static const String signInSocial = '/api/auth/sign-in/social';
   static const String signOut = '/api/auth/sign-out';
+  static const String signInEmail = '/api/auth/sign-in-email';
+  static const String signUpEmail = '/api/auth/sign-up/email';
 
   // Books
   static const String listBook = '/api/book/list-book';

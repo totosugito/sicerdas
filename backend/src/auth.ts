@@ -24,6 +24,17 @@ if (envConfig.email?.brevo?.apiKey) {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Helper to determine the cookie domain safely
+const getCookieDomain = (urlOrHost: string) => {
+  let host = urlOrHost.replace(/^https?:\/\//, "");
+  host = host.split(":")[0];
+  const isIp = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(host);
+  if (host === "localhost" || isIp) {
+    return undefined;
+  }
+  return `.${host}`;
+};
+
 const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
@@ -171,18 +182,25 @@ const auth = betterAuth({
     },
     resetPasswordTokenExpiresIn: 3600, // 1 hour
   },
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["google"],
+      requireLocalEmailVerified: false,
+    },
+  },
 
   advanced: {
     cookiePrefix: envConfig.server.cookiePrefix,
     cookies: {
       sessionToken: {
         attributes: {
-          domain: envConfig.server.frontendUrl.includes(".") ? `.${envConfig.server.frontendUrl}` : undefined,
+          domain: getCookieDomain(envConfig.server.frontendUrl),
         },
       },
       state: {
         attributes: {
-          domain: envConfig.server.frontendUrl.includes(".") ? `.${envConfig.server.frontendUrl}` : undefined,
+          domain: getCookieDomain(envConfig.server.frontendUrl),
         },
       },
     },

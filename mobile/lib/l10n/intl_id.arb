@@ -1,6 +1,6 @@
 {
   "@@locale": "id",
-  "loginTitle": "Masuk ke Sicerdas",
+  "loginTitle": "Selamat Datang",
   "loginSubtitle": "Silakan masuk untuk melanjutkan",
   "emailLabel": "Email",
   "passwordLabel": "Kata Sandi",
@@ -50,8 +50,8 @@
   "helpSupport": "Bantuan & Dukungan",
   "privacyPolicy": "Kebijakan Privasi",
   "notLoggedIn": "Anda belum masuk",
-  "student": "Pelajar",
-  "helloStudent": "Halo Pelajar,",
+  "student": "User",
+  "helloStudent": "Halo User,",
   "goodMorning": "Selamat Pagi,",
   "goodAfternoon": "Selamat Siang,",
   "goodEvening": "Selamat Sore,",
@@ -174,5 +174,13 @@
   "infoTitle": "Informasi",
   "textCopied": "Teks berhasil disalin",
   "textNotFound": "Teks tidak ditemukan",
-  "searchText": "Cari teks..."
+  "searchText": "Cari teks...",
+  "signUpTitle": "Buat Akun",
+  "signUpSubtitle": "Daftar untuk mengakses semua fitur",
+  "signUpButton": "Daftar",
+  "alreadyHaveAccount": "Sudah punya akun? Masuk",
+  "nameLabel": "Nama Lengkap",
+  "signUpSuccessMessage": "Pendaftaran berhasil! Silakan masuk.",
+  "errorNameRequired": "Nama lengkap wajib diisi",
+  "backToSignIn": "Kembali ke Halaman Masuk"
 }

@@ -29,6 +29,19 @@ class AuthNotifier extends Notifier<bool> {
     }
   }
 
+  Future<bool> signInWithEmail(String email, String password) async {
+    final success = await ref.read(authServiceProvider).signInWithEmailAndPassword(email, password);
+    if (success) {
+      state = true;
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> signUpWithEmail(String name, String email, String password) async {
+    return await ref.read(authServiceProvider).signUpWithEmailAndPassword(name, email, password);
+  }
+
   Future<void> signOut() async {
     await ref.read(authServiceProvider).signOut();
     state = false;

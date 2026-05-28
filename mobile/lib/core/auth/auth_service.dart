@@ -75,6 +75,47 @@ class AuthService {
     }
   }
 
+  Future<bool> signInWithEmailAndPassword(String email, String password) async {
+    try {
+      final response = await _dio.post(
+        ApiEndpoints.signInEmail,
+        data: FormData.fromMap({
+          'email': email,
+          'password': password,
+        }),
+      );
+
+      final success = response.statusCode == 200;
+      if (success && response.data['user'] != null) {
+        // 💾 Cache user data
+        final user = UserModel.fromMap(response.data['user']);
+        await _prefs.setString(_userKey, user.toJson());
+        await _prefs.setBool(_authKey, true);
+      }
+      return success;
+    } catch (e) {
+      _logger.e('Error during Credentials Sign-In: $e');
+      rethrow;
+    }
+  }
+
+  Future<bool> signUpWithEmailAndPassword(String name, String email, String password) async {
+    try {
+      final response = await _dio.post(
+        ApiEndpoints.signUpEmail,
+        data: {
+          'name': name,
+          'email': email,
+          'password': password,
+        },
+      );
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      _logger.e('Error during Credentials Sign-Up: $e');
+      rethrow;
+    }
+  }
+
   UserModel? getCachedUser() {
     final userJson = _prefs.getString(_userKey);
     if (userJson == null) return null;

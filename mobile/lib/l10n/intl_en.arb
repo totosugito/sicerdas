@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "loginTitle": "Login to Sicerdas",
+  "loginTitle": "Welcome",
   "loginSubtitle": "Please login to continue",
   "emailLabel": "Email",
   "passwordLabel": "Password",
@@ -50,8 +50,8 @@
   "helpSupport": "Help & Support",
   "privacyPolicy": "Privacy Policy",
   "notLoggedIn": "You are not logged in",
-  "student": "Student",
-  "helloStudent": "Hello Student,",
+  "student": "User",
+  "helloStudent": "Hello User,",
   "goodMorning": "Good Morning,",
   "goodAfternoon": "Good Afternoon,",
   "goodEvening": "Good Evening,",
@@ -174,5 +174,13 @@
   "infoTitle": "Information",
   "textCopied": "Text successfully copied",
   "textNotFound": "Text not found",
-  "searchText": "Search text..."
+  "searchText": "Search text...",
+  "signUpTitle": "Create Account",
+  "signUpSubtitle": "Register to access all features",
+  "signUpButton": "Sign Up",
+  "alreadyHaveAccount": "Already have an account? Sign In",
+  "nameLabel": "Full Name",
+  "signUpSuccessMessage": "Registration successful! Please sign in.",
+  "errorNameRequired": "Full Name is required",
+  "backToSignIn": "Back to Sign In"
 }
