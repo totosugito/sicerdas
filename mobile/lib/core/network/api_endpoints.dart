@@ -1,6 +1,7 @@
 class ApiEndpoints {
   // Versioning & Sync
   static const String appLatest = '/api/app/app-latest';
+  static const String periodicTable = '/api/app/periodic-table';
 
   // Authentication
   static const String getSession = '/api/auth/get-session';

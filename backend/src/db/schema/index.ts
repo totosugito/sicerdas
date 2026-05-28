@@ -21,7 +21,7 @@ export * from './course/index.ts';
 export * from './exam/index.ts';
 
 // Periodic Module
-export * from './table-periodic/index.ts';
+export * from './periodic-table/index.ts';
 
 // Book Module
 export * from './book/index.ts';

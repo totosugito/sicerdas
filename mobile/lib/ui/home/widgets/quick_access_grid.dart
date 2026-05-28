@@ -4,6 +4,8 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../core/providers/navigation_provider.dart';
 import '../../../l10n/gen_l10n/app_localizations.dart';
 
+import '../../periodic-table/periodic-screen/periodic-screen.dart';
+
 class QuickAccessGrid extends ConsumerWidget {
   const QuickAccessGrid({super.key});
 
@@ -25,10 +27,10 @@ class QuickAccessGrid extends ConsumerWidget {
         'icon': Icons.science_rounded,
         'colors': [const Color(0xFFF59E0B), const Color(0xFFD97706)],
         'onTap': () {
-          ShadToaster.of(context).show(
-            ShadToast(
-              title: Text(l10n.periodicTable),
-              description: const Text('Feature under development'),
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const PeriodicScreen(),
             ),
           );
         },

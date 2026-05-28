@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { PeriodicElement } from "../types/types";
 import { getElementStyle } from "../utils/element-styles";
-import { EnumPeriodicGroup } from "backend/src/db/schema/table-periodic/types";
+import { EnumPeriodicGroup } from "backend/src/db/schema/periodic-table/types";
 import { getColumnGroup } from "../utils/element";
 
 interface PeriodicCellProps {
