@@ -57,6 +57,7 @@ class BookService {
     required Book book,
     required String pdfUrl,
     ProgressCallback? onProgress,
+    CancelToken? cancelToken,
   }) async {
     try {
       final localFilePath = await book.getLocalFileName();
@@ -66,6 +67,7 @@ class BookService {
         pdfUrl,
         localFile.path,
         onReceiveProgress: onProgress,
+        cancelToken: cancelToken,
       );
 
       if (response.statusCode == 200) {
@@ -75,6 +77,14 @@ class BookService {
       }
     } catch (e) {
       // Error handling/logging
+      // Delete temporary/incomplete download file
+      try {
+        final localFilePath = await book.getLocalFileName();
+        final localFile = File(localFilePath);
+        if (await localFile.exists()) {
+          await localFile.delete();
+        }
+      } catch (_) {}
     }
     return null;
   }

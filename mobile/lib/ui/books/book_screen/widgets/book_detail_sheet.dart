@@ -6,7 +6,13 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../../core/database/database.dart';
 import '../../../../core/utils/book_utils.dart';
 import '../../../../core/providers/settings_provider.dart';
+import '../../../../core/providers/books_provider.dart';
+import '../../../../core/services/book_service.dart';
+import '../../../../core/utils/toast_utils.dart';
 import '../../../../l10n/gen_l10n/app_localizations.dart';
+import '../../../widgets/confirmation_dialog.dart';
+import '../../../widgets/download_progress_dialog.dart';
+import '../../../pdf_viewer/pdf_viewer_screen.dart';
 
 class BookDetailSheet extends ConsumerWidget {
   final BookWithMetadata item;
@@ -17,12 +23,114 @@ class BookDetailSheet extends ConsumerWidget {
   Category get category => item.category;
   EducationGrade get grade => item.grade;
 
+  Future<void> _downloadBook(BuildContext context, WidgetRef ref) async {
+    final bookService = ref.read(bookServiceProvider);
+    final l10n = AppLocalizations.of(context)!;
+
+    final pdfUrl = await bookService.getBookPdfUrl(
+      bookId: book.bookId,
+      totalPages: book.totalPages,
+    );
+
+    if (pdfUrl == null) {
+      if (context.mounted) {
+        ToastUtils.showError(
+          context,
+          title: l10n.downloadFailed,
+          message: l10n.downloadFailedNoUrl,
+        );
+      }
+      return;
+    }
+
+    if (!context.mounted) return;
+
+    final result = await DownloadProgressDialog.show<File>(
+      context,
+      title: book.title,
+      downloadTask: (cancelToken, onProgress) => bookService.downloadBookPdf(
+        book: book,
+        pdfUrl: pdfUrl,
+        cancelToken: cancelToken,
+        onProgress: onProgress,
+      ),
+    );
+
+    if (context.mounted && result != null) {
+      if (result.data != null) {
+        ref.read(downloadedBookIdsProvider.notifier).addId(book.bookId);
+      } else if (!result.isCancelled) {
+        ToastUtils.showError(
+          context,
+          title: l10n.downloadFailed,
+          message: l10n.downloadFailedNoFile,
+        );
+      }
+    }
+  }
+
+  Future<void> _deleteBook(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = ShadTheme.of(context);
+
+    ConfirmationDialog.show(
+      context,
+      icon: Icons.delete_outline,
+      title: l10n.deleteBookConfirmTitle,
+      descriptionWidget: Text.rich(
+        TextSpan(
+          style: theme.textTheme.muted.copyWith(fontSize: 14),
+          children: [
+            TextSpan(text: l10n.deleteBookConfirmPrefix),
+            TextSpan(
+              text: book.title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.foreground,
+              ),
+            ),
+            TextSpan(text: l10n.deleteBookConfirmSuffix),
+          ],
+        ),
+        textAlign: TextAlign.center,
+      ),
+      confirmLabel: l10n.deleteAction,
+      cancelLabel: l10n.cancel,
+      onConfirm: () async {
+        Navigator.of(context).pop();
+        final success = await book.deleteLocalFile();
+        if (success && context.mounted) {
+          ref.read(downloadedBookIdsProvider.notifier).removeId(book.bookId);
+          ToastUtils.showSuccess(
+            context,
+            title: book.title,
+            message: l10n.deleteBookSuccess,
+          );
+        }
+      },
+    );
+  }
+
+  Future<void> _readBook(BuildContext context) async {
+    final filePath = await book.getLocalFileName();
+    if (context.mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) =>
+              PdfViewerScreen(filePath: filePath, title: book.title),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
     final cloudUrl = ref.watch(cloudUrlProvider);
+    final downloadedIds = ref.watch(downloadedBookIdsProvider).value ?? {};
+    final isDownloaded = downloadedIds.contains(book.bookId);
 
     final coverUrl = BookUtils.getBookCoverUrl(
       baseUrl: cloudUrl,
@@ -217,6 +325,47 @@ class BookDetailSheet extends ConsumerWidget {
 
                       // Neat Info Grid
                       _buildInfoGrid(context, theme, l10n, isDark),
+                      const SizedBox(height: 24),
+                      // Actions section
+                      if (isDownloaded) ...[
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: ShadButton.destructive(
+                                onPressed: () => _deleteBook(context, ref),
+                                leading: const Icon(
+                                  Icons.delete_outline,
+                                  size: 16,
+                                ),
+                                child: Text(l10n.deleteAction),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              flex: 3,
+                              child: ShadButton(
+                                onPressed: () => _readBook(context),
+                                leading: const Icon(
+                                  Icons.menu_book_outlined,
+                                  size: 16,
+                                ),
+                                child: Text(l10n.readNowAction),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ] else ...[
+                        ShadButton(
+                          width: double.infinity,
+                          onPressed: () => _downloadBook(context, ref),
+                          leading: const Icon(
+                            Icons.file_download_outlined,
+                            size: 16,
+                          ),
+                          child: Text(l10n.downloadBookAction),
+                        ),
+                      ],
                       const SizedBox(height: 16),
                     ],
                   ),

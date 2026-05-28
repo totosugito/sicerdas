@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,6 +14,7 @@ import '../../../pdf_viewer/pdf_viewer_screen.dart';
 import '../../../../core/services/book_service.dart';
 import '../../../../core/providers/books_provider.dart';
 import '../../../widgets/confirmation_dialog.dart';
+import '../../../widgets/download_progress_dialog.dart';
 import '../../../../core/utils/toast_utils.dart';
 
 class BookListItem extends ConsumerWidget {
@@ -38,14 +40,6 @@ class BookListItem extends ConsumerWidget {
     final bookService = ref.read(bookServiceProvider);
     final l10n = AppLocalizations.of(context)!;
 
-    if (context.mounted) {
-      ToastUtils.showInfo(
-        context,
-        title: book.title,
-        message: l10n.downloadStarted,
-      );
-    }
-
     final pdfUrl = await bookService.getBookPdfUrl(
       bookId: book.bookId,
       totalPages: book.totalPages,
@@ -62,17 +56,23 @@ class BookListItem extends ConsumerWidget {
       return;
     }
 
-    final file = await bookService.downloadBookPdf(book: book, pdfUrl: pdfUrl);
+    if (!context.mounted) return;
 
-    if (context.mounted) {
-      if (file != null) {
+    final result = await DownloadProgressDialog.show<File>(
+      context,
+      title: book.title,
+      downloadTask: (cancelToken, onProgress) => bookService.downloadBookPdf(
+        book: book,
+        pdfUrl: pdfUrl,
+        cancelToken: cancelToken,
+        onProgress: onProgress,
+      ),
+    );
+
+    if (context.mounted && result != null) {
+      if (result.data != null) {
         ref.read(downloadedBookIdsProvider.notifier).addId(book.bookId);
-        ToastUtils.showSuccess(
-          context,
-          title: book.title,
-          message: l10n.downloadSuccess,
-        );
-      } else {
+      } else if (!result.isCancelled) {
         ToastUtils.showError(
           context,
           title: l10n.downloadFailed,
