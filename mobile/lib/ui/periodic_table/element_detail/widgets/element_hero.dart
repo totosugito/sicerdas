@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../../core/database/database.dart';
-import '../../periodic-screen/widgets/element_styles.dart';
+import '../../periodic_screen/widgets/element_styles.dart';
 
 class ElementHero extends StatelessWidget {
   final PeriodicElement element;
@@ -54,9 +54,7 @@ class ElementHero extends StatelessWidget {
             decoration: BoxDecoration(
               color: isDark ? Colors.black26 : Colors.white24,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: elStyle.text.withValues(alpha: 0.2),
-              ),
+              border: Border.all(color: elStyle.text.withValues(alpha: 0.2)),
             ),
             child: Center(
               child: Text(

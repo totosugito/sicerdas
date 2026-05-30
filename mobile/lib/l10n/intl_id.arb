@@ -306,5 +306,19 @@
   "electronAffinity": "Afinitas elektron",
   "ionizationEnergies": "Energi ionisasi",
   "electronegativityPaulingScale": "Skala elektronegatifitas pauling",
-  "electronegativityAllenScale": "Skala elektronegatifitas allen"
+  "electronegativityAllenScale": "Skala elektronegatifitas allen",
+  "dOTHazardClass": "Kelas bahaya DOT",
+  "dOTNumbers": "Nomor DOT",
+  "rtecsNumber": "Nomor RTECS",
+  "nfpaLabel": "Label NFPA",
+  "halfLife": "Half-life",
+  "lifetime": "Lifetime",
+  "decayMode": "Mode peluruhan",
+  "quantumNumbers": "Bilangan kuantum",
+  "neutronCrossSection": "Penampang neutron",
+  "neutronMassAbsorption": "Penyerapan massa neutron",
+  "knownIsotopes": "Isotop yang diketahui",
+  "stableIsotopes": "Isotop stabil",
+  "isotopicAbundances": "Kelimpahan isotop",
+  "viewIsotopeDetails": "Lihat Detail Isotop"
 }

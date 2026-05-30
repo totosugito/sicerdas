@@ -5,9 +5,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../l10n/gen_l10n/app_localizations.dart';
 import '../../../core/database/database.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../../core/providers/books_provider.dart';
+import '../../books/libs/providers/books_provider.dart';
 import '../../../core/providers/settings_provider.dart';
-import '../../../core/utils/book_utils.dart';
+import '../../books/libs/utils/book_utils.dart';
 import '../../books/latest_books/latest_books_screen.dart';
 import '../../books/book_screen/widgets/book_detail_sheet.dart';
 import '../../widgets/error_view.dart';
@@ -102,10 +102,8 @@ class LatestBooksSection extends ConsumerWidget {
               );
             },
             loading: () => const LoadingView(),
-            error: (err, _) => ErrorView(
-              message: l10n.errorGeneric,
-              details: err.toString(),
-            ),
+            error: (err, _) =>
+                ErrorView(message: l10n.errorGeneric, details: err.toString()),
           ),
         ),
       ],

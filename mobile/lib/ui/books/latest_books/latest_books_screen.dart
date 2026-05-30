@@ -5,7 +5,7 @@ import 'package:drift/drift.dart' hide Column;
 import '../../../../l10n/gen_l10n/app_localizations.dart';
 import '../../../../core/database/database.dart';
 import '../../../../core/providers/database_provider.dart';
-import '../../../../core/providers/books_provider.dart';
+import '../libs/providers/books_provider.dart';
 import '../book_screen/widgets/book_list_item.dart';
 import 'widgets/latest_books_filter_bar.dart';
 import '../../widgets/error_view.dart';

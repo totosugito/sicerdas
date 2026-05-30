@@ -4,7 +4,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../core/providers/navigation_provider.dart';
 import '../../../l10n/gen_l10n/app_localizations.dart';
 
-import '../../periodic-table/periodic-screen/periodic_screen.dart';
+import '../../periodic_table/periodic_screen/periodic_screen.dart';
 
 class QuickAccessGrid extends ConsumerWidget {
   const QuickAccessGrid({super.key});

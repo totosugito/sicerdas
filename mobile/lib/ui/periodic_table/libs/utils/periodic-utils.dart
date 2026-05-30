@@ -1,4 +1,4 @@
-import '../../../l10n/gen_l10n/app_localizations.dart';
+import '../../../../l10n/gen_l10n/app_localizations.dart';
 
 class PeriodicUtils {
   // Local helper matching React translations using AppLocalizations

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../core/database/database.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../../core/providers/books_provider.dart';
+import '../libs/providers/books_provider.dart';
 import '../book_screen/widgets/book_list_item.dart';
 import 'widgets/filter_bar.dart';
 
@@ -59,8 +59,6 @@ final groupGradesProvider = StreamProvider.family<List<EducationGrade>, int>((
 ) {
   return ref.watch(databaseProvider).watchGradesByGroup(groupId);
 });
-
-
 
 final groupBooksProvider = StreamProvider.family<List<BookWithMetadata>, int>((
   ref,

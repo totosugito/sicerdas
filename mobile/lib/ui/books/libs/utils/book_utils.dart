@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import '../database/database.dart';
-import 'my_utils.dart';
-import '../config/app_constants.dart';
+import '../../../../core/database/database.dart';
+import '../../../../core/utils/my_utils.dart';
+import '../../../../core/config/app_constants.dart';
 
 class BookUtils {
   static String getBookCoverUrl({
@@ -49,7 +49,9 @@ class BookUtils {
     final parentPath = dataDir != null
         ? dataDir.path
         : (await getApplicationDocumentsDirectory()).path;
-    final booksDir = Directory(p.join(parentPath, AppConstants.appDirParent, AppConstants.appDirBooks));
+    final booksDir = Directory(
+      p.join(parentPath, AppConstants.appDirParent, AppConstants.appDirBooks),
+    );
     if (!await booksDir.exists()) {
       await booksDir.create(recursive: true);
     }
@@ -61,7 +63,9 @@ extension BookExtension on Book {
   String getAutoFileNameFromTitle() {
     final filePrefix = bookId.toString().padLeft(4, "0");
     final cleanTitle = MyUtils.removeNonAlphanumericChar(title);
-    final textTitle = cleanTitle.length < 50 ? cleanTitle : cleanTitle.substring(0, 50);
+    final textTitle = cleanTitle.length < 50
+        ? cleanTitle
+        : cleanTitle.substring(0, 50);
     return "${filePrefix}_$textTitle";
   }
 

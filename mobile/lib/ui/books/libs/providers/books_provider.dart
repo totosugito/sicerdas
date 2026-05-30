@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart';
-import '../database/database.dart';
-import 'database_provider.dart';
-import 'settings_provider.dart';
+import '../../../../core/database/database.dart';
+import '../../../../core/providers/database_provider.dart';
+import '../../../../core/providers/settings_provider.dart';
 import '../utils/book_utils.dart';
 
 class BooksFilter {
@@ -50,7 +50,9 @@ class BooksFilterNotifier extends Notifier<BooksFilter> {
   }
 }
 
-final booksFilterProvider = NotifierProvider<BooksFilterNotifier, BooksFilter>(BooksFilterNotifier.new);
+final booksFilterProvider = NotifierProvider<BooksFilterNotifier, BooksFilter>(
+  BooksFilterNotifier.new,
+);
 
 final filteredBooksProvider = StreamProvider<List<BookWithMetadata>>((ref) {
   final db = ref.watch(databaseProvider);
@@ -76,9 +78,6 @@ final gradesProvider = StreamProvider<List<EducationGrade>>((ref) {
   return ref.watch(databaseProvider).watchGrades();
 });
 
-
-
-
 final localGroupsProvider = StreamProvider<List<BookGroup>>((ref) {
   final downloadedIds = ref.watch(downloadedBookIdsProvider).value ?? {};
   final db = ref.watch(databaseProvider);
@@ -89,21 +88,19 @@ class BookGroupWithMetadata {
   final BookGroup group;
   final bool isNew;
 
-  BookGroupWithMetadata({
-    required this.group,
-    this.isNew = false,
-  });
+  BookGroupWithMetadata({required this.group, this.isNew = false});
 }
 
 final latestBookVersionIdProvider = StreamProvider<int?>((ref) {
   final db = ref.watch(databaseProvider);
   return (db.select(db.appVersions)
-        ..where((t) => t.dataType.equals(ContentType.book.name) & t.status.equals(ContentStatus.published.name))
+        ..where(
+          (t) =>
+              t.dataType.equals(ContentType.book.name) &
+              t.status.equals(ContentStatus.published.name),
+        )
         ..orderBy([
-          (t) => OrderingTerm(
-            expression: t.id,
-            mode: OrderingMode.desc,
-          ),
+          (t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc),
         ])
         ..limit(1))
       .watch()
@@ -114,11 +111,13 @@ final allGroupsProvider = StreamProvider<List<BookGroupWithMetadata>>((ref) {
   final db = ref.watch(databaseProvider);
   final latestVersionId = ref.watch(latestBookVersionIdProvider).value;
 
-  final groupsStream = (db.select(db.bookGroups)
-        ..where((t) =>
-            t.status.equals(ContentStatus.published.name) &
-            t.bookTotal.isBiggerThan(Constant(0))))
-      .watch();
+  final groupsStream =
+      (db.select(db.bookGroups)..where(
+            (t) =>
+                t.status.equals(ContentStatus.published.name) &
+                t.bookTotal.isBiggerThan(Constant(0)),
+          ))
+          .watch();
 
   return groupsStream.map((groups) {
     return groups.map((g) {
@@ -151,9 +150,10 @@ class GroupBookExpandAllNotifier extends Notifier<bool> {
   }
 }
 
-final groupBookExpandAllProvider = NotifierProvider<GroupBookExpandAllNotifier, bool>(() {
-  return GroupBookExpandAllNotifier();
-});
+final groupBookExpandAllProvider =
+    NotifierProvider<GroupBookExpandAllNotifier, bool>(() {
+      return GroupBookExpandAllNotifier();
+    });
 
 class CategoryExpansionNotifier extends Notifier<Map<int, bool>> {
   @override
@@ -162,10 +162,7 @@ class CategoryExpansionNotifier extends Notifier<Map<int, bool>> {
   }
 
   void setExpanded(int categoryId, bool isExpanded) {
-    state = {
-      ...state,
-      categoryId: isExpanded,
-    };
+    state = {...state, categoryId: isExpanded};
   }
 
   void resetAll() {
@@ -173,9 +170,10 @@ class CategoryExpansionNotifier extends Notifier<Map<int, bool>> {
   }
 }
 
-final categoryExpansionProvider = NotifierProvider.autoDispose<CategoryExpansionNotifier, Map<int, bool>>(() {
-  return CategoryExpansionNotifier();
-});
+final categoryExpansionProvider =
+    NotifierProvider.autoDispose<CategoryExpansionNotifier, Map<int, bool>>(() {
+      return CategoryExpansionNotifier();
+    });
 
 class DownloadedBookIdsNotifier extends AsyncNotifier<Set<int>> {
   @override
@@ -211,9 +209,10 @@ class DownloadedBookIdsNotifier extends AsyncNotifier<Set<int>> {
   }
 }
 
-final downloadedBookIdsProvider = AsyncNotifierProvider<DownloadedBookIdsNotifier, Set<int>>(() {
-  return DownloadedBookIdsNotifier();
-});
+final downloadedBookIdsProvider =
+    AsyncNotifierProvider<DownloadedBookIdsNotifier, Set<int>>(() {
+      return DownloadedBookIdsNotifier();
+    });
 
 enum BooksViewType { grid, list }
 
@@ -228,13 +227,17 @@ class BooksViewTypeNotifier extends Notifier<BooksViewType> {
   }
 
   void toggle() {
-    final next = state == BooksViewType.grid ? BooksViewType.list : BooksViewType.grid;
+    final next = state == BooksViewType.grid
+        ? BooksViewType.list
+        : BooksViewType.grid;
     state = next;
-    ref.read(sharedPreferencesProvider).setBool(_key, next == BooksViewType.list);
+    ref
+        .read(sharedPreferencesProvider)
+        .setBool(_key, next == BooksViewType.list);
   }
 }
 
-final booksViewTypeProvider = NotifierProvider<BooksViewTypeNotifier, BooksViewType>(() {
-  return BooksViewTypeNotifier();
-});
-
+final booksViewTypeProvider =
+    NotifierProvider<BooksViewTypeNotifier, BooksViewType>(() {
+      return BooksViewTypeNotifier();
+    });

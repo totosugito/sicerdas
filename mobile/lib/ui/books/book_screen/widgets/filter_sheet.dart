@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../../core/providers/books_provider.dart';
+import '../../libs/providers/books_provider.dart';
 import '../../../../core/database/database.dart';
 import '../../../../l10n/gen_l10n/app_localizations.dart';
 import '../../../widgets/loading_view.dart';
@@ -71,7 +71,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                   ),
                 ),
                 const SizedBox(height: 24),
-    
+
                 // Group Filter
                 Text(
                   l10n.filterGroup,
@@ -111,7 +111,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                     ),
                   ),
                 ),
-    
+
                 const SizedBox(height: 24),
                 ShadButton(
                   width: double.infinity,

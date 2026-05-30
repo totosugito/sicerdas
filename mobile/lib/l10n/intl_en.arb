@@ -306,5 +306,19 @@
   "electronAffinity": "Electron affinity",
   "ionizationEnergies": "Ionization energies",
   "electronegativityPaulingScale": "Electronegativity pauling scale",
-  "electronegativityAllenScale": "Electronegativity allen scale"
+  "electronegativityAllenScale": "Electronegativity allen scale",
+  "dOTHazardClass": "DOT hazard class",
+  "dOTNumbers": "DOT numbers",
+  "rtecsNumber": "RTECS number",
+  "nfpaLabel": "NFPA label",
+  "halfLife": "Half-life",
+  "lifetime": "Lifetime",
+  "decayMode": "Decay mode",
+  "quantumNumbers": "Quantum numbers",
+  "neutronCrossSection": "Neutron cross section",
+  "neutronMassAbsorption": "Neutron mass absorption",
+  "knownIsotopes": "Known isotopes",
+  "stableIsotopes": "Stable isotopes",
+  "isotopicAbundances": "Isotopic abundances",
+  "viewIsotopeDetails": "View Isotope Details"
 }

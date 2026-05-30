@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-import '../../core/utils/book_utils.dart';
+import '../books/libs/utils/book_utils.dart';
 import '../../l10n/gen_l10n/app_localizations.dart';
 
 class DownloadDialogResult<T> {

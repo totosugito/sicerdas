@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../core/providers/books_provider.dart';
+import '../libs/providers/books_provider.dart';
 import '../../../l10n/gen_l10n/app_localizations.dart';
 import 'widgets/category_card.dart';
 import '../latest_books/latest_books_screen.dart';

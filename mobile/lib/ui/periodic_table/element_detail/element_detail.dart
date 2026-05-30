@@ -18,10 +18,9 @@ import 'widgets/element_abundances.dart';
 import 'widgets/element_reactivity.dart';
 import 'widgets/element_health_safety.dart';
 import 'widgets/element_nuclear.dart';
-import 'widgets/element_isotopes.dart';
 
-import '../periodic-screen/widgets/element_styles.dart';
-import '../models/periodic_models.dart';
+import '../periodic_screen/widgets/element_styles.dart';
+import '../libs/models/periodic_models.dart';
 
 class ElementDetailScreen extends ConsumerStatefulWidget {
   final PeriodicElement element;
@@ -91,9 +90,6 @@ class _ElementDetailScreenState extends ConsumerState<ElementDetailScreen> {
         jsonDecode(widget.element.atomicImages) as Map<String, dynamic>? ?? {};
     final atomicImages = AtomicImages.fromJson(imagesMap);
 
-    final Map<String, dynamic> isotope =
-        jsonDecode(widget.element.atomicIsotope) as Map<String, dynamic>? ?? {};
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.element.atomicName),
@@ -132,10 +128,9 @@ class _ElementDetailScreenState extends ConsumerState<ElementDetailScreen> {
                 ElementElectrical(properties: atomicProperties),
                 ElementMagnetic(properties: atomicProperties),
                 ElementAbundances(properties: atomicProperties),
-                ElementReactivity(properties: properties),
-                ElementHealthSafety(properties: properties),
-                ElementNuclear(properties: properties),
-                ElementIsotopes(isotope: isotope),
+                ElementReactivity(properties: atomicProperties),
+                ElementHealthSafety(properties: atomicProperties),
+                ElementNuclear(properties: atomicProperties),
               ],
             ),
           ],

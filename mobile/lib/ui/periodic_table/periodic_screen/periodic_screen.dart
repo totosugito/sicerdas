@@ -10,7 +10,7 @@ import '../../../l10n/gen_l10n/app_localizations.dart';
 import '../../../core/providers/settings_provider.dart';
 import 'widgets/periodic_cell.dart';
 import 'widgets/periodic_table_layout.dart';
-import '../element-detail/element-detail.dart';
+import '../element_detail/element_detail.dart';
 
 enum PeriodicSyncStatus { checking, notDownloaded, downloading, success, error }
 
