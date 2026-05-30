@@ -3,7 +3,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../../l10n/gen_l10n/app_localizations.dart';
 import '../../../widgets/funvas/funvas.dart';
 import 'electron_shell.dart';
-import '../../libs/utils/periodic-utils.dart';
+import '../../libs/utils/periodic_utils.dart';
 import '../../libs/models/periodic_models.dart';
 import 'property_item.dart';
 

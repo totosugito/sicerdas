@@ -16,8 +16,7 @@ class FunvasContainer extends StatefulWidget {
   ///
   /// If the [funvas] is changed for the same element in the element tree, the
   /// timer on the state will reset, restarting [Funvas.u] at `0` seconds.
-  const FunvasContainer({Key? key, this.paused = false, required this.funvas})
-    : super(key: key);
+  const FunvasContainer({super.key, this.paused = false, required this.funvas});
 
   /// Whether the [funvas] animation should be paused or not.
   ///
