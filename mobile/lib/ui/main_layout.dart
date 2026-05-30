@@ -10,9 +10,9 @@ import 'home/home_screen.dart';
 import 'books/book_screen/books_screen.dart';
 import 'placeholder_screens.dart';
 import 'profile/profile_screen.dart';
-import '../core/services/version_service.dart';
 import '../core/providers/sync_provider.dart';
 import '../core/config/app_constants.dart';
+import '../core/services/version_service.dart';
 
 class MainLayout extends ConsumerStatefulWidget {
   const MainLayout({super.key});
@@ -36,7 +36,11 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
   Future<bool> _initAppDirectory() async {
     final status = await _createAppDirectory(
       parentDir: AppConstants.appDirParent,
-      childDir: const [AppConstants.appDirBooks, AppConstants.appDirKamus],
+      childDir: const [
+        AppConstants.appDirBooks,
+        AppConstants.appDirKamus,
+        AppConstants.appDirPeriodic,
+      ],
     );
 
     if (!status && mounted) {
@@ -123,6 +127,12 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
     final syncState = ref.watch(syncProvider);
     final theme = ShadTheme.of(context);
 
+    if (selectedIndex == 0 || selectedIndex == 1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(syncProvider.notifier).checkInitial();
+      });
+    }
+
     // 🚀 Background Sync Feedback
     ref.listen(syncProvider, (previous, next) {
       if (next.status == SyncStatus.success &&
@@ -178,9 +188,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
             ],
           ),
         ),
-
-        // ✨ Shadcn UI Sync Overlay ✨
-        if (syncState.isInitialSync)
+        if (syncState.isInitialSync && (selectedIndex == 0 || selectedIndex == 1))
           Container(
             color: theme.colorScheme.background.withValues(alpha: 0.8),
             child: Center(

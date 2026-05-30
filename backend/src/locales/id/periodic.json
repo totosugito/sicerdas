@@ -2,6 +2,7 @@
   "periodic": {
     "elementNotFound": "Elemen dengan nomor atom %{atomicNumber} tidak ditemukan",
     "invalidAtomicNumber": "Nomor atom tidak valid",
-    "success": "Berhasil mengambil data elemen"
+    "success": "Berhasil mengambil data elemen",
+    "downloadFailed": "Gagal mengunduh data tabel periodik"
   }
 }

@@ -15,6 +15,7 @@ class DownloadDialogResult<T> {
 
 class DownloadProgressDialog<T> extends ConsumerStatefulWidget {
   final String title;
+  final String? message;
   final Future<T?> Function(
     CancelToken cancelToken,
     ProgressCallback onProgress,
@@ -24,6 +25,7 @@ class DownloadProgressDialog<T> extends ConsumerStatefulWidget {
   const DownloadProgressDialog({
     super.key,
     required this.title,
+    this.message,
     required this.downloadTask,
   });
 
@@ -34,6 +36,7 @@ class DownloadProgressDialog<T> extends ConsumerStatefulWidget {
   static Future<DownloadDialogResult<T>?> show<T>(
     BuildContext context, {
     required String title,
+    String? message,
     required Future<T?> Function(
       CancelToken cancelToken,
       ProgressCallback onProgress,
@@ -43,8 +46,11 @@ class DownloadProgressDialog<T> extends ConsumerStatefulWidget {
     return showShadDialog<DownloadDialogResult<T>?>(
       context: context,
       barrierDismissible: false,
-      builder: (context) =>
-          DownloadProgressDialog<T>(title: title, downloadTask: downloadTask),
+      builder: (context) => DownloadProgressDialog<T>(
+        title: title,
+        message: message,
+        downloadTask: downloadTask,
+      ),
     );
   }
 }
@@ -150,7 +156,7 @@ class _DownloadProgressDialogState<T>
             ),
             const SizedBox(height: 8),
             Text(
-              l10n.downloadStarted,
+              widget.message ?? l10n.downloadStarted,
               style: theme.textTheme.muted.copyWith(
                 fontSize: 13,
                 color: isDark ? Colors.white70 : Colors.black54,

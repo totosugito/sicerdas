@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import '../database/database.dart';
 import '../providers/database_provider.dart';
 import '../providers/dio_provider.dart';
@@ -10,6 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import '../models/app_settings.dart';
 import '../providers/logger_provider.dart';
+import '../config/app_constants.dart';
+import '../../ui/periodic_table/periodic_screen/periodic_screen.dart';
 
 final versionServiceProvider = Provider<VersionService>((ref) {
   final dio = ref.watch(dioProvider);
@@ -37,9 +42,26 @@ class VersionService {
     await prefs.remove(_lastCheckKey);
     await prefs.remove(_settingsKey);
     
-    // 3. Reset sync state to trigger the onboarding overlay
+    // 3. Reset sync state
     _ref.read(syncProvider.notifier).reset();
-    await _ref.read(syncProvider.notifier).checkInitial();
+
+    // 4. Reset periodic sync state
+    _ref.invalidate(periodicSyncProvider);
+
+    // 5. Clean up local periodic assets directory
+    try {
+      final dataDir = await getExternalStorageDirectory();
+      if (dataDir != null) {
+        final periodicDir = Directory(p.join(
+          dataDir.path,
+          AppConstants.appDirParent,
+          AppConstants.appDirPeriodic,
+        ));
+        if (await periodicDir.exists()) {
+          await periodicDir.delete(recursive: true);
+        }
+      }
+    } catch (_) {}
   }
 
   Future<void> checkAndSync({bool force = false}) async {

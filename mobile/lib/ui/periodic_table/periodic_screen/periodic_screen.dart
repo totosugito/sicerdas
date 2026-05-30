@@ -1,6 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:archive/archive.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../core/database/database.dart';
 import '../../../core/providers/database_provider.dart';
@@ -8,6 +12,9 @@ import '../../../core/providers/dio_provider.dart';
 import '../../../core/network/api_endpoints.dart';
 import '../../../l10n/gen_l10n/app_localizations.dart';
 import '../../../core/providers/settings_provider.dart';
+import '../../../core/config/app_constants.dart';
+import '../../../core/utils/toast_utils.dart';
+import '../../widgets/download_progress_dialog.dart';
 import 'widgets/periodic_cell.dart';
 import 'widgets/periodic_table_layout.dart';
 import '../element_detail/element_detail.dart';
@@ -17,22 +24,26 @@ enum PeriodicSyncStatus { checking, notDownloaded, downloading, success, error }
 class PeriodicSyncState {
   final PeriodicSyncStatus status;
   final String? errorMessage;
+  final String? errorKey;
   final List<PeriodicElement> elements;
 
   PeriodicSyncState({
     required this.status,
     this.errorMessage,
+    this.errorKey,
     this.elements = const [],
   });
 
   PeriodicSyncState copyWith({
     PeriodicSyncStatus? status,
     String? errorMessage,
+    String? errorKey,
     List<PeriodicElement>? elements,
   }) {
     return PeriodicSyncState(
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
+      errorKey: errorKey ?? this.errorKey,
       elements: elements ?? this.elements,
     );
   }
@@ -63,69 +74,139 @@ class PeriodicSyncNotifier extends Notifier<PeriodicSyncState> {
       state = PeriodicSyncState(
         status: PeriodicSyncStatus.error,
         errorMessage: e.toString(),
+        errorKey: 'syncFailedMessage',
       );
     }
   }
 
-  Future<void> downloadData() async {
+  void setSyncError() {
+    state = state.copyWith(
+      status: PeriodicSyncStatus.error,
+      errorKey: 'syncFailedMessage',
+    );
+  }
+
+  void setSyncNotDownloaded() {
+    state = state.copyWith(status: PeriodicSyncStatus.notDownloaded);
+  }
+
+  Future<void> processDownloadedZip(String zipPath) async {
     state = state.copyWith(status: PeriodicSyncStatus.downloading);
+    final tempZipFile = File(zipPath);
     try {
       final db = ref.read(databaseProvider);
-      final dio = ref.read(dioProvider);
-      final response = await dio.get(ApiEndpoints.periodicTable);
-      if (response.data['success'] == true) {
-        final data = response.data['data'];
-        final List<dynamic> elementsJson = data['elements'] ?? [];
-        final List<dynamic> notesJson = data['notes'] ?? [];
 
-        final List<PeriodicElement> elements = elementsJson.map((e) {
-          return PeriodicElement(
-            id: e['id'] as int,
-            idx: e['idx'] as int,
-            idy: e['idy'] as int,
-            atomicNumber: e['atomicNumber'] as int,
-            atomicGroup: e['atomicGroup'] as String,
-            atomicName: e['atomicName'] as String,
-            atomicSymbol: e['atomicSymbol'] as String,
-            atomicImages: jsonEncode(e['atomicImages'] ?? {}),
-            atomicProperties: jsonEncode(e['atomicProperties'] ?? {}),
-            atomicIsotope: jsonEncode(e['atomicIsotope'] ?? {}),
-            atomicExtra: jsonEncode(e['atomicExtra'] ?? {}),
-          );
-        }).toList();
-
-        final List<PeriodicElementNote> notes = notesJson.map((n) {
-          return PeriodicElementNote(
-            id: n['id'] as int,
-            atomicNumber: n['atomicNumber'] as int,
-            localeCode: n['localeCode'] as String,
-            atomicOverview: n['atomicOverview'] as String,
-            atomicHistory: n['atomicHistory'] as String,
-            atomicApps: n['atomicApps'] as String,
-            atomicFacts: n['atomicFacts'] as String,
-          );
-        }).toList();
-
-        await db.upsertPeriodicElements(elements);
-        await db.upsertPeriodicElementNotes(notes);
-
-        final sortedElements = await db.getPeriodicElements();
-
-        state = PeriodicSyncState(
-          status: PeriodicSyncStatus.success,
-          elements: sortedElements,
-        );
-      } else {
+      final bytes = await tempZipFile.readAsBytes();
+      if (bytes.isEmpty) {
         state = state.copyWith(
           status: PeriodicSyncStatus.error,
-          errorMessage: response.data['message'],
+          errorKey: 'periodicErrorEmptyZip',
+          errorMessage: 'Empty ZIP archive downloaded.',
         );
+        return;
       }
+
+      // 2. Decode the ZIP archive
+      final archive = ZipDecoder().decodeBytes(bytes);
+
+      // 3. Locate and parse periodic-table.json in-memory
+      dynamic parsedJson;
+      for (final file in archive) {
+        if (file.isFile && file.name == 'periodic-table.json') {
+          final contentString = utf8.decode(file.content as List<int>);
+          parsedJson = jsonDecode(contentString);
+          break;
+        }
+      }
+
+      if (parsedJson == null) {
+        state = state.copyWith(
+          status: PeriodicSyncStatus.error,
+          errorKey: 'periodicErrorJsonNotFound',
+          errorMessage: 'periodic-table.json not found in ZIP archive.',
+        );
+        return;
+      }
+
+      final data = parsedJson['data'];
+      final List<dynamic> elementsJson = data['elements'] ?? [];
+      final List<dynamic> notesJson = data['notes'] ?? [];
+
+      final List<PeriodicElement> elements = elementsJson.map((e) {
+        return PeriodicElement(
+          id: e['id'] as int,
+          idx: e['idx'] as int,
+          idy: e['idy'] as int,
+          atomicNumber: e['atomicNumber'] as int,
+          atomicGroup: e['atomicGroup'] as String,
+          atomicName: e['atomicName'] as String,
+          atomicSymbol: e['atomicSymbol'] as String,
+          atomicImages: jsonEncode(e['atomicImages'] ?? {}),
+          atomicProperties: jsonEncode(e['atomicProperties'] ?? {}),
+          atomicIsotope: jsonEncode(e['atomicIsotope'] ?? {}),
+          atomicExtra: jsonEncode(e['atomicExtra'] ?? {}),
+        );
+      }).toList();
+
+      final List<PeriodicElementNote> notes = notesJson.map((n) {
+        return PeriodicElementNote(
+          id: n['id'] as int,
+          atomicNumber: n['atomicNumber'] as int,
+          localeCode: n['localeCode'] as String,
+          atomicOverview: n['atomicOverview'] as String,
+          atomicHistory: n['atomicHistory'] as String,
+          atomicApps: n['atomicApps'] as String,
+          atomicFacts: n['atomicFacts'] as String,
+        );
+      }).toList();
+
+      // 4. Save other files into the appDirPeriodic directory
+      final dataDir = await getExternalStorageDirectory();
+      if (dataDir == null) {
+        state = state.copyWith(
+          status: PeriodicSyncStatus.error,
+          errorKey: 'periodicErrorStorageNotFound',
+          errorMessage: 'External storage directory not found.',
+        );
+        return;
+      }
+      final targetPath = p.join(
+        dataDir.path,
+        AppConstants.appDirParent,
+        AppConstants.appDirPeriodic,
+      );
+
+      for (final file in archive) {
+        if (file.isFile && file.name != 'periodic-table.json') {
+          final filePath = p.join(targetPath, file.name);
+          final outFile = File(filePath);
+          await outFile.create(recursive: true);
+          await outFile.writeAsBytes(file.content as List<int>);
+        }
+      }
+
+      // 5. Upsert database entries
+      await db.upsertPeriodicElements(elements);
+      await db.upsertPeriodicElementNotes(notes);
+
+      final sortedElements = await db.getPeriodicElements();
+
+      state = PeriodicSyncState(
+        status: PeriodicSyncStatus.success,
+        elements: sortedElements,
+      );
     } catch (e) {
       state = state.copyWith(
         status: PeriodicSyncStatus.error,
         errorMessage: e.toString(),
+        errorKey: 'syncFailedMessage',
       );
+    } finally {
+      try {
+        if (await tempZipFile.exists()) {
+          await tempZipFile.delete();
+        }
+      } catch (_) {}
     }
   }
 }
@@ -186,6 +267,43 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
     );
   }
 
+  Future<void> _startDownloadPeriodic() async {
+    final l10n = AppLocalizations.of(context)!;
+    final dio = ref.read(dioProvider);
+    final tempDir = await getTemporaryDirectory();
+    if (!mounted) return;
+    final tempZipPath = p.join(tempDir.path, 'periodic-table.zip');
+
+    final result = await DownloadProgressDialog.show<bool>(
+      context,
+      title: l10n.periodicTable,
+      message: l10n.periodicDownloadingMessage,
+      downloadTask: (cancelToken, onProgress) async {
+        try {
+          await dio.download(
+            ApiEndpoints.periodicData,
+            tempZipPath,
+            cancelToken: cancelToken,
+            onReceiveProgress: onProgress,
+          );
+          return true;
+        } catch (_) {
+          return false;
+        }
+      },
+    );
+
+    if (result != null && result.data == true && !result.isCancelled) {
+      await ref
+          .read(periodicSyncProvider.notifier)
+          .processDownloadedZip(tempZipPath);
+    } else if (result?.isCancelled == true) {
+      ref.read(periodicSyncProvider.notifier).setSyncNotDownloaded();
+    } else {
+      ref.read(periodicSyncProvider.notifier).setSyncError();
+    }
+  }
+
   Widget _buildSetupView(BuildContext context, PeriodicSyncState syncState) {
     final theme = ShadTheme.of(context);
     final l10n = AppLocalizations.of(context)!;
@@ -223,8 +341,7 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
                   const SizedBox(height: 24),
                   ShadButton(
                     width: double.infinity,
-                    onPressed: () =>
-                        ref.read(periodicSyncProvider.notifier).downloadData(),
+                    onPressed: () => _startDownloadPeriodic(),
                     child: Text(l10n.syncDownloadNow),
                   ),
                 ] else if (syncState.status ==
@@ -256,15 +373,18 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    syncState.errorMessage ?? l10n.syncFailedMessage,
+                    _getLocalizedError(
+                      l10n,
+                      syncState.errorKey,
+                      syncState.errorMessage,
+                    ),
                     style: theme.textTheme.muted,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
                   ShadButton(
                     width: double.infinity,
-                    onPressed: () =>
-                        ref.read(periodicSyncProvider.notifier).downloadData(),
+                    onPressed: () => _startDownloadPeriodic(),
                     child: Text(l10n.syncTryAgain),
                   ),
                 ],
@@ -274,6 +394,26 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
         ),
       ),
     );
+  }
+
+  String _getLocalizedError(
+    AppLocalizations l10n,
+    String? errorKey,
+    String? defaultMessage,
+  ) {
+    if (errorKey == 'syncFailedMessage') {
+      return l10n.syncFailedMessage;
+    }
+    if (errorKey == 'periodicErrorEmptyZip') {
+      return l10n.periodicErrorEmptyZip;
+    }
+    if (errorKey == 'periodicErrorJsonNotFound') {
+      return l10n.periodicErrorJsonNotFound;
+    }
+    if (errorKey == 'periodicErrorStorageNotFound') {
+      return l10n.periodicErrorStorageNotFound;
+    }
+    return defaultMessage ?? l10n.syncFailedMessage;
   }
 
   Widget _buildListView(
@@ -363,6 +503,25 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
     final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
 
+    // Listen for sync/download events to show toast notifications
+    ref.listen<PeriodicSyncState>(periodicSyncProvider, (previous, next) {
+      if (next.status == PeriodicSyncStatus.success &&
+          previous?.status == PeriodicSyncStatus.downloading) {
+        ToastUtils.showSuccess(
+          context,
+          title: l10n.successTitle,
+          message: l10n.periodicSyncSuccessMessage,
+        );
+      } else if (next.status == PeriodicSyncStatus.error &&
+          previous?.status == PeriodicSyncStatus.downloading) {
+        ToastUtils.showError(
+          context,
+          title: l10n.errorTitle,
+          message: _getLocalizedError(l10n, next.errorKey, next.errorMessage),
+        );
+      }
+    });
+
     // Get periodic table theme from preferences
     final settings = ref.watch(settingsProvider);
     final periodicTheme = settings.periodicTheme;
@@ -385,8 +544,7 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
             ),
             IconButton(
               icon: const Icon(LucideIcons.refreshCw),
-              onPressed: () =>
-                  ref.read(periodicSyncProvider.notifier).downloadData(),
+              onPressed: () => _startDownloadPeriodic(),
             ),
             ShadPopover(
               controller: _popoverController,
