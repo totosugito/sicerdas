@@ -1,6 +1,18 @@
+import 'package:path/path.dart' as p;
 import '../../../../l10n/gen_l10n/app_localizations.dart';
 
 class PeriodicUtils {
+  static String getAtomImagePath(String baseDir, int atomicNumber) {
+    final atomicNumStr = atomicNumber.toString().padLeft(3, '0');
+    return p.join(
+      baseDir,
+      'BSE',
+      'Periodic',
+      'atomic',
+      '$atomicNumStr-atomic.jpg',
+    );
+  }
+
   // Local helper matching React translations using AppLocalizations
   static String getLocalizedLabel(AppLocalizations l10n, String key) {
     switch (key) {
@@ -49,24 +61,42 @@ class PeriodicUtils {
     if (series == null) return "";
     switch (series) {
       case 'nobleGas':
+      case 'noble_gases':
+      case 'noblegases':
         return l10n.nobleGas;
       case 'halogen':
+      case 'halogens':
         return l10n.halogen;
       case 'nonmetal':
+      case 'othernonmetals':
+      case 'other_nonmetals':
         return l10n.nonmetal;
       case 'alkaliMetal':
+      case 'alkali_metals':
+      case 'alkalimetals':
         return l10n.alkaliMetal;
       case 'alkalineEarthMetal':
+      case 'alkaline_earth_metals':
+      case 'alkalineearthmetals':
         return l10n.alkalineEarthMetal;
       case 'metalloid':
+      case 'metalloids':
         return l10n.metalloid;
       case 'postTransitionMetal':
+      case 'post_transition_metals':
+      case 'posttransitionmetals':
         return l10n.postTransitionMetal;
       case 'transitionMetal':
+      case 'transition_metals':
+      case 'transitionmetals':
         return l10n.transitionMetal;
       case 'lanthanoid':
+      case 'lanthanoids':
+      case 'lanthanides':
         return l10n.lanthanoid;
       case 'actinoid':
+      case 'actinoids':
+      case 'actinides':
         return l10n.actinoid;
       default:
         return series;

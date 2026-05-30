@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../../core/database/database.dart';
@@ -7,12 +8,14 @@ class ElementHero extends StatelessWidget {
   final PeriodicElement element;
   final String periodicTheme;
   final bool isDark;
+  final String? imagePath;
 
   const ElementHero({
     super.key,
     required this.element,
     required this.periodicTheme,
     required this.isDark,
+    this.imagePath,
   });
 
   @override
@@ -98,6 +101,24 @@ class ElementHero extends StatelessWidget {
               ],
             ),
           ),
+          if (imagePath != null) ...[
+            const SizedBox(width: 16),
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: elStyle.text.withValues(alpha: 0.2)),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.file(
+                  File(imagePath!),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
