@@ -11,16 +11,13 @@ export const getElectronShell = (electronShell: string | undefined): string | un
   }
 
   const key_ = ["K", "L", "M", "N", "O", "P", "Q", "R"];
-  const default_ = ["0", "0", "0", "0", "0", "0", "0", "0"];
   const value_ = electronShell.split(" ");
 
-  for (let i = 0; i < value_.length; i++) {
-    default_[i] = value_[i].trim();
-  }
-
   let result = "";
-  for (let i = 0; i < key_.length; i++) {
-    result = `${result}${key_[i]}${default_[i]} `;
+  for (let i = 0; i < value_.length; i++) {
+    if (i < key_.length) {
+      result = `${result}${key_[i]}${value_[i].trim()} `;
+    }
   }
 
   return result.trim();

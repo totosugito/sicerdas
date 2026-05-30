@@ -33,6 +33,7 @@ dependencies:
   internet_connection_checker_plus: ^3.0.0
   firebase_crashlytics: ^5.2.2
   firebase_core: ^4.9.0
+  flutter_widget_from_html_core: ^0.17.2
 
 dev_dependencies:
   flutter_test:

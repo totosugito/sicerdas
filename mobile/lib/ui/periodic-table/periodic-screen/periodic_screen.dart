@@ -10,7 +10,7 @@ import '../../../l10n/gen_l10n/app_localizations.dart';
 import '../../../core/providers/settings_provider.dart';
 import 'widgets/periodic_cell.dart';
 import 'widgets/periodic_table_layout.dart';
-import 'widgets/element_styles.dart';
+import '../element-detail/element-detail.dart';
 
 enum PeriodicSyncStatus { checking, notDownloaded, downloading, success, error }
 
@@ -52,12 +52,6 @@ class PeriodicSyncNotifier extends Notifier<PeriodicSyncState> {
       final hasData = await db.hasPeriodicTableData();
       if (hasData) {
         final elements = await db.getPeriodicElements();
-        // Sort elements by idy and idx so they lay out correctly
-        elements.sort((a, b) {
-          final cmpY = a.idy.compareTo(b.idy);
-          if (cmpY != 0) return cmpY;
-          return a.idx.compareTo(b.idx);
-        });
         state = PeriodicSyncState(
           status: PeriodicSyncStatus.success,
           elements: elements,
@@ -115,20 +109,16 @@ class PeriodicSyncNotifier extends Notifier<PeriodicSyncState> {
         await db.upsertPeriodicElements(elements);
         await db.upsertPeriodicElementNotes(notes);
 
-        elements.sort((a, b) {
-          final cmpY = a.idy.compareTo(b.idy);
-          if (cmpY != 0) return cmpY;
-          return a.idx.compareTo(b.idx);
-        });
+        final sortedElements = await db.getPeriodicElements();
 
         state = PeriodicSyncState(
           status: PeriodicSyncStatus.success,
-          elements: elements,
+          elements: sortedElements,
         );
       } else {
         state = state.copyWith(
           status: PeriodicSyncStatus.error,
-          errorMessage: response.data['message'] ?? 'Failed to download data',
+          errorMessage: response.data['message'],
         );
       }
     } catch (e) {
@@ -154,6 +144,7 @@ class PeriodicScreen extends ConsumerStatefulWidget {
 
 class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final _popoverController = ShadPopoverController();
   String _searchQuery = "";
   bool _isGridView = true;
 
@@ -170,6 +161,7 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
   @override
   void dispose() {
     _searchController.dispose();
+    _popoverController.dispose();
     super.dispose();
   }
 
@@ -185,230 +177,12 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
         .join(' ');
   }
 
-  void _showElementDetails(PeriodicElement element) async {
-    final db = ref.read(databaseProvider);
-    final locale = Localizations.localeOf(context).languageCode;
-
-    // Fetch localized note
-    final note =
-        await db.getPeriodicElementNote(element.atomicNumber, locale) ??
-        await db.getPeriodicElementNote(element.atomicNumber, 'en');
-
-    if (!mounted) return;
-
-    final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
-    final properties =
-        jsonDecode(element.atomicProperties) as Map<String, dynamic>? ?? {};
-    final isotope =
-        jsonDecode(element.atomicIsotope) as Map<String, dynamic>? ?? {};
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.85,
-          decoration: BoxDecoration(
-            color: theme.colorScheme.background,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            children: [
-              // Pull handler
-              Container(
-                width: 40,
-                height: 5,
-                margin: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.muted,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-
-              // Header
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 8,
-                ),
-                child: Row(
-                  children: [
-                    // Symbol Badge
-                    Builder(
-                      builder: (context) {
-                        final isDark = theme.brightness == Brightness.dark;
-                        final elStyle = getElementStyle(
-                          element.atomicGroup,
-                          'theme1',
-                          isDark: isDark,
-                        );
-                        return Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            color: elStyle.background,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: elStyle.text.withValues(alpha: 0.3),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              element.atomicSymbol,
-                              style: theme.textTheme.h3.copyWith(
-                                color: elStyle.text,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            element.atomicName,
-                            style: theme.textTheme.h4.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            '${_formatGroupName(element.atomicGroup)} • Atomic No. ${element.atomicNumber}',
-                            style: theme.textTheme.muted,
-                          ),
-                        ],
-                      ),
-                    ),
-                    ShadButton.ghost(
-                      width: 40,
-                      height: 40,
-                      padding: EdgeInsets.zero,
-                      onPressed: () => Navigator.pop(context),
-                      child: const Icon(LucideIcons.x, size: 18),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(),
-
-              // Content Scroll
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(24),
-                  children: [
-                    // Localized notes if available
-                    if (note != null) ...[
-                      Text(
-                        l10n.periodicOverview,
-                        style: theme.textTheme.large.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(note.atomicOverview, style: theme.textTheme.muted),
-                      const SizedBox(height: 20),
-
-                      Text(
-                        l10n.periodicHistory,
-                        style: theme.textTheme.large.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(note.atomicHistory, style: theme.textTheme.muted),
-                      const SizedBox(height: 20),
-
-                      Text(
-                        l10n.periodicApplications,
-                        style: theme.textTheme.large.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(note.atomicApps, style: theme.textTheme.muted),
-                      const SizedBox(height: 20),
-
-                      Text(
-                        l10n.periodicInterestingFacts,
-                        style: theme.textTheme.large.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(note.atomicFacts, style: theme.textTheme.muted),
-                      const SizedBox(height: 24),
-                    ],
-
-                    // Technical Properties
-                    Text(
-                      l10n.periodicProperties,
-                      style: theme.textTheme.large.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: [
-                        for (var key in properties.keys)
-                          if (properties[key] != null &&
-                              properties[key].toString().isNotEmpty)
-                            SizedBox(
-                              width:
-                                  MediaQuery.of(context).size.width / 2.3 - 24,
-                              child: ShadCard(
-                                padding: const EdgeInsets.all(12),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      key.replaceAll('_', ' ').toUpperCase(),
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        color:
-                                            theme.colorScheme.mutedForeground,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      properties[key].toString(),
-                                      style: theme.textTheme.small.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Isotopes if available
-                    if (isotope.isNotEmpty) ...[
-                      Text(
-                        l10n.periodicIsotopes,
-                        style: theme.textTheme.large.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(isotope.toString(), style: theme.textTheme.muted),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+  void _showElementDetails(PeriodicElement element) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ElementDetailScreen(element: element),
+      ),
     );
   }
 
@@ -482,8 +256,7 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    syncState.errorMessage ??
-                        'An error occurred while downloading data.',
+                    syncState.errorMessage ?? l10n.syncFailedMessage,
                     style: theme.textTheme.muted,
                     textAlign: TextAlign.center,
                   ),
@@ -615,30 +388,80 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
               onPressed: () =>
                   ref.read(periodicSyncProvider.notifier).downloadData(),
             ),
-            PopupMenuButton<String>(
-              icon: const Icon(LucideIcons.palette),
-              initialValue: periodicTheme,
-              onSelected: (value) {
-                ref.read(settingsProvider.notifier).setPeriodicTheme(value);
-              },
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: 'theme1',
-                  child: Text(l10n.periodicThemeClassic),
+            ShadPopover(
+              controller: _popoverController,
+              popover: (context) => IntrinsicWidth(
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final themeOption in [
+                        ('theme1', l10n.periodicThemeClassic),
+                        ('theme2', l10n.periodicThemeBorder),
+                        ('theme3', l10n.periodicThemeGradient),
+                        ('theme4', l10n.periodicThemeGradientOutline),
+                      ])
+                        Builder(
+                          builder: (context) {
+                            final isSelected = periodicTheme == themeOption.$1;
+                            final theme = ShadTheme.of(context);
+                            return InkWell(
+                              onTap: () {
+                                ref
+                                    .read(settingsProvider.notifier)
+                                    .setPeriodicTheme(themeOption.$1);
+                                _popoverController.hide();
+                              },
+                              borderRadius: BorderRadius.circular(6),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? theme.colorScheme.accent
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      LucideIcons.check,
+                                      size: 16,
+                                      color: isSelected
+                                          ? theme.colorScheme.primary
+                                          : Colors.transparent,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        themeOption.$2,
+                                        textAlign: TextAlign.start,
+                                        style: theme.textTheme.small.copyWith(
+                                          fontWeight: isSelected
+                                              ? FontWeight.w600
+                                              : FontWeight.normal,
+                                          color: theme.colorScheme.foreground,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                    ],
+                  ),
                 ),
-                PopupMenuItem(
-                  value: 'theme2',
-                  child: Text(l10n.periodicThemeBorder),
-                ),
-                PopupMenuItem(
-                  value: 'theme3',
-                  child: Text(l10n.periodicThemeGradient),
-                ),
-                PopupMenuItem(
-                  value: 'theme4',
-                  child: Text(l10n.periodicThemeGradientOutline),
-                ),
-              ],
+              ),
+              child: IconButton(
+                icon: const Icon(LucideIcons.palette),
+                onPressed: () => _popoverController.show(),
+              ),
             ),
           ],
         ],

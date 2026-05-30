@@ -31,7 +31,12 @@ extension PeriodicTableDatabaseExtension on AppDatabase {
   }
 
   Future<List<PeriodicElement>> getPeriodicElements() {
-    return select(periodicElements).get();
+    return (select(periodicElements)
+          ..orderBy([
+            (t) => OrderingTerm(expression: t.idy),
+            (t) => OrderingTerm(expression: t.idx),
+          ]))
+        .get();
   }
 
   Future<List<PeriodicElementNote>> getPeriodicElementNotes() {
