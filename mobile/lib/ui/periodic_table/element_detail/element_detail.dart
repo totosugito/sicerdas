@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../../l10n/gen_l10n/app_localizations.dart';
 import '../../../core/database/database.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/settings_provider.dart';
+import 'widgets/detail_app_bar.dart';
+import 'widgets/navigation_bar.dart';
+import 'widgets/electron_view.dart';
 import 'widgets/element_notes.dart';
 import 'widgets/element_overview.dart';
 import 'widgets/element_classification.dart';
@@ -21,14 +23,24 @@ import 'widgets/element_reactivity.dart';
 import 'widgets/element_health_safety.dart';
 import 'widgets/element_nuclear.dart';
 
+import '../periodic_screen/periodic_screen.dart';
 import '../periodic_screen/widgets/element_styles.dart';
 import '../libs/models/periodic_models.dart';
 import '../libs/utils/periodic_utils.dart';
 
 class ElementDetailScreen extends ConsumerStatefulWidget {
   final PeriodicElement element;
+  final PeriodicElement? previous;
+  final PeriodicElement? next;
+  final List<String>? initialExpandedKeys;
 
-  const ElementDetailScreen({super.key, required this.element});
+  const ElementDetailScreen({
+    super.key,
+    required this.element,
+    this.previous,
+    this.next,
+    this.initialExpandedKeys,
+  });
 
   @override
   ConsumerState<ElementDetailScreen> createState() =>
@@ -38,21 +50,42 @@ class ElementDetailScreen extends ConsumerStatefulWidget {
 class _ElementDetailScreenState extends ConsumerState<ElementDetailScreen> {
   PeriodicElementNote? _note;
   String? _imagePath;
+  String? _spectrumPath;
   late final ScrollController _scrollController;
+  late final ShadAccordionController<String> _accordionController;
   bool _isCollapsed = false;
 
   bool _hasLoadedNote = false;
+
+  static const _accordionKeys = [
+    'group_overview',
+    'group_notes',
+    'group_classification',
+    'group_dimension',
+    'group_thermal',
+    'group_bulk_physical',
+    'group_electrical',
+    'group_magnetic',
+    'group_abundances',
+    'group_reactivity',
+    'group_health_safety',
+    'group_nuclear',
+  ];
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
+    _accordionController = ShadAccordionController<String>.multiple(
+      widget.initialExpandedKeys ?? [],
+    );
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _accordionController.dispose();
     super.dispose();
   }
 
@@ -93,6 +126,17 @@ class _ElementDetailScreenState extends ConsumerState<ElementDetailScreen> {
             _imagePath = imageFile.path;
           });
         }
+
+        final spectrumPath = PeriodicUtils.getSpectrumImagePath(
+          dataDir.path,
+          widget.element.atomicNumber,
+        );
+        final spectrumFile = File(spectrumPath);
+        if (await spectrumFile.exists() && mounted) {
+          setState(() {
+            _spectrumPath = spectrumFile.path;
+          });
+        }
       }
     } catch (_) {}
   }
@@ -121,7 +165,6 @@ class _ElementDetailScreenState extends ConsumerState<ElementDetailScreen> {
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final l10n = AppLocalizations.of(context)!;
 
     final settings = ref.watch(settingsProvider);
     final periodicTheme = settings.periodicTheme;
@@ -142,170 +185,77 @@ class _ElementDetailScreenState extends ConsumerState<ElementDetailScreen> {
         jsonDecode(widget.element.atomicImages) as Map<String, dynamic>? ?? {};
     final atomicImages = AtomicImages.fromJson(imagesMap);
 
-    final appBarColor = _isCollapsed
-        ? (isDark ? Colors.white : Colors.black87)
-        : Colors.white;
-
     return Scaffold(
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
-          SliverAppBar(
-            expandedHeight: 340.0,
-            pinned: true,
-            leading: IconButton(
-              icon: Icon(LucideIcons.arrowLeft, color: appBarColor),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            backgroundColor: elStyle.background,
-            actions: [
-              IconButton(
-                icon: Icon(LucideIcons.globe, color: appBarColor),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(LucideIcons.atom, color: appBarColor),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(LucideIcons.chevronUp, color: appBarColor),
-                onPressed: () {},
-              ),
-            ],
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: false,
-              titlePadding: const EdgeInsets.only(left: 56, bottom: 16),
-              title: AnimatedOpacity(
-                duration: const Duration(milliseconds: 150),
-                opacity: _isCollapsed ? 1.0 : 0.0,
-                child: Text(
-                  "${widget.element.atomicName} [${widget.element.atomicSymbol}]",
-                  style: TextStyle(
-                    color: isDark ? Colors.white : Colors.black87,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+          ValueListenableBuilder<List<String>>(
+            valueListenable: _accordionController,
+            builder: (context, expandedItems, _) {
+              final isAllExpanded =
+                  expandedItems.length == _accordionKeys.length;
+              return DetailAppBar(
+                element: widget.element,
+                atomicProperties: atomicProperties,
+                elStyle: elStyle,
+                atomColor: atomColor,
+                imagePath: _imagePath,
+                isCollapsed: _isCollapsed,
+                isDark: isDark,
+                isAllExpanded: isAllExpanded,
+                onToggleExpandCollapse: () {
+                  if (isAllExpanded) {
+                    _accordionController.value = const [];
+                  } else {
+                    _accordionController.value = _accordionKeys;
+                  }
+                },
+              );
+            },
+          ),
+          ElementNavBar(
+            previous: widget.previous,
+            next: widget.next,
+            elStyle: elStyle,
+            periodicTheme: periodicTheme,
+            isDark: isDark,
+            onNavigate: (target) {
+              final byNumber = {
+                for (final e in ref.read(periodicSyncProvider).elements)
+                  e.atomicNumber: e,
+              };
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ElementDetailScreen(
+                    element: target,
+                    previous: byNumber[target.atomicNumber - 1],
+                    next: byNumber[target.atomicNumber + 1],
+                    initialExpandedKeys: _accordionController.value,
                   ),
                 ),
-              ),
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  if (_imagePath != null)
-                    Image.file(File(_imagePath!), fit: BoxFit.cover)
-                  else
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: elStyle.gradient != null
-                            ? LinearGradient(
-                                colors: elStyle.gradient!,
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              )
-                            : null,
-                        color: elStyle.gradient == null
-                            ? elStyle.background
-                            : null,
-                      ),
-                    ),
-                  // Dark overlay gradient to make text readable
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.black.withValues(alpha: 0.35),
-                          Colors.transparent,
-                          Colors.black.withValues(alpha: 0.8),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
-                  ),
-                  // Overlay elements matching screenshot (bottom left)
-                  Positioned(
-                    left: 16,
-                    bottom: 16,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Colored Group Badge
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: atomColor, // Group color
-                          ),
-                          child: Text(
-                            "${widget.element.atomicNumber}  |  ${PeriodicUtils.getLocalizedSeries(l10n, widget.element.atomicGroup)}",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        // H Symbol, Hydrogen Name, and Atomic Weight
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              widget.element.atomicSymbol,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 48,
-                                fontWeight: FontWeight.w300,
-                                height: 0.9,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  widget.element.atomicName,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1.0,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  "${atomicProperties.atomicWeight ?? ''} g/mol",
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              );
+            },
+          ),
+          SliverToBoxAdapter(
+            child: ElectronView(
+              properties: atomicProperties,
+              atomicNumber: widget.element.atomicNumber,
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                ShadAccordion<String>(
+                ShadAccordion<String>.multiple(
+                  controller: _accordionController,
                   children: [
                     ElementOverview(
                       properties: atomicProperties,
                       images: atomicImages,
                       atomColor: atomColor,
                       atomSymbol: widget.element.atomicSymbol,
+                      spectrumPath: _spectrumPath,
                     ),
                     ElementNotes(note: _note),
                     ElementClassification(properties: atomicProperties),

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../../l10n/gen_l10n/app_localizations.dart';
@@ -12,6 +13,7 @@ class ElementOverview extends StatelessWidget {
   final AtomicImages? images;
   final Color atomColor;
   final String atomSymbol;
+  final String? spectrumPath;
 
   const ElementOverview({
     super.key,
@@ -19,6 +21,7 @@ class ElementOverview extends StatelessWidget {
     this.images,
     required this.atomColor,
     required this.atomSymbol,
+    this.spectrumPath,
   });
 
   @override
@@ -39,6 +42,8 @@ class ElementOverview extends StatelessWidget {
         : properties.atomicWeight;
 
     final spectrumUrl = images?.spectrum;
+    final hasLocalSpectrum = spectrumPath != null;
+    final hasRemoteSpectrum = spectrumUrl != null && spectrumUrl.isNotEmpty;
 
     final shellList = PeriodicUtils.getElectronShellValue(
       properties.electronShell,
@@ -98,7 +103,7 @@ class ElementOverview extends StatelessWidget {
                 ),
               ),
             ),
-            if (spectrumUrl != null && spectrumUrl.isNotEmpty) ...[
+            if (hasLocalSpectrum || hasRemoteSpectrum) ...[
               const SizedBox(height: 12),
               Text(
                 l10n.emissionSpectrum,
@@ -118,12 +123,19 @@ class ElementOverview extends StatelessWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(6),
-                  child: Image.network(
-                    spectrumUrl,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) =>
-                        const SizedBox.shrink(),
-                  ),
+                  child: hasLocalSpectrum
+                      ? Image.file(
+                          File(spectrumPath!),
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const SizedBox.shrink(),
+                        )
+                      : Image.network(
+                          spectrumUrl!,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const SizedBox.shrink(),
+                        ),
                 ),
               ),
             ],

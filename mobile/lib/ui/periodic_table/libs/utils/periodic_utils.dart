@@ -13,6 +13,17 @@ class PeriodicUtils {
     );
   }
 
+  static String getSpectrumImagePath(String baseDir, int atomicNumber) {
+    final atomicNumStr = atomicNumber.toString().padLeft(3, '0');
+    return p.join(
+      baseDir,
+      'BSE',
+      'Periodic',
+      'spectrum',
+      '$atomicNumStr-spectrum.png',
+    );
+  }
+
   // Local helper matching React translations using AppLocalizations
   static String getLocalizedLabel(AppLocalizations l10n, String key) {
     switch (key) {
@@ -241,5 +252,9 @@ class PeriodicUtils {
       'ionizationEnergies': 'kJ/mol',
     };
     return elementUnits[key] ?? '';
+  }
+
+  static String getElementUrl(int atomicNumber) {
+    return 'https://sicerdas.com/periodic/element/$atomicNumber';
   }
 }

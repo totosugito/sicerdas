@@ -259,10 +259,18 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
   }
 
   void _showElementDetails(PeriodicElement element) {
+    final byNumber = {
+      for (final e in ref.read(periodicSyncProvider).elements)
+        e.atomicNumber: e
+    };
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ElementDetailScreen(element: element),
+        builder: (context) => ElementDetailScreen(
+          element: element,
+          previous: byNumber[element.atomicNumber - 1],
+          next: byNumber[element.atomicNumber + 1],
+        ),
       ),
     );
   }

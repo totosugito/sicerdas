@@ -324,5 +324,8 @@
   "knownIsotopes": "Isotop yang diketahui",
   "stableIsotopes": "Isotop stabil",
   "isotopicAbundances": "Kelimpahan isotop",
-  "viewIsotopeDetails": "Lihat Detail Isotop"
+  "viewIsotopeDetails": "Lihat Detail Isotop",
+  "electrons": "Elektron",
+  "protons": "Proton",
+  "neutrons": "Neutron"
 }

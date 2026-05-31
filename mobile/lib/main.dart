@@ -48,9 +48,19 @@ void main() async {
   Logger.level = kReleaseMode ? Level.off : Level.debug;
 
   // Initialize according to Flutter Authors' example
-  await GoogleSignIn.instance.initialize(serverClientId: EnvConfig.googleWebClientId);
+  await GoogleSignIn.instance.initialize(
+    serverClientId: EnvConfig.googleWebClientId,
+  );
 
-  runApp(ProviderScope(overrides: [sharedPreferencesProvider.overrideWithValue(sharedPrefs), dioProvider.overrideWithValue(dio)], child: const MyApp()));
+  runApp(
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+        dioProvider.overrideWithValue(dio),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends ConsumerWidget {
@@ -85,6 +95,9 @@ class MyApp extends ConsumerWidget {
           input: const Color(0xFFE9ECEF),
           ring: const Color(0xFF1D87E5),
         ),
+        accordionTheme: const ShadAccordionTheme(
+          padding: EdgeInsets.symmetric(vertical: 6.0),
+        ),
       ),
       darkTheme: ShadThemeData(
         brightness: Brightness.dark,
@@ -108,6 +121,9 @@ class MyApp extends ConsumerWidget {
           border: const Color(0xFF343A40),
           input: const Color(0xFF2C3136),
           ring: const Color(0xFF1D87E5),
+        ),
+        accordionTheme: const ShadAccordionTheme(
+          padding: EdgeInsets.symmetric(vertical: 6.0),
         ),
       ),
       themeMode: settings.themeMode,

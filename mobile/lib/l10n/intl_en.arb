@@ -324,5 +324,8 @@
   "knownIsotopes": "Known isotopes",
   "stableIsotopes": "Stable isotopes",
   "isotopicAbundances": "Isotopic abundances",
-  "viewIsotopeDetails": "View Isotope Details"
+  "viewIsotopeDetails": "View Isotope Details",
+  "electrons": "Electrons",
+  "protons": "Protons",
+  "neutrons": "Neutrons"
 }
