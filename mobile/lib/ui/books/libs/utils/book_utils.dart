@@ -18,13 +18,7 @@ class BookUtils {
     return '$baseUrl/book/images/$dirName/$size/$fileId/${fileId}_0000_$size.jpg';
   }
 
-  static String getBookSamplePageUrl({
-    required String baseUrl,
-    required int bookId,
-    required int pageIndex,
-    String size = 'xs',
-    int maxChar = 4,
-  }) {
+  static String getBookSamplePageUrl({required String baseUrl, required int bookId, required int pageIndex, String size = 'xs', int maxChar = 4}) {
     final dirName = (bookId / 1000).floor();
     final fileId = bookId.toString().padLeft(maxChar, '0');
     final pageStr = pageIndex.toString().padLeft(4, '0');
@@ -46,16 +40,19 @@ class BookUtils {
 
   static Future<String> getBookRootDir() async {
     final dataDir = await getExternalStorageDirectory();
-    final parentPath = dataDir != null
-        ? dataDir.path
-        : (await getApplicationDocumentsDirectory()).path;
-    final booksDir = Directory(
-      p.join(parentPath, AppConstants.appDirParent, AppConstants.appDirBooks),
-    );
+    final parentPath = dataDir != null ? dataDir.path : (await getApplicationDocumentsDirectory()).path;
+    final booksDir = Directory(p.join(parentPath, AppConstants.appDirParent, AppConstants.appDirBooks));
     if (!await booksDir.exists()) {
       await booksDir.create(recursive: true);
     }
     return "${booksDir.path}${Platform.pathSeparator}";
+  }
+
+  static String getBookWebUrl(Book book) {
+    final cleanTitle = book.title.toLowerCase().replaceAll(RegExp(r'[^a-z0-9\s-]'), '').replaceAll(RegExp(r'\s+'), '-').replaceAll(RegExp(r'-+'), '-');
+    final slug = cleanTitle.length > 50 ? cleanTitle.substring(0, 50) : cleanTitle;
+    final trimmedSlug = slug.replaceAll(RegExp(r'^-+|-+$'), '');
+    return 'https://sicerdas.com/book/${book.bookId}-$trimmedSlug';
   }
 }
 
@@ -63,9 +60,7 @@ extension BookExtension on Book {
   String getAutoFileNameFromTitle() {
     final filePrefix = bookId.toString().padLeft(4, "0");
     final cleanTitle = MyUtils.removeNonAlphanumericChar(title);
-    final textTitle = cleanTitle.length < 50
-        ? cleanTitle
-        : cleanTitle.substring(0, 50);
+    final textTitle = cleanTitle.length < 50 ? cleanTitle : cleanTitle.substring(0, 50);
     return "${filePrefix}_$textTitle";
   }
 

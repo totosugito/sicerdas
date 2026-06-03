@@ -325,6 +325,34 @@
   "stableIsotopes": "Stable isotopes",
   "isotopicAbundances": "Isotopic abundances",
   "viewIsotopeDetails": "View Isotope Details",
+  "abundance": "Abundance",
+  "massExcess": "Mass excess",
+  "bindingEnergy": "Binding energy",
+  "magneticMoment": "Magnetic moment",
+  "quadrupoleMoment": "Quadrupole moment",
+  "quadrupoleMomentIsotope": "Quadrupole Moment",
+  "spinParity": "Spin/Parity",
+  "total": "Total",
+  "stable": "Stable",
+  "unstable": "Unstable",
+  "isotopeInformation": "Isotope Information",
+  "isotopeDescription": "{name} has {total} known isotopes, with {stable} being stable and {unstable} being radioactive. Isotopes are variants of a chemical element which differ in neutron number.",
+  "@isotopeDescription": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "total": {
+        "type": "int"
+      },
+      "stable": {
+        "type": "int"
+      },
+      "unstable": {
+        "type": "int"
+      }
+    }
+  },
   "electrons": "Electrons",
   "protons": "Protons",
   "neutrons": "Neutrons"

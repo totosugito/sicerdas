@@ -325,6 +325,34 @@
   "stableIsotopes": "Isotop stabil",
   "isotopicAbundances": "Kelimpahan isotop",
   "viewIsotopeDetails": "Lihat Detail Isotop",
+  "abundance": "Kelimpahan",
+  "massExcess": "Kelebihan massa",
+  "bindingEnergy": "Energi pengikat",
+  "magneticMoment": "Momen magnetik",
+  "quadrupoleMoment": "Momen quadrupole",
+  "quadrupoleMomentIsotope": "Momen Quadrupole",
+  "spinParity": "Spin/Paritas",
+  "total": "Total",
+  "stable": "Stabil",
+  "unstable": "Tidak Stabil",
+  "isotopeInformation": "Informasi Isotop",
+  "isotopeDescription": "{name} memiliki {total} isotop yang diketahui, dengan {stable} yang stabil dan {unstable} yang radioaktif. Isotop adalah varian dari unsur kimia yang berbeda dalam jumlah neutron.",
+  "@isotopeDescription": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "total": {
+        "type": "int"
+      },
+      "stable": {
+        "type": "int"
+      },
+      "unstable": {
+        "type": "int"
+      }
+    }
+  },
   "electrons": "Elektron",
   "protons": "Proton",
   "neutrons": "Neutron"
