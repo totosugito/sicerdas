@@ -6,6 +6,7 @@ import '../../../core/providers/settings_provider.dart';
 import '../../../core/database/database.dart';
 import '../../../../l10n/gen_l10n/app_localizations.dart';
 import '../periodic_screen/widgets/element_styles.dart';
+import 'widgets/periodic_hero_cell.dart';
 import '../libs/models/periodic_models.dart';
 import '../libs/utils/periodic_utils.dart';
 import 'widgets/isotope_card.dart';
@@ -50,10 +51,15 @@ class ElementIsotopeScreen extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
     final periodicTheme = settings.periodicTheme;
 
-    final elStyle = getElementStyle(element.atomicGroup, periodicTheme, isDark: isDark);
+    final elStyle = getElementStyle(
+      element.atomicGroup,
+      periodicTheme,
+      isDark: isDark,
+    );
     final Color atomColor = elStyle.atomColor;
 
-    final Map<String, dynamic> properties = jsonDecode(element.atomicProperties) as Map<String, dynamic>? ?? {};
+    final Map<String, dynamic> properties =
+        jsonDecode(element.atomicProperties) as Map<String, dynamic>? ?? {};
     final atomicProperties = AtomicProperties.fromJson(properties);
 
     final knownIsotopes = atomicProperties.knownIsotopes ?? [];
@@ -62,7 +68,8 @@ class ElementIsotopeScreen extends ConsumerWidget {
     final stableCount = stableIsotopes.length;
     final unstableCount = totalIsotopes - stableCount;
 
-    final Map<String, dynamic> isotopeMap = jsonDecode(element.atomicIsotope) as Map<String, dynamic>? ?? {};
+    final Map<String, dynamic> isotopeMap =
+        jsonDecode(element.atomicIsotope) as Map<String, dynamic>? ?? {};
 
     final List<IsotopeData> isotopesList = [];
     for (int i = 0; i < knownIsotopes.length; i++) {
@@ -105,7 +112,7 @@ class ElementIsotopeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('${element.atomicName} - ${l10n.periodicIsotopes}'),
-        centerTitle: true,
+        centerTitle: false,
         backgroundColor: theme.colorScheme.background,
         elevation: 0,
         foregroundColor: theme.colorScheme.foreground,
@@ -119,45 +126,41 @@ class ElementIsotopeScreen extends ConsumerWidget {
               // Hero Row
               Row(
                 children: [
-                  Container(
-                    width: 72,
-                    height: 72,
-                    decoration: BoxDecoration(
-                      color: elStyle.background,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: atomColor.withValues(alpha: 0.3), width: 1),
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          top: 4,
-                          left: 6,
-                          child: Text(
-                            '${element.atomicNumber}',
-                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'monospace', color: Colors.white),
-                          ),
-                        ),
-                        Center(
-                          child: Text(
-                            element.atomicSymbol,
-                            style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
+                  PeriodicHeroCell(
+                    element: element,
+                    theme: periodicTheme,
+                    isDark: isDark,
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(element.atomicName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        Text(
+                          element.atomicName,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         const SizedBox(height: 2),
                         Text(
-                          PeriodicUtils.getLocalizedSeries(l10n, atomicProperties.series),
-                          style: TextStyle(fontSize: 13, color: theme.colorScheme.mutedForeground),
+                          PeriodicUtils.getLocalizedSeries(
+                            l10n,
+                            atomicProperties.series,
+                          ),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: theme.colorScheme.mutedForeground,
+                          ),
                         ),
-                        Text('${atomicProperties.atomicWeight ?? ""} g/mol', style: TextStyle(fontSize: 12, color: theme.colorScheme.mutedForeground)),
+                        Text(
+                          '${atomicProperties.atomicWeight ?? ""} g/mol',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: theme.colorScheme.mutedForeground,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -168,11 +171,29 @@ class ElementIsotopeScreen extends ConsumerWidget {
               // Statistics grid
               Row(
                 children: [
-                  _buildStatCard(context, theme, '$totalIsotopes', l10n.total, atomColor),
+                  _buildStatCard(
+                    context,
+                    theme,
+                    '$totalIsotopes',
+                    l10n.total,
+                    atomColor,
+                  ),
                   const SizedBox(width: 8),
-                  _buildStatCard(context, theme, '$stableCount', l10n.stable, Colors.green),
+                  _buildStatCard(
+                    context,
+                    theme,
+                    '$stableCount',
+                    l10n.stable,
+                    Colors.green,
+                  ),
                   const SizedBox(width: 8),
-                  _buildStatCard(context, theme, '$unstableCount', l10n.unstable, Colors.red),
+                  _buildStatCard(
+                    context,
+                    theme,
+                    '$unstableCount',
+                    l10n.unstable,
+                    Colors.red,
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -184,16 +205,33 @@ class ElementIsotopeScreen extends ConsumerWidget {
                 decoration: BoxDecoration(
                   color: theme.colorScheme.muted.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: theme.colorScheme.border.withValues(alpha: 0.4)),
+                  border: Border.all(
+                    color: theme.colorScheme.border.withValues(alpha: 0.4),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l10n.isotopeInformation, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                    Text(
+                      l10n.isotopeInformation,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     Text(
-                      l10n.isotopeDescription(element.atomicName, totalIsotopes, stableCount, unstableCount),
-                      style: TextStyle(fontSize: 13, color: theme.colorScheme.mutedForeground, height: 1.4),
+                      l10n.isotopeDescription(
+                        element.atomicName,
+                        totalIsotopes,
+                        stableCount,
+                        unstableCount,
+                      ),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: theme.colorScheme.mutedForeground,
+                        height: 1.4,
+                      ),
                     ),
                   ],
                 ),
@@ -206,7 +244,11 @@ class ElementIsotopeScreen extends ConsumerWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: isotopesList.length,
                 itemBuilder: (context, index) {
-                  return IsotopeCard(atomColor: atomColor, isotope: isotopesList[index], atomicSymbol: element.atomicSymbol);
+                  return IsotopeCard(
+                    atomColor: atomColor,
+                    isotope: isotopesList[index],
+                    atomicSymbol: element.atomicSymbol,
+                  );
                 },
               ),
             ],
@@ -216,7 +258,13 @@ class ElementIsotopeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatCard(BuildContext context, ShadThemeData theme, String value, String label, Color textColor) {
+  Widget _buildStatCard(
+    BuildContext context,
+    ShadThemeData theme,
+    String value,
+    String label,
+    Color textColor,
+  ) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
@@ -229,12 +277,20 @@ class ElementIsotopeScreen extends ConsumerWidget {
           children: [
             Text(
               value,
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor),
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
             ),
             const SizedBox(height: 4),
             Text(
               label.toUpperCase(),
-              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: theme.colorScheme.mutedForeground),
+              style: TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.mutedForeground,
+              ),
               textAlign: TextAlign.center,
             ),
           ],

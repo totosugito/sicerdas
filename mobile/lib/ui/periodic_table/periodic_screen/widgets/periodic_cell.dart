@@ -21,13 +21,36 @@ class PeriodicCell extends StatelessWidget {
     this.onTap,
   });
 
+  String _getColumnGroup(String group) {
+    const Map<String, String> groups = {
+      '1': '1A',
+      '2': '2A',
+      '3': '3B',
+      '4': '4B',
+      '5': '5B',
+      '6': '6B',
+      '7': '7B',
+      '8': '8B',
+      '9': '8B',
+      '10': '8B',
+      '11': '1B',
+      '12': '2B',
+      '13': '3A',
+      '14': '4A',
+      '15': '5A',
+      '16': '6A',
+      '17': '7A',
+      '18': '8A',
+    };
+    final gr = groups[group];
+    if (gr == null) return '';
+    return ' / $gr';
+  }
+
   @override
   Widget build(BuildContext context) {
     if (element == null) {
-      return SizedBox(
-        width: cellSize + 4,
-        height: cellSize + 4,
-      );
+      return SizedBox(width: cellSize + 4, height: cellSize + 4);
     }
 
     final el = element!;
@@ -37,7 +60,11 @@ class PeriodicCell extends StatelessWidget {
 
     // Handle empty cells
     if (el.atomicGroup == 'empty') {
-      return SizedBox(width: cellSize, height: cellSize);
+      final double width = el.idx == 0 ? (cellSize / 2) + 4 : cellSize + 4;
+      final double height = (el.idy == 0 || el.idy == 8)
+          ? (cellSize / 2) + 4
+          : cellSize + 4;
+      return SizedBox(width: width, height: height);
     }
 
     // Handle header/text cells
@@ -50,16 +77,16 @@ class PeriodicCell extends StatelessWidget {
         decoration: BoxDecoration(
           color: isStickyHeader ? style.background : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(
-            color: style.border,
-            width: 1,
-          ),
+          border: Border.all(color: style.border, width: 1),
         ),
         child: Center(
           child: Text(
-            el.atomicSymbol,
+            el.atomicSymbol +
+                ((el.idy == 0 && el.idx > 0)
+                    ? _getColumnGroup(el.atomicSymbol)
+                    : ''),
             style: TextStyle(
-              fontSize: 11,
+              fontSize: 9,
               fontWeight: FontWeight.bold,
               color: isDark ? Colors.white60 : Colors.black54,
             ),

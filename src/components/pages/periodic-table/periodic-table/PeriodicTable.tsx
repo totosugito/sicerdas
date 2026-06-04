@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils";
 import { PeriodicCell } from "./PeriodicCell";
 import { PeriodicElement } from "../types/types";
 import { SearchBar } from "./SearchBar";
-import { PeriodicTableHeader } from "./PeriodicTableHeader";
 import { ThemeSelector } from "./ThemeSelector";
 import { ElementDetailPopover } from "./ElementDetailPopover";
 import { useAppStore } from "@/stores/useAppStore";
