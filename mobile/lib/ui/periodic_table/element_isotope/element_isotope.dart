@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/providers/settings_provider.dart';
+import '../libs/providers/periodic_provider.dart';
 import '../../../core/database/database.dart';
 import '../../../../l10n/gen_l10n/app_localizations.dart';
 import '../periodic_screen/widgets/element_styles.dart';
@@ -48,8 +48,7 @@ class ElementIsotopeScreen extends ConsumerWidget {
     final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
 
-    final settings = ref.watch(settingsProvider);
-    final periodicTheme = settings.periodicTheme;
+    final periodicTheme = ref.watch(periodicThemeProvider);
 
     final elStyle = getElementStyle(
       element.atomicGroup,

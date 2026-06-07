@@ -383,7 +383,7 @@
   "chemistryDictionaryMR": "M-R",
   "chemistryDictionarySZ": "S-Z",
   "viewDetails": "View Details",
-  "elementComparisonTitle": "Periodic Element Comparison",
+  "elementComparisonTitle": "Element Comparison",
   "elementComparisonSubtitle": "Compare properties of chemical elements with visual progress indicators",
   "elementComparisonSearchPlaceholder": "Search elements by name, symbol, or atomic number...",
   "elementComparisonElementsFound": "{count} elements found",
@@ -394,7 +394,7 @@
   "elementComparisonSortDirection": "Direction:",
   "elementComparisonSortAsc": "↑ Ascending",
   "elementComparisonSortDesc": "↓ Descending",
-  "elementComparisonSortNone": "None",
+  "elementComparisonSortAuto": "Auto",
   "elementComparisonShowLess": "Show Less",
   "elementComparisonShowMore": "Show More"
 }

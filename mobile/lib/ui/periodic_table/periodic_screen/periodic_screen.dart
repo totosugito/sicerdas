@@ -7,9 +7,10 @@ import '../../../core/database/database.dart';
 import '../../../core/providers/dio_provider.dart';
 import '../../../core/network/api_endpoints.dart';
 import '../../../l10n/gen_l10n/app_localizations.dart';
-import '../../../core/providers/settings_provider.dart';
+
 import '../../../core/utils/toast_utils.dart';
 import '../../widgets/download_progress_dialog.dart';
+import '../libs/providers/periodic_provider.dart';
 import '../libs/providers/periodic_sync_provider.dart';
 import 'widgets/periodic_setup_view.dart';
 import 'widgets/periodic_table_layout.dart';
@@ -27,7 +28,7 @@ class PeriodicScreen extends ConsumerStatefulWidget {
 
 class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
   final TextEditingController _searchController = TextEditingController();
-  final _popoverController = ShadPopoverController();
+
   String _searchQuery = "";
   bool _isSearching = false;
 
@@ -44,13 +45,12 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
   @override
   void dispose() {
     _searchController.dispose();
-    _popoverController.dispose();
+
     super.dispose();
   }
 
   void _showElementDetails(PeriodicElement element) {
-    final settings = ref.read(settingsProvider);
-    final periodicTheme = settings.periodicTheme;
+    final periodicTheme = ref.read(periodicThemeProvider);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -161,8 +161,7 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
     });
 
     // Get periodic table theme from preferences
-    final settings = ref.watch(settingsProvider);
-    final periodicTheme = settings.periodicTheme;
+    final periodicTheme = ref.watch(periodicThemeProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -201,104 +200,93 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
                 });
               },
             ),
-            IconButton(
-              icon: const Icon(LucideIcons.book),
-              tooltip: l10n.chemistryDictionary,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ChemistryDictionaryScreen(),
-                  ),
-                );
+            PopupMenuButton<String>(
+              icon: const Icon(LucideIcons.moreVertical),
+              onSelected: (value) {
+                switch (value) {
+                  case 'dictionary':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ChemistryDictionaryScreen(),
+                      ),
+                    );
+                    break;
+                  case 'comparison':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ElementComparisonScreen(),
+                      ),
+                    );
+                    break;
+                  default:
+                    if (value.startsWith('theme')) {
+                      ref
+                          .read(periodicThemeProvider.notifier)
+                          .setTheme(value);
+                    }
+                }
               },
-            ),
-            IconButton(
-              icon: const Icon(LucideIcons.gitCompare),
-              tooltip: l10n.elementComparisonTitle,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ElementComparisonScreen(),
-                  ),
-                );
-              },
-            ),
-            ShadPopover(
-              controller: _popoverController,
-              popover: (context) => IntrinsicWidth(
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'dictionary',
+                  child: Row(
                     children: [
-                      for (final themeOption in [
-                        ('theme1', l10n.periodicThemeClassic),
-                        ('theme2', l10n.periodicThemeBorder),
-                        ('theme3', l10n.periodicThemeGradient),
-                        ('theme4', l10n.periodicThemeGradientOutline),
-                      ])
-                        Builder(
-                          builder: (context) {
-                            final isSelected = periodicTheme == themeOption.$1;
-                            final theme = ShadTheme.of(context);
-                            return InkWell(
-                              onTap: () {
-                                ref
-                                    .read(settingsProvider.notifier)
-                                    .setPeriodicTheme(themeOption.$1);
-                                _popoverController.hide();
-                              },
-                              borderRadius: BorderRadius.circular(6),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: isSelected
-                                      ? theme.colorScheme.accent
-                                      : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 8,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      LucideIcons.check,
-                                      size: 16,
-                                      color: isSelected
-                                          ? theme.colorScheme.primary
-                                          : Colors.transparent,
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Text(
-                                        themeOption.$2,
-                                        textAlign: TextAlign.start,
-                                        style: theme.textTheme.small.copyWith(
-                                          fontWeight: isSelected
-                                              ? FontWeight.w600
-                                              : FontWeight.normal,
-                                          color: theme.colorScheme.foreground,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                      const Icon(LucideIcons.book, size: 18),
+                      const SizedBox(width: 12),
+                      Text(l10n.chemistryDictionary),
                     ],
                   ),
                 ),
-              ),
-              child: IconButton(
-                icon: const Icon(LucideIcons.palette),
-                onPressed: () => _popoverController.show(),
-              ),
+                PopupMenuItem(
+                  value: 'comparison',
+                  child: Row(
+                    children: [
+                      const Icon(LucideIcons.gitCompare, size: 18),
+                      const SizedBox(width: 12),
+                      Text(l10n.elementComparisonTitle),
+                    ],
+                  ),
+                ),
+                const PopupMenuDivider(),
+                PopupMenuItem(
+                  enabled: false,
+                  height: 32,
+                  child: Text(
+                    l10n.periodicThemeLabel,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ),
+                for (final themeOption in [
+                  ('theme1', l10n.periodicThemeClassic),
+                  ('theme2', l10n.periodicThemeBorder),
+                  ('theme3', l10n.periodicThemeGradient),
+                  ('theme4', l10n.periodicThemeGradientOutline),
+                ])
+                  PopupMenuItem(
+                    value: themeOption.$1,
+                    child: Row(
+                      children: [
+                        Icon(
+                          LucideIcons.check,
+                          size: 16,
+                          color: periodicTheme == themeOption.$1
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.transparent,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(themeOption.$2),
+                      ],
+                    ),
+                  ),
+              ],
             ),
           ],
         ],

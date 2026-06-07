@@ -7,23 +7,19 @@ import '../models/app_settings.dart';
 class SettingsState {
   final ThemeMode themeMode;
   final Locale locale;
-  final String periodicTheme;
 
   SettingsState({
     required this.themeMode,
     required this.locale,
-    required this.periodicTheme,
   });
 
   SettingsState copyWith({
     ThemeMode? themeMode,
     Locale? locale,
-    String? periodicTheme,
   }) {
     return SettingsState(
       themeMode: themeMode ?? this.themeMode,
       locale: locale ?? this.locale,
-      periodicTheme: periodicTheme ?? this.periodicTheme,
     );
   }
 }
@@ -36,7 +32,6 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
 class SettingsNotifier extends Notifier<SettingsState> {
   static const _themeKey = 'theme_mode';
   static const _localeKey = 'locale';
-  static const _periodicThemeKey = 'periodic_table_theme';
 
   @override
   SettingsState build() {
@@ -50,13 +45,9 @@ class SettingsNotifier extends Notifier<SettingsState> {
     final languageCode = prefs.getString(_localeKey) ?? 'id';
     final locale = Locale(languageCode);
 
-    // Load saved periodic theme
-    final periodicTheme = prefs.getString(_periodicThemeKey) ?? 'theme1';
-
     return SettingsState(
       themeMode: themeMode,
       locale: locale,
-      periodicTheme: periodicTheme,
     );
   }
 
@@ -68,11 +59,6 @@ class SettingsNotifier extends Notifier<SettingsState> {
   void setLocale(Locale locale) {
     state = state.copyWith(locale: locale);
     ref.read(sharedPreferencesProvider).setString(_localeKey, locale.languageCode);
-  }
-
-  void setPeriodicTheme(String theme) {
-    state = state.copyWith(periodicTheme: theme);
-    ref.read(sharedPreferencesProvider).setString(_periodicThemeKey, theme);
   }
 }
 

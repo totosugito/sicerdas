@@ -6,7 +6,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../core/database/database.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../../core/providers/settings_provider.dart';
+import '../libs/providers/periodic_provider.dart';
 import 'widgets/detail_app_bar.dart';
 import 'widgets/navigation_bar.dart';
 import 'widgets/electron_view.dart';
@@ -166,8 +166,7 @@ class _ElementDetailScreenState extends ConsumerState<ElementDetailScreen> {
     final theme = ShadTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final settings = ref.watch(settingsProvider);
-    final periodicTheme = settings.periodicTheme;
+    final periodicTheme = ref.watch(periodicThemeProvider);
 
     final elStyle = getElementStyle(
       widget.element.atomicGroup,
