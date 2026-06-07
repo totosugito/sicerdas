@@ -14,7 +14,7 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 import '../models/app_settings.dart';
 import '../providers/logger_provider.dart';
 import '../config/app_constants.dart';
-import '../../ui/periodic_table/periodic_screen/periodic_screen.dart';
+import '../../ui/periodic_table/libs/providers/periodic_sync_provider.dart';
 
 final versionServiceProvider = Provider<VersionService>((ref) {
   final dio = ref.watch(dioProvider);

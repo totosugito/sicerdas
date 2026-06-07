@@ -355,5 +355,32 @@
   },
   "electrons": "Elektron",
   "protons": "Proton",
-  "neutrons": "Neutron"
+  "neutrons": "Neutron",
+  "chemistryDictionary": "Kamus Kimia",
+  "chemistryDictionaryDesc": "Jelajahi istilah kimia dan definisinya",
+  "chemistryDictionarySearchPlaceholder": "Cari istilah atau definisi...",
+  "chemistryDictionaryResultsInfo": "Menampilkan {start}-{end} dari {total} entri",
+  "@chemistryDictionaryResultsInfo": {
+    "placeholders": {
+      "start": {
+        "type": "int"
+      },
+      "end": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "chemistryDictionaryNoEntriesFoundTitle": "Tidak ada entri ditemukan",
+  "chemistryDictionaryNoEntriesFoundDesc": "Coba sesuaikan pencarian atau kriteria filter Anda",
+  "chemistryDictionaryAll": "Semua",
+  "chemistryDictionaryCopyToClipboard": "Definisi disalin ke papan klip",
+  "chemistryDictionaryCopyText": "Salin definisi",
+  "chemistryDictionaryAF": "A-F",
+  "chemistryDictionaryGL": "G-L",
+  "chemistryDictionaryMR": "M-R",
+  "chemistryDictionarySZ": "S-Z",
+  "viewDetails": "Lihat Detail"
 }

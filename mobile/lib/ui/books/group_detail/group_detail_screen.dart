@@ -113,73 +113,154 @@ class GroupDetailScreen extends ConsumerWidget {
       }
     });
 
+    final booksCount = booksAsync.value?.length;
+    final subtitleText = booksCount != null
+        ? AppLocalizations.of(context)!.booksCount(
+            booksCount,
+            '$booksCount${group.bookTotal != null ? " / ${group.bookTotal}" : ""}',
+          )
+        : (group.bookTotal != null
+              ? AppLocalizations.of(
+                  context,
+                )!.booksCount(group.bookTotal!, '${group.bookTotal}')
+              : AppLocalizations.of(context)!.booksCount(0, '0'));
+
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
-      appBar: AppBar(
-        titleSpacing: 0,
-        title: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    group.name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                ],
+      body: CustomScrollView(
+        slivers: [
+          // Collapsible Hero Header
+          SliverAppBar(
+            expandedHeight: 140.0,
+            pinned: true,
+            backgroundColor: theme.brightness == Brightness.dark
+                ? theme.colorScheme.card
+                : theme.colorScheme.primary,
+            iconTheme: const IconThemeData(color: Colors.white),
+            titleSpacing: 0,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Builder(
+                builder: (context) {
+                  final settings = context
+                      .dependOnInheritedWidgetOfExactType<
+                        FlexibleSpaceBarSettings
+                      >();
+                  double collapseProgress = 0.0;
+                  if (settings != null) {
+                    final deltaExtent = settings.maxExtent - settings.minExtent;
+                    if (deltaExtent > 0.0) {
+                      collapseProgress =
+                          (1.0 -
+                                  (settings.currentExtent -
+                                          settings.minExtent) /
+                                      deltaExtent)
+                              .clamp(0.0, 1.0);
+                    }
+                  }
+                  final showBadge = collapseProgress > 0.85;
+                  final opacity = showBadge
+                      ? (collapseProgress - 0.85) / 0.15
+                      : 0.0;
+
+                  return Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          group.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (showBadge)
+                        Opacity(
+                          opacity: opacity.clamp(0.0, 1.0),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              booksCount != null
+                                  ? '$booksCount${group.bookTotal != null ? " / ${group.bookTotal}" : ""}'
+                                  : '${group.bookTotal ?? 0}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 9,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
               ),
-            ),
-            booksAsync.when(
-              data: (books) => Container(
-                margin: const EdgeInsets.only(right: 16),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
+              titlePadding: const EdgeInsets.only(
+                left: 48,
+                bottom: 14,
+                right: 16,
+              ),
+              background: Container(
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.2),
-                  ),
+                  color: theme.brightness == Brightness.dark
+                      ? theme.colorScheme.card
+                      : theme.colorScheme.primary,
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+                child: Stack(
                   children: [
-                    Text(
-                      '${books.length}${group.bookTotal != null ? " / ${group.bookTotal}" : ""}',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.primary,
+                    Positioned(
+                      right: -10,
+                      bottom: -15,
+                      child: Icon(
+                        Icons.library_books_rounded,
+                        size: 90,
+                        color: Colors.white.withValues(alpha: 0.15),
+                      ),
+                    ),
+                    Positioned(
+                      left: 48,
+                      bottom: 54,
+                      child: Text(
+                        subtitleText,
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              loading: () => const SizedBox.shrink(),
-              error: (err, stack) => const SizedBox.shrink(),
             ),
-          ],
-        ),
-        centerTitle: false,
-        elevation: 0,
-        backgroundColor: theme.colorScheme.background,
-        foregroundColor: theme.colorScheme.foreground,
-      ),
-      body: Column(
-        children: [
-          FilterBar(groupId: group.id),
-          Expanded(
-            child: booksAsync.when(
-              data: (books) {
-                if (books.isEmpty) {
-                  return Center(
+          ),
+
+          // Sticky Filter Bar
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _StickyHeaderDelegate(
+              height: 62.0,
+              backgroundColor: theme.colorScheme.background,
+              child: FilterBar(groupId: group.id),
+            ),
+          ),
+
+          booksAsync.when(
+            data: (books) {
+              if (books.isEmpty) {
+                return SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -197,31 +278,101 @@ class GroupDetailScreen extends ConsumerWidget {
                         ),
                       ],
                     ),
-                  );
-                }
-                return RawScrollbar(
-                  thumbColor: theme.colorScheme.primary.withValues(alpha: 0.3),
-                  radius: const Radius.circular(8),
-                  thickness: 4,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    itemCount: books.length,
-                    itemBuilder: (context, index) {
-                      final item = books[index];
-                      return BookListItem(item: item, index: index);
-                    },
                   ),
                 );
-              },
-              loading: () => const LoadingView(),
-              error: (err, _) => ErrorView(
-                message: AppLocalizations.of(context)!.errorGeneric,
-                details: err.toString(),
-              ),
-            ),
+              }
+              return SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final item = books[index];
+                    return BookListItem(item: item, index: index);
+                  }, childCount: books.length),
+                ),
+              );
+            },
+            loading: () {
+              if (booksAsync.hasValue) {
+                final books = booksAsync.value!;
+                if (books.isEmpty) {
+                  return const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: LoadingView(),
+                  );
+                }
+                return SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final item = books[index];
+                      return BookListItem(item: item, index: index);
+                    }, childCount: books.length),
+                  ),
+                );
+              }
+              return const SliverFillRemaining(
+                hasScrollBody: false,
+                child: LoadingView(),
+              );
+            },
+            error: (err, _) {
+              if (booksAsync.hasValue) {
+                final books = booksAsync.value!;
+                return SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final item = books[index];
+                      return BookListItem(item: item, index: index);
+                    }, childCount: books.length),
+                  ),
+                );
+              }
+              return SliverFillRemaining(
+                hasScrollBody: false,
+                child: ErrorView(
+                  message: AppLocalizations.of(context)!.errorGeneric,
+                  details: err.toString(),
+                ),
+              );
+            },
           ),
         ],
       ),
     );
+  }
+}
+
+class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  final double height;
+  final Color backgroundColor;
+
+  _StickyHeaderDelegate({
+    required this.child,
+    required this.height,
+    required this.backgroundColor,
+  });
+
+  @override
+  double get minExtent => height;
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(color: backgroundColor, child: child);
+  }
+
+  @override
+  bool shouldRebuild(covariant _StickyHeaderDelegate oldDelegate) {
+    return oldDelegate.child != child ||
+        oldDelegate.height != height ||
+        oldDelegate.backgroundColor != backgroundColor;
   }
 }

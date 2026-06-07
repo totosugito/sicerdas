@@ -2,6 +2,19 @@ import 'package:path/path.dart' as p;
 import '../../../../l10n/gen_l10n/app_localizations.dart';
 
 class PeriodicUtils {
+  static const List<String> legendGroups = [
+    'othernonmetals',
+    'noble_gases',
+    'halogens',
+    'metalloids',
+    'post_transition_metals',
+    'transition_metals',
+    'lanthanoids',
+    'actinoids',
+    'alkaline_earth_metals',
+    'alkali_metals',
+  ];
+
   static String getAtomImagePath(String baseDir, int atomicNumber) {
     final atomicNumStr = atomicNumber.toString().padLeft(3, '0');
     return p.join(

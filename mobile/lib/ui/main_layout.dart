@@ -8,11 +8,11 @@ import '../core/providers/navigation_provider.dart';
 import '../l10n/gen_l10n/app_localizations.dart';
 import 'home/home_screen.dart';
 import 'books/book_screen/books_screen.dart';
-import 'placeholder_screens.dart';
 import 'profile/profile_screen.dart';
 import '../core/providers/sync_provider.dart';
 import '../core/config/app_constants.dart';
 import '../core/services/version_service.dart';
+import 'periodic_table/periodic_dictionary/periodic_dictionary.dart';
 
 class MainLayout extends ConsumerStatefulWidget {
   const MainLayout({super.key});
@@ -122,7 +122,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
     return Stack(
       children: [
         Scaffold(
-          body: IndexedStack(index: selectedIndex, children: [const HomeScreen(), const BooksScreen(), const DictionaryScreen(), const ProfileScreen()]),
+          body: IndexedStack(index: selectedIndex, children: [const HomeScreen(), const BooksScreen(), const ChemistryDictionaryScreen(), const ProfileScreen()]),
           bottomNavigationBar: NavigationBar(
             selectedIndex: selectedIndex,
             onDestinationSelected: (index) {

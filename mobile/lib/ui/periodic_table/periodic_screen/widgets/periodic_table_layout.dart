@@ -1,12 +1,15 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../../../core/database/database.dart';
 import 'periodic_cell.dart';
+import 'periodic_table_legend.dart';
 
 class PeriodicTableLayout extends StatefulWidget {
   final List<PeriodicElement> elements;
   final String searchQuery;
   final String theme;
   final Function(PeriodicElement) onElementTap;
+  final double minCellSize;
 
   const PeriodicTableLayout({
     super.key,
@@ -14,6 +17,7 @@ class PeriodicTableLayout extends StatefulWidget {
     required this.searchQuery,
     required this.theme,
     required this.onElementTap,
+    this.minCellSize = 58.0,
   });
 
   @override
@@ -25,7 +29,6 @@ class _PeriodicTableLayoutState extends State<PeriodicTableLayout> {
   late final ScrollController _verticalHeaderController;
   late final ScrollController _horizontalBodyController;
   late final ScrollController _horizontalHeaderController;
-  late final ScrollController _horizontalDummyController;
 
   @override
   void initState() {
@@ -34,23 +37,19 @@ class _PeriodicTableLayoutState extends State<PeriodicTableLayout> {
     _verticalHeaderController = ScrollController();
     _horizontalBodyController = ScrollController();
     _horizontalHeaderController = ScrollController();
-    _horizontalDummyController = ScrollController();
 
     _verticalBodyController.addListener(_syncVerticalScroll);
     _horizontalBodyController.addListener(_syncHorizontalScroll);
-    _horizontalDummyController.addListener(_syncDummyHorizontalScroll);
   }
 
   @override
   void dispose() {
     _verticalBodyController.removeListener(_syncVerticalScroll);
     _horizontalBodyController.removeListener(_syncHorizontalScroll);
-    _horizontalDummyController.removeListener(_syncDummyHorizontalScroll);
     _verticalBodyController.dispose();
     _verticalHeaderController.dispose();
     _horizontalBodyController.dispose();
     _horizontalHeaderController.dispose();
-    _horizontalDummyController.dispose();
     super.dispose();
   }
 
@@ -67,18 +66,6 @@ class _PeriodicTableLayoutState extends State<PeriodicTableLayout> {
         _horizontalHeaderController.offset != offset) {
       _horizontalHeaderController.jumpTo(offset);
     }
-    if (_horizontalDummyController.hasClients &&
-        _horizontalDummyController.offset != offset) {
-      _horizontalDummyController.jumpTo(offset);
-    }
-  }
-
-  void _syncDummyHorizontalScroll() {
-    final offset = _horizontalDummyController.offset;
-    if (_horizontalBodyController.hasClients &&
-        _horizontalBodyController.offset != offset) {
-      _horizontalBodyController.jumpTo(offset);
-    }
   }
 
   double _getCellWidth(int x, double baseCellSize) =>
@@ -91,9 +78,8 @@ class _PeriodicTableLayoutState extends State<PeriodicTableLayout> {
   Widget build(BuildContext context) {
     const int numCols = 19;
     const int numRows = 11;
-    const double baseCellSize = 58.0;
-    const double rightScrollbarSpacer = 10.0;
-    const double bottomScrollbarSpacer = 22.0;
+    const double rightScrollbarSpacer = 0.0;
+    const double bottomScrollbarSpacer = 0.0;
 
     // Create a 2D grid structure to place elements by their idx (X) and idy (Y)
     final grid = List.generate(
@@ -109,155 +95,184 @@ class _PeriodicTableLayoutState extends State<PeriodicTableLayout> {
       }
     }
 
-    final double bodyScrollWidth = (numCols - 1) * (baseCellSize + 4);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate cell size dynamically based on available width and height constraints
+        // Subtract spacers, paddings (16.0 total), and the extra 4px margin per cell:
+        // Width offset: 16.0 (padding) + 4.0 (col 0 margin) + 18 * 4.0 (cols 1-18 margins) = 92.0
+        // Height offset: 16.0 (padding) + 2 * 4.0 (rows 0 & 8 margins) + 9 * 4.0 (other rows margins) = 60.0
+        final double widthBasedCellSize = (constraints.maxWidth - 92.0) / 18.5;
+        final double heightBasedCellSize =
+            (constraints.maxHeight - 60.0) / 10.0;
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          // Top row: Corner cell (0,0) + Horizontal Scroll Header
-          Row(
+        // Take the minimum size that fits both width and height, but clamp to widget.minCellSize
+        final double baseCellSize = math.max(
+          widget.minCellSize,
+          math.min(widthBasedCellSize, heightBasedCellSize),
+        );
+
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
             children: [
-              SizedBox(
-                width: _getCellWidth(0, baseCellSize),
-                height: _getCellHeight(0, baseCellSize),
-                child: _buildCellWrapper(grid[0][0], 0, 0),
-              ),
-              Expanded(
-                child: ScrollConfiguration(
-                  behavior: ScrollConfiguration.of(
-                    context,
-                  ).copyWith(scrollbars: false),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    controller: _horizontalHeaderController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    child: Row(
-                      children: [
-                        for (int x = 1; x < numCols; x++)
-                          SizedBox(
-                            width: _getCellWidth(x, baseCellSize),
-                            height: _getCellHeight(0, baseCellSize),
-                            child: _buildCellWrapper(grid[0][x], x, 0),
-                          ),
-                        const SizedBox(
-                          width: rightScrollbarSpacer,
-                        ), // spacer for vertical scrollbar
-                      ],
-                    ),
+              // Top row: Corner cell (0,0) + Horizontal Scroll Header
+              Row(
+                children: [
+                  SizedBox(
+                    width: _getCellWidth(0, baseCellSize),
+                    height: _getCellHeight(0, baseCellSize),
+                    child: _buildCellWrapper(grid[0][0], 0, 0, baseCellSize),
                   ),
-                ),
-              ),
-            ],
-          ),
-          // Middle area: Vertical Scroll Header + Body (Scrollable)
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: _getCellWidth(0, baseCellSize),
-                  child: ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(
-                      context,
-                    ).copyWith(scrollbars: false),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      controller: _verticalHeaderController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      child: Column(
-                        children: [
-                          for (int y = 1; y < numRows; y++)
-                            SizedBox(
-                              width: _getCellWidth(0, baseCellSize),
-                              height: _getCellHeight(y, baseCellSize),
-                              child: _buildCellWrapper(grid[y][0], 0, y),
-                            ),
-                          const SizedBox(
-                            height: bottomScrollbarSpacer,
-                          ), // spacer to match body height
-                        ],
+                  Expanded(
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(
+                        context,
+                      ).copyWith(scrollbars: false),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        controller: _horizontalHeaderController,
+                        physics: const NeverScrollableScrollPhysics(),
+                        child: Row(
+                          children: [
+                            for (int x = 1; x < numCols; x++)
+                              SizedBox(
+                                width: _getCellWidth(x, baseCellSize),
+                                height: _getCellHeight(0, baseCellSize),
+                                child: _buildCellWrapper(
+                                  grid[0][x],
+                                  x,
+                                  0,
+                                  baseCellSize,
+                                ),
+                              ),
+                            const SizedBox(
+                              width: rightScrollbarSpacer,
+                            ), // spacer for vertical scrollbar
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Scrollbar(
-                    controller: _verticalBodyController,
-                    thumbVisibility: true,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      controller: _verticalBodyController,
+                ],
+              ),
+              // Middle area: Vertical Scroll Header + Body (Scrollable)
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: _getCellWidth(0, baseCellSize),
                       child: ScrollConfiguration(
                         behavior: ScrollConfiguration.of(
                           context,
                         ).copyWith(scrollbars: false),
                         child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          controller: _horizontalBodyController,
+                          scrollDirection: Axis.vertical,
+                          controller: _verticalHeaderController,
+                          physics: const NeverScrollableScrollPhysics(),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               for (int y = 1; y < numRows; y++)
-                                Row(
-                                  children: [
-                                    for (int x = 1; x < numCols; x++)
-                                      SizedBox(
-                                        width: _getCellWidth(x, baseCellSize),
-                                        height: _getCellHeight(y, baseCellSize),
-                                        child: _buildCellWrapper(
-                                          grid[y][x],
-                                          x,
-                                          y,
-                                        ),
-                                      ),
-                                    const SizedBox(
-                                      width: rightScrollbarSpacer,
-                                    ), // spacer for vertical scrollbar
-                                  ],
+                                SizedBox(
+                                  width: _getCellWidth(0, baseCellSize),
+                                  height: _getCellHeight(y, baseCellSize),
+                                  child: _buildCellWrapper(
+                                    grid[y][0],
+                                    0,
+                                    y,
+                                    baseCellSize,
+                                  ),
                                 ),
                               const SizedBox(
                                 height: bottomScrollbarSpacer,
-                              ), // spacer for bottom horizontal scrollbar
+                              ), // spacer to match body height
                             ],
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Bottom area: Dummy Horizontal Scrollbar
-          Row(
-            children: [
-              SizedBox(width: _getCellWidth(0, baseCellSize)),
-              Expanded(
-                child: SizedBox(
-                  height: 12,
-                  child: Scrollbar(
-                    controller: _horizontalDummyController,
-                    thumbVisibility: true,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      controller: _horizontalDummyController,
-                      child: SizedBox(
-                        width: bodyScrollWidth + rightScrollbarSpacer,
-                        height: 1,
+                    Expanded(
+                      child: ScrollConfiguration(
+                        behavior: ScrollConfiguration.of(
+                          context,
+                        ).copyWith(scrollbars: false),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          controller: _verticalBodyController,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            controller: _horizontalBodyController,
+                            child: Stack(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    for (int y = 1; y < numRows; y++)
+                                      Row(
+                                        children: [
+                                          for (int x = 1; x < numCols; x++)
+                                            SizedBox(
+                                              width: _getCellWidth(
+                                                x,
+                                                baseCellSize,
+                                              ),
+                                              height: _getCellHeight(
+                                                y,
+                                                baseCellSize,
+                                              ),
+                                              child: _buildCellWrapper(
+                                                grid[y][x],
+                                                x,
+                                                y,
+                                                baseCellSize,
+                                              ),
+                                            ),
+                                          const SizedBox(
+                                            width: rightScrollbarSpacer,
+                                          ), // spacer for vertical scrollbar
+                                        ],
+                                      ),
+                                    const SizedBox(
+                                      height: bottomScrollbarSpacer,
+                                    ), // spacer for bottom horizontal scrollbar
+                                  ],
+                                ),
+                                Positioned(
+                                  left: 2 * (baseCellSize + 4),
+                                  top: 0,
+                                  width: 10 * (baseCellSize + 4),
+                                  height: 3 * (baseCellSize + 4),
+                                  child: Container(
+                                    alignment: Alignment.bottomCenter,
+                                    padding: const EdgeInsets.only(bottom: 8.0),
+                                    child: PeriodicTableLegend(
+                                      theme: widget.theme,
+                                      baseCellSize: baseCellSize,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildCellWrapper(PeriodicElement? element, int x, int y) {
+  Widget _buildCellWrapper(
+    PeriodicElement? element,
+    int x,
+    int y,
+    double baseCellSize,
+  ) {
     final isSearchActive = widget.searchQuery.isNotEmpty;
     bool isSearchMatch = false;
 
@@ -267,8 +282,6 @@ class _PeriodicTableLayoutState extends State<PeriodicTableLayout> {
           element.atomicSymbol.toLowerCase().contains(widget.searchQuery) ||
           element.atomicNumber.toString().contains(widget.searchQuery);
     }
-
-    const double baseCellSize = 58.0;
 
     if (element == null) {
       final double width = _getCellWidth(x, baseCellSize);

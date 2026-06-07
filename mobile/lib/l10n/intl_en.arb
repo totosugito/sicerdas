@@ -355,5 +355,32 @@
   },
   "electrons": "Electrons",
   "protons": "Protons",
-  "neutrons": "Neutrons"
+  "neutrons": "Neutrons",
+  "chemistryDictionary": "Chemistry Dictionary",
+  "chemistryDictionaryDesc": "Explore chemical terms and definitions",
+  "chemistryDictionarySearchPlaceholder": "Search terms or definitions...",
+  "chemistryDictionaryResultsInfo": "Showing {start}-{end} of {total} entries",
+  "@chemistryDictionaryResultsInfo": {
+    "placeholders": {
+      "start": {
+        "type": "int"
+      },
+      "end": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "chemistryDictionaryNoEntriesFoundTitle": "No entries found",
+  "chemistryDictionaryNoEntriesFoundDesc": "Try adjusting your search or filter criteria",
+  "chemistryDictionaryAll": "All",
+  "chemistryDictionaryCopyToClipboard": "Definition copied to clipboard",
+  "chemistryDictionaryCopyText": "Copy definition",
+  "chemistryDictionaryAF": "A-F",
+  "chemistryDictionaryGL": "G-L",
+  "chemistryDictionaryMR": "M-R",
+  "chemistryDictionarySZ": "S-Z",
+  "viewDetails": "View Details"
 }

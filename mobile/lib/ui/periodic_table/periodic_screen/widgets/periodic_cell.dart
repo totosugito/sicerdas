@@ -54,6 +54,7 @@ class PeriodicCell extends StatelessWidget {
     }
 
     final el = element!;
+    final isSpecialMarker = el.atomicNumber > 1000;
     final themeData = ShadTheme.of(context);
     final isDark = themeData.brightness == Brightness.dark;
     final style = getElementStyle(el.atomicGroup, theme, isDark: isDark);
@@ -145,31 +146,40 @@ class PeriodicCell extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    el.atomicNumber > 0 ? el.atomicNumber.toString() : '',
+                    isSpecialMarker
+                        ? el.atomicName
+                        : (el.atomicNumber > 0
+                              ? el.atomicNumber.toString()
+                              : ''),
                     style: TextStyle(
-                      fontSize: 8,
+                      fontSize: isSpecialMarker ? 8 : 10,
                       fontWeight: FontWeight.bold,
                       color: style.text.withValues(alpha: 0.8),
                     ),
                   ),
                 ),
-                // Symbol
+                // Symbol (Only if not a special marker)
+                if (!isSpecialMarker)
+                  Text(
+                    el.atomicSymbol,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                      color: style.text,
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+                // Name or Range Symbol
                 Text(
-                  el.atomicSymbol,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    color: style.text,
-                  ),
-                ),
-                // Name
-                Text(
-                  el.atomicName,
+                  isSpecialMarker ? el.atomicSymbol : el.atomicName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 7,
-                    fontWeight: FontWeight.w500,
+                    fontSize: isSpecialMarker ? 10 : 8,
+                    fontWeight: isSpecialMarker
+                        ? FontWeight.bold
+                        : FontWeight.w500,
                     color: style.text.withValues(alpha: 0.8),
                   ),
                 ),

@@ -23,7 +23,7 @@ import 'widgets/element_reactivity.dart';
 import 'widgets/element_health_safety.dart';
 import 'widgets/element_nuclear.dart';
 
-import '../periodic_screen/periodic_screen.dart';
+import '../libs/providers/periodic_sync_provider.dart';
 import '../periodic_screen/widgets/element_styles.dart';
 import '../libs/models/periodic_models.dart';
 import '../libs/utils/periodic_utils.dart';

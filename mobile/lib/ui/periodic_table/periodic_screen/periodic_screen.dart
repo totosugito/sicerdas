@@ -1,219 +1,21 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:archive/archive.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../core/database/database.dart';
-import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/dio_provider.dart';
 import '../../../core/network/api_endpoints.dart';
 import '../../../l10n/gen_l10n/app_localizations.dart';
 import '../../../core/providers/settings_provider.dart';
-import '../../../core/config/app_constants.dart';
 import '../../../core/utils/toast_utils.dart';
 import '../../widgets/download_progress_dialog.dart';
+import '../libs/providers/periodic_sync_provider.dart';
+import 'widgets/periodic_setup_view.dart';
 import 'widgets/periodic_table_layout.dart';
+import 'widgets/element_overview_sheet.dart';
 import '../element_detail/element_detail.dart';
-
-enum PeriodicSyncStatus { checking, notDownloaded, downloading, success, error }
-
-class PeriodicSyncState {
-  final PeriodicSyncStatus status;
-  final String? errorMessage;
-  final String? errorKey;
-  final List<PeriodicElement> elements;
-
-  PeriodicSyncState({
-    required this.status,
-    this.errorMessage,
-    this.errorKey,
-    this.elements = const [],
-  });
-
-  PeriodicSyncState copyWith({
-    PeriodicSyncStatus? status,
-    String? errorMessage,
-    String? errorKey,
-    List<PeriodicElement>? elements,
-  }) {
-    return PeriodicSyncState(
-      status: status ?? this.status,
-      errorMessage: errorMessage ?? this.errorMessage,
-      errorKey: errorKey ?? this.errorKey,
-      elements: elements ?? this.elements,
-    );
-  }
-}
-
-class PeriodicSyncNotifier extends Notifier<PeriodicSyncState> {
-  @override
-  PeriodicSyncState build() {
-    Future.microtask(() => checkInitial());
-    return PeriodicSyncState(status: PeriodicSyncStatus.checking);
-  }
-
-  Future<void> checkInitial() async {
-    state = PeriodicSyncState(status: PeriodicSyncStatus.checking);
-    try {
-      final db = ref.read(databaseProvider);
-      final hasData = await db.hasPeriodicTableData();
-      if (hasData) {
-        final elements = await db.getPeriodicElements();
-        state = PeriodicSyncState(
-          status: PeriodicSyncStatus.success,
-          elements: elements,
-        );
-      } else {
-        state = PeriodicSyncState(status: PeriodicSyncStatus.notDownloaded);
-      }
-    } catch (e) {
-      state = PeriodicSyncState(
-        status: PeriodicSyncStatus.error,
-        errorMessage: e.toString(),
-        errorKey: 'syncFailedMessage',
-      );
-    }
-  }
-
-  void setSyncError() {
-    state = state.copyWith(
-      status: PeriodicSyncStatus.error,
-      errorKey: 'syncFailedMessage',
-    );
-  }
-
-  void setSyncNotDownloaded() {
-    state = state.copyWith(status: PeriodicSyncStatus.notDownloaded);
-  }
-
-  Future<void> processDownloadedZip(String zipPath) async {
-    state = state.copyWith(status: PeriodicSyncStatus.downloading);
-    final tempZipFile = File(zipPath);
-    try {
-      final db = ref.read(databaseProvider);
-
-      final bytes = await tempZipFile.readAsBytes();
-      if (bytes.isEmpty) {
-        state = state.copyWith(
-          status: PeriodicSyncStatus.error,
-          errorKey: 'periodicErrorEmptyZip',
-          errorMessage: 'Empty ZIP archive downloaded.',
-        );
-        return;
-      }
-
-      // 2. Decode the ZIP archive
-      final archive = ZipDecoder().decodeBytes(bytes);
-
-      // 3. Locate and parse periodic-table.json in-memory
-      dynamic parsedJson;
-      for (final file in archive) {
-        if (file.isFile && file.name == 'periodic-table.json') {
-          final contentString = utf8.decode(file.content as List<int>);
-          parsedJson = jsonDecode(contentString);
-          break;
-        }
-      }
-
-      if (parsedJson == null) {
-        state = state.copyWith(
-          status: PeriodicSyncStatus.error,
-          errorKey: 'periodicErrorJsonNotFound',
-          errorMessage: 'periodic-table.json not found in ZIP archive.',
-        );
-        return;
-      }
-
-      final data = parsedJson['data'];
-      final List<dynamic> elementsJson = data['elements'] ?? [];
-      final List<dynamic> notesJson = data['notes'] ?? [];
-
-      final List<PeriodicElement> elements = elementsJson.map((e) {
-        return PeriodicElement(
-          id: e['id'] as int,
-          idx: e['idx'] as int,
-          idy: e['idy'] as int,
-          atomicNumber: e['atomicNumber'] as int,
-          atomicGroup: e['atomicGroup'] as String,
-          atomicName: e['atomicName'] as String,
-          atomicSymbol: e['atomicSymbol'] as String,
-          atomicImages: jsonEncode(e['atomicImages'] ?? {}),
-          atomicProperties: jsonEncode(e['atomicProperties'] ?? {}),
-          atomicIsotope: jsonEncode(e['atomicIsotope'] ?? {}),
-          atomicExtra: jsonEncode(e['atomicExtra'] ?? {}),
-        );
-      }).toList();
-
-      final List<PeriodicElementNote> notes = notesJson.map((n) {
-        return PeriodicElementNote(
-          id: n['id'] as int,
-          atomicNumber: n['atomicNumber'] as int,
-          localeCode: n['localeCode'] as String,
-          atomicOverview: n['atomicOverview'] as String,
-          atomicHistory: n['atomicHistory'] as String,
-          atomicApps: n['atomicApps'] as String,
-          atomicFacts: n['atomicFacts'] as String,
-        );
-      }).toList();
-
-      // 4. Save other files into the appDirPeriodic directory
-      final dataDir = await getExternalStorageDirectory();
-      if (dataDir == null) {
-        state = state.copyWith(
-          status: PeriodicSyncStatus.error,
-          errorKey: 'periodicErrorStorageNotFound',
-          errorMessage: 'External storage directory not found.',
-        );
-        return;
-      }
-      final targetPath = p.join(
-        dataDir.path,
-        AppConstants.appDirParent,
-        AppConstants.appDirPeriodic,
-      );
-
-      for (final file in archive) {
-        if (file.isFile && file.name != 'periodic-table.json') {
-          final filePath = p.join(targetPath, file.name);
-          final outFile = File(filePath);
-          await outFile.create(recursive: true);
-          await outFile.writeAsBytes(file.content as List<int>);
-        }
-      }
-
-      // 5. Upsert database entries
-      await db.upsertPeriodicElements(elements);
-      await db.upsertPeriodicElementNotes(notes);
-
-      final sortedElements = await db.getPeriodicElements();
-
-      state = PeriodicSyncState(
-        status: PeriodicSyncStatus.success,
-        elements: sortedElements,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: PeriodicSyncStatus.error,
-        errorMessage: e.toString(),
-        errorKey: 'syncFailedMessage',
-      );
-    } finally {
-      try {
-        if (await tempZipFile.exists()) {
-          await tempZipFile.delete();
-        }
-      } catch (_) {}
-    }
-  }
-}
-
-final periodicSyncProvider =
-    NotifierProvider<PeriodicSyncNotifier, PeriodicSyncState>(
-      PeriodicSyncNotifier.new,
-    );
+import '../periodic_dictionary/periodic_dictionary.dart';
 
 class PeriodicScreen extends ConsumerStatefulWidget {
   const PeriodicScreen({super.key});
@@ -226,6 +28,7 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
   final TextEditingController _searchController = TextEditingController();
   final _popoverController = ShadPopoverController();
   String _searchQuery = "";
+  bool _isSearching = false;
 
   @override
   void initState() {
@@ -245,18 +48,32 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
   }
 
   void _showElementDetails(PeriodicElement element) {
-    final byNumber = {
-      for (final e in ref.read(periodicSyncProvider).elements)
-        e.atomicNumber: e,
-    };
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ElementDetailScreen(
-          element: element,
-          previous: byNumber[element.atomicNumber - 1],
-          next: byNumber[element.atomicNumber + 1],
-        ),
+    final settings = ref.read(settingsProvider);
+    final periodicTheme = settings.periodicTheme;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => ElementOverviewSheet(
+        element: element,
+        theme: periodicTheme,
+        onViewDetails: () {
+          Navigator.pop(context); // close sheet
+          final byNumber = {
+            for (final e in ref.read(periodicSyncProvider).elements)
+              e.atomicNumber: e,
+          };
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ElementDetailScreen(
+                element: element,
+                previous: byNumber[element.atomicNumber - 1],
+                next: byNumber[element.atomicNumber + 1],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -296,98 +113,6 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
     } else {
       ref.read(periodicSyncProvider.notifier).setSyncError();
     }
-  }
-
-  Widget _buildSetupView(BuildContext context, PeriodicSyncState syncState) {
-    final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 400),
-          child: ShadCard(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (syncState.status == PeriodicSyncStatus.checking) ...[
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 16),
-                  Text(l10n.periodicChecking),
-                ] else if (syncState.status ==
-                    PeriodicSyncStatus.notDownloaded) ...[
-                  const Icon(LucideIcons.package2, size: 48),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.periodicSetupTitle,
-                    style: theme.textTheme.large.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.periodicSetupMessage,
-                    style: theme.textTheme.muted,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  ShadButton(
-                    width: double.infinity,
-                    onPressed: () => _startDownloadPeriodic(),
-                    child: Text(l10n.syncDownloadNow),
-                  ),
-                ] else if (syncState.status ==
-                    PeriodicSyncStatus.downloading) ...[
-                  const Icon(LucideIcons.refreshCcw, size: 48),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.periodicDownloadingTitle,
-                    style: theme.textTheme.large.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(l10n.periodicDownloadingMessage),
-                  const SizedBox(height: 24),
-                  const ShadProgress(),
-                ] else if (syncState.status == PeriodicSyncStatus.error) ...[
-                  Icon(
-                    LucideIcons.wifiOff,
-                    size: 48,
-                    color: theme.colorScheme.destructive,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.periodicSyncFailedTitle,
-                    style: theme.textTheme.large.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    _getLocalizedError(
-                      l10n,
-                      syncState.errorKey,
-                      syncState.errorMessage,
-                    ),
-                    style: theme.textTheme.muted,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  ShadButton(
-                    width: double.infinity,
-                    onPressed: () => _startDownloadPeriodic(),
-                    child: Text(l10n.syncTryAgain),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   String _getLocalizedError(
@@ -440,15 +165,52 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          l10n.periodicTable,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: _isSearching
+            ? ShadInput(
+                controller: _searchController,
+                placeholder: Text(l10n.periodicSearchPlaceholder),
+                autofocus: true,
+                trailing: _searchController.text.isNotEmpty
+                    ? GestureDetector(
+                        onTap: () => _searchController.clear(),
+                        child: const Icon(LucideIcons.x, size: 16),
+                      )
+                    : null,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+              )
+            : Text(
+                l10n.periodicTable,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
         actions: [
           if (syncState.status == PeriodicSyncStatus.success) ...[
             IconButton(
-              icon: const Icon(LucideIcons.refreshCw),
-              onPressed: () => _startDownloadPeriodic(),
+              icon: Icon(
+                _isSearching ? LucideIcons.searchX : LucideIcons.search,
+              ),
+              onPressed: () {
+                setState(() {
+                  _isSearching = !_isSearching;
+                  if (!_isSearching) {
+                    _searchController.clear();
+                  }
+                });
+              },
+            ),
+            IconButton(
+              icon: const Icon(LucideIcons.book),
+              tooltip: l10n.chemistryDictionary,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ChemistryDictionaryScreen(),
+                  ),
+                );
+              },
             ),
             ShadPopover(
               controller: _popoverController,
@@ -529,32 +291,15 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
         ],
       ),
       body: syncState.status != PeriodicSyncStatus.success
-          ? _buildSetupView(context, syncState)
-          : Column(
-              children: [
-                // Search Bar
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ShadInput(
-                    controller: _searchController,
-                    placeholder: Text(l10n.periodicSearchPlaceholder),
-                    leading: const Padding(
-                      padding: EdgeInsets.only(right: 8.0),
-                      child: Icon(LucideIcons.search, size: 16),
-                    ),
-                  ),
-                ),
-
-                // Main Content
-                Expanded(
-                  child: PeriodicTableLayout(
-                    elements: syncState.elements,
-                    searchQuery: _searchQuery,
-                    theme: periodicTheme,
-                    onElementTap: _showElementDetails,
-                  ),
-                ),
-              ],
+          ? PeriodicSetupView(
+              syncState: syncState,
+              onDownloadTriggered: _startDownloadPeriodic,
+            )
+          : PeriodicTableLayout(
+              elements: syncState.elements,
+              searchQuery: _searchQuery,
+              theme: periodicTheme,
+              onElementTap: _showElementDetails,
             ),
     );
   }
