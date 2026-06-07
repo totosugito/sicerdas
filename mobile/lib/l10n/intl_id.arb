@@ -382,5 +382,19 @@
   "chemistryDictionaryGL": "G-L",
   "chemistryDictionaryMR": "M-R",
   "chemistryDictionarySZ": "S-Z",
-  "viewDetails": "Lihat Detail"
+  "viewDetails": "Lihat Detail",
+  "elementComparisonTitle": "Perbandingan Unsur Periodik",
+  "elementComparisonSubtitle": "Bandingkan sifat unsur kimia dengan indikator kemajuan visual",
+  "elementComparisonSearchPlaceholder": "Cari unsur berdasarkan nama, simbol, atau nomor atom...",
+  "elementComparisonElementsFound": "{count} unsur ditemukan",
+  "elementComparisonElementsFoundMatching": "{count} unsur ditemukan yang cocok dengan \"{term}\"",
+  "elementComparisonNoElementsFound": "Tidak ada unsur yang ditemukan",
+  "elementComparisonNoElementsFoundMatching": "Tidak ada unsur yang cocok dengan pencarian Anda \"{term}\". Coba kata kunci yang berbeda.",
+  "elementComparisonSortBy": "Urutkan berdasarkan:",
+  "elementComparisonSortDirection": "Arah:",
+  "elementComparisonSortAsc": "↑ Naik",
+  "elementComparisonSortDesc": "↓ Turun",
+  "elementComparisonSortNone": "Tidak ada",
+  "elementComparisonShowLess": "Tampilkan Lebih Sedikit",
+  "elementComparisonShowMore": "Tampilkan Lebih Banyak"
 }

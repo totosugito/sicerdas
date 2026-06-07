@@ -382,5 +382,19 @@
   "chemistryDictionaryGL": "G-L",
   "chemistryDictionaryMR": "M-R",
   "chemistryDictionarySZ": "S-Z",
-  "viewDetails": "View Details"
+  "viewDetails": "View Details",
+  "elementComparisonTitle": "Periodic Element Comparison",
+  "elementComparisonSubtitle": "Compare properties of chemical elements with visual progress indicators",
+  "elementComparisonSearchPlaceholder": "Search elements by name, symbol, or atomic number...",
+  "elementComparisonElementsFound": "{count} elements found",
+  "elementComparisonElementsFoundMatching": "{count} elements found matching \"{term}\"",
+  "elementComparisonNoElementsFound": "No elements found",
+  "elementComparisonNoElementsFoundMatching": "No elements match your search for \"{term}\". Try different keywords.",
+  "elementComparisonSortBy": "Sort by:",
+  "elementComparisonSortDirection": "Direction:",
+  "elementComparisonSortAsc": "↑ Ascending",
+  "elementComparisonSortDesc": "↓ Descending",
+  "elementComparisonSortNone": "None",
+  "elementComparisonShowLess": "Show Less",
+  "elementComparisonShowMore": "Show More"
 }

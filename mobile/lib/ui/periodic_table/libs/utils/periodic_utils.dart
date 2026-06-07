@@ -168,6 +168,7 @@ class PeriodicUtils {
     return precision < 0 ? '$value' : value.toStringAsFixed(precision);
   }
 
+
   static String getDiscoveryYear(String year, String bcUnit) {
     if (year.startsWith("-")) {
       return '${year.substring(1)} $bcUnit';

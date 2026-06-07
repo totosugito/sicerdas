@@ -16,6 +16,7 @@ import 'widgets/periodic_table_layout.dart';
 import 'widgets/element_overview_sheet.dart';
 import '../element_detail/element_detail.dart';
 import '../periodic_dictionary/periodic_dictionary.dart';
+import '../element-comparison/element_comparison.dart';
 
 class PeriodicScreen extends ConsumerStatefulWidget {
   const PeriodicScreen({super.key});
@@ -208,6 +209,18 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const ChemistryDictionaryScreen(),
+                  ),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(LucideIcons.gitCompare),
+              tooltip: l10n.elementComparisonTitle,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ElementComparisonScreen(),
                   ),
                 );
               },
