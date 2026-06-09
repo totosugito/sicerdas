@@ -1,18 +1,23 @@
-import 'admob/admob_native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'admob/admob_native.dart';
+import 'ads_config.dart';
 
-class AdsNative extends StatefulWidget {
+class AdsNative extends ConsumerWidget {
   final String adsUnit;
 
   const AdsNative({super.key, required this.adsUnit});
 
   @override
-  State<AdsNative> createState() => AdsNativeState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeProvider = ref.watch(activeAdProvider);
 
-class AdsNativeState extends State<AdsNative> {
-  @override
-  Widget build(BuildContext context) {
-    return (AdmobNative(adsUnitId: widget.adsUnit));
+    switch (activeProvider) {
+      case AdProviderType.admob:
+        return AdmobNative(adsUnitId: adsUnit);
+      // Future cases:
+      // case AdProviderType.unity:
+      //   return UnityNative(adsUnitId: adsUnit);
+    }
   }
 }

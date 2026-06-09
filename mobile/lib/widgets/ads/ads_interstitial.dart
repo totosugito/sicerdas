@@ -1,17 +1,38 @@
-import 'package:bse/widgets/ads/admob/admob_interstitial.dart';
+import 'admob/admob_interstitial.dart';
+import 'ads_config.dart';
+
+abstract class BaseInterstitialAd {
+  void show();
+  void dispose();
+}
+
+class AdmobInterstitialAd implements BaseInterstitialAd {
+  final AdmobInterstitial _ad;
+
+  AdmobInterstitialAd(String unitId) : _ad = AdmobInterstitial(adsUnitId: unitId);
+
+  @override
+  void show() => _ad.show();
+
+  @override
+  void dispose() => _ad.dispose();
+}
 
 class AdsInterstitial {
-  final String adsUnit;
-  AdmobInterstitial? intersAdmob;
-  AdsInterstitial({required this.adsUnit}) {
-    intersAdmob = AdmobInterstitial(adsUnitId: adsUnit);
+  final BaseInterstitialAd _ad;
+
+  AdsInterstitial({
+    required String adsUnit,
+    AdProviderType provider = AdProviderType.admob,
+  }) : _ad = _createAd(adsUnit, provider);
+
+  static BaseInterstitialAd _createAd(String adsUnit, AdProviderType provider) {
+    switch (provider) {
+      case AdProviderType.admob:
+        return AdmobInterstitialAd(adsUnit);
+    }
   }
 
-  void dispose() {
-    intersAdmob?.dispose();
-  }
-
-  void show() {
-    intersAdmob?.show();
-  }
+  void show() => _ad.show();
+  void dispose() => _ad.dispose();
 }

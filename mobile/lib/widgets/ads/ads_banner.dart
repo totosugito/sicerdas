@@ -1,8 +1,10 @@
-import 'admob/admob_banner.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'admob/admob_banner.dart';
+import 'ads_config.dart';
 
-class AdsBanner extends StatefulWidget {
+class AdsBanner extends ConsumerWidget {
   final String adsUnit;
   final bool showDivider;
 
@@ -13,20 +15,22 @@ class AdsBanner extends StatefulWidget {
   });
 
   @override
-  State<AdsBanner> createState() => AdsBannerState();
-}
-
-class AdsBannerState extends State<AdsBanner> {
-  Widget createBannerAds() {
-    return AdmobBanner(adsUnitId: widget.adsUnit);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
-    final banner = createBannerAds();
+    final activeProvider = ref.watch(activeAdProvider);
 
-    if (widget.showDivider) {
+    Widget banner;
+    switch (activeProvider) {
+      case AdProviderType.admob:
+        banner = AdmobBanner(adsUnitId: adsUnit);
+        break;
+      // Future cases:
+      // case AdProviderType.unity:
+      //   banner = UnityBanner(adsUnitId: adsUnit);
+      //   break;
+    }
+
+    if (showDivider) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
