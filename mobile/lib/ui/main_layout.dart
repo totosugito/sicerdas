@@ -13,6 +13,7 @@ import '../core/providers/sync_provider.dart';
 import '../core/config/app_constants.dart';
 import '../core/services/version_service.dart';
 import 'periodic_table/periodic_dictionary/periodic_dictionary.dart';
+import 'widgets/ads/admob/admob_banner.dart';
 
 class MainLayout extends ConsumerStatefulWidget {
   const MainLayout({super.key});
@@ -123,16 +124,22 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
       children: [
         Scaffold(
           body: IndexedStack(index: selectedIndex, children: [const HomeScreen(), const BooksScreen(), const ChemistryDictionaryScreen(), const ProfileScreen()]),
-          bottomNavigationBar: NavigationBar(
-            selectedIndex: selectedIndex,
-            onDestinationSelected: (index) {
-              ref.read(navigationProvider.notifier).setIndex(index);
-            },
-            destinations: [
-              NavigationDestination(icon: const Icon(Icons.home_outlined), selectedIcon: const Icon(Icons.home), label: l10n.navHome),
-              NavigationDestination(icon: const Icon(Icons.menu_book_outlined), selectedIcon: const Icon(Icons.menu_book), label: l10n.navBooks),
-              NavigationDestination(icon: const Icon(Icons.translate_outlined), selectedIcon: const Icon(Icons.translate), label: l10n.navDictionary),
-              NavigationDestination(icon: const Icon(Icons.person_outline), selectedIcon: const Icon(Icons.person), label: l10n.navProfile),
+          bottomNavigationBar: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const AdmobBanner(adsUnitId: AppConstants.bannerAdmob),
+              NavigationBar(
+                selectedIndex: selectedIndex,
+                onDestinationSelected: (index) {
+                  ref.read(navigationProvider.notifier).setIndex(index);
+                },
+                destinations: [
+                  NavigationDestination(icon: const Icon(Icons.home_outlined), selectedIcon: const Icon(Icons.home), label: l10n.navHome),
+                  NavigationDestination(icon: const Icon(Icons.menu_book_outlined), selectedIcon: const Icon(Icons.menu_book), label: l10n.navBooks),
+                  NavigationDestination(icon: const Icon(Icons.translate_outlined), selectedIcon: const Icon(Icons.translate), label: l10n.navDictionary),
+                  NavigationDestination(icon: const Icon(Icons.person_outline), selectedIcon: const Icon(Icons.person), label: l10n.navProfile),
+                ],
+              ),
             ],
           ),
         ),

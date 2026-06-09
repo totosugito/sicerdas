@@ -8,6 +8,7 @@ import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'core/providers/settings_provider.dart';
 import 'core/config/env_config.dart';
 import 'core/providers/dio_provider.dart';
@@ -16,6 +17,9 @@ import 'ui/main_layout.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize AdMob
+  await MobileAds.instance.initialize();
 
   // Initialize Firebase
   await Firebase.initializeApp();
