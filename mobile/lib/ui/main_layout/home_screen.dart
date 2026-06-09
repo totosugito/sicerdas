@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bse/core/auth/auth_notifier.dart';
-import 'widgets/home_header.dart';
-import 'widgets/quick_access_grid.dart';
-import 'widgets/latest_books_section.dart';
-import 'widgets/auth_cta.dart';
-import 'widgets/offline_banner.dart';
+import 'home/home_header.dart';
+import 'home/quick_access_grid.dart';
+import 'home/latest_books_section.dart';
+import 'home/auth_cta.dart';
+import 'home/offline_banner.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});

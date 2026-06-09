@@ -19,7 +19,7 @@ class CategoryCard extends ConsumerWidget {
   });
 
   static const List<List<Color>> _gradients = [
-    [Color(0xFF6366F1), Color(0xFF8B5CF6)], // Indigo-Violet
+    // [Color(0xFF6366F1), Color(0xFF8B5CF6)], // Indigo-Violet
     [Color(0xFFF59E0B), Color(0xFFD97706)], // Amber-Orange
     [Color(0xFFEC4899), Color(0xFFDB2777)], // Pink-Rose
     [Color(0xFF10B981), Color(0xFF059669)], // Emerald-Green

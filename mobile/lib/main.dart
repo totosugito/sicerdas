@@ -13,7 +13,7 @@ import 'core/providers/settings_provider.dart';
 import 'core/config/env_config.dart';
 import 'core/providers/dio_provider.dart';
 import 'l10n/gen_l10n/app_localizations.dart';
-import 'ui/main_layout.dart';
+import 'ui/main_layout/main_layout.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

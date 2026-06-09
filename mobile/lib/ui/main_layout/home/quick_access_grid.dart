@@ -59,11 +59,11 @@ class QuickAccessGrid extends ConsumerWidget {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 220,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
-        childAspectRatio: 2.2, // Much sleeker, horizontal cards
+        childAspectRatio: 2.2,
       ),
       itemCount: modules.length,
       itemBuilder: (context, index) {

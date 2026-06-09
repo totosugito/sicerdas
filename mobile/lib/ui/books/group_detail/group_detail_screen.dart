@@ -9,6 +9,8 @@ import 'package:bse/widgets/loading_view.dart';
 import '../libs/providers/books_provider.dart';
 import '../book_screen/widgets/book_list_item.dart';
 import 'widgets/filter_bar.dart';
+import 'widgets/group_detail_header.dart';
+import 'package:bse/widgets/sliver_sticky_header_delegate.dart';
 
 // Local state for GroupDetail filtering
 class GroupDetailFilter {
@@ -112,142 +114,17 @@ class GroupDetailScreen extends ConsumerWidget {
       }
     });
 
-    final booksCount = booksAsync.value?.length;
-    final subtitleText = booksCount != null
-        ? AppLocalizations.of(context)!.booksCount(
-            booksCount,
-            '$booksCount${group.bookTotal != null ? " / ${group.bookTotal}" : ""}',
-          )
-        : (group.bookTotal != null
-              ? AppLocalizations.of(
-                  context,
-                )!.booksCount(group.bookTotal!, '${group.bookTotal}')
-              : AppLocalizations.of(context)!.booksCount(0, '0'));
-
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       body: CustomScrollView(
         slivers: [
           // Collapsible Hero Header
-          SliverAppBar(
-            expandedHeight: 140.0,
-            pinned: true,
-            backgroundColor: theme.brightness == Brightness.dark
-                ? theme.colorScheme.card
-                : theme.colorScheme.primary,
-            iconTheme: const IconThemeData(color: Colors.white),
-            titleSpacing: 0,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Builder(
-                builder: (context) {
-                  final settings = context
-                      .dependOnInheritedWidgetOfExactType<
-                        FlexibleSpaceBarSettings
-                      >();
-                  double collapseProgress = 0.0;
-                  if (settings != null) {
-                    final deltaExtent = settings.maxExtent - settings.minExtent;
-                    if (deltaExtent > 0.0) {
-                      collapseProgress =
-                          (1.0 -
-                                  (settings.currentExtent -
-                                          settings.minExtent) /
-                                      deltaExtent)
-                              .clamp(0.0, 1.0);
-                    }
-                  }
-                  final showBadge = collapseProgress > 0.85;
-                  final opacity = showBadge
-                      ? (collapseProgress - 0.85) / 0.15
-                      : 0.0;
-
-                  return Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          group.name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (showBadge)
-                        Opacity(
-                          opacity: opacity.clamp(0.0, 1.0),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              booksCount != null
-                                  ? '$booksCount${group.bookTotal != null ? " / ${group.bookTotal}" : ""}'
-                                  : '${group.bookTotal ?? 0}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  );
-                },
-              ),
-              titlePadding: const EdgeInsets.only(
-                left: 48,
-                bottom: 14,
-                right: 16,
-              ),
-              background: Container(
-                decoration: BoxDecoration(
-                  color: theme.brightness == Brightness.dark
-                      ? theme.colorScheme.card
-                      : theme.colorScheme.primary,
-                ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      right: -10,
-                      bottom: -15,
-                      child: Icon(
-                        Icons.library_books_rounded,
-                        size: 90,
-                        color: Colors.white.withValues(alpha: 0.15),
-                      ),
-                    ),
-                    Positioned(
-                      left: 48,
-                      bottom: 54,
-                      child: Text(
-                        subtitleText,
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.85),
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          GroupDetailHeader(group: group),
 
           // Sticky Filter Bar
           SliverPersistentHeader(
             pinned: true,
-            delegate: _StickyHeaderDelegate(
+            delegate: SliverStickyHeaderDelegate(
               height: 62.0,
               backgroundColor: theme.colorScheme.background,
               child: FilterBar(groupId: group.id),
@@ -342,36 +219,3 @@ class GroupDetailScreen extends ConsumerWidget {
   }
 }
 
-class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final Widget child;
-  final double height;
-  final Color backgroundColor;
-
-  _StickyHeaderDelegate({
-    required this.child,
-    required this.height,
-    required this.backgroundColor,
-  });
-
-  @override
-  double get minExtent => height;
-
-  @override
-  double get maxExtent => height;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(color: backgroundColor, child: child);
-  }
-
-  @override
-  bool shouldRebuild(covariant _StickyHeaderDelegate oldDelegate) {
-    return oldDelegate.child != child ||
-        oldDelegate.height != height ||
-        oldDelegate.backgroundColor != backgroundColor;
-  }
-}

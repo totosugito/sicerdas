@@ -396,5 +396,6 @@
   "elementComparisonSortDesc": "↓ Descending",
   "elementComparisonSortAuto": "Auto",
   "elementComparisonShowLess": "Show Less",
-  "elementComparisonShowMore": "Show More"
+  "elementComparisonShowMore": "Show More",
+  "pressBackAgainToExit": "Press back again to exit"
 }

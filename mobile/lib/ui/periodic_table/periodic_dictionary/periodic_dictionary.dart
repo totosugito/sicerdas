@@ -8,6 +8,7 @@ import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 import 'widgets/chemistry_term_card.dart';
 import 'widgets/dictionary_empty_state.dart';
 import 'widgets/dictionary_hero_app_bar.dart';
+import 'package:bse/widgets/sliver_sticky_header_delegate.dart';
 
 class ChemistryTerm {
   final int id;
@@ -194,7 +195,7 @@ class _ChemistryDictionaryScreenState
                 // Sticky Search & Filters Header
                 SliverPersistentHeader(
                   pinned: true,
-                  delegate: _StickyHeaderDelegate(
+                  delegate: SliverStickyHeaderDelegate(
                     height: 120.0,
                     backgroundColor: theme.colorScheme.background,
                     child: Padding(
@@ -331,36 +332,3 @@ class _ChemistryDictionaryScreenState
   }
 }
 
-class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final Widget child;
-  final double height;
-  final Color backgroundColor;
-
-  _StickyHeaderDelegate({
-    required this.child,
-    required this.height,
-    required this.backgroundColor,
-  });
-
-  @override
-  double get minExtent => height;
-
-  @override
-  double get maxExtent => height;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(color: backgroundColor, child: child);
-  }
-
-  @override
-  bool shouldRebuild(covariant _StickyHeaderDelegate oldDelegate) {
-    return oldDelegate.child != child ||
-        oldDelegate.height != height ||
-        oldDelegate.backgroundColor != backgroundColor;
-  }
-}
