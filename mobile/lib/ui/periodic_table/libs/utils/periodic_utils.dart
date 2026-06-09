@@ -1,5 +1,5 @@
 import 'package:path/path.dart' as p;
-import '../../../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 
 class PeriodicUtils {
   static const List<String> legendGroups = [
@@ -167,7 +167,6 @@ class PeriodicUtils {
     }
     return precision < 0 ? '$value' : value.toStringAsFixed(precision);
   }
-
 
   static String getDiscoveryYear(String year, String bcUnit) {
     if (year.startsWith("-")) {

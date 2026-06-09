@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 
 class ComparisonAppBar extends StatelessWidget {
   final TextEditingController searchController;
@@ -38,9 +38,7 @@ class ComparisonAppBar extends StatelessWidget {
         titlePadding: const EdgeInsets.only(left: 48, bottom: 76),
         background: Container(
           decoration: BoxDecoration(
-            color: isDark
-                ? theme.colorScheme.card
-                : theme.colorScheme.primary,
+            color: isDark ? theme.colorScheme.card : theme.colorScheme.primary,
           ),
           child: Stack(
             children: [
@@ -77,9 +75,7 @@ class ComparisonAppBar extends StatelessWidget {
               Expanded(
                 child: ShadInput(
                   controller: searchController,
-                  placeholder: Text(
-                    l10n.elementComparisonSearchPlaceholder,
-                  ),
+                  placeholder: Text(l10n.elementComparisonSearchPlaceholder),
                   leading: const Padding(
                     padding: EdgeInsets.only(right: 8),
                     child: Icon(LucideIcons.search, size: 16),

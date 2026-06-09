@@ -3,21 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../core/database/database.dart';
-import '../../../core/providers/dio_provider.dart';
-import '../../../core/network/api_endpoints.dart';
-import '../../../l10n/gen_l10n/app_localizations.dart';
-
-import '../../../core/utils/toast_utils.dart';
-import '../../widgets/download_progress_dialog.dart';
+import 'package:bse/core/database/database.dart';
+import 'package:bse/core/providers/dio_provider.dart';
+import 'package:bse/core/network/api_endpoints.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/core/utils/toast_utils.dart';
+import 'package:bse/widgets/download_progress_dialog.dart';
 import '../libs/providers/periodic_provider.dart';
 import '../libs/providers/periodic_sync_provider.dart';
-import 'widgets/periodic_setup_view.dart';
-import 'widgets/periodic_table_layout.dart';
-import 'widgets/element_overview_sheet.dart';
 import '../element_detail/element_detail.dart';
 import '../periodic_dictionary/periodic_dictionary.dart';
 import '../element-comparison/element_comparison.dart';
+import 'widgets/periodic_setup_view.dart';
+import 'widgets/periodic_table_layout.dart';
+import 'widgets/element_overview_sheet.dart';
 
 class PeriodicScreen extends ConsumerStatefulWidget {
   const PeriodicScreen({super.key});
@@ -222,9 +221,7 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
                     break;
                   default:
                     if (value.startsWith('theme')) {
-                      ref
-                          .read(periodicThemeProvider.notifier)
-                          .setTheme(value);
+                      ref.read(periodicThemeProvider.notifier).setTheme(value);
                     }
                 }
               },

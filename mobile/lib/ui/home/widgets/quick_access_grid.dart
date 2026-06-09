@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../core/providers/navigation_provider.dart';
-import '../../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/core/providers/navigation_provider.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 
 import '../../periodic_table/periodic_screen/periodic_screen.dart';
 

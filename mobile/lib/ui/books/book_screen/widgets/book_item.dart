@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../libs/providers/books_provider.dart';
-import '../../../../core/providers/settings_provider.dart';
-import '../../../../core/database/database.dart';
-import '../../libs/utils/book_utils.dart';
-import '../../../../core/utils/toast_utils.dart';
-import '../../../../l10n/gen_l10n/app_localizations.dart';
-import '../../../widgets/confirmation_dialog.dart';
-import '../../../pdf_viewer/pdf_viewer_screen.dart';
+import 'package:bse/core/providers/settings_provider.dart';
+import 'package:bse/core/database/database.dart';
+import 'package:bse/core/utils/toast_utils.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/widgets/confirmation_dialog.dart';
+import 'package:bse/ui/pdf_viewer/pdf_viewer_screen.dart';
 import 'book_detail_sheet.dart';
+import '../../libs/providers/books_provider.dart';
+import '../../libs/utils/book_utils.dart';
 
 class BookItem extends ConsumerWidget {
   final BookWithMetadata item;

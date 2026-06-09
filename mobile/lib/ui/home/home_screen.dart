@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/auth/auth_notifier.dart';
+import 'package:bse/core/auth/auth_notifier.dart';
 import 'widgets/home_header.dart';
 import 'widgets/quick_access_grid.dart';
 import 'widgets/latest_books_section.dart';

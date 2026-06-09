@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../../../widgets/funvas/funvas.dart';
+import 'package:bse/widgets/funvas/funvas.dart';
 
 class ViewElectronShell extends Funvas {
   final Color labelColor;

@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../../core/database/database.dart';
-import '../../../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/core/database/database.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 import '../../libs/models/periodic_models.dart';
 import '../../libs/utils/periodic_utils.dart';
 import 'element_styles.dart';
@@ -24,9 +24,9 @@ class ElementOverviewSheet extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final shadTheme = ShadTheme.of(context);
     final isDark = shadTheme.brightness == Brightness.dark;
-    
+
     final elStyle = getElementStyle(element.atomicGroup, theme, isDark: isDark);
-    
+
     final Map<String, dynamic> propertiesMap =
         jsonDecode(element.atomicProperties) as Map<String, dynamic>? ?? {};
     final properties = AtomicProperties.fromJson(propertiesMap);
@@ -37,10 +37,7 @@ class ElementOverviewSheet extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           border: Border(
-            bottom: BorderSide(
-              color: shadTheme.colorScheme.border,
-              width: 0.5,
-            ),
+            bottom: BorderSide(color: shadTheme.colorScheme.border, width: 0.5),
           ),
         ),
         child: Row(
@@ -103,7 +100,7 @@ class ElementOverviewSheet extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Header info: mini periodic cell representation + Name/Symbol
           Row(
             children: [
@@ -161,7 +158,7 @@ class ElementOverviewSheet extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          
+
           // Key Properties Section
           Container(
             decoration: BoxDecoration(
@@ -200,7 +197,7 @@ class ElementOverviewSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          
+
           // Details button
           ShadButton(
             width: double.infinity,

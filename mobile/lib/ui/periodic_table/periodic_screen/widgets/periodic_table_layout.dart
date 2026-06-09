@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../../../core/database/database.dart';
+import 'package:bse/core/database/database.dart';
 import 'periodic_cell.dart';
 import 'periodic_table_legend.dart';
 

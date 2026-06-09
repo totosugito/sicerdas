@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:bse/core/database/database.dart';
+import 'package:bse/widgets/loading_view.dart';
 import '../group_detail_screen.dart';
-import '../../../../core/database/database.dart';
-import '../../../widgets/loading_view.dart';
 
 class FilterBar extends ConsumerStatefulWidget {
   final int groupId;

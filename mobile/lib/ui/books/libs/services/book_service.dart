@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/network/api_endpoints.dart';
-import '../../../../core/providers/dio_provider.dart';
-import '../../../../core/database/database.dart';
+import 'package:bse/core/network/api_endpoints.dart';
+import 'package:bse/core/providers/dio_provider.dart';
+import 'package:bse/core/database/database.dart';
 import '../utils/book_utils.dart';
 
 final bookServiceProvider = Provider<BookService>((ref) {

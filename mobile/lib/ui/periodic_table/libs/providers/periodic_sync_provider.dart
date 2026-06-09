@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:archive/archive.dart';
-import '../../../../core/database/database.dart';
-import '../../../../core/providers/database_provider.dart';
-import '../../../../core/config/app_constants.dart';
+import 'package:bse/core/database/database.dart';
+import 'package:bse/core/providers/database_provider.dart';
+import 'package:bse/core/config/app_constants.dart';
 
 enum PeriodicSyncStatus { checking, notDownloaded, downloading, success, error }
 

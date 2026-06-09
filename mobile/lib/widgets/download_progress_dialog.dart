@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-
-import '../books/libs/utils/book_utils.dart';
-import '../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/ui/books/libs/utils/book_utils.dart';
 
 class DownloadDialogResult<T> {
   final T? data;

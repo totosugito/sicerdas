@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../../core/database/database.dart';
+import 'package:bse/core/database/database.dart';
 import '../../periodic_screen/widgets/element_styles.dart';
 
 class ElementNavBar extends StatelessWidget {

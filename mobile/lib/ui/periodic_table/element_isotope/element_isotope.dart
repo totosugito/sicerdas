@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../libs/providers/periodic_provider.dart';
-import '../../../core/database/database.dart';
-import '../../../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/ui/periodic_table/libs/providers/periodic_provider.dart';
+import 'package:bse/core/database/database.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 import '../periodic_screen/widgets/element_styles.dart';
-import 'widgets/periodic_hero_cell.dart';
 import '../libs/models/periodic_models.dart';
 import '../libs/utils/periodic_utils.dart';
+import 'widgets/periodic_hero_cell.dart';
 import 'widgets/isotope_card.dart';
 
 class IsotopeData {

@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../core/utils/toast_utils.dart';
-import '../../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/core/utils/toast_utils.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'widgets/chemistry_term_card.dart';
+import 'widgets/dictionary_empty_state.dart';
+import 'widgets/dictionary_hero_app_bar.dart';
 
 class ChemistryTerm {
   final int id;
@@ -183,54 +186,9 @@ class _ChemistryDictionaryScreenState
           : CustomScrollView(
               slivers: [
                 // Collapsible Hero Banner AppBar
-                SliverAppBar(
-                  expandedHeight: 150.0,
-                  pinned: true,
-                  backgroundColor: theme.brightness == Brightness.dark
-                      ? theme.colorScheme.card
-                      : theme.colorScheme.primary,
-                  iconTheme: const IconThemeData(color: Colors.white),
-                  flexibleSpace: FlexibleSpaceBar(
-                    title: Text(
-                      l10n.chemistryDictionary,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    titlePadding: const EdgeInsets.only(left: 48, bottom: 14),
-                    background: Container(
-                      decoration: BoxDecoration(
-                        color: theme.brightness == Brightness.dark
-                            ? theme.colorScheme.card
-                            : theme.colorScheme.primary,
-                      ),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            right: -10,
-                            bottom: -15,
-                            child: Icon(
-                              LucideIcons.beaker,
-                              size: 90,
-                              color: Colors.white.withValues(alpha: 0.15),
-                            ),
-                          ),
-                          Positioned(
-                            left: 48,
-                            bottom: 54,
-                            child: Text(
-                              l10n.chemistryDictionaryDesc,
-                              style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.85),
-                                fontSize: 11,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                DictionaryHeroAppBar(
+                  title: l10n.chemistryDictionary,
+                  description: l10n.chemistryDictionaryDesc,
                 ),
 
                 // Sticky Search & Filters Header
@@ -340,30 +298,10 @@ class _ChemistryDictionaryScreenState
                   sliver: _filteredTerms.isEmpty
                       ? SliverFillRemaining(
                           hasScrollBody: false,
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  LucideIcons.bookOpen,
-                                  size: 48,
-                                  color: theme.colorScheme.mutedForeground,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  l10n.chemistryDictionaryNoEntriesFoundTitle,
-                                  style: theme.textTheme.large.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  l10n.chemistryDictionaryNoEntriesFoundDesc,
-                                  style: theme.textTheme.muted,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
+                          child: DictionaryEmptyState(
+                            title: l10n.chemistryDictionaryNoEntriesFoundTitle,
+                            description:
+                                l10n.chemistryDictionaryNoEntriesFoundDesc,
                           ),
                         )
                       : SliverGrid(
@@ -379,64 +317,10 @@ class _ChemistryDictionaryScreenState
                             index,
                           ) {
                             final term = _filteredTerms[index];
-                            return InkWell(
-                              onLongPress: () => _copyToClipboard(term),
-                              borderRadius: BorderRadius.circular(8),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: theme.colorScheme.card,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                    color: theme.colorScheme.border,
-                                  ),
-                                ),
-                                padding: const EdgeInsets.all(12),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            term.word,
-                                            style: theme.textTheme.p.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color:
-                                                  theme.colorScheme.foreground,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Expanded(
-                                            child: Text(
-                                              term.translation,
-                                              style: theme.textTheme.small
-                                                  .copyWith(
-                                                    color: theme
-                                                        .colorScheme
-                                                        .mutedForeground,
-                                                  ),
-                                              maxLines: 3,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(
-                                        LucideIcons.copy,
-                                        size: 16,
-                                      ),
-                                      tooltip: l10n.chemistryDictionaryCopyText,
-                                      onPressed: () => _copyToClipboard(term),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            return ChemistryTermCard(
+                              term: term,
+                              onCopy: () => _copyToClipboard(term),
+                              copyTooltip: l10n.chemistryDictionaryCopyText,
                             );
                           }, childCount: _filteredTerms.length),
                         ),

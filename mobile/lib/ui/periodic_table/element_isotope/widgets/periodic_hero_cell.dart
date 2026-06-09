@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/database/database.dart';
+import 'package:bse/core/database/database.dart';
 import '../../periodic_screen/widgets/element_styles.dart';
 
 class PeriodicHeroCell extends StatelessWidget {

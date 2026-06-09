@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 import '../element_isotope.dart' show IsotopeData;
 import 'isotope_property_item.dart';
 
@@ -141,53 +141,59 @@ class IsotopeCard extends StatelessWidget {
     final items = <Widget>[];
 
     if (isotope.sIdentified.isNotEmpty) {
-      items.add(IsotopePropertyItem(
-        label: l10n.spinParity,
-        value: isotope.sIdentified,
-        isHtml: true,
-      ));
+      items.add(
+        IsotopePropertyItem(
+          label: l10n.spinParity,
+          value: isotope.sIdentified,
+          isHtml: true,
+        ),
+      );
     }
     if (isotope.halfLife.isNotEmpty) {
-      items.add(IsotopePropertyItem(
-        label: l10n.halfLife,
-        value: isotope.halfLife,
-        isHtml: true,
-      ));
+      items.add(
+        IsotopePropertyItem(
+          label: l10n.halfLife,
+          value: isotope.halfLife,
+          isHtml: true,
+        ),
+      );
     }
     if (isotope.massExcess.isNotEmpty && isotope.massExcess != 'None') {
-      items.add(IsotopePropertyItem(
-        label: l10n.massExcess,
-        value: isotope.massExcess,
-      ));
+      items.add(
+        IsotopePropertyItem(label: l10n.massExcess, value: isotope.massExcess),
+      );
     }
     if (isotope.bindingEnergy.isNotEmpty && isotope.bindingEnergy != 'None') {
-      items.add(IsotopePropertyItem(
-        label: l10n.bindingEnergy,
-        value: isotope.bindingEnergy,
-      ));
+      items.add(
+        IsotopePropertyItem(
+          label: l10n.bindingEnergy,
+          value: isotope.bindingEnergy,
+        ),
+      );
     }
     if (isotope.magneticMoment.isNotEmpty && isotope.magneticMoment != 'None') {
-      items.add(IsotopePropertyItem(
-        label: l10n.magneticMoment,
-        value: isotope.magneticMoment,
-      ));
+      items.add(
+        IsotopePropertyItem(
+          label: l10n.magneticMoment,
+          value: isotope.magneticMoment,
+        ),
+      );
     }
     if (isotope.quadrupoleMoment.isNotEmpty &&
         isotope.quadrupoleMoment != 'None') {
-      items.add(IsotopePropertyItem(
-        label: l10n.quadrupoleMomentIsotope,
-        value: isotope.quadrupoleMoment,
-      ));
+      items.add(
+        IsotopePropertyItem(
+          label: l10n.quadrupoleMomentIsotope,
+          value: isotope.quadrupoleMoment,
+        ),
+      );
     }
     if (isotope.abundance.isNotEmpty && isotope.abundance != 'None') {
-      items.add(IsotopePropertyItem(
-        label: l10n.abundance,
-        value: isotope.abundance,
-      ));
+      items.add(
+        IsotopePropertyItem(label: l10n.abundance, value: isotope.abundance),
+      );
     }
 
-    return Column(
-      children: items,
-    );
+    return Column(children: items);
   }
 }

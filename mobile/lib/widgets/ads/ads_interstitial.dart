@@ -1,4 +1,4 @@
-import 'package:bse/ui/widgets/ads/admob/admob_interstitial.dart';
+import 'package:bse/widgets/ads/admob/admob_interstitial.dart';
 
 class AdsInterstitial {
   final String adsUnit;

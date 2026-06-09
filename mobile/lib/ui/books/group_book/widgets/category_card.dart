@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../../core/database/database.dart';
+import 'package:bse/core/database/database.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 import '../../libs/providers/books_provider.dart';
-import '../../../../l10n/gen_l10n/app_localizations.dart';
 import 'group_item.dart';
 
 class CategoryCard extends ConsumerWidget {

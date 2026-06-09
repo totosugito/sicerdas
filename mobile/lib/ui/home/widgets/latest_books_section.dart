@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../../l10n/gen_l10n/app_localizations.dart';
-import '../../../core/database/database.dart';
-import '../../../core/providers/database_provider.dart';
-import '../../books/libs/providers/books_provider.dart';
-import '../../../core/providers/settings_provider.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/core/database/database.dart';
+import 'package:bse/core/providers/database_provider.dart';
+import 'package:bse/core/providers/settings_provider.dart';
+import 'package:bse/widgets/error_view.dart';
+import 'package:bse/widgets/loading_view.dart';
 import '../../books/libs/utils/book_utils.dart';
 import '../../books/latest_books/latest_books_screen.dart';
 import '../../books/book_screen/widgets/book_detail_sheet.dart';
-import '../../widgets/error_view.dart';
-import '../../widgets/loading_view.dart';
+import '../../books/libs/providers/books_provider.dart';
 
 final homeLatestBooksProvider = StreamProvider<List<BookWithMetadata>>((ref) {
   final db = ref.watch(databaseProvider);

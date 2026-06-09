@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import '../../../../core/database/database.dart';
+import 'package:bse/core/database/database.dart';
 import '../../libs/utils/periodic_utils.dart';
 import '../../periodic_screen/widgets/element_styles.dart';
 

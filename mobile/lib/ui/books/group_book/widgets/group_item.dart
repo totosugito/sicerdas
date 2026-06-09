@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:bse/widgets/new_badge.dart';
 import '../../libs/providers/books_provider.dart';
 import '../../group_detail/group_detail_screen.dart';
-import '../../../widgets/new_badge.dart';
 
 class GroupItem extends StatelessWidget {
   final BookGroupWithMetadata group;

@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart';
-import '../../../../core/database/database.dart';
-import '../../../../core/providers/database_provider.dart';
-import '../../../../core/providers/settings_provider.dart';
+import 'package:bse/core/database/database.dart';
+import 'package:bse/core/providers/database_provider.dart';
+import 'package:bse/core/providers/settings_provider.dart';
 import '../utils/book_utils.dart';
 
 class BooksFilter {

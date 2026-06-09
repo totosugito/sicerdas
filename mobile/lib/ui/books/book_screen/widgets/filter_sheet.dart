@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:bse/core/database/database.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/widgets/loading_view.dart';
 import '../../libs/providers/books_provider.dart';
-import '../../../../core/database/database.dart';
-import '../../../../l10n/gen_l10n/app_localizations.dart';
-import '../../../widgets/loading_view.dart';
 
 class FilterSheet extends ConsumerStatefulWidget {
   const FilterSheet({super.key});

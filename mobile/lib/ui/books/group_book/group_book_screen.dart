@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/widgets/error_view.dart';
+import 'package:bse/widgets/loading_view.dart';
 import '../libs/providers/books_provider.dart';
-import '../../../l10n/gen_l10n/app_localizations.dart';
-import 'widgets/category_card.dart';
 import '../latest_books/latest_books_screen.dart';
-import '../../widgets/error_view.dart';
-import '../../widgets/loading_view.dart';
+import 'widgets/category_card.dart';
 
 class GroupBookScreen extends ConsumerWidget {
   const GroupBookScreen({super.key});

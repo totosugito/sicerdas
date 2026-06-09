@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../core/database/database.dart';
-import '../../../core/providers/database_provider.dart';
+import 'package:bse/core/database/database.dart';
+import 'package:bse/core/providers/database_provider.dart';
+import 'package:bse/widgets/error_view.dart';
+import 'package:bse/widgets/loading_view.dart';
 import '../libs/providers/books_provider.dart';
 import '../book_screen/widgets/book_list_item.dart';
 import 'widgets/filter_bar.dart';
-
-import '../../widgets/error_view.dart';
-import '../../widgets/loading_view.dart';
 
 // Local state for GroupDetail filtering
 class GroupDetailFilter {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 import '../../libs/utils/periodic_utils.dart';
 import 'element_styles.dart';
 
@@ -62,11 +62,7 @@ class PeriodicTableLegend extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  width: 14,
-                  height: 14,
-                  decoration: boxDecoration,
-                ),
+                Container(width: 14, height: 14, decoration: boxDecoration),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(

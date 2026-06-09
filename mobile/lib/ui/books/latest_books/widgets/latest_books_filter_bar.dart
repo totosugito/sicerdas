@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:bse/core/database/database.dart';
+import 'package:bse/widgets/loading_view.dart';
 import '../latest_books_screen.dart';
-import '../../../../core/database/database.dart';
-import '../../../widgets/loading_view.dart';
 
 class LatestBooksFilterBar extends ConsumerStatefulWidget {
   const LatestBooksFilterBar({super.key});
@@ -252,10 +252,12 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                   ],
                 ),
                 const SizedBox(height: 24),
-      
+
                 Text(
                   l10n.filterGrade,
-                  style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold),
+                  style: theme.textTheme.small.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 gradesAsync.when(
@@ -269,7 +271,9 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                           selected: pendingFilter.gradeIds.isEmpty,
                           onTap: () {
                             setState(() {
-                              pendingFilter = pendingFilter.copyWith(gradeIds: []);
+                              pendingFilter = pendingFilter.copyWith(
+                                gradeIds: [],
+                              );
                             });
                           },
                         ),
@@ -282,7 +286,9 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                             selected: isSelected,
                             onTap: () {
                               setState(() {
-                                final newIds = List<int>.from(pendingFilter.gradeIds);
+                                final newIds = List<int>.from(
+                                  pendingFilter.gradeIds,
+                                );
                                 if (isSelected) {
                                   newIds.remove(grade.id);
                                 } else {
@@ -312,12 +318,14 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                     ),
                   ),
                 ),
-      
+
                 const SizedBox(height: 24),
-      
+
                 Text(
                   l10n.sortBy,
-                  style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold),
+                  style: theme.textTheme.small.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Wrap(
@@ -329,7 +337,9 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                       icon: Icons.sort_by_alpha_rounded,
                       selected: pendingFilter.sortBy == 'title',
                       onTap: () => setState(
-                        () => pendingFilter = pendingFilter.copyWith(sortBy: 'title'),
+                        () => pendingFilter = pendingFilter.copyWith(
+                          sortBy: 'title',
+                        ),
                       ),
                     ),
                     _SortChip(
@@ -357,14 +367,16 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                       icon: Icons.storage_rounded,
                       selected: pendingFilter.sortBy == 'size',
                       onTap: () => setState(
-                        () => pendingFilter = pendingFilter.copyWith(sortBy: 'size'),
+                        () => pendingFilter = pendingFilter.copyWith(
+                          sortBy: 'size',
+                        ),
                       ),
                     ),
                   ],
                 ),
-      
+
                 const SizedBox(height: 24),
-      
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -396,7 +408,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                     ),
                   ],
                 ),
-      
+
                 const SizedBox(height: 24),
                 ShadButton(
                   width: double.infinity,

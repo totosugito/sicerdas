@@ -1,9 +1,9 @@
 import 'dart:io';
+import 'package:bse/core/database/database.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../../l10n/gen_l10n/app_localizations.dart';
-import '../../../../core/database/database.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 import '../../libs/models/periodic_models.dart';
 import '../../libs/utils/periodic_utils.dart';
 import '../../periodic_screen/widgets/element_styles.dart';
@@ -37,7 +37,9 @@ class DetailAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final appBarColor = isCollapsed ? (isDark ? Colors.white : Colors.black87) : Colors.white;
+    final appBarColor = isCollapsed
+        ? (isDark ? Colors.white : Colors.black87)
+        : Colors.white;
 
     return SliverAppBar(
       expandedHeight: 340.0,
@@ -51,7 +53,9 @@ class DetailAppBar extends StatelessWidget {
         IconButton(
           icon: Icon(LucideIcons.globe, color: appBarColor),
           onPressed: () async {
-            final url = Uri.parse(PeriodicUtils.getElementUrl(element.atomicNumber));
+            final url = Uri.parse(
+              PeriodicUtils.getElementUrl(element.atomicNumber),
+            );
             if (await canLaunchUrl(url)) {
               await launchUrl(url, mode: LaunchMode.externalApplication);
             } else {
@@ -66,11 +70,18 @@ class DetailAppBar extends StatelessWidget {
         IconButton(
           icon: Icon(LucideIcons.atom, color: appBarColor),
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ElementIsotopeScreen(element: element)));
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ElementIsotopeScreen(element: element),
+              ),
+            );
           },
         ),
         IconButton(
-          icon: Icon(isAllExpanded ? LucideIcons.chevronUp : LucideIcons.chevronDown, color: appBarColor),
+          icon: Icon(
+            isAllExpanded ? LucideIcons.chevronUp : LucideIcons.chevronDown,
+            color: appBarColor,
+          ),
           onPressed: onToggleExpandCollapse,
         ),
       ],
@@ -82,7 +93,11 @@ class DetailAppBar extends StatelessWidget {
           opacity: isCollapsed ? 1.0 : 0.0,
           child: Text(
             "${element.atomicName} [${element.atomicSymbol}]",
-            style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontWeight: FontWeight.bold, fontSize: 18),
+            style: TextStyle(
+              color: isDark ? Colors.white : Colors.black87,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
           ),
         ),
         background: Stack(
@@ -93,7 +108,13 @@ class DetailAppBar extends StatelessWidget {
             else
               Container(
                 decoration: BoxDecoration(
-                  gradient: elStyle.gradient != null ? LinearGradient(colors: elStyle.gradient!, begin: Alignment.topLeft, end: Alignment.bottomRight) : null,
+                  gradient: elStyle.gradient != null
+                      ? LinearGradient(
+                          colors: elStyle.gradient!,
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null,
                   color: elStyle.gradient == null ? elStyle.background : null,
                 ),
               ),
@@ -101,7 +122,11 @@ class DetailAppBar extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.black.withValues(alpha: 0.35), Colors.transparent, Colors.black.withValues(alpha: 0.8)],
+                  colors: [
+                    Colors.black.withValues(alpha: 0.35),
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: 0.8),
+                  ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
@@ -117,11 +142,18 @@ class DetailAppBar extends StatelessWidget {
                 children: [
                   // Colored Group Badge
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(color: atomColor),
                     child: Text(
                       "${element.atomicNumber}  |  ${PeriodicUtils.getLocalizedSeries(l10n, element.atomicGroup)}",
-                      style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -131,7 +163,12 @@ class DetailAppBar extends StatelessWidget {
                     children: [
                       Text(
                         element.atomicSymbol,
-                        style: const TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.w300, height: 0.9),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 48,
+                          fontWeight: FontWeight.w300,
+                          height: 0.9,
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Column(
@@ -140,12 +177,21 @@ class DetailAppBar extends StatelessWidget {
                         children: [
                           Text(
                             element.atomicName,
-                            style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold, height: 1.0),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              height: 1.0,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             "${atomicProperties.atomicWeight ?? ''} g/mol",
-                            style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w400),
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                         ],
                       ),

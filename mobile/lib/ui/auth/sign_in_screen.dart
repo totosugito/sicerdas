@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../core/auth/auth_notifier.dart';
-import '../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/core/auth/auth_notifier.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 import 'sign_up_screen.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {

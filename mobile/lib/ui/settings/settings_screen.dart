@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../core/providers/settings_provider.dart';
-import '../../l10n/gen_l10n/app_localizations.dart';
-import '../../core/services/version_service.dart';
-import '../widgets/confirmation_dialog.dart';
+import 'package:bse/core/providers/settings_provider.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/core/services/version_service.dart';
+import 'package:bse/widgets/confirmation_dialog.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../../core/database/database.dart';
+import 'package:bse/core/database/database.dart';
 import '../../periodic_screen/widgets/element_styles.dart';
 
 class ElementHero extends StatelessWidget {
@@ -112,10 +112,7 @@ class ElementHero extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.file(
-                  File(imagePath!),
-                  fit: BoxFit.cover,
-                ),
+                child: Image.file(File(imagePath!), fit: BoxFit.cover),
               ),
             ),
           ],

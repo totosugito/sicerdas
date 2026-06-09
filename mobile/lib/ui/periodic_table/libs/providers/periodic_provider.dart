@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/providers/settings_provider.dart';
+import 'package:bse/core/providers/settings_provider.dart';
 
 // --- Periodic Table Theme ---
 
@@ -18,8 +18,9 @@ class PeriodicThemeNotifier extends Notifier<String> {
   }
 }
 
-final periodicThemeProvider =
-    NotifierProvider<PeriodicThemeNotifier, String>(PeriodicThemeNotifier.new);
+final periodicThemeProvider = NotifierProvider<PeriodicThemeNotifier, String>(
+  PeriodicThemeNotifier.new,
+);
 
 // --- Comparison Sort Settings ---
 
@@ -32,10 +33,7 @@ class ComparisonSortState {
     this.sortDirection = 'auto',
   });
 
-  ComparisonSortState copyWith({
-    String? sortBy,
-    String? sortDirection,
-  }) {
+  ComparisonSortState copyWith({String? sortBy, String? sortDirection}) {
     return ComparisonSortState(
       sortBy: sortBy ?? this.sortBy,
       sortDirection: sortDirection ?? this.sortDirection,

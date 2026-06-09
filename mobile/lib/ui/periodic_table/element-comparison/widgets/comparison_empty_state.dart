@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 
 class ComparisonEmptyState extends StatelessWidget {
   final String searchQuery;
 
-  const ComparisonEmptyState({
-    super.key,
-    required this.searchQuery,
-  });
+  const ComparisonEmptyState({super.key, required this.searchQuery});
 
   @override
   Widget build(BuildContext context) {
@@ -20,33 +17,31 @@ class ComparisonEmptyState extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              LucideIcons.fileSearch,
-              size: 48,
-              color: theme.colorScheme.mutedForeground,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.elementComparisonNoElementsFound,
-              style: theme.textTheme.large.copyWith(
-                fontWeight: FontWeight.bold,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                LucideIcons.fileSearch,
+                size: 48,
+                color: theme.colorScheme.mutedForeground,
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              searchQuery.isNotEmpty
-                  ? l10n.elementComparisonNoElementsFoundMatching(
-                      searchQuery,
-                    )
-                  : l10n.elementComparisonNoElementsFound,
-              style: theme.textTheme.muted,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.elementComparisonNoElementsFound,
+                style: theme.textTheme.large.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                searchQuery.isNotEmpty
+                    ? l10n.elementComparisonNoElementsFoundMatching(searchQuery)
+                    : l10n.elementComparisonNoElementsFound,
+                style: theme.textTheme.muted,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

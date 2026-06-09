@@ -38,10 +38,7 @@ class NewBadge extends StatelessWidget {
 
     return Container(
       margin: margin,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 4,
-        vertical: 1.5,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1.5),
       decoration: BoxDecoration(
         color: theme.colorScheme.primary.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(4),

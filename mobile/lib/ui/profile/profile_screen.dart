@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../core/auth/auth_notifier.dart';
-import '../../core/auth/auth_service.dart';
-import '../../l10n/gen_l10n/app_localizations.dart';
-import '../settings/settings_screen.dart';
-import '../widgets/confirmation_dialog.dart';
+import 'package:bse/core/auth/auth_notifier.dart';
+import 'package:bse/core/auth/auth_service.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/widgets/confirmation_dialog.dart';
 import '../auth/sign_in_screen.dart';
+import '../settings/settings_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});

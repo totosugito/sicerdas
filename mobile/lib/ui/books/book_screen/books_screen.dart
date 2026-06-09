@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../libs/providers/books_provider.dart';
-import '../../../core/database/database.dart';
-import '../../../l10n/gen_l10n/app_localizations.dart';
-import '../../widgets/empty_state.dart';
+import 'package:bse/core/database/database.dart';
+import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/widgets/empty_state.dart';
+import 'package:bse/widgets/error_view.dart';
+import 'package:bse/widgets/loading_view.dart';
 import '../group_book/group_book_screen.dart';
+import '../libs/providers/books_provider.dart';
 import 'widgets/book_item.dart';
 import 'widgets/filter_sheet.dart';
 import 'widgets/book_list_item.dart';
-import '../../widgets/error_view.dart';
-import '../../widgets/loading_view.dart';
 
 class BooksScreen extends ConsumerWidget {
   const BooksScreen({super.key});

@@ -13,7 +13,7 @@ import '../core/providers/sync_provider.dart';
 import '../core/config/app_constants.dart';
 import '../core/services/version_service.dart';
 import 'periodic_table/periodic_dictionary/periodic_dictionary.dart';
-import 'widgets/ads/admob/admob_banner.dart';
+import 'package:bse/widgets/ads/admob/admob_banner.dart';
 
 class MainLayout extends ConsumerStatefulWidget {
   const MainLayout({super.key});
@@ -37,7 +37,11 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
   Future<bool> _initAppDirectory() async {
     final status = await _createAppDirectory(
       parentDir: AppConstants.appDirParent,
-      childDir: const [AppConstants.appDirBooks, AppConstants.appDirKamus, AppConstants.appDirPeriodic],
+      childDir: const [
+        AppConstants.appDirBooks,
+        AppConstants.appDirKamus,
+        AppConstants.appDirPeriodic,
+      ],
     );
 
     if (!status && mounted) {
@@ -53,17 +57,31 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(LucideIcons.triangleAlert, size: 32, color: theme.colorScheme.destructive),
+                Icon(
+                  LucideIcons.triangleAlert,
+                  size: 32,
+                  color: theme.colorScheme.destructive,
+                ),
                 const SizedBox(height: 16),
                 Text(
                   l10n.errorTitle,
-                  style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w700),
+                  style: theme.textTheme.large.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
-                Text(l10n.errorCreateAppDir, style: theme.textTheme.muted.copyWith(fontSize: 14), textAlign: TextAlign.center),
+                Text(
+                  l10n.errorCreateAppDir,
+                  style: theme.textTheme.muted.copyWith(fontSize: 14),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 24),
-                ShadButton.destructive(width: double.infinity, onPressed: () => Navigator.of(context).pop(), child: Text(l10n.close)),
+                ShadButton.destructive(
+                  width: double.infinity,
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(l10n.close),
+                ),
               ],
             ),
           ),
@@ -74,7 +92,10 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
     return status;
   }
 
-  Future<bool> _createAppDirectory({required String parentDir, required List<String> childDir}) async {
+  Future<bool> _createAppDirectory({
+    required String parentDir,
+    required List<String> childDir,
+  }) async {
     try {
       final dataDir = await getExternalStorageDirectory();
       if (dataDir == null) return false;
@@ -115,15 +136,30 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
 
     // 🚀 Background Sync Feedback
     ref.listen(syncProvider, (previous, next) {
-      if (next.status == SyncStatus.success && !next.isInitialSync && next.booksAdded > 0) {
-        ShadToaster.of(context).show(ShadToast(title: Text(l10n.badgeNew), description: Text(l10n.syncSuccessMessage(next.booksAdded))));
+      if (next.status == SyncStatus.success &&
+          !next.isInitialSync &&
+          next.booksAdded > 0) {
+        ShadToaster.of(context).show(
+          ShadToast(
+            title: Text(l10n.badgeNew),
+            description: Text(l10n.syncSuccessMessage(next.booksAdded)),
+          ),
+        );
       }
     });
 
     return Stack(
       children: [
         Scaffold(
-          body: IndexedStack(index: selectedIndex, children: [const HomeScreen(), const BooksScreen(), const ChemistryDictionaryScreen(), const ProfileScreen()]),
+          body: IndexedStack(
+            index: selectedIndex,
+            children: [
+              const HomeScreen(),
+              const BooksScreen(),
+              const ChemistryDictionaryScreen(),
+              const ProfileScreen(),
+            ],
+          ),
           bottomNavigationBar: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -134,16 +170,33 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                   ref.read(navigationProvider.notifier).setIndex(index);
                 },
                 destinations: [
-                  NavigationDestination(icon: const Icon(Icons.home_outlined), selectedIcon: const Icon(Icons.home), label: l10n.navHome),
-                  NavigationDestination(icon: const Icon(Icons.menu_book_outlined), selectedIcon: const Icon(Icons.menu_book), label: l10n.navBooks),
-                  NavigationDestination(icon: const Icon(Icons.translate_outlined), selectedIcon: const Icon(Icons.translate), label: l10n.navDictionary),
-                  NavigationDestination(icon: const Icon(Icons.person_outline), selectedIcon: const Icon(Icons.person), label: l10n.navProfile),
+                  NavigationDestination(
+                    icon: const Icon(Icons.home_outlined),
+                    selectedIcon: const Icon(Icons.home),
+                    label: l10n.navHome,
+                  ),
+                  NavigationDestination(
+                    icon: const Icon(Icons.menu_book_outlined),
+                    selectedIcon: const Icon(Icons.menu_book),
+                    label: l10n.navBooks,
+                  ),
+                  NavigationDestination(
+                    icon: const Icon(Icons.translate_outlined),
+                    selectedIcon: const Icon(Icons.translate),
+                    label: l10n.navDictionary,
+                  ),
+                  NavigationDestination(
+                    icon: const Icon(Icons.person_outline),
+                    selectedIcon: const Icon(Icons.person),
+                    label: l10n.navProfile,
+                  ),
                 ],
               ),
             ],
           ),
         ),
-        if (syncState.isInitialSync && (selectedIndex == 0 || selectedIndex == 1))
+        if (syncState.isInitialSync &&
+            (selectedIndex == 0 || selectedIndex == 1))
           Container(
             color: theme.colorScheme.background.withValues(alpha: 0.8),
             child: Center(
@@ -161,15 +214,23 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                           const SizedBox(height: 16),
                           Text(
                             l10n.syncInitialDownloadTitle,
-                            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w700),
+                            style: theme.textTheme.large.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
-                          Text(l10n.syncInitialDownloadMessage, style: theme.textTheme.muted.copyWith(fontSize: 14), textAlign: TextAlign.center),
+                          Text(
+                            l10n.syncInitialDownloadMessage,
+                            style: theme.textTheme.muted.copyWith(fontSize: 14),
+                            textAlign: TextAlign.center,
+                          ),
                           const SizedBox(height: 24),
                           ShadButton(
                             width: double.infinity,
-                            onPressed: () => ref.read(versionServiceProvider).checkAndSync(force: true),
+                            onPressed: () => ref
+                                .read(versionServiceProvider)
+                                .checkAndSync(force: true),
                             child: Text(l10n.syncDownloadNow),
                           ),
                         ] else if (syncState.status == SyncStatus.syncing) ...[
@@ -177,29 +238,52 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                           const SizedBox(height: 16),
                           Text(
                             l10n.syncPreparingData,
-                            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w700),
+                            style: theme.textTheme.large.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
-                          Text(l10n.syncWaitMessage, style: theme.textTheme.muted.copyWith(fontSize: 14), textAlign: TextAlign.center),
-                          const SizedBox(height: 24),
-                          const ShadProgress(),
-                        ] else if (syncState.status == SyncStatus.success) ...[
-                          const Icon(LucideIcons.circleCheck, size: 32, color: Colors.green),
-                          const SizedBox(height: 16),
                           Text(
-                            l10n.syncSuccessMessage(syncState.booksAdded),
-                            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w700),
+                            l10n.syncWaitMessage,
+                            style: theme.textTheme.muted.copyWith(fontSize: 14),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 24),
-                          ShadButton(width: double.infinity, onPressed: () => ref.read(syncProvider.notifier).reset(), child: Text(l10n.close)),
+                          const ShadProgress(),
+                        ] else if (syncState.status == SyncStatus.success) ...[
+                          const Icon(
+                            LucideIcons.circleCheck,
+                            size: 32,
+                            color: Colors.green,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            l10n.syncSuccessMessage(syncState.booksAdded),
+                            style: theme.textTheme.large.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 24),
+                          ShadButton(
+                            width: double.infinity,
+                            onPressed: () =>
+                                ref.read(syncProvider.notifier).reset(),
+                            child: Text(l10n.close),
+                          ),
                         ] else if (syncState.status == SyncStatus.error) ...[
-                          Icon(LucideIcons.wifiOff, size: 32, color: theme.colorScheme.destructive),
+                          Icon(
+                            LucideIcons.wifiOff,
+                            size: 32,
+                            color: theme.colorScheme.destructive,
+                          ),
                           const SizedBox(height: 16),
                           Text(
                             l10n.syncConnectionRequired,
-                            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w700),
+                            style: theme.textTheme.large.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
@@ -211,7 +295,9 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                           const SizedBox(height: 24),
                           ShadButton(
                             width: double.infinity,
-                            onPressed: () => ref.read(versionServiceProvider).checkAndSync(force: true),
+                            onPressed: () => ref
+                                .read(versionServiceProvider)
+                                .checkAndSync(force: true),
                             child: Text(l10n.syncTryAgain),
                           ),
                         ],
