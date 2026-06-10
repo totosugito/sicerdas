@@ -4,20 +4,22 @@ import 'admob/admob_native.dart';
 import 'ads_config.dart';
 
 class AdsNative extends ConsumerWidget {
-  final String adsUnit;
+  final String? adsUnit;
 
-  const AdsNative({super.key, required this.adsUnit});
+  const AdsNative({super.key, this.adsUnit});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeProvider = ref.watch(activeAdProvider);
+    final adSettings = ref.watch(adSettingsProvider);
+    final activeProvider = adSettings.provider;
+    final unitId = adsUnit ?? adSettings.native;
 
     switch (activeProvider) {
       case AdProviderType.admob:
-        return AdmobNative(adsUnitId: adsUnit);
+        return AdmobNative(adsUnitId: unitId);
       // Future cases:
       // case AdProviderType.unity:
-      //   return UnityNative(adsUnitId: adsUnit);
+      //   return UnityNative(adsUnitId: unitId);
     }
   }
 }

@@ -59,23 +59,24 @@ const GroupItem = Type.Object({
 
 const SettingsItem = Type.Object({
   cloudUrl: Type.String(),
+  showAds: Type.Boolean(),
   ads: Type.Object({
     adsDelayCounter: Type.Number(),
     adsDelayTimeInSec: Type.Number(),
-    adsUnitAndroid: Type.Object({
+    android: Type.Object({
       adsProvider: Type.String(),
       banner: Type.String(),
       rewards: Type.String(),
       interstitial: Type.String(),
       native: Type.String(),
     }),
-  }),
-  license: Type.Object({
-    showAds: Type.Boolean(),
-    user: Type.String(),
-    productId: Type.String(),
-    pPurchaseStart: Type.String(),
-    pPurchaseEnd: Type.String(),
+    ios: Type.Object({
+      adsProvider: Type.String(),
+      banner: Type.String(),
+      rewards: Type.String(),
+      interstitial: Type.String(),
+      native: Type.String(),
+    }),
   }),
 });
 
@@ -126,8 +127,6 @@ export default async function appLatestRoute(app: FastifyInstance) {
     handler: withErrorHandler(async (req, reply) => {
       const i18n = getTypedI18n(req);
       const { dbVersion: currentDbVersion } = req.body as any;
-
-
       const session = await getAuthInstance(app).api.getSession({
         headers: fromNodeHeaders(req.headers),
       });
@@ -152,6 +151,9 @@ export default async function appLatestRoute(app: FastifyInstance) {
       }
 
       const showAds = userTier === "free";
+
+
+
 
       // 1. Get the internal appVersion.id for the client's current version
       let clientVersionId = 0;
@@ -259,32 +261,33 @@ export default async function appLatestRoute(app: FastifyInstance) {
         success: true,
         message: i18n.t((l) => l.version.latestSuccess),
         data: {
-          versions: versionsWithHtml,
-          books: bookItems,
-          grades: allGrades,
-          categories: allCategories,
-          groups: bookGroups,
           settings: {
             cloudUrl: envConfig.server.s3Storage.publicUrl,
+            showAds: showAds,
             ads: {
               adsDelayCounter: envConfig.ads.delayCounter,
               adsDelayTimeInSec: envConfig.ads.delayTimeInSec,
-              adsUnitAndroid: {
+              android: {
                 adsProvider: envConfig.ads.android.provider,
                 banner: envConfig.ads.android.bannerId,
                 rewards: envConfig.ads.android.rewardedId,
                 interstitial: envConfig.ads.android.interstitialId,
                 native: envConfig.ads.android.nativeId,
-              }
-            },
-            license: {
-              showAds: showAds,
-              user: userId || "",
-              productId: "",
-              pPurchaseStart: "",
-              pPurchaseEnd: "",
+              },
+              ios: {
+                adsProvider: envConfig.ads.ios.provider,
+                banner: envConfig.ads.ios.bannerId,
+                rewards: envConfig.ads.ios.rewardedId,
+                interstitial: envConfig.ads.ios.interstitialId,
+                native: envConfig.ads.ios.nativeId,
+              },
             },
           },
+          versions: versionsWithHtml,
+          books: bookItems,
+          grades: allGrades,
+          categories: allCategories,
+          groups: bookGroups,
         },
       };
     }),

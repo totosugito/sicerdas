@@ -9,6 +9,8 @@ import '../latest_books/latest_books_screen.dart';
 import 'widgets/category_card.dart';
 import 'widgets/latest_books_card.dart';
 import 'widgets/group_book_header.dart';
+import 'package:bse/core/providers/settings_provider.dart';
+import 'package:bse/widgets/ads/ads_banner.dart';
 
 class GroupBookScreen extends ConsumerWidget {
   const GroupBookScreen({super.key});
@@ -21,6 +23,7 @@ class GroupBookScreen extends ConsumerWidget {
     final latestBooksAsync = ref.watch(unfilteredLatestBooksStreamProvider);
 
     final theme = ShadTheme.of(context);
+    final showAds = ref.watch(appSettingsProvider)?.showAds ?? false;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
@@ -95,6 +98,7 @@ class GroupBookScreen extends ConsumerWidget {
           ),
         ],
       ),
+      bottomNavigationBar: showAds ? const AdsBanner() : null,
     );
   }
 }

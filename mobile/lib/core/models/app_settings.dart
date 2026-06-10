@@ -1,27 +1,29 @@
+import 'dart:io' show Platform;
+
 class AppSettings {
   final String cloudUrl;
+  final bool showAds;
   final AppAdsSettings ads;
-  final AppLicenseSettings license;
 
   AppSettings({
     required this.cloudUrl,
+    required this.showAds,
     required this.ads,
-    required this.license,
   });
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
     return AppSettings(
       cloudUrl: json['cloudUrl'] ?? '',
+      showAds: json['showAds'] ?? false,
       ads: AppAdsSettings.fromJson(json['ads'] ?? {}),
-      license: AppLicenseSettings.fromJson(json['license'] ?? {}),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'cloudUrl': cloudUrl,
+      'showAds': showAds,
       'ads': ads.toJson(),
-      'license': license.toJson(),
     };
   }
 }
@@ -29,19 +31,24 @@ class AppSettings {
 class AppAdsSettings {
   final int adsDelayCounter;
   final int adsDelayTimeInSec;
-  final AppAdsUnitAndroid android;
+  final AppAdsUnit android;
+  final AppAdsUnit ios;
 
   AppAdsSettings({
     required this.adsDelayCounter,
     required this.adsDelayTimeInSec,
     required this.android,
+    required this.ios,
   });
+
+  AppAdsUnit get current => Platform.isIOS ? ios : android;
 
   factory AppAdsSettings.fromJson(Map<String, dynamic> json) {
     return AppAdsSettings(
       adsDelayCounter: json['adsDelayCounter'] ?? 0,
       adsDelayTimeInSec: json['adsDelayTimeInSec'] ?? 0,
-      android: AppAdsUnitAndroid.fromJson(json['adsUnitAndroid'] ?? {}),
+      android: AppAdsUnit.fromJson(json['android'] ?? {}),
+      ios: AppAdsUnit.fromJson(json['ios'] ?? {}),
     );
   }
 
@@ -49,19 +56,20 @@ class AppAdsSettings {
     return {
       'adsDelayCounter': adsDelayCounter,
       'adsDelayTimeInSec': adsDelayTimeInSec,
-      'adsUnitAndroid': android.toJson(),
+      'android': android.toJson(),
+      'ios': ios.toJson(),
     };
   }
 }
 
-class AppAdsUnitAndroid {
+class AppAdsUnit {
   final String adsProvider;
   final String banner;
   final String rewards;
   final String interstitial;
   final String native;
 
-  AppAdsUnitAndroid({
+  AppAdsUnit({
     required this.adsProvider,
     required this.banner,
     required this.rewards,
@@ -69,8 +77,8 @@ class AppAdsUnitAndroid {
     required this.native,
   });
 
-  factory AppAdsUnitAndroid.fromJson(Map<String, dynamic> json) {
-    return AppAdsUnitAndroid(
+  factory AppAdsUnit.fromJson(Map<String, dynamic> json) {
+    return AppAdsUnit(
       adsProvider: json['adsProvider'] ?? '',
       banner: json['banner'] ?? '',
       rewards: json['rewards'] ?? '',
@@ -86,42 +94,6 @@ class AppAdsUnitAndroid {
       'rewards': rewards,
       'interstitial': interstitial,
       'native': native,
-    };
-  }
-}
-
-class AppLicenseSettings {
-  final bool showAds;
-  final String user;
-  final String productId;
-  final String pPurchaseStart;
-  final String pPurchaseEnd;
-
-  AppLicenseSettings({
-    required this.showAds,
-    required this.user,
-    required this.productId,
-    required this.pPurchaseStart,
-    required this.pPurchaseEnd,
-  });
-
-  factory AppLicenseSettings.fromJson(Map<String, dynamic> json) {
-    return AppLicenseSettings(
-      showAds: json['showAds'] ?? false,
-      user: json['user'] ?? '',
-      productId: json['productId'] ?? '',
-      pPurchaseStart: json['pPurchaseStart'] ?? '',
-      pPurchaseEnd: json['pPurchaseEnd'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'showAds': showAds,
-      'user': user,
-      'productId': productId,
-      'pPurchaseStart': pPurchaseStart,
-      'pPurchaseEnd': pPurchaseEnd,
     };
   }
 }

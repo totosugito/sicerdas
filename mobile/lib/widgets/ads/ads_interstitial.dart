@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'admob/admob_interstitial.dart';
 import 'ads_config.dart';
 
@@ -25,6 +26,22 @@ class AdsInterstitial {
     required String adsUnit,
     AdProviderType provider = AdProviderType.admob,
   }) : _ad = _createAd(adsUnit, provider);
+
+  factory AdsInterstitial.fromRef(Ref ref, {String? adsUnit, AdProviderType? provider}) {
+    final adSettings = ref.read(adSettingsProvider);
+    return AdsInterstitial(
+      adsUnit: adsUnit ?? adSettings.interstitial,
+      provider: provider ?? adSettings.provider,
+    );
+  }
+
+  factory AdsInterstitial.fromWidgetRef(WidgetRef ref, {String? adsUnit, AdProviderType? provider}) {
+    final adSettings = ref.read(adSettingsProvider);
+    return AdsInterstitial(
+      adsUnit: adsUnit ?? adSettings.interstitial,
+      provider: provider ?? adSettings.provider,
+    );
+  }
 
   static BaseInterstitialAd _createAd(String adsUnit, AdProviderType provider) {
     switch (provider) {

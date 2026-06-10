@@ -5,28 +5,30 @@ import 'admob/admob_banner.dart';
 import 'ads_config.dart';
 
 class AdsBanner extends ConsumerWidget {
-  final String adsUnit;
+  final String? adsUnit;
   final bool showDivider;
 
   const AdsBanner({
     super.key,
-    required this.adsUnit,
+    this.adsUnit,
     this.showDivider = true,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
-    final activeProvider = ref.watch(activeAdProvider);
+    final adSettings = ref.watch(adSettingsProvider);
+    final activeProvider = adSettings.provider;
+    final unitId = adsUnit ?? adSettings.banner;
 
     Widget banner;
     switch (activeProvider) {
       case AdProviderType.admob:
-        banner = AdmobBanner(adsUnitId: adsUnit);
+        banner = AdmobBanner(adsUnitId: unitId);
         break;
       // Future cases:
       // case AdProviderType.unity:
-      //   banner = UnityBanner(adsUnitId: adsUnit);
+      //   banner = UnityBanner(adsUnitId: unitId);
       //   break;
     }
 

@@ -14,6 +14,7 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 import '../models/app_settings.dart';
 import '../providers/logger_provider.dart';
 import '../config/app_constants.dart';
+import '../providers/settings_provider.dart';
 import '../../ui/periodic_table/libs/providers/periodic_sync_provider.dart';
 
 final versionServiceProvider = Provider<VersionService>((ref) {
@@ -109,6 +110,7 @@ class VersionService {
           try {
             final appSettings = AppSettings.fromJson(settings as Map<String, dynamic>);
             await prefs.setString(_settingsKey, jsonEncode(appSettings.toJson()));
+            _ref.invalidate(appSettingsProvider);
           } catch (e, stack) {
             _ref.read(loggerProvider).e('Failed to parse app settings', error: e, stackTrace: stack);
           }
