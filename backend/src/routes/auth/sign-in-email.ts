@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@fastify/type-provider-typebox";
 import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
-import { users } from "../../db/schema/user/index.ts";
+import { users, usersProfile } from "../../db/schema/user/index.ts";
 import { eq } from "drizzle-orm";
 import { getUserAvatarUrl } from "../../utils/user-utils.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
@@ -15,6 +15,8 @@ const UserResponse = Type.Object({
   image: Type.Union([Type.String(), Type.Null()]),
   emailVerified: Type.Boolean(),
   role: Type.Union([Type.String(), Type.Null()]),
+  showAds: Type.Boolean(),
+  tierId: Type.String(),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
 });
@@ -97,24 +99,32 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         return reply.badRequest(t(($) => $.auth.invalidCredentials));
       }
 
-      // Fetch the user with role from the database
-      const userWithRole = await db.query.users.findFirst({
-        where: eq(users.id, authData.user.id),
-        columns: {
-          id: true,
-          email: true,
-          name: true,
-          image: true,
-          emailVerified: true,
-          role: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      });
+      // Fetch the user with role and tier from the database
+      const userRecord = await db
+        .select({
+          id: users.id,
+          email: users.email,
+          name: users.name,
+          image: users.image,
+          emailVerified: users.emailVerified,
+          role: users.role,
+          createdAt: users.createdAt,
+          updatedAt: users.updatedAt,
+          tierId: usersProfile.tierId,
+        })
+        .from(users)
+        .leftJoin(usersProfile, eq(users.id, usersProfile.id))
+        .where(eq(users.id, authData.user.id))
+        .limit(1);
+
+      const userWithRole = userRecord.length > 0 ? userRecord[0] : null;
 
       if (!userWithRole) {
         return reply.notFound(t(($) => $.auth.userNotFound));
       }
+
+      const tierId = userWithRole.tierId || "free";
+      const showAds = tierId === "free";
 
       // Forward the response
       return reply
@@ -126,6 +136,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             ...authData.user,
             ...userWithRole,
             image: getUserAvatarUrl(userWithRole.id, userWithRole.image),
+            showAds,
+            tierId,
           },
         });
     }),

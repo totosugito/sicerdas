@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import '../../core/providers/settings_provider.dart';
 import 'admob/admob_banner.dart';
 import 'ads_config.dart';
 
@@ -8,11 +9,19 @@ class AdsBanner extends ConsumerWidget {
   final String? adsUnit;
   final bool showDivider;
 
-  const AdsBanner({
-    super.key,
-    this.adsUnit,
-    this.showDivider = true,
-  });
+  const AdsBanner({super.key, this.adsUnit, this.showDivider = true});
+
+  /// Builds the ads banner widget if ads are enabled in the settings.
+  /// Otherwise, returns null to avoid layout issues in Scaffold.
+  static Widget? buildBottomBar(
+    WidgetRef ref, {
+    String? adsUnit,
+    bool showDivider = true,
+  }) {
+    final showAds = ref.watch(appSettingsProvider)?.showAds ?? false;
+    if (!showAds) return null;
+    return AdsBanner(adsUnit: adsUnit, showDivider: showDivider);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,11 +45,7 @@ class AdsBanner extends ConsumerWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Divider(
-            height: 1,
-            thickness: 1,
-            color: theme.colorScheme.border,
-          ),
+          Divider(height: 1, thickness: 1, color: theme.colorScheme.border),
           banner,
         ],
       );

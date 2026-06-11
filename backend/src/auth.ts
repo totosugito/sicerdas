@@ -11,6 +11,7 @@ import { fileURLToPath } from "url";
 import { BrevoClient } from "@getbrevo/brevo";
 import { getUserAvatarUrl } from "./utils/user-utils.ts";
 import { eq } from "drizzle-orm";
+import { users, usersProfile } from "./db/schema/user/index.ts";
 
 // Initialize Brevo API client if API key is provided
 let brevo: BrevoClient | null = null;
@@ -48,16 +49,29 @@ const auth = betterAuth({
       path: "/docs",
     }),
     customSession(async ({ user, session }) => {
-      // get user role from database
-      const userRecord = await db.query.users.findFirst({
-        where: (fields) => eq(fields.id, user.id),
-      });
+      // get user role and tier in a single query
+      const userRecord = await db
+        .select({
+          role: users.role,
+          tierId: usersProfile.tierId,
+        })
+        .from(users)
+        .leftJoin(usersProfile, eq(users.id, usersProfile.id))
+        .where(eq(users.id, user.id))
+        .limit(1);
+
+      const record = userRecord.length > 0 ? userRecord[0] : null;
+      const role = record?.role || "user";
+      const tierId = record?.tierId || "free";
+      const showAds = tierId === "free";
 
       return {
         user: {
           ...user,
-          role: userRecord?.role || "user",
+          role,
           image: getUserAvatarUrl(user.id, user.image),
+          showAds,
+          tierId,
         },
         session,
       };

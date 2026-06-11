@@ -9,6 +9,11 @@ enum AdProviderType {
   // appLovin,
 }
 
+enum AdsTemplateType {
+  small,
+  medium,
+}
+
 class AdSettings {
   final AdProviderType provider;
   final String banner;

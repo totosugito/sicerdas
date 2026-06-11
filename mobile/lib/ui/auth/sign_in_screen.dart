@@ -290,7 +290,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               // Login Button
               ShadButton(
                 width: double.infinity,
-                height: 48,
                 onPressed: _isLoading || _isGoogleLoading ? null : _handleLogin,
                 child: _isLoading
                     ? const SizedBox(
@@ -341,7 +340,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               // Google Sign In Button
               ShadButton.outline(
                 width: double.infinity,
-                height: 48,
                 onPressed: _isLoading || _isGoogleLoading
                     ? null
                     : _handleGoogleLogin,
@@ -359,13 +357,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            'assets/images/google_logo.png',
+                          SvgPicture.asset(
+                            'assets/images/google_logo.svg',
                             height: 18,
                             width: 18,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Icon(Icons.g_mobiledata, size: 24);
-                            },
                           ),
                           const SizedBox(width: 12),
                           Text(

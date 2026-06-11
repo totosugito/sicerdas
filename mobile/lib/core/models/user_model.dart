@@ -6,6 +6,8 @@ class UserModel {
   final String? name;
   final String? image;
   final String? role;
+  final bool showAds;
+  final String? tierId;
 
   UserModel({
     required this.id,
@@ -13,6 +15,8 @@ class UserModel {
     this.name,
     this.image,
     this.role,
+    this.showAds = true,
+    this.tierId,
   });
 
   Map<String, dynamic> toMap() {
@@ -22,6 +26,8 @@ class UserModel {
       'name': name,
       'image': image,
       'role': role,
+      'showAds': showAds,
+      'tierId': tierId,
     };
   }
 
@@ -32,6 +38,8 @@ class UserModel {
       name: map['name'],
       image: map['image'],
       role: map['role'],
+      showAds: map['showAds'] ?? true,
+      tierId: map['tierId'],
     );
   }
 

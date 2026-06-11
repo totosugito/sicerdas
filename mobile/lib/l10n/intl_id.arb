@@ -190,7 +190,7 @@
   "periodicErrorStorageNotFound": "Penyimpanan eksternal tidak ditemukan.",
   "periodicSetupMessage": "Database tabel periodik lokal Anda kosong. Unduh konten sekarang (~4MB) untuk menjelajahi semua unsur kimia secara offline.",
   "periodicDownloadingTitle": "Mengunduh data...",
-  "periodicDownloadingMessage": "Mohon tunggu sementara kami menyiapkan unsur-unsur kimia untuk Anda.",
+  "periodicDownloadingMessage": "Kami sedang mengunduh data. Mohon tunggu sebentar...",
   "periodicSyncFailedTitle": "Koneksi / Sinkronisasi Gagal",
   "periodicSearchPlaceholder": "Cari berdasarkan nama, lambang, atau nomor atom...",
   "periodicNoElementsFound": "Unsur tidak ditemukan",

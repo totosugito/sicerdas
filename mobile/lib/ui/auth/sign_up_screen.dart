@@ -349,7 +349,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               // Register Button
               ShadButton(
                 width: double.infinity,
-                height: 48,
                 onPressed: _isLoading ? null : _handleSignUp,
                 child: _isLoading
                     ? const SizedBox(

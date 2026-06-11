@@ -3,6 +3,9 @@ import type { FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
 import auth from "../../auth.ts";
 import { getUserAvatarUrl } from "../../utils/user-utils.ts";
+import { db } from "../../db/db-pool.ts";
+import { users, usersProfile } from "../../db/schema/user/index.ts";
+import { eq } from "drizzle-orm";
 
 const authentication: FastifyPluginAsync = async (fastify) => {
   fastify.all("/api/auth/*", async (request, reply) => {
@@ -51,17 +54,44 @@ const authentication: FastifyPluginAsync = async (fastify) => {
           try {
             const data = JSON.parse(text);
             if (data && typeof data === "object") {
-              const formatUserObject = (obj: any) => {
+              const populateUserExtra = async (userId: string) => {
+                const userRecord = await db
+                  .select({
+                    role: users.role,
+                    tierId: usersProfile.tierId,
+                  })
+                  .from(users)
+                  .leftJoin(usersProfile, eq(users.id, usersProfile.id))
+                  .where(eq(users.id, userId))
+                  .limit(1);
+
+                const record = userRecord.length > 0 ? userRecord[0] : null;
+                const role = record?.role || "user";
+                const tierId = record?.tierId || "free";
+                const showAds = tierId === "free";
+                return { role, showAds, tierId };
+              };
+
+              const formatUserObject = async (obj: any) => {
                 if (obj && typeof obj === "object") {
                   if (obj.user && typeof obj.user === "object" && obj.user.id) {
                     obj.user.image = getUserAvatarUrl(obj.user.id, obj.user.image);
+                    const extra = await populateUserExtra(obj.user.id);
+                    obj.user.role = obj.user.role || extra.role;
+                    obj.user.showAds = extra.showAds;
+                    obj.user.tierId = extra.tierId;
                   }
                   if (obj.id && obj.email && "image" in obj) {
                     obj.image = getUserAvatarUrl(obj.id, obj.image);
+                    const extra = await populateUserExtra(obj.id);
+                    obj.role = obj.role || extra.role;
+                    obj.showAds = extra.showAds;
+                    obj.tierId = extra.tierId;
                   }
                 }
               };
-              formatUserObject(data);
+
+              await formatUserObject(data);
               return reply.send(JSON.stringify(data));
             }
           } catch (_) {

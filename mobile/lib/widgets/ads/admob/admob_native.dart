@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:bse/widgets/ads/ads_config.dart';
 
 class AdmobNative extends StatefulWidget {
   final String adsUnitId;
+  final AdsTemplateType templateType;
 
-  const AdmobNative({super.key, required this.adsUnitId});
+  const AdmobNative({
+    super.key,
+    required this.adsUnitId,
+    this.templateType = AdsTemplateType.medium,
+  });
 
   @override
   State<AdmobNative> createState() => AdmobNativeState();
@@ -13,10 +19,11 @@ class AdmobNative extends StatefulWidget {
 class AdmobNativeState extends State<AdmobNative> {
   NativeAd? _nativeAd;
   bool _nativeAdIsLoaded = false;
-  double minWidth = 300;
-  double minHeight = 350;
-  double maxHeight = 400;
-  double maxWidth = 450;
+
+  double get minWidth => widget.templateType == AdsTemplateType.small ? 320.0 : 300.0;
+  double get minHeight => widget.templateType == AdsTemplateType.small ? 90.0 : 320.0;
+  double get maxHeight => widget.templateType == AdsTemplateType.small ? 120.0 : 400.0;
+  double get maxWidth => widget.templateType == AdsTemplateType.small ? double.infinity : 450.0;
 
   @override
   void initState() {
@@ -53,7 +60,9 @@ class AdmobNativeState extends State<AdmobNative> {
         },
       ),
       nativeTemplateStyle: NativeTemplateStyle(
-        templateType: TemplateType.medium,
+        templateType: widget.templateType == AdsTemplateType.small
+            ? TemplateType.small
+            : TemplateType.medium,
         mainBackgroundColor: Colors.white12,
         callToActionTextStyle: NativeTemplateTextStyle(size: 16.0),
         primaryTextStyle: NativeTemplateTextStyle(

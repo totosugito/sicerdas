@@ -5,8 +5,10 @@ import 'package:drift/drift.dart' hide Column;
 import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 import 'package:bse/core/database/database.dart';
 import 'package:bse/core/providers/database_provider.dart';
+import 'package:bse/core/providers/settings_provider.dart';
 import 'package:bse/widgets/error_view.dart';
 import 'package:bse/widgets/loading_view.dart';
+import 'package:bse/widgets/ads/ads_native.dart';
 import 'widgets/latest_books_filter_bar.dart';
 import 'widgets/latest_books_header.dart';
 import 'package:bse/widgets/sliver_sticky_header_delegate.dart';
@@ -105,11 +107,38 @@ final unfilteredLatestBooksStreamProvider =
 class LatestBooksScreen extends ConsumerWidget {
   const LatestBooksScreen({super.key});
 
+  Widget _buildBookList(
+    BuildContext context,
+    List<BookWithMetadata> books,
+    bool showAds,
+  ) {
+    final hasAd = showAds && books.length > 3;
+    final childCount = hasAd ? books.length + 1 : books.length;
+
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
+          if (hasAd && index == 3) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: AdsNative(templateType: AdsTemplateType.small),
+            );
+          }
+          final bookIndex = (hasAd && index > 3) ? index - 1 : index;
+          final item = books[bookIndex];
+          return BookListItem(item: item, index: bookIndex);
+        }, childCount: childCount),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
     final booksAsync = ref.watch(latestBooksStreamProvider);
     final l10n = AppLocalizations.of(context)!;
+    final showAds = ref.watch(appSettingsProvider)?.showAds ?? false;
 
     ref.listen(latestBooksGradesProvider, (previous, next) {
       if (next is AsyncData<List<EducationGrade>>) {
@@ -172,15 +201,7 @@ class LatestBooksScreen extends ConsumerWidget {
                     ),
                   );
                 }
-                return SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final item = books[index];
-                      return BookListItem(item: item, index: index);
-                    }, childCount: books.length),
-                  ),
-                );
+                return _buildBookList(context, books, showAds);
               },
               loading: () => const SliverFillRemaining(
                 hasScrollBody: false,
@@ -200,4 +221,3 @@ class LatestBooksScreen extends ConsumerWidget {
     );
   }
 }
-

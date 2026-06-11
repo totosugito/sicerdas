@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/database/database.dart';
 import 'package:bse/core/providers/database_provider.dart';
+import 'package:bse/core/providers/settings_provider.dart';
 import 'package:bse/widgets/error_view.dart';
 import 'package:bse/widgets/loading_view.dart';
+import 'package:bse/widgets/ads/ads_native.dart';
 import '../libs/providers/books_provider.dart';
 import '../book_screen/widgets/book_list_item.dart';
 import 'widgets/filter_bar.dart';
@@ -92,10 +94,36 @@ class GroupDetailScreen extends ConsumerWidget {
 
   const GroupDetailScreen({super.key, required this.group});
 
+  Widget _buildBookList(BuildContext context, List<BookWithMetadata> books, bool showAds) {
+    final hasAd = showAds && books.length > 3;
+    final childCount = hasAd ? books.length + 1 : books.length;
+
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            if (hasAd && index == 3) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: AdsNative(templateType: AdsTemplateType.small),
+              );
+            }
+            final bookIndex = (hasAd && index > 3) ? index - 1 : index;
+            final item = books[bookIndex];
+            return BookListItem(item: item, index: bookIndex);
+          },
+          childCount: childCount,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
     final booksAsync = ref.watch(groupBooksProvider(group.id));
+    final showAds = ref.watch(appSettingsProvider)?.showAds ?? false;
 
     // Automatically clean global filter when group grades are loaded/changed
     ref.listen(groupGradesProvider(group.id), (previous, next) {
@@ -157,15 +185,7 @@ class GroupDetailScreen extends ConsumerWidget {
                   ),
                 );
               }
-              return SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final item = books[index];
-                    return BookListItem(item: item, index: index);
-                  }, childCount: books.length),
-                ),
-              );
+              return _buildBookList(context, books, showAds);
             },
             loading: () {
               if (booksAsync.hasValue) {
@@ -176,15 +196,7 @@ class GroupDetailScreen extends ConsumerWidget {
                     child: LoadingView(),
                   );
                 }
-                return SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final item = books[index];
-                      return BookListItem(item: item, index: index);
-                    }, childCount: books.length),
-                  ),
-                );
+                return _buildBookList(context, books, showAds);
               }
               return const SliverFillRemaining(
                 hasScrollBody: false,
@@ -194,15 +206,7 @@ class GroupDetailScreen extends ConsumerWidget {
             error: (err, _) {
               if (booksAsync.hasValue) {
                 final books = booksAsync.value!;
-                return SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final item = books[index];
-                      return BookListItem(item: item, index: index);
-                    }, childCount: books.length),
-                  ),
-                );
+                return _buildBookList(context, books, showAds);
               }
               return SliverFillRemaining(
                 hasScrollBody: false,
@@ -218,4 +222,3 @@ class GroupDetailScreen extends ConsumerWidget {
     );
   }
 }
-

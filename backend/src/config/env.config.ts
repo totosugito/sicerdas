@@ -186,17 +186,17 @@ export default {
     delayTimeInSec: env.ADS_DELAY_TIME_IN_SEC,
     android: {
       provider: "admob",
-      bannerId: env.IS_ADS_TEST ? "ca-app-pub-1499065961898758/9439356495" : "ca-app-pub-3940256099942544/6300978111",
-      interstitialId: env.IS_ADS_TEST ? "ca-app-pub-1499065961898758/2472870697" : "ca-app-pub-3940256099942544/1033173712",
-      rewardedId: env.IS_ADS_TEST ? "ca-app-pub-1499065961898758/3424623195" : "ca-app-pub-3940256099942544/5224354917",
-      nativeId: env.IS_ADS_TEST ? "ca-app-pub-1499065961898758/4185407614" : "ca-app-pub-3940256099942544/2247696110",
+      bannerId: env.IS_ADS_TEST ? "ca-app-pub-3940256099942544/6300978111" : "ca-app-pub-1499065961898758/9439356495",
+      interstitialId: env.IS_ADS_TEST ? "ca-app-pub-3940256099942544/1033173712" : "ca-app-pub-1499065961898758/2472870697",
+      rewardedId: env.IS_ADS_TEST ? "ca-app-pub-3940256099942544/5224354917" : "ca-app-pub-1499065961898758/3424623195",
+      nativeId: env.IS_ADS_TEST ? "ca-app-pub-3940256099942544/2247696110" : "ca-app-pub-1499065961898758/4185407614",
     },
     ios: {
       provider: "admob",
-      bannerId: env.IS_ADS_TEST ? "ca-app-pub-1499065961898758/9439356495" : "ca-app-pub-3940256099942544/2934735716",
-      interstitialId: env.IS_ADS_TEST ? "ca-app-pub-1499065961898758/2472870697" : "ca-app-pub-3940256099942544/4411468910",
-      rewardedId: env.IS_ADS_TEST ? "ca-app-pub-1499065961898758/3424623195" : "ca-app-pub-3940256099942544/1712485313",
-      nativeId: env.IS_ADS_TEST ? "ca-app-pub-1499065961898758/4185407614" : "ca-app-pub-3940256099942544/3986693107",
+      bannerId: env.IS_ADS_TEST ? "ca-app-pub-3940256099942544/2934735716" : "ca-app-pub-1499065961898758/9439356495",
+      interstitialId: env.IS_ADS_TEST ? "ca-app-pub-3940256099942544/4411468910" : "ca-app-pub-1499065961898758/2472870697",
+      rewardedId: env.IS_ADS_TEST ? "ca-app-pub-3940256099942544/1712485313" : "ca-app-pub-1499065961898758/3424623195",
+      nativeId: env.IS_ADS_TEST ? "ca-app-pub-3940256099942544/3986624511" : "ca-app-pub-1499065961898758/4185407614",
     }
   },
 };

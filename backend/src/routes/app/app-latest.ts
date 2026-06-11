@@ -152,9 +152,6 @@ export default async function appLatestRoute(app: FastifyInstance) {
 
       const showAds = userTier === "free";
 
-
-
-
       // 1. Get the internal appVersion.id for the client's current version
       let clientVersionId = 0;
       if (currentDbVersion > 0) {

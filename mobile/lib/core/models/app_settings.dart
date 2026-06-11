@@ -14,7 +14,7 @@ class AppSettings {
   factory AppSettings.fromJson(Map<String, dynamic> json) {
     return AppSettings(
       cloudUrl: json['cloudUrl'] ?? '',
-      showAds: json['showAds'] ?? false,
+      showAds: json['showAds'] ?? true,
       ads: AppAdsSettings.fromJson(json['ads'] ?? {}),
     );
   }

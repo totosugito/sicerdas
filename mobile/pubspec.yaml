@@ -37,6 +37,7 @@ dependencies:
   flutter_widget_from_html_core: ^0.17.2
   url_launcher: ^6.3.2
   google_mobile_ads: ^8.0.0
+  flutter_svg: ^2.3.0
 
 dev_dependencies:
   flutter_test:

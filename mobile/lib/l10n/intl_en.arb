@@ -190,7 +190,7 @@
   "periodicErrorStorageNotFound": "External storage directory not found.",
   "periodicSetupMessage": "Your local periodic table database is empty. Download the content now (~4MB) to browse all chemical elements offline.",
   "periodicDownloadingTitle": "Downloading data...",
-  "periodicDownloadingMessage": "Please wait while we set up the chemical elements for you.",
+  "periodicDownloadingMessage": "We are downloading data. Please wait a moment...",
   "periodicSyncFailedTitle": "Connection / Sync Failed",
   "periodicSearchPlaceholder": "Search by name, symbol, or atomic number...",
   "periodicNoElementsFound": "No elements found",
