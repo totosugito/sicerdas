@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/database/database.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'property_item_html.dart';
 
 class ElementNotes extends StatelessWidget {
@@ -15,7 +15,7 @@ class ElementNotes extends StatelessWidget {
       return const SizedBox.shrink() as dynamic;
     }
 
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final hasContent =
         note!.atomicOverview.isNotEmpty ||
@@ -33,7 +33,7 @@ class ElementNotes extends StatelessWidget {
         children: [
           const Icon(LucideIcons.fileText, size: 18),
           const SizedBox(width: 8),
-          Text(l10n.periodicNotes),
+          Text(l10n.periodic_table.periodicNotes),
         ],
       ),
       child: Padding(
@@ -43,22 +43,22 @@ class ElementNotes extends StatelessWidget {
           children: [
             if (note!.atomicOverview.isNotEmpty)
               PropertyItemHtml(
-                label: l10n.periodicOverview,
+                label: l10n.periodic_table.periodicOverview,
                 value: note!.atomicOverview,
               ),
             if (note!.atomicHistory.isNotEmpty)
               PropertyItemHtml(
-                label: l10n.periodicHistory,
+                label: l10n.periodic_table.periodicHistory,
                 value: note!.atomicHistory,
               ),
             if (note!.atomicApps.isNotEmpty)
               PropertyItemHtml(
-                label: l10n.periodicApplications,
+                label: l10n.periodic_table.periodicApplications,
                 value: note!.atomicApps,
               ),
             if (note!.atomicFacts.isNotEmpty)
               PropertyItemHtml(
-                label: l10n.periodicInterestingFacts,
+                label: l10n.periodic_table.periodicInterestingFacts,
                 value: note!.atomicFacts,
               ),
           ],

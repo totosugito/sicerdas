@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class PancasilaAppBar extends StatelessWidget {
   final bool isCollapsed;
@@ -15,7 +15,7 @@ class PancasilaAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     return SliverAppBar(
       expandedHeight: expandedHeight,
@@ -106,7 +106,7 @@ class PancasilaAppBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  l10n.pancasilaSubtitle,
+                  l10n.constitution.pancasilaSubtitle,
                   style: TextStyle(
                     color: isDark
                         ? Colors.white.withValues(alpha: 0.7)

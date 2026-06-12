@@ -1,0 +1,33 @@
+{
+  "login": {
+    "title": "Welcome",
+    "subtitle": "Please login to continue",
+    "button": "Login"
+  },
+  "emailLabel": "Email",
+  "passwordLabel": "Password",
+  "forgotPassword": "Forgot Password?",
+  "noAccount": "Don't have an account? Register",
+  "error": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email format",
+    "passwordRequired": "Password is required",
+    "passwordLength": "Password must be at least 6 characters",
+    "generic": "Something went wrong. Please try again.",
+    "nameRequired": "Full Name is required"
+  },
+  "notLoggedIn": "You are not logged in",
+  "logout": "Logout",
+  "logoutConfirm": "Are you sure you want to logout from your account?",
+  "signInWithGoogle": "Sign in with Google",
+  "signInMessage": "Sign in to access the full book collection and custom features.",
+  "signUp": {
+    "title": "Create Account",
+    "subtitle": "Register to access all features",
+    "button": "Sign Up",
+    "successMessage": "Registration successful! Please sign in."
+  },
+  "alreadyHaveAccount": "Already have an account? Sign In",
+  "nameLabel": "Full Name",
+  "backToSignIn": "Back to Sign In"
+}

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class ComparisonEmptyState extends StatelessWidget {
   final String searchQuery;
@@ -10,7 +10,7 @@ class ComparisonEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     return SliverFillRemaining(
       hasScrollBody: false,
@@ -27,7 +27,7 @@ class ComparisonEmptyState extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                l10n.elementComparisonNoElementsFound,
+                l10n.common.elementComparisonNoElementsFound,
                 style: theme.textTheme.large.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -35,8 +35,8 @@ class ComparisonEmptyState extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 searchQuery.isNotEmpty
-                    ? l10n.elementComparisonNoElementsFoundMatching(searchQuery)
-                    : l10n.elementComparisonNoElementsFound,
+                    ? l10n.common.elementComparisonNoElementsFoundMatching(term: searchQuery)
+                    : l10n.common.elementComparisonNoElementsFound,
                 style: theme.textTheme.muted,
                 textAlign: TextAlign.center,
               ),

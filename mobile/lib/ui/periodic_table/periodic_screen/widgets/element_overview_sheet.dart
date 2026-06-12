@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/database/database.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/models/periodic_models.dart';
 import '../../libs/utils/periodic_utils.dart';
 import 'element_styles.dart';
@@ -21,7 +21,7 @@ class ElementOverviewSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final shadTheme = ShadTheme.of(context);
     final isDark = shadTheme.brightness == Brightness.dark;
 
@@ -161,7 +161,7 @@ class ElementOverviewSheet extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  '${element.atomicSymbol} • ${l10n.atomicNumber} ${element.atomicNumber}',
+                                  '${element.atomicSymbol} • ${l10n.periodic_table.atomicNumber} ${element.atomicNumber}',
                                   style: shadTheme.textTheme.muted,
                                 ),
                               ],
@@ -192,7 +192,7 @@ class ElementOverviewSheet extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  l10n.periodicOverview,
+                                  l10n.periodic_table.periodicOverview,
                                   style: shadTheme.textTheme.small.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -200,13 +200,13 @@ class ElementOverviewSheet extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 8),
-                            renderProperty(l10n.atomicWeight, weight),
-                            renderProperty(l10n.phase, properties.phase),
-                            renderProperty(l10n.group, groupVal),
-                            renderProperty(l10n.period, properties.period),
-                            renderProperty(l10n.block, properties.block),
-                            renderProperty(l10n.series, seriesVal),
-                            renderProperty(l10n.color, properties.color),
+                            renderProperty(l10n.periodic_table.atomicWeight, weight),
+                            renderProperty(l10n.periodic_table.phase, properties.phase),
+                            renderProperty(l10n.periodic_table.group, groupVal),
+                            renderProperty(l10n.periodic_table.period, properties.period),
+                            renderProperty(l10n.periodic_table.block, properties.block),
+                            renderProperty(l10n.periodic_table.series, seriesVal),
+                            renderProperty(l10n.periodic_table.color, properties.color),
                           ],
                         ),
                       ),
@@ -216,7 +216,7 @@ class ElementOverviewSheet extends StatelessWidget {
                       ShadButton(
                         width: double.infinity,
                         onPressed: onViewDetails,
-                        child: Text(l10n.viewDetails),
+                        child: Text(l10n.chemistry_dictionary.viewDetails),
                       ),
                     ],
                   ),

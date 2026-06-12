@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:drift/drift.dart' hide Column;
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/core/database/database.dart';
 import 'package:bse/core/providers/database_provider.dart';
 import 'package:bse/widgets/error_view.dart';
@@ -136,7 +136,7 @@ class LatestBooksScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
     final booksAsync = ref.watch(latestBooksStreamProvider);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final showAds = ref.watch(showNativeAdsProvider);
 
     ref.listen(latestBooksGradesProvider, (previous, next) {
@@ -194,7 +194,7 @@ class LatestBooksScreen extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          Text(l10n.noBooksFound, style: theme.textTheme.muted),
+                          Text(l10n.books.noBooksFound, style: theme.textTheme.muted),
                         ],
                       ),
                     ),
@@ -209,7 +209,7 @@ class LatestBooksScreen extends ConsumerWidget {
               error: (err, _) => SliverFillRemaining(
                 hasScrollBody: false,
                 child: ErrorView(
-                  message: l10n.errorGeneric,
+                  message: l10n.auth.errorGeneric,
                   details: err.toString(),
                 ),
               ),

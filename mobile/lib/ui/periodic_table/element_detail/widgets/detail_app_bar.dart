@@ -3,7 +3,7 @@ import 'package:bse/core/database/database.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/models/periodic_models.dart';
 import '../../libs/utils/periodic_utils.dart';
 import '../../periodic_screen/widgets/element_styles.dart';
@@ -36,7 +36,7 @@ class DetailAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final appBarColor = isCollapsed
         ? (isDark ? Colors.white : Colors.black87)
         : Colors.white;

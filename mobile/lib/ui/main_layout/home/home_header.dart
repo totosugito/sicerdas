@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/auth/auth_service.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../settings/settings_screen.dart';
 
 class HomeHeader extends ConsumerWidget {
@@ -10,10 +10,10 @@ class HomeHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final theme = ShadTheme.of(context);
     final currentUser = ref.watch(currentUserProvider);
-    final greeting = l10n.hello;
+    final greeting = l10n.common.hello;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,7 +34,7 @@ class HomeHeader extends ConsumerWidget {
                       ),
                     ),
                     TextSpan(
-                      text: currentUser?.name ?? l10n.student,
+                      text: currentUser?.name ?? l10n.common.student,
                       style: theme.textTheme.large.copyWith(
                         fontWeight: FontWeight.w800,
                         color: theme.colorScheme.foreground,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class PembukaanAppBar extends StatelessWidget {
   final bool isCollapsed;
@@ -15,7 +15,7 @@ class PembukaanAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     return SliverAppBar(
       expandedHeight: expandedHeight,
@@ -53,7 +53,7 @@ class PembukaanAppBar extends StatelessWidget {
             duration: const Duration(milliseconds: 150),
             opacity: isCollapsed ? 1.0 : 0.0,
             child: Text(
-              l10n.pembukaanTitle,
+              l10n.constitution.pembukaanTitle,
               style: TextStyle(
                 color: isDark ? Colors.white : const Color(0xFF1A202C),
                 fontSize: 18,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../latest_books_screen.dart';
 
 class LatestBooksHeader extends ConsumerWidget {
@@ -12,13 +12,13 @@ class LatestBooksHeader extends ConsumerWidget {
     final theme = ShadTheme.of(context);
     final booksAsync = ref.watch(latestBooksStreamProvider);
     final unfilteredAsync = ref.watch(unfilteredLatestBooksStreamProvider);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final booksCount = booksAsync.value?.length;
     final totalCount = unfilteredAsync.value?.length ?? booksCount ?? 0;
     final subtitleText = booksCount != null
-        ? l10n.booksCount(booksCount, '$booksCount / $totalCount')
-        : l10n.navBooks;
+        ? l10n.books.booksCount(n: booksCount, countText: '$booksCount / $totalCount')
+        : l10n.books.navBooks;
 
     final isDark = theme.brightness == Brightness.dark;
 
@@ -55,7 +55,7 @@ class LatestBooksHeader extends ConsumerWidget {
               children: [
                 Flexible(
                   child: Text(
-                    l10n.latestBooks,
+                    l10n.books.latestBooks,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,

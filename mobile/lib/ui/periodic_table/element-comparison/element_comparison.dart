@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/database/database.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../libs/providers/periodic_provider.dart';
 import '../element_detail/element_detail.dart';
 import '../libs/providers/periodic_sync_provider.dart';
@@ -56,23 +56,23 @@ class _ElementComparisonScreenState
   String _searchQuery = '';
 
   final List<PropertyDef> _properties = [
-    PropertyDef('atomicWeight', (l10n) => l10n.atomicWeight),
-    PropertyDef('numberOfElectron', (l10n) => l10n.electrons),
-    PropertyDef('meltingPoint', (l10n) => l10n.meltingPoint),
-    PropertyDef('boilingPoint', (l10n) => l10n.boilingPoint),
-    PropertyDef('density', (l10n) => l10n.density),
-    PropertyDef('molarVolume', (l10n) => l10n.molarVolume),
-    PropertyDef('bulkModulus', (l10n) => l10n.bulkModulus),
-    PropertyDef('shearModulus', (l10n) => l10n.shearModulus),
-    PropertyDef('youngModulus', (l10n) => l10n.youngModulus),
-    PropertyDef('electronegativity', (l10n) => l10n.electronegativity),
+    PropertyDef('atomicWeight', (l10n) => l10n.periodic_table.atomicWeight),
+    PropertyDef('numberOfElectron', (l10n) => l10n.periodic_table.electrons),
+    PropertyDef('meltingPoint', (l10n) => l10n.periodic_table.meltingPoint),
+    PropertyDef('boilingPoint', (l10n) => l10n.periodic_table.boilingPoint),
+    PropertyDef('density', (l10n) => l10n.periodic_table.density),
+    PropertyDef('molarVolume', (l10n) => l10n.periodic_table.molarVolume),
+    PropertyDef('bulkModulus', (l10n) => l10n.periodic_table.bulkModulus),
+    PropertyDef('shearModulus', (l10n) => l10n.periodic_table.shearModulus),
+    PropertyDef('youngModulus', (l10n) => l10n.periodic_table.youngModulus),
+    PropertyDef('electronegativity', (l10n) => l10n.periodic_table.electronegativity),
     PropertyDef(
       'electricalConductivity',
-      (l10n) => l10n.electricalConductivity,
+      (l10n) => l10n.periodic_table.electricalConductivity,
     ),
-    PropertyDef('resistivity', (l10n) => l10n.resistivity),
-    PropertyDef('atomicRadius', (l10n) => l10n.atomicRadius),
-    PropertyDef('vanDerWaalsRadius', (l10n) => l10n.vanDerWaalsRadius),
+    PropertyDef('resistivity', (l10n) => l10n.periodic_table.resistivity),
+    PropertyDef('atomicRadius', (l10n) => l10n.periodic_table.atomicRadius),
+    PropertyDef('vanDerWaalsRadius', (l10n) => l10n.periodic_table.vanDerWaalsRadius),
   ];
 
   @override
@@ -153,7 +153,7 @@ class _ElementComparisonScreenState
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final parsedElements = ref.watch(_parsedElementsProvider);
     final periodicTheme = ref.watch(periodicThemeProvider);
     final sortState = ref.watch(comparisonSortProvider);
@@ -228,11 +228,8 @@ class _ElementComparisonScreenState
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
                 _searchQuery.isNotEmpty
-                    ? l10n.elementComparisonElementsFoundMatching(
-                        sorted.length,
-                        _searchQuery,
-                      )
-                    : l10n.elementComparisonElementsFound(sorted.length),
+                    ? l10n.common.elementComparisonElementsFoundMatching(count: sorted.length, term: _searchQuery,)
+                    : l10n.common.elementComparisonElementsFound(count: sorted.length),
                 style: theme.textTheme.small.copyWith(
                   color: theme.colorScheme.mutedForeground,
                 ),

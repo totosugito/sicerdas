@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:bse/core/database/database.dart';
 import 'package:bse/core/providers/settings_provider.dart';
 import 'package:bse/core/utils/toast_utils.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/widgets/confirmation_dialog.dart';
 import 'package:bse/widgets/download_progress_dialog.dart';
 import 'package:bse/ui/pdf_viewer/pdf_viewer_screen.dart';
@@ -26,7 +26,7 @@ class BookDetailSheet extends ConsumerWidget {
 
   Future<void> _downloadBook(BuildContext context, WidgetRef ref) async {
     final bookService = ref.read(bookServiceProvider);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final pdfUrl = await bookService.getBookPdfUrl(
       bookId: book.bookId,
@@ -37,8 +37,8 @@ class BookDetailSheet extends ConsumerWidget {
       if (context.mounted) {
         ToastUtils.showError(
           context,
-          title: l10n.downloadFailed,
-          message: l10n.downloadFailedNoUrl,
+          title: l10n.books.downloadFailed,
+          message: l10n.books.downloadFailedNoUrl,
         );
       }
       return;
@@ -63,26 +63,26 @@ class BookDetailSheet extends ConsumerWidget {
       } else if (!result.isCancelled) {
         ToastUtils.showError(
           context,
-          title: l10n.downloadFailed,
-          message: l10n.downloadFailedNoFile,
+          title: l10n.books.downloadFailed,
+          message: l10n.books.downloadFailedNoFile,
         );
       }
     }
   }
 
   Future<void> _deleteBook(BuildContext context, WidgetRef ref) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final theme = ShadTheme.of(context);
 
     ConfirmationDialog.show(
       context,
       icon: Icons.delete_outline,
-      title: l10n.deleteBookConfirmTitle,
+      title: l10n.books.deleteBookConfirmTitle,
       descriptionWidget: Text.rich(
         TextSpan(
           style: theme.textTheme.muted.copyWith(fontSize: 14),
           children: [
-            TextSpan(text: l10n.deleteBookConfirmPrefix),
+            TextSpan(text: l10n.books.deleteBookConfirmPrefix),
             TextSpan(
               text: book.title,
               style: TextStyle(
@@ -90,13 +90,13 @@ class BookDetailSheet extends ConsumerWidget {
                 color: theme.colorScheme.foreground,
               ),
             ),
-            TextSpan(text: l10n.deleteBookConfirmSuffix),
+            TextSpan(text: l10n.books.deleteBookConfirmSuffix),
           ],
         ),
         textAlign: TextAlign.center,
       ),
-      confirmLabel: l10n.deleteAction,
-      cancelLabel: l10n.cancel,
+      confirmLabel: l10n.books.deleteAction,
+      cancelLabel: l10n.common.cancel,
       onConfirm: () async {
         Navigator.of(context).pop();
         final success = await book.deleteLocalFile();
@@ -105,7 +105,7 @@ class BookDetailSheet extends ConsumerWidget {
           ToastUtils.showSuccess(
             context,
             title: book.title,
-            message: l10n.deleteBookSuccess,
+            message: l10n.books.deleteBookSuccess,
           );
         }
       },
@@ -128,7 +128,7 @@ class BookDetailSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final cloudUrl = ref.watch(cloudUrlProvider);
     final downloadedIds = ref.watch(downloadedBookIdsProvider).value ?? {};
     final isDownloaded = downloadedIds.contains(book.bookId);
@@ -257,7 +257,7 @@ class BookDetailSheet extends ConsumerWidget {
 
                             // Author
                             Text(
-                              book.author ?? l10n.unknownAuthor,
+                              book.author ?? l10n.books.unknownAuthor,
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
@@ -315,7 +315,7 @@ class BookDetailSheet extends ConsumerWidget {
 
                       // Metadata section
                       Text(
-                        l10n.detailInformation,
+                        l10n.books.detailInformation,
                         style: theme.textTheme.large.copyWith(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
@@ -339,7 +339,7 @@ class BookDetailSheet extends ConsumerWidget {
                                   Icons.delete_outline,
                                   size: 16,
                                 ),
-                                child: Text(l10n.deleteAction),
+                                child: Text(l10n.books.deleteAction),
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -351,7 +351,7 @@ class BookDetailSheet extends ConsumerWidget {
                                   Icons.menu_book_outlined,
                                   size: 16,
                                 ),
-                                child: Text(l10n.readNowAction),
+                                child: Text(l10n.books.readNowAction),
                               ),
                             ),
                           ],
@@ -364,7 +364,7 @@ class BookDetailSheet extends ConsumerWidget {
                             Icons.file_download_outlined,
                             size: 16,
                           ),
-                          child: Text(l10n.downloadBookAction),
+                          child: Text(l10n.books.downloadBookAction),
                         ),
                       ],
                       const SizedBox(height: 16),
@@ -464,7 +464,7 @@ class BookDetailSheet extends ConsumerWidget {
   Widget _buildInfoGrid(
     BuildContext context,
     ShadThemeData theme,
-    AppLocalizations l10n,
+    Translations l10n,
     bool isDark,
   ) {
     final localSizeFuture = Future(() async {
@@ -485,8 +485,8 @@ class BookDetailSheet extends ConsumerWidget {
             Expanded(
               child: _buildInfoItem(
                 context,
-                l10n.totalPagesLabel,
-                l10n.pagesCount(book.totalPages),
+                l10n.books.totalPagesLabel,
+                l10n.books.pagesCount(count: book.totalPages),
                 Icons.auto_stories_outlined,
                 isDark,
               ),
@@ -501,7 +501,7 @@ class BookDetailSheet extends ConsumerWidget {
                       : BookUtils.formatFileSize(book.size);
                   return _buildInfoItem(
                     context,
-                    l10n.fileSizeLabel,
+                    l10n.books.fileSizeLabel,
                     sizeText,
                     Icons.storage_outlined,
                     isDark,
@@ -517,7 +517,7 @@ class BookDetailSheet extends ConsumerWidget {
             Expanded(
               child: _buildInfoItem(
                 context,
-                l10n.publishedYearLabel,
+                l10n.books.publishedYearLabel,
                 book.publishedYear.isNotEmpty ? book.publishedYear : '-',
                 Icons.calendar_today_outlined,
                 isDark,
@@ -526,7 +526,7 @@ class BookDetailSheet extends ConsumerWidget {
             Expanded(
               child: _buildInfoItem(
                 context,
-                '${l10n.bookIdLabel} / Online',
+                '${l10n.books.bookIdLabel} / Online',
                 '${book.bookId}',
                 Icons.tag_outlined,
                 isDark,

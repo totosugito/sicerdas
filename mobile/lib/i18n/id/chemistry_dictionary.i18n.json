@@ -1,0 +1,18 @@
+{
+  "dict": {
+    "title": "Kamus Kimia",
+    "desc": "Jelajahi istilah kimia dan definisinya",
+    "searchPlaceholder": "Cari istilah atau definisi...",
+    "resultsInfo": "Menampilkan {start}-{end} dari {total} entri",
+    "noEntriesFoundTitle": "Tidak ada entri ditemukan",
+    "noEntriesFoundDesc": "Coba sesuaikan pencarian atau kriteria filter Anda",
+    "all": "Semua",
+    "copyToClipboard": "Definisi disalin ke papan klip",
+    "copyText": "Salin definisi",
+    "tabAF": "A-F",
+    "tabGL": "G-L",
+    "tabMR": "M-R",
+    "tabSZ": "S-Z"
+  },
+  "viewDetails": "Lihat Detail"
+}

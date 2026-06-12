@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class NewBadge extends StatelessWidget {
   final EdgeInsetsGeometry margin;
@@ -15,7 +15,7 @@ class NewBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     if (useSolidRed) {
       return Container(
@@ -26,7 +26,7 @@ class NewBadge extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
-          l10n.badgeNew,
+          l10n.books.badgeNew,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 10,
@@ -44,7 +44,7 @@ class NewBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
-        l10n.badgeNew,
+        l10n.books.badgeNew,
         style: TextStyle(
           fontSize: 8.5,
           fontWeight: FontWeight.bold,

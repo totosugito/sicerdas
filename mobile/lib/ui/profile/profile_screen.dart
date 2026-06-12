@@ -4,7 +4,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bse/core/auth/auth_notifier.dart';
 import 'package:bse/core/auth/auth_service.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/widgets/confirmation_dialog.dart';
 import '../auth/sign_in_screen.dart';
 import '../settings/settings_screen.dart';
@@ -14,13 +14,13 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final isLoggedIn = ref.watch(authStateProvider);
     final currentUser = ref.watch(currentUserProvider);
     final theme = ShadTheme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.navProfile), centerTitle: true),
+      appBar: AppBar(title: Text(l10n.common.navProfile), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -65,7 +65,7 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    currentUser?.name ?? l10n.notLoggedIn,
+                    currentUser?.name ?? l10n.auth.notLoggedIn,
                     style: theme.textTheme.h4.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -84,14 +84,14 @@ class ProfileScreen extends ConsumerWidget {
                   _buildProfileItem(
                     context,
                     icon: LucideIcons.user,
-                    title: l10n.accountSettings,
+                    title: l10n.common.accountSettings,
                     onTap: () {},
                   ),
                   const Divider(height: 1),
                   _buildProfileItem(
                     context,
                     icon: LucideIcons.settings,
-                    title: l10n.settings,
+                    title: l10n.common.settings,
                     onTap: () {
                       Navigator.push(
                         context,
@@ -105,14 +105,14 @@ class ProfileScreen extends ConsumerWidget {
                   _buildProfileItem(
                     context,
                     icon: LucideIcons.info,
-                    title: l10n.helpSupport,
+                    title: l10n.common.helpSupport,
                     onTap: () {},
                   ),
                   const Divider(height: 1),
                   _buildProfileItem(
                     context,
                     icon: LucideIcons.shieldCheck,
-                    title: l10n.privacyPolicy,
+                    title: l10n.common.privacyPolicy,
                     onTap: () {},
                   ),
                 ],
@@ -126,7 +126,7 @@ class ProfileScreen extends ConsumerWidget {
                 width: double.infinity,
                 child: ShadButton.destructive(
                   leading: const Icon(LucideIcons.logOut, size: 18),
-                  child: Text(l10n.logout),
+                  child: Text(l10n.auth.logout),
                   onPressed: () => _handleLogout(context, ref, l10n),
                 ),
               )
@@ -135,7 +135,7 @@ class ProfileScreen extends ConsumerWidget {
                 width: double.infinity,
                 child: ShadButton(
                   leading: const Icon(LucideIcons.logIn, size: 18),
-                  child: Text(l10n.loginButton),
+                  child: Text(l10n.auth.loginButton),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -173,15 +173,15 @@ class ProfileScreen extends ConsumerWidget {
   void _handleLogout(
     BuildContext context,
     WidgetRef ref,
-    AppLocalizations l10n,
+    Translations l10n,
   ) {
     ConfirmationDialog.show(
       context,
       icon: LucideIcons.logOut,
-      title: l10n.logout,
-      description: l10n.logoutConfirm,
-      confirmLabel: l10n.logout,
-      cancelLabel: l10n.cancel,
+      title: l10n.auth.logout,
+      description: l10n.auth.logoutConfirm,
+      confirmLabel: l10n.auth.logout,
+      cancelLabel: l10n.common.cancel,
       isDestructive: true,
       onConfirm: () async {
         Navigator.pop(context);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/utils/periodic_utils.dart';
 import '../../libs/models/periodic_models.dart';
 import 'property_item.dart';
@@ -12,7 +12,7 @@ class ElementThermal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final rawMelting = double.tryParse(properties.meltingPoint ?? '');
     final formattedMelting = rawMelting != null
@@ -74,7 +74,7 @@ class ElementThermal extends StatelessWidget {
         children: [
           const Icon(LucideIcons.thermometer, size: 18),
           const SizedBox(width: 8),
-          Text(l10n.thermalProperties),
+          Text(l10n.periodic_table.thermalProperties),
         ],
       ),
       child: Padding(
@@ -82,64 +82,64 @@ class ElementThermal extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PropertyItem(label: l10n.phase, value: properties.phase),
+            PropertyItem(label: l10n.periodic_table.phase, value: properties.phase),
             PropertyItem(
-              label: l10n.meltingPoint,
+              label: l10n.periodic_table.meltingPoint,
               value: formattedMelting,
               isMultiline: true,
             ),
             PropertyItem(
-              label: l10n.boilingPoint,
+              label: l10n.periodic_table.boilingPoint,
               value: formattedBoiling,
               isMultiline: true,
             ),
             PropertyItem(
-              label: l10n.criticalTemperature,
+              label: l10n.periodic_table.criticalTemperature,
               value: formattedCriticalTemp,
               isMultiline: true,
             ),
             PropertyItem(
-              label: l10n.criticalPressure,
+              label: l10n.periodic_table.criticalPressure,
               value: formattedCriticalPress,
               unit: PeriodicUtils.getPeriodicUnits('criticalPressure'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.heatOfFusion,
+              label: l10n.periodic_table.heatOfFusion,
               value: formattedHeatFusion,
               unit: PeriodicUtils.getPeriodicUnits('heatOfFusion'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.heatOfVaporization,
+              label: l10n.periodic_table.heatOfVaporization,
               value: formattedHeatVapor,
               unit: PeriodicUtils.getPeriodicUnits('heatOfVaporization'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.specificHeat,
+              label: l10n.periodic_table.specificHeat,
               value: formattedSpecificHeat,
               unit: PeriodicUtils.getPeriodicUnits('specificHeat'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.adiabaticIndex,
+              label: l10n.periodic_table.adiabaticIndex,
               value: properties.adiabaticIndex,
             ),
             PropertyItem(
-              label: l10n.neelPoint,
+              label: l10n.periodic_table.neelPoint,
               value: formattedNeel,
               unit: PeriodicUtils.getPeriodicUnits('neelPoint'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.thermalConductivity,
+              label: l10n.periodic_table.thermalConductivity,
               value: formattedThermalCond,
               unit: PeriodicUtils.getPeriodicUnits('thermalConductivity'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.thermalExpansion,
+              label: l10n.periodic_table.thermalExpansion,
               value: formattedThermalExpand,
               unit: PeriodicUtils.getPeriodicUnits('thermalExpansion'),
               isHtml: true,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/database/database.dart';
@@ -176,7 +176,7 @@ class GroupDetailScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          AppLocalizations.of(context)!.noBooksFound,
+                          context.t.books.noBooksFound,
                           style: theme.textTheme.muted,
                         ),
                       ],
@@ -210,7 +210,7 @@ class GroupDetailScreen extends ConsumerWidget {
               return SliverFillRemaining(
                 hasScrollBody: false,
                 child: ErrorView(
-                  message: AppLocalizations.of(context)!.errorGeneric,
+                  message: context.t.auth.error.generic,
                   details: err.toString(),
                 ),
               );

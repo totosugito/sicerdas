@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/providers/books_provider.dart';
 
 class GroupBookHeader extends ConsumerWidget {
@@ -9,7 +9,7 @@ class GroupBookHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final allGroupsAsync = ref.watch(allGroupsProvider);
     final expandAll = ref.watch(groupBookExpandAllProvider);
     final theme = ShadTheme.of(context);
@@ -20,8 +20,8 @@ class GroupBookHeader extends ConsumerWidget {
     );
 
     final subtitleText = totalBookCount != null
-        ? l10n.booksCount(totalBookCount, '$totalBookCount')
-        : l10n.navBooks;
+        ? l10n.books.booksCount(n: totalBookCount, countText: '$totalBookCount')
+        : l10n.books.navBooks;
 
     return SliverAppBar(
       expandedHeight: 140.0,
@@ -36,7 +36,7 @@ class GroupBookHeader extends ConsumerWidget {
           icon: Icon(
             expandAll ? Icons.expand_less_rounded : Icons.expand_more_rounded,
           ),
-          tooltip: expandAll ? l10n.collapseAll : l10n.expandAll,
+          tooltip: expandAll ? l10n.books.collapseAll : l10n.books.expandAll,
           onPressed: () {
             ref.read(groupBookExpandAllProvider.notifier).toggle();
             ref.read(categoryExpansionProvider.notifier).resetAll();
@@ -68,7 +68,7 @@ class GroupBookHeader extends ConsumerWidget {
               children: [
                 Flexible(
                   child: Text(
-                    l10n.browseGroups,
+                    l10n.books.browseGroups,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,

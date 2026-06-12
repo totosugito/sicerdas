@@ -1,0 +1,18 @@
+{
+  "dict": {
+    "title": "Chemistry Dictionary",
+    "desc": "Explore chemical terms and definitions",
+    "searchPlaceholder": "Search terms or definitions...",
+    "resultsInfo": "Showing {start}-{end} of {total} entries",
+    "noEntriesFoundTitle": "No entries found",
+    "noEntriesFoundDesc": "Try adjusting your search or filter criteria",
+    "all": "All",
+    "copyToClipboard": "Definition copied to clipboard",
+    "copyText": "Copy definition",
+    "tabAF": "A-F",
+    "tabGL": "G-L",
+    "tabMR": "M-R",
+    "tabSZ": "S-Z"
+  },
+  "viewDetails": "View Details"
+}

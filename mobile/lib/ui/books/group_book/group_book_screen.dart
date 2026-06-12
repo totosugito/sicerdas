@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/widgets/error_view.dart';
 import 'package:bse/widgets/loading_view.dart';
 import '../libs/providers/books_provider.dart';
@@ -16,7 +16,7 @@ class GroupBookScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final categoriesAsync = ref.watch(categoriesWithGroupsProvider);
     final allGroupsAsync = ref.watch(allGroupsProvider);
     final latestBooksAsync = ref.watch(unfilteredLatestBooksStreamProvider);
@@ -36,7 +36,7 @@ class GroupBookScreen extends ConsumerWidget {
                 if (categories.isEmpty) {
                   return SliverFillRemaining(
                     hasScrollBody: false,
-                    child: Center(child: Text(l10n.noCategoriesFound)),
+                    child: Center(child: Text(l10n.books.noCategoriesFound)),
                   );
                 }
 
@@ -77,7 +77,7 @@ class GroupBookScreen extends ConsumerWidget {
               error: (err, _) => SliverFillRemaining(
                 hasScrollBody: false,
                 child: ErrorView(
-                  message: l10n.errorLoadingGroups,
+                  message: l10n.books.errorLoadingGroups,
                   details: err.toString(),
                 ),
               ),
@@ -89,7 +89,7 @@ class GroupBookScreen extends ConsumerWidget {
             error: (err, _) => SliverFillRemaining(
               hasScrollBody: false,
               child: ErrorView(
-                message: l10n.errorLoadingCategories,
+                message: l10n.books.errorLoadingCategories,
                 details: err.toString(),
               ),
             ),

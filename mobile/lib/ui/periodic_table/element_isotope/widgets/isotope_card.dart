@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../element_isotope.dart' show IsotopeData;
 import 'isotope_property_item.dart';
 
@@ -18,7 +18,7 @@ class IsotopeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final theme = ShadTheme.of(context);
     final isStable = isotope.halfLife == "Stable";
     final hasAtomicWeight =
@@ -92,7 +92,7 @@ class IsotopeCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          l10n.atomicWeight,
+                          l10n.periodic_table.atomicWeight,
                           style: TextStyle(
                             fontSize: 11,
                             color: theme.colorScheme.mutedForeground,
@@ -136,14 +136,14 @@ class IsotopeCard extends StatelessWidget {
   Widget _buildPropertyGrid(
     BuildContext context,
     ShadThemeData theme,
-    AppLocalizations l10n,
+    Translations l10n,
   ) {
     final items = <Widget>[];
 
     if (isotope.sIdentified.isNotEmpty) {
       items.add(
         IsotopePropertyItem(
-          label: l10n.spinParity,
+          label: l10n.periodic_table.spinParity,
           value: isotope.sIdentified,
           isHtml: true,
         ),
@@ -152,7 +152,7 @@ class IsotopeCard extends StatelessWidget {
     if (isotope.halfLife.isNotEmpty) {
       items.add(
         IsotopePropertyItem(
-          label: l10n.halfLife,
+          label: l10n.periodic_table.halfLife,
           value: isotope.halfLife,
           isHtml: true,
         ),
@@ -160,13 +160,13 @@ class IsotopeCard extends StatelessWidget {
     }
     if (isotope.massExcess.isNotEmpty && isotope.massExcess != 'None') {
       items.add(
-        IsotopePropertyItem(label: l10n.massExcess, value: isotope.massExcess),
+        IsotopePropertyItem(label: l10n.periodic_table.massExcess, value: isotope.massExcess),
       );
     }
     if (isotope.bindingEnergy.isNotEmpty && isotope.bindingEnergy != 'None') {
       items.add(
         IsotopePropertyItem(
-          label: l10n.bindingEnergy,
+          label: l10n.periodic_table.bindingEnergy,
           value: isotope.bindingEnergy,
         ),
       );
@@ -174,7 +174,7 @@ class IsotopeCard extends StatelessWidget {
     if (isotope.magneticMoment.isNotEmpty && isotope.magneticMoment != 'None') {
       items.add(
         IsotopePropertyItem(
-          label: l10n.magneticMoment,
+          label: l10n.periodic_table.magneticMoment,
           value: isotope.magneticMoment,
         ),
       );
@@ -183,14 +183,14 @@ class IsotopeCard extends StatelessWidget {
         isotope.quadrupoleMoment != 'None') {
       items.add(
         IsotopePropertyItem(
-          label: l10n.quadrupoleMomentIsotope,
+          label: l10n.periodic_table.quadrupoleMomentIsotope,
           value: isotope.quadrupoleMoment,
         ),
       );
     }
     if (isotope.abundance.isNotEmpty && isotope.abundance != 'None') {
       items.add(
-        IsotopePropertyItem(label: l10n.abundance, value: isotope.abundance),
+        IsotopePropertyItem(label: l10n.periodic_table.abundance, value: isotope.abundance),
       );
     }
 

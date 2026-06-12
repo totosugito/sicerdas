@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../pancasila/pancasila_screen.dart';
 import '../pembukaan/pembukaan_screen.dart';
 import 'widgets/menu_card.dart';
@@ -60,13 +60,13 @@ class _ConstitutionMenuScreenState
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     final List<Map<String, dynamic>> menuItems = [
       {
-        'title': l10n.pancasilaTitle,
-        'subtitle': l10n.pancasilaSubtitle,
+        'title': l10n.constitution.pancasilaTitle,
+        'subtitle': l10n.constitution.pancasilaSubtitle,
         'icon': LucideIcons.atom,
         'color': const Color(0xFFEF4444),
         'onTap': () => Navigator.push(
@@ -75,8 +75,8 @@ class _ConstitutionMenuScreenState
         ),
       },
       {
-        'title': l10n.pembukaanTitle,
-        'subtitle': l10n.pembukaanSubtitle,
+        'title': l10n.constitution.pembukaanTitle,
+        'subtitle': l10n.constitution.pembukaanSubtitle,
         'icon': LucideIcons.scroll,
         'color': const Color(0xFFF59E0B),
         'onTap': () => Navigator.push(
@@ -85,8 +85,8 @@ class _ConstitutionMenuScreenState
         ),
       },
       {
-        'title': l10n.butirPancasilaTitle,
-        'subtitle': l10n.butirPancasilaSubtitle,
+        'title': l10n.constitution.butirPancasilaTitle,
+        'subtitle': l10n.constitution.butirPancasilaSubtitle,
         'icon': LucideIcons.listOrdered,
         'color': const Color(0xFF10B981),
         'onTap': () {
@@ -99,8 +99,8 @@ class _ConstitutionMenuScreenState
         },
       },
       {
-        'title': l10n.uud1945Title,
-        'subtitle': l10n.uud1945Subtitle,
+        'title': l10n.constitution.uud1945Title,
+        'subtitle': l10n.constitution.uud1945Subtitle,
         'icon': LucideIcons.bookOpen,
         'color': const Color(0xFF3B82F6),
         'onTap': () {
@@ -113,8 +113,8 @@ class _ConstitutionMenuScreenState
         },
       },
       {
-        'title': l10n.uud1945AsliTitle,
-        'subtitle': l10n.uud1945AsliSubtitle,
+        'title': l10n.constitution.uud1945AsliTitle,
+        'subtitle': l10n.constitution.uud1945AsliSubtitle,
         'icon': LucideIcons.bookmark,
         'color': const Color(0xFF8B5CF6),
         'onTap': () {
@@ -127,8 +127,8 @@ class _ConstitutionMenuScreenState
         },
       },
       {
-        'title': l10n.amandemenTitle,
-        'subtitle': l10n.amandemenSubtitle,
+        'title': l10n.constitution.amandemenTitle,
+        'subtitle': l10n.constitution.amandemenSubtitle,
         'icon': LucideIcons.fileCheck2,
         'color': const Color(0xFFEC4899),
         'onTap': () {
@@ -158,7 +158,7 @@ class _ConstitutionMenuScreenState
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 Text(
-                  l10n.constitutionChooseModule,
+                  l10n.constitution.constitutionChooseModule,
                   style: theme.textTheme.large.copyWith(
                     fontWeight: FontWeight.w700,
                     fontSize: 16,

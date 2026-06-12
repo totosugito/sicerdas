@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'comparison_models.dart';
 
 class ComparisonFilterSheet extends StatefulWidget {
@@ -35,7 +35,7 @@ class _ComparisonFilterSheetState extends State<ComparisonFilterSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     return Container(
       constraints: BoxConstraints(
@@ -84,7 +84,7 @@ class _ComparisonFilterSheetState extends State<ComparisonFilterSheet> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(l10n.filterTitle, style: theme.textTheme.h4),
+                          Text(l10n.books.filterTitle, style: theme.textTheme.h4),
                           if (_tempSortBy != 'atomicWeight' ||
                               _tempSortDirection != 'auto')
                             TextButton(
@@ -94,13 +94,13 @@ class _ComparisonFilterSheetState extends State<ComparisonFilterSheet> {
                                   _tempSortDirection = 'auto';
                                 });
                               },
-                              child: Text(l10n.filterClearAll),
+                              child: Text(l10n.books.filterClearAll),
                             ),
                         ],
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        l10n.elementComparisonSortBy,
+                        l10n.common.elementComparisonSortBy,
                         style: theme.textTheme.small.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -149,7 +149,7 @@ class _ComparisonFilterSheetState extends State<ComparisonFilterSheet> {
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        l10n.elementComparisonSortDirection,
+                        l10n.common.elementComparisonSortDirection,
                         style: theme.textTheme.small.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -182,10 +182,10 @@ class _ComparisonFilterSheetState extends State<ComparisonFilterSheet> {
                                   ),
                                   child: Text(
                                     direction == 'asc'
-                                        ? l10n.elementComparisonSortAsc
+                                        ? l10n.common.elementComparisonSortAsc
                                         : direction == 'desc'
-                                        ? l10n.elementComparisonSortDesc
-                                        : l10n.elementComparisonSortAuto,
+                                        ? l10n.common.elementComparisonSortDesc
+                                        : l10n.common.elementComparisonSortAuto,
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight:
@@ -209,7 +209,7 @@ class _ComparisonFilterSheetState extends State<ComparisonFilterSheet> {
                           widget.onApply(_tempSortBy, _tempSortDirection);
                           Navigator.pop(context);
                         },
-                        child: Text(l10n.filterApply),
+                        child: Text(l10n.books.filterApply),
                       ),
                     ],
                   ),

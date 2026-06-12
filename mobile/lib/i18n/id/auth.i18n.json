@@ -1,0 +1,33 @@
+{
+  "login": {
+    "title": "Selamat Datang",
+    "subtitle": "Silakan masuk untuk melanjutkan",
+    "button": "Masuk"
+  },
+  "emailLabel": "Email",
+  "passwordLabel": "Kata Sandi",
+  "forgotPassword": "Lupa Kata Sandi?",
+  "noAccount": "Belum punya akun? Daftar",
+  "error": {
+    "emailRequired": "Email wajib diisi",
+    "emailInvalid": "Format email tidak valid",
+    "passwordRequired": "Kata sandi wajib diisi",
+    "passwordLength": "Kata sandi minimal 6 karakter",
+    "generic": "Terjadi kesalahan. Silakan coba lagi.",
+    "nameRequired": "Nama lengkap wajib diisi"
+  },
+  "notLoggedIn": "Anda belum masuk",
+  "logout": "Keluar",
+  "logoutConfirm": "Apakah Anda yakin ingin keluar dari akun Anda?",
+  "signInWithGoogle": "Masuk dengan Google",
+  "signInMessage": "Masuk untuk mengakses koleksi buku lengkap dan fitur kustom.",
+  "signUp": {
+    "title": "Buat Akun",
+    "subtitle": "Daftar untuk mengakses semua fitur",
+    "button": "Daftar",
+    "successMessage": "Pendaftaran berhasil! Silakan masuk."
+  },
+  "alreadyHaveAccount": "Sudah punya akun? Masuk",
+  "nameLabel": "Nama Lengkap",
+  "backToSignIn": "Kembali ke Halaman Masuk"
+}

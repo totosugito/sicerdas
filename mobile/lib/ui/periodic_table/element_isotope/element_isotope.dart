@@ -4,7 +4,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bse/ui/periodic_table/libs/providers/periodic_provider.dart';
 import 'package:bse/core/database/database.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../periodic_screen/widgets/element_styles.dart';
 import '../libs/models/periodic_models.dart';
 import '../libs/utils/periodic_utils.dart';
@@ -47,7 +47,7 @@ class ElementIsotopeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final periodicTheme = ref.watch(periodicThemeProvider);
 
@@ -112,7 +112,7 @@ class ElementIsotopeScreen extends ConsumerWidget {
     return Scaffold(
       bottomNavigationBar: AdsBanner.buildBottomBar(ref),
       appBar: AppBar(
-        title: Text('${element.atomicName} - ${l10n.periodicIsotopes}'),
+        title: Text('${element.atomicName} - ${l10n.periodic_table.periodicIsotopes}'),
         centerTitle: false,
         backgroundColor: theme.colorScheme.background,
         elevation: 0,
@@ -176,7 +176,7 @@ class ElementIsotopeScreen extends ConsumerWidget {
                     context,
                     theme,
                     '$totalIsotopes',
-                    l10n.total,
+                    l10n.periodic_table.total,
                     atomColor,
                   ),
                   const SizedBox(width: 8),
@@ -184,7 +184,7 @@ class ElementIsotopeScreen extends ConsumerWidget {
                     context,
                     theme,
                     '$stableCount',
-                    l10n.stable,
+                    l10n.periodic_table.stable,
                     Colors.green,
                   ),
                   const SizedBox(width: 8),
@@ -192,7 +192,7 @@ class ElementIsotopeScreen extends ConsumerWidget {
                     context,
                     theme,
                     '$unstableCount',
-                    l10n.unstable,
+                    l10n.periodic_table.unstable,
                     Colors.red,
                   ),
                 ],
@@ -214,7 +214,7 @@ class ElementIsotopeScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10n.isotopeInformation,
+                      l10n.periodic_table.isotopeInformation,
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -222,12 +222,7 @@ class ElementIsotopeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      l10n.isotopeDescription(
-                        element.atomicName,
-                        totalIsotopes,
-                        stableCount,
-                        unstableCount,
-                      ),
+                      l10n.periodic_table.isotopeDescription(name: element.atomicName, total: totalIsotopes, stable: stableCount, unstable: unstableCount,),
                       style: TextStyle(
                         fontSize: 13,
                         color: theme.colorScheme.mutedForeground,

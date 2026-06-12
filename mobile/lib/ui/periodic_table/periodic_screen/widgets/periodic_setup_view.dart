@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/providers/periodic_sync_provider.dart';
 
 class PeriodicSetupView extends StatelessWidget {
@@ -16,7 +16,7 @@ class PeriodicSetupView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     return Center(
       child: Padding(
@@ -31,20 +31,20 @@ class PeriodicSetupView extends StatelessWidget {
                 if (syncState.status == PeriodicSyncStatus.checking) ...[
                   const CircularProgressIndicator(),
                   const SizedBox(height: 16),
-                  Text(l10n.periodicChecking),
+                  Text(l10n.periodic_table.periodicChecking),
                 ] else if (syncState.status ==
                     PeriodicSyncStatus.notDownloaded) ...[
                   const Icon(LucideIcons.package2, size: 48),
                   const SizedBox(height: 16),
                   Text(
-                    l10n.periodicSetupTitle,
+                    l10n.periodic_table.periodicSetupTitle,
                     style: theme.textTheme.large.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    l10n.periodicSetupMessage,
+                    l10n.periodic_table.periodicSetupMessage,
                     style: theme.textTheme.muted,
                     textAlign: TextAlign.center,
                   ),
@@ -52,20 +52,20 @@ class PeriodicSetupView extends StatelessWidget {
                   ShadButton(
                     width: double.infinity,
                     onPressed: onDownloadTriggered,
-                    child: Text(l10n.syncDownloadNow),
+                    child: Text(l10n.books.syncDownloadNow),
                   ),
                 ] else if (syncState.status ==
                     PeriodicSyncStatus.downloading) ...[
                   const Icon(LucideIcons.refreshCcw, size: 48),
                   const SizedBox(height: 16),
                   Text(
-                    l10n.periodicDownloadingTitle,
+                    l10n.periodic_table.periodicDownloadingTitle,
                     style: theme.textTheme.large.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(l10n.periodicDownloadingMessage),
+                  Text(l10n.periodic_table.periodicDownloadingMessage),
                   const SizedBox(height: 24),
                   const ShadProgress(),
                 ] else if (syncState.status == PeriodicSyncStatus.error) ...[
@@ -76,7 +76,7 @@ class PeriodicSetupView extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    l10n.periodicSyncFailedTitle,
+                    l10n.periodic_table.periodicSyncFailedTitle,
                     style: theme.textTheme.large.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -95,7 +95,7 @@ class PeriodicSetupView extends StatelessWidget {
                   ShadButton(
                     width: double.infinity,
                     onPressed: onDownloadTriggered,
-                    child: Text(l10n.syncTryAgain),
+                    child: Text(l10n.books.syncTryAgain),
                   ),
                 ],
               ],
@@ -107,22 +107,22 @@ class PeriodicSetupView extends StatelessWidget {
   }
 
   String _getLocalizedError(
-    AppLocalizations l10n,
+    Translations l10n,
     String? errorKey,
     String? defaultMessage,
   ) {
     if (errorKey == 'syncFailedMessage') {
-      return l10n.syncFailedMessage;
+      return l10n.books.syncFailedMessage;
     }
     if (errorKey == 'periodicErrorEmptyZip') {
-      return l10n.periodicErrorEmptyZip;
+      return l10n.periodic_table.periodicErrorEmptyZip;
     }
     if (errorKey == 'periodicErrorJsonNotFound') {
-      return l10n.periodicErrorJsonNotFound;
+      return l10n.periodic_table.periodicErrorJsonNotFound;
     }
     if (errorKey == 'periodicErrorStorageNotFound') {
-      return l10n.periodicErrorStorageNotFound;
+      return l10n.periodic_table.periodicErrorStorageNotFound;
     }
-    return defaultMessage ?? l10n.syncFailedMessage;
+    return defaultMessage ?? l10n.books.syncFailedMessage;
   }
 }

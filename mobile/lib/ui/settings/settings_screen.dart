@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/providers/settings_provider.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/core/services/version_service.dart';
 import 'package:bse/widgets/confirmation_dialog.dart';
 
@@ -12,17 +12,17 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.settings), centerTitle: true),
+      appBar: AppBar(title: Text(l10n.common.settings), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Appearance Section
-            _buildSectionTitle(context, l10n.appearance),
+            _buildSectionTitle(context, l10n.common.appearance),
             const SizedBox(height: 12),
             ShadCard(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -31,9 +31,9 @@ class SettingsScreen extends ConsumerWidget {
                   _buildSettingItem(
                     context,
                     icon: LucideIcons.palette,
-                    title: l10n.themeMode,
+                    title: l10n.common.themeMode,
                     trailing: ShadSelect<ThemeMode>(
-                      placeholder: Text(l10n.selectTheme),
+                      placeholder: Text(l10n.common.selectTheme),
                       initialValue: settings.themeMode,
                       onChanged: (value) {
                         if (value != null) {
@@ -45,25 +45,25 @@ class SettingsScreen extends ConsumerWidget {
                       selectedOptionBuilder: (context, value) {
                         switch (value) {
                           case ThemeMode.system:
-                            return Text(l10n.system);
+                            return Text(l10n.common.system);
                           case ThemeMode.light:
-                            return Text(l10n.light);
+                            return Text(l10n.common.light);
                           case ThemeMode.dark:
-                            return Text(l10n.dark);
+                            return Text(l10n.common.dark);
                         }
                       },
                       options: [
                         ShadOption(
                           value: ThemeMode.system,
-                          child: Text(l10n.system),
+                          child: Text(l10n.common.system),
                         ),
                         ShadOption(
                           value: ThemeMode.light,
-                          child: Text(l10n.light),
+                          child: Text(l10n.common.light),
                         ),
                         ShadOption(
                           value: ThemeMode.dark,
-                          child: Text(l10n.dark),
+                          child: Text(l10n.common.dark),
                         ),
                       ],
                     ),
@@ -72,9 +72,9 @@ class SettingsScreen extends ConsumerWidget {
                   _buildSettingItem(
                     context,
                     icon: LucideIcons.languages,
-                    title: l10n.language,
+                    title: l10n.common.language,
                     trailing: ShadSelect<Locale>(
-                      placeholder: Text(l10n.selectLanguage),
+                      placeholder: Text(l10n.common.selectLanguage),
                       initialValue: settings.locale,
                       onChanged: (value) {
                         if (value != null) {
@@ -88,7 +88,7 @@ class SettingsScreen extends ConsumerWidget {
                           children: [
                             Text(isId ? '🇮🇩' : '🇬🇧'),
                             const SizedBox(width: 8),
-                            Text(isId ? l10n.indonesian : l10n.english),
+                            Text(isId ? l10n.common.indonesian : l10n.common.english),
                           ],
                         );
                       },
@@ -99,7 +99,7 @@ class SettingsScreen extends ConsumerWidget {
                             children: [
                               const Text('🇮🇩'),
                               const SizedBox(width: 8),
-                              Text(l10n.indonesian),
+                              Text(l10n.common.indonesian),
                             ],
                           ),
                         ),
@@ -109,7 +109,7 @@ class SettingsScreen extends ConsumerWidget {
                             children: [
                               const Text('🇬🇧'),
                               const SizedBox(width: 8),
-                              Text(l10n.english),
+                              Text(l10n.common.english),
                             ],
                           ),
                         ),
@@ -123,7 +123,7 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 32),
 
             // About Section
-            _buildSectionTitle(context, l10n.aboutSection),
+            _buildSectionTitle(context, l10n.common.aboutSection),
             const SizedBox(height: 12),
             ShadCard(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -132,7 +132,7 @@ class SettingsScreen extends ConsumerWidget {
                   _buildSettingItem(
                     context,
                     icon: LucideIcons.info,
-                    title: l10n.appVersion,
+                    title: l10n.common.appVersion,
                     trailing: const Text(
                       "1.0.0",
                       style: TextStyle(color: Colors.grey),
@@ -142,7 +142,7 @@ class SettingsScreen extends ConsumerWidget {
                   _buildSettingItem(
                     context,
                     icon: LucideIcons.heart,
-                    title: l10n.madeBy,
+                    title: l10n.common.madeBy,
                   ),
                 ],
               ),
@@ -153,7 +153,7 @@ class SettingsScreen extends ConsumerWidget {
             // Danger Zone Section
             _buildSectionTitle(
               context,
-              l10n.settingsDangerZone,
+              l10n.common.settingsDangerZone,
               isDanger: true,
             ),
             const SizedBox(height: 12),
@@ -164,8 +164,8 @@ class SettingsScreen extends ConsumerWidget {
                   _buildSettingItem(
                     context,
                     icon: LucideIcons.databaseBackup,
-                    title: l10n.settingsResetLibrary,
-                    subtitle: l10n.settingsResetLibraryDescription,
+                    title: l10n.books.settingsResetLibrary,
+                    subtitle: l10n.books.settingsResetLibraryDescription,
                     isDanger: true,
                     onTap: () => _showResetConfirmation(context, ref),
                   ),
@@ -180,15 +180,15 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _showResetConfirmation(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     ConfirmationDialog.show(
       context,
       icon: LucideIcons.triangleAlert,
-      title: l10n.settingsResetLibrary,
-      description: l10n.settingsResetLibraryConfirm,
-      confirmLabel: l10n.settingsResetAction,
-      cancelLabel: l10n.cancel,
+      title: l10n.books.settingsResetLibrary,
+      description: l10n.books.settingsResetLibraryConfirm,
+      confirmLabel: l10n.books.settingsResetAction,
+      cancelLabel: l10n.common.cancel,
       onConfirm: () async {
         Navigator.of(context).pop(); // Close dialog
         Navigator.of(context).pop(); // Go back to profile/main

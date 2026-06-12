@@ -1,0 +1,26 @@
+{
+  "constitution": {
+    "title": "Pancasila & UUD 1945",
+    "searchPlaceholder": "Cari isi pasal atau butir...",
+    "noResult": "Tidak ada hasil ditemukan",
+    "clearSearch": "Hapus Pencarian",
+    "article": "Pasal",
+    "clause": "Ayat",
+    "sila": "Sila",
+    "butir": "Butir",
+    "desc": "Pelajari dasar negara dan konstitusi Republik Indonesia dengan mudah.",
+    "chooseModule": "Pilih Modul Pembelajaran"
+  },
+  "pancasilaTitle": "Pancasila",
+  "pancasilaSubtitle": "Lima Dasar Negara Republik Indonesia",
+  "pembukaanTitle": "Pembukaan UUD 1945",
+  "butirPancasilaTitle": "Butir Pancasila",
+  "uud1945Title": "UUD 1945",
+  "uud1945AsliTitle": "UUD 1945 Asli",
+  "amandemenTitle": "Amandemen UUD 1945",
+  "pembukaanSubtitle": "Naskah Pembukaan UUD 1945",
+  "butirPancasilaSubtitle": "45 Butir Pengamalan Pancasila",
+  "uud1945Subtitle": "Undang-Undang Dasar 1945",
+  "uud1945AsliSubtitle": "Naskah Asli UUD 1945",
+  "amandemenSubtitle": "Perubahan / Amandemen UUD"
+}

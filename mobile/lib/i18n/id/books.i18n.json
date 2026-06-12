@@ -1,0 +1,92 @@
+{
+  "searchHint": "Cari buku, kamus...",
+  "categoryTitle": "Kategori",
+  "popularBooks": "Buku Populer",
+  "recentActivity": "Aktivitas Terbaru",
+  "seeAll": "Lihat Semua",
+  "badgeNew": "NEW",
+  "navBooks": "Buku",
+  "library": "Perpustakaan",
+  "booksCount": {
+    "other": "{countText} buku"
+  },
+  "latestBooks": "Buku Terbaru",
+  "sync": {
+    "preparingData": "Menyiapkan Data...",
+    "waitMessage": "Mohon tunggu sebentar selagi kami menyiapkan koleksi buku untuk Anda.",
+    "connectionRequired": "Koneksi Diperlukan",
+    "internetRequiredMessage": "Koneksi internet diperlukan untuk unduhan pertama.",
+    "failedMessage": "Sinkronisasi gagal. Silakan coba lagi.",
+    "tryAgain": "Coba Lagi",
+    "initialDownloadTitle": "Siapkan Database Buku",
+    "initialDownloadMessage": "Selamat datang di Sicerdas! Database buku Anda saat ini kosong. Unduh konten sekarang (~500KB) untuk memulai perjalanan belajar Anda secara offline.",
+    "downloadNow": "Unduh Sekarang",
+    "successMessage": "Berhasil! {count} buku telah ditambahkan ke database."
+  },
+  "settingsResetLibrary": "Reset Database Buku",
+  "settingsResetLibraryDescription": "Hapus data metadata buku dan riwayat sinkronisasi lokal untuk mengunduh ulang data terbaru. Ini tidak akan menghapus file buku yang sudah diunduh.",
+  "settingsResetLibraryConfirm": "Apakah Anda yakin ingin mereset dan mengunduh ulang database buku?",
+  "settingsResetAction": "Reset Sekarang",
+  "addDownloadBooks": "Tambah/Unduh Buku",
+  "searchPlaceholder": "Cari berdasarkan judul atau penulis...",
+  "noBooksFound": "Buku Tidak Ditemukan",
+  "emptyStateFilterDescription": "Coba hapus kueri pencarian atau filter aktif untuk melihat semua buku.",
+  "emptyStateDefaultDescription": "Koleksi buku Anda kosong. Silakan unduh beberapa buku terlebih dahulu!",
+  "filter": {
+    "title": "Filter",
+    "category": "Kategori",
+    "group": "Kelompok",
+    "grade": "Kelas",
+    "apply": "Terapkan Filter",
+    "clearAll": "Hapus Semua",
+    "activeCount": "{count} filter aktif"
+  },
+  "browseGroups": "Kelompok Buku",
+  "noCategoriesFound": "Kategori tidak ditemukan.",
+  "noGroupsInCategory": "Tidak ada kelompok dalam kategori ini",
+  "localLibraryCollection": "Koleksi Perpustakaan Lokal",
+  "sort": {
+    "label": "Urutkan berdasarkan",
+    "byTitle": "Judul",
+    "byPages": "Halaman",
+    "bySize": "Ukuran",
+    "byYear": "Tahun",
+    "byVersion": "Terbaru"
+  },
+  "unknownAuthor": "Penulis Tidak Diketahui",
+  "pagesCount": "{count} hal",
+  "searchHintDetail": "Cari judul atau penulis...",
+  "detailInformation": "Informasi Detail",
+  "totalPagesLabel": "Jumlah Halaman",
+  "fileSizeLabel": "Ukuran File",
+  "publishedYearLabel": "Tahun Terbit",
+  "statusLabel": "Status",
+  "bookIdLabel": "ID Buku",
+  "download": {
+    "action": "Unduh Buku",
+    "started": "Memulai pengunduhan buku...",
+    "failed": "Gagal mengunduh",
+    "failedNoUrl": "Tidak dapat mengambil URL buku dari server.",
+    "success": "Buku berhasil diunduh!",
+    "failedNoFile": "Gagal mengunduh file PDF."
+  },
+  "readNowAction": "Baca Sekarang",
+  "orderLabel": "Urutan",
+  "orderDescending": "Menurun",
+  "orderAscending": "Menaik",
+  "collapseAll": "Sembunyikan Semua",
+  "expandAll": "Tampilkan Semua",
+  "delete": {
+    "confirmTitle": "Hapus Buku",
+    "confirmMessage": "Apakah Anda yakin ingin menghapus \"{title}\" dari penyimpanan lokal?",
+    "success": "Buku berhasil dihapus dari penyimpanan.",
+    "confirmPrefix": "Apakah Anda yakin ingin menghapus ",
+    "confirmSuffix": " dari penyimpanan lokal?"
+  },
+  "deleteAction": "Hapus",
+  "error": {
+    "loadingCategories": "Gagal memuat kategori",
+    "loadingGroups": "Gagal memuat kelompok",
+    "loadingGrades": "Gagal memuat kelas"
+  }
+}

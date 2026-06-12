@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class MenuAppBar extends StatelessWidget {
   final bool isCollapsed;
@@ -15,7 +15,7 @@ class MenuAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     return SliverAppBar(
       expandedHeight: expandedHeight,
@@ -53,7 +53,7 @@ class MenuAppBar extends StatelessWidget {
             duration: const Duration(milliseconds: 150),
             opacity: isCollapsed ? 1.0 : 0.0,
             child: Text(
-              l10n.constitutionTitle,
+              l10n.constitution.constitutionTitle,
               style: TextStyle(
                 color: isDark ? Colors.white : const Color(0xFF1A202C),
                 fontSize: 18,
@@ -96,7 +96,7 @@ class MenuAppBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  l10n.constitutionTitle,
+                  l10n.constitution.constitutionTitle,
                   style: TextStyle(
                     color: isDark ? Colors.white : const Color(0xFF1A202C),
                     fontSize: 22,
@@ -106,7 +106,7 @@ class MenuAppBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  l10n.constitutionDesc,
+                  l10n.constitution.constitutionDesc,
                   style: TextStyle(
                     color: isDark
                         ? Colors.white.withValues(alpha: 0.7)

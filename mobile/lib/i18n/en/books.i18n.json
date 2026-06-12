@@ -1,0 +1,93 @@
+{
+  "searchHint": "Search books, dictionary...",
+  "categoryTitle": "Category",
+  "popularBooks": "Popular Books",
+  "recentActivity": "Recent Activity",
+  "seeAll": "See All",
+  "badgeNew": "NEW",
+  "navBooks": "Books",
+  "library": "Library",
+  "booksCount": {
+    "one": "{countText} book",
+    "other": "{countText} books"
+  },
+  "latestBooks": "Latest Books",
+  "sync": {
+    "preparingData": "Preparing Data...",
+    "waitMessage": "Please wait a moment while we prepare our book collection for you.",
+    "connectionRequired": "Connection Required",
+    "internetRequiredMessage": "An internet connection is required for the initial setup.",
+    "failedMessage": "Failed to sync data. Please try again.",
+    "tryAgain": "Try Again",
+    "initialDownloadTitle": "Setup Book Database",
+    "initialDownloadMessage": "Welcome to Sicerdas! Your book database is currently empty. Download the content now (~500KB) to start your journey offline.",
+    "downloadNow": "Download Now",
+    "successMessage": "Success! {count} books added to your database."
+  },
+  "settingsResetLibrary": "Reset Book Database",
+  "settingsResetLibraryDescription": "Delete local book metadata and sync history to redownload the latest data. This will not delete your downloaded book files.",
+  "settingsResetLibraryConfirm": "Are you sure you want to reset and redownload the book database?",
+  "settingsResetAction": "Reset Now",
+  "addDownloadBooks": "Add/Download Books",
+  "searchPlaceholder": "Search by title or author...",
+  "noBooksFound": "No Books Found",
+  "emptyStateFilterDescription": "Try clearing the search query or active filters to see all books.",
+  "emptyStateDefaultDescription": "Your collection is empty. Go ahead and download some books!",
+  "filter": {
+    "title": "Filters",
+    "category": "Category",
+    "group": "Group",
+    "grade": "Grade",
+    "apply": "Apply Filters",
+    "clearAll": "Clear All",
+    "activeCount": "{count} filters active"
+  },
+  "browseGroups": "Browse Groups",
+  "noCategoriesFound": "No categories found.",
+  "noGroupsInCategory": "No groups in this category",
+  "localLibraryCollection": "Local Library Collection",
+  "sort": {
+    "label": "Sort by",
+    "byTitle": "Title",
+    "byPages": "Pages",
+    "bySize": "Size",
+    "byYear": "Year",
+    "byVersion": "Latest"
+  },
+  "unknownAuthor": "Unknown Author",
+  "pagesCount": "{count} p",
+  "searchHintDetail": "Search titles or authors...",
+  "detailInformation": "Detail Information",
+  "totalPagesLabel": "Total Pages",
+  "fileSizeLabel": "File Size",
+  "publishedYearLabel": "Published Year",
+  "statusLabel": "Status",
+  "bookIdLabel": "Book ID",
+  "download": {
+    "action": "Download Book",
+    "started": "Starting book download...",
+    "failed": "Failed to download",
+    "failedNoUrl": "Could not retrieve the book URL from server.",
+    "success": "Book successfully downloaded!",
+    "failedNoFile": "Failed to download PDF file."
+  },
+  "readNowAction": "Read Now",
+  "orderLabel": "Order",
+  "orderDescending": "Descending",
+  "orderAscending": "Ascending",
+  "collapseAll": "Collapse All",
+  "expandAll": "Expand All",
+  "delete": {
+    "confirmTitle": "Delete Book",
+    "confirmMessage": "Are you sure you want to delete \"{title}\" from local storage?",
+    "success": "Book successfully deleted from storage.",
+    "confirmPrefix": "Are you sure you want to delete ",
+    "confirmSuffix": " from local storage?"
+  },
+  "deleteAction": "Delete",
+  "error": {
+    "loadingCategories": "Error loading categories",
+    "loadingGroups": "Error loading groups",
+    "loadingGrades": "Error loading grades"
+  }
+}

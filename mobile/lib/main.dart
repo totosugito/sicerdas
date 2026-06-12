@@ -12,7 +12,8 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'core/providers/settings_provider.dart';
 import 'core/config/env_config.dart';
 import 'core/providers/dio_provider.dart';
-import 'l10n/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'i18n/strings.g.dart' as slang;
 import 'ui/main_layout/main_layout.dart';
 
 void main() async {
@@ -45,6 +46,10 @@ void main() async {
   // Initialize shared preferences
   final sharedPrefs = await SharedPreferences.getInstance();
 
+  // Load saved locale for slang initialization
+  final languageCode = sharedPrefs.getString('locale') ?? 'id';
+  slang.LocaleSettings.setLocaleRaw(languageCode);
+
   // Initialize Dio and Cookies
   final dio = await createDioInstance();
 
@@ -57,12 +62,14 @@ void main() async {
   );
 
   runApp(
-    ProviderScope(
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(sharedPrefs),
-        dioProvider.overrideWithValue(dio),
-      ],
-      child: const MyApp(),
+    slang.TranslationProvider(
+      child: ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+          dioProvider.overrideWithValue(dio),
+        ],
+        child: const MyApp(),
+      ),
     ),
   );
 }
@@ -131,9 +138,13 @@ class MyApp extends ConsumerWidget {
         ),
       ),
       themeMode: settings.themeMode,
-      locale: settings.locale,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      locale: slang.TranslationProvider.of(context).locale.flutterLocale,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: slang.AppLocaleUtils.supportedLocales,
       home: Builder(builder: (context) => const MainLayout()),
     );
   }

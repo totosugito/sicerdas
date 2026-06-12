@@ -5,7 +5,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/providers/navigation_provider.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/core/providers/sync_provider.dart';
 import 'package:bse/core/config/app_constants.dart';
 import 'home_screen.dart';
@@ -50,7 +50,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
 
     if (!status && mounted) {
       final theme = ShadTheme.of(context);
-      final l10n = AppLocalizations.of(context)!;
+      final l10n = Translations.of(context);
 
       showShadDialog(
         context: context,
@@ -68,7 +68,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  l10n.errorTitle,
+                  l10n.common.errorTitle,
                   style: theme.textTheme.large.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -76,7 +76,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  l10n.errorCreateAppDir,
+                  l10n.common.errorCreateAppDir,
                   style: theme.textTheme.muted.copyWith(fontSize: 14),
                   textAlign: TextAlign.center,
                 ),
@@ -84,7 +84,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                 ShadButton.destructive(
                   width: double.infinity,
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text(l10n.close),
+                  child: Text(l10n.common.close),
                 ),
               ],
             ),
@@ -128,7 +128,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
   @override
   Widget build(BuildContext context) {
     final selectedIndex = ref.watch(navigationProvider);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     if (selectedIndex == 0 || selectedIndex == 1) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -143,8 +143,8 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
           next.booksAdded > 0) {
         ShadToaster.of(context).show(
           ShadToast(
-            title: Text(l10n.badgeNew),
-            description: Text(l10n.syncSuccessMessage(next.booksAdded)),
+            title: Text(l10n.books.badgeNew),
+            description: Text(l10n.books.syncSuccessMessage(count: next.booksAdded)),
           ),
         );
       }
@@ -168,8 +168,8 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
           _lastPressedAt = now;
           ToastUtils.showInfo(
             context,
-            title: l10n.infoTitle,
-            message: l10n.pressBackAgainToExit,
+            title: l10n.common.infoTitle,
+            message: l10n.common.pressBackAgainToExit,
           );
         } else {
           SystemNavigator.pop();
@@ -202,22 +202,22 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                   CustomBottomNavBarItem(
                     icon: Icons.home_outlined,
                     activeIcon: Icons.home,
-                    label: l10n.navHome,
+                    label: l10n.common.navHome,
                   ),
                   CustomBottomNavBarItem(
                     icon: Icons.menu_book_outlined,
                     activeIcon: Icons.menu_book,
-                    label: l10n.navBooks,
+                    label: l10n.books.navBooks,
                   ),
                   CustomBottomNavBarItem(
                     icon: Icons.translate_outlined,
                     activeIcon: Icons.translate,
-                    label: l10n.navDictionary,
+                    label: l10n.common.navDictionary,
                   ),
                   CustomBottomNavBarItem(
                     icon: Icons.person_outline,
                     activeIcon: Icons.person,
-                    label: l10n.navProfile,
+                    label: l10n.common.navProfile,
                   ),
                 ],
               ),

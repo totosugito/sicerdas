@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/utils/toast_utils.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class PdfViewerScreen extends StatefulWidget {
   final String filePath;
@@ -49,7 +49,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     BuildContext context,
     PdfTextSelectionChangedDetails details,
   ) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final OverlayState overlayState = Overlay.of(context);
     _overlayEntry = OverlayEntry(
       builder: (context) {
@@ -91,8 +91,8 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                       _pdfViewerController.clearSelection();
                       ToastUtils.showSuccess(
                         context,
-                        title: l10n.successTitle,
-                        message: l10n.textCopied,
+                        title: l10n.common.successTitle,
+                        message: l10n.common.textCopied,
                       );
                     },
                     child: Icon(
@@ -132,7 +132,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -141,7 +141,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                 controller: _searchController,
                 autofocus: true,
                 decoration: InputDecoration(
-                  hintText: l10n.searchText,
+                  hintText: l10n.common.searchText,
                   border: InputBorder.none,
                 ),
                 style: theme.textTheme.p.copyWith(
@@ -153,8 +153,8 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                     if (_searchResult.totalInstanceCount == 0) {
                       ToastUtils.showInfo(
                         context,
-                        title: l10n.infoTitle,
-                        message: l10n.textNotFound,
+                        title: l10n.common.infoTitle,
+                        message: l10n.common.textNotFound,
                       );
                     }
                     setState(() {});

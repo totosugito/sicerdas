@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/auth/auth_notifier.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'sign_up_screen.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
@@ -30,22 +30,22 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   }
 
   Future<void> _handleLogin() async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
     // Manual Validation
     if (email.isEmpty) {
-      setState(() => _errorMessage = l10n.errorEmailRequired);
+      setState(() => _errorMessage = l10n.auth.errorEmailRequired);
       return;
     }
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(email)) {
-      setState(() => _errorMessage = l10n.errorEmailInvalid);
+      setState(() => _errorMessage = l10n.auth.errorEmailInvalid);
       return;
     }
     if (password.isEmpty) {
-      setState(() => _errorMessage = l10n.errorPasswordRequired);
+      setState(() => _errorMessage = l10n.auth.errorPasswordRequired);
       return;
     }
 
@@ -63,7 +63,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         Navigator.pop(context); // Go back after login success
       } else if (mounted) {
         setState(() {
-          _errorMessage = l10n.errorGeneric;
+          _errorMessage = l10n.auth.errorGeneric;
         });
       }
     } catch (e) {
@@ -118,7 +118,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -164,13 +164,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
               // Welcome Title
               Text(
-                l10n.loginTitle,
+                l10n.auth.loginTitle,
                 style: theme.textTheme.h2.copyWith(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
-                l10n.loginSubtitle,
+                l10n.auth.loginSubtitle,
                 style: theme.textTheme.muted,
                 textAlign: TextAlign.center,
               ),
@@ -223,7 +223,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    l10n.emailLabel,
+                    l10n.auth.emailLabel,
                     style: theme.textTheme.small.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.foreground,
@@ -232,7 +232,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   const SizedBox(height: 8),
                   ShadInput(
                     controller: _emailController,
-                    placeholder: Text(l10n.emailLabel),
+                    placeholder: Text(l10n.auth.emailLabel),
                     keyboardType: TextInputType.emailAddress,
                     leading: Padding(
                       padding: const EdgeInsets.only(right: 8.0),
@@ -252,7 +252,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    l10n.passwordLabel,
+                    l10n.auth.passwordLabel,
                     style: theme.textTheme.small.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.foreground,
@@ -261,7 +261,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   const SizedBox(height: 8),
                   ShadInput(
                     controller: _passwordController,
-                    placeholder: Text(l10n.passwordLabel),
+                    placeholder: Text(l10n.auth.passwordLabel),
                     obscureText: _obscurePassword,
                     leading: Padding(
                       padding: const EdgeInsets.only(right: 8.0),
@@ -302,7 +302,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                           ),
                         ),
                       )
-                    : Text(l10n.loginButton),
+                    : Text(l10n.auth.loginButton),
               ),
 
               const SizedBox(height: 24),
@@ -364,7 +364,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            l10n.signInWithGoogle,
+                            l10n.auth.signInWithGoogle,
                             style: TextStyle(
                               color: theme.colorScheme.foreground,
                               fontWeight: FontWeight.w600,
@@ -394,9 +394,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       fontSize: 14,
                     ),
                     children: [
-                      TextSpan(text: "${l10n.noAccount.split('?').first}? "),
+                      TextSpan(text: "${l10n.auth.noAccount.split('?').first}? "),
                       TextSpan(
-                        text: l10n.noAccount.split('?').last.trim(),
+                        text: l10n.auth.noAccount.split('?').last.trim(),
                         style: TextStyle(
                           color: theme.colorScheme.primary,
                           fontWeight: FontWeight.bold,

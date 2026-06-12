@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'widgets/pancasila_app_bar.dart';
 
 class PancasilaScreen extends ConsumerStatefulWidget {
@@ -48,7 +48,7 @@ class _PancasilaScreenState extends ConsumerState<PancasilaScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     final pancasilaData = [
@@ -182,7 +182,7 @@ class _PancasilaScreenState extends ConsumerState<PancasilaScreen> {
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
-                                    '${l10n.constitutionSila} $id',
+                                    '${l10n.constitution.constitutionSila} $id',
                                     style: const TextStyle(
                                       color: Color(0xFFEF4444),
                                       fontWeight: FontWeight.bold,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/core/database/database.dart';
 import 'package:bse/core/providers/database_provider.dart';
 import 'package:bse/core/providers/settings_provider.dart';
@@ -28,7 +28,7 @@ class LatestBooksSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final theme = ShadTheme.of(context);
     final booksAsync = ref.watch(homeLatestBooksProvider);
 
@@ -39,7 +39,7 @@ class LatestBooksSection extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              l10n.latestBooks,
+              l10n.books.latestBooks,
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextButton(
@@ -54,7 +54,7 @@ class LatestBooksSection extends ConsumerWidget {
               child: Row(
                 children: [
                   Text(
-                    l10n.seeAll,
+                    l10n.books.seeAll,
                     style: TextStyle(color: theme.colorScheme.primary),
                   ),
                   const SizedBox(width: 4),
@@ -86,7 +86,7 @@ class LatestBooksSection extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Text(l10n.noBooksFound, style: theme.textTheme.muted),
+                      Text(l10n.books.noBooksFound, style: theme.textTheme.muted),
                     ],
                   ),
                 );
@@ -103,7 +103,7 @@ class LatestBooksSection extends ConsumerWidget {
             },
             loading: () => const LoadingView(),
             error: (err, _) =>
-                ErrorView(message: l10n.errorGeneric, details: err.toString()),
+                ErrorView(message: l10n.auth.errorGeneric, details: err.toString()),
           ),
         ),
       ],
@@ -113,7 +113,7 @@ class LatestBooksSection extends ConsumerWidget {
 
 class _BookCard extends ConsumerWidget {
   final BookWithMetadata item;
-  final AppLocalizations l10n;
+  final Translations l10n;
 
   const _BookCard({required this.item, required this.l10n});
 

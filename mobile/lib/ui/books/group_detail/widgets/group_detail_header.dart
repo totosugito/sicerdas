@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/core/database/database.dart';
 import '../group_detail_screen.dart';
 
@@ -17,15 +17,12 @@ class GroupDetailHeader extends ConsumerWidget {
     final booksCount = booksAsync.value?.length;
 
     final subtitleText = booksCount != null
-        ? AppLocalizations.of(context)!.booksCount(
-            booksCount,
-            '$booksCount${group.bookTotal != null ? " / ${group.bookTotal}" : ""}',
-          )
+        ? context.t.books.booksCount(n: booksCount, countText: '$booksCount${group.bookTotal != null ? " / ${group.bookTotal}" : ""}',)
         : (group.bookTotal != null
-            ? AppLocalizations.of(
+            ? Translations.of(
                 context,
-              )!.booksCount(group.bookTotal!, '${group.bookTotal}')
-            : AppLocalizations.of(context)!.booksCount(0, '0'));
+              ).books.booksCount(n: group.bookTotal!, countText: '${group.bookTotal}')
+            : context.t.books.booksCount(n: 0, countText: '0'));
 
     return SliverAppBar(
       expandedHeight: 140.0,

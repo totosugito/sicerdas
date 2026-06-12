@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/database/database.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/widgets/loading_view.dart';
 import '../../libs/providers/books_provider.dart';
 
@@ -26,7 +26,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final groupsAsync = ref.watch(localGroupsProvider);
 
     return Container(
@@ -64,7 +64,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                 const SizedBox(height: 16),
                 // Sheet Title
                 Text(
-                  l10n.filterTitle,
+                  l10n.books.filterTitle,
                   style: theme.textTheme.h4.copyWith(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.foreground,
@@ -74,7 +74,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
 
                 // Group Filter
                 Text(
-                  l10n.filterGroup,
+                  l10n.books.filterGroup,
                   style: theme.textTheme.large.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
@@ -104,7 +104,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                   error: (_, _) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
-                      l10n.errorLoadingGroups,
+                      l10n.books.errorLoadingGroups,
                       style: theme.textTheme.muted.copyWith(
                         color: theme.colorScheme.destructive,
                       ),
@@ -126,7 +126,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                         );
                     Navigator.pop(context);
                   },
-                  child: Text(l10n.filterApply),
+                  child: Text(l10n.books.filterApply),
                 ),
                 const SizedBox(height: 16),
               ],
@@ -168,7 +168,7 @@ class _FilterChipsMultiselect<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final isAllSelected = selectedValues.isEmpty;
 
     return Wrap(
@@ -177,7 +177,7 @@ class _FilterChipsMultiselect<T> extends StatelessWidget {
       children: [
         // "All" option chip
         _BadgeChip(
-          label: l10n.filterAll,
+          label: l10n.common.filterAll,
           isSelected: isAllSelected,
           onTap: () {
             onSelectedChanged([]);

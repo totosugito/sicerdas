@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/models/periodic_models.dart';
 
 class ElectronView extends StatelessWidget {
@@ -14,7 +14,7 @@ class ElectronView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -29,7 +29,7 @@ class ElectronView extends StatelessWidget {
         children: [
           // --- Electrons ---
           _buildCard(
-            label: l10n.electrons,
+            label: l10n.periodic_table.electrons,
             value: '$electrons',
             gradient: LinearGradient(
               colors: isDark
@@ -46,7 +46,7 @@ class ElectronView extends StatelessWidget {
 
           // --- Protons ---
           _buildCard(
-            label: l10n.protons,
+            label: l10n.periodic_table.protons,
             value: '$protons',
             gradient: LinearGradient(
               colors: isDark
@@ -63,7 +63,7 @@ class ElectronView extends StatelessWidget {
 
           // --- Neutrons ---
           _buildCard(
-            label: l10n.neutrons,
+            label: l10n.periodic_table.neutrons,
             value: neutrons,
             gradient: LinearGradient(
               colors: isDark

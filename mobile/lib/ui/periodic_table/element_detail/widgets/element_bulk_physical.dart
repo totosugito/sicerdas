@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/utils/periodic_utils.dart';
 import '../../libs/models/periodic_models.dart';
 import 'property_item.dart';
@@ -12,7 +12,7 @@ class ElementBulkPhysical extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final rawDensity = double.tryParse(properties.density ?? '');
     final formattedDensity = rawDensity != null
@@ -80,7 +80,7 @@ class ElementBulkPhysical extends StatelessWidget {
         children: [
           const Icon(LucideIcons.weight, size: 18),
           const SizedBox(width: 8),
-          Text(l10n.bulkPhysicalProperties),
+          Text(l10n.periodic_table.bulkPhysicalProperties),
         ],
       ),
       child: Padding(
@@ -89,70 +89,70 @@ class ElementBulkPhysical extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PropertyItem(
-              label: l10n.density,
+              label: l10n.periodic_table.density,
               value: formattedDensity,
               unit: PeriodicUtils.getPeriodicUnits('density'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.densityLiquid,
+              label: l10n.periodic_table.densityLiquid,
               value: formattedDensityLiquid,
               unit: PeriodicUtils.getPeriodicUnits('density'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.molarVolume,
+              label: l10n.periodic_table.molarVolume,
               value: formattedMolarVolume,
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.brinellHardness,
+              label: l10n.periodic_table.brinellHardness,
               value: formattedBrinell,
               unit: PeriodicUtils.getPeriodicUnits('brinellHardness'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.mohsHardness,
+              label: l10n.periodic_table.mohsHardness,
               value: formattedMohs,
               unit: PeriodicUtils.getPeriodicUnits('mohsHardness'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.vickersHardness,
+              label: l10n.periodic_table.vickersHardness,
               value: formattedVickers,
               unit: PeriodicUtils.getPeriodicUnits('vickersHardness'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.bulkModulus,
+              label: l10n.periodic_table.bulkModulus,
               value: formattedBulkModulus,
               unit: PeriodicUtils.getPeriodicUnits('bulkModulus'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.shearModulus,
+              label: l10n.periodic_table.shearModulus,
               value: formattedShearModulus,
               unit: PeriodicUtils.getPeriodicUnits('shearModulus'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.youngModulus,
+              label: l10n.periodic_table.youngModulus,
               value: formattedYoungModulus,
               unit: PeriodicUtils.getPeriodicUnits('youngModulus'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.poissonRatio,
+              label: l10n.periodic_table.poissonRatio,
               value: formattedPoisson,
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.refractiveIndex,
+              label: l10n.periodic_table.refractiveIndex,
               value: formattedRefractive,
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.speedOfSound,
+              label: l10n.periodic_table.speedOfSound,
               value: formattedSpeed,
               unit: PeriodicUtils.getPeriodicUnits('speedOfSound'),
               isHtml: true,

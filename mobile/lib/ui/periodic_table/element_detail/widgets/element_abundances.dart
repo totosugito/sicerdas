@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/utils/periodic_utils.dart';
 import '../../libs/models/periodic_models.dart';
 import 'property_item.dart';
@@ -12,7 +12,7 @@ class ElementAbundances extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final rawUniverse = double.tryParse(properties.percInUniverse ?? '');
     final formattedUniverse = rawUniverse != null
@@ -50,7 +50,7 @@ class ElementAbundances extends StatelessWidget {
         children: [
           const Icon(LucideIcons.mountain, size: 18),
           const SizedBox(width: 8),
-          Text(l10n.abundances),
+          Text(l10n.periodic_table.abundances),
         ],
       ),
       child: Padding(
@@ -59,37 +59,37 @@ class ElementAbundances extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PropertyItem(
-              label: l10n.percInUniverse,
+              label: l10n.periodic_table.percInUniverse,
               value: formattedUniverse,
               unit: '%',
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.percInSun,
+              label: l10n.periodic_table.percInSun,
               value: formattedSun,
               unit: '%',
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.percInMeteorites,
+              label: l10n.periodic_table.percInMeteorites,
               value: formattedMeteorites,
               unit: '%',
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.percInEarthsCrust,
+              label: l10n.periodic_table.percInEarthsCrust,
               value: formattedEarth,
               unit: '%',
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.percInOceans,
+              label: l10n.periodic_table.percInOceans,
               value: formattedOceans,
               unit: '%',
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.percInHumans,
+              label: l10n.periodic_table.percInHumans,
               value: formattedHumans,
               unit: '%',
               isHtml: true,

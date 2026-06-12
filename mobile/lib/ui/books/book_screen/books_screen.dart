@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/database/database.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/widgets/empty_state.dart';
 import 'package:bse/widgets/error_view.dart';
 import 'package:bse/widgets/loading_view.dart';
@@ -17,7 +17,7 @@ class BooksScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final booksAsync = ref.watch(filteredBooksProvider);
     final filter = ref.watch(booksFilterProvider);
     final downloadedIdsAsync = ref.watch(downloadedBookIdsProvider);
@@ -53,7 +53,7 @@ class BooksScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text.rich(
           TextSpan(
-            text: l10n.library,
+            text: l10n.books.library,
             children: [
               if (countText != null) ...[
                 const WidgetSpan(child: SizedBox(width: 8)),
@@ -69,7 +69,7 @@ class BooksScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      l10n.booksCount(filteredCount ?? 0, countText),
+                      l10n.books.booksCount(n: filteredCount ?? 0, countText: countText),
                       style: ShadTheme.of(context).textTheme.small.copyWith(
                         color: ShadTheme.of(
                           context,
@@ -136,11 +136,11 @@ class BooksScreen extends ConsumerWidget {
                   final hasActiveFilters = _countActiveFilters(filter) > 0;
                   return EmptyState(
                     icon: Icons.search_off_rounded,
-                    title: l10n.noBooksFound,
+                    title: l10n.books.noBooksFound,
                     description: hasActiveFilters
-                        ? l10n.emptyStateFilterDescription
-                        : l10n.emptyStateDefaultDescription,
-                    actionLabel: hasActiveFilters ? l10n.filterClearAll : null,
+                        ? l10n.books.emptyStateFilterDescription
+                        : l10n.books.emptyStateDefaultDescription,
+                    actionLabel: hasActiveFilters ? l10n.books.filterClearAll : null,
                     onActionPressed: hasActiveFilters
                         ? () {
                             ref
@@ -181,7 +181,7 @@ class BooksScreen extends ConsumerWidget {
               },
               loading: () => const LoadingView(),
               error: (err, _) => ErrorView(
-                message: l10n.errorGeneric,
+                message: l10n.auth.errorGeneric,
                 details: err.toString(),
               ),
             ),

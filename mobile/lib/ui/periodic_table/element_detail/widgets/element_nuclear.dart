@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/utils/periodic_utils.dart';
 import '../../libs/models/periodic_models.dart';
 import 'property_item.dart';
@@ -38,7 +38,7 @@ class ElementNuclear extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final rawCrossSection = double.tryParse(
       properties.neutronCrossSection ?? '',
@@ -73,7 +73,7 @@ class ElementNuclear extends StatelessWidget {
         children: [
           const Icon(LucideIcons.atom, size: 18),
           const SizedBox(width: 8),
-          Text(l10n.nuclearProperties),
+          Text(l10n.periodic_table.nuclearProperties),
         ],
       ),
       child: Padding(
@@ -81,38 +81,38 @@ class ElementNuclear extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PropertyItem(label: l10n.halfLife, value: properties.halfLife),
-            PropertyItem(label: l10n.lifetime, value: properties.lifetime),
-            PropertyItem(label: l10n.decayMode, value: properties.decayMode),
+            PropertyItem(label: l10n.periodic_table.halfLife, value: properties.halfLife),
+            PropertyItem(label: l10n.periodic_table.lifetime, value: properties.lifetime),
+            PropertyItem(label: l10n.periodic_table.decayMode, value: properties.decayMode),
             PropertyItem(
-              label: l10n.quantumNumbers,
+              label: l10n.periodic_table.quantumNumbers,
               value: properties.quantumNumbers,
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.neutronCrossSection,
+              label: l10n.periodic_table.neutronCrossSection,
               value: formattedCrossSection,
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.neutronMassAbsorption,
+              label: l10n.periodic_table.neutronMassAbsorption,
               value: formattedMassAbs,
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.knownIsotopes,
+              label: l10n.periodic_table.knownIsotopes,
               value: knownIsotopesVal.isNotEmpty ? knownIsotopesVal : null,
               isHtml: true,
               isMultiline: true,
             ),
             PropertyItem(
-              label: l10n.stableIsotopes,
+              label: l10n.periodic_table.stableIsotopes,
               value: stableIsotopesVal.isNotEmpty ? stableIsotopesVal : null,
               isHtml: true,
               isMultiline: true,
             ),
             PropertyItem(
-              label: l10n.isotopicAbundances,
+              label: l10n.periodic_table.isotopicAbundances,
               value: isotopicAbundancesVal.isNotEmpty
                   ? isotopicAbundancesVal
                   : null,

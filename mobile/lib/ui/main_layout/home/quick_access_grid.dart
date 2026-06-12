@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/providers/navigation_provider.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 import '../../periodic_table/periodic_screen/periodic_screen.dart';
 import '../../constitution/constitution_menu/constitution_menu.dart';
@@ -12,11 +12,11 @@ class QuickAccessGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final modules = [
       {
-        'title': l10n.digitalBooks,
+        'title': l10n.common.digitalBooks,
         'icon': Icons.menu_book_rounded,
         'colors': [const Color(0xFF6366F1), const Color(0xFF8B5CF6)],
         'onTap': () {
@@ -24,7 +24,7 @@ class QuickAccessGrid extends ConsumerWidget {
         },
       },
       {
-        'title': l10n.periodicTable,
+        'title': l10n.periodic_table.periodicTable,
         'icon': Icons.science_rounded,
         'colors': [const Color(0xFFF59E0B), const Color(0xFFD97706)],
         'onTap': () {
@@ -35,7 +35,7 @@ class QuickAccessGrid extends ConsumerWidget {
         },
       },
       {
-        'title': l10n.constitutionTitle,
+        'title': l10n.constitution.constitutionTitle,
         'icon': Icons.gavel_rounded,
         'colors': [const Color(0xFFEF4444), const Color(0xFFB91C1C)],
         'onTap': () {
@@ -48,7 +48,7 @@ class QuickAccessGrid extends ConsumerWidget {
         },
       },
       {
-        'title': l10n.dictionary,
+        'title': l10n.common.dictionary,
         'icon': Icons.translate_rounded,
         'colors': [const Color(0xFFEC4899), const Color(0xFFDB2777)],
         'onTap': () {
@@ -56,13 +56,13 @@ class QuickAccessGrid extends ConsumerWidget {
         },
       },
       {
-        'title': l10n.aiAssistant,
+        'title': l10n.common.aiAssistant,
         'icon': Icons.auto_awesome_rounded,
         'colors': [const Color(0xFF10B981), const Color(0xFF059669)],
         'onTap': () {
           ShadToaster.of(context).show(
             ShadToast(
-              title: Text(l10n.aiAssistant),
+              title: Text(l10n.common.aiAssistant),
               description: const Text('Feature under development'),
             ),
           );

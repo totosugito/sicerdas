@@ -19,4 +19,7 @@ flutter pub cache clean
 flutter pub get
 
 # generate genl10n
+# 1. Merge split locales files (under lib/l10n/src) into main ARB files
+dart tool/merge_l10n.dart
+# 2. Run standard Flutter localization generator
 flutter gen-l10n

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class ComparisonAppBar extends StatelessWidget {
   final TextEditingController searchController;
@@ -17,7 +17,7 @@ class ComparisonAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     return SliverAppBar(
@@ -29,7 +29,7 @@ class ComparisonAppBar extends StatelessWidget {
       iconTheme: const IconThemeData(color: Colors.white),
       flexibleSpace: FlexibleSpaceBar(
         title: Text(
-          l10n.elementComparisonTitle,
+          l10n.common.elementComparisonTitle,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -75,7 +75,7 @@ class ComparisonAppBar extends StatelessWidget {
               Expanded(
                 child: ShadInput(
                   controller: searchController,
-                  placeholder: Text(l10n.elementComparisonSearchPlaceholder),
+                  placeholder: Text(l10n.common.elementComparisonSearchPlaceholder),
                   leading: const Padding(
                     padding: EdgeInsets.only(right: 8),
                     child: Icon(LucideIcons.search, size: 16),

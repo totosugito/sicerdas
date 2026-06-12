@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/auth/auth_notifier.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -31,31 +31,31 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   Future<void> _handleSignUp() async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
     // Manual Validation
     if (name.isEmpty) {
-      setState(() => _errorMessage = l10n.errorNameRequired);
+      setState(() => _errorMessage = l10n.auth.errorNameRequired);
       return;
     }
     if (email.isEmpty) {
-      setState(() => _errorMessage = l10n.errorEmailRequired);
+      setState(() => _errorMessage = l10n.auth.errorEmailRequired);
       return;
     }
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(email)) {
-      setState(() => _errorMessage = l10n.errorEmailInvalid);
+      setState(() => _errorMessage = l10n.auth.errorEmailInvalid);
       return;
     }
     if (password.isEmpty) {
-      setState(() => _errorMessage = l10n.errorPasswordRequired);
+      setState(() => _errorMessage = l10n.auth.errorPasswordRequired);
       return;
     }
     if (password.length < 6) {
-      setState(() => _errorMessage = l10n.errorPasswordLength);
+      setState(() => _errorMessage = l10n.auth.errorPasswordLength);
       return;
     }
 
@@ -72,7 +72,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
       if (success && mounted) {
         setState(() {
-          _successMessage = l10n.signUpSuccessMessage;
+          _successMessage = l10n.auth.signUpSuccessMessage;
         });
         // Auto-navigate back to Login after a short delay
         Future.delayed(const Duration(seconds: 2), () {
@@ -80,7 +80,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         });
       } else if (mounted) {
         setState(() {
-          _errorMessage = l10n.errorGeneric;
+          _errorMessage = l10n.auth.errorGeneric;
         });
       }
     } catch (e) {
@@ -108,7 +108,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -154,13 +154,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
               // Title & Subtitle
               Text(
-                l10n.signUpTitle,
+                l10n.auth.signUpTitle,
                 style: theme.textTheme.h2.copyWith(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
-                l10n.signUpSubtitle,
+                l10n.auth.signUpSubtitle,
                 style: theme.textTheme.muted,
                 textAlign: TextAlign.center,
               ),
@@ -253,7 +253,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    l10n.nameLabel,
+                    l10n.auth.nameLabel,
                     style: theme.textTheme.small.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.foreground,
@@ -262,7 +262,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   const SizedBox(height: 8),
                   ShadInput(
                     controller: _nameController,
-                    placeholder: Text(l10n.nameLabel),
+                    placeholder: Text(l10n.auth.nameLabel),
                     keyboardType: TextInputType.name,
                     leading: Padding(
                       padding: const EdgeInsets.only(right: 8.0),
@@ -282,7 +282,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    l10n.emailLabel,
+                    l10n.auth.emailLabel,
                     style: theme.textTheme.small.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.foreground,
@@ -291,7 +291,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   const SizedBox(height: 8),
                   ShadInput(
                     controller: _emailController,
-                    placeholder: Text(l10n.emailLabel),
+                    placeholder: Text(l10n.auth.emailLabel),
                     keyboardType: TextInputType.emailAddress,
                     leading: Padding(
                       padding: const EdgeInsets.only(right: 8.0),
@@ -311,7 +311,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    l10n.passwordLabel,
+                    l10n.auth.passwordLabel,
                     style: theme.textTheme.small.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.foreground,
@@ -320,7 +320,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   const SizedBox(height: 8),
                   ShadInput(
                     controller: _passwordController,
-                    placeholder: Text(l10n.passwordLabel),
+                    placeholder: Text(l10n.auth.passwordLabel),
                     obscureText: _obscurePassword,
                     leading: Padding(
                       padding: const EdgeInsets.only(right: 8.0),
@@ -361,7 +361,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           ),
                         ),
                       )
-                    : Text(l10n.signUpButton),
+                    : Text(l10n.auth.signUpButton),
               ),
 
               const SizedBox(height: 32),
@@ -380,10 +380,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     ),
                     children: [
                       TextSpan(
-                        text: "${l10n.alreadyHaveAccount.split('?').first}? ",
+                        text: "${l10n.auth.alreadyHaveAccount.split('?').first}? ",
                       ),
                       TextSpan(
-                        text: l10n.alreadyHaveAccount.split('?').last.trim(),
+                        text: l10n.auth.alreadyHaveAccount.split('?').last.trim(),
                         style: TextStyle(
                           color: theme.colorScheme.primary,
                           fontWeight: FontWeight.bold,

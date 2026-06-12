@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/widgets/funvas/funvas.dart';
 import '../../libs/utils/periodic_utils.dart';
 import '../../libs/models/periodic_models.dart';
@@ -27,12 +27,12 @@ class ElementOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     // Parse discovery year
     final rawYear = properties.discoveryYear ?? '';
     final formattedYear = PeriodicUtils.getDiscoveryYear(
       rawYear,
-      l10n.periodicBcYear,
+      l10n.periodic_table.periodicBcYear,
     );
 
     // Parse atomic weight with toPhysics
@@ -58,7 +58,7 @@ class ElementOverview extends StatelessWidget {
         children: [
           const Icon(LucideIcons.atom, size: 18),
           const SizedBox(width: 8),
-          Text(l10n.periodicOverview),
+          Text(l10n.periodic_table.periodicOverview),
         ],
       ),
       child: Padding(
@@ -67,26 +67,26 @@ class ElementOverview extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PropertyItem(
-              label: l10n.atomicNumber,
+              label: l10n.periodic_table.atomicNumber,
               value: properties.atomicNumber,
             ),
-            PropertyItem(label: l10n.symbol, value: properties.symbol),
-            PropertyItem(label: l10n.name, value: properties.name),
-            PropertyItem(label: l10n.latinName, value: properties.latinName),
-            PropertyItem(label: l10n.discovery, value: properties.discovery),
-            PropertyItem(label: l10n.discoveryYear, value: formattedYear),
+            PropertyItem(label: l10n.periodic_table.symbol, value: properties.symbol),
+            PropertyItem(label: l10n.periodic_table.name, value: properties.name),
+            PropertyItem(label: l10n.periodic_table.latinName, value: properties.latinName),
+            PropertyItem(label: l10n.periodic_table.discovery, value: properties.discovery),
+            PropertyItem(label: l10n.periodic_table.discoveryYear, value: formattedYear),
             PropertyItem(
-              label: l10n.discoveryCountry,
+              label: l10n.periodic_table.discoveryCountry,
               value: properties.discoveryCountry,
             ),
             PropertyItem(
-              label: l10n.atomicWeight,
+              label: l10n.periodic_table.atomicWeight,
               value: formattedWeight,
               unit: PeriodicUtils.getPeriodicUnits('atomicWeight'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.electronShell,
+              label: l10n.periodic_table.electronShell,
               value: PeriodicUtils.getElectronShell(properties.electronShell),
             ),
             const SizedBox(height: 16),
@@ -106,7 +106,7 @@ class ElementOverview extends StatelessWidget {
             if (hasLocalSpectrum || hasRemoteSpectrum) ...[
               const SizedBox(height: 12),
               Text(
-                l10n.emissionSpectrum,
+                l10n.periodic_table.emissionSpectrum,
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,

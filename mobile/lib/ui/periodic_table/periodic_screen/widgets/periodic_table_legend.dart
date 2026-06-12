@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/utils/periodic_utils.dart';
 import 'element_styles.dart';
 
@@ -15,7 +15,7 @@ class PeriodicTableLegend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final double containerWidth = 10 * (baseCellSize + 4);

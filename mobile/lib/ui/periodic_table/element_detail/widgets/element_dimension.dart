@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/utils/periodic_utils.dart';
 import '../../libs/models/periodic_models.dart';
 import 'property_item.dart';
@@ -12,7 +12,7 @@ class ElementDimension extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final rawAtomicRadius = double.tryParse(properties.atomicRadius ?? '');
     final formattedAtomicRadius = rawAtomicRadius != null
@@ -39,7 +39,7 @@ class ElementDimension extends StatelessWidget {
         children: [
           const Icon(LucideIcons.ruler, size: 18),
           const SizedBox(width: 8),
-          Text(l10n.atomicDimensionsAndStructure),
+          Text(l10n.periodic_table.atomicDimensionsAndStructure),
         ],
       ),
       child: Padding(
@@ -48,50 +48,50 @@ class ElementDimension extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PropertyItem(
-              label: l10n.atomicRadius,
+              label: l10n.periodic_table.atomicRadius,
               value: formattedAtomicRadius,
               unit: PeriodicUtils.getPeriodicUnits('atomRadius'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.covalentRadius,
+              label: l10n.periodic_table.covalentRadius,
               value: properties.covalentRadius,
             ),
             PropertyItem(
-              label: l10n.vanDerWaalsRadius,
+              label: l10n.periodic_table.vanDerWaalsRadius,
               value: formattedVanDerWaalsRadius,
               unit: PeriodicUtils.getPeriodicUnits('vanDerWaalsRadius'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.crystalStructure,
+              label: l10n.periodic_table.crystalStructure,
               value: properties.crystalStructure,
             ),
             PropertyItem(
-              label: l10n.latticeAngles,
+              label: l10n.periodic_table.latticeAngles,
               value: properties.latticeAngles,
             ),
             PropertyItem(
-              label: l10n.latticeConstants,
+              label: l10n.periodic_table.latticeConstants,
               value: properties.latticeConstants,
             ),
             PropertyItem(
-              label: l10n.spaceGroupName,
+              label: l10n.periodic_table.spaceGroupName,
               value: properties.spaceGroupName,
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.spaceGroupNumber,
+              label: l10n.periodic_table.spaceGroupNumber,
               value: properties.spaceGroupNumber,
             ),
             PropertyItem(
-              label: l10n.empiricalAtomicRadius,
+              label: l10n.periodic_table.empiricalAtomicRadius,
               value: formattedEmpiricalRadius,
               unit: PeriodicUtils.getPeriodicUnits('empiricalAtomicRadius'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.atomicSpectra,
+              label: l10n.periodic_table.atomicSpectra,
               value: properties.atomicSpectra,
             ),
           ],

@@ -1,5 +1,5 @@
 import 'package:path/path.dart' as p;
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class PeriodicUtils {
   static const List<String> legendGroups = [
@@ -37,91 +37,91 @@ class PeriodicUtils {
     );
   }
 
-  // Local helper matching React translations using AppLocalizations
-  static String getLocalizedLabel(AppLocalizations l10n, String key) {
+  // Local helper matching React translations using Translations
+  static String getLocalizedLabel(Translations l10n, String key) {
     switch (key) {
       case 'atomicNumber':
-        return l10n.atomicNumber;
+        return l10n.periodic_table.atomicNumber;
       case 'symbol':
-        return l10n.symbol;
+        return l10n.periodic_table.symbol;
       case 'name':
-        return l10n.name;
+        return l10n.periodic_table.name;
       case 'latinName':
-        return l10n.latinName;
+        return l10n.periodic_table.latinName;
       case 'discovery':
-        return l10n.discovery;
+        return l10n.periodic_table.discovery;
       case 'discoveryYear':
-        return l10n.discoveryYear;
+        return l10n.periodic_table.discoveryYear;
       case 'discoveryCountry':
-        return l10n.discoveryCountry;
+        return l10n.periodic_table.discoveryCountry;
       case 'atomicWeight':
-        return l10n.atomicWeight;
+        return l10n.periodic_table.atomicWeight;
       case 'electronShell':
-        return l10n.electronShell;
+        return l10n.periodic_table.electronShell;
       case 'emissionSpectrum':
-        return l10n.emissionSpectrum;
+        return l10n.periodic_table.emissionSpectrum;
       case 'overview':
-        return l10n.periodicOverview;
+        return l10n.periodic_table.periodicOverview;
       case 'classifications':
-        return l10n.classifications;
+        return l10n.periodic_table.classifications;
       case 'atomicDimensionsAndStructure':
-        return l10n.atomicDimensionsAndStructure;
+        return l10n.periodic_table.atomicDimensionsAndStructure;
       case 'thermalProperties':
-        return l10n.thermalProperties;
+        return l10n.periodic_table.thermalProperties;
       case 'bulkPhysicalProperties':
-        return l10n.bulkPhysicalProperties;
+        return l10n.periodic_table.bulkPhysicalProperties;
       case 'reactivity':
-        return l10n.reactivity;
+        return l10n.periodic_table.reactivity;
       case 'healthAndSafety':
-        return l10n.healthAndSafety;
+        return l10n.periodic_table.healthAndSafety;
       case 'nuclearProperties':
-        return l10n.nuclearProperties;
+        return l10n.periodic_table.nuclearProperties;
       default:
         return key;
     }
   }
 
-  static String getLocalizedSeries(AppLocalizations l10n, String? series) {
+  static String getLocalizedSeries(Translations l10n, String? series) {
     if (series == null) return "";
     switch (series) {
       case 'nobleGas':
       case 'noble_gases':
       case 'noblegases':
-        return l10n.nobleGas;
+        return l10n.periodic_table.nobleGas;
       case 'halogen':
       case 'halogens':
-        return l10n.halogen;
+        return l10n.periodic_table.halogen;
       case 'nonmetal':
       case 'othernonmetals':
       case 'other_nonmetals':
-        return l10n.nonmetal;
+        return l10n.periodic_table.nonmetal;
       case 'alkaliMetal':
       case 'alkali_metals':
       case 'alkalimetals':
-        return l10n.alkaliMetal;
+        return l10n.periodic_table.alkaliMetal;
       case 'alkalineEarthMetal':
       case 'alkaline_earth_metals':
       case 'alkalineearthmetals':
-        return l10n.alkalineEarthMetal;
+        return l10n.periodic_table.alkalineEarthMetal;
       case 'metalloid':
       case 'metalloids':
-        return l10n.metalloid;
+        return l10n.periodic_table.metalloid;
       case 'postTransitionMetal':
       case 'post_transition_metals':
       case 'posttransitionmetals':
-        return l10n.postTransitionMetal;
+        return l10n.periodic_table.postTransitionMetal;
       case 'transitionMetal':
       case 'transition_metals':
       case 'transitionmetals':
-        return l10n.transitionMetal;
+        return l10n.periodic_table.transitionMetal;
       case 'lanthanoid':
       case 'lanthanoids':
       case 'lanthanides':
-        return l10n.lanthanoid;
+        return l10n.periodic_table.lanthanoid;
       case 'actinoid':
       case 'actinoids':
       case 'actinides':
-        return l10n.actinoid;
+        return l10n.periodic_table.actinoid;
       default:
         return series;
     }

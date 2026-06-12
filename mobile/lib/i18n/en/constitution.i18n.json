@@ -1,0 +1,26 @@
+{
+  "constitution": {
+    "title": "Pancasila & UUD 1945",
+    "searchPlaceholder": "Search articles or clauses...",
+    "noResult": "No results found",
+    "clearSearch": "Clear Search",
+    "article": "Article",
+    "clause": "Clause",
+    "sila": "Principle",
+    "butir": "Point",
+    "desc": "Learn the state foundation and constitution of the Republic of Indonesia easily.",
+    "chooseModule": "Select Learning Module"
+  },
+  "pancasilaTitle": "Pancasila",
+  "pancasilaSubtitle": "Five Principles of the Republic of Indonesia",
+  "pembukaanTitle": "UUD 1945 Preamble",
+  "butirPancasilaTitle": "Pancasila Points",
+  "uud1945Title": "UUD 1945",
+  "uud1945AsliTitle": "Original UUD 1945",
+  "amandemenTitle": "UUD 1945 Amendments",
+  "pembukaanSubtitle": "Preamble text of UUD 1945",
+  "butirPancasilaSubtitle": "45 Points of Pancasila realization",
+  "uud1945Subtitle": "The Constitution of 1945",
+  "uud1945AsliSubtitle": "The Original text of UUD 1945",
+  "amandemenSubtitle": "Amendments of UUD 1945"
+}

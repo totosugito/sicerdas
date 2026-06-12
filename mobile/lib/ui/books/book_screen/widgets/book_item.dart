@@ -5,7 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bse/core/providers/settings_provider.dart';
 import 'package:bse/core/database/database.dart';
 import 'package:bse/core/utils/toast_utils.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/widgets/confirmation_dialog.dart';
 import 'package:bse/ui/pdf_viewer/pdf_viewer_screen.dart';
 import 'book_detail_sheet.dart';
@@ -43,18 +43,18 @@ class BookItem extends ConsumerWidget {
   }
 
   Future<void> _deleteBook(BuildContext context, WidgetRef ref) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final theme = ShadTheme.of(context);
 
     ConfirmationDialog.show(
       context,
       icon: Icons.delete_outline,
-      title: l10n.deleteBookConfirmTitle,
+      title: l10n.books.deleteBookConfirmTitle,
       descriptionWidget: Text.rich(
         TextSpan(
           style: theme.textTheme.muted.copyWith(fontSize: 14),
           children: [
-            TextSpan(text: l10n.deleteBookConfirmPrefix),
+            TextSpan(text: l10n.books.deleteBookConfirmPrefix),
             TextSpan(
               text: book.title,
               style: TextStyle(
@@ -62,13 +62,13 @@ class BookItem extends ConsumerWidget {
                 color: theme.colorScheme.foreground,
               ),
             ),
-            TextSpan(text: l10n.deleteBookConfirmSuffix),
+            TextSpan(text: l10n.books.deleteBookConfirmSuffix),
           ],
         ),
         textAlign: TextAlign.center,
       ),
-      confirmLabel: l10n.deleteAction,
-      cancelLabel: l10n.cancel,
+      confirmLabel: l10n.books.deleteAction,
+      cancelLabel: l10n.common.cancel,
       onConfirm: () async {
         Navigator.of(context).pop();
         final success = await book.deleteLocalFile();
@@ -77,7 +77,7 @@ class BookItem extends ConsumerWidget {
           ToastUtils.showSuccess(
             context,
             title: book.title,
-            message: l10n.deleteBookSuccess,
+            message: l10n.books.deleteBookSuccess,
           );
         }
       },
@@ -87,7 +87,7 @@ class BookItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final cloudUrl = ref.watch(cloudUrlProvider);
     final coverUrl = BookUtils.getBookCoverUrl(
       baseUrl: cloudUrl,
@@ -187,7 +187,7 @@ class BookItem extends ConsumerWidget {
                               color: theme.colorScheme.foreground,
                             ),
                             const SizedBox(width: 8),
-                            Text(l10n.detailInformation),
+                            Text(l10n.books.detailInformation),
                           ],
                         ),
                       ),
@@ -202,7 +202,7 @@ class BookItem extends ConsumerWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              l10n.deleteAction,
+                              l10n.books.deleteAction,
                               style: TextStyle(
                                 color: theme.colorScheme.destructive,
                               ),

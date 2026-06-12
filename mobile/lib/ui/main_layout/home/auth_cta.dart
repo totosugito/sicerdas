@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../auth/sign_in_screen.dart';
 
 class AuthCTA extends ConsumerWidget {
@@ -9,7 +9,7 @@ class AuthCTA extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final theme = ShadTheme.of(context);
 
@@ -27,13 +27,13 @@ class AuthCTA extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                l10n.welcome,
+                l10n.common.welcome,
                 style: theme.textTheme.large.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 8),
-              Text(l10n.signInMessage, style: theme.textTheme.muted),
+              Text(l10n.auth.signInMessage, style: theme.textTheme.muted),
               const SizedBox(height: 16),
               ShadButton(
                 onPressed: () {
@@ -48,7 +48,7 @@ class AuthCTA extends ConsumerWidget {
                   padding: EdgeInsets.only(right: 8.0),
                   child: Icon(Icons.mail_outline_rounded, size: 16),
                 ),
-                child: Text(l10n.loginButton),
+                child: Text(l10n.auth.loginButton),
               ),
             ],
           ),

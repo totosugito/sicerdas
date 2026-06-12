@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/ui/books/libs/utils/book_utils.dart';
 
 class DownloadDialogResult<T> {
@@ -114,7 +114,7 @@ class _DownloadProgressDialogState<T>
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     final progressPercent = (_progress * 100).toStringAsFixed(0);
@@ -155,7 +155,7 @@ class _DownloadProgressDialogState<T>
             ),
             const SizedBox(height: 8),
             Text(
-              widget.message ?? l10n.downloadStarted,
+              widget.message ?? l10n.books.downloadStarted,
               style: theme.textTheme.muted.copyWith(
                 fontSize: 13,
                 color: isDark ? Colors.white70 : Colors.black54,
@@ -198,7 +198,7 @@ class _DownloadProgressDialogState<T>
               width: double.infinity,
               onPressed: _cancelDownload,
               child: Text(
-                l10n.cancel,
+                l10n.common.cancel,
                 style: TextStyle(color: theme.colorScheme.mutedForeground),
               ),
             ),

@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/models/periodic_models.dart';
 import 'property_item.dart';
 
@@ -122,7 +122,7 @@ class ElementHealthSafety extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final hasContent =
         (properties.dOTHazardClass != null &&
@@ -142,7 +142,7 @@ class ElementHealthSafety extends StatelessWidget {
         children: [
           const Icon(LucideIcons.shieldAlert, size: 18),
           const SizedBox(width: 8),
-          Text(l10n.healthAndSafety),
+          Text(l10n.periodic_table.healthAndSafety),
         ],
       ),
       child: Padding(
@@ -151,12 +151,12 @@ class ElementHealthSafety extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PropertyItem(
-              label: l10n.dOTHazardClass,
+              label: l10n.periodic_table.dOTHazardClass,
               value: properties.dOTHazardClass,
             ),
-            PropertyItem(label: l10n.dOTNumbers, value: properties.dOTNumbers),
+            PropertyItem(label: l10n.periodic_table.dOTNumbers, value: properties.dOTNumbers),
             PropertyItem(
-              label: l10n.rtecsNumber,
+              label: l10n.periodic_table.rtecsNumber,
               value: properties.rtecsNumber,
             ),
             if (properties.nfpaLabel != null &&
@@ -167,7 +167,7 @@ class ElementHealthSafety extends StatelessWidget {
                   horizontal: 4.0,
                 ),
                 child: Text(
-                  l10n.nfpaLabel,
+                  l10n.periodic_table.nfpaLabel,
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,

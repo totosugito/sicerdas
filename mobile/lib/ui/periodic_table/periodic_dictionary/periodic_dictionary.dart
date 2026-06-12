@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/utils/toast_utils.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import 'widgets/chemistry_term_card.dart';
 import 'widgets/dictionary_empty_state.dart';
 import 'widgets/dictionary_hero_app_bar.dart';
@@ -158,28 +158,28 @@ class _ChemistryDictionaryScreenState
   }
 
   void _copyToClipboard(ChemistryTerm term) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final textToCopy = '${term.word}: ${term.translation}';
     Clipboard.setData(ClipboardData(text: textToCopy));
     ToastUtils.showSuccess(
       context,
-      title: l10n.successTitle,
-      message: l10n.chemistryDictionaryCopyToClipboard,
+      title: l10n.common.successTitle,
+      message: l10n.chemistry_dictionary.chemistryDictionaryCopyToClipboard,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final crossAxisCount = MediaQuery.sizeOf(context).width > 600 ? 2 : 1;
 
     final alphabetGroups = [
-      ('all', l10n.chemistryDictionaryAll),
-      ('a-f', l10n.chemistryDictionaryAF),
-      ('g-l', l10n.chemistryDictionaryGL),
-      ('m-r', l10n.chemistryDictionaryMR),
-      ('s-z', l10n.chemistryDictionarySZ),
+      ('all', l10n.chemistry_dictionary.chemistryDictionaryAll),
+      ('a-f', l10n.chemistry_dictionary.chemistryDictionaryAF),
+      ('g-l', l10n.chemistry_dictionary.chemistryDictionaryGL),
+      ('m-r', l10n.chemistry_dictionary.chemistryDictionaryMR),
+      ('s-z', l10n.chemistry_dictionary.chemistryDictionarySZ),
     ];
 
     return Scaffold(
@@ -190,8 +190,8 @@ class _ChemistryDictionaryScreenState
               slivers: [
                 // Collapsible Hero Banner AppBar
                 DictionaryHeroAppBar(
-                  title: l10n.chemistryDictionary,
-                  description: l10n.chemistryDictionaryDesc,
+                  title: l10n.chemistry_dictionary.chemistryDictionary,
+                  description: l10n.chemistry_dictionary.chemistryDictionaryDesc,
                 ),
 
                 // Sticky Search & Filters Header
@@ -209,7 +209,7 @@ class _ChemistryDictionaryScreenState
                           ShadInput(
                             controller: _searchController,
                             placeholder: Text(
-                              l10n.chemistryDictionarySearchPlaceholder,
+                              l10n.chemistry_dictionary.chemistryDictionarySearchPlaceholder,
                             ),
                             leading: const Padding(
                               padding: EdgeInsets.only(right: 8),
@@ -282,11 +282,7 @@ class _ChemistryDictionaryScreenState
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        l10n.chemistryDictionaryResultsInfo(
-                          1,
-                          _filteredTerms.length,
-                          _filteredTerms.length,
-                        ),
+                        l10n.chemistry_dictionary.chemistryDictionaryResultsInfo(start: 1, end: _filteredTerms.length, total: _filteredTerms.length,),
                         style: theme.textTheme.small.copyWith(
                           color: theme.colorScheme.mutedForeground,
                         ),
@@ -302,9 +298,9 @@ class _ChemistryDictionaryScreenState
                       ? SliverFillRemaining(
                           hasScrollBody: false,
                           child: DictionaryEmptyState(
-                            title: l10n.chemistryDictionaryNoEntriesFoundTitle,
+                            title: l10n.chemistry_dictionary.chemistryDictionaryNoEntriesFoundTitle,
                             description:
-                                l10n.chemistryDictionaryNoEntriesFoundDesc,
+                                l10n.chemistry_dictionary.chemistryDictionaryNoEntriesFoundDesc,
                           ),
                         )
                       : SliverGrid(
@@ -323,7 +319,7 @@ class _ChemistryDictionaryScreenState
                             return ChemistryTermCard(
                               term: term,
                               onCopy: () => _copyToClipboard(term),
-                              copyTooltip: l10n.chemistryDictionaryCopyText,
+                              copyTooltip: l10n.chemistry_dictionary.chemistryDictionaryCopyText,
                             );
                           }, childCount: _filteredTerms.length),
                         ),

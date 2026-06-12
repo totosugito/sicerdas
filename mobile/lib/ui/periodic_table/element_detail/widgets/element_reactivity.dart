@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/utils/periodic_utils.dart';
 import '../../libs/models/periodic_models.dart';
 import 'property_item.dart';
@@ -12,7 +12,7 @@ class ElementReactivity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final rawElectronegativity = double.tryParse(
       properties.electronegativity ?? '',
@@ -53,7 +53,7 @@ class ElementReactivity extends StatelessWidget {
         children: [
           const Icon(LucideIcons.flame, size: 18),
           const SizedBox(width: 8),
-          Text(l10n.reactivity),
+          Text(l10n.periodic_table.reactivity),
         ],
       ),
       child: Padding(
@@ -61,30 +61,30 @@ class ElementReactivity extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PropertyItem(label: l10n.valence, value: properties.valence),
+            PropertyItem(label: l10n.periodic_table.valence, value: properties.valence),
             PropertyItem(
-              label: l10n.electronegativity,
+              label: l10n.periodic_table.electronegativity,
               value: formattedElectronegativity,
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.electronAffinity,
+              label: l10n.periodic_table.electronAffinity,
               value: formattedElectronAffinity,
               unit: PeriodicUtils.getPeriodicUnits('electronAffinity'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.electronegativityPaulingScale,
+              label: l10n.periodic_table.electronegativityPaulingScale,
               value: formattedPauling,
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.electronegativityAllenScale,
+              label: l10n.periodic_table.electronegativityAllenScale,
               value: formattedAllen,
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.ionizationEnergies,
+              label: l10n.periodic_table.ionizationEnergies,
               value: formattedIonization,
               unit: PeriodicUtils.getPeriodicUnits('ionizationEnergies'),
             ),

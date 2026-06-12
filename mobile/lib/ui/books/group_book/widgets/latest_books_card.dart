@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../latest_books/latest_books_screen.dart';
 
 class LatestBooksCard extends ConsumerWidget {
@@ -11,7 +11,7 @@ class LatestBooksCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
     final latestBooksAsync = ref.watch(unfilteredLatestBooksStreamProvider);
 
     return Padding(
@@ -78,7 +78,7 @@ class LatestBooksCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10n.latestBooks,
+                      l10n.books.latestBooks,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w800,
@@ -87,7 +87,7 @@ class LatestBooksCard extends ConsumerWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      l10n.seeAll,
+                      l10n.books.seeAll,
                       style: theme.textTheme.muted.copyWith(
                         fontSize: 11,
                         fontWeight: FontWeight.w500,

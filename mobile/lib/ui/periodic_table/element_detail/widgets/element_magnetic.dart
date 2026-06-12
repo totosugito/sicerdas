@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:bse/l10n/gen_l10n/app_localizations.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../../libs/utils/periodic_utils.dart';
 import '../../libs/models/periodic_models.dart';
 import 'property_item.dart';
@@ -12,7 +12,7 @@ class ElementMagnetic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = Translations.of(context);
 
     final rawCurie = double.tryParse(properties.curiePoint ?? '');
     final formattedCurie = rawCurie != null
@@ -46,7 +46,7 @@ class ElementMagnetic extends StatelessWidget {
         children: [
           const Icon(LucideIcons.magnet, size: 18),
           const SizedBox(width: 8),
-          Text(l10n.magneticProperties),
+          Text(l10n.periodic_table.magneticProperties),
         ],
       ),
       child: Padding(
@@ -55,17 +55,17 @@ class ElementMagnetic extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PropertyItem(
-              label: l10n.magneticType,
+              label: l10n.periodic_table.magneticType,
               value: properties.magneticType,
             ),
             PropertyItem(
-              label: l10n.curiePoint,
+              label: l10n.periodic_table.curiePoint,
               value: formattedCurie,
               unit: PeriodicUtils.getPeriodicUnits('curiePoint'),
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.massMagneticSusceptibility,
+              label: l10n.periodic_table.massMagneticSusceptibility,
               value: formattedMassSusc,
               unit: PeriodicUtils.getPeriodicUnits(
                 'massMagneticSusceptibility',
@@ -73,7 +73,7 @@ class ElementMagnetic extends StatelessWidget {
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.molarMagneticSusceptibility,
+              label: l10n.periodic_table.molarMagneticSusceptibility,
               value: formattedMolarSusc,
               unit: PeriodicUtils.getPeriodicUnits(
                 'molarMagneticSusceptibility',
@@ -81,7 +81,7 @@ class ElementMagnetic extends StatelessWidget {
               isHtml: true,
             ),
             PropertyItem(
-              label: l10n.volumeMagneticSusceptibility,
+              label: l10n.periodic_table.volumeMagneticSusceptibility,
               value: formattedVolSusc,
               isHtml: true,
             ),
