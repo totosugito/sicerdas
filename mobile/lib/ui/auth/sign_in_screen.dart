@@ -36,16 +36,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
     // Manual Validation
     if (email.isEmpty) {
-      setState(() => _errorMessage = l10n.auth.errorEmailRequired);
+      setState(() => _errorMessage = l10n.auth.error.emailRequired);
       return;
     }
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(email)) {
-      setState(() => _errorMessage = l10n.auth.errorEmailInvalid);
+      setState(() => _errorMessage = l10n.auth.error.emailInvalid);
       return;
     }
     if (password.isEmpty) {
-      setState(() => _errorMessage = l10n.auth.errorPasswordRequired);
+      setState(() => _errorMessage = l10n.auth.error.passwordRequired);
       return;
     }
 
@@ -63,7 +63,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         Navigator.pop(context); // Go back after login success
       } else if (mounted) {
         setState(() {
-          _errorMessage = l10n.auth.errorGeneric;
+          _errorMessage = l10n.auth.error.generic;
         });
       }
     } catch (e) {
@@ -164,13 +164,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
               // Welcome Title
               Text(
-                l10n.auth.loginTitle,
+                l10n.auth.login.title,
                 style: theme.textTheme.h2.copyWith(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
-                l10n.auth.loginSubtitle,
+                l10n.auth.login.subtitle,
                 style: theme.textTheme.muted,
                 textAlign: TextAlign.center,
               ),
@@ -302,7 +302,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                           ),
                         ),
                       )
-                    : Text(l10n.auth.loginButton),
+                    : Text(l10n.auth.login.button),
               ),
 
               const SizedBox(height: 24),

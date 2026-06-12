@@ -35,7 +35,7 @@ class QuickAccessGrid extends ConsumerWidget {
         },
       },
       {
-        'title': l10n.constitution.constitutionTitle,
+        'title': l10n.constitution.constitution.title,
         'icon': Icons.gavel_rounded,
         'colors': [const Color(0xFFEF4444), const Color(0xFFB91C1C)],
         'onTap': () {

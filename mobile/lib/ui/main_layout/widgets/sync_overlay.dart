@@ -37,7 +37,7 @@ class SyncOverlay extends ConsumerWidget {
                     const Icon(LucideIcons.package2, size: 32),
                     const SizedBox(height: 16),
                     Text(
-                      l10n.books.syncInitialDownloadTitle,
+                      l10n.books.sync.initialDownloadTitle,
                       style: theme.textTheme.large.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -45,7 +45,7 @@ class SyncOverlay extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      l10n.books.syncInitialDownloadMessage,
+                      l10n.books.sync.initialDownloadMessage,
                       style: theme.textTheme.muted.copyWith(fontSize: 14),
                       textAlign: TextAlign.center,
                     ),
@@ -55,13 +55,13 @@ class SyncOverlay extends ConsumerWidget {
                       onPressed: () => ref
                           .read(versionServiceProvider)
                           .checkAndSync(force: true),
-                      child: Text(l10n.books.syncDownloadNow),
+                      child: Text(l10n.books.sync.downloadNow),
                     ),
                   ] else if (syncState.status == SyncStatus.syncing) ...[
                     const Icon(LucideIcons.refreshCcw, size: 32),
                     const SizedBox(height: 16),
                     Text(
-                      l10n.books.syncPreparingData,
+                      l10n.books.sync.preparingData,
                       style: theme.textTheme.large.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -69,7 +69,7 @@ class SyncOverlay extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      l10n.books.syncWaitMessage,
+                      l10n.books.sync.waitMessage,
                       style: theme.textTheme.muted.copyWith(fontSize: 14),
                       textAlign: TextAlign.center,
                     ),
@@ -83,7 +83,7 @@ class SyncOverlay extends ConsumerWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      l10n.books.syncSuccessMessage(count: syncState.booksAdded),
+                      l10n.books.sync.successMessage(count: syncState.booksAdded),
                       style: theme.textTheme.large.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -103,7 +103,7 @@ class SyncOverlay extends ConsumerWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      l10n.books.syncConnectionRequired,
+                      l10n.books.sync.connectionRequired,
                       style: theme.textTheme.large.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -121,7 +121,7 @@ class SyncOverlay extends ConsumerWidget {
                       onPressed: () => ref
                           .read(versionServiceProvider)
                           .checkAndSync(force: true),
-                      child: Text(l10n.books.syncTryAgain),
+                      child: Text(l10n.books.sync.tryAgain),
                     ),
                   ],
                 ],
@@ -135,11 +135,11 @@ class SyncOverlay extends ConsumerWidget {
 
   String _getSyncErrorMessage(Translations l10n, String? key) {
     if (key == 'syncInternetRequiredMessage') {
-      return l10n.books.syncInternetRequiredMessage;
+      return l10n.books.sync.internetRequiredMessage;
     }
     if (key == 'syncFailedMessage') {
-      return l10n.books.syncFailedMessage;
+      return l10n.books.sync.failedMessage;
     }
-    return l10n.books.syncFailedMessage;
+    return l10n.books.sync.failedMessage;
   }
 }

@@ -84,7 +84,7 @@ class _ComparisonFilterSheetState extends State<ComparisonFilterSheet> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(l10n.books.filterTitle, style: theme.textTheme.h4),
+                          Text(l10n.books.filter.title, style: theme.textTheme.h4),
                           if (_tempSortBy != 'atomicWeight' ||
                               _tempSortDirection != 'auto')
                             TextButton(
@@ -94,7 +94,7 @@ class _ComparisonFilterSheetState extends State<ComparisonFilterSheet> {
                                   _tempSortDirection = 'auto';
                                 });
                               },
-                              child: Text(l10n.books.filterClearAll),
+                              child: Text(l10n.books.filter.clearAll),
                             ),
                         ],
                       ),
@@ -209,7 +209,7 @@ class _ComparisonFilterSheetState extends State<ComparisonFilterSheet> {
                           widget.onApply(_tempSortBy, _tempSortDirection);
                           Navigator.pop(context);
                         },
-                        child: Text(l10n.books.filterApply),
+                        child: Text(l10n.books.filter.apply),
                       ),
                     ],
                   ),

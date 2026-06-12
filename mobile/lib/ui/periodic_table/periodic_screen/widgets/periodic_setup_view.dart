@@ -31,20 +31,20 @@ class PeriodicSetupView extends StatelessWidget {
                 if (syncState.status == PeriodicSyncStatus.checking) ...[
                   const CircularProgressIndicator(),
                   const SizedBox(height: 16),
-                  Text(l10n.periodic_table.periodicChecking),
+                  Text(l10n.periodic_table.sections.checking),
                 ] else if (syncState.status ==
                     PeriodicSyncStatus.notDownloaded) ...[
                   const Icon(LucideIcons.package2, size: 48),
                   const SizedBox(height: 16),
                   Text(
-                    l10n.periodic_table.periodicSetupTitle,
+                    l10n.periodic_table.setup.title,
                     style: theme.textTheme.large.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    l10n.periodic_table.periodicSetupMessage,
+                    l10n.periodic_table.setup.message,
                     style: theme.textTheme.muted,
                     textAlign: TextAlign.center,
                   ),
@@ -52,20 +52,20 @@ class PeriodicSetupView extends StatelessWidget {
                   ShadButton(
                     width: double.infinity,
                     onPressed: onDownloadTriggered,
-                    child: Text(l10n.books.syncDownloadNow),
+                    child: Text(l10n.books.sync.downloadNow),
                   ),
                 ] else if (syncState.status ==
                     PeriodicSyncStatus.downloading) ...[
                   const Icon(LucideIcons.refreshCcw, size: 48),
                   const SizedBox(height: 16),
                   Text(
-                    l10n.periodic_table.periodicDownloadingTitle,
+                    l10n.periodic_table.download.title,
                     style: theme.textTheme.large.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(l10n.periodic_table.periodicDownloadingMessage),
+                  Text(l10n.periodic_table.download.message),
                   const SizedBox(height: 24),
                   const ShadProgress(),
                 ] else if (syncState.status == PeriodicSyncStatus.error) ...[
@@ -76,7 +76,7 @@ class PeriodicSetupView extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    l10n.periodic_table.periodicSyncFailedTitle,
+                    l10n.periodic_table.sync.failedTitle,
                     style: theme.textTheme.large.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -95,7 +95,7 @@ class PeriodicSetupView extends StatelessWidget {
                   ShadButton(
                     width: double.infinity,
                     onPressed: onDownloadTriggered,
-                    child: Text(l10n.books.syncTryAgain),
+                    child: Text(l10n.books.sync.tryAgain),
                   ),
                 ],
               ],
@@ -112,17 +112,17 @@ class PeriodicSetupView extends StatelessWidget {
     String? defaultMessage,
   ) {
     if (errorKey == 'syncFailedMessage') {
-      return l10n.books.syncFailedMessage;
+      return l10n.books.sync.failedMessage;
     }
     if (errorKey == 'periodicErrorEmptyZip') {
-      return l10n.periodic_table.periodicErrorEmptyZip;
+      return l10n.periodic_table.error.emptyZip;
     }
     if (errorKey == 'periodicErrorJsonNotFound') {
-      return l10n.periodic_table.periodicErrorJsonNotFound;
+      return l10n.periodic_table.error.jsonNotFound;
     }
     if (errorKey == 'periodicErrorStorageNotFound') {
-      return l10n.periodic_table.periodicErrorStorageNotFound;
+      return l10n.periodic_table.error.storageNotFound;
     }
-    return defaultMessage ?? l10n.books.syncFailedMessage;
+    return defaultMessage ?? l10n.books.sync.failedMessage;
   }
 }

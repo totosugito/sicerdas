@@ -209,7 +209,7 @@ class LatestBooksScreen extends ConsumerWidget {
               error: (err, _) => SliverFillRemaining(
                 hasScrollBody: false,
                 child: ErrorView(
-                  message: l10n.auth.errorGeneric,
+                  message: l10n.auth.error.generic,
                   details: err.toString(),
                 ),
               ),

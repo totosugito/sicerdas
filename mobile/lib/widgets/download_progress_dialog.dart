@@ -155,7 +155,7 @@ class _DownloadProgressDialogState<T>
             ),
             const SizedBox(height: 8),
             Text(
-              widget.message ?? l10n.books.downloadStarted,
+              widget.message ?? l10n.books.download.started,
               style: theme.textTheme.muted.copyWith(
                 fontSize: 13,
                 color: isDark ? Colors.white70 : Colors.black54,

@@ -10,7 +10,7 @@ class DictionaryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = Translations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.common.navDictionary)),
+      appBar: AppBar(title: Text(l10n.common.nav.dictionary)),
       body: const Center(
         child: Icon(Icons.translate, size: 64, color: Colors.grey),
       ),

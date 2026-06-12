@@ -88,7 +88,7 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
     final result = await DownloadProgressDialog.show<bool>(
       context,
       title: l10n.periodic_table.periodicTable,
-      message: l10n.periodic_table.periodicDownloadingMessage,
+      message: l10n.periodic_table.download.message,
       downloadTask: (cancelToken, onProgress) async {
         try {
           await dio.download(
@@ -121,18 +121,18 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
     String? defaultMessage,
   ) {
     if (errorKey == 'syncFailedMessage') {
-      return l10n.books.syncFailedMessage;
+      return l10n.books.sync.failedMessage;
     }
     if (errorKey == 'periodicErrorEmptyZip') {
-      return l10n.periodic_table.periodicErrorEmptyZip;
+      return l10n.periodic_table.error.emptyZip;
     }
     if (errorKey == 'periodicErrorJsonNotFound') {
-      return l10n.periodic_table.periodicErrorJsonNotFound;
+      return l10n.periodic_table.error.jsonNotFound;
     }
     if (errorKey == 'periodicErrorStorageNotFound') {
-      return l10n.periodic_table.periodicErrorStorageNotFound;
+      return l10n.periodic_table.error.storageNotFound;
     }
-    return defaultMessage ?? l10n.books.syncFailedMessage;
+    return defaultMessage ?? l10n.books.sync.failedMessage;
   }
 
   @override
@@ -147,13 +147,13 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
         ToastUtils.showSuccess(
           context,
           title: l10n.common.successTitle,
-          message: l10n.periodic_table.periodicSyncSuccessMessage,
+          message: l10n.periodic_table.sync.successMessage,
         );
       } else if (next.status == PeriodicSyncStatus.error &&
           previous?.status == PeriodicSyncStatus.downloading) {
         ToastUtils.showError(
           context,
-          title: l10n.common.errorTitle,
+          title: l10n.common.error.title,
           message: _getLocalizedError(l10n, next.errorKey, next.errorMessage),
         );
       }
@@ -167,7 +167,7 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
         title: _isSearching
             ? ShadInput(
                 controller: _searchController,
-                placeholder: Text(l10n.periodic_table.periodicSearchPlaceholder),
+                placeholder: Text(l10n.periodic_table.search.placeholder),
                 autofocus: true,
                 trailing: _searchController.text.isNotEmpty
                     ? GestureDetector(
@@ -232,7 +232,7 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
                     children: [
                       const Icon(LucideIcons.book, size: 18),
                       const SizedBox(width: 12),
-                      Text(l10n.chemistry_dictionary.chemistryDictionary),
+                      Text(l10n.chemistry_dictionary.dict.title),
                     ],
                   ),
                 ),
@@ -251,7 +251,7 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
                   enabled: false,
                   height: 32,
                   child: Text(
-                    l10n.periodic_table.periodicThemeLabel,
+                    l10n.periodic_table.theme.label,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -262,10 +262,10 @@ class _PeriodicScreenState extends ConsumerState<PeriodicScreen> {
                   ),
                 ),
                 for (final themeOption in [
-                  ('theme1', l10n.periodic_table.periodicThemeClassic),
-                  ('theme2', l10n.periodic_table.periodicThemeBorder),
-                  ('theme3', l10n.periodic_table.periodicThemeGradient),
-                  ('theme4', l10n.periodic_table.periodicThemeGradientOutline),
+                  ('theme1', l10n.periodic_table.theme.classic),
+                  ('theme2', l10n.periodic_table.theme.border),
+                  ('theme3', l10n.periodic_table.theme.gradient),
+                  ('theme4', l10n.periodic_table.theme.gradientOutline),
                 ])
                   PopupMenuItem(
                     value: themeOption.$1,

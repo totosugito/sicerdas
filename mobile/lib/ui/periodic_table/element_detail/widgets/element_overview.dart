@@ -58,7 +58,7 @@ class ElementOverview extends StatelessWidget {
         children: [
           const Icon(LucideIcons.atom, size: 18),
           const SizedBox(width: 8),
-          Text(l10n.periodic_table.periodicOverview),
+          Text(l10n.periodic_table.sections.overview),
         ],
       ),
       child: Padding(

@@ -49,12 +49,12 @@ class BookItem extends ConsumerWidget {
     ConfirmationDialog.show(
       context,
       icon: Icons.delete_outline,
-      title: l10n.books.deleteBookConfirmTitle,
+      title: l10n.books.delete.confirmTitle,
       descriptionWidget: Text.rich(
         TextSpan(
           style: theme.textTheme.muted.copyWith(fontSize: 14),
           children: [
-            TextSpan(text: l10n.books.deleteBookConfirmPrefix),
+            TextSpan(text: l10n.books.delete.confirmPrefix),
             TextSpan(
               text: book.title,
               style: TextStyle(
@@ -62,7 +62,7 @@ class BookItem extends ConsumerWidget {
                 color: theme.colorScheme.foreground,
               ),
             ),
-            TextSpan(text: l10n.books.deleteBookConfirmSuffix),
+            TextSpan(text: l10n.books.delete.confirmSuffix),
           ],
         ),
         textAlign: TextAlign.center,
@@ -77,7 +77,7 @@ class BookItem extends ConsumerWidget {
           ToastUtils.showSuccess(
             context,
             title: book.title,
-            message: l10n.books.deleteBookSuccess,
+            message: l10n.books.delete.success,
           );
         }
       },

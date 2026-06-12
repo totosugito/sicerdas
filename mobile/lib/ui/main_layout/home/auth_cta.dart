@@ -48,7 +48,7 @@ class AuthCTA extends ConsumerWidget {
                   padding: EdgeInsets.only(right: 8.0),
                   child: Icon(Icons.mail_outline_rounded, size: 16),
                 ),
-                child: Text(l10n.auth.loginButton),
+                child: Text(l10n.auth.login.button),
               ),
             ],
           ),

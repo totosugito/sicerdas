@@ -158,7 +158,7 @@ class _ConstitutionMenuScreenState
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 Text(
-                  l10n.constitution.constitutionChooseModule,
+                  l10n.constitution.constitution.chooseModule,
                   style: theme.textTheme.large.copyWith(
                     fontWeight: FontWeight.w700,
                     fontSize: 16,

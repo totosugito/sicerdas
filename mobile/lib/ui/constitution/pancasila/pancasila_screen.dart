@@ -182,7 +182,7 @@ class _PancasilaScreenState extends ConsumerState<PancasilaScreen> {
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
-                                    '${l10n.constitution.constitutionSila} $id',
+                                    '${l10n.constitution.constitution.sila} $id',
                                     style: const TextStyle(
                                       color: Color(0xFFEF4444),
                                       fontWeight: FontWeight.bold,

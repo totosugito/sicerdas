@@ -20,7 +20,7 @@ class ProfileScreen extends ConsumerWidget {
     final theme = ShadTheme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.common.navProfile), centerTitle: true),
+      appBar: AppBar(title: Text(l10n.common.nav.profile), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -135,7 +135,7 @@ class ProfileScreen extends ConsumerWidget {
                 width: double.infinity,
                 child: ShadButton(
                   leading: const Icon(LucideIcons.logIn, size: 18),
-                  child: Text(l10n.auth.loginButton),
+                  child: Text(l10n.auth.login.button),
                   onPressed: () {
                     Navigator.push(
                       context,

@@ -242,7 +242,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(l10n.books.filterTitle, style: theme.textTheme.h4),
+                    Text(l10n.books.filter.title, style: theme.textTheme.h4),
                     if (pendingFilter.gradeIds.isNotEmpty ||
                         pendingFilter.sortBy != 'version' ||
                         !pendingFilter.descending)
@@ -254,7 +254,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                             );
                           });
                         },
-                        child: Text(l10n.books.filterClearAll),
+                        child: Text(l10n.books.filter.clearAll),
                       ),
                   ],
                 ),
@@ -262,7 +262,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
 
                 // Grade Filter (Multi-select)
                 Text(
-                  l10n.books.filterGrade,
+                  l10n.books.filter.grade,
                   style: theme.textTheme.small.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -319,7 +319,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                   error: (err, stack) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
-                      '${l10n.auth.errorGeneric}: $err',
+                      '${l10n.auth.error.generic}: $err',
                       style: theme.textTheme.muted.copyWith(
                         color: theme.colorScheme.destructive,
                       ),
@@ -331,7 +331,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
 
                 // Sort By
                 Text(
-                  l10n.books.sortBy,
+                  l10n.books.sort.label,
                   style: theme.textTheme.small.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -342,7 +342,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                   runSpacing: 8,
                   children: [
                     _SortChip(
-                      label: l10n.books.sortByVersion,
+                      label: l10n.books.sort.byVersion,
                       icon: Icons.update_rounded,
                       selected: pendingFilter.sortBy == 'version',
                       onTap: () => setState(
@@ -352,7 +352,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                       ),
                     ),
                     _SortChip(
-                      label: l10n.books.sortByTitle,
+                      label: l10n.books.sort.byTitle,
                       icon: Icons.sort_by_alpha_rounded,
                       selected: pendingFilter.sortBy == 'title',
                       onTap: () => setState(
@@ -362,7 +362,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                       ),
                     ),
                     _SortChip(
-                      label: l10n.books.sortByYear,
+                      label: l10n.books.sort.byYear,
                       icon: Icons.calendar_today_rounded,
                       selected: pendingFilter.sortBy == 'publishedYear',
                       onTap: () => setState(
@@ -372,7 +372,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                       ),
                     ),
                     _SortChip(
-                      label: l10n.books.sortByPages,
+                      label: l10n.books.sort.byPages,
                       icon: Icons.auto_stories_rounded,
                       selected: pendingFilter.sortBy == 'totalPages',
                       onTap: () => setState(
@@ -382,7 +382,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                       ),
                     ),
                     _SortChip(
-                      label: l10n.books.sortBySize,
+                      label: l10n.books.sort.bySize,
                       icon: Icons.storage_rounded,
                       selected: pendingFilter.sortBy == 'size',
                       onTap: () => setState(
@@ -438,7 +438,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                         .updateAll(pendingFilter);
                     Navigator.pop(context);
                   },
-                  child: Text(l10n.books.filterApply),
+                  child: Text(l10n.books.filter.apply),
                 ),
               ],
             ),

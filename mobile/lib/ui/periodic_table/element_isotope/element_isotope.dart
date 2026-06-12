@@ -112,7 +112,7 @@ class ElementIsotopeScreen extends ConsumerWidget {
     return Scaffold(
       bottomNavigationBar: AdsBanner.buildBottomBar(ref),
       appBar: AppBar(
-        title: Text('${element.atomicName} - ${l10n.periodic_table.periodicIsotopes}'),
+        title: Text('${element.atomicName} - ${l10n.periodic_table.sections.isotopes}'),
         centerTitle: false,
         backgroundColor: theme.colorScheme.background,
         elevation: 0,

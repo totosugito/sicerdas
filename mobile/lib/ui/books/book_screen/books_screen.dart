@@ -140,7 +140,7 @@ class BooksScreen extends ConsumerWidget {
                     description: hasActiveFilters
                         ? l10n.books.emptyStateFilterDescription
                         : l10n.books.emptyStateDefaultDescription,
-                    actionLabel: hasActiveFilters ? l10n.books.filterClearAll : null,
+                    actionLabel: hasActiveFilters ? l10n.books.filter.clearAll : null,
                     onActionPressed: hasActiveFilters
                         ? () {
                             ref
@@ -181,7 +181,7 @@ class BooksScreen extends ConsumerWidget {
               },
               loading: () => const LoadingView(),
               error: (err, _) => ErrorView(
-                message: l10n.auth.errorGeneric,
+                message: l10n.auth.error.generic,
                 details: err.toString(),
               ),
             ),

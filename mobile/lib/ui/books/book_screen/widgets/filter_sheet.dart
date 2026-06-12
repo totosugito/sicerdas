@@ -64,7 +64,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                 const SizedBox(height: 16),
                 // Sheet Title
                 Text(
-                  l10n.books.filterTitle,
+                  l10n.books.filter.title,
                   style: theme.textTheme.h4.copyWith(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.foreground,
@@ -74,7 +74,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
 
                 // Group Filter
                 Text(
-                  l10n.books.filterGroup,
+                  l10n.books.filter.group,
                   style: theme.textTheme.large.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
@@ -104,7 +104,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                   error: (_, _) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
-                      l10n.books.errorLoadingGroups,
+                      l10n.books.error.loadingGroups,
                       style: theme.textTheme.muted.copyWith(
                         color: theme.colorScheme.destructive,
                       ),
@@ -126,7 +126,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                         );
                     Navigator.pop(context);
                   },
-                  child: Text(l10n.books.filterApply),
+                  child: Text(l10n.books.filter.apply),
                 ),
                 const SizedBox(height: 16),
               ],

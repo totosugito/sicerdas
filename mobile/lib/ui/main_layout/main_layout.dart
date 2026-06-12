@@ -68,7 +68,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  l10n.common.errorTitle,
+                  l10n.common.error.title,
                   style: theme.textTheme.large.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -76,7 +76,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  l10n.common.errorCreateAppDir,
+                  l10n.common.error.createAppDir,
                   style: theme.textTheme.muted.copyWith(fontSize: 14),
                   textAlign: TextAlign.center,
                 ),
@@ -144,7 +144,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
         ShadToaster.of(context).show(
           ShadToast(
             title: Text(l10n.books.badgeNew),
-            description: Text(l10n.books.syncSuccessMessage(count: next.booksAdded)),
+            description: Text(l10n.books.sync.successMessage(count: next.booksAdded)),
           ),
         );
       }
@@ -202,7 +202,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                   CustomBottomNavBarItem(
                     icon: Icons.home_outlined,
                     activeIcon: Icons.home,
-                    label: l10n.common.navHome,
+                    label: l10n.common.nav.home,
                   ),
                   CustomBottomNavBarItem(
                     icon: Icons.menu_book_outlined,
@@ -212,12 +212,12 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                   CustomBottomNavBarItem(
                     icon: Icons.translate_outlined,
                     activeIcon: Icons.translate,
-                    label: l10n.common.navDictionary,
+                    label: l10n.common.nav.dictionary,
                   ),
                   CustomBottomNavBarItem(
                     icon: Icons.person_outline,
                     activeIcon: Icons.person,
-                    label: l10n.common.navProfile,
+                    label: l10n.common.nav.profile,
                   ),
                 ],
               ),

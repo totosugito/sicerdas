@@ -61,7 +61,7 @@ class PeriodicUtils {
       case 'emissionSpectrum':
         return l10n.periodic_table.emissionSpectrum;
       case 'overview':
-        return l10n.periodic_table.periodicOverview;
+        return l10n.periodic_table.sections.overview;
       case 'classifications':
         return l10n.periodic_table.classifications;
       case 'atomicDimensionsAndStructure':

@@ -53,7 +53,7 @@ class MenuAppBar extends StatelessWidget {
             duration: const Duration(milliseconds: 150),
             opacity: isCollapsed ? 1.0 : 0.0,
             child: Text(
-              l10n.constitution.constitutionTitle,
+              l10n.constitution.constitution.title,
               style: TextStyle(
                 color: isDark ? Colors.white : const Color(0xFF1A202C),
                 fontSize: 18,
@@ -96,7 +96,7 @@ class MenuAppBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  l10n.constitution.constitutionTitle,
+                  l10n.constitution.constitution.title,
                   style: TextStyle(
                     color: isDark ? Colors.white : const Color(0xFF1A202C),
                     fontSize: 22,
@@ -106,7 +106,7 @@ class MenuAppBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  l10n.constitution.constitutionDesc,
+                  l10n.constitution.constitution.desc,
                   style: TextStyle(
                     color: isDark
                         ? Colors.white.withValues(alpha: 0.7)

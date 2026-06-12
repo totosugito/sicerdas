@@ -43,22 +43,22 @@ class ElementNotes extends StatelessWidget {
           children: [
             if (note!.atomicOverview.isNotEmpty)
               PropertyItemHtml(
-                label: l10n.periodic_table.periodicOverview,
+                label: l10n.periodic_table.sections.overview,
                 value: note!.atomicOverview,
               ),
             if (note!.atomicHistory.isNotEmpty)
               PropertyItemHtml(
-                label: l10n.periodic_table.periodicHistory,
+                label: l10n.periodic_table.sections.history,
                 value: note!.atomicHistory,
               ),
             if (note!.atomicApps.isNotEmpty)
               PropertyItemHtml(
-                label: l10n.periodic_table.periodicApplications,
+                label: l10n.periodic_table.sections.applications,
                 value: note!.atomicApps,
               ),
             if (note!.atomicFacts.isNotEmpty)
               PropertyItemHtml(
-                label: l10n.periodic_table.periodicInterestingFacts,
+                label: l10n.periodic_table.sections.interestingFacts,
                 value: note!.atomicFacts,
               ),
           ],

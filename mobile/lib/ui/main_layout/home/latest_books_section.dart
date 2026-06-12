@@ -103,7 +103,7 @@ class LatestBooksSection extends ConsumerWidget {
             },
             loading: () => const LoadingView(),
             error: (err, _) =>
-                ErrorView(message: l10n.auth.errorGeneric, details: err.toString()),
+                ErrorView(message: l10n.auth.error.generic, details: err.toString()),
           ),
         ),
       ],

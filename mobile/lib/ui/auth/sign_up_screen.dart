@@ -38,24 +38,24 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
     // Manual Validation
     if (name.isEmpty) {
-      setState(() => _errorMessage = l10n.auth.errorNameRequired);
+      setState(() => _errorMessage = l10n.auth.error.nameRequired);
       return;
     }
     if (email.isEmpty) {
-      setState(() => _errorMessage = l10n.auth.errorEmailRequired);
+      setState(() => _errorMessage = l10n.auth.error.emailRequired);
       return;
     }
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(email)) {
-      setState(() => _errorMessage = l10n.auth.errorEmailInvalid);
+      setState(() => _errorMessage = l10n.auth.error.emailInvalid);
       return;
     }
     if (password.isEmpty) {
-      setState(() => _errorMessage = l10n.auth.errorPasswordRequired);
+      setState(() => _errorMessage = l10n.auth.error.passwordRequired);
       return;
     }
     if (password.length < 6) {
-      setState(() => _errorMessage = l10n.auth.errorPasswordLength);
+      setState(() => _errorMessage = l10n.auth.error.passwordLength);
       return;
     }
 
@@ -72,7 +72,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
       if (success && mounted) {
         setState(() {
-          _successMessage = l10n.auth.signUpSuccessMessage;
+          _successMessage = l10n.auth.signUp.successMessage;
         });
         // Auto-navigate back to Login after a short delay
         Future.delayed(const Duration(seconds: 2), () {
@@ -80,7 +80,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         });
       } else if (mounted) {
         setState(() {
-          _errorMessage = l10n.auth.errorGeneric;
+          _errorMessage = l10n.auth.error.generic;
         });
       }
     } catch (e) {
@@ -154,13 +154,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
               // Title & Subtitle
               Text(
-                l10n.auth.signUpTitle,
+                l10n.auth.signUp.title,
                 style: theme.textTheme.h2.copyWith(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
-                l10n.auth.signUpSubtitle,
+                l10n.auth.signUp.subtitle,
                 style: theme.textTheme.muted,
                 textAlign: TextAlign.center,
               ),
@@ -361,7 +361,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           ),
                         ),
                       )
-                    : Text(l10n.auth.signUpButton),
+                    : Text(l10n.auth.signUp.button),
               ),
 
               const SizedBox(height: 32),

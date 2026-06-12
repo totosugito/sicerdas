@@ -192,7 +192,7 @@ class ElementOverviewSheet extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  l10n.periodic_table.periodicOverview,
+                                  l10n.periodic_table.sections.overview,
                                   style: shadTheme.textTheme.small.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),

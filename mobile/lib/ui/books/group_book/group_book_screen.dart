@@ -77,7 +77,7 @@ class GroupBookScreen extends ConsumerWidget {
               error: (err, _) => SliverFillRemaining(
                 hasScrollBody: false,
                 child: ErrorView(
-                  message: l10n.books.errorLoadingGroups,
+                  message: l10n.books.error.loadingGroups,
                   details: err.toString(),
                 ),
               ),
@@ -89,7 +89,7 @@ class GroupBookScreen extends ConsumerWidget {
             error: (err, _) => SliverFillRemaining(
               hasScrollBody: false,
               child: ErrorView(
-                message: l10n.books.errorLoadingCategories,
+                message: l10n.books.error.loadingCategories,
                 details: err.toString(),
               ),
             ),
