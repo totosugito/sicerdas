@@ -58,3 +58,5 @@ flutter:
     - assets/
     - assets/images/
     - assets/periodic_dictionary/
+    - assets/constitution/images/
+    - assets/constitution/data/

@@ -5,6 +5,7 @@ import 'package:bse/core/providers/navigation_provider.dart';
 import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 
 import '../../periodic_table/periodic_screen/periodic_screen.dart';
+import '../../constitution/constitution_menu/constitution_menu.dart';
 
 class QuickAccessGrid extends ConsumerWidget {
   const QuickAccessGrid({super.key});
@@ -30,6 +31,19 @@ class QuickAccessGrid extends ConsumerWidget {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const PeriodicScreen()),
+          );
+        },
+      },
+      {
+        'title': l10n.constitutionTitle,
+        'icon': Icons.gavel_rounded,
+        'colors': [const Color(0xFFEF4444), const Color(0xFFB91C1C)],
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ConstitutionMenuScreen(),
+            ),
           );
         },
       },
@@ -199,7 +213,7 @@ class _SleekActionCardState extends State<_SleekActionCard>
                         Expanded(
                           child: Text(
                             widget.title,
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 13,
