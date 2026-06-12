@@ -71,6 +71,9 @@ class ElementOverviewSheet extends StatelessWidget {
     final seriesVal = PeriodicUtils.getLocalizedSeries(l10n, properties.series);
 
     return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+      ),
       decoration: BoxDecoration(
         color: shadTheme.colorScheme.background,
         borderRadius: const BorderRadius.only(
@@ -84,125 +87,157 @@ class ElementOverviewSheet extends StatelessWidget {
         bottom: MediaQuery.of(context).padding.bottom + 20,
         top: 10,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Stack(
         children: [
-          // Drag handle
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: 20),
-              decoration: BoxDecoration(
-                color: shadTheme.colorScheme.border,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-
-          // Header info: mini periodic cell representation + Name/Symbol
-          Row(
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Beautiful element style representation box
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: elStyle.background,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: elStyle.border, width: 1.5),
-                  gradient: (theme == 'theme3' && elStyle.gradient != null)
-                      ? LinearGradient(
-                          colors: elStyle.gradient!,
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        )
-                      : null,
-                ),
-                child: Center(
-                  child: Text(
-                    element.atomicSymbol,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900,
-                      color: elStyle.text,
-                    ),
+              // Drag handle
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(
+                    color: shadTheme.colorScheme.border,
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      element.atomicName,
-                      style: shadTheme.textTheme.large.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+
+              Flexible(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Header info: mini periodic cell representation + Name/Symbol
+                      Row(
+                        children: [
+                          // Beautiful element style representation box
+                          Container(
+                            width: 64,
+                            height: 64,
+                            decoration: BoxDecoration(
+                              color: elStyle.background,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: elStyle.border,
+                                width: 1.5,
+                              ),
+                              gradient:
+                                  (theme == 'theme3' &&
+                                      elStyle.gradient != null)
+                                  ? LinearGradient(
+                                      colors: elStyle.gradient!,
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                    )
+                                  : null,
+                            ),
+                            child: Center(
+                              child: Text(
+                                element.atomicSymbol,
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w900,
+                                  color: elStyle.text,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  element.atomicName,
+                                  style: shadTheme.textTheme.large.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${element.atomicSymbol} • ${l10n.atomicNumber} ${element.atomicNumber}',
+                                  style: shadTheme.textTheme.muted,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '${element.atomicSymbol} • ${l10n.atomicNumber} ${element.atomicNumber}',
-                      style: shadTheme.textTheme.muted,
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+
+                      // Key Properties Section
+                      Container(
+                        decoration: BoxDecoration(
+                          color: shadTheme.colorScheme.muted.withValues(
+                            alpha: 0.3,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  LucideIcons.info,
+                                  size: 16,
+                                  color: shadTheme.colorScheme.foreground,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  l10n.periodicOverview,
+                                  style: shadTheme.textTheme.small.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            renderProperty(l10n.atomicWeight, weight),
+                            renderProperty(l10n.phase, properties.phase),
+                            renderProperty(l10n.group, groupVal),
+                            renderProperty(l10n.period, properties.period),
+                            renderProperty(l10n.block, properties.block),
+                            renderProperty(l10n.series, seriesVal),
+                            renderProperty(l10n.color, properties.color),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Details button
+                      ShadButton(
+                        width: double.infinity,
+                        onPressed: onViewDetails,
+                        child: Text(l10n.viewDetails),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.pop(context),
               ),
             ],
           ),
-          const SizedBox(height: 20),
-
-          // Key Properties Section
-          Container(
-            decoration: BoxDecoration(
-              color: shadTheme.colorScheme.muted.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(10),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: ShadButton.ghost(
+              width: 32,
+              height: 32,
+              padding: EdgeInsets.zero,
+              onPressed: () => Navigator.pop(context),
+              child: Icon(
+                Icons.close_rounded,
+                size: 20,
+                color: shadTheme.colorScheme.mutedForeground,
+              ),
             ),
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      LucideIcons.info,
-                      size: 16,
-                      color: shadTheme.colorScheme.foreground,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      l10n.periodicOverview,
-                      style: shadTheme.textTheme.small.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                renderProperty(l10n.atomicWeight, weight),
-                renderProperty(l10n.phase, properties.phase),
-                renderProperty(l10n.group, groupVal),
-                renderProperty(l10n.period, properties.period),
-                renderProperty(l10n.block, properties.block),
-                renderProperty(l10n.series, seriesVal),
-                renderProperty(l10n.color, properties.color),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Details button
-          ShadButton(
-            width: double.infinity,
-            onPressed: onViewDetails,
-            child: Text(l10n.viewDetails),
           ),
         ],
       ),
