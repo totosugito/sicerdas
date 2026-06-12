@@ -10,6 +10,7 @@ import '../libs/models/periodic_models.dart';
 import '../libs/utils/periodic_utils.dart';
 import 'widgets/periodic_hero_cell.dart';
 import 'widgets/isotope_card.dart';
+import 'package:bse/widgets/ads/ads_banner.dart';
 
 class IsotopeData {
   final int id;
@@ -109,6 +110,7 @@ class ElementIsotopeScreen extends ConsumerWidget {
     }
 
     return Scaffold(
+      bottomNavigationBar: AdsBanner.buildBottomBar(ref),
       appBar: AppBar(
         title: Text('${element.atomicName} - ${l10n.periodicIsotopes}'),
         centerTitle: false,

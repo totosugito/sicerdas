@@ -5,7 +5,6 @@ import 'package:drift/drift.dart' hide Column;
 import 'package:bse/l10n/gen_l10n/app_localizations.dart';
 import 'package:bse/core/database/database.dart';
 import 'package:bse/core/providers/database_provider.dart';
-import 'package:bse/core/providers/settings_provider.dart';
 import 'package:bse/widgets/error_view.dart';
 import 'package:bse/widgets/loading_view.dart';
 import 'package:bse/widgets/ads/ads_native.dart';
@@ -138,7 +137,7 @@ class LatestBooksScreen extends ConsumerWidget {
     final theme = ShadTheme.of(context);
     final booksAsync = ref.watch(latestBooksStreamProvider);
     final l10n = AppLocalizations.of(context)!;
-    final showAds = ref.watch(appSettingsProvider)?.showAds ?? false;
+    final showAds = ref.watch(showNativeAdsProvider);
 
     ref.listen(latestBooksGradesProvider, (previous, next) {
       if (next is AsyncData<List<EducationGrade>>) {

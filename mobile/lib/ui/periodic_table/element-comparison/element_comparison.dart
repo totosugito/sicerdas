@@ -13,6 +13,7 @@ import 'widgets/comparison_empty_state.dart';
 import 'widgets/comparison_filter_sheet.dart';
 import 'widgets/comparison_models.dart';
 import 'widgets/comparison_card.dart';
+import 'package:bse/widgets/ads/ads_banner.dart';
 
 class _ElementWithProps {
   final PeriodicElement element;
@@ -211,6 +212,7 @@ class _ElementComparisonScreenState
 
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
+      bottomNavigationBar: AdsBanner.buildBottomBar(ref),
       body: CustomScrollView(
         slivers: [
           // Collapsible Hero Banner AppBar with Pinned Search & Filter Row

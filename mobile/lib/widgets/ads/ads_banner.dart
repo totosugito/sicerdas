@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import '../../core/providers/settings_provider.dart';
 import 'admob/admob_banner.dart';
 import 'ads_config.dart';
 
@@ -18,8 +17,10 @@ class AdsBanner extends ConsumerWidget {
     String? adsUnit,
     bool showDivider = true,
   }) {
-    final showAds = ref.watch(appSettingsProvider)?.showAds ?? false;
-    if (!showAds) return null;
+    final showBanner = ref.watch(showBannerAdsProvider);
+    final isEnabled = adsUnit?.isNotEmpty ?? showBanner;
+    if (!isEnabled) return null;
+
     return AdsBanner(adsUnit: adsUnit, showDivider: showDivider);
   }
 
@@ -28,7 +29,8 @@ class AdsBanner extends ConsumerWidget {
     final theme = ShadTheme.of(context);
     final adSettings = ref.watch(adSettingsProvider);
     final activeProvider = adSettings.provider;
-    final unitId = adsUnit ?? adSettings.banner;
+    final unitId = adsUnit ?? adSettings.bannerId;
+    if (unitId.trim().isEmpty) return const SizedBox.shrink();
 
     Widget banner;
     switch (activeProvider) {

@@ -29,7 +29,12 @@ class AuthService {
         data = Map<String, dynamic>.from(jsonDecode(settingsJson) as Map);
       } catch (_) {}
     }
-    data['showAds'] = showAds;
+    final Map<String, dynamic> adsMap = data['ads'] != null
+        ? Map<String, dynamic>.from(data['ads'] as Map)
+        : <String, dynamic>{};
+    adsMap['enabled'] = showAds;
+    data['ads'] = adsMap;
+
     final jsonStr = jsonEncode(data);
     await _prefs.setString('app_settings', jsonStr);
     _ref.invalidate(appSettingsProvider);

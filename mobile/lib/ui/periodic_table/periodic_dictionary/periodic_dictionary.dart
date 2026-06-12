@@ -9,6 +9,7 @@ import 'widgets/chemistry_term_card.dart';
 import 'widgets/dictionary_empty_state.dart';
 import 'widgets/dictionary_hero_app_bar.dart';
 import 'package:bse/widgets/sliver_sticky_header_delegate.dart';
+import 'package:bse/widgets/ads/ads_banner.dart';
 
 class ChemistryTerm {
   final int id;
@@ -182,6 +183,7 @@ class _ChemistryDictionaryScreenState
     ];
 
     return Scaffold(
+      bottomNavigationBar: AdsBanner.buildBottomBar(ref),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : CustomScrollView(
@@ -331,4 +333,3 @@ class _ChemistryDictionaryScreenState
     );
   }
 }
-

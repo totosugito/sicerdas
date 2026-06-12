@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/config/app_constants.dart';
-import '../../core/providers/settings_provider.dart';
+import 'package:bse/core/config/app_constants.dart';
+import 'package:bse/core/providers/settings_provider.dart';
 
 enum AdProviderType {
   admob,
@@ -9,22 +9,25 @@ enum AdProviderType {
   // appLovin,
 }
 
-enum AdsTemplateType {
-  small,
-  medium,
-}
+enum AdsTemplateType { small, medium }
 
 class AdSettings {
   final AdProviderType provider;
-  final String banner;
-  final String interstitial;
-  final String native;
+  final String bannerId;
+  final bool bannerEnabled;
+  final String interstitialId;
+  final bool interstitialEnabled;
+  final String nativeId;
+  final bool nativeEnabled;
 
   const AdSettings({
     required this.provider,
-    required this.banner,
-    required this.interstitial,
-    required this.native,
+    required this.bannerId,
+    required this.bannerEnabled,
+    required this.interstitialId,
+    required this.interstitialEnabled,
+    required this.nativeId,
+    required this.nativeEnabled,
   });
 }
 
@@ -32,7 +35,7 @@ final adSettingsProvider = Provider<AdSettings>((ref) {
   final appSettings = ref.watch(appSettingsProvider);
   if (appSettings != null) {
     final adsUnit = appSettings.ads.current;
-    
+
     final provider = AdProviderType.values.firstWhere(
       (e) => e.name.toLowerCase() == adsUnit.adsProvider.toLowerCase(),
       orElse: () => AdProviderType.admob,
@@ -40,21 +43,45 @@ final adSettingsProvider = Provider<AdSettings>((ref) {
 
     return AdSettings(
       provider: provider,
-      banner: adsUnit.banner.isNotEmpty ? adsUnit.banner : AppConstants.bannerAdmob,
-      interstitial: adsUnit.interstitial.isNotEmpty ? adsUnit.interstitial : AppConstants.intersAdmob,
-      native: adsUnit.native.isNotEmpty ? adsUnit.native : AppConstants.nativeAdmob,
+      bannerId: adsUnit.banner.id.isNotEmpty
+          ? adsUnit.banner.id
+          : AppConstants.bannerAdmob,
+      bannerEnabled: adsUnit.banner.enabled,
+      interstitialId: adsUnit.interstitial.id.isNotEmpty
+          ? adsUnit.interstitial.id
+          : AppConstants.intersAdmob,
+      interstitialEnabled: adsUnit.interstitial.enabled,
+      nativeId: adsUnit.native.id.isNotEmpty
+          ? adsUnit.native.id
+          : AppConstants.nativeAdmob,
+      nativeEnabled: adsUnit.native.enabled,
     );
   }
 
   // Fallback to defaults
   return const AdSettings(
     provider: AdProviderType.admob,
-    banner: AppConstants.bannerAdmob,
-    interstitial: AppConstants.intersAdmob,
-    native: AppConstants.nativeAdmob,
+    bannerId: AppConstants.bannerAdmob,
+    bannerEnabled: true,
+    interstitialId: AppConstants.intersAdmob,
+    interstitialEnabled: true,
+    nativeId: AppConstants.nativeAdmob,
+    nativeEnabled: true,
   );
 });
 
 final activeAdProvider = Provider<AdProviderType>((ref) {
   return ref.watch(adSettingsProvider).provider;
+});
+
+final showBannerAdsProvider = Provider<bool>((ref) {
+  final showAds = ref.watch(appSettingsProvider)?.ads.enabled ?? false;
+  final adSettings = ref.watch(adSettingsProvider);
+  return showAds && adSettings.bannerEnabled;
+});
+
+final showNativeAdsProvider = Provider<bool>((ref) {
+  final showAds = ref.watch(appSettingsProvider)?.ads.enabled ?? false;
+  final adSettings = ref.watch(adSettingsProvider);
+  return showAds && adSettings.nativeEnabled;
 });

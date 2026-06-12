@@ -30,7 +30,7 @@ class AdsInterstitial {
   factory AdsInterstitial.fromRef(Ref ref, {String? adsUnit, AdProviderType? provider}) {
     final adSettings = ref.read(adSettingsProvider);
     return AdsInterstitial(
-      adsUnit: adsUnit ?? adSettings.interstitial,
+      adsUnit: adsUnit ?? adSettings.interstitialId,
       provider: provider ?? adSettings.provider,
     );
   }
@@ -38,7 +38,7 @@ class AdsInterstitial {
   factory AdsInterstitial.fromWidgetRef(WidgetRef ref, {String? adsUnit, AdProviderType? provider}) {
     final adSettings = ref.read(adSettingsProvider);
     return AdsInterstitial(
-      adsUnit: adsUnit ?? adSettings.interstitial,
+      adsUnit: adsUnit ?? adSettings.interstitialId,
       provider: provider ?? adSettings.provider,
     );
   }

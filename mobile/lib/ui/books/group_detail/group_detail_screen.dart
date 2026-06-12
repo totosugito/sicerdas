@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/database/database.dart';
 import 'package:bse/core/providers/database_provider.dart';
-import 'package:bse/core/providers/settings_provider.dart';
 import 'package:bse/widgets/error_view.dart';
 import 'package:bse/widgets/loading_view.dart';
 import 'package:bse/widgets/ads/ads_native.dart';
@@ -123,7 +122,7 @@ class GroupDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
     final booksAsync = ref.watch(groupBooksProvider(group.id));
-    final showAds = ref.watch(appSettingsProvider)?.showAds ?? false;
+    final showAds = ref.watch(showNativeAdsProvider);
 
     // Automatically clean global filter when group grades are loaded/changed
     ref.listen(groupGradesProvider(group.id), (previous, next) {

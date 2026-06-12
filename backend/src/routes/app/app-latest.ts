@@ -13,9 +13,9 @@ import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import { EnumContentStatus } from "../../db/schema/enum/enum-app.ts";
 import { blocknoteToHtml, resolveBlockNoteUrls } from "../../utils/blocknote-utils.ts";
 import { usersProfile } from "../../db/schema/user/profiles.ts";
-import envConfig from "../../config/env.config.ts";
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
 import { fromNodeHeaders } from "better-auth/node";
+import { getAppSettings } from "../../utils/settings-utils.ts";
 
 const AppLatestBody = Type.Object({
   dbVersion: Type.Number(),
@@ -57,25 +57,30 @@ const GroupItem = Type.Object({
   bookTotal: Type.Union([Type.Number(), Type.Null()]),
 });
 
+const AdPlacement = Type.Object({
+  id: Type.String(),
+  enabled: Type.Boolean(),
+});
+
 const SettingsItem = Type.Object({
   cloudUrl: Type.String(),
-  showAds: Type.Boolean(),
   ads: Type.Object({
+    enabled: Type.Boolean(),
     adsDelayCounter: Type.Number(),
     adsDelayTimeInSec: Type.Number(),
     android: Type.Object({
       adsProvider: Type.String(),
-      banner: Type.String(),
-      rewards: Type.String(),
-      interstitial: Type.String(),
-      native: Type.String(),
+      banner: AdPlacement,
+      rewards: AdPlacement,
+      interstitial: AdPlacement,
+      native: AdPlacement,
     }),
     ios: Type.Object({
       adsProvider: Type.String(),
-      banner: Type.String(),
-      rewards: Type.String(),
-      interstitial: Type.String(),
-      native: Type.String(),
+      banner: AdPlacement,
+      rewards: AdPlacement,
+      interstitial: AdPlacement,
+      native: AdPlacement,
     }),
   }),
 });
@@ -258,28 +263,7 @@ export default async function appLatestRoute(app: FastifyInstance) {
         success: true,
         message: i18n.t((l) => l.version.latestSuccess),
         data: {
-          settings: {
-            cloudUrl: envConfig.server.s3Storage.publicUrl,
-            showAds: showAds,
-            ads: {
-              adsDelayCounter: envConfig.ads.delayCounter,
-              adsDelayTimeInSec: envConfig.ads.delayTimeInSec,
-              android: {
-                adsProvider: envConfig.ads.android.provider,
-                banner: envConfig.ads.android.bannerId,
-                rewards: envConfig.ads.android.rewardedId,
-                interstitial: envConfig.ads.android.interstitialId,
-                native: envConfig.ads.android.nativeId,
-              },
-              ios: {
-                adsProvider: envConfig.ads.ios.provider,
-                banner: envConfig.ads.ios.bannerId,
-                rewards: envConfig.ads.ios.rewardedId,
-                interstitial: envConfig.ads.ios.interstitialId,
-                native: envConfig.ads.ios.nativeId,
-              },
-            },
-          },
+          settings: getAppSettings(showAds),
           versions: versionsWithHtml,
           books: bookItems,
           grades: allGrades,

@@ -22,6 +22,7 @@ import 'widgets/element_abundances.dart';
 import 'widgets/element_reactivity.dart';
 import 'widgets/element_health_safety.dart';
 import 'widgets/element_nuclear.dart';
+import 'package:bse/widgets/ads/ads_banner.dart';
 
 import '../libs/providers/periodic_sync_provider.dart';
 import '../periodic_screen/widgets/element_styles.dart';
@@ -185,6 +186,7 @@ class _ElementDetailScreenState extends ConsumerState<ElementDetailScreen> {
     final atomicImages = AtomicImages.fromJson(imagesMap);
 
     return Scaffold(
+      bottomNavigationBar: AdsBanner.buildBottomBar(ref),
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
