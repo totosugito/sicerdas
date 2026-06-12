@@ -88,7 +88,11 @@ class SettingsScreen extends ConsumerWidget {
                           children: [
                             Text(isId ? '🇮🇩' : '🇬🇧'),
                             const SizedBox(width: 8),
-                            Text(isId ? l10n.common.indonesian : l10n.common.english),
+                            Text(
+                              isId
+                                  ? l10n.common.indonesian
+                                  : l10n.common.english,
+                            ),
                           ],
                         );
                       },
@@ -255,6 +259,7 @@ class SettingsScreen extends ConsumerWidget {
                       color: isDanger ? theme.colorScheme.destructive : null,
                     ),
                   ),
+                  const SizedBox(height: 4),
                   if (subtitle != null)
                     Text(
                       subtitle,

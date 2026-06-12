@@ -3,20 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/app_settings.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class SettingsState {
   final ThemeMode themeMode;
   final Locale locale;
 
-  SettingsState({
-    required this.themeMode,
-    required this.locale,
-  });
+  SettingsState({required this.themeMode, required this.locale});
 
-  SettingsState copyWith({
-    ThemeMode? themeMode,
-    Locale? locale,
-  }) {
+  SettingsState copyWith({ThemeMode? themeMode, Locale? locale}) {
     return SettingsState(
       themeMode: themeMode ?? this.themeMode,
       locale: locale ?? this.locale,
@@ -39,16 +34,15 @@ class SettingsNotifier extends Notifier<SettingsState> {
 
     // Load saved theme
     final themeIndex = prefs.getInt(_themeKey);
-    final themeMode = themeIndex != null ? ThemeMode.values[themeIndex] : ThemeMode.system;
+    final themeMode = themeIndex != null
+        ? ThemeMode.values[themeIndex]
+        : ThemeMode.system;
 
     // Load saved locale
     final languageCode = prefs.getString(_localeKey) ?? 'id';
     final locale = Locale(languageCode);
 
-    return SettingsState(
-      themeMode: themeMode,
-      locale: locale,
-    );
+    return SettingsState(themeMode: themeMode, locale: locale);
   }
 
   void setThemeMode(ThemeMode mode) {
@@ -58,7 +52,10 @@ class SettingsNotifier extends Notifier<SettingsState> {
 
   void setLocale(Locale locale) {
     state = state.copyWith(locale: locale);
-    ref.read(sharedPreferencesProvider).setString(_localeKey, locale.languageCode);
+    ref
+        .read(sharedPreferencesProvider)
+        .setString(_localeKey, locale.languageCode);
+    LocaleSettings.setLocaleRaw(locale.languageCode);
   }
 }
 
@@ -75,7 +72,7 @@ final appSettingsProvider = Provider<AppSettings?>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   final settingsJson = prefs.getString('app_settings');
   if (settingsJson == null) return null;
-  
+
   try {
     final Map<String, dynamic> data = Map<String, dynamic>.from(
       jsonDecode(settingsJson) as Map,
