@@ -7,7 +7,6 @@ class MenuCard extends StatefulWidget {
   final IconData icon;
   final Color color;
   final VoidCallback onTap;
-  final bool isDark;
 
   const MenuCard({
     super.key,
@@ -16,7 +15,6 @@ class MenuCard extends StatefulWidget {
     required this.icon,
     required this.color,
     required this.onTap,
-    required this.isDark,
   });
 
   @override

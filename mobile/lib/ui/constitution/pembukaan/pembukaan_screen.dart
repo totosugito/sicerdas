@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'widgets/pembukaan_app_bar.dart';
+import 'widgets/pembukaan_card.dart';
 
 class PembukaanScreen extends ConsumerStatefulWidget {
   const PembukaanScreen({super.key});
@@ -72,20 +73,6 @@ class _PembukaanScreenState extends ConsumerState<PembukaanScreen> {
       },
     ];
 
-    final cardGradients = [
-      [const Color(0xFFFFF5F5), const Color(0xFFFFFFFF)],
-      [const Color(0xFFFFFFFF), const Color(0xFFFFF5F5)],
-      [const Color(0xFFFFF5F5), const Color(0xFFFFFFFF)],
-      [const Color(0xFFFFFFFF), const Color(0xFFFFF5F5)],
-    ];
-
-    final darkCardGradients = [
-      [const Color(0xFF1E1B1B), const Color(0xFF151313)],
-      [const Color(0xFF151313), const Color(0xFF1E1B1B)],
-      [const Color(0xFF1E1B1B), const Color(0xFF151313)],
-      [const Color(0xFF151313), const Color(0xFF1E1B1B)],
-    ];
-
     return Scaffold(
       body: SelectionArea(
         child: CustomScrollView(
@@ -106,77 +93,8 @@ class _PembukaanScreenState extends ConsumerState<PembukaanScreen> {
                   final alinea = alineaData[index];
                   final label = alinea['label']!;
                   final text = alinea['text']!;
-                  final gradient = isDark
-                      ? darkCardGradients[index]
-                      : cardGradients[index];
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        gradient: LinearGradient(
-                          colors: gradient,
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(
-                              alpha: isDark ? 0.3 : 0.04,
-                            ),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                        border: Border.all(
-                          color: Colors.red.withValues(
-                            alpha: isDark ? 0.15 : 0.08,
-                          ),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.red.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Text(
-                                label,
-                                style: const TextStyle(
-                                  color: Color(0xFFEF4444),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 11,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              text,
-                              style: theme.textTheme.muted.copyWith(
-                                fontSize: 15,
-                                height: 1.6,
-                                color: isDark
-                                    ? Colors.white.withValues(alpha: 0.9)
-                                    : const Color(0xFF2D3748),
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
+                  return PembukaanCard(label: label, text: text);
                 }, childCount: alineaData.length),
               ),
             ),

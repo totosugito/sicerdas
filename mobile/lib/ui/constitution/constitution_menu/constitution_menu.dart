@@ -185,7 +185,6 @@ class _ConstitutionMenuScreenState
                       icon: icon,
                       color: color,
                       onTap: item['onTap'] as VoidCallback,
-                      isDark: isDark,
                     );
                   },
                 ),

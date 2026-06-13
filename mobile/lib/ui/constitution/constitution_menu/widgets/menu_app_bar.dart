@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
 
 class MenuAppBar extends StatelessWidget {
@@ -15,7 +16,13 @@ class MenuAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = ShadTheme.of(context);
     final l10n = Translations.of(context);
+
+    final backgroundColor = theme.colorScheme.background;
+    final redHint = theme.colorScheme.destructive.withValues(
+      alpha: isDark ? 0.08 : 0.04,
+    );
 
     return SliverAppBar(
       expandedHeight: expandedHeight,
@@ -25,7 +32,7 @@ class MenuAppBar extends StatelessWidget {
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back_rounded,
-          color: isDark ? Colors.white : const Color(0xFF2D3748),
+          color: theme.colorScheme.foreground,
         ),
         onPressed: () => Navigator.of(context).pop(),
       ),
@@ -33,16 +40,19 @@ class MenuAppBar extends StatelessWidget {
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1.5),
         child: Container(
-          color: isDark ? const Color(0xFF3E2222) : const Color(0xFFFFD6D6),
+          color: theme.colorScheme.destructive.withValues(
+            alpha: isDark ? 0.3 : 0.15,
+          ),
           height: 1.5,
         ),
       ),
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: isDark
-                ? [const Color(0xFF2E1A1A), const Color(0xFF181010)]
-                : [const Color(0xFFFFF5F5), const Color(0xFFFFF0F0)],
+            colors: [
+              Color.alphaBlend(redHint, backgroundColor),
+              backgroundColor,
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -54,8 +64,8 @@ class MenuAppBar extends StatelessWidget {
             opacity: isCollapsed ? 1.0 : 0.0,
             child: Text(
               l10n.constitution.constitution.title,
-              style: TextStyle(
-                color: isDark ? Colors.white : const Color(0xFF1A202C),
+              style: theme.textTheme.large.copyWith(
+                color: theme.colorScheme.foreground,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -77,13 +87,13 @@ class MenuAppBar extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.05)
-                        : Colors.red.withValues(alpha: 0.05),
+                    color: theme.colorScheme.destructive.withValues(
+                      alpha: 0.05,
+                    ),
                     border: Border.all(
-                      color: isDark
-                          ? Colors.white.withValues(alpha: 0.15)
-                          : Colors.red.withValues(alpha: 0.1),
+                      color: theme.colorScheme.destructive.withValues(
+                        alpha: isDark ? 0.2 : 0.1,
+                      ),
                       width: 1.5,
                     ),
                   ),
@@ -97,8 +107,8 @@ class MenuAppBar extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   l10n.constitution.constitution.title,
-                  style: TextStyle(
-                    color: isDark ? Colors.white : const Color(0xFF1A202C),
+                  style: theme.textTheme.h3.copyWith(
+                    color: theme.colorScheme.foreground,
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.5,
@@ -107,10 +117,7 @@ class MenuAppBar extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   l10n.constitution.constitution.desc,
-                  style: TextStyle(
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.7)
-                        : const Color(0xFF4A5568),
+                  style: theme.textTheme.muted.copyWith(
                     fontSize: 12,
                     height: 1.3,
                   ),
