@@ -4,6 +4,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
 import '../pancasila/pancasila_screen.dart';
 import '../pembukaan/pembukaan_screen.dart';
+import '../butir_pancasila/butir_pancasila_screen.dart';
 import 'widgets/menu_card.dart';
 import 'widgets/menu_app_bar.dart';
 
@@ -89,14 +90,10 @@ class _ConstitutionMenuScreenState
         'subtitle': l10n.constitution.butirPancasilaSubtitle,
         'icon': LucideIcons.listOrdered,
         'color': const Color(0xFF10B981),
-        'onTap': () {
-          ShadToaster.of(context).show(
-            const ShadToast(
-              title: Text('Butir Pancasila'),
-              description: Text('Screen will be implemented soon'),
-            ),
-          );
-        },
+        'onTap': () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ButirPancasilaScreen()),
+        ),
       },
       {
         'title': l10n.constitution.uud1945Title,

@@ -87,7 +87,9 @@ class PancasilaAppBar extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: theme.colorScheme.destructive.withValues(alpha: 0.05),
+                    color: theme.colorScheme.destructive.withValues(
+                      alpha: 0.05,
+                    ),
                     border: Border.all(
                       color: theme.colorScheme.destructive.withValues(
                         alpha: isDark ? 0.2 : 0.1,
@@ -115,9 +117,7 @@ class PancasilaAppBar extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   l10n.constitution.pancasilaSubtitle,
-                  style: theme.textTheme.muted.copyWith(
-                    fontSize: 12,
-                  ),
+                  style: theme.textTheme.muted.copyWith(fontSize: 12),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -128,4 +128,3 @@ class PancasilaAppBar extends StatelessWidget {
     );
   }
 }
-

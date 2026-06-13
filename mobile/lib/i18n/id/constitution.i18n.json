@@ -9,7 +9,11 @@
     "sila": "Sila",
     "butir": "Butir",
     "desc": "Pelajari dasar negara dan konstitusi Republik Indonesia dengan mudah.",
-    "chooseModule": "Pilih Modul Pembelajaran"
+    "chooseModule": "Pilih Modul Pembelajaran",
+    "searchResults": "Hasil pencarian untuk {query}",
+    "noResultFor": "Tidak ada hasil untuk {query}",
+    "matchingPoints": "Cocok: {matching} dari {total} butir",
+    "practicePoints": "{count} Butir Pengamalan"
   },
   "pancasilaTitle": "Pancasila",
   "pancasilaSubtitle": "Lima Dasar Negara Republik Indonesia",

@@ -9,7 +9,11 @@
     "sila": "Principle",
     "butir": "Point",
     "desc": "Learn the state foundation and constitution of the Republic of Indonesia easily.",
-    "chooseModule": "Select Learning Module"
+    "chooseModule": "Select Learning Module",
+    "searchResults": "Search results for {query}",
+    "noResultFor": "No results for {query}",
+    "matchingPoints": "Matched: {matching} of {total} points",
+    "practicePoints": "{count} Practice Points"
   },
   "pancasilaTitle": "Pancasila",
   "pancasilaSubtitle": "Five Principles of the Republic of Indonesia",
