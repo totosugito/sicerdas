@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/widgets/empty_state.dart';
-import 'widgets/butir_pancasila_card.dart';
-import 'widgets/butir_pancasila_app_bar.dart';
+import 'widgets/butir_card.dart';
+import 'widgets/butir_app_bar.dart';
 
 class ButirPancasilaScreen extends ConsumerStatefulWidget {
   const ButirPancasilaScreen({super.key});
@@ -28,7 +28,7 @@ class _ButirPancasilaScreenState extends ConsumerState<ButirPancasilaScreen> {
   late final TextEditingController _searchController;
 
   bool _isCollapsed = false;
-  static const double _expandedHeight = 240.0;
+  static const double _expandedHeight = 220.0;
 
   List<dynamic> _silaList = [];
   List<dynamic> _filteredSilaList = [];
