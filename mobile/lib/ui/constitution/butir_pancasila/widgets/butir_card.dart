@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
+import 'package:bse/core/utils/toast_utils.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SearchHighlightText extends StatelessWidget {
   final String text;
@@ -70,6 +73,23 @@ class ButirPancasilaCard extends StatefulWidget {
 
 class _ButirPancasilaCardState extends State<ButirPancasilaCard> {
   late bool _isExpanded;
+
+  String _getCopyStringValue(Translations l10n) {
+    String str =
+        "--- ${l10n.constitution.butirPancasilaTitle} ---\n${l10n.constitution.constitution.sila} ${widget.id}. ${widget.title}\n${l10n.constitution.constitution.butir} ke:\n";
+    final filteredButir = widget.searchTerm.isEmpty
+        ? widget.butirData
+        : widget.butirData.where((b) {
+            final isi = b['isi'] as String;
+            return isi.toLowerCase().contains(widget.searchTerm.toLowerCase());
+          }).toList();
+    for (final item in filteredButir) {
+      final butirId = item['id'];
+      final isi = item['isi'];
+      str = "$str$butirId. $isi\n";
+    }
+    return str;
+  }
 
   @override
   void initState() {
@@ -141,13 +161,15 @@ class _ButirPancasilaCardState extends State<ButirPancasilaCard> {
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: isDark
-                          ? Colors.white.withValues(alpha: 0.05)
-                          : Colors.red.withValues(alpha: 0.05),
-                      borderRadius: BorderRadius.circular(8),
+                          ? theme.colorScheme.destructive.withValues(alpha: 0.1)
+                          : theme.colorScheme.destructive.withValues(
+                              alpha: 0.05,
+                            ),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: isDark
-                            ? Colors.white.withValues(alpha: 0.15)
-                            : Colors.red.withValues(alpha: 0.1),
+                        color: theme.colorScheme.destructive.withValues(
+                          alpha: isDark ? 0.25 : 0.15,
+                        ),
                         width: 1.5,
                       ),
                     ),
@@ -164,16 +186,106 @@ class _ButirPancasilaCardState extends State<ButirPancasilaCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ShadBadge(
-                          backgroundColor: theme.colorScheme.destructive,
-                          foregroundColor: Colors.white,
-                          child: Text(
-                            '${l10n.constitution.constitution.sila} ${widget.id}',
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ShadBadge(
+                              backgroundColor: theme.colorScheme.destructive,
+                              foregroundColor: Colors.white,
+                              child: Text(
+                                '${l10n.constitution.constitution.sila} ${widget.id}',
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 0.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  PopupMenuButton<int>(
+                                    child: Icon(
+                                      LucideIcons.moreVertical,
+                                      color: theme.colorScheme.mutedForeground
+                                          .withValues(alpha: 0.6),
+                                      size: 20,
+                                    ),
+                                    onSelected: (value) {
+                                      if (value == 0) {
+                                        final copyText = _getCopyStringValue(
+                                          l10n,
+                                        );
+                                        Clipboard.setData(
+                                          ClipboardData(text: copyText),
+                                        );
+                                        ToastUtils.showSuccess(
+                                          context,
+                                          title: l10n.common.successTitle,
+                                          message: l10n.common.textCopied,
+                                        );
+                                      } else if (value == 1) {
+                                        final copyText = _getCopyStringValue(
+                                          l10n,
+                                        );
+                                        SharePlus.instance.share(
+                                          ShareParams(text: copyText),
+                                        );
+                                      }
+                                    },
+                                    itemBuilder: (context) => [
+                                      PopupMenuItem(
+                                        value: 0,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              LucideIcons.copy,
+                                              color:
+                                                  theme.colorScheme.foreground,
+                                              size: 16,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              l10n.common.copyText,
+                                              style: theme.textTheme.small,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      PopupMenuItem(
+                                        value: 1,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              LucideIcons.share,
+                                              color:
+                                                  theme.colorScheme.foreground,
+                                              size: 16,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              l10n.common.shareText,
+                                              style: theme.textTheme.small,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Icon(
+                                    _isExpanded
+                                        ? LucideIcons.chevronUp
+                                        : LucideIcons.chevronDown,
+                                    color: theme.colorScheme.mutedForeground,
+                                    size: 20,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 6),
                         SearchHighlightText(
@@ -207,14 +319,6 @@ class _ButirPancasilaCardState extends State<ButirPancasilaCard> {
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Icon(
-                    _isExpanded
-                        ? LucideIcons.chevronUp
-                        : LucideIcons.chevronDown,
-                    color: theme.colorScheme.mutedForeground,
-                    size: 20,
                   ),
                 ],
               ),

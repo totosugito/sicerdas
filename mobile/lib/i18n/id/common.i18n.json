@@ -46,6 +46,8 @@
   "textCopied": "Teks berhasil disalin",
   "textNotFound": "Teks tidak ditemukan",
   "searchText": "Cari teks...",
+  "copyText": "Salin",
+  "shareText": "Bagikan",
   "elementComparisonTitle": "Perbandingan Unsur",
   "elementComparisonSubtitle": "Bandingkan sifat unsur kimia dengan indikator kemajuan visual",
   "elementComparisonSearchPlaceholder": "Cari unsur berdasarkan nama, simbol, atau nomor atom...",

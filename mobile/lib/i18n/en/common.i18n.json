@@ -46,6 +46,8 @@
   "textCopied": "Text successfully copied",
   "textNotFound": "Text not found",
   "searchText": "Search text...",
+  "copyText": "Copy",
+  "shareText": "Share",
   "elementComparisonTitle": "Element Comparison",
   "elementComparisonSubtitle": "Compare properties of chemical elements with visual progress indicators",
   "elementComparisonSearchPlaceholder": "Search elements by name, symbol, or atomic number...",
