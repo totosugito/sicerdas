@@ -4,7 +4,8 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
 import '../pancasila/pancasila_screen.dart';
 import '../pembukaan/pembukaan_screen.dart';
-import '../butir_pancasila/butir_pancasila_screen.dart';
+import '../butir_pancasila/butir_pancasila.dart';
+import '../uud_1945/uud_1945.dart';
 import 'widgets/menu_card.dart';
 import 'widgets/menu_app_bar.dart';
 
@@ -100,42 +101,21 @@ class _ConstitutionMenuScreenState
         'subtitle': l10n.constitution.uud1945Subtitle,
         'icon': LucideIcons.bookOpen,
         'color': const Color(0xFF3B82F6),
-        'onTap': () {
-          ShadToaster.of(context).show(
-            const ShadToast(
-              title: Text('UUD 1945'),
-              description: Text('Screen will be implemented soon'),
-            ),
-          );
-        },
+        'onTap': () => Uud1945Screen.navigate(context, UudMode.latest),
       },
       {
         'title': l10n.constitution.uud1945AsliTitle,
         'subtitle': l10n.constitution.uud1945AsliSubtitle,
         'icon': LucideIcons.bookmark,
         'color': const Color(0xFF8B5CF6),
-        'onTap': () {
-          ShadToaster.of(context).show(
-            const ShadToast(
-              title: Text('UUD 1945 Asli'),
-              description: Text('Screen will be implemented soon'),
-            ),
-          );
-        },
+        'onTap': () => Uud1945Screen.navigate(context, UudMode.asli),
       },
       {
         'title': l10n.constitution.amandemenTitle,
         'subtitle': l10n.constitution.amandemenSubtitle,
         'icon': LucideIcons.fileCheck2,
         'color': const Color(0xFFEC4899),
-        'onTap': () {
-          ShadToaster.of(context).show(
-            const ShadToast(
-              title: Text('Amandemen UUD 1945'),
-              description: Text('Screen will be implemented soon'),
-            ),
-          );
-        },
+        'onTap': () => Uud1945Screen.navigate(context, UudMode.amandemen),
       },
     ];
     return Scaffold(

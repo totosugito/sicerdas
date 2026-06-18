@@ -148,7 +148,7 @@ class _ButirPancasilaScreenState extends ConsumerState<ButirPancasilaScreen> {
                   SliverPersistentHeader(
                     pinned: true,
                     delegate: _SearchInputDelegate(
-                      height: 96.0,
+                      height: 86.0,
                       child: Container(
                         color: theme.colorScheme.background,
                         padding: const EdgeInsets.only(
