@@ -6,6 +6,7 @@ import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/core/database/database.dart';
 import 'package:bse/core/providers/database_provider.dart';
 import 'package:bse/widgets/error_view.dart';
+import 'package:bse/widgets/empty_state.dart';
 import 'package:bse/widgets/loading_view.dart';
 import 'package:bse/widgets/ads/ads_native.dart';
 import 'widgets/latest_books_filter_bar.dart';
@@ -103,8 +104,27 @@ final unfilteredLatestBooksStreamProvider =
       return db.watchFilteredBooks(versionId: latestVersion);
     });
 
-class LatestBooksScreen extends ConsumerWidget {
+class LatestBooksScreen extends ConsumerStatefulWidget {
   const LatestBooksScreen({super.key});
+
+  @override
+  ConsumerState<LatestBooksScreen> createState() => _LatestBooksScreenState();
+}
+
+class _LatestBooksScreenState extends ConsumerState<LatestBooksScreen> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   Widget _buildBookList(
     BuildContext context,
@@ -133,7 +153,7 @@ class LatestBooksScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
     final booksAsync = ref.watch(latestBooksStreamProvider);
     final l10n = Translations.of(context);
@@ -158,10 +178,12 @@ class LatestBooksScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       body: RawScrollbar(
+        controller: _scrollController,
         thumbColor: theme.colorScheme.primary.withValues(alpha: 0.3),
         radius: const Radius.circular(8),
         thickness: 4,
         child: CustomScrollView(
+          controller: _scrollController,
           slivers: [
             // Collapsible Hero Header with custom Purple/Indigo releases theme
             const LatestBooksHeader(),
@@ -182,21 +204,16 @@ class LatestBooksScreen extends ConsumerWidget {
                 if (books.isEmpty) {
                   return SliverFillRemaining(
                     hasScrollBody: false,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.library_books_rounded,
-                            size: 48,
-                            color: theme.colorScheme.mutedForeground.withValues(
-                              alpha: 0.5,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Text(l10n.books.noBooksFound, style: theme.textTheme.muted),
-                        ],
-                      ),
+                    child: EmptyState(
+                      icon: Icons.library_books_rounded,
+                      title: l10n.books.noBooksFound,
+                      description: l10n.books.emptyStateFilterDescription,
+                      actionLabel: l10n.constitution.constitution.clearSearch,
+                      onActionPressed: () {
+                        ref
+                            .read(latestBooksFilterProvider.notifier)
+                            .updateSearch('');
+                      },
                     ),
                   );
                 }
@@ -214,6 +231,7 @@ class LatestBooksScreen extends ConsumerWidget {
                 ),
               ),
             ),
+            const SliverToBoxAdapter(child: SizedBox(height: 200)),
           ],
         ),
       ),

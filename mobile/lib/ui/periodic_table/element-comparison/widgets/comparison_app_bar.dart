@@ -70,41 +70,46 @@ class ComparisonAppBar extends StatelessWidget {
                 ),
             ],
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: ShadInput(
-                  controller: searchController,
-                  placeholder: Text(l10n.common.elementComparisonSearchPlaceholder),
-                  leading: const Padding(
-                    padding: EdgeInsets.only(right: 8),
-                    child: Icon(LucideIcons.search, size: 16),
-                  ),
-                  trailing: searchController.text.isNotEmpty
-                      ? GestureDetector(
-                          onTap: () => searchController.clear(),
-                          child: const Icon(LucideIcons.x, size: 16),
-                        )
-                      : null,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Badge(
-                label: Text('$activeFilters'),
-                isLabelVisible: activeFilters > 0,
-                child: ShadButton.secondary(
-                  width: 38,
-                  height: 38,
-                  padding: EdgeInsets.zero,
-                  onPressed: onFilterTap,
-                  child: Icon(
-                    LucideIcons.slidersHorizontal,
-                    size: 20,
-                    color: theme.colorScheme.primary,
+          child: Padding(
+            padding: EdgeInsets.only(top: 2),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ShadInput(
+                    controller: searchController,
+                    placeholder: Text(
+                      l10n.common.elementComparisonSearchPlaceholder,
+                    ),
+                    leading: const Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: Icon(LucideIcons.search, size: 16),
+                    ),
+                    trailing: searchController.text.isNotEmpty
+                        ? GestureDetector(
+                            onTap: () => searchController.clear(),
+                            child: const Icon(LucideIcons.x, size: 16),
+                          )
+                        : null,
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(width: 8),
+                Badge(
+                  label: Text('$activeFilters'),
+                  isLabelVisible: activeFilters > 0,
+                  child: ShadButton.secondary(
+                    width: 38,
+                    height: 38,
+                    padding: EdgeInsets.zero,
+                    onPressed: onFilterTap,
+                    child: Icon(
+                      LucideIcons.slidersHorizontal,
+                      size: 20,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

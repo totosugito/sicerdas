@@ -5,6 +5,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/database/database.dart';
 import 'package:bse/core/providers/database_provider.dart';
 import 'package:bse/widgets/error_view.dart';
+import 'package:bse/widgets/empty_state.dart';
 import 'package:bse/widgets/loading_view.dart';
 import 'package:bse/widgets/ads/ads_native.dart';
 import '../libs/providers/books_provider.dart';
@@ -88,10 +89,29 @@ final groupBooksProvider = StreamProvider.family<List<BookWithMetadata>, int>((
       });
 });
 
-class GroupDetailScreen extends ConsumerWidget {
+class GroupDetailScreen extends ConsumerStatefulWidget {
   final BookGroup group;
 
   const GroupDetailScreen({super.key, required this.group});
+
+  @override
+  ConsumerState<GroupDetailScreen> createState() => _GroupDetailScreenState();
+}
+
+class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   Widget _buildBookList(BuildContext context, List<BookWithMetadata> books, bool showAds) {
     final hasAd = showAds && books.length > 3;
@@ -119,13 +139,13 @@ class GroupDetailScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final booksAsync = ref.watch(groupBooksProvider(group.id));
+    final booksAsync = ref.watch(groupBooksProvider(widget.group.id));
     final showAds = ref.watch(showNativeAdsProvider);
 
     // Automatically clean global filter when group grades are loaded/changed
-    ref.listen(groupGradesProvider(group.id), (previous, next) {
+    ref.listen(groupGradesProvider(widget.group.id), (previous, next) {
       if (next is AsyncData<List<EducationGrade>>) {
         final availableIds = next.value.map((e) => e.id).toSet();
         final currentFilter = ref.read(groupDetailFilterProvider);
@@ -144,9 +164,10 @@ class GroupDetailScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           // Collapsible Hero Header
-          GroupDetailHeader(group: group),
+          GroupDetailHeader(group: widget.group),
 
           // Sticky Filter Bar
           SliverPersistentHeader(
@@ -154,7 +175,7 @@ class GroupDetailScreen extends ConsumerWidget {
             delegate: SliverStickyHeaderDelegate(
               height: 62.0,
               backgroundColor: theme.colorScheme.background,
-              child: FilterBar(groupId: group.id),
+              child: FilterBar(groupId: widget.group.id),
             ),
           ),
 
@@ -163,24 +184,16 @@ class GroupDetailScreen extends ConsumerWidget {
               if (books.isEmpty) {
                 return SliverFillRemaining(
                   hasScrollBody: false,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.library_books_rounded,
-                          size: 48,
-                          color: theme.colorScheme.mutedForeground.withValues(
-                            alpha: 0.5,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          context.t.books.noBooksFound,
-                          style: theme.textTheme.muted,
-                        ),
-                      ],
-                    ),
+                  child: EmptyState(
+                    icon: Icons.library_books_rounded,
+                    title: context.t.books.noBooksFound,
+                    description: context.t.books.emptyStateFilterDescription,
+                    actionLabel: context.t.constitution.constitution.clearSearch,
+                    onActionPressed: () {
+                      ref
+                          .read(groupDetailFilterProvider.notifier)
+                          .updateSearch('');
+                    },
                   ),
                 );
               }
@@ -216,6 +229,7 @@ class GroupDetailScreen extends ConsumerWidget {
               );
             },
           ),
+          const SliverToBoxAdapter(child: SizedBox(height: 200)),
         ],
       ),
     );

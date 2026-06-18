@@ -81,66 +81,69 @@ class _LatestBooksFilterBarState extends ConsumerState<LatestBooksFilterBar> {
             ),
         ],
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: ShadInput(
-              controller: _controller,
-              placeholder: Text(l10n.books.searchHintDetail),
-              leading: Padding(
-                padding: const EdgeInsets.only(right: 8),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 2),
+        child: Row(
+          children: [
+            Expanded(
+              child: ShadInput(
+                controller: _controller,
+                placeholder: Text(l10n.books.searchHintDetail),
+                leading: Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Icon(
+                    Icons.search_rounded,
+                    size: 18,
+                    color: theme.colorScheme.mutedForeground,
+                  ),
+                ),
+                trailing: _controller.text.isNotEmpty
+                    ? GestureDetector(
+                        onTap: _clearSearch,
+                        child: Icon(
+                          Icons.close_rounded,
+                          size: 18,
+                          color: theme.colorScheme.mutedForeground,
+                        ),
+                      )
+                    : null,
+                onChanged: (val) {
+                  setState(() {});
+                  if (_debounce?.isActive ?? false) _debounce!.cancel();
+                  _debounce = Timer(const Duration(milliseconds: 400), () {
+                    ref
+                        .read(latestBooksFilterProvider.notifier)
+                        .updateSearch(val);
+                  });
+                },
+                decoration: ShadDecoration(
+                  border: ShadBorder.all(
+                    color: isDark
+                        ? Colors.white.withValues(alpha: 0.1)
+                        : Colors.black.withValues(alpha: 0.05),
+                    width: 1,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Badge(
+              label: Text('$activeFilters'),
+              isLabelVisible: activeFilters > 0,
+              child: ShadButton.secondary(
+                width: 42,
+                height: 42,
+                padding: EdgeInsets.zero,
+                onPressed: () => _showFilterSheet(context),
                 child: Icon(
-                  Icons.search_rounded,
-                  size: 18,
-                  color: theme.colorScheme.mutedForeground,
-                ),
-              ),
-              trailing: _controller.text.isNotEmpty
-                  ? GestureDetector(
-                      onTap: _clearSearch,
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: 18,
-                        color: theme.colorScheme.mutedForeground,
-                      ),
-                    )
-                  : null,
-              onChanged: (val) {
-                setState(() {});
-                if (_debounce?.isActive ?? false) _debounce!.cancel();
-                _debounce = Timer(const Duration(milliseconds: 400), () {
-                  ref
-                      .read(latestBooksFilterProvider.notifier)
-                      .updateSearch(val);
-                });
-              },
-              decoration: ShadDecoration(
-                border: ShadBorder.all(
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.1)
-                      : Colors.black.withValues(alpha: 0.05),
-                  width: 1,
+                  Icons.tune_rounded,
+                  size: 20,
+                  color: theme.colorScheme.primary,
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 8),
-          Badge(
-            label: Text('$activeFilters'),
-            isLabelVisible: activeFilters > 0,
-            child: ShadButton.secondary(
-              width: 42,
-              height: 42,
-              padding: EdgeInsets.zero,
-              onPressed: () => _showFilterSheet(context),
-              child: Icon(
-                Icons.tune_rounded,
-                size: 20,
-                color: theme.colorScheme.primary,
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

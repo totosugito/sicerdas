@@ -9,7 +9,7 @@ import '../element_detail/element_detail.dart';
 import '../libs/providers/periodic_sync_provider.dart';
 import '../periodic_screen/widgets/element_overview_sheet.dart';
 import 'widgets/comparison_app_bar.dart';
-import 'widgets/comparison_empty_state.dart';
+import 'package:bse/widgets/empty_state.dart';
 import 'widgets/comparison_filter_sheet.dart';
 import 'widgets/comparison_models.dart';
 import 'widgets/comparison_card.dart';
@@ -65,19 +65,28 @@ class _ElementComparisonScreenState
     PropertyDef('bulkModulus', (l10n) => l10n.periodic_table.bulkModulus),
     PropertyDef('shearModulus', (l10n) => l10n.periodic_table.shearModulus),
     PropertyDef('youngModulus', (l10n) => l10n.periodic_table.youngModulus),
-    PropertyDef('electronegativity', (l10n) => l10n.periodic_table.electronegativity),
+    PropertyDef(
+      'electronegativity',
+      (l10n) => l10n.periodic_table.electronegativity,
+    ),
     PropertyDef(
       'electricalConductivity',
       (l10n) => l10n.periodic_table.electricalConductivity,
     ),
     PropertyDef('resistivity', (l10n) => l10n.periodic_table.resistivity),
     PropertyDef('atomicRadius', (l10n) => l10n.periodic_table.atomicRadius),
-    PropertyDef('vanDerWaalsRadius', (l10n) => l10n.periodic_table.vanDerWaalsRadius),
+    PropertyDef(
+      'vanDerWaalsRadius',
+      (l10n) => l10n.periodic_table.vanDerWaalsRadius,
+    ),
   ];
+
+  late final ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     _searchController.addListener(() {
       setState(() {
         _searchQuery = _searchController.text.trim().toLowerCase();
@@ -87,6 +96,7 @@ class _ElementComparisonScreenState
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -214,6 +224,7 @@ class _ElementComparisonScreenState
       backgroundColor: theme.colorScheme.background,
       bottomNavigationBar: AdsBanner.buildBottomBar(ref),
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           // Collapsible Hero Banner AppBar with Pinned Search & Filter Row
           ComparisonAppBar(
@@ -228,8 +239,13 @@ class _ElementComparisonScreenState
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
                 _searchQuery.isNotEmpty
-                    ? l10n.common.elementComparisonElementsFoundMatching(count: sorted.length, term: _searchQuery,)
-                    : l10n.common.elementComparisonElementsFound(count: sorted.length),
+                    ? l10n.common.elementComparisonElementsFoundMatching(
+                        count: sorted.length,
+                        term: _searchQuery,
+                      )
+                    : l10n.common.elementComparisonElementsFound(
+                        count: sorted.length,
+                      ),
                 style: theme.textTheme.small.copyWith(
                   color: theme.colorScheme.mutedForeground,
                 ),
@@ -240,7 +256,22 @@ class _ElementComparisonScreenState
 
           // Comparison List
           sorted.isEmpty
-              ? ComparisonEmptyState(searchQuery: _searchQuery)
+              ? SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: EmptyState(
+                    icon: Icons.search_off_rounded,
+                    title: l10n.common.elementComparisonNoElementsFound,
+                    description: _searchQuery.isNotEmpty
+                        ? l10n.common.elementComparisonNoElementsFoundMatching(
+                            term: _searchQuery,
+                          )
+                        : l10n.common.elementComparisonNoElementsFound,
+                    actionLabel: l10n.constitution.constitution.clearSearch,
+                    onActionPressed: () {
+                      _searchController.clear();
+                    },
+                  ),
+                )
               : SliverPadding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                   sliver: SliverList(
@@ -268,6 +299,7 @@ class _ElementComparisonScreenState
                     }, childCount: sorted.length),
                   ),
                 ),
+          const SliverToBoxAdapter(child: SizedBox(height: 200)),
         ],
       ),
     );

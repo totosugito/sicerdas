@@ -6,7 +6,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/utils/toast_utils.dart';
 import 'package:bse/i18n/strings.g.dart';
 import 'widgets/chemistry_term_card.dart';
-import 'widgets/dictionary_empty_state.dart';
+import 'package:bse/widgets/empty_state.dart';
 import 'widgets/dictionary_hero_app_bar.dart';
 import 'package:bse/widgets/sliver_sticky_header_delegate.dart';
 import 'package:bse/widgets/ads/ads_banner.dart';
@@ -42,6 +42,7 @@ class ChemistryDictionaryScreen extends ConsumerStatefulWidget {
 class _ChemistryDictionaryScreenState
     extends ConsumerState<ChemistryDictionaryScreen> {
   final TextEditingController _searchController = TextEditingController();
+  late final ScrollController _scrollController;
   bool _isLoading = true;
   List<ChemistryTerm> _allTerms = [];
   List<ChemistryTerm> _filteredTerms = [];
@@ -52,6 +53,7 @@ class _ChemistryDictionaryScreenState
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     _searchController.addListener(() {
       setState(() {
         _searchQuery = _searchController.text.trim().toLowerCase();
@@ -72,6 +74,7 @@ class _ChemistryDictionaryScreenState
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -187,6 +190,7 @@ class _ChemistryDictionaryScreenState
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : CustomScrollView(
+              controller: _scrollController,
               slivers: [
                 // Collapsible Hero Banner AppBar
                 DictionaryHeroAppBar(
@@ -282,7 +286,11 @@ class _ChemistryDictionaryScreenState
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        l10n.chemistry_dictionary.dict.resultsInfo(start: 1, end: _filteredTerms.length, total: _filteredTerms.length,),
+                        l10n.chemistry_dictionary.dict.resultsInfo(
+                          start: 1,
+                          end: _filteredTerms.length,
+                          total: _filteredTerms.length,
+                        ),
                         style: theme.textTheme.small.copyWith(
                           color: theme.colorScheme.mutedForeground,
                         ),
@@ -297,10 +305,24 @@ class _ChemistryDictionaryScreenState
                   sliver: _filteredTerms.isEmpty
                       ? SliverFillRemaining(
                           hasScrollBody: false,
-                          child: DictionaryEmptyState(
-                            title: l10n.chemistry_dictionary.dict.noEntriesFoundTitle,
-                            description:
-                                l10n.chemistry_dictionary.dict.noEntriesFoundDesc,
+                          child: EmptyState(
+                            icon: Icons.search_off_rounded,
+                            title: l10n
+                                .chemistry_dictionary
+                                .dict
+                                .noEntriesFoundTitle,
+                            description: l10n
+                                .chemistry_dictionary
+                                .dict
+                                .noEntriesFoundDesc,
+                            actionLabel:
+                                l10n.constitution.constitution.clearSearch,
+                            onActionPressed: () {
+                              _searchController.clear();
+                              setState(() {
+                                _activeGroup = 'all';
+                              });
+                            },
                           ),
                         )
                       : SliverGrid(
@@ -319,11 +341,13 @@ class _ChemistryDictionaryScreenState
                             return ChemistryTermCard(
                               term: term,
                               onCopy: () => _copyToClipboard(term),
-                              copyTooltip: l10n.chemistry_dictionary.dict.copyText,
+                              copyTooltip:
+                                  l10n.chemistry_dictionary.dict.copyText,
                             );
                           }, childCount: _filteredTerms.length),
                         ),
                 ),
+                const SliverToBoxAdapter(child: SizedBox(height: 200)),
               ],
             ),
     );
