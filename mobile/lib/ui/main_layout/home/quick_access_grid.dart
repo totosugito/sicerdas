@@ -6,6 +6,7 @@ import 'package:bse/i18n/strings.g.dart';
 
 import '../../periodic_table/periodic_screen/periodic_screen.dart';
 import '../../constitution/constitution_menu/constitution_menu.dart';
+import '../../math_tricks/tricks_menu/tricks_menu.dart';
 
 class QuickAccessGrid extends ConsumerWidget {
   const QuickAccessGrid({super.key});
@@ -43,6 +44,19 @@ class QuickAccessGrid extends ConsumerWidget {
             context,
             MaterialPageRoute(
               builder: (context) => const ConstitutionMenuScreen(),
+            ),
+          );
+        },
+      },
+      {
+        'title': l10n.math_tricks.title,
+        'icon': Icons.calculate_rounded,
+        'colors': [const Color(0xFF3B82F6), const Color(0xFF1D4ED8)],
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const TricksMenuScreen(),
             ),
           );
         },

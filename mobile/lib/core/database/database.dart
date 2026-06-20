@@ -21,6 +21,9 @@ part 'database.g.dart';
     BookGroups,
     PeriodicElements,
     PeriodicElementNotes,
+    MathTrickChapters,
+    MathTrickLevels,
+    MathTrickDailyScores,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -40,6 +43,9 @@ class AppDatabase extends _$AppDatabase {
       await delete(bookGroups).go();
       await delete(periodicElements).go();
       await delete(periodicElementNotes).go();
+      await delete(mathTrickChapters).go();
+      await delete(mathTrickLevels).go();
+      await delete(mathTrickDailyScores).go();
     });
   }
 

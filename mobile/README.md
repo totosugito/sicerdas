@@ -6,7 +6,7 @@ flutter build appbundle --obfuscate --no-tree-shake-icons --split-debug-info=C:/
 flutter build apk --obfuscate --no-tree-shake-icons --split-debug-info=C:/Temp/ -t lib/main.dart
 
 # run build runner when create json object
-dart run build_runner build
+dart run build_runner build --delete-conflicting-outputs
 
 # auto create app icon
 dart run flutter_launcher_icons

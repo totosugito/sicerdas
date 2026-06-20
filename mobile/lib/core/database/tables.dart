@@ -5,4 +5,7 @@ export 'tables/book/book_groups.dart';
 export 'tables/book/books.dart';
 export 'tables/periodic-table/periodic_elements.dart';
 export 'tables/periodic-table/periodic_element_notes.dart';
+export 'tables/math-tricks/math_trick_chapters.dart';
+export 'tables/math-tricks/math_trick_levels.dart';
+export 'tables/math-tricks/math_trick_daily_scores.dart';
 export 'tables/enums.dart';
