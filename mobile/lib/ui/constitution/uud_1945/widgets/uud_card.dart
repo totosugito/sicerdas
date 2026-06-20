@@ -152,16 +152,16 @@ class _Uud1945CardState extends State<Uud1945Card> {
     final String badgeLabel = isTransitional
         ? (isIndonesian ? "Aturan Peralihan" : "Transitional")
         : isAdditional
-            ? (isIndonesian ? "Aturan Tambahan" : "Additional")
-            : l10n.constitution.constitution.article;
+        ? (isIndonesian ? "Aturan Tambahan" : "Additional")
+        : l10n.constitution.constitution.article;
 
     final String countLabel = widget.searchTerm.isNotEmpty
         ? (isIndonesian
-            ? "Cocok: $matchingCount dari $totalCount ayat"
-            : "Matched: $matchingCount of $totalCount clauses")
+              ? "Cocok: $matchingCount dari $totalCount ayat"
+              : "Matched: $matchingCount of $totalCount clauses")
         : (isIndonesian
-            ? "$totalCount Ayat"
-            : "$totalCount ${totalCount == 1 ? 'Clause' : 'Clauses'}");
+              ? "$totalCount Ayat"
+              : "$totalCount ${totalCount == 1 ? 'Clause' : 'Clauses'}");
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
@@ -191,7 +191,10 @@ class _Uud1945CardState extends State<Uud1945Card> {
                 children: [
                   // Icon/Number box
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: isDark
                           ? theme.colorScheme.destructive.withValues(alpha: 0.1)
@@ -229,7 +232,8 @@ class _Uud1945CardState extends State<Uud1945Card> {
                               runSpacing: 4,
                               children: [
                                 ShadBadge(
-                                  backgroundColor: theme.colorScheme.destructive,
+                                  backgroundColor:
+                                      theme.colorScheme.destructive,
                                   foregroundColor: Colors.white,
                                   child: Text(
                                     badgeLabel,
@@ -342,7 +346,7 @@ class _Uud1945CardState extends State<Uud1945Card> {
                           Text(
                             widget.bab!,
                             style: theme.textTheme.muted.copyWith(
-                              fontSize: 11,
+                              fontSize: 12,
                               fontWeight: FontWeight.w500,
                             ),
                           ),

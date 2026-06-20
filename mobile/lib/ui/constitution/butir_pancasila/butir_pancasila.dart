@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/widgets/empty_state.dart';
+import 'package:bse/widgets/ads/ads_banner.dart';
 import 'widgets/butir_card.dart';
 import 'widgets/butir_app_bar.dart';
 
@@ -277,6 +278,7 @@ class _ButirPancasilaScreenState extends ConsumerState<ButirPancasilaScreen> {
                 ],
               ),
             ),
+      bottomNavigationBar: AdsBanner.buildBottomBar(ref),
     );
   }
 }

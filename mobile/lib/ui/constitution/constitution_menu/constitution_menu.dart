@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
+import 'package:bse/widgets/ads/ads_banner.dart';
 import '../pancasila/pancasila_screen.dart';
 import '../pembukaan/pembukaan_screen.dart';
 import '../butir_pancasila/butir_pancasila.dart';
@@ -172,6 +173,7 @@ class _ConstitutionMenuScreenState
           const SliverToBoxAdapter(child: SizedBox(height: 24)),
         ],
       ),
+      bottomNavigationBar: AdsBanner.buildBottomBar(ref),
     );
   }
 }

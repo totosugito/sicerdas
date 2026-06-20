@@ -121,8 +121,9 @@ class Uud1945AppBar extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: theme.colorScheme.destructive
-                          .withValues(alpha: 0.05),
+                      color: theme.colorScheme.destructive.withValues(
+                        alpha: 0.05,
+                      ),
                       border: Border.all(
                         color: theme.colorScheme.destructive.withValues(
                           alpha: isDark ? 0.2 : 0.1,
@@ -150,9 +151,7 @@ class Uud1945AppBar extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: theme.textTheme.muted.copyWith(
-                      fontSize: 12,
-                    ),
+                    style: theme.textTheme.muted.copyWith(fontSize: 12),
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -196,7 +195,7 @@ class Uud1945AppBar extends StatelessWidget {
         text,
         style: TextStyle(
           color: theme.colorScheme.destructive,
-          fontSize: 9,
+          fontSize: 10,
           fontWeight: FontWeight.bold,
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:bse/widgets/ads/ads_banner.dart';
 import 'widgets/pembukaan_app_bar.dart';
 import 'widgets/pembukaan_card.dart';
 
@@ -104,6 +105,7 @@ class _PembukaanScreenState extends ConsumerState<PembukaanScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: AdsBanner.buildBottomBar(ref),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:bse/widgets/ads/ads_banner.dart';
 import 'widgets/pancasila_app_bar.dart';
 import 'widgets/pancasila_card.dart';
 
@@ -112,6 +113,7 @@ class _PancasilaScreenState extends ConsumerState<PancasilaScreen> {
           const SliverToBoxAdapter(child: SizedBox(height: 24)),
         ],
       ),
+      bottomNavigationBar: AdsBanner.buildBottomBar(ref),
     );
   }
 }
