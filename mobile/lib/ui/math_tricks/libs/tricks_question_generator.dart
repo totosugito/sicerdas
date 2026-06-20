@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'widgets/keypad_mode.dart';
 import '../tricks/addition/trick14_add_close_to_100.dart';
+import '../tricks/subtraction/trick11_subtraction_from_1000.dart';
+import '../tricks/subtraction/trick15_subtraction_close_to_100.dart';
+import '../tricks/multiplication/trick16_multiply_between_11_and_19.dart';
+import '../tricks/multiplication/trick18_multiply_two_digit_sum_ten.dart';
+import '../tricks/multiplication/trick21_multiply_two_digit_ending_in_1.dart';
 
 class GeneratedQuestion {
   final String questionText;
@@ -25,8 +30,20 @@ class TricksQuestionGenerator {
     switch (chapterKey) {
       case 'trick14AddCloseTo100':
         return Trick14AddCloseTo100(level).generate();
+      case 'trick11SubtractFrom1000':
+        return Trick11SubtractionFrom1000(level).generate();
+      case 'trick15SubtractingCloseToHundreds':
+        return Trick15SubtractionCloseTo100(level).generate();
+      case 'trick16MultiplyBetween11And19':
+        return Trick16MultiplyBetween11And19(level).generate();
+      case 'trick18MultiplyTwoDigitSumTen':
+        return Trick18MultiplyTwoDigitSumTen(level).generate();
+      case 'trick21MultiplyTwoDigitEndingIn1':
+        return Trick21MultiplyTwoDigitEndingIn1(level).generate();
       default:
-        throw UnimplementedError('Trick "$chapterKey" is under development and not yet registered.');
+        throw UnimplementedError(
+          'Trick "$chapterKey" is under development and not yet registered.',
+        );
     }
   }
 }

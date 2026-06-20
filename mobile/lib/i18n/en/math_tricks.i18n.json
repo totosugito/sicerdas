@@ -12,9 +12,41 @@
   "soal": "Problem:",
   "jadi": "So, {result}",
   "trick14": {
-    "step1": "Round the number to the nearest hundred",
-    "step2": "Add the rounded number to the other number",
-    "step3": "Adjust the result of the addition"
+    "step1RoundUp": "Round {op2} up to {temp2} by adding {temp3}",
+    "step1RoundDown": "Round {op2} down to {temp2} by subtracting {temp3}",
+    "step2": "Add the rounded number ({temp2}) to the other number ({op1})",
+    "step3RoundUp": "Since we added {temp3} in Step 1, subtract {temp3} from the result",
+    "step3RoundDown": "Since we subtracted {temp3} in Step 1, add {temp3} to the result"
+  },
+  "trick11": {
+    "step1": "Subtract the hundreds digit ({digit}) from 9",
+    "step2": "Subtract the tens digit ({digit}) from 9",
+    "step3": "Subtract the ones digit ({digit}) from 10",
+    "step4": "Combine all the results to get the final answer"
+  },
+  "trick15": {
+    "step1RoundUp": "Round {op2} up to {temp2} by adding {temp3}",
+    "step1RoundDown": "Round {op2} down to {temp2} by subtracting {temp3}",
+    "step2": "Subtract the rounded number ({temp2}) from the first number ({op1})",
+    "step3RoundUp": "Since we added {temp3} in Step 1 (subtracted too much), add {temp3} back to the result",
+    "step3RoundDown": "Since we subtracted {temp3} in Step 1 (haven't subtracted all yet), subtract {temp3} from the result"
+  },
+  "trick16": {
+    "step1": "Add one of the numbers ({op1}) to the ones digit of the other number ({digit})",
+    "step2": "Multiply that sum ({temp3}) by 10",
+    "step3": "Multiply the ones digits of both numbers ({digit1} × {digit2})",
+    "step4": "Add the result of Step 2 ({step2Val}) to the result of Step 3 ({step3Val})"
+  },
+  "trick18": {
+    "step1": "Multiply the tens digit ({tens}) by the tens digit plus one ({tens} + 1)",
+    "step2": "Multiply the ones digits together ({ones1} × {ones2})",
+    "step3": "Combine the results of Step 1 ({val1}) and Step 2 ({val2}) side-by-side"
+  },
+  "trick21": {
+    "step1": "Multiply the tens digits of both numbers ({tens1} × {tens2})",
+    "step2": "Add the tens digits of both numbers ({tens1} + {tens2})",
+    "step3": "Combine the results of Step 1 ({val1}) and Step 2 ({val2}) by adding them (carry over if the Step 2 result >= 10)",
+    "step4": "Append the digit 1 to the end of the combined result"
   },
   "groups": {
     "addition": "Addition",

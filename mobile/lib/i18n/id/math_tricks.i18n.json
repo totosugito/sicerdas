@@ -12,9 +12,41 @@
   "soal": "Soal:",
   "jadi": "Jadi, {result}",
   "trick14": {
-    "step1": "Bulatkan angka ke ratusan terdekat",
-    "step2": "Tambahkan angka bulat tersebut ke angka lainnya",
-    "step3": "Sesuaikan hasil penjumlahan"
+    "step1RoundUp": "Bulatkan {op2} ke atas menjadi {temp2} dengan menambahkan {temp3}",
+    "step1RoundDown": "Bulatkan {op2} ke bawah menjadi {temp2} dengan mengurangi {temp3}",
+    "step2": "Tambahkan hasil pembulatan ({temp2}) ke angka lainnya ({op1})",
+    "step3RoundUp": "Karena di Langkah 1 kita menambahkan {temp3}, sekarang kita kurangi hasil akhir dengan {temp3}",
+    "step3RoundDown": "Karena di Langkah 1 kita mengurangi {temp3}, sekarang kita tambahkan hasil akhir dengan {temp3}"
+  },
+  "trick11": {
+    "step1": "Kurangi angka ratusan ({digit}) dari 9",
+    "step2": "Kurangi angka puluhan ({digit}) dari 9",
+    "step3": "Kurangi angka satuan ({digit}) dari 10",
+    "step4": "Gabungkan semua hasil untuk mendapatkan jawaban akhir"
+  },
+  "trick15": {
+    "step1RoundUp": "Bulatkan {op2} ke atas menjadi {temp2} dengan menambahkan {temp3}",
+    "step1RoundDown": "Bulatkan {op2} ke bawah menjadi {temp2} dengan mengurangi {temp3}",
+    "step2": "Kurangi hasil pembulatan ({temp2}) dari angka pertama ({op1})",
+    "step3RoundUp": "Karena di Langkah 1 kita menambahkan {temp3} (mengurangi terlalu banyak), sekarang kita tambahkan kembali {temp3} ke hasil",
+    "step3RoundDown": "Karena di Langkah 1 kita mengurangi {temp3} (belum mengurangi semuanya), sekarang kita kurangi hasil dengan {temp3}"
+  },
+  "trick16": {
+    "step1": "Tambahkan salah satu angka ({op1}) dengan digit satuan dari angka lainnya ({digit})",
+    "step2": "Kalikan hasil penjumlahan tersebut ({temp3}) dengan 10",
+    "step3": "Kalikan digit satuan dari kedua angka ({digit1} × {digit2})",
+    "step4": "Tambahkan hasil dari Langkah 2 ({step2Val}) dengan hasil dari Langkah 3 ({step3Val})"
+  },
+  "trick18": {
+    "step1": "Kalikan angka puluhan ({tens}) dengan angka puluhan ditambah satu ({tens} + 1)",
+    "step2": "Kalikan kedua angka satuan ({ones1} × {ones2})",
+    "step3": "Gabungkan hasil dari Langkah 1 ({val1}) dan Langkah 2 ({val2}) berdampingan"
+  },
+  "trick21": {
+    "step1": "Kalikan angka puluhan dari kedua bilangan ({tens1} × {tens2})",
+    "step2": "Tambahkan angka puluhan dari kedua bilangan ({tens1} + {tens2})",
+    "step3": "Gabungkan hasil dari Langkah 1 ({val1}) dan Langkah 2 ({val2}) dengan menjumlahkannya sebagai puluhan (simpan angka puluhan jika hasil Langkah 2 >= 10)",
+    "step4": "Tambahkan angka 1 di akhir hasil penggabungan"
   },
   "groups": {
     "addition": "Penjumlahan",

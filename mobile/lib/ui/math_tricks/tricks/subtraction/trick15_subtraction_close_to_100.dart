@@ -2,43 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:bse/i18n/strings.g.dart';
 import '../base_trick.dart';
 
-class Trick14AddCloseTo100 extends BaseTrick {
+class Trick15SubtractionCloseTo100 extends BaseTrick {
   late int op1;
   late int op2;
 
-  Trick14AddCloseTo100(super.level);
+  Trick15SubtractionCloseTo100(super.level);
 
   @override
   void generateData() {
     final int i = level;
     final double d = level.toDouble();
-    op1 = ((BaseTrick.random.nextDouble() * d * 50.0).toInt()) + (i * 15);
-    op2 = ((BaseTrick.random.nextDouble() * d * 30.0).toInt()) + (i * 40);
-
-    if (op2 > op1) {
-      final int temp = op1;
-      op1 = op2;
-      op2 = temp;
+    
+    int tempOp1 = ((BaseTrick.random.nextDouble() * d * 10.0).toInt()) + (i * 15);
+    int tempOp2 = ((BaseTrick.random.nextDouble() * d * 5.0).toInt()) + (i * 15);
+    
+    if (tempOp2 > tempOp1) {
+      final int temp = tempOp1;
+      tempOp1 = tempOp2;
+      tempOp2 = temp;
     }
-
-    final int i5 = op2;
-    if (i5 < 100) {
-      op2 = ((BaseTrick.random.nextDouble() * 19.0).toInt()) + 90;
-    } else if ((i5 >= 100) && (i5 < 1000)) {
-      op2 =
-          ((i5 ~/ 100) * 100) +
-          90 +
-          ((BaseTrick.random.nextDouble() * 19.0).toInt());
+    
+    final int temp = tempOp2;
+    op1 = tempOp1 + 109;
+    
+    if (temp >= 100) {
+      op2 = ((temp / 100 * 100) + 90).toInt() + (BaseTrick.random.nextDouble() * 19.0).toInt();
+    } else if (temp >= 1000) {
+      op2 = (((temp / 1000 * 1000) + (temp / 100 * 100)).toInt() + 90) + (BaseTrick.random.nextDouble() * 19.0).toInt();
     } else {
-      op2 =
-          ((i5 ~/ 1000) * 1000) +
-          ((i5 ~/ 100) * 100) +
-          90 +
-          ((BaseTrick.random.nextDouble() * 19.0).toInt());
+      op2 = (BaseTrick.random.nextDouble() * 19.0).toInt() + 90;
     }
 
-    answer = op1 + op2;
-    questionText = '$op1 + $op2';
+    answer = op1 - op2;
+    questionText = '$op1 - $op2';
     choices = generateChoices(answer);
   }
 
@@ -54,11 +50,11 @@ class Trick14AddCloseTo100 extends BaseTrick {
     if ((op2 ~/ 10) % 10 == 9) {
       temp3 = 10 - (op2 % 10);
       temp2 = op2 + temp3;
-      temp1 = op1 + temp2;
+      temp1 = op1 - temp2;
 
       steps += createStepLabel(
         stepNo: 1,
-        text: l10n.math_tricks.trick14.step1RoundUp(
+        text: l10n.math_tricks.trick15.step1RoundUp(
           op2: op2.toString(),
           temp2: temp2.toString(),
           temp3: temp3.toString(),
@@ -71,32 +67,32 @@ class Trick14AddCloseTo100 extends BaseTrick {
 
       steps += createStepLabel(
         stepNo: 2,
-        text: l10n.math_tricks.trick14.step2(
+        text: l10n.math_tricks.trick15.step2(
           temp2: temp2.toString(),
           op1: op1.toString(),
         ),
       );
       steps += createStepValue(
         text:
-            "${spanColor(temp2, 'yellow')}${plus()}${spanColor(op1, 'red')}${equal()}${spanColor(temp1, 'magenta')}",
+            "${spanColor(op1, 'red')}${minus()}${spanColor(temp2, 'yellow')}${equal()}${spanColor(temp1, 'magenta')}",
       );
 
       steps += createStepLabel(
         stepNo: 3,
-        text: l10n.math_tricks.trick14.step3RoundUp(temp3: temp3.toString()),
+        text: l10n.math_tricks.trick15.step3RoundUp(temp3: temp3.toString()),
       );
       steps += createStepValue(
         text:
-            "${spanColor(temp1, 'magenta')}${minus()}${spanColor(temp3, 'green')}${equal()}${spanColor(answer, 'default')}",
+            "${spanColor(temp1, 'magenta')}${plus()}${spanColor(temp3, 'green')}${equal()}${spanColor(answer, 'default')}",
       );
     } else {
       temp3 = op2 % 10;
       temp2 = op2 - temp3;
-      temp1 = op1 + temp2;
+      temp1 = op1 - temp2;
 
       steps += createStepLabel(
         stepNo: 1,
-        text: l10n.math_tricks.trick14.step1RoundDown(
+        text: l10n.math_tricks.trick15.step1RoundDown(
           op2: op2.toString(),
           temp2: temp2.toString(),
           temp3: temp3.toString(),
@@ -109,31 +105,31 @@ class Trick14AddCloseTo100 extends BaseTrick {
 
       steps += createStepLabel(
         stepNo: 2,
-        text: l10n.math_tricks.trick14.step2(
+        text: l10n.math_tricks.trick15.step2(
           temp2: temp2.toString(),
           op1: op1.toString(),
         ),
       );
       steps += createStepValue(
         text:
-            "${spanColor(temp2, 'yellow')}${plus()}${spanColor(op1, 'red')}${equal()}${spanColor(temp1, 'magenta')}",
+            "${spanColor(op1, 'red')}${minus()}${spanColor(temp2, 'yellow')}${equal()}${spanColor(temp1, 'magenta')}",
       );
 
       steps += createStepLabel(
         stepNo: 3,
-        text: l10n.math_tricks.trick14.step3RoundDown(temp3: temp3.toString()),
+        text: l10n.math_tricks.trick15.step3RoundDown(temp3: temp3.toString()),
       );
       steps += createStepValue(
         text:
-            "${spanColor(temp1, 'magenta')}${plus()}${spanColor(temp3, 'green')}${equal()}${spanColor(answer, 'default')}",
+            "${spanColor(temp1, 'magenta')}${minus()}${spanColor(temp3, 'green')}${equal()}${spanColor(answer, 'default')}",
       );
     }
 
     return buildHtmlContainer(
       problemLabel: l10n.math_tricks.soal,
-      problem: '$op1 + $op2',
+      problem: '$op1 - $op2',
       steps: steps,
-      finalAnswer: l10n.math_tricks.jadi(result: '$op1 + $op2 = $answer'),
+      finalAnswer: l10n.math_tricks.jadi(result: '$op1 - $op2 = $answer'),
     );
   }
 }

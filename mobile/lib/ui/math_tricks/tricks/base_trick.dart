@@ -66,7 +66,7 @@ abstract class BaseTrick {
   }
 
   String createStepLabel({required int stepNo, required String text}) {
-    return '<div style="margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #4b5563;">Langkah $stepNo: $text</div>';
+    return '<div style="margin-top: 12px; margin-bottom: 4px; color: #4b5563; font-size: 14px;"><span style="font-weight: bold; color: #1f2937;">Langkah $stepNo:</span> $text</div>';
   }
 
   String createStepValue({required String text}) {
@@ -74,15 +74,13 @@ abstract class BaseTrick {
   }
 
   String buildHtmlContainer({
-    required String heading,
     required String problemLabel,
     required String problem,
     required String steps,
     required String finalAnswer,
   }) {
     return '''
-<div style="font-family: sans-serif; padding: 12px; line-height: 1.6;">
-  <h3 style="color: #3b82f6; margin-bottom: 12px; font-size: 16px; font-weight: bold;">$heading</h3>
+<div style="font-family: sans-serif; padding: 0px 12px 12px 12px; line-height: 1.6;">
   <div style="margin-bottom: 16px; padding: 10px; background-color: #f3f4f6; border-radius: 8px; border-left: 4px solid #3b82f6;">
     <strong>$problemLabel</strong> <span style="font-size: 16px; font-weight: bold; color: #1f2937;">$problem</span>
   </div>
