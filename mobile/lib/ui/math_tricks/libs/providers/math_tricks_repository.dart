@@ -21,6 +21,10 @@ class MathTricksRepository {
     return _db.select(_db.mathTrickChapters).watch();
   }
 
+  Future<List<MathTrickChapter>> getAllChapters() async {
+    return _db.select(_db.mathTrickChapters).get();
+  }
+
   // --- Chapter Progress ---
 
   Future<MathTrickChapter> getOrCreateChapter(String groupKey, String chapterKey) async {
@@ -149,7 +153,7 @@ class MathTricksRepository {
 
     final companion = MathTrickDailyScoresCompanion.insert(
       dateId: dateId,
-      day: date.day,
+      updatedAt: date.millisecondsSinceEpoch,
       correctAnswer: const Value(0),
       wrongAnswer: const Value(0),
     );
@@ -166,16 +170,17 @@ class MathTricksRepository {
       MathTrickDailyScoresCompanion(
         correctAnswer: Value(daily.correctAnswer + correct),
         wrongAnswer: Value(daily.wrongAnswer + wrong),
+        updatedAt: Value(date.millisecondsSinceEpoch),
       ),
     );
   }
 
-  Future<List<MathTrickDailyScore>> getDailyScores() async {
+  Future<List<MathTrickDailyScore>> getDailyScores({int limit = 30}) async {
     return (_db.select(_db.mathTrickDailyScores)
           ..orderBy([
             (tbl) => OrderingTerm(expression: tbl.dateId, mode: OrderingMode.desc),
           ])
-          ..limit(30)) // Get last 30 entries
+          ..limit(limit)) // Get last entries
         .get();
   }
 }

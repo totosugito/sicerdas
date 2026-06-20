@@ -2,6 +2,11 @@
   "title": "Math Tricks",
   "subtitle": "Master math calculations with rapid calculation methods",
   "chooseModule": "Choose Mathematical Operation",
+  "levelLocked": "Level Locked",
+  "levelLockedDesc": "Complete the previous level to unlock this level.",
+  "accuracy": "Accuracy",
+  "progress": "Progress",
+  "selectLevel": "Select Level",
   "levels": "Levels",
   "stepsLabel": "Solution Steps:",
   "soal": "Problem:",
@@ -103,5 +108,21 @@
     "tooltipPadMc": "Change to Multiple Choice",
     "tooltipPadNum": "Change to Numeric Pad",
     "tooltipPadYesNo": "Change to True/False"
+  },
+  "achievement": {
+    "title": "Stats & Achievements",
+    "summary": "Practice Summary",
+    "totalCorrect": "Total Correct",
+    "averageAccuracy": "Average Accuracy",
+    "dailyTrend": "Daily Practice Trend (Answers)",
+    "correct": "Correct",
+    "wrong": "Wrong",
+    "topTricks": "Most Practiced Tricks",
+    "solvedQuestions": "Solved: {count} Questions",
+    "stars": "Stars",
+    "dailyHistory": "Last {count} Sessions",
+    "noHistory": "No practice history yet.",
+    "correctSymbol": "C",
+    "wrongSymbol": "W"
   }
 }

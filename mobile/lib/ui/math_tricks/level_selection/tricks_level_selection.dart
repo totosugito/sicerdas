@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/widgets/ads/ads_banner.dart';
+import 'package:bse/core/utils/toast_utils.dart';
 import '../../../core/database/database.dart';
 import '../libs/providers/math_tricks_repository.dart';
 import '../training/tricks_training.dart';
+import 'widgets/level_card.dart';
 
 class TricksLevelSelectionScreen extends ConsumerStatefulWidget {
   final String groupTitle;
@@ -42,10 +44,12 @@ class TricksLevelSelectionScreen extends ConsumerStatefulWidget {
   }
 
   @override
-  ConsumerState<TricksLevelSelectionScreen> createState() => _TricksLevelSelectionScreenState();
+  ConsumerState<TricksLevelSelectionScreen> createState() =>
+      _TricksLevelSelectionScreenState();
 }
 
-class _TricksLevelSelectionScreenState extends ConsumerState<TricksLevelSelectionScreen> {
+class _TricksLevelSelectionScreenState
+    extends ConsumerState<TricksLevelSelectionScreen> {
   late Future<void> _loadingFuture;
   MathTrickChapter? _chapter;
   List<MathTrickLevel> _levels = [];
@@ -65,7 +69,10 @@ class _TricksLevelSelectionScreenState extends ConsumerState<TricksLevelSelectio
 
   Future<void> _fetchDbData() async {
     final repo = ref.read(mathTricksRepositoryProvider);
-    _chapter = await repo.getOrCreateChapter(widget.groupTitle, widget.chapterKey);
+    _chapter = await repo.getOrCreateChapter(
+      widget.groupTitle,
+      widget.chapterKey,
+    );
     _levels = await repo.getLevelsForChapter(widget.chapterKey);
   }
 
@@ -77,11 +84,17 @@ class _TricksLevelSelectionScreenState extends ConsumerState<TricksLevelSelectio
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.trickTitle, style: theme.textTheme.large.copyWith(fontSize: 16)),
+        title: Text(
+          l10n.math_tricks.selectLevel,
+          style: theme.textTheme.large.copyWith(fontSize: 16),
+        ),
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: theme.colorScheme.foreground),
+          icon: Icon(
+            Icons.arrow_back_rounded,
+            color: theme.colorScheme.foreground,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -93,23 +106,202 @@ class _TricksLevelSelectionScreenState extends ConsumerState<TricksLevelSelectio
           }
 
           final unlockedLevelsCount = _chapter?.opened ?? 1;
+          final width = MediaQuery.of(context).size.width;
+          final crossAxisCount = (width / 95).floor().clamp(4, 12);
+
+          final totalStars = _levels.fold<int>(0, (sum, lvl) => sum + lvl.star);
+          final maxStars = _totalLevels * 3;
+          final completedLevels = (unlockedLevelsCount - 1).clamp(0, 50);
+          final progressPercent = completedLevels / 50.0;
+
+          final totalSolved = (_chapter?.correct ?? 0) + (_chapter?.wrong ?? 0);
+          final accuracy = totalSolved > 0
+              ? ((_chapter?.correct ?? 0) / totalSolved * 100).round()
+              : 0;
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 8),
-                Text(
-                  l10n.math_tricks.chooseModule,
-                  style: theme.textTheme.muted.copyWith(fontSize: 13),
+                const SizedBox(height: 12),
+                ShadCard(
+                  backgroundColor: widget.themeColor.withValues(
+                    alpha: isDark ? 0.08 : 0.04,
+                  ),
+                  border: ShadBorder.all(
+                    color: widget.themeColor.withValues(
+                      alpha: isDark ? 0.25 : 0.15,
+                    ),
+                    width: 1.5,
+                  ),
+                  radius: BorderRadius.circular(16),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 3,
+                            ),
+                            decoration: BoxDecoration(
+                              color: widget.themeColor.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              widget.groupTitle,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: widget.themeColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        widget.trickTitle,
+                        style: theme.textTheme.h4.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.flag_rounded,
+                                      size: 14,
+                                      color: theme.colorScheme.mutedForeground,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      l10n.math_tricks.progress,
+                                      style: theme.textTheme.muted.copyWith(
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '$completedLevels / $_totalLevels',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark
+                                        ? Colors.white
+                                        : Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.star_rounded,
+                                      size: 14,
+                                      color: Colors.amber,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'Bintang',
+                                      style: theme.textTheme.muted.copyWith(
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '$totalStars / $maxStars',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark
+                                        ? Colors.white
+                                        : Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.insights_rounded,
+                                      size: 14,
+                                      color: widget.themeColor,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      l10n.math_tricks.accuracy,
+                                      style: theme.textTheme.muted.copyWith(
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  totalSolved > 0 ? '$accuracy%' : '-',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark
+                                        ? Colors.white
+                                        : Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: LinearProgressIndicator(
+                          value: progressPercent,
+                          backgroundColor: widget.themeColor.withValues(
+                            alpha: 0.1,
+                          ),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            widget.themeColor,
+                          ),
+                          minHeight: 6,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Expanded(
                   child: GridView.builder(
                     padding: const EdgeInsets.only(bottom: 24),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
                       childAspectRatio: 1.0,
@@ -138,7 +330,7 @@ class _TricksLevelSelectionScreenState extends ConsumerState<TricksLevelSelectio
 
                       final starCount = dbLevel.star;
 
-                      return _LevelCard(
+                      return LevelCard(
                         levelId: levelId,
                         isUnlocked: isUnlocked,
                         starCount: starCount,
@@ -158,11 +350,10 @@ class _TricksLevelSelectionScreenState extends ConsumerState<TricksLevelSelectio
                               },
                             );
                           } else {
-                            ShadToaster.of(context).show(
-                              const ShadToast(
-                                title: Text('Level Locked'),
-                                description: Text('Selesaikan level sebelumnya untuk membuka level ini.'),
-                              ),
+                            ToastUtils.showWarning(
+                              context,
+                              title: l10n.math_tricks.levelLocked,
+                              message: l10n.math_tricks.levelLockedDesc,
                             );
                           }
                         },
@@ -176,93 +367,6 @@ class _TricksLevelSelectionScreenState extends ConsumerState<TricksLevelSelectio
         },
       ),
       bottomNavigationBar: AdsBanner.buildBottomBar(ref),
-    );
-  }
-}
-
-class _LevelCard extends StatelessWidget {
-  final int levelId;
-  final bool isUnlocked;
-  final int starCount;
-  final Color themeColor;
-  final bool isDark;
-  final ShadThemeData theme;
-  final VoidCallback onTap;
-
-  const _LevelCard({
-    required this.levelId,
-    required this.isUnlocked,
-    required this.starCount,
-    required this.themeColor,
-    required this.isDark,
-    required this.theme,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        decoration: BoxDecoration(
-          color: isUnlocked
-              ? (isDark ? themeColor.withValues(alpha: 0.15) : Colors.white)
-              : (isDark ? Colors.white.withValues(alpha: 0.03) : Colors.grey.shade100),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isUnlocked
-                ? themeColor.withValues(alpha: isDark ? 0.4 : 0.2)
-                : (isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.shade300),
-            width: 1.5,
-          ),
-          boxShadow: isUnlocked
-              ? [
-                  BoxShadow(
-                    color: themeColor.withValues(alpha: isDark ? 0.0 : 0.08),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
-                  ),
-                ]
-              : null,
-        ),
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (!isUnlocked)
-              Icon(
-                Icons.lock_rounded,
-                size: 20,
-                color: isDark ? Colors.white24 : Colors.grey.shade400,
-              )
-            else ...[
-              Text(
-                '$levelId',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(3, (idx) {
-                  final isFilled = idx < starCount;
-                  return Icon(
-                    Icons.star_rounded,
-                    size: 11,
-                    color: isFilled
-                        ? Colors.amber
-                        : (isDark ? Colors.white10 : Colors.grey.shade300),
-                  );
-                }),
-              )
-            ]
-          ],
-        ),
-      ),
     );
   }
 }

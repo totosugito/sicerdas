@@ -2,6 +2,11 @@
   "title": "Trik Matematika",
   "subtitle": "Kuasai perhitungan matematika dengan metode cepat",
   "chooseModule": "Pilih Operasi Matematika",
+  "levelLocked": "Level Terkunci",
+  "levelLockedDesc": "Selesaikan level sebelumnya untuk membuka level ini.",
+  "accuracy": "Akurasi",
+  "progress": "Progres",
+  "selectLevel": "Pilih Level",
   "levels": "Level",
   "stepsLabel": "Langkah Penyelesaian:",
   "soal": "Soal:",
@@ -103,5 +108,21 @@
     "tooltipPadMc": "Ganti ke Pilihan Ganda",
     "tooltipPadNum": "Ganti ke Papan Angka",
     "tooltipPadYesNo": "Ganti ke Benar/Salah"
+  },
+  "achievement": {
+    "title": "Statistik & Pencapaian",
+    "summary": "Ringkasan Latihan",
+    "totalCorrect": "Total Benar",
+    "averageAccuracy": "Rata-rata Akurasi",
+    "dailyTrend": "Tren Latihan Harian (Jawaban)",
+    "correct": "Benar",
+    "wrong": "Salah",
+    "topTricks": "Trik Paling Sering Dimainkan",
+    "solvedQuestions": "Dijawab: {count} Soal",
+    "stars": "Bintang",
+    "dailyHistory": "{count} Riwayat Terakhir",
+    "noHistory": "Belum ada riwayat latihan.",
+    "correctSymbol": "B",
+    "wrongSymbol": "S"
   }
 }
