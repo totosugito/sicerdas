@@ -48,6 +48,8 @@
     "step3": "Gabungkan hasil dari Langkah 1 ({val1}) dan Langkah 2 ({val2}) dengan menjumlahkannya sebagai puluhan (simpan angka puluhan jika hasil Langkah 2 >= 10)",
     "step4": "Tambahkan angka 1 di akhir hasil penggabungan"
   },
+  "stepDivideBy": "Bagi bilangan dengan {divisor}",
+  "stepMultiplyStep1By": "Kalikan hasil dari Langkah 1 dengan {multiplier}",
   "groups": {
     "addition": "Penjumlahan",
     "subtraction": "Pengurangan",

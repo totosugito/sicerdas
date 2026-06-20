@@ -48,6 +48,8 @@
     "step3": "Combine the results of Step 1 ({val1}) and Step 2 ({val2}) by adding them (carry over if the Step 2 result >= 10)",
     "step4": "Append the digit 1 to the end of the combined result"
   },
+  "stepDivideBy": "Divide the number by {divisor}",
+  "stepMultiplyStep1By": "Multiply the result of Step 1 by {multiplier}",
   "groups": {
     "addition": "Addition",
     "subtraction": "Subtraction",

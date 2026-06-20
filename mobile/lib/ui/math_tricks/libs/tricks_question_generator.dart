@@ -6,6 +6,7 @@ import '../tricks/subtraction/trick15_subtraction_close_to_100.dart';
 import '../tricks/multiplication/trick16_multiply_between_11_and_19.dart';
 import '../tricks/multiplication/trick18_multiply_two_digit_sum_ten.dart';
 import '../tricks/multiplication/trick21_multiply_two_digit_ending_in_1.dart';
+import '../tricks/multiplication/trick07_multiply_by_5.dart';
 
 class GeneratedQuestion {
   final String questionText;
@@ -40,6 +41,14 @@ class TricksQuestionGenerator {
         return Trick18MultiplyTwoDigitSumTen(level).generate();
       case 'trick21MultiplyTwoDigitEndingIn1':
         return Trick21MultiplyTwoDigitEndingIn1(level).generate();
+      case 'trick07MultiplyBy5':
+      case 'trick34MultiplyBy25':
+      case 'trick35MultiplyBy50':
+      case 'trick40MultiplyBy02':
+      case 'trick90MultiplyBy125':
+      case 'trick93MultiplyBy250':
+      case 'trick94MultiplyBy500':
+        return Trick07MultiplyBy5(level, chapterKey: chapterKey).generate();
       default:
         throw UnimplementedError(
           'Trick "$chapterKey" is under development and not yet registered.',
