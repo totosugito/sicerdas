@@ -132,7 +132,7 @@ class Trick07MultiplyBy5 extends BaseTrick {
     // Step 1: Divide by Divisor
     steps += createStepLabel(
       stepNo: 1,
-      text: l10n.math_tricks.stepDivideBy(divisor: divisor.toString()),
+      text: l10n.math_tricks.trick07.step1(divisor: divisor.toString()),
     );
     steps += createStepValue(
       text:
@@ -142,7 +142,7 @@ class Trick07MultiplyBy5 extends BaseTrick {
     // Step 2: Multiply by Multiplier
     steps += createStepLabel(
       stepNo: 2,
-      text: l10n.math_tricks.stepMultiplyStep1By(
+      text: l10n.math_tricks.trick07.step2(
         multiplier: multiplier.toString(),
       ),
     );
