@@ -98,7 +98,7 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
     if (widget.initialKeyPadMode != null && supported.contains(widget.initialKeyPadMode)) {
       _currentPadMode = widget.initialKeyPadMode!;
     } else if (supported.isNotEmpty) {
-      final preferredIndex = widget.level % supported.length;
+      final preferredIndex = 0; //widget.level % supported.length;
       _currentPadMode = supported[preferredIndex];
     } else {
       _currentPadMode = KeyPadMode.multipleChoice;

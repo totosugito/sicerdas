@@ -13,6 +13,18 @@ import '../tricks/multiplication/trick09_multiply_by_4.dart';
 import '../tricks/multiplication/trick26_multiply_by_15.dart';
 import '../tricks/multiplication/trick37_multiply_by_05.dart';
 import '../tricks/multiplication/trick59_multiply_by_3.dart';
+import '../tricks/multiplication/trick60_multiply_by_6.dart';
+import '../tricks/multiplication/trick66_multiply_by_16.dart';
+import '../tricks/multiplication/trick68_multiply_by_18.dart';
+import '../tricks/multiplication/trick95_multiply_by_750.dart';
+import '../tricks/percent/trick50_percent_25.dart';
+import '../tricks/percent/trick52_percent_15.dart';
+import '../tricks/percent/trick55_percent_2.dart';
+import '../tricks/percent/trick56_percent_05.dart';
+import '../tricks/percent/trick57_percent_150.dart';
+import '../tricks/percent/trick58_percent_200.dart';
+import '../tricks/percent/trick107_percent_40.dart';
+import '../tricks/percent/trick106_percent_750.dart';
 
 class GeneratedQuestion {
   final String questionText;
@@ -73,6 +85,43 @@ class TricksQuestionGenerator {
       case 'trick65MultiplyBy14':
       case 'trick05MultiplyTwoDigitBy11':
         return Trick59MultiplyBy3(level, chapterKey: chapterKey);
+      case 'trick60MultiplyBy6':
+      case 'trick61MultiplyBy7':
+        return Trick60MultiplyBy6(level, chapterKey: chapterKey);
+      case 'trick66MultiplyBy16':
+      case 'trick67MultiplyBy17':
+        return Trick66MultiplyBy16(level, chapterKey: chapterKey);
+      case 'trick62MultiplyBy8':
+      case 'trick68MultiplyBy18':
+      case 'trick69MultiplyBy19':
+        return Trick68MultiplyBy18(level, chapterKey: chapterKey);
+      case 'trick95MultiplyBy750':
+      case 'trick101MultiplyBy75':
+        return Trick95MultiplyBy750(level, chapterKey: chapterKey);
+      case 'trick50Percent25':
+      case 'trick49Percent50':
+        return Trick50Percent25(level, chapterKey: chapterKey);
+      case 'trick52Percent15':
+        return Trick52Percent15(level, chapterKey: chapterKey);
+      case 'trick55Percent2':
+      case 'trick54Percent4':
+      case 'trick51Percent20':
+        return Trick55Percent2(level, chapterKey: chapterKey);
+      case 'trick56Percent05':
+      case 'trick53Percent5':
+        return Trick56Percent05(level, chapterKey: chapterKey);
+      case 'trick57Percent150':
+        return Trick57Percent150(level, chapterKey: chapterKey);
+      case 'trick58Percent200':
+      case 'trick99Percent300':
+      case 'trick100Percent500':
+        return Trick58Percent200(level, chapterKey: chapterKey);
+      case 'trick107Percent40':
+      case 'trick105Percent75':
+      case 'trick70Percent250':
+        return Trick107Percent40(level, chapterKey: chapterKey);
+      case 'trick106Percent750':
+        return Trick106Percent750(level, chapterKey: chapterKey);
       default:
         throw UnimplementedError('Trick "$chapterKey" is under development and not yet registered.');
     }

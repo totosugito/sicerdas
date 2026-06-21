@@ -222,7 +222,7 @@ class _TricksLevelSelectionScreenState
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
-                                      'Bintang',
+                                      l10n.math_tricks.achievement.stars,
                                       style: theme.textTheme.muted.copyWith(
                                         fontSize: 11,
                                       ),

@@ -11,6 +11,7 @@
   "stepsLabel": "Solution Steps:",
   "soal": "Problem:",
   "jadi": "So, {result}",
+  "of": "of",
   "trick14": {
     "step1RoundUp": "Round {op2} up to {temp2} by adding {temp3}",
     "step1RoundDown": "Round {op2} down to {temp2} by subtracting {temp3}",
@@ -72,6 +73,64 @@
     "step1": "Split the multiplication into two parts. First, multiply by {var1}",
     "step2": "Second, multiply by {var2}",
     "step3": "Add the result of Step 1 ({temp1}) and Step 2 ({temp2}) to get the final answer"
+  },
+  "trick60": {
+    "step1": "Divide the number by {divisor}",
+    "step2": "Multiply the result of Step 1 ({temp1}) by {multiplier}",
+    "step3": "Multiply the original number by {multiplier2}",
+    "step4": "Add the result of Step 2 ({temp2}) and Step 3 ({temp3}) to get the final answer"
+  },
+  "trick66": {
+    "step1": "Split the multiplication into three parts. First, multiply by {var1}",
+    "step2": "Second, multiply by {var2}",
+    "step3": "Third, multiply by {var3}",
+    "step4": "Add the result of Step 1 ({temp1}), Step 2 ({temp2}), and Step 3 ({temp3}) to get the final answer"
+  },
+  "trick68": {
+    "step1": "Multiply the number by {var1} (to simplify the calculation)",
+    "step2": "Multiply the number by {var2}",
+    "step3": "Subtract the result of Step 2 ({temp2}) from Step 1 ({temp1}) to get the final answer"
+  },
+  "trick95": {
+    "step1": "Divide the number by {divisor}",
+    "step2": "Multiply the result of Step 1 ({temp1}) by {multiplier1}",
+    "step3": "Multiply the result of Step 2 ({temp2}) by {multiplier2} to get the final answer"
+  },
+  "trick50": {
+    "step1": "We know that {op1}% is equivalent to 100% divided by {divisor}",
+    "step2": "Divide the number by {divisor} to get the final answer"
+  },
+  "trick52": {
+    "step1": "Divide the number by {divisor1} to get 10% of the number",
+    "step2": "Divide the result of Step 1 ({temp1}) by {divisor2} to get 5% of the number",
+    "step3": "Add the result of Step 1 ({temp1}) and Step 2 ({temp2}) to get the final answer (15%)"
+  },
+  "trick55": {
+    "step1": "Divide the number by {divisor} to get {percent}% of the number",
+    "step2": "Multiply the result of Step 1 ({temp1}) by {multiplier} to get the final answer"
+  },
+  "trick56": {
+    "step1": "Divide the number by {divisor} to get {percent}% of the number",
+    "step2": "Divide the result of Step 1 ({temp1}) by 2 to get the final answer ({targetPercent}%)"
+  },
+  "trick57": {
+    "step1": "Divide the number by 2 to get 50% of the number",
+    "step2": "Add the result of Step 1 ({temp1}) to the original number ({op2}) to get the final answer (150%)"
+  },
+  "trick58": {
+    "step1": "Convert the percentage to standard multiplication",
+    "step2": "Multiply the number by {multiplier}"
+  },
+  "trick107": {
+    "step1": "Convert the percentage to division and multiplication",
+    "step2": "Divide the number by {divisor}",
+    "step3": "Multiply the result of Step 2 ({temp1}) by {multiplier}"
+  },
+  "trick106": {
+    "step1": "Convert the percentage to multi-step division and multiplication",
+    "step2": "Divide the number by {divisor}",
+    "step3": "Multiply the result of Step 2 ({temp1}) by {multiplier}",
+    "step4": "Multiply the result of Step 3 ({temp2}) by {multiplier2}"
   },
   "groups": {
     "addition": "Addition",

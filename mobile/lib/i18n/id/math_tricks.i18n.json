@@ -11,6 +11,7 @@
   "stepsLabel": "Langkah Penyelesaian:",
   "soal": "Soal:",
   "jadi": "Jadi, {result}",
+  "of": "dari",
   "trick14": {
     "step1RoundUp": "Bulatkan {op2} ke atas menjadi {temp2} dengan menambahkan {temp3}",
     "step1RoundDown": "Bulatkan {op2} ke bawah menjadi {temp2} dengan mengurangi {temp3}",
@@ -72,6 +73,64 @@
     "step1": "Pecah perkalian menjadi dua bagian. Pertama, kalikan dengan {var1}",
     "step2": "Kedua, kalikan dengan {var2}",
     "step3": "Tambahkan hasil Langkah 1 ({temp1}) dan Langkah 2 ({temp2}) untuk mendapatkan jawaban akhir"
+  },
+  "trick60": {
+    "step1": "Bagi bilangan dengan {divisor}",
+    "step2": "Kalikan hasil Langkah 1 ({temp1}) dengan {multiplier}",
+    "step3": "Kalikan bilangan asli dengan {multiplier2}",
+    "step4": "Tambahkan hasil Langkah 2 ({temp2}) dan Langkah 3 ({temp3}) untuk mendapatkan jawaban akhir"
+  },
+  "trick66": {
+    "step1": "Pecah perkalian menjadi tiga bagian. Pertama, kalikan dengan {var1}",
+    "step2": "Kedua, kalikan dengan {var2}",
+    "step3": "Ketiga, kalikan dengan {var3}",
+    "step4": "Tambahkan hasil Langkah 1 ({temp1}), Langkah 2 ({temp2}), dan Langkah 3 ({temp3}) untuk mendapatkan jawaban akhir"
+  },
+  "trick68": {
+    "step1": "Kalikan bilangan dengan {var1} (untuk mempermudah perhitungan)",
+    "step2": "Kalikan bilangan dengan {var2}",
+    "step3": "Kurangkan hasil Langkah 1 ({temp1}) dengan hasil Langkah 2 ({temp2}) untuk mendapatkan jawaban akhir"
+  },
+  "trick95": {
+    "step1": "Bagi bilangan dengan {divisor}",
+    "step2": "Kalikan hasil Langkah 1 ({temp1}) dengan {multiplier1}",
+    "step3": "Kalikan hasil Langkah 2 ({temp2}) dengan {multiplier2} untuk mendapatkan jawaban akhir"
+  },
+  "trick50": {
+    "step1": "Kita tahu bahwa {op1}% sama dengan 100% dibagi {divisor}",
+    "step2": "Bagi bilangan dengan {divisor} untuk mendapatkan jawaban akhir"
+  },
+  "trick52": {
+    "step1": "Bagi bilangan dengan {divisor1} untuk mendapatkan 10% dari bilangan tersebut",
+    "step2": "Bagi hasil Langkah 1 ({temp1}) dengan {divisor2} untuk mendapatkan 5% dari bilangan tersebut",
+    "step3": "Tambahkan hasil Langkah 1 ({temp1}) dan Langkah 2 ({temp2}) untuk mendapatkan jawaban akhir (15%)"
+  },
+  "trick55": {
+    "step1": "Bagi bilangan dengan {divisor} untuk mendapatkan {percent}% dari bilangan tersebut",
+    "step2": "Kalikan hasil Langkah 1 ({temp1}) dengan {multiplier} untuk mendapatkan jawaban akhir"
+  },
+  "trick56": {
+    "step1": "Bagi bilangan dengan {divisor} untuk mendapatkan {percent}% dari bilangan tersebut",
+    "step2": "Bagi hasil Langkah 1 ({temp1}) dengan 2 untuk mendapatkan jawaban akhir ({targetPercent}%)"
+  },
+  "trick57": {
+    "step1": "Bagi bilangan dengan 2 untuk mendapatkan 50% dari bilangan tersebut",
+    "step2": "Tambahkan hasil Langkah 1 ({temp1}) ke bilangan asli ({op2}) untuk mendapatkan jawaban akhir (150%)"
+  },
+  "trick58": {
+    "step1": "Ubah persentase menjadi perkalian biasa",
+    "step2": "Kalikan bilangan dengan {multiplier}"
+  },
+  "trick107": {
+    "step1": "Ubah persentase menjadi pembagian dan perkalian",
+    "step2": "Bagi bilangan dengan {divisor}",
+    "step3": "Kalikan hasil Langkah 2 ({temp1}) dengan {multiplier}"
+  },
+  "trick106": {
+    "step1": "Ubah persentase menjadi pembagian dan perkalian bertingkat",
+    "step2": "Bagi bilangan dengan {divisor}",
+    "step3": "Kalikan hasil Langkah 2 ({temp1}) dengan {multiplier}",
+    "step4": "Kalikan hasil Langkah 3 ({temp2}) dengan {multiplier2}"
   },
   "groups": {
     "addition": "Penjumlahan",
