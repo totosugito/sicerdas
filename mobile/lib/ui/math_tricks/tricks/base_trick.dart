@@ -16,11 +16,7 @@ abstract class BaseTrick {
   void generateData();
   String createHtmlStepsSolution(BuildContext context);
 
-  List<KeyPadMode> get supportedKeyPads => [
-        KeyPadMode.multipleChoice,
-        KeyPadMode.numPad,
-        KeyPadMode.yesNo,
-      ];
+  List<KeyPadMode> get supportedKeyPads => [KeyPadMode.multipleChoice, KeyPadMode.numPad, KeyPadMode.yesNo];
 
   void generateDemoData() {
     generateData();
@@ -101,7 +97,7 @@ abstract class BaseTrick {
   </div>
   $steps
   <div style="margin-top: 16px; font-size: 15px; font-weight: bold; color: #10b981; padding: 8px; background-color: #f0fdf4; border-radius: 6px; display: inline-block;">
-    $finalAnswer.
+    $finalAnswer
   </div>
 </div>
 ''';

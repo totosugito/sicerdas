@@ -25,6 +25,11 @@ import '../tricks/percent/trick57_percent_150.dart';
 import '../tricks/percent/trick58_percent_200.dart';
 import '../tricks/percent/trick107_percent_40.dart';
 import '../tricks/percent/trick106_percent_750.dart';
+import '../tricks/division/trick10_divide_by_5.dart';
+import '../tricks/division/trick28_divide_by_4.dart';
+import '../tricks/division/trick38_divide_by_05.dart';
+import '../tricks/division/trick71_divide_by_15.dart';
+import '../tricks/division/trick88_divide_by_8.dart';
 
 class GeneratedQuestion {
   final String questionText;
@@ -122,6 +127,24 @@ class TricksQuestionGenerator {
         return Trick107Percent40(level, chapterKey: chapterKey);
       case 'trick106Percent750':
         return Trick106Percent750(level, chapterKey: chapterKey);
+      case 'trick10DivideBy5':
+      case 'trick30DivideBy50':
+      case 'trick31DivideBy25':
+      case 'trick41DivideBy02':
+        return Trick10DivideBy5(level, chapterKey: chapterKey);
+      case 'trick28DivideBy4':
+      case 'trick29DivideBy20':
+      case 'trick36DivideBy40':
+      case 'trick72DivideBy6':
+      case 'trick98DivideBy9':
+        return Trick28DivideBy4(level, chapterKey: chapterKey);
+      case 'trick38DivideBy05':
+      case 'trick43DivideBy025':
+        return Trick38DivideBy05(level, chapterKey: chapterKey);
+      case 'trick71DivideBy15':
+        return Trick71DivideBy15(level, chapterKey: chapterKey);
+      case 'trick88DivideBy8':
+        return Trick88DivideBy8(level, chapterKey: chapterKey);
       default:
         throw UnimplementedError('Trick "$chapterKey" is under development and not yet registered.');
     }

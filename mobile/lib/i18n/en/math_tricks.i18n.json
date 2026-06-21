@@ -132,6 +132,27 @@
     "step3": "Multiply the result of Step 2 ({temp1}) by {multiplier}",
     "step4": "Multiply the result of Step 3 ({temp2}) by {multiplier2}"
   },
+  "trick10": {
+    "step1": "Divide the number by {divisor}",
+    "step2": "Multiply the result of Step 1 ({temp1}) by {multiplier}"
+  },
+  "trick28": {
+    "step1": "Divide the number by {divisor1}",
+    "step2": "Divide the result of Step 1 ({temp1}) by {divisor2}"
+  },
+  "trick38": {
+    "step1": "Multiply the number by {multiplier} (since dividing by a decimal is equivalent to multiplying by its reciprocal)"
+  },
+  "trick71": {
+    "step1": "Divide the number by {divisor1}",
+    "step2": "Divide the result of Step 1 ({temp1}) by {divisor2}",
+    "step3": "Multiply the result of Step 2 ({temp2}) by {multiplier}"
+  },
+  "trick88": {
+    "step1": "Divide the number by {divisor1}",
+    "step2": "Divide the result of Step 1 ({temp1}) by {divisor2}",
+    "step3": "Divide the result of Step 2 ({temp2}) by {divisor3}"
+  },
   "groups": {
     "addition": "Addition",
     "subtraction": "Subtraction",

@@ -132,6 +132,27 @@
     "step3": "Kalikan hasil Langkah 2 ({temp1}) dengan {multiplier}",
     "step4": "Kalikan hasil Langkah 3 ({temp2}) dengan {multiplier2}"
   },
+  "trick10": {
+    "step1": "Bagi bilangan dengan {divisor}",
+    "step2": "Kalikan hasil Langkah 1 ({temp1}) dengan {multiplier}"
+  },
+  "trick28": {
+    "step1": "Bagi bilangan dengan {divisor1}",
+    "step2": "Bagi hasil Langkah 1 ({temp1}) dengan {divisor2}"
+  },
+  "trick38": {
+    "step1": "Kalikan bilangan dengan {multiplier} (karena pembagian dengan desimal sama dengan perkalian dengan kebalikannya)"
+  },
+  "trick71": {
+    "step1": "Bagi bilangan dengan {divisor1}",
+    "step2": "Bagi hasil Langkah 1 ({temp1}) dengan {divisor2}",
+    "step3": "Kalikan hasil Langkah 2 ({temp2}) dengan {multiplier}"
+  },
+  "trick88": {
+    "step1": "Bagi bilangan dengan {divisor1}",
+    "step2": "Bagi hasil Langkah 1 ({temp1}) dengan {divisor2}",
+    "step3": "Bagi hasil Langkah 2 ({temp2}) dengan {divisor3}"
+  },
   "groups": {
     "addition": "Penjumlahan",
     "subtraction": "Pengurangan",
