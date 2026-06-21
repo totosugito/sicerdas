@@ -30,6 +30,17 @@ import '../tricks/division/trick28_divide_by_4.dart';
 import '../tricks/division/trick38_divide_by_05.dart';
 import '../tricks/division/trick71_divide_by_15.dart';
 import '../tricks/division/trick88_divide_by_8.dart';
+import '../tricks/square/trick06_square_ending_in_5.dart';
+import '../tricks/square/trick102_square_ending_in_05.dart';
+import '../tricks/square/trick103_square_ending_in_15.dart';
+import '../tricks/square/trick104_square_ending_in_95.dart';
+import '../tricks/square/trick17_square_between_90_and_99.dart';
+import '../tricks/square/trick19_square_between_50_and_59.dart';
+import '../tricks/square/trick32_square_between_10_and_19.dart';
+import '../tricks/square/trick44_48_square_between_20_and_89.dart';
+import '../tricks/square/trick39_square_ending_in_25.dart';
+import '../tricks/square/trick91_square_ending_in_75.dart';
+import '../tricks/square/trick92_square_ending_in_125.dart';
 
 class GeneratedQuestion {
   final String questionText;
@@ -145,6 +156,34 @@ class TricksQuestionGenerator {
         return Trick71DivideBy15(level, chapterKey: chapterKey);
       case 'trick88DivideBy8':
         return Trick88DivideBy8(level, chapterKey: chapterKey);
+      case 'trick06SquareEndingIn5':
+        return Trick06SquareEndingIn5(level);
+      case 'trick102SquareEndingIn05':
+        return Trick102SquareEndingIn05(level);
+      case 'trick103SquareEndingIn15':
+        return Trick103SquareEndingIn15(level);
+      case 'trick104SquareEndingIn95':
+        return Trick104SquareEndingIn95(level);
+      case 'trick17SquareBetween90And99':
+      case 'trick23SquareBetween100And109':
+        return Trick17SquareBetween90And99(level, chapterKey: chapterKey);
+      case 'trick19SquareBetween50And59':
+      case 'trick20SquareBetween40And49':
+        return Trick19SquareBetween50And59(level, chapterKey: chapterKey);
+      case 'trick32SquareBetween10And19':
+        return Trick32SquareBetween10And19(level);
+      case 'trick44SquareBetween20And29':
+      case 'trick45SquareBetween30And39':
+      case 'trick46SquareBetween60And69':
+      case 'trick47SquareBetween70And79':
+      case 'trick48SquareBetween80And89':
+        return Trick44To48SquareBetween20And89(level, chapterKey: chapterKey);
+      case 'trick39SquareEndingIn25':
+        return Trick39SquareEndingIn25(level);
+      case 'trick91SquareEndingIn75':
+        return Trick91SquareEndingIn75(level);
+      case 'trick92SquareEndingIn125':
+        return Trick92SquareEndingIn125(level);
       default:
         throw UnimplementedError('Trick "$chapterKey" is under development and not yet registered.');
     }

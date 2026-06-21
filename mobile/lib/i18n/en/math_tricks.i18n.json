@@ -132,6 +132,82 @@
     "step3": "Multiply the result of Step 2 ({temp1}) by {multiplier}",
     "step4": "Multiply the result of Step 3 ({temp2}) by {multiplier2}"
   },
+  "step_add_step2_by_step3": "Add the result of Step 2 to the result of Step 3",
+  "step_add_step1_by_step2": "Add the result of Step 1 to the result of Step 2",
+  "step_multiply_step3_by": "Multiply the result of Step 3 by {multiplier}",
+  "step_do_the_calculation": "Perform the following calculation",
+  "trick06": {
+    "step1": "Multiply the tens digit ({temp1}) by the tens digit plus one ({temp1} + 1)",
+    "step2": "Write 25 at the end of the result of Step 1"
+  },
+  "trick102": {
+    "step1": "Square the digits before 05 ({temp1})",
+    "step2": "Multiply the result of Step 1 ({temp2}) by 10 and add the digits before 05 ({temp1})",
+    "step3": "Write 025 at the end of the result of Step 2"
+  },
+  "trick103": {
+    "step1": "Square the digits before 15 ({temp1})",
+    "step2": "Add the result of Step 1 ({temp2}) to half of that digit ({float1}) and multiply the result by 10",
+    "step3": "Multiply the digits before 15 ({temp1}) by 2",
+    "step4": "Subtract the result of Step 3 ({temp4}) from the result of Step 2 ({temp3})",
+    "step5": "Write 225 at the end of the result of Step 4"
+  },
+  "trick104": {
+    "step1": "Add 1 to the digits before 95 ({temp1})",
+    "step2": "Square the result of Step 1 ({temp2})",
+    "step3": "Multiply the result of Step 2 ({temp3}) by 10 and subtract the result of Step 1 ({temp2})",
+    "step4": "Write 025 at the end of the result of Step 3"
+  },
+  "trick17": {
+    "step1": "Subtract the number ({temp1}) from 100",
+    "step2": "Subtract the difference ({temp2}) from the number ({temp1})",
+    "step3": "Square the difference ({temp2})",
+    "step4": "Combine the result of Step 2 ({temp3}) and Step 3 ({temp4})"
+  },
+  "trick23": {
+    "step1": "Add the units digit ({temp1}) to the number ({op1})",
+    "step2": "Square the units digit ({temp1})",
+    "step3": "Combine the result of Step 1 ({temp2}) and Step 2 ({temp3})"
+  },
+  "trick19": {
+    "step1": "Add 25 to the units digit of the number ({temp1})",
+    "step2": "Square the units digit ({temp1})",
+    "step3": "Combine the result of Step 1 ({temp2}) and Step 2 ({temp3})"
+  },
+  "trick20": {
+    "step1": "Subtract the number ({op1}) from 50",
+    "step2": "Subtract the difference ({temp2}) from 25",
+    "step3": "Square the difference ({temp2})",
+    "step4": "Combine the result of Step 2 ({temp3}) and Step 3 ({temp4})"
+  },
+  "trick32": {
+    "step1": "Add the units digit ({temp1}) to the number ({op1})",
+    "step2": "Multiply the result of Step 1 ({temp2}) by 10",
+    "step3": "Square the units digit ({temp1})"
+  },
+  "trick44": {
+    "step1": "Split the number ({op1}) into tens ({tens}) and units",
+    "step2": "Square the tens digit ({tens})",
+    "step3": "Multiply the units digit ({units}) by {multiplier}",
+    "step4": "Square the units digit ({units})",
+    "step5": "Add the result of Step 2 to the result of Step 3",
+    "step6": "Add the result of Step 4 to the result of Step 5"
+  },
+  "trick39": {
+    "step1": "Square the digits before 25 ({temp1})",
+    "step2": "Divide the digits before 25 ({temp1}) by 2",
+    "step5": "Write 625 at the end of the result of Step 4"
+  },
+  "trick91": {
+    "step2": "Write 625 at the end of the result of Step 1"
+  },
+  "trick92": {
+    "step1": "Square the thousands digit ({temp1})",
+    "step2": "Divide the thousands digit ({temp1}) by 4",
+    "step3": "Add the result of Step 1 to Step 2 and multiply by 100",
+    "step4": "Add 1 to the result of Step 3",
+    "step5": "Write 5625 at the end of the result of Step 4"
+  },
   "trick10": {
     "step1": "Divide the number by {divisor}",
     "step2": "Multiply the result of Step 1 ({temp1}) by {multiplier}"

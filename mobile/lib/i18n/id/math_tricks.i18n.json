@@ -132,6 +132,82 @@
     "step3": "Kalikan hasil Langkah 2 ({temp1}) dengan {multiplier}",
     "step4": "Kalikan hasil Langkah 3 ({temp2}) dengan {multiplier2}"
   },
+  "step_add_step2_by_step3": "Tambahkan hasil Langkah 2 dengan hasil Langkah 3",
+  "step_add_step1_by_step2": "Tambahkan hasil Langkah 1 dengan hasil Langkah 2",
+  "step_multiply_step3_by": "Kalikan hasil Langkah 3 dengan {multiplier}",
+  "step_do_the_calculation": "Lakukan perhitungan berikut",
+  "trick06": {
+    "step1": "Kalikan angka puluhan ({temp1}) dengan angka puluhan ditambah satu ({temp1} + 1)",
+    "step2": "Tuliskan angka 25 di akhir hasil Langkah 1"
+  },
+  "trick102": {
+    "step1": "Kuadratkan angka sebelum 05 ({temp1})",
+    "step2": "Kalikan hasil Langkah 1 ({temp2}) dengan 10 dan tambahkan dengan angka sebelum 05 ({temp1})",
+    "step3": "Tuliskan angka 025 di akhir hasil Langkah 2"
+  },
+  "trick103": {
+    "step1": "Kuadratkan angka sebelum 15 ({temp1})",
+    "step2": "Tambahkan hasil Langkah 1 ({temp2}) dengan setengah dari angka tersebut ({float1}) lalu kalikan hasilnya dengan 10",
+    "step3": "Kalikan angka sebelum 15 ({temp1}) dengan 2",
+    "step4": "Kurangkan hasil Langkah 2 ({temp3}) dengan hasil Langkah 3 ({temp4})",
+    "step5": "Tuliskan angka 225 di akhir hasil Langkah 4"
+  },
+  "trick104": {
+    "step1": "Tambahkan angka sebelum 95 ({temp1}) dengan 1",
+    "step2": "Kuadratkan hasil Langkah 1 ({temp2})",
+    "step3": "Kalikan hasil Langkah 2 ({temp3}) dengan 10 dan kurangi dengan hasil Langkah 1 ({temp2})",
+    "step4": "Tuliskan angka 025 di akhir hasil Langkah 3"
+  },
+  "trick17": {
+    "step1": "Kurangkan angka tersebut ({temp1}) dari 100",
+    "step2": "Kurangkan angka tersebut ({temp1}) dengan selisihnya ({temp2})",
+    "step3": "Kuadratkan selisihnya ({temp2})",
+    "step4": "Gabungkan hasil Langkah 2 ({temp3}) dan Langkah 3 ({temp4})"
+  },
+  "trick23": {
+    "step1": "Tambahkan angka tersebut ({op1}) dengan digit satuannya ({temp1})",
+    "step2": "Kuadratkan digit satuannya ({temp1})",
+    "step3": "Gabungkan hasil Langkah 1 ({temp2}) dan Langkah 2 ({temp3})"
+  },
+  "trick19": {
+    "step1": "Tambahkan angka 25 dengan digit satuan dari angka tersebut ({temp1})",
+    "step2": "Kuadratkan digit satuannya ({temp1})",
+    "step3": "Gabungkan hasil Langkah 1 ({temp2}) dan Langkah 2 ({temp3})"
+  },
+  "trick20": {
+    "step1": "Kurangkan angka tersebut ({op1}) dari 50",
+    "step2": "Kurangkan angka 25 dengan selisihnya ({temp2})",
+    "step3": "Kuadratkan selisihnya ({temp2})",
+    "step4": "Gabungkan hasil Langkah 2 ({temp3}) dan Langkah 3 ({temp4})"
+  },
+  "trick32": {
+    "step1": "Tambahkan angka tersebut ({op1}) dengan digit satuannya ({temp1})",
+    "step2": "Kalikan hasil Langkah 1 ({temp2}) dengan 10",
+    "step3": "Kuadratkan digit satuannya ({temp1})"
+  },
+  "trick44": {
+    "step1": "Pecah angka ({op1}) menjadi puluhan ({tens}) dan satuan",
+    "step2": "Kuadratkan angka puluhannya ({tens})",
+    "step3": "Kalikan digit satuan ({units}) dengan {multiplier}",
+    "step4": "Kuadratkan digit satuannya ({units})",
+    "step5": "Tambahkan hasil Langkah 2 dengan hasil Langkah 3",
+    "step6": "Tambahkan hasil Langkah 4 dengan hasil Langkah 5"
+  },
+  "trick39": {
+    "step1": "Kuadratkan angka sebelum 25 ({temp1})",
+    "step2": "Bagi angka sebelum 25 ({temp1}) dengan 2",
+    "step5": "Tuliskan angka 625 di akhir hasil Langkah 4"
+  },
+  "trick91": {
+    "step2": "Tuliskan angka 625 di akhir hasil Langkah 1"
+  },
+  "trick92": {
+    "step1": "Kuadratkan angka ribuan ({temp1})",
+    "step2": "Bagi angka ribuan ({temp1}) dengan 4",
+    "step3": "Tambahkan hasil Langkah 1 dengan hasil Langkah 2 lalu kalikan dengan 100",
+    "step4": "Tambahkan hasil Langkah 3 dengan 1",
+    "step5": "Tuliskan angka 5625 di akhir hasil Langkah 4"
+  },
   "trick10": {
     "step1": "Bagi bilangan dengan {divisor}",
     "step2": "Kalikan hasil Langkah 1 ({temp1}) dengan {multiplier}"
