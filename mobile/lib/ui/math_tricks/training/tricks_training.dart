@@ -60,8 +60,7 @@ class TricksTrainingScreen extends ConsumerStatefulWidget {
   }
 
   @override
-  ConsumerState<TricksTrainingScreen> createState() =>
-      _TricksTrainingScreenState();
+  ConsumerState<TricksTrainingScreen> createState() => _TricksTrainingScreenState();
 }
 
 class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
@@ -96,8 +95,7 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
     super.initState();
     _generateNextQuestion();
     final supported = _currentQuestion.supportedKeyPads;
-    if (widget.initialKeyPadMode != null &&
-        supported.contains(widget.initialKeyPadMode)) {
+    if (widget.initialKeyPadMode != null && supported.contains(widget.initialKeyPadMode)) {
       _currentPadMode = widget.initialKeyPadMode!;
     } else if (supported.isNotEmpty) {
       final preferredIndex = widget.level % supported.length;
@@ -125,10 +123,7 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
   }
 
   void _generateNextQuestion() {
-    _currentQuestion = TricksQuestionGenerator.generate(
-      widget.chapterKey,
-      widget.level,
-    );
+    _currentQuestion = TricksQuestionGenerator.generate(widget.chapterKey, widget.level);
     _answered = false;
     _selectedAnswer = null;
     _numInput = '';
@@ -139,9 +134,7 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
     if (showCorrect) {
       _proposedAnswer = _currentQuestion.answer;
     } else {
-      final distractors = _currentQuestion.choices
-          .where((c) => c != _currentQuestion.answer)
-          .toList();
+      final distractors = _currentQuestion.choices.where((c) => c != _currentQuestion.answer).toList();
       if (distractors.isNotEmpty) {
         _proposedAnswer = distractors[_random.nextInt(distractors.length)];
       } else {
@@ -173,8 +166,7 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
   void _onYesNoAnswered(bool chosenYes) {
     if (_answered) return;
 
-    final bool isProposedAnswerCorrect =
-        (_proposedAnswer == _currentQuestion.answer);
+    final bool isProposedAnswerCorrect = (_proposedAnswer == _currentQuestion.answer);
     final bool correct = (chosenYes == isProposedAnswerCorrect);
 
     setState(() {
@@ -255,10 +247,7 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
       _onAnswerSubmitted(_currentQuestion.answer + 1);
     }
 
-    SolutionSheet.show(
-      context,
-      htmlContent: _currentQuestion.buildSolutionHtml(context),
-    );
+    SolutionSheet.show(context, htmlContent: _currentQuestion.buildSolutionHtml(context));
   }
 
   @override
@@ -286,10 +275,7 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
               title: Text(l10n.math_tricks.training.exitTitle),
               description: Text(l10n.math_tricks.training.exitDescription),
               actions: [
-                ShadButton.outline(
-                  child: Text(l10n.common.cancel),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
+                ShadButton.outline(child: Text(l10n.common.cancel), onPressed: () => Navigator.of(context).pop()),
                 ShadButton.destructive(
                   child: Text(l10n.math_tricks.training.exitButton),
                   onPressed: () {
@@ -309,42 +295,55 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
               final nextIndex = (currentIndex + 1) % supported.length;
               _currentPadMode = supported[nextIndex];
               _numInput = ''; // Clear input
-              _generateNextQuestion(); // Regenerate proposed answer for yesNo
             });
           }
         },
         onShowSolution: () => _showSolutionBottomSheet(context),
       ),
-      body: Column(
-        children: [
-          // Progress Dots Bar
-          ProgressDots(
-            totalQuestions: _totalQuestions,
-            currentQuestionIndex: _currentQuestionIndex,
-            questionResults: _questionResults,
-            themeColor: widget.themeColor,
-            isDark: isDark,
-          ),
+      body: SafeArea(
+        child: Builder(
+          builder: (context) {
+            final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+            Widget content = Column(
+              children: [
+                // Progress Dots Bar
+                ProgressDots(
+                  totalQuestions: _totalQuestions,
+                  currentQuestionIndex: _currentQuestionIndex,
+                  questionResults: _questionResults,
+                  themeColor: widget.themeColor,
+                  isDark: isDark,
+                ),
 
-          const Spacer(),
+                if (isLandscape) const SizedBox(height: 12) else const Spacer(),
 
-          // Question Card
-          TrainingQuestionCard(
-            questionText: _currentQuestion.questionText,
-            isYesNo: _currentPadMode == KeyPadMode.yesNo,
-            proposedAnswer: _proposedAnswer,
-            isDark: isDark,
-          ),
+                // Question Card
+                TrainingQuestionCard(
+                  questionText: _currentQuestion.questionText,
+                  isYesNo: _currentPadMode == KeyPadMode.yesNo,
+                  proposedAnswer: _proposedAnswer,
+                  isDark: isDark,
+                ),
 
-          const Spacer(),
+                if (isLandscape) const SizedBox(height: 12) else const Spacer(),
 
-          // Input Method
-          Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: _buildInputWidget(isDark),
-          ),
-          const SizedBox(height: 16),
-        ],
+                // Input Method
+                Padding(
+                  padding: EdgeInsets.all(isLandscape ? 12.0 : 24.0),
+                  child: Center(
+                    child: SizedBox(width: isLandscape ? 400 : double.infinity, child: _buildInputWidget(isDark)),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+            );
+
+            if (isLandscape) {
+              return SingleChildScrollView(child: content);
+            }
+            return content;
+          },
+        ),
       ),
       bottomNavigationBar: AdsBanner.buildBottomBar(ref),
     );
@@ -402,9 +401,7 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
     }
 
     final isNextAvailable = stars > 0 && widget.level < 50;
-    final actionLabel = isNextAvailable
-        ? l10n.math_tricks.training.nextLevel
-        : l10n.math_tricks.training.retry;
+    final actionLabel = isNextAvailable ? l10n.math_tricks.training.nextLevel : l10n.math_tricks.training.retry;
 
     return TrainingFinishedView(
       correctAnswers: _correctAnswers,

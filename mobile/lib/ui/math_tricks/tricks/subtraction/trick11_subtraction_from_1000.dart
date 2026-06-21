@@ -33,6 +33,15 @@ class Trick11SubtractionFrom1000 extends BaseTrick {
   }
 
   @override
+  void generateDemoData() {
+    op1 = 1000;
+    op2 = 325;
+    answer = op1 - op2;
+    questionText = '$op1 - $op2';
+    choices = generateChoices(answer);
+  }
+
+  @override
   String createHtmlStepsSolution(BuildContext context) {
     final l10n = Translations.of(context);
 

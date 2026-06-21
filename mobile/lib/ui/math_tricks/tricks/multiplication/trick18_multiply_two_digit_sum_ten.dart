@@ -32,6 +32,15 @@ class Trick18MultiplyTwoDigitSumTen extends BaseTrick {
   }
 
   @override
+  void generateDemoData() {
+    op1 = 26;
+    op2 = 24;
+    answer = op1 * op2;
+    questionText = '$op1 × $op2';
+    choices = generateChoices(answer);
+  }
+
+  @override
   String createHtmlStepsSolution(BuildContext context) {
     final l10n = Translations.of(context);
 

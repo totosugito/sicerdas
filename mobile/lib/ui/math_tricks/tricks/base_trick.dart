@@ -22,8 +22,23 @@ abstract class BaseTrick {
         KeyPadMode.yesNo,
       ];
 
+  void generateDemoData() {
+    generateData();
+  }
+
   GeneratedQuestion generate() {
     generateData();
+    return GeneratedQuestion(
+      questionText: questionText,
+      answer: answer,
+      choices: choices,
+      getSolutionHtml: createHtmlStepsSolution,
+      supportedKeyPads: supportedKeyPads,
+    );
+  }
+
+  GeneratedQuestion generateDemo() {
+    generateDemoData();
     return GeneratedQuestion(
       questionText: questionText,
       answer: answer,

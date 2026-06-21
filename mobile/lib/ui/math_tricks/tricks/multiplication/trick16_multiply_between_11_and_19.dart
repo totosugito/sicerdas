@@ -36,6 +36,15 @@ class Trick16MultiplyBetween11And19 extends BaseTrick {
   }
 
   @override
+  void generateDemoData() {
+    op1 = 16;
+    op2 = 12;
+    answer = op1 * op2;
+    questionText = '$op1 × $op2';
+    choices = generateChoices(answer);
+  }
+
+  @override
   String createHtmlStepsSolution(BuildContext context) {
     final l10n = Translations.of(context);
 

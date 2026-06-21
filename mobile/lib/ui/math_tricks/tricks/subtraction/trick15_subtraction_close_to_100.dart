@@ -39,6 +39,15 @@ class Trick15SubtractionCloseTo100 extends BaseTrick {
   }
 
   @override
+  void generateDemoData() {
+    op1 = 125;
+    op2 = 98;
+    answer = op1 - op2;
+    questionText = '$op1 - $op2';
+    choices = generateChoices(answer);
+  }
+
+  @override
   String createHtmlStepsSolution(BuildContext context) {
     final l10n = Translations.of(context);
     int temp3;

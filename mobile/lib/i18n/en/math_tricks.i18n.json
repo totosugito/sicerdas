@@ -52,6 +52,27 @@
     "step1": "Divide the number by {divisor}",
     "step2": "Multiply the result of Step 1 by {multiplier}"
   },
+  "trick08": {
+    "step1": "Multiply the number by {multiplier} (instead of multiplying by {original})",
+    "step2": "Subtract the original number ({op1}) from the result of Step 1 ({temp1})"
+  },
+  "trick09": {
+    "step1": "Multiply the number by {multiplier1} (to simplify the calculation)",
+    "step2": "Multiply the result of Step 1 ({temp1}) by {multiplier2}"
+  },
+  "trick26": {
+    "step1": "Multiply the number by {multiplier} (to simplify the calculation)",
+    "step2": "Divide the result of Step 1 ({temp1}) by {divisor}",
+    "step3": "Add the result of Step 1 ({temp1}) and Step 2 ({temp2}) to get the final answer"
+  },
+  "trick37": {
+    "step1": "Divide the number by {divisor} (because multiplying by {multiplier} is equivalent to dividing by {divisor})"
+  },
+  "trick59": {
+    "step1": "Split the multiplication into two parts. First, multiply by {var1}",
+    "step2": "Second, multiply by {var2}",
+    "step3": "Add the result of Step 1 ({temp1}) and Step 2 ({temp2}) to get the final answer"
+  },
   "groups": {
     "addition": "Addition",
     "subtraction": "Subtraction",

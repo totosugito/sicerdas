@@ -52,6 +52,27 @@
     "step1": "Bagi bilangan dengan {divisor}",
     "step2": "Kalikan hasil dari Langkah 1 dengan {multiplier}"
   },
+  "trick08": {
+    "step1": "Kalikan bilangan dengan {multiplier} (sebagai pengganti perkalian dengan {original})",
+    "step2": "Kurangkan hasil dari Langkah 1 ({temp1}) dengan bilangan aslinya ({op1})"
+  },
+  "trick09": {
+    "step1": "Kalikan bilangan dengan {multiplier1} (untuk menyederhanakan perkalian)",
+    "step2": "Kalikan hasil dari Langkah 1 ({temp1}) dengan {multiplier2}"
+  },
+  "trick26": {
+    "step1": "Kalikan bilangan dengan {multiplier} (untuk mempermudah perhitungan)",
+    "step2": "Bagi hasil dari Langkah 1 ({temp1}) dengan {divisor}",
+    "step3": "Tambahkan hasil Langkah 1 ({temp1}) dan Langkah 2 ({temp2}) untuk mendapatkan jawaban akhir"
+  },
+  "trick37": {
+    "step1": "Bagi bilangan dengan {divisor} (karena perkalian dengan {multiplier} sama dengan pembagian dengan {divisor})"
+  },
+  "trick59": {
+    "step1": "Pecah perkalian menjadi dua bagian. Pertama, kalikan dengan {var1}",
+    "step2": "Kedua, kalikan dengan {var2}",
+    "step3": "Tambahkan hasil Langkah 1 ({temp1}) dan Langkah 2 ({temp2}) untuk mendapatkan jawaban akhir"
+  },
   "groups": {
     "addition": "Penjumlahan",
     "subtraction": "Pengurangan",

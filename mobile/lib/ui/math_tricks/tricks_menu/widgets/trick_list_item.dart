@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../../core/database/database.dart';
-import '../../level_selection/tricks_level_selection.dart';
+import 'trick_info_sheet.dart';
 
 class TrickListItem extends StatelessWidget {
   final int id;
@@ -30,12 +30,14 @@ class TrickListItem extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        TricksLevelSelectionScreen.navigate(
+        TrickInfoSheet.show(
           context,
-          groupTitle: groupTitle,
-          chapterKey: trickKey,
+          id: id,
+          trickKey: trickKey,
           trickTitle: trickTitle,
+          groupTitle: groupTitle,
           themeColor: themeColor,
+          chapter: chapter,
         );
       },
       borderRadius: BorderRadius.circular(8),

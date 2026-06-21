@@ -33,6 +33,15 @@ class Trick21MultiplyTwoDigitEndingIn1 extends BaseTrick {
   }
 
   @override
+  void generateDemoData() {
+    op1 = 21;
+    op2 = 41;
+    answer = op1 * op2;
+    questionText = '$op1 × $op2';
+    choices = generateChoices(answer);
+  }
+
+  @override
   String createHtmlStepsSolution(BuildContext context) {
     final l10n = Translations.of(context);
 

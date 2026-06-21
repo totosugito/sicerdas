@@ -82,6 +82,46 @@ class Trick07MultiplyBy5 extends BaseTrick {
   }
 
   @override
+  void generateDemoData() {
+    switch (chapterKey) {
+      case 'trick07MultiplyBy5':
+        op1 = 16;
+        op2 = 5;
+        break;
+      case 'trick34MultiplyBy25':
+        op1 = 16;
+        op2 = 25;
+        break;
+      case 'trick35MultiplyBy50':
+        op1 = 18;
+        op2 = 50;
+        break;
+      case 'trick40MultiplyBy02':
+        op1 = 20;
+        op2 = 0.2;
+        break;
+      case 'trick90MultiplyBy125':
+        op1 = 24;
+        op2 = 125;
+        break;
+      case 'trick93MultiplyBy250':
+        op1 = 16;
+        op2 = 250;
+        break;
+      case 'trick94MultiplyBy500':
+        op1 = 14;
+        op2 = 500;
+        break;
+      default:
+        op1 = 16;
+        op2 = 5;
+    }
+    answer = op1 * op2;
+    questionText = '$op1 × $op2';
+    choices = generateChoices(answer);
+  }
+
+  @override
   String createHtmlStepsSolution(BuildContext context) {
     final l10n = Translations.of(context);
 
