@@ -8,6 +8,7 @@
   "progress": "Progress",
   "selectLevel": "Select Level",
   "levels": "Levels",
+  "trick": "Tricks",
   "stepsLabel": "Solution Steps:",
   "soal": "Problem:",
   "jadi": "So, {result}",
@@ -234,7 +235,7 @@
     "subtraction": "Subtraction",
     "multiplication": "Multiplication",
     "division": "Division",
-    "square": "Squaring / Roots",
+    "square": "Squaring",
     "percent": "Percentage"
   },
   "tricks": {

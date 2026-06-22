@@ -8,6 +8,7 @@
   "progress": "Progres",
   "selectLevel": "Pilih Level",
   "levels": "Level",
+  "trick": "Trik",
   "stepsLabel": "Langkah Penyelesaian:",
   "soal": "Soal:",
   "jadi": "Jadi, {result}",
@@ -234,7 +235,7 @@
     "subtraction": "Pengurangan",
     "multiplication": "Perkalian",
     "division": "Pembagian",
-    "square": "Akar Kuadrat / Kuadrat",
+    "square": "Kuadrat",
     "percent": "Persentase"
   },
   "tricks": {
