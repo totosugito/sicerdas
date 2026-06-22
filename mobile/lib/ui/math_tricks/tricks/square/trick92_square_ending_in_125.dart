@@ -45,53 +45,28 @@ class Trick92SquareEndingIn125 extends BaseTrick {
     String steps = "";
 
     // Step 1: Square temp1
-    steps += createStepLabel(
-      stepNo: 1,
-      text: l10n.math_tricks.trick92.step1(temp1: temp1.toString()),
-    );
-    steps += createStepValue(
-      text:
-          "${spanColor(temp1, 'red')}²${equal()}${spanColor(temp2, 'blue')}",
-    );
+    steps += createStepLabel(stepNo: 1, text: l10n.math_tricks.trick92.step1(temp1: temp1.toString()));
+    steps += createStepValue(text: "${spanColor(temp1, 'red')}²${equal()}${spanColor(temp2, 'blue')}");
 
     // Step 2: Divide temp1 by 4
-    steps += createStepLabel(
-      stepNo: 2,
-      text: l10n.math_tricks.trick92.step2(temp1: temp1.toString()),
-    );
-    steps += createStepValue(
-      text:
-          "${spanColor(temp1, 'red')}${divide()}4${equal()}${spanColor(float1Str, 'yellow')}",
-    );
+    steps += createStepLabel(stepNo: 2, text: l10n.math_tricks.trick92.step2(temp1: temp1.toString()));
+    steps += createStepValue(text: "${spanColor(temp1, 'red')}${divide()}4${equal()}${spanColor(float1Str, 'yellow')}");
 
     // Step 3: (temp2 + float1) * 100
-    steps += createStepLabel(
-      stepNo: 3,
-      text: l10n.math_tricks.trick92.step3,
-    );
+    steps += createStepLabel(stepNo: 3, text: l10n.math_tricks.trick92.step3);
     steps += createStepValue(
       text:
           "(${spanColor(temp2, 'blue')}${plus()}${spanColor(float1Str, 'yellow')})${times()}100${equal()}${spanColor(temp3, 'green')}",
     );
 
     // Step 4: temp3 + 1
-    steps += createStepLabel(
-      stepNo: 4,
-      text: l10n.math_tricks.trick92.step4,
-    );
-    steps += createStepValue(
-      text:
-          "${spanColor(temp3, 'green')}${plus()}1${equal()}${spanColor(temp4, 'magenta')}",
-    );
+    steps += createStepLabel(stepNo: 4, text: l10n.math_tricks.trick92.step4);
+    steps += createStepValue(text: "${spanColor(temp3, 'green')}${plus()}1${equal()}${spanColor(temp4, 'magenta')}");
 
     // Step 5: Append 5625
-    steps += createStepLabel(
-      stepNo: 5,
-      text: l10n.math_tricks.trick92.step5,
-    );
+    steps += createStepLabel(stepNo: 5, text: l10n.math_tricks.trick92.step5);
     steps += createStepValue(
-      text:
-          "${spanColor(temp4, 'magenta')}_${spanColor('5625', 'yellow')}${equal()}${spanColor(answer, 'default')}",
+      text: "${spanColor(temp4, 'magenta')}_${spanColor('5625', 'yellow')}${equal()}${spanColor(answer, 'default')}",
     );
 
     return buildHtmlContainer(

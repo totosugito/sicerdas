@@ -40,14 +40,8 @@ class Trick102SquareEndingIn05 extends BaseTrick {
     String steps = "";
 
     // Step 1: Square temp1
-    steps += createStepLabel(
-      stepNo: 1,
-      text: l10n.math_tricks.trick102.step1(temp1: temp1.toString()),
-    );
-    steps += createStepValue(
-      text:
-          "${spanColor(temp1, 'blue')}²${equal()}${spanColor(temp2, 'yellow')}",
-    );
+    steps += createStepLabel(stepNo: 1, text: l10n.math_tricks.trick102.step1(temp1: temp1.toString()));
+    steps += createStepValue(text: "${spanColor(temp1, 'blue')}²${equal()}${spanColor(temp2, 'yellow')}");
 
     // Step 2: Multiply by 10 and add temp1
     steps += createStepLabel(
@@ -60,13 +54,9 @@ class Trick102SquareEndingIn05 extends BaseTrick {
     );
 
     // Step 3: Append 025
-    steps += createStepLabel(
-      stepNo: 3,
-      text: l10n.math_tricks.trick102.step3,
-    );
+    steps += createStepLabel(stepNo: 3, text: l10n.math_tricks.trick102.step3);
     steps += createStepValue(
-      text:
-          "${spanColor(temp3, 'green')}_${spanColor('025', 'magenta')}${equal()}${spanColor(answer, 'default')}",
+      text: "${spanColor(temp3, 'green')}_${spanColor('025', 'magenta')}${equal()}${spanColor(answer, 'default')}",
     );
 
     return buildHtmlContainer(
