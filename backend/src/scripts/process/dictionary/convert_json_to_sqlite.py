@@ -53,7 +53,6 @@ def convert_json_to_sqlite(json_path: Path, sqlite_path: Path):
     cursor.execute("""
     CREATE VIRTUAL TABLE words_fts USING fts5(
         word,
-        meaning,
         content='words',
         content_rowid='dict_id'
     );
@@ -62,20 +61,20 @@ def convert_json_to_sqlite(json_path: Path, sqlite_path: Path):
     # Create triggers to sync FTS5 table with the words table automatically
     cursor.execute("""
     CREATE TRIGGER words_ai AFTER INSERT ON words BEGIN
-      INSERT INTO words_fts(rowid, word, meaning) VALUES (new.dict_id, new.word, new.meaning);
+      INSERT INTO words_fts(rowid, word) VALUES (new.dict_id, new.word);
     END;
     """)
     
     cursor.execute("""
     CREATE TRIGGER words_ad AFTER DELETE ON words BEGIN
-      INSERT INTO words_fts(words_fts, rowid, word, meaning) VALUES('delete', old.dict_id, old.word, old.meaning);
+      INSERT INTO words_fts(words_fts, rowid, word) VALUES('delete', old.dict_id, old.word);
     END;
     """)
     
     cursor.execute("""
     CREATE TRIGGER words_au AFTER UPDATE ON words BEGIN
-      INSERT INTO words_fts(words_fts, rowid, word, meaning) VALUES('delete', old.dict_id, old.word, old.meaning);
-      INSERT INTO words_fts(rowid, word, meaning) VALUES (new.dict_id, new.word, new.meaning);
+      INSERT INTO words_fts(words_fts, rowid, word) VALUES('delete', old.dict_id, old.word);
+      INSERT INTO words_fts(rowid, word) VALUES (new.dict_id, new.word);
     END;
     """)
     
@@ -135,7 +134,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert Dictionary JSON to SQLite FTS5")
     parser.add_argument("--json", type=str, default="d:/React/sicerdas/test/003_id_en_01_50F2.json", help="Path to input JSON file")
     parser.add_argument("--sqlite", type=str, default="d:/React/sicerdas/test/003_id_en_01_50F2.db", help="Path to output SQLite file")
-    
+    # python convert_json_to_sqlite.py --json d:/React/sicerdas/test/004_kb_kb_01_eb22.json --sqlite d:/React/sicerdas/test/004_kb_kb_01_eb22.db
     args = parser.parse_args()
     
     json_file = Path(args.json)
