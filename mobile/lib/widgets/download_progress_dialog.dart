@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
-import 'package:bse/ui/books/libs/utils/book_utils.dart';
+import 'package:bse/core/utils/my_utils.dart';
 
 class DownloadDialogResult<T> {
   final T? data;
@@ -118,8 +118,8 @@ class _DownloadProgressDialogState<T>
     final isDark = theme.brightness == Brightness.dark;
 
     final progressPercent = (_progress * 100).toStringAsFixed(0);
-    final downloadedText = BookUtils.formatFileSize(_downloadedBytes);
-    final totalText = BookUtils.formatFileSize(_totalBytes);
+    final downloadedText = MyUtils.formatFileSize(_downloadedBytes);
+    final totalText = MyUtils.formatFileSize(_totalBytes);
 
     return PopScope(
       canPop: false,

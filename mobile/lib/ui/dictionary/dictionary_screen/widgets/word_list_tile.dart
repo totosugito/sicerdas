@@ -62,6 +62,7 @@ class WordListTile extends ConsumerWidget {
           ),
           onPressed: () async {
             final db = ref.read(dictionaryDatabaseProvider);
+            if (db == null) return;
             if (isFav) {
               await db.removeFavorite(word.dictId);
             } else {

@@ -9,5 +9,19 @@
   "examples": "Usage Examples:",
   "copiedSuccess": "Copied successfully",
   "copiedDetail": "Word details for \"{word}\" copied to clipboard.",
-  "shareSubject": "Word Meaning: {word}"
+  "shareSubject": "Word Meaning: {word}",
+  "packageList": {
+    "title": "Dictionary Databases",
+    "desc": "Please download a dictionary database for offline usage.",
+    "download": "Download",
+    "downloading": "Downloading... {progress}%",
+    "delete": "Delete",
+    "active": "Active",
+    "activate": "Use",
+    "confirmDeleteTitle": "Delete Dictionary",
+    "confirmDeleteDesc": "Are you sure you want to delete the dictionary database \"{title}\"?",
+    "noDbWarning": "No active dictionary database. Please download or activate one of the dictionaries below.",
+    "releaseDate": "Release Date: {date}",
+    "fileSize": "File Size: {size}"
+  }
 }

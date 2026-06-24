@@ -79,6 +79,7 @@ class WordDetailSheet extends ConsumerWidget {
                       isLoadingFavorite: false,
                       onFavoriteClicked: () async {
                         final db = ref.read(dictionaryDatabaseProvider);
+                        if (db == null) return;
                         if (isFav) {
                           await db.removeFavorite(word.dictId);
                         } else {

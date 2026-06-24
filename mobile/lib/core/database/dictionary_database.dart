@@ -1,16 +1,11 @@
-import 'dart:io';
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as p;
 import 'tables.dart';
 
 part 'dictionary_database.g.dart';
 
 @DriftDatabase(tables: [Words, Favorites, WordsFts])
 class DictionaryDatabase extends _$DictionaryDatabase {
-  DictionaryDatabase() : super(_openConnection());
+  DictionaryDatabase(super.e);
 
   @override
   int get schemaVersion => 1;
@@ -79,25 +74,4 @@ class DictionaryDatabase extends _$DictionaryDatabase {
   }
 }
 
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'dictionary.sqlite'));
 
-    if (!await file.exists()) {
-      // Ensure the directory exists
-      await file.parent.create(recursive: true);
-      // Copy database from asset to documents directory
-      final data = await rootBundle.load(
-        'assets/dictionary/003_id_en_01_50F2.db',
-      );
-      final bytes = data.buffer.asUint8List(
-        data.offsetInBytes,
-        data.lengthInBytes,
-      );
-      await file.writeAsBytes(bytes);
-    }
-
-    return NativeDatabase.createInBackground(file);
-  });
-}

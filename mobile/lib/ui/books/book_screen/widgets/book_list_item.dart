@@ -13,6 +13,7 @@ import 'package:bse/widgets/download_progress_dialog.dart';
 import 'package:bse/core/utils/toast_utils.dart';
 import '../../libs/providers/books_provider.dart';
 import '../../libs/services/book_service.dart';
+import 'package:bse/core/utils/my_utils.dart';
 import '../../libs/utils/book_utils.dart';
 import 'book_detail_sheet.dart';
 
@@ -256,7 +257,7 @@ class BookListItem extends ConsumerWidget {
                           const SizedBox(width: 12),
                           _buildMetaItem(
                             Icons.storage_outlined,
-                            BookUtils.formatFileSize(book.size),
+                            MyUtils.formatFileSize(book.size),
                             theme,
                             isDark,
                           ),

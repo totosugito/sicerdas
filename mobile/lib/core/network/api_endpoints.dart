@@ -1,8 +1,8 @@
 class ApiEndpoints {
   // Versioning & Sync
   static const String appLatest = '/api/app/app-latest';
-  static const String periodicTable = '/api/app/periodic-table';
   static const String periodicData = '/api/app/periodic-data';
+  static const String dictionaryData = '/api/app/dictionary-data';
 
   // Authentication
   static const String getSession = '/api/auth/get-session';

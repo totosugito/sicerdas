@@ -9,6 +9,7 @@ import periodic from "./id/periodic.json" with { type: "json" };
 import report from "./id/report.json" with { type: "json" };
 import user from "./id/user.json" with { type: "json" };
 import version from "./id/version.json" with { type: "json" };
+import dictionary from "./id/dictionary.json" with { type: "json" };
 
 const idMessages = {
   ...tier,
@@ -22,6 +23,7 @@ const idMessages = {
   ...report,
   ...user,
   ...version,
+  ...dictionary,
 };
 
 export type AppLocale = typeof idMessages;

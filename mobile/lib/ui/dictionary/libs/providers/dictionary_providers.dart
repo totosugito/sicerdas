@@ -43,6 +43,7 @@ class DictionaryResultsNotifier extends Notifier<AsyncValue<List<Word>>> {
 
   @override
   AsyncValue<List<Word>> build() {
+    final db = ref.watch(dictionaryDatabaseProvider);
     final query = ref.watch(dictionarySearchQueryProvider);
     final isSwap = ref.watch(dictionaryIsSwapProvider);
     final favoritesOnly = ref.watch(dictionaryFavoritesOnlyProvider);
@@ -52,13 +53,16 @@ class DictionaryResultsNotifier extends Notifier<AsyncValue<List<Word>>> {
     _isLoadingMore = false;
     _loadedWords.clear();
 
-    _fetchPage(query, isSwap, favoritesOnly);
-    return const AsyncValue.loading();
+    if (db != null) {
+      _fetchPage(db, query, isSwap, favoritesOnly);
+      return const AsyncValue.loading();
+    } else {
+      return const AsyncValue.data([]);
+    }
   }
 
-  Future<void> _fetchPage(String query, bool isSwap, bool favoritesOnly) async {
+  Future<void> _fetchPage(DictionaryDatabase db, String query, bool isSwap, bool favoritesOnly) async {
     try {
-      final db = ref.read(dictionaryDatabaseProvider);
       List<Word> newWords;
       if (favoritesOnly) {
         newWords = await db.getFavoriteWords(isSwap);
@@ -83,6 +87,9 @@ class DictionaryResultsNotifier extends Notifier<AsyncValue<List<Word>>> {
   Future<void> loadNextPage() async {
     if (!_hasMore || _isLoadingMore || state.isLoading) return;
 
+    final db = ref.read(dictionaryDatabaseProvider);
+    if (db == null) return;
+
     _isLoadingMore = true;
     _currentPage++;
 
@@ -90,7 +97,6 @@ class DictionaryResultsNotifier extends Notifier<AsyncValue<List<Word>>> {
     final isSwap = ref.read(dictionaryIsSwapProvider);
 
     try {
-      final db = ref.read(dictionaryDatabaseProvider);
       final newWords = await db.searchWords(
         query,
         isSwap,
@@ -114,5 +120,6 @@ final dictionaryResultsProvider = NotifierProvider<DictionaryResultsNotifier, As
 
 final wordFavoriteStateProvider = FutureProvider.family<bool, int>((ref, dictId) async {
   final db = ref.watch(dictionaryDatabaseProvider);
+  if (db == null) return false;
   return db.isFavorite(dictId);
 });

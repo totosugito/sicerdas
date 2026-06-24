@@ -13,6 +13,7 @@ import 'package:bse/widgets/download_progress_dialog.dart';
 import 'package:bse/ui/pdf_viewer/pdf_viewer_screen.dart';
 import '../../libs/providers/books_provider.dart';
 import '../../libs/services/book_service.dart';
+import 'package:bse/core/utils/my_utils.dart';
 import '../../libs/utils/book_utils.dart';
 
 class BookDetailSheet extends ConsumerWidget {
@@ -497,8 +498,8 @@ class BookDetailSheet extends ConsumerWidget {
                 builder: (context, snapshot) {
                   final localSize = snapshot.data;
                   final sizeText = localSize != null
-                      ? '${BookUtils.formatFileSize(localSize)} / ${BookUtils.formatFileSize(book.size)}'
-                      : BookUtils.formatFileSize(book.size);
+                      ? '${MyUtils.formatFileSize(localSize)} / ${MyUtils.formatFileSize(book.size)}'
+                      : MyUtils.formatFileSize(book.size);
                   return _buildInfoItem(
                     context,
                     l10n.books.fileSizeLabel,
