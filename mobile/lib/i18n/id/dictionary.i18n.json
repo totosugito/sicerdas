@@ -1,0 +1,13 @@
+{
+  "title": "Kamus Offline",
+  "searchPlaceholder": "Cari kata / Search word...",
+  "favoritesOnly": "Favorit",
+  "all": "Semua",
+  "notFound": "Kata tidak ditemukan",
+  "noFavorites": "Belum ada kata favorit",
+  "errorOccurred": "Terjadi kesalahan: {error}",
+  "examples": "Contoh Penggunaan / Examples:",
+  "copiedSuccess": "Berhasil disalin",
+  "copiedDetail": "Detail kata \"{word}\" disalin ke clipboard.",
+  "shareSubject": "Arti Kata: {word}"
+}

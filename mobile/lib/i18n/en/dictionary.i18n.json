@@ -1,0 +1,13 @@
+{
+  "title": "Offline Dictionary",
+  "searchPlaceholder": "Search word...",
+  "favoritesOnly": "Favorites",
+  "all": "All",
+  "notFound": "Word not found",
+  "noFavorites": "No favorite words yet",
+  "errorOccurred": "An error occurred: {error}",
+  "examples": "Usage Examples:",
+  "copiedSuccess": "Copied successfully",
+  "copiedDetail": "Word details for \"{word}\" copied to clipboard.",
+  "shareSubject": "Word Meaning: {word}"
+}

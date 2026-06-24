@@ -9,3 +9,6 @@ export 'tables/math-tricks/math_trick_chapters.dart';
 export 'tables/math-tricks/math_trick_levels.dart';
 export 'tables/math-tricks/math_trick_daily_scores.dart';
 export 'tables/enums.dart';
+export 'tables/dictionary/words.dart';
+export 'tables/dictionary/favorites.dart';
+export 'tables/dictionary/words_fts.dart';

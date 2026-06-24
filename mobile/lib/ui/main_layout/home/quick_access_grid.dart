@@ -7,6 +7,7 @@ import 'package:bse/i18n/strings.g.dart';
 import '../../periodic_table/periodic_screen/periodic_screen.dart';
 import '../../constitution/constitution_menu/constitution_menu.dart';
 import '../../math_tricks/tricks_menu/tricks_menu.dart';
+import '../../dictionary/dictionary_screen/dictionary_screen.dart';
 
 class QuickAccessGrid extends ConsumerWidget {
   const QuickAccessGrid({super.key});
@@ -55,9 +56,7 @@ class QuickAccessGrid extends ConsumerWidget {
         'onTap': () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const TricksMenuScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const TricksMenuScreen()),
           );
         },
       },
@@ -66,7 +65,10 @@ class QuickAccessGrid extends ConsumerWidget {
         'icon': Icons.translate_rounded,
         'colors': [const Color(0xFFEC4899), const Color(0xFFDB2777)],
         'onTap': () {
-          ref.read(navigationProvider.notifier).setIndex(2);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DictionaryScreen()),
+          );
         },
       },
       {
