@@ -7,13 +7,13 @@ import 'package:bse/core/utils/my_utils.dart';
 import '../../libs/providers/dictionary_package_provider.dart';
 import '../../libs/model/dictionary_package.dart';
 
-class DictionaryPackageItem extends ConsumerWidget {
+class PackageItem extends ConsumerWidget {
   final DictionaryPackage package;
   final bool isDownloaded;
   final bool isActive;
   final double? downloadProgress;
 
-  const DictionaryPackageItem({
+  const PackageItem({
     super.key,
     required this.package,
     required this.isDownloaded,
@@ -279,7 +279,9 @@ class DictionaryPackageItem extends ConsumerWidget {
                       children: [
                         Text(
                           l10n.dictionary.packageList.downloading(
-                            progress: (downloadProgress! * 100).toStringAsFixed(0),
+                            progress: (downloadProgress! * 100).toStringAsFixed(
+                              0,
+                            ),
                           ),
                           style: theme.textTheme.small.copyWith(
                             color: theme.colorScheme.primary,
@@ -325,7 +327,9 @@ class DictionaryPackageItem extends ConsumerWidget {
                   bottom: 4.0,
                 ),
                 child: Text(
-                  'Tampilan Layar:',
+                  l10n.dictionary.packageList.screenshots(
+                    count: package.packSampleScreen.length,
+                  ),
                   style: theme.textTheme.small.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 12,

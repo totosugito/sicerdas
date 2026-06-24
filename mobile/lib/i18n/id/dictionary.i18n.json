@@ -10,6 +10,7 @@
   "copiedSuccess": "Berhasil disalin",
   "copiedDetail": "Detail kata \"{word}\" disalin ke clipboard.",
   "shareSubject": "Arti Kata: {word}",
+  "resetDatabase": "Reset Basis Data",
   "packageList": {
     "title": "Basis Data Kamus",
     "desc": "Silakan unduh kamus yang ingin digunakan secara offline.",
@@ -22,6 +23,8 @@
     "confirmDeleteDesc": "Apakah Anda yakin ingin menghapus basis data kamus \"{title}\"?",
     "noDbWarning": "Tidak ada basis data kamus yang aktif. Silakan unduh atau gunakan salah satu kamus di bawah.",
     "releaseDate": "Tanggal Rilis: {date}",
-    "fileSize": "Ukuran File: {size}"
+    "fileSize": "Ukuran File: {size}",
+    "downloadedCount": "{count} / {total} terunduh",
+    "screenshots": "Tampilan Layar ({count})"
   }
 }

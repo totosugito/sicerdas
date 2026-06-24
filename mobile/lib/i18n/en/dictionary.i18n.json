@@ -10,6 +10,7 @@
   "copiedSuccess": "Copied successfully",
   "copiedDetail": "Word details for \"{word}\" copied to clipboard.",
   "shareSubject": "Word Meaning: {word}",
+  "resetDatabase": "Reset Database",
   "packageList": {
     "title": "Dictionary Databases",
     "desc": "Please download a dictionary database for offline usage.",
@@ -22,6 +23,8 @@
     "confirmDeleteDesc": "Are you sure you want to delete the dictionary database \"{title}\"?",
     "noDbWarning": "No active dictionary database. Please download or activate one of the dictionaries below.",
     "releaseDate": "Release Date: {date}",
-    "fileSize": "File Size: {size}"
+    "fileSize": "File Size: {size}",
+    "downloadedCount": "{count} / {total} downloaded",
+    "screenshots": "Screenshots ({count})"
   }
 }
