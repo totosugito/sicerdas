@@ -37,76 +37,143 @@ class ViewObjDict10 extends StatelessWidget {
     final l10n = Translations.of(context);
     final detail = _parseMeaning();
 
+    final List<MapEntry<String, String>> groupedMeanings = [];
+    for (int i = 0; i < detail.t.length; i += 2) {
+      final type = detail.t[i];
+      final meaning = (i + 1 < detail.t.length) ? detail.t[i + 1] : '';
+      groupedMeanings.add(MapEntry(type, meaning));
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header actions bar
+        // Word Title (Full width, wraps naturally)
+        Text(
+          word.word,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+          ),
+        ),
+        const SizedBox(height: 8),
+
+        // Action buttons bar
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Expanded(
-              child: Text(
-                word.word,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                overflow: TextOverflow.ellipsis,
+            // Favorite Button
+            isLoadingFavorite
+                ? const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.0),
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  )
+                : ShadButton.ghost(
+                    width: 38,
+                    height: 38,
+                    padding: EdgeInsets.zero,
+                    onPressed: onFavoriteClicked,
+                    child: Icon(
+                      isFavorite
+                          ? LucideIcons.bookmarkCheck
+                          : LucideIcons.bookmark,
+                      color: isFavorite
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.mutedForeground,
+                      size: 20,
+                    ),
+                  ),
+            // Copy Button
+            ShadButton.ghost(
+              width: 38,
+              height: 38,
+              padding: EdgeInsets.zero,
+              onPressed: onCopyClicked,
+              child: Icon(
+                LucideIcons.copy,
+                color: theme.colorScheme.mutedForeground,
+                size: 20,
               ),
             ),
-            Row(
-              children: [
-                // Favorite Button
-                isLoadingFavorite
-                    ? const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.0),
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      )
-                    : IconButton(
-                        icon: Icon(
-                          isFavorite ? LucideIcons.bookmarkCheck : LucideIcons.bookmark,
-                          color: isFavorite ? theme.colorScheme.primary : null,
-                        ),
-                        onPressed: onFavoriteClicked,
-                      ),
-                // Copy Button
-                IconButton(
-                  icon: const Icon(LucideIcons.copy),
-                  onPressed: onCopyClicked,
-                ),
-                // Share Button
-                IconButton(
-                  icon: const Icon(LucideIcons.share),
-                  onPressed: onShareClicked,
-                ),
-              ],
+            // Share Button
+            ShadButton.ghost(
+              width: 38,
+              height: 38,
+              padding: EdgeInsets.zero,
+              onPressed: onShareClicked,
+              child: Icon(
+                LucideIcons.share,
+                color: theme.colorScheme.mutedForeground,
+                size: 20,
+              ),
             ),
           ],
         ),
-        const Divider(height: 24),
+        const SizedBox(height: 16),
 
-        // Meanings
-        ...List.generate(detail.t.length, (index) {
-          final text = detail.t[index];
-          final isTitle = index % 2 == 0;
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: isTitle ? FontWeight.bold : FontWeight.normal,
-                color: isTitle ? theme.colorScheme.primary : theme.colorScheme.foreground,
-              ),
+        // Meanings Card Group
+        ...groupedMeanings.map((entry) {
+          final type = entry.key;
+          final meaning = entry.value;
+          return Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.card,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: theme.colorScheme.border),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.2),
+                    ),
+                  ),
+                  child: Text(
+                    type,
+                    style: TextStyle(
+                      color: theme.colorScheme.primary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 2.0),
+                    child: Text(
+                      meaning,
+                      style: TextStyle(
+                        color: theme.colorScheme.foreground,
+                        fontSize: 15,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         }),
 
-        // Examples
+        // Examples Section
         if (detail.e.isNotEmpty) ...[
           Padding(
-            padding: const EdgeInsets.only(top: 20.0, bottom: 8.0),
+            padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
             child: Text(
               l10n.dictionary.examples,
               style: TextStyle(
@@ -116,24 +183,48 @@ class ViewObjDict10 extends StatelessWidget {
               ),
             ),
           ),
-          ...List.generate(detail.e.length, (index) {
-            final example = detail.e[index];
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
+          ...detail.e.map((example) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.card,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: theme.colorScheme.border),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '${index + 1}. ${example.s}',
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        LucideIcons.quote,
+                        size: 12,
+                        color: theme.colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          example.s,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.foreground,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    example.t,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontStyle: FontStyle.italic,
-                      color: theme.colorScheme.mutedForeground,
+                  const SizedBox(height: 6),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: Text(
+                      example.t,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: theme.colorScheme.mutedForeground,
+                      ),
                     ),
                   ),
                 ],
