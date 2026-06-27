@@ -5,7 +5,9 @@ part 'dictionary_database.g.dart';
 
 @DriftDatabase(tables: [Words, Favorites, WordsFts])
 class DictionaryDatabase extends _$DictionaryDatabase {
-  DictionaryDatabase(super.e);
+  DictionaryDatabase(super.e) {
+    driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+  }
 
   @override
   int get schemaVersion => 1;
@@ -72,6 +74,15 @@ class DictionaryDatabase extends _$DictionaryDatabase {
     final rows = await query.get();
     return rows.map((row) => row.readTable(words)).toList();
   }
+
+  Future<List<Word>> getWordsByIds(List<int> dictIds) async {
+    if (dictIds.isEmpty) return [];
+    return (select(words)..where((t) => t.dictId.isIn(dictIds))).get();
+  }
+
+  Future<Word?> getWordByExactText(String text, bool isSwap) async {
+    return (select(words)
+          ..where((t) => t.word.equals(text) & t.dictSwap.equals(isSwap)))
+        .getSingleOrNull();
+  }
 }
-
-

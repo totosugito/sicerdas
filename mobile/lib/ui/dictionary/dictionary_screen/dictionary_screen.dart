@@ -48,6 +48,7 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
     final isSwap = ref.watch(dictionaryIsSwapProvider);
     final favoritesOnly = ref.watch(dictionaryFavoritesOnlyProvider);
     final packagesAsync = ref.watch(dictionaryPackagesProvider);
+    final localDbsAsync = ref.watch(localDownloadedDbFilesProvider);
 
     return activeDbVal.when(
       data: (activePath) {
@@ -96,12 +97,7 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
             packSampleScreen: [],
           ),
         );
-
-        final isKbbi = activePackage.packName.toLowerCase().contains('kbbi');
-        final directionLabel = isKbbi
-            ? 'Bahasa Indonesia (KBBI)'
-            : (isSwap ? 'English ➔ Indonesia' : 'Indonesia ➔ English');
-        final showSwap = !isKbbi;
+        const dictMap = {"id": "Indonesia", "en": "English", "kb": "KBBI"};
 
         return Scaffold(
           backgroundColor: theme.colorScheme.background,
@@ -118,15 +114,236 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
                 titleSpacing: 0,
                 actions: [
                   IconButton(
-                    icon: const Icon(LucideIcons.database),
+                    icon: Icon(
+                      favoritesOnly
+                          ? LucideIcons.bookmarkCheck
+                          : LucideIcons.bookmark,
+                    ),
+                    tooltip: favoritesOnly
+                        ? l10n.dictionary.all
+                        : l10n.dictionary.favoritesOnly,
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const DictionaryPackageListScreen(),
+                      ref
+                          .read(dictionaryFavoritesOnlyProvider.notifier)
+                          .toggle();
+                    },
+                  ),
+                  PopupMenuButton<String>(
+                    icon: const Icon(LucideIcons.database),
+                    tooltip: l10n.dictionary.packageList.title,
+                    onSelected: (value) async {
+                      if (value == '__manage__') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const DictionaryPackageListScreen(),
+                          ),
+                        );
+                      } else {
+                        final parts = value.split('|');
+                        final dbFile = parts[0];
+                        final isSwap = parts.length > 1 && parts[1] == 'true';
+
+                        await ref
+                            .read(activeDictionaryDbProvider.notifier)
+                            .setActiveDb(dbFile);
+
+                        ref
+                            .read(dictionaryIsSwapProvider.notifier)
+                            .setSwap(isSwap);
+                      }
+                    },
+                    itemBuilder: (context) {
+                      final localDbs = localDbsAsync.value ?? [];
+                      final List<PopupMenuEntry<String>> items = [];
+
+                      if (localDbs.isEmpty) {
+                        items.add(
+                          const PopupMenuItem<String>(
+                            enabled: false,
+                            child: Text('No downloaded dictionaries'),
+                          ),
+                        );
+                      } else {
+                        for (final dbFile in localDbs) {
+                          final dbNameWithoutExt = dbFile.split('.').first;
+                          final pParts = dbNameWithoutExt.split('_');
+                          final isActiveDb = dbFile == activeFilename;
+
+                          final pkg = packages.firstWhere(
+                            (p) => p.packName == dbNameWithoutExt,
+                            orElse: () => DictionaryPackage(
+                              packId: -1,
+                              packName: dbNameWithoutExt,
+                              packReleaseDate: '',
+                              packFileSize: 0,
+                              packTitle: '',
+                              packSource: '',
+                              packDesc: '',
+                              packUrl: '',
+                              packWordInfo: [],
+                              packSampleScreen: [],
+                            ),
+                          );
+
+                          final isKbbi =
+                              dbNameWithoutExt.toLowerCase().contains('_kb_') ||
+                              (pParts.length >= 3 &&
+                                  (pParts[1].toLowerCase() == 'kb' ||
+                                      pParts[2].toLowerCase() == 'kb'));
+
+                          if (isKbbi) {
+                            final isActive = isActiveDb;
+                            items.add(
+                              PopupMenuItem<String>(
+                                value: '$dbFile|false',
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Expanded(
+                                      child: Text(
+                                        'KBBI',
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    if (isActive) ...[
+                                      const SizedBox(width: 8),
+                                      const Icon(LucideIcons.check, size: 16),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            );
+                          } else if (pParts.length >= 3) {
+                            final code1 = pParts[1].toLowerCase();
+                            final code2 = pParts[2].toLowerCase();
+                            final lang1 = dictMap[code1] ?? code1.toUpperCase();
+                            final lang2 = dictMap[code2] ?? code2.toUpperCase();
+
+                            if (code1 != code2) {
+                              // First direction: lang1 ➔ lang2 (isSwap = false)
+                              final isActive1 = isActiveDb && !isSwap;
+                              items.add(
+                                PopupMenuItem<String>(
+                                  value: '$dbFile|false',
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          pkg.packTitle.isNotEmpty
+                                              ? '$lang1 ➔ $lang2'
+                                              : '$lang1 ➔ $lang2',
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      if (isActive1) ...[
+                                        const SizedBox(width: 8),
+                                        const Icon(LucideIcons.check, size: 16),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              );
+
+                              // Second direction: lang2 ➔ lang1 (isSwap = true)
+                              final isActive2 = isActiveDb && isSwap;
+                              items.add(
+                                PopupMenuItem<String>(
+                                  value: '$dbFile|true',
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          pkg.packTitle.isNotEmpty
+                                              ? '$lang2 ➔ $lang1'
+                                              : '$lang2 ➔ $lang1',
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      if (isActive2) ...[
+                                        const SizedBox(width: 8),
+                                        const Icon(LucideIcons.check, size: 16),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              );
+                            } else {
+                              final isActive = isActiveDb;
+                              items.add(
+                                PopupMenuItem<String>(
+                                  value: '$dbFile|false',
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          pkg.packTitle.isNotEmpty
+                                              ? pkg.packTitle
+                                              : lang1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      if (isActive) ...[
+                                        const SizedBox(width: 8),
+                                        const Icon(LucideIcons.check, size: 16),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                          } else {
+                            final isActive = isActiveDb;
+                            items.add(
+                              PopupMenuItem<String>(
+                                value: '$dbFile|false',
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        pkg.packTitle.isNotEmpty
+                                            ? pkg.packTitle
+                                            : dbNameWithoutExt,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    if (isActive) ...[
+                                      const SizedBox(width: 8),
+                                      const Icon(LucideIcons.check, size: 16),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                      }
+
+                      items.add(const PopupMenuDivider());
+                      items.add(
+                        PopupMenuItem<String>(
+                          value: '__manage__',
+                          child: Row(
+                            children: [
+                              const Icon(LucideIcons.settings, size: 16),
+                              const SizedBox(width: 8),
+                              Text(l10n.dictionary.packageList.title),
+                            ],
+                          ),
                         ),
                       );
+
+                      return items;
                     },
                   ),
                 ],
@@ -184,10 +401,13 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
               SliverPersistentHeader(
                 pinned: true,
                 delegate: SliverStickyHeaderDelegate(
-                  height: 120.0,
+                  height: 68.0,
                   backgroundColor: theme.colorScheme.background,
                   child: Container(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
@@ -216,118 +436,6 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
                                   child: const Icon(LucideIcons.x, size: 18),
                                 )
                               : null,
-                        ),
-                        const SizedBox(height: 10),
-
-                        // Swappers and toggles row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            if (showSwap)
-                              ShadButton.outline(
-                                height: 32,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                                onPressed: () {
-                                  ref
-                                      .read(dictionaryIsSwapProvider.notifier)
-                                      .toggle();
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      LucideIcons.arrowLeftRight,
-                                      size: 14,
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      directionLabel,
-                                      style: const TextStyle(fontSize: 12),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            else
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: theme.colorScheme.muted,
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(
-                                    color: theme.colorScheme.border,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      LucideIcons.bookOpen,
-                                      size: 14,
-                                      color: theme.colorScheme.mutedForeground,
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      directionLabel,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color:
-                                            theme.colorScheme.mutedForeground,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                            // Favorites Filter Button
-                            ShadButton.ghost(
-                              height: 32,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
-                              onPressed: () {
-                                ref
-                                    .read(
-                                      dictionaryFavoritesOnlyProvider.notifier,
-                                    )
-                                    .toggle();
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    favoritesOnly
-                                        ? LucideIcons.bookmarkCheck
-                                        : LucideIcons.bookmark,
-                                    size: 16,
-                                    color: favoritesOnly
-                                        ? theme.colorScheme.primary
-                                        : null,
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    favoritesOnly
-                                        ? l10n.dictionary.favoritesOnly
-                                        : l10n.dictionary.all,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: favoritesOnly
-                                          ? theme.colorScheme.primary
-                                          : null,
-                                      fontWeight: favoritesOnly
-                                          ? FontWeight.bold
-                                          : null,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
                         ),
                       ],
                     ),

@@ -19,6 +19,7 @@ class DictionaryIsSwapNotifier extends Notifier<bool> {
   bool build() => false;
 
   void toggle() => state = !state;
+  void setSwap(bool value) => state = value;
 }
 
 final dictionaryIsSwapProvider = NotifierProvider<DictionaryIsSwapNotifier, bool>(DictionaryIsSwapNotifier.new);
@@ -77,9 +78,12 @@ class DictionaryResultsNotifier extends Notifier<AsyncValue<List<Word>>> {
         _hasMore = newWords.length == _pageSize;
       }
 
+      if (ref.read(dictionaryDatabaseProvider) != db) return;
+
       _loadedWords.addAll(newWords);
       state = AsyncValue.data(List.from(_loadedWords));
     } catch (e, stack) {
+      if (ref.read(dictionaryDatabaseProvider) != db) return;
       state = AsyncValue.error(e, stack);
     }
   }
@@ -103,6 +107,9 @@ class DictionaryResultsNotifier extends Notifier<AsyncValue<List<Word>>> {
         limit: _pageSize,
         offset: _currentPage * _pageSize,
       );
+      
+      if (ref.read(dictionaryDatabaseProvider) != db) return;
+
       _hasMore = newWords.length == _pageSize;
       _loadedWords.addAll(newWords);
       state = AsyncValue.data(List.from(_loadedWords));
