@@ -73,11 +73,11 @@ const dictionaryDataRoute: FastifyPluginAsyncTypebox = async (app) => {
                     packName: "004_kb_kb_01_eb22",
                     packReleaseDate: "24 Juni 2026",
                     packFileSize: 14489769,
-                    packTitle: "KBBI Edisi V",
+                    packTitle: "KBBI Edisi VI",
                     packSource: "https://kbbi.kemdikbud.go.id",
                     packDesc: "Kamus Besar Bahasa Indonesia Edisi VI",
                     packUrl: "https://storage.sicerdas.com/dictionary/004_kb_kb_01_eb22.zip",
-                    packWordInfo: ["104.535 kosakata KBBI"],
+                    packWordInfo: ["194.692 kosakata KBBI"],
                     packSampleScreen: [
                         "https://storage.sicerdas.com/dictionary/images/004_kbbi_00_01.png",
                         "https://storage.sicerdas.com/dictionary/images/004_kbbi_00_02.png",

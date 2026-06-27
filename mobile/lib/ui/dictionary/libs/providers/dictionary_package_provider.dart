@@ -4,7 +4,7 @@ import 'package:path/path.dart' as p;
 import 'package:dio/dio.dart';
 import 'package:archive/archive.dart';
 import 'package:bse/core/providers/dio_provider.dart';
-import 'package:bse/core/providers/database_provider.dart';
+import 'dictionary_providers.dart';
 import 'package:bse/core/network/api_endpoints.dart';
 import '../model/dictionary_package.dart';
 

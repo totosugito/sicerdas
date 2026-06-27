@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:bse/core/providers/database_provider.dart';
 import 'package:bse/core/database/dictionary_database.dart';
+import 'dictionary_db_provider.dart';
+export 'dictionary_db_provider.dart';
 
 class DictionarySearchQueryNotifier extends Notifier<String> {
   @override

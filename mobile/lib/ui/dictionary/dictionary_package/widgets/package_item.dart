@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
-import 'package:bse/core/providers/database_provider.dart';
 import 'package:bse/core/utils/my_utils.dart';
 import '../../libs/providers/dictionary_package_provider.dart';
 import '../../libs/model/dictionary_package.dart';
@@ -26,7 +25,6 @@ class PackageItem extends ConsumerWidget {
     final theme = ShadTheme.of(context);
     final l10n = Translations.of(context);
     final isDownloading = downloadProgress != null;
-    final dbFilename = '${package.packName}.db';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -80,54 +78,6 @@ class PackageItem extends ConsumerWidget {
                       const SizedBox(width: 8),
                       // Action buttons
                       if (isDownloaded) ...[
-                        if (isActive)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.primary.withValues(
-                                alpha: 0.1,
-                              ),
-                              borderRadius: BorderRadius.circular(6),
-                              border: Border.all(
-                                color: theme.colorScheme.primary.withValues(
-                                  alpha: 0.2,
-                                ),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  LucideIcons.check,
-                                  size: 12,
-                                  color: theme.colorScheme.primary,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  l10n.dictionary.packageList.active,
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        else
-                          ShadButton(
-                            size: ShadButtonSize.sm,
-                            onPressed: () async {
-                              await ref
-                                  .read(activeDictionaryDbProvider.notifier)
-                                  .setActiveDb(dbFilename);
-                            },
-                            child: Text(l10n.dictionary.packageList.activate),
-                          ),
-                        const SizedBox(width: 6),
                         ShadButton.outline(
                           size: ShadButtonSize.sm,
                           hoverBackgroundColor: theme.colorScheme.destructive

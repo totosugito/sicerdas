@@ -8,7 +8,6 @@ import 'package:bse/core/database/dictionary_database.dart';
 import 'package:bse/ui/dictionary/libs/providers/dictionary_providers.dart';
 import 'package:bse/ui/dictionary/libs/model/obj_dict10.dart';
 import 'package:bse/ui/dictionary/libs/model/obj_dict00.dart';
-import 'package:bse/core/providers/database_provider.dart';
 import 'package:bse/i18n/strings.g.dart';
 import 'view_obj_dict10.dart';
 import 'view_obj_dict00.dart';

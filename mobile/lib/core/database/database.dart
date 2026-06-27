@@ -43,9 +43,9 @@ class AppDatabase extends _$AppDatabase {
       await delete(bookGroups).go();
       await delete(periodicElements).go();
       await delete(periodicElementNotes).go();
-      await delete(mathTrickChapters).go();
-      await delete(mathTrickLevels).go();
-      await delete(mathTrickDailyScores).go();
+      // await delete(mathTrickChapters).go();
+      // await delete(mathTrickLevels).go();
+      // await delete(mathTrickDailyScores).go();
     });
   }
 

@@ -5,7 +5,6 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/database/dictionary_database.dart';
 import 'package:bse/ui/dictionary/libs/providers/dictionary_providers.dart';
 import 'package:bse/ui/dictionary/libs/model/obj_dict10.dart';
-import 'package:bse/core/providers/database_provider.dart';
 import 'word_detail_sheet.dart';
 
 class WordListTile extends ConsumerWidget {

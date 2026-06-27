@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/database/dictionary_database.dart';
-import 'package:bse/core/providers/database_provider.dart';
+import 'package:bse/ui/dictionary/libs/providers/dictionary_providers.dart';
 import 'package:bse/ui/dictionary/libs/model/obj_dict00.dart';
 
 class ViewObjDict00 extends ConsumerWidget {
