@@ -29,5 +29,12 @@
   "start_training": "Mulai Latihan",
   "view_solution": "Lihat Solusi",
   "score": "Skor",
-  "time": "Waktu"
+  "time": "Waktu",
+  "chapter_addition_sequential": "Penjumlahan Berurutan",
+  "chapter_addition_2_digits": "Penjumlahan 2 Digit",
+  "chapter_addition_3_digits": "Penjumlahan 3 Digit",
+  "chapter_addition_4_digits": "Penjumlahan 4 Digit",
+  "chapter_addition_negative": "Penjumlahan Negatif",
+  "chapter_addition_missing_digit": "Penjumlahan Digit Hilang",
+  "chapter_addition_simple": "Penjumlahan Sederhana"
 }

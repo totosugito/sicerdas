@@ -32,7 +32,11 @@ class ModelChapter {
     this.useCoverAsset = false,
     this.types = const [],
     this.ranges = const [],
-    this.pads = const [KeyPadMode.padYesNo, KeyPadMode.pad4Pad, KeyPadMode.padNumPad],
+    this.pads = const [
+      KeyPadMode.padYesNo,
+      KeyPadMode.pad4Pad,
+      KeyPadMode.padNumPad,
+    ],
     this.visibility = true,
     this.sort = 0,
     this.correctAnswer = 0,

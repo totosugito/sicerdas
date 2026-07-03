@@ -29,5 +29,12 @@
   "start_training": "Start Practice",
   "view_solution": "View Solution",
   "score": "Score",
-  "time": "Time"
+  "time": "Time",
+  "chapter_addition_sequential": "Sequential Addition",
+  "chapter_addition_2_digits": "2-Digit Addition",
+  "chapter_addition_3_digits": "3-Digit Addition",
+  "chapter_addition_4_digits": "4-Digit Addition",
+  "chapter_addition_negative": "Negative Addition",
+  "chapter_addition_missing_digit": "Missing Digit Addition",
+  "chapter_addition_simple": "Simple Addition"
 }

@@ -19,7 +19,7 @@ class ChapterOptionsSheet extends StatefulWidget {
 
 class _ChapterOptionsSheetState extends State<ChapterOptionsSheet> {
   int _selectedRangeIndex = 0;
-  int _trainingTimeMode = 0; // 0 = no limit
+  final int _trainingTimeMode = 0; // 0 = no limit
   int _numberOfQuestions = 5; // default 5 questions
 
   Widget _buildOptionButton({
@@ -87,7 +87,24 @@ class _ChapterOptionsSheetState extends State<ChapterOptionsSheet> {
                   final range = entry.value;
                   final isSelected = _selectedRangeIndex == index;
                   return ChoiceChip(
-                    label: Text(range.title),
+                    label: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(range.title),
+                        const SizedBox(height: 2),
+                        Text(
+                          range.desc,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal,
+                            color: isSelected
+                                ? theme.colorScheme.primaryForeground
+                                      .withValues(alpha: 0.8)
+                                : theme.colorScheme.mutedForeground,
+                          ),
+                        ),
+                      ],
+                    ),
                     selected: isSelected,
                     selectedColor: theme.colorScheme.primary,
                     labelStyle: TextStyle(
@@ -103,39 +120,6 @@ class _ChapterOptionsSheetState extends State<ChapterOptionsSheet> {
                     },
                   );
                 }).toList(),
-              ),
-              const SizedBox(height: 20),
-              // Time limit dropdown/options
-              Text(
-                locale.time_limit_of_questions,
-                style: theme.textTheme.large.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  _buildOptionButton(
-                    label: 'Tanpa Batas',
-                    isSelected: _trainingTimeMode == 0,
-                    onPressed: () => setState(() => _trainingTimeMode = 0),
-                    theme: theme,
-                  ),
-                  const SizedBox(width: 8),
-                  _buildOptionButton(
-                    label: '1 Menit',
-                    isSelected: _trainingTimeMode == 1,
-                    onPressed: () => setState(() => _trainingTimeMode = 1),
-                    theme: theme,
-                  ),
-                  const SizedBox(width: 8),
-                  _buildOptionButton(
-                    label: '2 Menit',
-                    isSelected: _trainingTimeMode == 2,
-                    onPressed: () => setState(() => _trainingTimeMode = 2),
-                    theme: theme,
-                  ),
-                ],
               ),
               const SizedBox(height: 20),
               // Question Count

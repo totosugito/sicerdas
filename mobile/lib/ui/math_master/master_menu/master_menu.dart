@@ -8,10 +8,10 @@ import '../libs/models/model_chapter.dart';
 import '../libs/models/cl_mm_chapter.dart';
 import '../libs/models/model_item.dart';
 import '../libs/providers/math_master_repository.dart';
-import '../ui/ui_mm_achievement.dart';
 import '../ui/ui_mm_training.dart';
 import 'widgets/chapter_options_sheet.dart';
 import 'widgets/master_chapter_list_item.dart';
+import 'widgets/master_menu_app_bar.dart';
 
 class UiMathMaster extends ConsumerStatefulWidget {
   const UiMathMaster({super.key});
@@ -19,9 +19,7 @@ class UiMathMaster extends ConsumerStatefulWidget {
   static void navigate(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const UiMathMaster(),
-      ),
+      MaterialPageRoute(builder: (context) => const UiMathMaster()),
     );
   }
 
@@ -61,13 +59,13 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
   Future<void> _initDataView() async {
     final repo = ref.read(mathMasterRepositoryProvider);
     final summary = await repo.getTodayScores();
-    
+
     if (!mounted) return;
-    
+
     setState(() {
       todayCorrect = summary['correct'] ?? 0;
       todayWrong = summary['wrong'] ?? 0;
-      
+
       groupList = DataMathMaster.createGroupList(context);
       gradeList = DataMathMaster.createGradesList(context);
       topicList = DataMathMaster.createTopicsList(context);
@@ -83,15 +81,141 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
 
   void _updateSelectedChapters() {
     if (selectedGroup.id == KeyGroup.grades.index) {
-      selectedChapterList = DataMathMaster.createGroupByGrades(chapterList, KeyGrade.values[selectedGrade.id]);
+      selectedChapterList = DataMathMaster.createGroupByGrades(
+        chapterList,
+        KeyGrade.values[selectedGrade.id],
+      );
     } else {
-      selectedChapterList = DataMathMaster.createGroupByTopics(chapterList, KeyTopic.values[selectedTopic.id]);
+      selectedChapterList = DataMathMaster.createGroupByTopics(
+        chapterList,
+        KeyTopic.values[selectedTopic.id],
+      );
     }
   }
 
-  _showChapterOptionsDialog(ModelChapter selectedChapter) async {
+  void _showFilterPickerBottomSheet() {
     final theme = ShadTheme.of(context);
-    
+    final locale = Translations.of(context).math_master;
+    final isGrades = selectedGroup.id == KeyGroup.grades.index;
+    final list = isGrades ? gradeList : topicList;
+    final title = isGrades ? locale.group_grades : locale.group_topics;
+    String searchQuery = '';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: theme.colorScheme.background,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.6,
+          minChildSize: 0.4,
+          maxChildSize: 0.85,
+          expand: false,
+          builder: (context, scrollController) {
+            return StatefulBuilder(
+              builder: (context, setSheetState) {
+                final filteredList = list.where((item) {
+                  return item.title.toLowerCase().contains(
+                    searchQuery.toLowerCase(),
+                  );
+                }).toList();
+
+                return Container(
+                  padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.muted,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        title,
+                        style: theme.textTheme.large.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ShadInput(
+                        placeholder: Text(
+                          isGrades ? 'Cari kelas...' : 'Cari topik...',
+                        ),
+                        leading: const Padding(
+                          padding: EdgeInsets.only(right: 8),
+                          child: Icon(Icons.search_rounded, size: 18),
+                        ),
+                        onChanged: (val) {
+                          setSheetState(() {
+                            searchQuery = val;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: ListView.builder(
+                          controller: scrollController,
+                          itemCount: filteredList.length,
+                          itemBuilder: (context, index) {
+                            final item = filteredList[index];
+                            final isSelected = isGrades
+                                ? selectedGrade.key == item.key
+                                : selectedTopic.key == item.key;
+                            return ListTile(
+                              title: Text(
+                                item.title,
+                                style: theme.textTheme.small.copyWith(
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: isSelected
+                                      ? theme.colorScheme.primary
+                                      : theme.colorScheme.foreground,
+                                ),
+                              ),
+                              trailing: isSelected
+                                  ? Icon(
+                                      Icons.check_circle_rounded,
+                                      color: theme.colorScheme.primary,
+                                    )
+                                  : null,
+                              onTap: () {
+                                setState(() {
+                                  if (isGrades) {
+                                    selectedGrade = item;
+                                  } else {
+                                    selectedTopic = item;
+                                  }
+                                  _updateSelectedChapters();
+                                });
+                                Navigator.pop(context);
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _showChapterOptionsDialog(ModelChapter selectedChapter) async {
+    final theme = ShadTheme.of(context);
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -103,14 +227,24 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
         return ChapterOptionsSheet(
           selectedChapter: selectedChapter,
           onStart: (rangeIndex, timeMode, questionCount) {
-            _startTraining(selectedChapter, rangeIndex, timeMode, questionCount);
+            _startTraining(
+              selectedChapter,
+              rangeIndex,
+              timeMode,
+              questionCount,
+            );
           },
         );
       },
     );
   }
 
-  void _startTraining(ModelChapter selectedChapter, int rangeIndex, int timeMode, int questionCount) {
+  void _startTraining(
+    ModelChapter selectedChapter,
+    int rangeIndex,
+    int timeMode,
+    int questionCount,
+  ) {
     final clChapter = ClMmChapter.auto(userId: '', chapter: selectedChapter)
       ..correct = 0
       ..wrong = 0;
@@ -136,159 +270,153 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
     final locale = Translations.of(context).math_master;
-    final isDark = theme.brightness == Brightness.dark;
-    
-    final primaryHint = theme.colorScheme.primary.withValues(alpha: isDark ? 0.08 : 0.04);
-    final backgroundColor = theme.colorScheme.background;
 
     return Scaffold(
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
           // App Bar
-          SliverAppBar(
-            expandedHeight: 180,
-            pinned: true,
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_rounded, color: theme.colorScheme.foreground),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            actions: [
-              IconButton(
-                icon: Icon(Icons.emoji_events_rounded, color: theme.colorScheme.foreground),
-                onPressed: () => UiMmAchievement.navigate(context),
+          MasterMenuAppBar(todayCorrect: todayCorrect, todayWrong: todayWrong),
+
+          // Selection Dropdowns & Segmented Control
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 12.0,
               ),
-            ],
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(1.5),
-              child: Container(color: theme.colorScheme.primary.withValues(alpha: isDark ? 0.3 : 0.15), height: 1.5),
-            ),
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color.alphaBlend(primaryHint, backgroundColor), backgroundColor],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                padding: const EdgeInsets.only(top: 80, left: 24, right: 24),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final isWide = constraints.maxWidth > 600;
+
+                  final segmentedControl = Container(
+                    width: isWide ? 280 : double.infinity,
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.muted.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      children: groupList.map((group) {
+                        final isSelected = selectedGroup.key == group.key;
+                        return Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedGroup = group;
+                                _updateSelectedChapters();
+                              });
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.easeInOut,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? theme.colorScheme.background
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: isSelected
+                                    ? [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.05,
+                                          ),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ]
+                                    : [],
+                              ),
+                              child: Text(
+                                group.title,
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.small.copyWith(
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.w500,
+                                  color: isSelected
+                                      ? theme.colorScheme.foreground
+                                      : theme.colorScheme.mutedForeground,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  );
+
+                  final pickerTrigger = ShadButton.outline(
+                    onPressed: _showFilterPickerBottomSheet,
+                    width: double.infinity,
+                    height: 48,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          locale.module_math_master,
-                          style: theme.textTheme.h2.copyWith(fontWeight: FontWeight.w800),
+                        Row(
+                          children: [
+                            Icon(
+                              selectedGroup.id == KeyGroup.grades.index
+                                  ? Icons.school_rounded
+                                  : Icons.topic_rounded,
+                              color: theme.colorScheme.primary,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              selectedGroup.id == KeyGroup.grades.index
+                                  ? '${locale.group_grades}: '
+                                  : '${locale.group_topics}: ',
+                              style: theme.textTheme.small.copyWith(
+                                color: theme.colorScheme.mutedForeground,
+                              ),
+                            ),
+                            Text(
+                              selectedGroup.id == KeyGroup.grades.index
+                                  ? selectedGrade.title
+                                  : selectedTopic.title,
+                              style: theme.textTheme.small.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.foreground,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          locale.daily_progress,
-                          style: theme.textTheme.muted,
+                        Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: theme.colorScheme.mutedForeground,
+                          size: 18,
                         ),
                       ],
                     ),
-                    // Quick Stats Badge
-                    ShadCard(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      backgroundColor: theme.colorScheme.muted.withValues(alpha: 0.3),
-                      child: Row(
-                        children: [
-                          Icon(Icons.check_circle_rounded, color: theme.colorScheme.primary),
-                          const SizedBox(width: 6),
-                          Text(
-                            '$todayCorrect',
-                            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(width: 12),
-                          const Icon(Icons.cancel_rounded, color: Colors.red),
-                          const SizedBox(width: 6),
-                          Text(
-                            '$todayWrong',
-                            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+
+                  if (isWide) {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        segmentedControl,
+                        const SizedBox(width: 16),
+                        Expanded(child: pickerTrigger),
+                      ],
+                    );
+                  } else {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        segmentedControl,
+                        const SizedBox(height: 14),
+                        pickerTrigger,
+                      ],
+                    );
+                  }
+                },
               ),
             ),
           ),
-          
-          // Selection Dropdowns
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: DropdownButtonFormField<String>(
-                      value: selectedGroup.key,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                      items: groupList.map((g) => DropdownMenuItem(value: g.key, child: Text(g.title))).toList(),
-                      onChanged: (val) {
-                        if (val == null) return;
-                        setState(() {
-                          selectedGroup = groupList.firstWhere((g) => g.key == val);
-                          _updateSelectedChapters();
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  if (selectedGroup.id == KeyGroup.grades.index)
-                    Expanded(
-                      flex: 3,
-                      child: DropdownButtonFormField<String>(
-                        value: selectedGrade.key,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        items: gradeList.map((g) => DropdownMenuItem(value: g.key, child: Text(g.title))).toList(),
-                        onChanged: (val) {
-                          if (val == null) return;
-                          setState(() {
-                            selectedGrade = gradeList.firstWhere((g) => g.key == val);
-                            _updateSelectedChapters();
-                          });
-                        },
-                      ),
-                    ),
-                  if (selectedGroup.id == KeyGroup.topics.index)
-                    Expanded(
-                      flex: 3,
-                      child: DropdownButtonFormField<String>(
-                        value: selectedTopic.key,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        items: topicList.map((g) => DropdownMenuItem(value: g.key, child: Text(g.title))).toList(),
-                        onChanged: (val) {
-                          if (val == null) return;
-                          setState(() {
-                            selectedTopic = topicList.firstWhere((g) => g.key == val);
-                            _updateSelectedChapters();
-                          });
-                        },
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-          
+
           // Chapters Grid/List
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -301,8 +429,12 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
-                          entry.key == KeyTopic.topicAddition ? locale.topics_addition : entry.key.name,
-                          style: theme.textTheme.large.copyWith(fontWeight: FontWeight.bold),
+                          entry.key == KeyTopic.topicAddition
+                              ? locale.topics_addition
+                              : entry.key.name,
+                          style: theme.textTheme.large.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       ...entry.value.map((chapter) {
