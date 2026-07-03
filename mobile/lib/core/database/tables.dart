@@ -12,3 +12,4 @@ export 'tables/enums.dart';
 export 'tables/dictionary/words.dart';
 export 'tables/dictionary/favorites.dart';
 export 'tables/dictionary/words_fts.dart';
+export 'tables/math_master_scores.dart';

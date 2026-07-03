@@ -7,19 +7,21 @@ This document lists the step-by-step tasks required to migrate, optimize, and in
 ## Phase 0: Vertical Slice / Proof-of-Concept (Addition 1-Digit)
 Implement and test the entire end-to-end pipeline using *only* the 1-digit addition module (`addition_1_digit.dart`) before porting the other chapters.
 
-- [ ] **0.1. Setup Core Directories & Files**
-  - [ ] Create base directories under `mobile/lib/ui/math_master/`.
-  - [ ] Port base files: `base_mm_chapter.dart`, `base_mm_topic.dart`, and the router `lib_math_master.dart`.
-- [ ] **0.2. Port Addition 1-Digit Chapter & Solver**
-  - [ ] Port `addition_1_digit.dart` to `libs/modules/addition/`.
-  - [ ] Port the base solver `calc_steps.dart` and `calc_addition_steps.dart` (for generating carry steps solutions).
-- [ ] **0.3. Setup Local Drift Database Table**
-  - [ ] Create `math_master_scores.dart` table.
-  - [ ] Register it in `@DriftDatabase` and implement the migration strategy (Schema v2).
+- [x] **0.1. Setup Core Directories & Files**
+  - [x] Create base directories under `mobile/lib/ui/math_master/`.
+  - [x] Port base files: `base_mm_chapter.dart`, `base_mm_topic.dart`, and the router `lib_math_master.dart`.
+- [x] **0.2. Port Addition 1-Digit Chapter & Solver**
+  - [x] Port `addition_1_digit.dart` to `libs/modules/addition/`.
+  - [x] Port the base solver `calc_steps.dart` and `calc_addition_steps.dart` (for generating carry steps solutions).
+- [x] **0.3. Setup Local Drift Database Table**
+  - [x] Create `math_master_scores.dart` table.
+  - [x] Register it in `@DriftDatabase` and implement the migration strategy (Schema v2).
 - [ ] **0.4. Build UI flow for Training & Solution**
-  - [ ] Build `math_master_screen.dart` (Dashboard displaying the single 1-digit addition option).
-  - [ ] Build `training_screen.dart` with timer, scoring, keypad input, and state management.
-  - [ ] Build `solution_screen.dart` rendering the step-by-step LaTeX solution.
+  - [ ] Port and refactor `ui_math_master.dart` (Dashboard displaying the single 1-digit addition option).
+  - [ ] Port and refactor `ui_mm_training.dart` with timer, scoring, keypad input, and state management.
+  - [ ] Port and refactor `ui_mm_steps_solution.dart` rendering the step-by-step LaTeX/HTML solution.
+  - [ ] Port and refactor `ui_mm_achievement.dart` for scoring milestones.
+  - [ ] Port and refactor `ui_mm_daily_chart.dart` displaying score trends.
 - [ ] **0.5. Implement Hashing & Backend Sync**
   - [ ] Implement SHA-256 signature generator on mobile.
   - [ ] Define PostgreSQL table and build `POST /api/math-master/sync` on the backend with signature validation and speed limits.

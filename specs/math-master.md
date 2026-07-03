@@ -49,18 +49,12 @@ Under the root `mobile/lib/ui/math_master/` directory, subfolders omit the `math
 
 ```
 mobile/lib/ui/math_master/
-├── math_master_screen.dart                  // Main Dashboard / Selection Screen
-├── widgets/                                 // Widgets for the main dashboard screen
-│   └── topic_menu_item.dart
-├── training/                                // Live Arithmetic Session Screen
-│   ├── training_screen.dart
-│   └── widgets/
-│       ├── training_keypad.dart
-│       └── training_board.dart
-├── solution/                                // Steps Solution Screen / Dialog
-│   ├── solution_screen.dart
-│   └── widgets/
-│       └── solution_latex_viewer.dart
+├── ui/                                      // Presentational UI layer
+│   ├── ui_math_master.dart                  // Main Dashboard / Selection Screen
+│   ├── ui_mm_training.dart                  // Live Arithmetic Session Screen
+│   ├── ui_mm_steps_solution.dart            // Steps Solution WebView Screen
+│   ├── ui_mm_achievement.dart               // Achievements & Streaks Screen
+│   └── ui_mm_daily_chart.dart               // Performance Daily Chart Screen
 └── libs/                                    // Math Engine Core Logic
     ├── lib_math_master.dart                 // Facade Router class
     ├── base/

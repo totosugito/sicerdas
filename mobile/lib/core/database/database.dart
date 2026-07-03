@@ -24,13 +24,26 @@ part 'database.g.dart';
     MathTrickChapters,
     MathTrickLevels,
     MathTrickDailyScores,
+    MathMasterScores,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (m) async {
+          await m.createAll();
+        },
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            await m.createTable(mathMasterScores);
+          }
+        },
+      );
 
   // --- Global Helpers ---
 
