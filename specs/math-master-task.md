@@ -16,12 +16,12 @@ Implement and test the entire end-to-end pipeline using *only* the 1-digit addit
 - [x] **0.3. Setup Local Drift Database Table**
   - [x] Create `math_master_scores.dart` table.
   - [x] Register it in `@DriftDatabase` and implement the migration strategy (Schema v2).
-- [ ] **0.4. Build UI flow for Training & Solution**
-  - [ ] Port and refactor `ui_math_master.dart` (Dashboard displaying the single 1-digit addition option).
-  - [ ] Port and refactor `ui_mm_training.dart` with timer, scoring, keypad input, and state management.
-  - [ ] Port and refactor `ui_mm_steps_solution.dart` rendering the step-by-step LaTeX/HTML solution.
-  - [ ] Port and refactor `ui_mm_achievement.dart` for scoring milestones.
-  - [ ] Port and refactor `ui_mm_daily_chart.dart` displaying score trends.
+- [x] **0.4. Build UI flow for Training & Solution**
+  - [x] Port and refactor `ui_math_master.dart` (Dashboard displaying the single 1-digit addition option).
+  - [x] Port and refactor `ui_mm_training.dart` with timer, scoring, keypad input, and state management.
+  - [x] Port and refactor `ui_mm_steps_solution.dart` rendering the step-by-step LaTeX/HTML solution.
+  - [x] Port and refactor `ui_mm_achievement.dart` for scoring milestones.
+  - [x] Port and refactor `ui_mm_daily_chart.dart` displaying score trends.
 - [ ] **0.5. Implement Hashing & Backend Sync**
   - [ ] Implement SHA-256 signature generator on mobile.
   - [ ] Define PostgreSQL table and build `POST /api/math-master/sync` on the backend with signature validation and speed limits.

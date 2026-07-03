@@ -31,19 +31,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
-
-  @override
-  MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (m) async {
-          await m.createAll();
-        },
-        onUpgrade: (m, from, to) async {
-          if (from < 2) {
-            await m.createTable(mathMasterScores);
-          }
-        },
-      );
+  int get schemaVersion => 1;
 
   // --- Global Helpers ---
 
@@ -56,6 +44,7 @@ class AppDatabase extends _$AppDatabase {
       await delete(bookGroups).go();
       await delete(periodicElements).go();
       await delete(periodicElementNotes).go();
+      await delete(mathMasterScores).go();
       // await delete(mathTrickChapters).go();
       // await delete(mathTrickLevels).go();
       // await delete(mathTrickDailyScores).go();

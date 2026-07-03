@@ -8,6 +8,7 @@ import '../../periodic_table/periodic_screen/periodic_screen.dart';
 import '../../constitution/constitution_menu/constitution_menu.dart';
 import '../../math_tricks/tricks_menu/tricks_menu.dart';
 import '../../dictionary/dictionary_screen/dictionary_screen.dart';
+import '../../math_master/master_menu/master_menu.dart';
 
 class QuickAccessGrid extends ConsumerWidget {
   const QuickAccessGrid({super.key});
@@ -57,6 +58,17 @@ class QuickAccessGrid extends ConsumerWidget {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const TricksMenuScreen()),
+          );
+        },
+      },
+      {
+        'title': l10n.math_master.module_math_master,
+        'icon': Icons.functions_rounded,
+        'colors': [const Color(0xFF06B6D4), const Color(0xFF0891B2)],
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const UiMathMaster()),
           );
         },
       },
