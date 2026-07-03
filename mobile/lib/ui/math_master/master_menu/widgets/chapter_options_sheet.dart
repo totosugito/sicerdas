@@ -135,7 +135,7 @@ class _ChapterOptionsSheetState extends State<ChapterOptionsSheet> {
                   return Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: _buildOptionButton(
-                      label: '$qCount Soal',
+                      label: locale.questions_count(count: qCount),
                       isSelected: _numberOfQuestions == qCount,
                       onPressed: () =>
                           setState(() => _numberOfQuestions = qCount),
