@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:intl/intl.dart';
-
 import '../libs/providers/math_master_repository.dart';
-import '../../../../core/database/database.dart';
 
 class UiMmDailyChart extends ConsumerStatefulWidget {
   const UiMmDailyChart({super.key});
@@ -13,9 +10,7 @@ class UiMmDailyChart extends ConsumerStatefulWidget {
   static void navigate(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const UiMmDailyChart(),
-      ),
+      MaterialPageRoute(builder: (context) => const UiMmDailyChart()),
     );
   }
 
@@ -60,18 +55,22 @@ class _UiMmDailyChartState extends ConsumerState<UiMmDailyChart> {
       if (!grouped.containsKey(dateStr)) {
         grouped[dateStr] = {'correct': 0, 'wrong': 0};
       }
-      grouped[dateStr]!['correct'] = grouped[dateStr]!['correct']! + score.correctCount;
-      grouped[dateStr]!['wrong'] = grouped[dateStr]!['wrong']! + score.wrongCount;
+      grouped[dateStr]!['correct'] =
+          grouped[dateStr]!['correct']! + score.correctCount;
+      grouped[dateStr]!['wrong'] =
+          grouped[dateStr]!['wrong']! + score.wrongCount;
     }
 
     // Convert to list sorted chronologically
     final List<_ChartData> dataList = [];
     grouped.forEach((key, val) {
-      dataList.add(_ChartData(
-        dateStr: key,
-        correct: val['correct'] ?? 0,
-        wrong: val['wrong'] ?? 0,
-      ));
+      dataList.add(
+        _ChartData(
+          dateStr: key,
+          correct: val['correct'] ?? 0,
+          wrong: val['wrong'] ?? 0,
+        ),
+      );
     });
 
     // reverse to show chronologically from left to right (oldest to newest)
@@ -88,10 +87,7 @@ class _UiMmDailyChartState extends ConsumerState<UiMmDailyChart> {
     final theme = ShadTheme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Progres Harian'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Progres Harian'), centerTitle: true),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
@@ -101,7 +97,9 @@ class _UiMmDailyChartState extends ConsumerState<UiMmDailyChart> {
                 children: [
                   Text(
                     'Analisis Latihan',
-                    style: theme.textTheme.large.copyWith(fontWeight: FontWeight.bold),
+                    style: theme.textTheme.large.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -127,7 +125,10 @@ class _UiMmDailyChartState extends ConsumerState<UiMmDailyChart> {
                           margin: EdgeInsets.zero,
                           primaryXAxis: const CategoryAxis(
                             majorGridLines: MajorGridLines(width: 0),
-                            labelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                            labelStyle: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           primaryYAxis: const NumericAxis(
                             axisLine: AxisLine(width: 0),
@@ -137,14 +138,19 @@ class _UiMmDailyChartState extends ConsumerState<UiMmDailyChart> {
                           legend: const Legend(
                             isVisible: true,
                             position: LegendPosition.bottom,
-                            textStyle: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                            textStyle: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           tooltipBehavior: TooltipBehavior(enable: true),
                           series: <CartesianSeries<_ChartData, String>>[
                             StackedColumnSeries<_ChartData, String>(
                               dataSource: chartData,
-                              xValueMapper: (_ChartData data, _) => data.dateStr,
-                              yValueMapper: (_ChartData data, _) => data.correct,
+                              xValueMapper: (_ChartData data, _) =>
+                                  data.dateStr,
+                              yValueMapper: (_ChartData data, _) =>
+                                  data.correct,
                               name: 'Benar',
                               color: Colors.green.shade400,
                               borderRadius: const BorderRadius.only(
@@ -154,7 +160,8 @@ class _UiMmDailyChartState extends ConsumerState<UiMmDailyChart> {
                             ),
                             StackedColumnSeries<_ChartData, String>(
                               dataSource: chartData,
-                              xValueMapper: (_ChartData data, _) => data.dateStr,
+                              xValueMapper: (_ChartData data, _) =>
+                                  data.dateStr,
                               yValueMapper: (_ChartData data, _) => data.wrong,
                               name: 'Salah',
                               color: Colors.red.shade400,

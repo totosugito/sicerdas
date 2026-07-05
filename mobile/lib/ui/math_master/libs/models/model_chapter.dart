@@ -60,11 +60,11 @@ class ModelChapter {
     }
   }
 
-  setTopicLabel(String v) {
+  void setTopicLabel(String v) {
     topicLabel = v;
   }
 
-  getTopicLabel() {
+  String getTopicLabel() {
     return (topicLabel);
   }
 }

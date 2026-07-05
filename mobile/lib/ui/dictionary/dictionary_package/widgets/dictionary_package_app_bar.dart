@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
 import '../../libs/providers/dictionary_package_provider.dart';
-import '../../libs/providers/dictionary_providers.dart';
 
-class DictionaryPackageAppBar extends ConsumerWidget implements PreferredSizeWidget {
+class DictionaryPackageAppBar extends ConsumerWidget
+    implements PreferredSizeWidget {
   const DictionaryPackageAppBar({super.key});
 
   @override
@@ -27,25 +27,20 @@ class DictionaryPackageAppBar extends ConsumerWidget implements PreferredSizeWid
         title: Builder(
           builder: (context) {
             final settings = context
-                .dependOnInheritedWidgetOfExactType<
-                  FlexibleSpaceBarSettings
-                >();
+                .dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
             double collapseProgress = 0.0;
             if (settings != null) {
               final deltaExtent = settings.maxExtent - settings.minExtent;
               if (deltaExtent > 0.0) {
                 collapseProgress =
                     (1.0 -
-                            (settings.currentExtent -
-                                    settings.minExtent) /
+                            (settings.currentExtent - settings.minExtent) /
                                 deltaExtent)
                         .clamp(0.0, 1.0);
               }
             }
             final showBadge = collapseProgress > 0.85;
-            final opacity = showBadge
-                ? (collapseProgress - 0.85) / 0.15
-                : 0.0;
+            final opacity = showBadge ? (collapseProgress - 0.85) / 0.15 : 0.0;
 
             return Row(
               mainAxisSize: MainAxisSize.max,
@@ -102,11 +97,7 @@ class DictionaryPackageAppBar extends ConsumerWidget implements PreferredSizeWid
             );
           },
         ),
-        titlePadding: const EdgeInsets.only(
-          left: 48,
-          bottom: 14,
-          right: 16,
-        ),
+        titlePadding: const EdgeInsets.only(left: 48, bottom: 14, right: 16),
         background: Container(
           decoration: BoxDecoration(
             color: theme.brightness == Brightness.dark

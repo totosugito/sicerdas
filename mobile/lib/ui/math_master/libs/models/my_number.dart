@@ -16,15 +16,16 @@ class MyNumber {
   late String unit;
   late KeyDataType type;
 
-  MyNumber(
-      {this.id = 0,
-      this.valueText = "",
-      this.value = 0,
-      this.numerator = 0,
-      this.denominator = 1,
-      this.unit = "",
-      this.decimalPlaces = 0,
-      this.type = KeyDataType.integer});
+  MyNumber({
+    this.id = 0,
+    this.valueText = "",
+    this.value = 0,
+    this.numerator = 0,
+    this.denominator = 1,
+    this.unit = "",
+    this.decimalPlaces = 0,
+    this.type = KeyDataType.integer,
+  });
 
   MyNumber.empty() {
     id = 0;
@@ -81,46 +82,63 @@ class MyNumber {
     hoursToMinutes();
   }
 
-  MyNumber.nextInt(
-      {this.type = KeyDataType.integer,
-      this.id = 0,
-      this.unit = "",
-      RandomMode mode = RandomMode.range,
-      required MyRandom myRandom,
-      required ModelNumber minMax}) {
-    int _min = minMax.min.toInt();
-    int _max = minMax.max.toInt();
-    int _spacing = minMax.spacing.toInt();
-    int _value = myRandom.nextInt(min: _min, spacing: _spacing, max: _max);
+  MyNumber.nextInt({
+    this.type = KeyDataType.integer,
+    this.id = 0,
+    this.unit = "",
+    RandomMode mode = RandomMode.range,
+    required MyRandom myRandom,
+    required ModelNumber minMax,
+  }) {
+    int min_ = minMax.min.toInt();
+    int max_ = minMax.max.toInt();
+    int spacing_ = minMax.spacing.toInt();
+    int value_ = myRandom.nextInt(min: min_, spacing: spacing_, max: max_);
     _initInt();
-    value = _value;
+    value = value_;
   }
 
-  MyNumber.nextFractions(
-      {this.type = KeyDataType.fractions,
-      this.id = 0,
-      this.unit = "",
-      RandomMode mode = RandomMode.range,
-      required MyRandom myRandom,
-      required ModelNumber minMax,
-      bool simplify = false}) {
+  MyNumber.nextFractions({
+    this.type = KeyDataType.fractions,
+    this.id = 0,
+    this.unit = "",
+    RandomMode mode = RandomMode.range,
+    required MyRandom myRandom,
+    required ModelNumber minMax,
+    bool simplify = false,
+  }) {
     // create main value
     int min = minMax.min.toInt();
     int max = minMax.max.toInt();
     int spacing = minMax.spacing.toInt();
-    int value_ = myRandom.nextInt(mode: mode, min: min, spacing: spacing, max: max);
+    int value_ = myRandom.nextInt(
+      mode: mode,
+      min: min,
+      spacing: spacing,
+      max: max,
+    );
 
     // create numerator
     int minNum = minMax.minNum.toInt();
     int maxNum = minMax.maxNum.toInt();
     int spacingNum = minMax.spacingNum.toInt();
-    int numerator_ = myRandom.nextInt(mode: mode, min: minNum, spacing: spacingNum, max: maxNum);
+    int numerator_ = myRandom.nextInt(
+      mode: mode,
+      min: minNum,
+      spacing: spacingNum,
+      max: maxNum,
+    );
 
     // create denominator
     int minDen = minMax.minDen.toInt();
     int maxDen = minMax.maxDen.toInt();
     int spacingDen = minMax.spacingDen.toInt();
-    int denominator_ = myRandom.nextInt(mode: mode, min: minDen, spacing: spacingDen, max: maxDen);
+    int denominator_ = myRandom.nextInt(
+      mode: mode,
+      min: minDen,
+      spacing: spacingDen,
+      max: maxDen,
+    );
 
     _initInt();
     value = value_;
@@ -134,14 +152,15 @@ class MyNumber {
     }
   }
 
-  MyNumber.nextIntUnique(
-      {bool useOneDigit = false,
-      this.type = KeyDataType.integer,
-      this.id = 0,
-      this.unit = "",
-      required List<MyNumber> rawList,
-      required int checkNumber,
-      int spacing = 1}) {
+  MyNumber.nextIntUnique({
+    bool useOneDigit = false,
+    this.type = KeyDataType.integer,
+    this.id = 0,
+    this.unit = "",
+    required List<MyNumber> rawList,
+    required int checkNumber,
+    int spacing = 1,
+  }) {
     // checkNumber must 1 digit
     if (useOneDigit) {
       checkNumber = checkNumber < 10 ? checkNumber : 1;
@@ -169,14 +188,15 @@ class MyNumber {
     valueText = toString();
   }
 
-  MyNumber.nextFractionUnique(
-      {bool useOneDigit = false,
-      this.type = KeyDataType.fractions,
-      this.id = 0,
-      this.unit = "",
-      required List<MyNumber> rawList,
-      required MyNumber checkNumber,
-      int spacing = 1}) {
+  MyNumber.nextFractionUnique({
+    bool useOneDigit = false,
+    this.type = KeyDataType.fractions,
+    this.id = 0,
+    this.unit = "",
+    required List<MyNumber> rawList,
+    required MyNumber checkNumber,
+    int spacing = 1,
+  }) {
     int idx = 0;
     while (idx < rawList.length) {
       if (rawList[idx].isEqual(checkNumber)) {
@@ -186,8 +206,12 @@ class MyNumber {
           if (checkNumber.getVal().toInt() != 0) {
             // add value with spacing
             int v = checkNumber.numerator += spacing;
-            checkNumber.value = v < checkNumber.denominator ? checkNumber.value : checkNumber.value + 1;
-            checkNumber.numerator = v < checkNumber.denominator ? v : checkNumber.numerator;
+            checkNumber.value = v < checkNumber.denominator
+                ? checkNumber.value
+                : checkNumber.value + 1;
+            checkNumber.numerator = v < checkNumber.denominator
+                ? v
+                : checkNumber.numerator;
           } else {
             // only update numerator
             checkNumber.numerator += spacing;
@@ -200,7 +224,7 @@ class MyNumber {
     clone(checkNumber); // clone data from checkNumber
   }
 
-  _initInt() {
+  void _initInt() {
     valueText = "";
     value = 0;
     numerator = 0;
@@ -208,7 +232,7 @@ class MyNumber {
     decimalPlaces = 0;
   }
 
-  minuteToHours() {
+  void minuteToHours() {
     type = KeyDataType.hours;
     numerator = (value % 60).toInt();
     value = value ~/ 60;
@@ -220,14 +244,14 @@ class MyNumber {
     denominator = denominator ~/ gcd;
   }
 
-  hoursToMinutes() {
+  void hoursToMinutes() {
     type = KeyDataType.minutes;
     value = (value * 60) + (numerator * 60 ~/ denominator);
     numerator = 0;
     denominator = 1;
   }
 
-  toSimplify() {
+  void toSimplify() {
     if (numerator == 0 || denominator == 0) {
       return;
     }
@@ -246,53 +270,58 @@ class MyNumber {
     return (getValue() < 0);
   }
 
-  abs() {
+  void abs() {
     value = value.abs();
   }
 
   MyNumber operator +(MyNumber b) {
     switch (type) {
       case KeyDataType.fractions:
-        int numerator_ = (numerator * b.denominator) + (denominator * b.numerator);
+        int numerator_ =
+            (numerator * b.denominator) + (denominator * b.numerator);
         int denominator_ = denominator * b.denominator;
         MyNumber r = MyNumber(
-            id: id,
-            valueText: valueText,
-            value: value + b.value,
-            numerator: numerator_,
-            denominator: denominator_,
-            decimalPlaces: decimalPlaces,
-            unit: unit,
-            type: type);
+          id: id,
+          valueText: valueText,
+          value: value + b.value,
+          numerator: numerator_,
+          denominator: denominator_,
+          decimalPlaces: decimalPlaces,
+          unit: unit,
+          type: type,
+        );
         // r.toSimplify();
         return (r);
       default:
         return (MyNumber(
-            id: id,
-            valueText: valueText,
-            value: value + b.value,
-            numerator: numerator,
-            denominator: denominator,
-            decimalPlaces: decimalPlaces,
-            unit: unit,
-            type: type));
+          id: id,
+          valueText: valueText,
+          value: value + b.value,
+          numerator: numerator,
+          denominator: denominator,
+          decimalPlaces: decimalPlaces,
+          unit: unit,
+          type: type,
+        ));
     }
   }
 
   MyNumber operator -(MyNumber b) {
     switch (type) {
       case KeyDataType.fractions:
-        int numerator_ = (numerator * b.denominator) - (denominator * b.numerator);
+        int numerator_ =
+            (numerator * b.denominator) - (denominator * b.numerator);
         int denominator_ = denominator * b.denominator;
         MyNumber r = MyNumber(
-            id: id,
-            valueText: valueText,
-            value: value - b.value,
-            numerator: numerator_,
-            denominator: denominator_,
-            decimalPlaces: decimalPlaces,
-            unit: unit,
-            type: type);
+          id: id,
+          valueText: valueText,
+          value: value - b.value,
+          numerator: numerator_,
+          denominator: denominator_,
+          decimalPlaces: decimalPlaces,
+          unit: unit,
+          type: type,
+        );
         // r.toSimplify();
         return (r);
       case KeyDataType.clock:
@@ -303,24 +332,26 @@ class MyNumber {
           minute_ = minute_ + 60;
         }
         return (MyNumber(
-            id: id,
-            valueText: valueText,
-            value: hour_ - b.value,
-            numerator: minute_ - b.numerator,
-            denominator: denominator,
-            decimalPlaces: decimalPlaces,
-            unit: unit,
-            type: KeyDataType.clock));
+          id: id,
+          valueText: valueText,
+          value: hour_ - b.value,
+          numerator: minute_ - b.numerator,
+          denominator: denominator,
+          decimalPlaces: decimalPlaces,
+          unit: unit,
+          type: KeyDataType.clock,
+        ));
       default:
         return (MyNumber(
-            id: id,
-            valueText: valueText,
-            value: value - b.value,
-            numerator: numerator,
-            denominator: denominator,
-            decimalPlaces: decimalPlaces,
-            unit: unit,
-            type: type));
+          id: id,
+          valueText: valueText,
+          value: value - b.value,
+          numerator: numerator,
+          denominator: denominator,
+          decimalPlaces: decimalPlaces,
+          unit: unit,
+          type: type,
+        ));
     }
   }
 
@@ -328,26 +359,28 @@ class MyNumber {
     switch (type) {
       case KeyDataType.fractions:
         MyNumber r = MyNumber(
-            id: id,
-            valueText: valueText,
-            value: value * b.value,
-            numerator: numerator * b.numerator,
-            denominator: denominator * b.denominator,
-            decimalPlaces: decimalPlaces,
-            unit: unit,
-            type: type);
+          id: id,
+          valueText: valueText,
+          value: value * b.value,
+          numerator: numerator * b.numerator,
+          denominator: denominator * b.denominator,
+          decimalPlaces: decimalPlaces,
+          unit: unit,
+          type: type,
+        );
         // r.toSimplify();
         return (r);
       default:
         return (MyNumber(
-            id: id,
-            valueText: valueText,
-            value: value * b.value,
-            numerator: numerator,
-            denominator: denominator,
-            decimalPlaces: decimalPlaces,
-            unit: unit,
-            type: type));
+          id: id,
+          valueText: valueText,
+          value: value * b.value,
+          numerator: numerator,
+          denominator: denominator,
+          decimalPlaces: decimalPlaces,
+          unit: unit,
+          type: type,
+        ));
     }
   }
 
@@ -356,26 +389,28 @@ class MyNumber {
       case KeyDataType.fractions:
         num bValue = b.value == 0 ? 1 : b.value;
         MyNumber r = MyNumber(
-            id: id,
-            valueText: valueText,
-            value: value / bValue,
-            numerator: numerator * b.denominator,
-            denominator: denominator * b.numerator,
-            decimalPlaces: decimalPlaces,
-            unit: unit,
-            type: type);
+          id: id,
+          valueText: valueText,
+          value: value / bValue,
+          numerator: numerator * b.denominator,
+          denominator: denominator * b.numerator,
+          decimalPlaces: decimalPlaces,
+          unit: unit,
+          type: type,
+        );
         // r.toSimplify();
         return (r);
       default:
         return (MyNumber(
-            id: id,
-            valueText: valueText,
-            value: value / b.value,
-            numerator: numerator,
-            denominator: denominator,
-            decimalPlaces: decimalPlaces,
-            unit: unit,
-            type: type));
+          id: id,
+          valueText: valueText,
+          value: value / b.value,
+          numerator: numerator,
+          denominator: denominator,
+          decimalPlaces: decimalPlaces,
+          unit: unit,
+          type: type,
+        ));
     }
   }
 
@@ -383,14 +418,15 @@ class MyNumber {
     switch (type) {
       default:
         return (MyNumber(
-            id: id,
-            valueText: valueText,
-            value: value % b.value,
-            numerator: numerator,
-            denominator: denominator,
-            decimalPlaces: decimalPlaces,
-            unit: unit,
-            type: type));
+          id: id,
+          valueText: valueText,
+          value: value % b.value,
+          numerator: numerator,
+          denominator: denominator,
+          decimalPlaces: decimalPlaces,
+          unit: unit,
+          type: type,
+        ));
     }
   }
 
@@ -410,7 +446,7 @@ class MyNumber {
     return (getValue() >= other.getValue());
   }
 
-  clone(MyNumber other) {
+  void clone(MyNumber other) {
     id = other.id;
     valueText = other.valueText;
     value = other.value;
@@ -427,14 +463,14 @@ class MyNumber {
       valueText = numerator == 0
           ? "0"
           : denominator == 0
-              ? "0"
-              : "\\frac{$numerator}{$denominator}";
+          ? "0"
+          : "\\frac{$numerator}{$denominator}";
     } else {
       valueText = numerator == 0
           ? "$value"
           : denominator == 0
-              ? "$value"
-              : "$value\\frac{$numerator}{$denominator}";
+          ? "$value"
+          : "$value\\frac{$numerator}{$denominator}";
     }
     return (valueText);
   }
@@ -460,7 +496,8 @@ class MyNumber {
   }
 
   String toClockFormat() {
-    valueText = "${value.toString().padLeft(2, '0')}:${numerator.toString().padLeft(2, '0')}";
+    valueText =
+        "${value.toString().padLeft(2, '0')}:${numerator.toString().padLeft(2, '0')}";
     return (valueText);
   }
 
@@ -509,7 +546,7 @@ class MyNumber {
         return ("${getValue()}\\%");
       case KeyDataType.measurement:
         //return (sprintf("%d \\text{ %s}", [getVal(), unit]));
-        return(toMeasurementText());
+        return (toMeasurementText());
       case KeyDataType.hours:
         return (toHourText());
       case KeyDataType.minutes:
@@ -573,7 +610,9 @@ class MyNumber {
       case KeyDataType.hours:
       case KeyDataType.minutes:
       case KeyDataType.clock:
-        return ((value.toInt() == other.value.toInt()) && (getNum() == other.getNum()) && (getDen() == other.getDen()));
+        return ((value.toInt() == other.value.toInt()) &&
+            (getNum() == other.getNum()) &&
+            (getDen() == other.getDen()));
       default:
         return (getValue() == other.getValue());
     }
@@ -587,26 +626,26 @@ class MyNumber {
     return (unit);
   }
 
-  toMeasurementText() {
+  String toMeasurementText() {
     valueText = "";
     if (value == 0) {
-      if(numerator * denominator == 0) {
+      if (numerator * denominator == 0) {
         valueText = "$value";
-      }
-      else {
+      } else {
         valueText = "\\frac{$numerator}{$denominator}";
       }
     } else {
-      if(numerator * denominator == 0) {
+      if (numerator * denominator == 0) {
         valueText = "$value";
       } else {
         valueText = "$value\\frac{$numerator}{$denominator}";
       }
     }
     valueText = "$valueText\\text{ $unit}";
-    return(valueText);
+    return (valueText);
   }
-  toCorrectClockFormat(int maxHour) {
+
+  void toCorrectClockFormat(int maxHour) {
     if (numerator == 60) {
       value = value + 1 <= maxHour ? value + 1 : value - 1;
       numerator = 0;
@@ -614,7 +653,7 @@ class MyNumber {
     }
   }
 
-  toUniqueClockFormat(MyNumber other, int maxHour) {
+  void toUniqueClockFormat(MyNumber other, int maxHour) {
     if (isEqual(other)) {
       value = value + 1 <= maxHour ? value + 1 : value - 1;
       toString();
@@ -625,7 +664,7 @@ class MyNumber {
     return ("\\begin{gathered}${getValI()} _{\\text{ $textHour }} \\normalsize{${getNum()}} _{\\text{ $textMinute}}\\end{gathered}");
   }
 
-  numeratorLessThanDenominatorAndNotEqual() {
+  void numeratorLessThanDenominatorAndNotEqual() {
     if (numerator == denominator) {
       denominator = denominator - 1 > 1 ? denominator - 1 : denominator + 1;
     }
@@ -637,12 +676,12 @@ class MyNumber {
     }
   }
 
-  toImproperFractions() {
+  void toImproperFractions() {
     numerator = (value * denominator).toInt() + numerator;
     value = 0;
   }
 
-  toMixedFractions() {
+  void toMixedFractions() {
     value = numerator ~/ denominator;
     numerator = numerator % denominator;
     toFractionsText();
@@ -652,7 +691,7 @@ class MyNumber {
     return (numerator > denominator);
   }
 
-  setNumeratorLargeThanDenominator() {
+  void setNumeratorLargeThanDenominator() {
     int numerator_ = numerator;
     if (numerator < denominator) {
       numerator = denominator;

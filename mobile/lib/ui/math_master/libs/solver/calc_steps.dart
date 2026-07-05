@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../models/my_number.dart';
 import 'libs/html_lib.dart';
 import 'libs/calculator_lib.dart';
 
@@ -10,14 +9,15 @@ class CalcSteps extends LibHtml {
     lib = CalculatorLib();
   }
 
-  String _texAdditionSteps(
-      {required List<List<String>> data,
-      String spacing = "\\space",
-      bool header = true,
-      int start = 1,
-      end = -1,
-      String symbol = "+",
-      int startColor = 0}) {
+  String _texAdditionSteps({
+    required List<List<String>> data,
+    String spacing = "\\space",
+    bool header = true,
+    int start = 1,
+    end = -1,
+    String symbol = "+",
+    int startColor = 0,
+  }) {
     String result = "";
 
     String calcSymbol = texSmall(value: symbol);
@@ -28,8 +28,14 @@ class CalcSteps extends LibHtml {
     if (header) {
       List<String> item = data[0];
       for (int j = 0; j < item.length; j++) {
-        String str = item[j].trim().isNotEmpty ? item[j] : texPhantom(value: "0");
-        strItem += texSmall(value: texColor(value: str, color: Colors.grey)) + spacing;
+        String str = item[j].trim().isNotEmpty
+            ? item[j]
+            : texPhantom(value: "0");
+        strItem +=
+            texSmall(
+              value: texColor(value: str, color: Colors.grey),
+            ) +
+            spacing;
       }
       result += strItem + calcSymbolPhantom + texBr();
     }
@@ -40,8 +46,11 @@ class CalcSteps extends LibHtml {
       strItem = spacing;
       List<String> item = data[i];
       for (int j = 0; j < item.length; j++) {
-        String str = item[j].trim().isNotEmpty ? item[j] : texPhantom(value: "0");
-        strItem += texColor(value: str, color: autoColor[startColor + j]) + spacing;
+        String str = item[j].trim().isNotEmpty
+            ? item[j]
+            : texPhantom(value: "0");
+        strItem +=
+            texColor(value: str, color: autoColor[startColor + j]) + spacing;
       }
 
       // add horizontal line
@@ -55,14 +64,15 @@ class CalcSteps extends LibHtml {
     return (texMatrix(value: result));
   }
 
-  String _texSubtractionSteps(
-      {required List<List<String>> data,
-      String spacing = "\\space",
-      bool header = true,
-      int start = 1,
-      end = -1,
-      String symbol = "+",
-      int startColor = 0}) {
+  String _texSubtractionSteps({
+    required List<List<String>> data,
+    String spacing = "\\space",
+    bool header = true,
+    int start = 1,
+    end = -1,
+    String symbol = "+",
+    int startColor = 0,
+  }) {
     String result = "";
 
     String calcSymbol = texFootNote(value: symbol);
@@ -73,7 +83,9 @@ class CalcSteps extends LibHtml {
     if (header) {
       List<String> item = data[0];
       for (int j = 0; j < item.length; j++) {
-        String str = item[j].trim().isNotEmpty ? item[j] : texPhantom(value: "0");
+        String str = item[j].trim().isNotEmpty
+            ? item[j]
+            : texPhantom(value: "0");
         strItem += texColor(value: str, color: Colors.grey) + spacing;
       }
       result += strItem + calcSymbolPhantom + texBr();
@@ -90,12 +102,13 @@ class CalcSteps extends LibHtml {
           str = data[0][j].trim().isNotEmpty
               ? texCancel(value: item[j])
               : item[j].trim().isNotEmpty
-                  ? item[j]
-                  : texPhantom(value: "0");
+              ? item[j]
+              : texPhantom(value: "0");
         } else {
           str = item[j].trim().isNotEmpty ? item[j] : texPhantom(value: "0");
         }
-        strItem += texColor(value: str, color: autoColor[startColor + j]) + spacing;
+        strItem +=
+            texColor(value: str, color: autoColor[startColor + j]) + spacing;
       }
 
       // add horizontal line
@@ -109,29 +122,55 @@ class CalcSteps extends LibHtml {
     return (texMatrix(value: result));
   }
 
-  String htmlAdditionDigit({required String label, required List<List<String>> data, int startColor = 0}) {
-    String htmlLabel = span(id: idStepsLabel, value: sprintf(label, ["\n"]) + br());
+  String htmlAdditionDigit({
+    required String label,
+    required List<List<String>> data,
+    int startColor = 0,
+  }) {
+    String htmlLabel = span(
+      id: idStepsLabel,
+      value: sprintf(label, ["\n"]) + br(),
+    );
 
     String html = "";
     if (label.isNotEmpty) {}
 
     bool haveHeader = lib.isEmpty(data: data, irow: 0);
     html += tex(
-        value: _texAdditionSteps(
-            data: data, header: !haveHeader, spacing: "&", symbol: plus(spacing: ""), startColor: startColor));
+      value: _texAdditionSteps(
+        data: data,
+        header: !haveHeader,
+        spacing: "&",
+        symbol: plus(spacing: ""),
+        startColor: startColor,
+      ),
+    );
     return (htmlLabel + html);
   }
 
-  String htmlSubtractionDigit({required String label, required List<List<String>> data, int startColor = 0}) {
-    String htmlLabel = span(id: idStepsLabel, value: sprintf(label, ["\n"]) + br());
+  String htmlSubtractionDigit({
+    required String label,
+    required List<List<String>> data,
+    int startColor = 0,
+  }) {
+    String htmlLabel = span(
+      id: idStepsLabel,
+      value: sprintf(label, ["\n"]) + br(),
+    );
 
     String html = "";
     if (label.isNotEmpty) {}
 
     bool haveHeader = lib.isEmpty(data: data, irow: 0);
     html += tex(
-        value: _texSubtractionSteps(
-            data: data, header: !haveHeader, spacing: "&", symbol: minus(spacing: ""), startColor: startColor));
+      value: _texSubtractionSteps(
+        data: data,
+        header: !haveHeader,
+        spacing: "&",
+        symbol: minus(spacing: ""),
+        startColor: startColor,
+      ),
+    );
     return (htmlLabel + html);
   }
 
@@ -146,7 +185,8 @@ class CalcSteps extends LibHtml {
     for (int j = 0; j < data.length; j++) {
       String str = data[j].trim().isNotEmpty ? data[j] : texPhantom(value: "0");
       if (isAutoColor) {
-        text += texColor(value: str, color: autoColor[idxAutoColor + j]) + spacing;
+        text +=
+            texColor(value: str, color: autoColor[idxAutoColor + j]) + spacing;
       } else {
         text += texColor(value: str, color: color) + spacing;
       }
@@ -162,21 +202,27 @@ class CalcSteps extends LibHtml {
     String spacing = "\\space",
   }) {
     String text = "";
-    int selectedColor = data.length-1-idxColor;
+    int selectedColor = data.length - 1 - idxColor;
     for (int j = 0; j < data.length; j++) {
       String str = data[j].trim().isNotEmpty ? data[j] : texPhantom(value: "0");
-      text += texColor(value: str, color: j == selectedColor ? color2 : color1) + spacing;
+      text +=
+          texColor(value: str, color: j == selectedColor ? color2 : color1) +
+          spacing;
     }
     return (text);
   }
 
-  String htmlMultiplicationStep(
-      {required String label,
-      required List<List<String>> data,
-      bool lastStep = false,
-      int step = 0,
-      int startColor = 0}) {
-    String htmlLabel = span(id: idStepsLabel, value: sprintf(label, ["\n"]) + br());
+  String htmlMultiplicationStep({
+    required String label,
+    required List<List<String>> data,
+    bool lastStep = false,
+    int step = 0,
+    int startColor = 0,
+  }) {
+    String htmlLabel = span(
+      id: idStepsLabel,
+      value: sprintf(label, ["\n"]) + br(),
+    );
 
     String html = "";
     if (label.isNotEmpty) {}
@@ -190,64 +236,120 @@ class CalcSteps extends LibHtml {
     String spacing = "\\space";
     if (lastStep) {
       // --- show header from last steps ---
-      List<String> currentStepHeader = data[2*step];
-      bool noStepHeader = lib.isEmpty(data: data, irow: 2*step);
-      html += noStepHeader ? "" : listStringToTexRow(
-          data: currentStepHeader, isAutoColor: false, idxAutoColor: 0, color: Colors.grey, spacing: spacing) +
-          mulSymbolPhantom +
-          texBr();
+      List<String> currentStepHeader = data[2 * step];
+      bool noStepHeader = lib.isEmpty(data: data, irow: 2 * step);
+      html += noStepHeader
+          ? ""
+          : listStringToTexRow(
+                  data: currentStepHeader,
+                  isAutoColor: false,
+                  idxAutoColor: 0,
+                  color: Colors.grey,
+                  spacing: spacing,
+                ) +
+                mulSymbolPhantom +
+                texBr();
 
-      html += listStringToTexRow(
-          data: data[0], isAutoColor: false, idxAutoColor: 0, color: colorDefault, spacing: spacing) +
+      html +=
+          listStringToTexRow(
+            data: data[0],
+            isAutoColor: false,
+            idxAutoColor: 0,
+            color: colorDefault,
+            spacing: spacing,
+          ) +
           mulSymbolPhantom +
           texBr();
-      html += listStringToTexRowWithSelectedColor(
-          data: data[1], idxColor: step, color1: colorDefault, color2: colorDefault, spacing: spacing) +
+      html +=
+          listStringToTexRowWithSelectedColor(
+            data: data[1],
+            idxColor: step,
+            color1: colorDefault,
+            color2: colorDefault,
+            spacing: spacing,
+          ) +
           mulSymbol +
           texBr();
       html += texHline();
 
       // adding multiplication from previous steps
-      for(int i=1; i<=step; i++) {
-        if(i==step) {
+      for (int i = 1; i <= step; i++) {
+        if (i == step) {
           html += texHline();
         }
-        html += listStringToTexRow(
-            data: data[2 * i + 1], isAutoColor: true, idxAutoColor: 0, color: colorDefault, spacing: spacing) +
-            (i==step-1 ? addSymbol:addSymbolPhantom) +
+        html +=
+            listStringToTexRow(
+              data: data[2 * i + 1],
+              isAutoColor: true,
+              idxAutoColor: 0,
+              color: colorDefault,
+              spacing: spacing,
+            ) +
+            (i == step - 1 ? addSymbol : addSymbolPhantom) +
             texBr();
       }
     } else {
       // --- show header from current steps
-      List<String> currentStepHeader = data[2*step];
-      bool noStepHeader = lib.isEmpty(data: data, irow: 2*step);
-      html += noStepHeader ? "" : listStringToTexRow(
-          data: currentStepHeader, isAutoColor: false, idxAutoColor: 0, color: Colors.grey, spacing: spacing) +
-          mulSymbolPhantom +
-          texBr();
+      List<String> currentStepHeader = data[2 * step];
+      bool noStepHeader = lib.isEmpty(data: data, irow: 2 * step);
+      html += noStepHeader
+          ? ""
+          : listStringToTexRow(
+                  data: currentStepHeader,
+                  isAutoColor: false,
+                  idxAutoColor: 0,
+                  color: Colors.grey,
+                  spacing: spacing,
+                ) +
+                mulSymbolPhantom +
+                texBr();
 
       // --- show question ---
-      html += listStringToTexRow(
-              data: data[0], isAutoColor: false, idxAutoColor: 0, color: color, spacing: spacing) +
+      html +=
+          listStringToTexRow(
+            data: data[0],
+            isAutoColor: false,
+            idxAutoColor: 0,
+            color: color,
+            spacing: spacing,
+          ) +
           mulSymbolPhantom +
           texBr(); // numbers[0]
-      html += listStringToTexRowWithSelectedColor(
-              data: data[1], idxColor: step-1, color1: colorDefault, color2: color, spacing: spacing) +
+      html +=
+          listStringToTexRowWithSelectedColor(
+            data: data[1],
+            idxColor: step - 1,
+            color1: colorDefault,
+            color2: color,
+            spacing: spacing,
+          ) +
           mulSymbol +
           texBr(); // numbers[1]
       html += texHline();
 
       // --- adding multiplication from previous steps ---
-      for(int i=1; i<step; i++) {
-        html += listStringToTexRow(
-            data: data[2 * i + 1], isAutoColor: false, idxAutoColor: step, color: colorDefault, spacing: spacing) +
+      for (int i = 1; i < step; i++) {
+        html +=
+            listStringToTexRow(
+              data: data[2 * i + 1],
+              isAutoColor: false,
+              idxAutoColor: step,
+              color: colorDefault,
+              spacing: spacing,
+            ) +
             addSymbolPhantom +
             texBr();
       }
 
       // --- add current steps ---
-      html += listStringToTexRow(
-              data: data[2 * step + 1], isAutoColor: false, idxAutoColor: step, color: color, spacing: spacing) +
+      html +=
+          listStringToTexRow(
+            data: data[2 * step + 1],
+            isAutoColor: false,
+            idxAutoColor: step,
+            color: color,
+            spacing: spacing,
+          ) +
           addSymbolPhantom +
           texBr();
     }

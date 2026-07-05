@@ -76,7 +76,7 @@ class WordListTile extends ConsumerWidget {
           height: 20,
           child: CircularProgressIndicator(strokeWidth: 2),
         ),
-        error: (_, __) => const SizedBox.shrink(),
+        error: (_, _) => const SizedBox.shrink(),
       ),
       onTap: () {
         showModalBottomSheet(

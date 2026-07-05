@@ -13,7 +13,7 @@ class ModelQuestion {
   List<ModelChoice> choicesBool = [];
   bool hasSolution = false;
 
-  ModelQuestion.clone(m) {
+  ModelQuestion.clone(ModelQuestion m) {
     empty();
     cloneObject(m);
   }
@@ -32,7 +32,7 @@ class ModelQuestion {
     this.prefixAnswer = "=answer",
   });
 
-  empty({int maxChoice = 5}) {
+  void empty({int maxChoice = 5}) {
     id = -1;
     prefix = "";
     question = ".";
@@ -44,16 +44,24 @@ class ModelQuestion {
     choicesBool = [];
     for (int i = 0; i < maxChoice; i++) {
       bool status = i == 0 ? true : false;
-      ModelChoice m = ModelChoice(id: i, status: status, value: MyNumber(value: i + 1));
+      ModelChoice m = ModelChoice(
+        id: i,
+        status: status,
+        value: MyNumber(value: i + 1),
+      );
       choices.add(m);
       if (i < 2) {
-        ModelChoice m0 = ModelChoice(id: i, status: status, value: MyNumber(value: i + 1));
+        ModelChoice m0 = ModelChoice(
+          id: i,
+          status: status,
+          value: MyNumber(value: i + 1),
+        );
         choicesBool.add(m0);
       }
     }
   }
 
-  void cloneObject(m) {
+  void cloneObject(ModelQuestion m) {
     id = m.id;
     prefix = m.prefix;
     question = m.question;

@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:bse/i18n/strings.g.dart';
 import 'models/enums.dart';
 import 'models/model_chapter.dart';
-import 'models/chapter_range.dart';
-import 'models/model_number.dart';
 import 'models/model_item.dart';
 import 'models/achievement_parent.dart';
 import 'modules/addition/chapter_addition.dart';
 
 class DataMathMaster {
-  static _addChapter(List<ModelChapter> totalList, List<ModelChapter> list) {
+  static void _addChapter(
+    List<ModelChapter> totalList,
+    List<ModelChapter> list,
+  ) {
     for (var item in list) {
       totalList.add(item);
     }

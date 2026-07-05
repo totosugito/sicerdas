@@ -4,19 +4,19 @@ import 'calc_steps.dart';
 
 class MathMasterLocale {
   static MathMasterLocale? of(dynamic context) => MathMasterLocale();
-  String get steps_addition_tables => "Tabel Penjumlahan";
-  String get steps_therefore_result => "Maka Hasilnya";
-  String get if_text => "jika";
-  String get steps_do_the_calculation => "Lakukan perhitungan:";
-  String get steps_use_this_rule => "Gunakan aturan ini:";
-  String get steps_therefore_missing_digit => "Maka Digit yang Hilang:";
+  String get stepsAdditionTables => "Tabel Penjumlahan";
+  String get stepsThereforeResult => "Maka Hasilnya";
+  String get ifText => "jika";
+  String get stepsDoTheCalculation => "Lakukan perhitungan:";
+  String get stepsUseThisRule => "Gunakan aturan ini:";
+  String get stepsThereforeMissingDigit => "Maka Digit yang Hilang:";
 }
 
 class CalcAdditionSteps extends CalcSteps {
   dynamic get context => null;
 
   CalcAdditionSteps({required List<MyNumber> numbers, required MyNumber answer})
-      : super(numbers, answer);
+    : super(numbers, answer);
 
   // --------------------- ADDITION 1 DIGIT ----------------------
   String _htmlAdditionSequentialTable(String label) {
@@ -26,7 +26,8 @@ class CalcAdditionSteps extends CalcSteps {
     int r;
     for (int i = 0; i < 10; i++) {
       r = numbers[0].getValI() + i;
-      html += texColor(value: numbers[0].getValueIText(), color: Colors.blue) +
+      html +=
+          texColor(value: numbers[0].getValueIText(), color: Colors.blue) +
           plus() +
           texColor(value: i.toString(), color: Colors.green) +
           texEqual() +
@@ -48,8 +49,18 @@ class CalcAdditionSteps extends CalcSteps {
     html += liSpan(value: _htmlAdditionSequentialTable(stepsAdditionTables));
 
     // 2. show the result
-    String question = listNumbersIntToString(data: numbers, separator: plus(), lastSeparator: plus());
-    html += liSpan(value: showHtmlResult(label: stepsThereforeResult, input: tex(value: question), result: answer.getValueIText()));
+    String question = listNumbersIntToString(
+      data: numbers,
+      separator: plus(),
+      lastSeparator: plus(),
+    );
+    html += liSpan(
+      value: showHtmlResult(
+        label: stepsThereforeResult,
+        input: tex(value: question),
+        result: answer.getValueIText(),
+      ),
+    );
     return (ol(value: html));
   }
 
@@ -65,7 +76,13 @@ class CalcAdditionSteps extends CalcSteps {
 
     // 1. do the calculation
     List<List<String>> calcSteps = lib.calcAddition(data, result);
-    html += liSpan(value: htmlAdditionDigit(label: label, data: calcSteps, startColor: startColor));
+    html += liSpan(
+      value: htmlAdditionDigit(
+        label: label,
+        data: calcSteps,
+        startColor: startColor,
+      ),
+    );
 
     return (html);
   }
@@ -75,56 +92,92 @@ class CalcAdditionSteps extends CalcSteps {
     String htmlLabel = span(id: idStepsLabel, value: label + br());
 
     String html = "";
-    html += texColor(value: "a", color: autoColor[0]) +
+    html +=
+        texColor(value: "a", color: autoColor[0]) +
         plus() +
-        parenthesis(value: texColor(value: "-b", color: autoColor[1])) +
+        parenthesis(
+          value: texColor(value: "-b", color: autoColor[1]),
+        ) +
         texEqual() +
         texColor(value: "a", color: autoColor[0]) +
         minus() +
         texColor(value: "b", color: autoColor[1]) +
         sprintf("&%s\\ %s>%s", [
-          texText(value: MathMasterLocale.of(context)!.if_text),
+          texText(value: MathMasterLocale.of(context)!.ifText),
           texColor(value: "a", color: autoColor[0]),
-          texColor(value: "b", color: autoColor[1])
+          texColor(value: "b", color: autoColor[1]),
         ]) +
         texBr();
-    html += texEqual() +
+    html +=
+        texEqual() +
         minus() +
         parenthesis(
-            value: texColor(value: "b", color: autoColor[1]) + minus() + texColor(value: "a", color: autoColor[0])) +
+          value:
+              texColor(value: "b", color: autoColor[1]) +
+              minus() +
+              texColor(value: "a", color: autoColor[0]),
+        ) +
         sprintf("&%s\\ %s>%s", [
-          texText(value: MathMasterLocale.of(context)!.if_text),
+          texText(value: MathMasterLocale.of(context)!.ifText),
           texColor(value: "b", color: autoColor[1]),
-          texColor(value: "a", color: autoColor[0])
+          texColor(value: "a", color: autoColor[0]),
         ]);
 
     html = tex(value: texAligned(value: html));
     return (htmlLabel + html);
   }
 
-  String _htmlResultAdditionPosNeg(List<MyNumber> data, MyNumber result, String label, String question) {
-    String htmlLabel = span(id: idStepsLabel, value: sprintf(label, [question, "\n"]));
+  String _htmlResultAdditionPosNeg(
+    List<MyNumber> data,
+    MyNumber result,
+    String label,
+    String question,
+  ) {
+    String htmlLabel = span(
+      id: idStepsLabel,
+      value: sprintf(label, [question, "\n"]),
+    );
     String html = "";
 
     if (data[0].getValI().abs() >= data[1].getValI().abs()) {
-      html += texColor(value: data[0].getValueIText(), color: autoColor[0]) +
+      html +=
+          texColor(value: data[0].getValueIText(), color: autoColor[0]) +
           plus() +
-          parenthesis(value: texColor(value: data[1].getValueIText(), color: autoColor[1])) +
+          parenthesis(
+            value: texColor(
+              value: data[1].getValueIText(),
+              color: autoColor[1],
+            ),
+          ) +
           texEqual() +
           texColor(value: data[0].getValueIAbsText(), color: autoColor[0]) +
           minus() +
           texColor(value: data[1].getValueIAbsText(), color: autoColor[1]) +
           texBr();
     } else {
-      html += texColor(value: data[0].getValueIText(), color: autoColor[0]) +
+      html +=
+          texColor(value: data[0].getValueIText(), color: autoColor[0]) +
           plus() +
-          parenthesis(value: texColor(value: data[1].getValueIText(), color: autoColor[1])) +
+          parenthesis(
+            value: texColor(
+              value: data[1].getValueIText(),
+              color: autoColor[1],
+            ),
+          ) +
           texEqual() +
           minus() +
           parenthesis(
-              value: texColor(value: data[1].getValueIAbsText(), color: autoColor[1]) +
-                  minus() +
-                  texColor(value: data[0].getValueIAbsText(), color: autoColor[0])) +
+            value:
+                texColor(
+                  value: data[1].getValueIAbsText(),
+                  color: autoColor[1],
+                ) +
+                minus() +
+                texColor(
+                  value: data[0].getValueIAbsText(),
+                  color: autoColor[0],
+                ),
+          ) +
           texBr();
     }
 
@@ -143,13 +196,30 @@ class CalcAdditionSteps extends CalcSteps {
     String html = "";
     if (data[0].getValI().abs() >= data[1].getValI().abs()) {
       // A + (-B) = A - B
-      List<List<String>> calcSteps = lib.calcSubtraction([MyNumber.abs(data[0]), MyNumber.abs(data[1])], result);
-      html += liSpan(value: htmlSubtractionDigit(label: label, data: calcSteps, startColor: startColor));
+      List<List<String>> calcSteps = lib.calcSubtraction([
+        MyNumber.abs(data[0]),
+        MyNumber.abs(data[1]),
+      ], result);
+      html += liSpan(
+        value: htmlSubtractionDigit(
+          label: label,
+          data: calcSteps,
+          startColor: startColor,
+        ),
+      );
     } else {
       // A + (-B) = - (B - A)
-      List<List<String>> calcSteps =
-          lib.calcSubtraction([MyNumber.abs(data[1]), MyNumber.abs(data[0])], MyNumber.abs(result));
-      html += liSpan(value: htmlSubtractionDigit(label: label, data: calcSteps, startColor: startColor));
+      List<List<String>> calcSteps = lib.calcSubtraction([
+        MyNumber.abs(data[1]),
+        MyNumber.abs(data[0]),
+      ], MyNumber.abs(result));
+      html += liSpan(
+        value: htmlSubtractionDigit(
+          label: label,
+          data: calcSteps,
+          startColor: startColor,
+        ),
+      );
     }
 
     return (html);
@@ -160,25 +230,34 @@ class CalcAdditionSteps extends CalcSteps {
     String htmlLabel = span(id: idStepsLabel, value: label + br());
 
     String html = "";
-    html += texColor(value: "-a", color: autoColor[0]) + plus() + texColor(value: "b", color: autoColor[1]);
-    html += texEqual() +
+    html +=
+        texColor(value: "-a", color: autoColor[0]) +
+        plus() +
+        texColor(value: "b", color: autoColor[1]);
+    html +=
+        texEqual() +
         minus() +
         parenthesis(
-            value: texColor(value: "a", color: autoColor[0]) + minus() + texColor(value: "b", color: autoColor[1])) +
+          value:
+              texColor(value: "a", color: autoColor[0]) +
+              minus() +
+              texColor(value: "b", color: autoColor[1]),
+        ) +
         sprintf("&%s\\ %s>%s", [
-          texText(value: MathMasterLocale.of(context)!.if_text),
+          texText(value: MathMasterLocale.of(context)!.ifText),
           texColor(value: "a", color: autoColor[0]),
-          texColor(value: "b", color: autoColor[1])
+          texColor(value: "b", color: autoColor[1]),
         ]) +
         texBr();
-    html += texEqual() +
+    html +=
+        texEqual() +
         texColor(value: "b", color: autoColor[1]) +
         minus() +
         texColor(value: "a", color: autoColor[0]) +
         sprintf("&%s\\ %s>%s", [
-          texText(value: MathMasterLocale.of(context)!.if_text),
+          texText(value: MathMasterLocale.of(context)!.ifText),
           texColor(value: "b", color: autoColor[1]),
-          texColor(value: "a", color: autoColor[0])
+          texColor(value: "a", color: autoColor[0]),
         ]) +
         texBr();
 
@@ -186,23 +265,41 @@ class CalcAdditionSteps extends CalcSteps {
     return (htmlLabel + html);
   }
 
-  String _htmlResultAdditionNegPos(List<MyNumber> data, MyNumber result, String label, String question) {
-    String htmlLabel = span(id: idStepsLabel, value: sprintf(label, [question, "\n"]));
+  String _htmlResultAdditionNegPos(
+    List<MyNumber> data,
+    MyNumber result,
+    String label,
+    String question,
+  ) {
+    String htmlLabel = span(
+      id: idStepsLabel,
+      value: sprintf(label, [question, "\n"]),
+    );
     String html = "";
 
     if (data[0].getValI().abs() >= data[1].getValI().abs()) {
-      html += texColor(value: data[0].getValueIText(), color: autoColor[0]) +
+      html +=
+          texColor(value: data[0].getValueIText(), color: autoColor[0]) +
           plus() +
           texColor(value: data[1].getValueIText(), color: autoColor[1]) +
           texEqual() +
           minus() +
           parenthesis(
-              value: texColor(value: data[0].getValueIAbsText(), color: autoColor[0]) +
-                  minus() +
-                  texColor(value: data[1].getValueIAbsText(), color: autoColor[1])) +
+            value:
+                texColor(
+                  value: data[0].getValueIAbsText(),
+                  color: autoColor[0],
+                ) +
+                minus() +
+                texColor(
+                  value: data[1].getValueIAbsText(),
+                  color: autoColor[1],
+                ),
+          ) +
           texBr();
     } else {
-      html += texColor(value: data[0].getValueIText(), color: autoColor[0]) +
+      html +=
+          texColor(value: data[0].getValueIText(), color: autoColor[0]) +
           plus() +
           texColor(value: data[1].getValueIText(), color: autoColor[1]) +
           texEqual() +
@@ -235,38 +332,50 @@ class CalcAdditionSteps extends CalcSteps {
     String htmlLabel = span(id: idStepsLabel, value: label + br());
 
     String html = "";
-    html += texColor(value: "-a", color: autoColor[0]) +
+    html +=
+        texColor(value: "-a", color: autoColor[0]) +
         plus() +
-        parenthesis(value: texColor(value: "-b", color: autoColor[1])) +
+        parenthesis(
+          value: texColor(value: "-b", color: autoColor[1]),
+        ) +
         texEqual() +
         minus() +
         parenthesis(
-            value: texColor(value: "a", color: autoColor[0]) +
-                plus() +
-                texColor(
-                  value: "b",
-                  color: autoColor[1],
-                ));
+          value:
+              texColor(value: "a", color: autoColor[0]) +
+              plus() +
+              texColor(value: "b", color: autoColor[1]),
+        );
     html = tex(value: texAligned(value: html));
     return (htmlLabel + html);
   }
 
-  String _htmlResultAdditionNegNeg(List<MyNumber> data, MyNumber result, String label, String question) {
-    String htmlLabel = span(id: idStepsLabel, value: sprintf(label, [question, "\n"]));
+  String _htmlResultAdditionNegNeg(
+    List<MyNumber> data,
+    MyNumber result,
+    String label,
+    String question,
+  ) {
+    String htmlLabel = span(
+      id: idStepsLabel,
+      value: sprintf(label, [question, "\n"]),
+    );
     String html = "";
 
-    html += texColor(value: data[0].getValueIText(), color: autoColor[0]) +
+    html +=
+        texColor(value: data[0].getValueIText(), color: autoColor[0]) +
         plus() +
-        parenthesis(value: texColor(value: data[1].getValueIText(), color: autoColor[1])) +
+        parenthesis(
+          value: texColor(value: data[1].getValueIText(), color: autoColor[1]),
+        ) +
         texEqual() +
         minus() +
         parenthesis(
-            value: texColor(value: data[0].getValueIAbsText(), color: autoColor[0]) +
-                plus() +
-                texColor(
-                  value: data[1].getValueIAbsText(),
-                  color: autoColor[1],
-                )) +
+          value:
+              texColor(value: data[0].getValueIAbsText(), color: autoColor[0]) +
+              plus() +
+              texColor(value: data[1].getValueIAbsText(), color: autoColor[1]),
+        ) +
         texBr();
 
     html += texEqual() + result.getValueIText();
@@ -280,7 +389,10 @@ class CalcAdditionSteps extends CalcSteps {
     String smSpacing = " \\ ",
     String lgSpacing = " \\ ",
   }) {
-    List<List<String>> listCalc = lib.calcAddition([numbers[0], numbers[1]], numbers[2]);
+    List<List<String>> listCalc = lib.calcAddition([
+      numbers[0],
+      numbers[1],
+    ], numbers[2]);
 
     String calcSymbol = texFootNote(value: symbol);
     String calcSymbolPhantom = texFootNote(value: texPhantom(value: symbol));
@@ -293,9 +405,14 @@ class CalcAdditionSteps extends CalcSteps {
       var item = listCalc[i];
       for (int j = 0; j < item.length; j++) {
         if (idxPos == idxPos_) {
-          html += texScriptSize(value: "") + texFbox(value: "?") + texNormalSize(value: "");
+          html +=
+              texScriptSize(value: "") +
+              texFbox(value: "?") +
+              texNormalSize(value: "");
         } else {
-          html += smSpacing + ((item[j].trim().isNotEmpty) ? item[j] : texPhantom(value: "0"));
+          html +=
+              smSpacing +
+              ((item[j].trim().isNotEmpty) ? item[j] : texPhantom(value: "0"));
         }
         html += j < item.length - 1 ? lgSpacing : smSpacing;
         idxPos_ += 1;
@@ -309,9 +426,14 @@ class CalcAdditionSteps extends CalcSteps {
     var item = listCalc[3];
     for (int j = 0; j < item.length; j++) {
       if (idxPos == idxPos_) {
-        html += texScriptSize(value: "") + texFbox(value: "?") + texNormalSize(value: "");
+        html +=
+            texScriptSize(value: "") +
+            texFbox(value: "?") +
+            texNormalSize(value: "");
       } else {
-        html += smSpacing + ((item[j].trim().isNotEmpty) ? item[j] : texPhantom(value: "0"));
+        html +=
+            smSpacing +
+            ((item[j].trim().isNotEmpty) ? item[j] : texPhantom(value: "0"));
       }
       html += j < item.length - 1 ? lgSpacing : smSpacing;
       idxPos_ += 1;
@@ -327,7 +449,10 @@ class CalcAdditionSteps extends CalcSteps {
     String smSpacing = " \\ ",
     String lgSpacing = " \\ ",
   }) {
-    List<List<String>> listCalc = lib.calcSubtraction([numbers[0], numbers[1]], numbers[2]);
+    List<List<String>> listCalc = lib.calcSubtraction([
+      numbers[0],
+      numbers[1],
+    ], numbers[2]);
 
     String calcSymbol = texFootNote(value: symbol);
     String calcSymbolPhantom = texFootNote(value: texPhantom(value: symbol));
@@ -340,9 +465,14 @@ class CalcAdditionSteps extends CalcSteps {
       var item = listCalc[i];
       for (int j = 0; j < item.length; j++) {
         if (idxPos == idxPos_) {
-          html += texScriptSize(value: "") + texFbox(value: "?") + texNormalSize(value: "");
+          html +=
+              texScriptSize(value: "") +
+              texFbox(value: "?") +
+              texNormalSize(value: "");
         } else {
-          html += smSpacing + ((item[j].trim().isNotEmpty) ? item[j] : texPhantom(value: "0"));
+          html +=
+              smSpacing +
+              ((item[j].trim().isNotEmpty) ? item[j] : texPhantom(value: "0"));
         }
         html += j < item.length - 1 ? lgSpacing : smSpacing;
         idxPos_ += 1;
@@ -356,9 +486,14 @@ class CalcAdditionSteps extends CalcSteps {
     var item = listCalc[3];
     for (int j = 0; j < item.length; j++) {
       if (idxPos == idxPos_) {
-        html += texScriptSize(value: "") + texFbox(value: "?") + texNormalSize(value: "");
+        html +=
+            texScriptSize(value: "") +
+            texFbox(value: "?") +
+            texNormalSize(value: "");
       } else {
-        html += smSpacing + ((item[j].trim().isNotEmpty) ? item[j] : texPhantom(value: "0"));
+        html +=
+            smSpacing +
+            ((item[j].trim().isNotEmpty) ? item[j] : texPhantom(value: "0"));
       }
       html += j < item.length - 1 ? lgSpacing : smSpacing;
       idxPos_ += 1;
@@ -368,8 +503,12 @@ class CalcAdditionSteps extends CalcSteps {
     return (texMatrix(value: html));
   }
 
-  String htmlAdditionNegNeg(
-      {String label = "", required List<MyNumber> data, required MyNumber result, int startColor = 0}) {
+  String htmlAdditionNegNeg({
+    String label = "",
+    required List<MyNumber> data,
+    required MyNumber result,
+    int startColor = 0,
+  }) {
     // -A + -B = -(A+B)
     String html = htmlAdditionPosPos(
       label: label,
@@ -391,24 +530,29 @@ class CalcAdditionSteps extends CalcSteps {
       // -----------------------------
       // CONDITION : A + B
       // -----------------------------
-      String label = MathMasterLocale.of(context)!.steps_do_the_calculation;
+      String label = MathMasterLocale.of(context)!.stepsDoTheCalculation;
       html += htmlAdditionPosPos(label: label, data: numbers, result: answer);
 
       // show the result
-      String labelResult = MathMasterLocale.of(context)!.steps_therefore_result;
-      String question = listNumbersIntToString(data: numbers, separator: plus(), lastSeparator: plus());
+      String labelResult = MathMasterLocale.of(context)!.stepsThereforeResult;
+      String question = listNumbersIntToString(
+        data: numbers,
+        separator: plus(),
+        lastSeparator: plus(),
+      );
       html += liSpan(
-          value: showHtmlResult(
-        label: labelResult,
-        input: tex(value: question),
-        result: answer.getValueIText(),
-      ));
+        value: showHtmlResult(
+          label: labelResult,
+          input: tex(value: question),
+          result: answer.getValueIText(),
+        ),
+      );
     } else if ((!isNegative0) & (isNegative1)) {
       // -----------------------------
       // CONDITION : A + -B
       // -----------------------------
       // 1. rule
-      labelRule = MathMasterLocale.of(context)!.steps_use_this_rule;
+      labelRule = MathMasterLocale.of(context)!.stepsUseThisRule;
       html += liSpan(value: _htmlRuleAdditionPosNeg(labelRule));
 
       // 2. do the calculation
@@ -416,24 +560,31 @@ class CalcAdditionSteps extends CalcSteps {
       // html += liSpan(value: htmlAdditionPosNeg(label: label1, data: numbers, result: answer, startColor: 2));
 
       // show the result
-      String label2 = MathMasterLocale.of(context)!.steps_do_the_calculation;
-      html += liSpan(value: _htmlResultAdditionPosNeg(numbers, answer, label2, br()));
+      String label2 = MathMasterLocale.of(context)!.stepsDoTheCalculation;
+      html += liSpan(
+        value: _htmlResultAdditionPosNeg(numbers, answer, label2, br()),
+      );
 
       // show the result
-      String labelResult = MathMasterLocale.of(context)!.steps_therefore_result;
-      String question = listNumbersIntToString(data: numbers, separator: plus(), lastSeparator: plus());
+      String labelResult = MathMasterLocale.of(context)!.stepsThereforeResult;
+      String question = listNumbersIntToString(
+        data: numbers,
+        separator: plus(),
+        lastSeparator: plus(),
+      );
       html += liSpan(
-          value: showHtmlResult(
-            label: labelResult,
-            input: tex(value: question),
-            result: answer.getValueIText(),
-          ));
+        value: showHtmlResult(
+          label: labelResult,
+          input: tex(value: question),
+          result: answer.getValueIText(),
+        ),
+      );
     } else if ((isNegative0) & (!isNegative1)) {
       // -----------------------------
       // CONDITION : -A + B
       // -----------------------------
       // 1. rule
-      labelRule = MathMasterLocale.of(context)!.steps_use_this_rule;
+      labelRule = MathMasterLocale.of(context)!.stepsUseThisRule;
       html += liSpan(value: _htmlRuleAdditionNegPos(labelRule));
 
       // 2. do the calculation
@@ -441,41 +592,55 @@ class CalcAdditionSteps extends CalcSteps {
       // html += liSpan(value: htmlAdditionNegPos(label: label1, data: numbers, result: answer, startColor: 2));
 
       // show the result
-      String label2 = MathMasterLocale.of(context)!.steps_do_the_calculation;
-      html += liSpan(value: _htmlResultAdditionNegPos(numbers, answer, label2, br()));
+      String label2 = MathMasterLocale.of(context)!.stepsDoTheCalculation;
+      html += liSpan(
+        value: _htmlResultAdditionNegPos(numbers, answer, label2, br()),
+      );
 
       // show the result
-      String labelResult = MathMasterLocale.of(context)!.steps_therefore_result;
-      String question = listNumbersIntToString(data: numbers, separator: plus(), lastSeparator: plus());
+      String labelResult = MathMasterLocale.of(context)!.stepsThereforeResult;
+      String question = listNumbersIntToString(
+        data: numbers,
+        separator: plus(),
+        lastSeparator: plus(),
+      );
       html += liSpan(
-          value: showHtmlResult(
-            label: labelResult,
-            input: tex(value: question),
-            result: answer.getValueIText(),
-          ));
+        value: showHtmlResult(
+          label: labelResult,
+          input: tex(value: question),
+          result: answer.getValueIText(),
+        ),
+      );
     } else {
       // -----------------------------
       // CONDITION : -A + -B
       // -----------------------------
-      labelRule = MathMasterLocale.of(context)!.steps_use_this_rule;
+      labelRule = MathMasterLocale.of(context)!.stepsUseThisRule;
       html += liSpan(value: _htmlRuleAdditionNegNeg(labelRule));
 
       // String label = MasterLocalizations.of(context)!.steps_do_the_calculation;
       // html += htmlAdditionNegNeg(label: label, data: numbers, result: answer);
 
       // show the result
-      String label2 = MathMasterLocale.of(context)!.steps_do_the_calculation;
-      html += liSpan(value: _htmlResultAdditionNegNeg(numbers, answer, label2, br()));
+      String label2 = MathMasterLocale.of(context)!.stepsDoTheCalculation;
+      html += liSpan(
+        value: _htmlResultAdditionNegNeg(numbers, answer, label2, br()),
+      );
 
       // show the result
-      String labelResult = MathMasterLocale.of(context)!.steps_therefore_result;
-      String question = listNumbersIntToString(data: numbers, separator: plus(), lastSeparator: plus());
+      String labelResult = MathMasterLocale.of(context)!.stepsThereforeResult;
+      String question = listNumbersIntToString(
+        data: numbers,
+        separator: plus(),
+        lastSeparator: plus(),
+      );
       html += liSpan(
-          value: showHtmlResult(
-            label: labelResult,
-            input: tex(value: question),
-            result: answer.getValueIText(),
-          ));
+        value: showHtmlResult(
+          label: labelResult,
+          input: tex(value: question),
+          result: answer.getValueIText(),
+        ),
+      );
     }
 
     return (ol(value: html));
@@ -485,12 +650,22 @@ class CalcAdditionSteps extends CalcSteps {
     String html = "";
 
     // 1. do the calculation
-    String label = MathMasterLocale.of(context)!.steps_do_the_calculation;
-    html += htmlAdditionPosPos(label: label, data: [numbers[0], numbers[1]], result: numbers[2]);
+    String label = MathMasterLocale.of(context)!.stepsDoTheCalculation;
+    html += htmlAdditionPosPos(
+      label: label,
+      data: [numbers[0], numbers[1]],
+      result: numbers[2],
+    );
 
     // 2. show the result
-    String label2 = MathMasterLocale.of(context)!.steps_therefore_missing_digit;
-    html += liSpan(value: showHtmlResult(label: label2, input: "", result: answer.getValueIText()));
+    String label2 = MathMasterLocale.of(context)!.stepsThereforeMissingDigit;
+    html += liSpan(
+      value: showHtmlResult(
+        label: label2,
+        input: "",
+        result: answer.getValueIText(),
+      ),
+    );
 
     return (ol(value: html));
   }

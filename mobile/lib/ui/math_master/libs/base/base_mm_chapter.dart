@@ -48,7 +48,7 @@ class BaseMmChapter {
     }
   }
 
-  init(ClMmChapter chapter_, ModelChapter mdChapter_) {
+  void init(ClMmChapter chapter_, ModelChapter mdChapter_) {
     chapter = chapter_;
     mdChapter = mdChapter_;
     myRandom = MyRandom();
@@ -91,25 +91,28 @@ class BaseMmChapter {
     return ("");
   }
 
-  ModelQuestion newQuestion({required KeyPadMode padMode, bool resetData = true}) {
+  ModelQuestion newQuestion({
+    required KeyPadMode padMode,
+    bool resetData = true,
+  }) {
     return ModelQuestion.empty();
   }
 
-  createDataValue(KeyPadMode padMode) {
-  }
+  void createDataValue(KeyPadMode padMode) {}
 
   String createHtmlQuestion() {
     return ("");
   }
 
-  updateSolution(ModelQuestion question, {
+  void updateSolution(
+    ModelQuestion question, {
     required String solutionText,
     required String solveTheQuestionText,
     required String stepsAdditionTables,
     required String stepsThereforeResult,
   }) {}
 
-  initSolution(ModelQuestion question, {required String solutionText}) {
+  void initSolution(ModelQuestion question, {required String solutionText}) {
     question.solution.module = mdChapter.getTopicLabel();
     question.solution.chapter = mdChapter.title;
     question.solution.question = createHtmlQuestion();
@@ -130,7 +133,10 @@ class BaseMmChapter {
     int nSelectedRangeTemp = tempSelectedRange.length;
     int selectedRangeIndex = 0;
     if (nSelectedRangeTemp > 1) {
-      selectedRangeIndex = myRandom.nextInt(min: 0, max: nSelectedRangeTemp - 1);
+      selectedRangeIndex = myRandom.nextInt(
+        min: 0,
+        max: nSelectedRangeTemp - 1,
+      );
     }
     int selectedRangeValue = tempSelectedRange[selectedRangeIndex];
     tempSelectedRange.removeAt(selectedRangeIndex);
@@ -138,10 +144,15 @@ class BaseMmChapter {
     return (selectedRangeValue);
   }
 
-  List<ModelChoice> _createModelChoice({required List<MyNumber> rawChoices, required int choiceCount}) {
+  List<ModelChoice> _createModelChoice({
+    required List<MyNumber> rawChoices,
+    required int choiceCount,
+  }) {
     List<ModelChoice> tmpChoices = [];
     for (int i = 0; i < choiceCount; i++) {
-      tmpChoices.add(ModelChoice(id: i, status: i == 0 ? true : false, value: rawChoices[i]));
+      tmpChoices.add(
+        ModelChoice(id: i, status: i == 0 ? true : false, value: rawChoices[i]),
+      );
     }
     tmpChoices.shuffle();
     return (tmpChoices);
@@ -163,7 +174,11 @@ class BaseMmChapter {
     for (int i = 1; i < maxChoice; i++) {
       int checkAnswer = myRandom.nextInt(min: minNumber, max: maxNumber);
       MyNumber number = MyNumber.nextIntUnique(
-          useOneDigit: useOneDigit, rawList: rawChoices, checkNumber: checkAnswer, spacing: spacing);
+        useOneDigit: useOneDigit,
+        rawList: rawChoices,
+        checkNumber: checkAnswer,
+        spacing: spacing,
+      );
       rawChoices.add(number);
     }
 
@@ -179,7 +194,9 @@ class BaseMmChapter {
 
     List<MyNumber> rawChoices = [];
     rawChoices.add(answer);
-    num baseAnswer = answer.getValI() != 0 ? answer.getVal() : answer.getVal() + 1;
+    num baseAnswer = answer.getValI() != 0
+        ? answer.getVal()
+        : answer.getVal() + 1;
     for (int i = valLeft; i <= valRight; i++) {
       if (i == valCenter) {
         continue;
@@ -202,8 +219,14 @@ class BaseMmChapter {
 
     rawChoices.add(answer);
     for (int i = 1; i < maxChoice; i++) {
-      int checkAnswer = myRandom.nextInt(min: valLeft.toInt(), max: valRight.toInt()) * spacing;
-      MyNumber number = MyNumber.nextIntUnique(rawList: rawChoices, checkNumber: checkAnswer, spacing: spacing);
+      int checkAnswer =
+          myRandom.nextInt(min: valLeft.toInt(), max: valRight.toInt()) *
+          spacing;
+      MyNumber number = MyNumber.nextIntUnique(
+        rawList: rawChoices,
+        checkNumber: checkAnswer,
+        spacing: spacing,
+      );
       rawChoices.add(number);
     }
 
@@ -211,8 +234,13 @@ class BaseMmChapter {
     return (_createModelChoice(rawChoices: rawChoices, choiceCount: maxChoice));
   }
 
-  List<ModelChoice> createChoiceRomanNumeral({required LibRoman romanLib, bool useOneDigit = false}) {
-    List<ModelChoice> tmpChoices = createChoiceInteger(useOneDigit: useOneDigit);
+  List<ModelChoice> createChoiceRomanNumeral({
+    required LibRoman romanLib,
+    bool useOneDigit = false,
+  }) {
+    List<ModelChoice> tmpChoices = createChoiceInteger(
+      useOneDigit: useOneDigit,
+    );
     for (int i = 0; i < maxChoice; i++) {
       ModelChoice mc = tmpChoices[i];
       mc.setText(sprintf("{%s}", [mc.value.setRomanText(romanLib)]));
@@ -225,8 +253,12 @@ class BaseMmChapter {
     return (tmpChoices);
   }
 
-  List<ModelChoice> createChoiceFractions(
-      {bool isOneDigitOnly = false, bool simplify = false, bool simpleFraction = false, required ModelNumber minMax}) {
+  List<ModelChoice> createChoiceFractions({
+    bool isOneDigitOnly = false,
+    bool simplify = false,
+    bool simpleFraction = false,
+    required ModelNumber minMax,
+  }) {
     int spacing = myRandom.nextInt(min: 1, max: 3);
     List<MyNumber> rawChoices = [];
 
@@ -239,7 +271,10 @@ class BaseMmChapter {
     }
     rawChoices.add(answer);
     for (int i = 1; i < maxChoice; i++) {
-      MyNumber checkAnswer = MyNumber.nextFractions(myRandom: myRandom, minMax: minMax);
+      MyNumber checkAnswer = MyNumber.nextFractions(
+        myRandom: myRandom,
+        minMax: minMax,
+      );
 
       if (simpleFraction) {
         checkAnswer.toImproperFractions();
@@ -248,7 +283,11 @@ class BaseMmChapter {
         checkAnswer.toSimplify();
       }
 
-      MyNumber number = MyNumber.nextFractionUnique(rawList: rawChoices, checkNumber: checkAnswer, spacing: spacing);
+      MyNumber number = MyNumber.nextFractionUnique(
+        rawList: rawChoices,
+        checkNumber: checkAnswer,
+        spacing: spacing,
+      );
       number.type = answer.type;
       rawChoices.add(number);
     }
@@ -269,33 +308,48 @@ class BaseMmChapter {
     return (mdChapter.ranges[idxRange].ranges);
   }
 
-  String createQuestionInRowInt({required String question, required List<MyNumber> data, required String lastSymbol}) {
+  String createQuestionInRowInt({
+    required String question,
+    required List<MyNumber> data,
+    required String lastSymbol,
+  }) {
     // Example :
     // 1 + 3 = ..
 
     for (int i = 0; i < data.length; i++) {
       question = question.replaceAll(sprintf("@%d", [i]), data[i].toString());
     }
-    question = lastSymbol.isEmpty ? question : question.replaceAll(sprintf("@%d", [data.length]), lastSymbol);
+    question = lastSymbol.isEmpty
+        ? question
+        : question.replaceAll(sprintf("@%d", [data.length]), lastSymbol);
     return (question);
   }
 
-  ModelQuestion createQuestionWithHorzLineIntSimple(
-      {required String question, required List<MyNumber> data, required String lastSymbol}) {
+  ModelQuestion createQuestionWithHorzLineIntSimple({
+    required String question,
+    required List<MyNumber> data,
+    required String lastSymbol,
+  }) {
     for (int i = 0; i < data.length; i++) {
       question = question.replaceAll(sprintf("@%d", [i]), data[i].toString());
     }
-    question = lastSymbol.isEmpty ? question : question.replaceAll(sprintf("@%d", [data.length]), lastSymbol);
+    question = lastSymbol.isEmpty
+        ? question
+        : question.replaceAll(sprintf("@%d", [data.length]), lastSymbol);
     return (ModelQuestion(
-        question: question,
-        hasSolution: mdChapter.hasSolution,
-        choices: choices,
-        choicesBool: choicesBool,
-        solution: ModelSolution()));
+      question: question,
+      hasSolution: mdChapter.hasSolution,
+      choices: choices,
+      choicesBool: choicesBool,
+      solution: ModelSolution(),
+    ));
   }
 
-  ModelQuestion createQuestionWithHorzLineInt(
-      {required String question, required List<MyNumber> data, required String lastSymbol}) {
+  ModelQuestion createQuestionWithHorzLineInt({
+    required String question,
+    required List<MyNumber> data,
+    required String lastSymbol,
+  }) {
     // Example :
     // 1 5
     // 2 3
@@ -318,8 +372,9 @@ class BaseMmChapter {
     // add last symbol
     dataText.add(lastSymbol);
     allDataText = sprintf("%s%s", [allDataText, lastSymbol]);
-    maxLengthCharInRow =
-        maxLengthCharInRow < lastSymbol.length ? lastSymbol.length : maxLengthCharInRow; //get maximum number length
+    maxLengthCharInRow = maxLengthCharInRow < lastSymbol.length
+        ? lastSymbol.length
+        : maxLengthCharInRow; //get maximum number length
     ndata += 1;
 
     // created formatted question
@@ -333,7 +388,9 @@ class BaseMmChapter {
       for (int j = 0; j < (maxLengthCharInRow - nRowDigit); j++) {
         emptyChar = sprintf("%s0", [emptyChar]);
       }
-      formattedTex = emptyChar.isNotEmpty ? sprintf("\\phantom{%s}", [emptyChar]) : "";
+      formattedTex = emptyChar.isNotEmpty
+          ? sprintf("\\phantom{%s}", [emptyChar])
+          : "";
 
       // create formattedTex data
       for (int idxDigit = 0; idxDigit < nRowDigit; idxDigit++) {
@@ -341,18 +398,22 @@ class BaseMmChapter {
             ? sprintf("%s %s\\", [formattedTex, rowDigit[idxDigit]])
             : sprintf("%s %s", [formattedTex, rowDigit[idxDigit]]);
       }
-      question = question.replaceAll(sprintf("@%d", [idxRow]), sprintf("\\space %s \\space", [formattedTex]));
+      question = question.replaceAll(
+        sprintf("@%d", [idxRow]),
+        sprintf("\\space %s \\space", [formattedTex]),
+      );
     }
 
     return (ModelQuestion(
-        question: question,
-        hasSolution: mdChapter.hasSolution,
-        choices: choices,
-        choicesBool: choicesBool,
-        solution: ModelSolution()));
+      question: question,
+      hasSolution: mdChapter.hasSolution,
+      choices: choices,
+      choicesBool: choicesBool,
+      solution: ModelSolution(),
+    ));
   }
 
-  createMissingDigitIndex(List<MyNumber> data) {
+  void createMissingDigitIndex(List<MyNumber> data) {
     LibMath libMath = LibMath();
     int maxLength = libMath.computeMaxLengthIntFromList(data: numbers);
     int totalItem = maxLength * data.length;
@@ -378,8 +439,11 @@ class BaseMmChapter {
     choices = createChoiceInteger(useOneDigit: true);
   }
 
-  String createQuestionInLongDivInt(
-      {required String question, required List<MyNumber> data, required String lastSymbol}) {
+  String createQuestionInLongDivInt({
+    required String question,
+    required List<MyNumber> data,
+    required String lastSymbol,
+  }) {
     // compute length of input and create formatted input
     List<String> listInput = [];
     for (int i = 0; i < data.length; i++) {
@@ -406,7 +470,9 @@ class BaseMmChapter {
     int maxLengthInput = 0;
     for (int i = 0; i < listInput.length; i++) {
       question = question.replaceAll(sprintf("@%d", [i]), listInput[i]);
-      maxLengthInput = maxLengthInput > listInput[i].length ? maxLengthInput : listInput[i].length;
+      maxLengthInput = maxLengthInput > listInput[i].length
+          ? maxLengthInput
+          : listInput[i].length;
     }
     return (question);
   }

@@ -23,7 +23,7 @@ class ClMmChapter {
     _fillFromChapter(chapter);
   }
 
-  _init() {
+  void _init() {
     correct = 0;
     wrong = 0;
     modeTypes = [];
@@ -32,7 +32,7 @@ class ClMmChapter {
     title = "";
   }
 
-  fixDataIfNeeded(ModelChapter chapter) {
+  void fixDataIfNeeded(ModelChapter chapter) {
     if (modeTypes.length != chapter.types.length) {
       _fillFromChapter(chapter);
     }
@@ -41,7 +41,7 @@ class ClMmChapter {
     }
   }
 
-  _fillFromChapter(ModelChapter chapter) {
+  void _fillFromChapter(ModelChapter chapter) {
     int lenType = chapter.types.length;
     if (lenType > 0) {
       modeTypes = List<bool>.filled(lenType, false);

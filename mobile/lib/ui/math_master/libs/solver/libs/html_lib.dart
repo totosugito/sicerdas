@@ -15,7 +15,7 @@ class LibHtml {
     Colors.cyan,
     Colors.pink,
     Colors.teal,
-    Colors.brown
+    Colors.brown,
   ];
 
   LibHtml(this.numbers, this.answer);
@@ -67,7 +67,13 @@ class LibHtml {
     return (duplicate(htmlSpacing, n));
   }
 
-  String tag({required String tag, required String value, String id = "", String style = "", bool newline = true}) {
+  String tag({
+    required String tag,
+    required String value,
+    String id = "",
+    String style = "",
+    bool newline = true,
+  }) {
     String strId = id.isEmpty ? '' : 'class="$id"';
     String strStyle = style.isEmpty ? '' : 'style="$style"';
     return ('<$tag $strId $strStyle>$value</$tag> ${newline ? "\n" : ""}');
@@ -78,23 +84,68 @@ class LibHtml {
     return ('</br>\n');
   }
 
-  String image({required String value, String style=""}) {
+  String image({required String value, String style = ""}) {
     return ('<img class="img-fluid" src="$value" style="$style" alt="image"/>');
   }
-  String h3({required String value, String id = "", String style = "", bool newline = true}) {
-    return (tag(tag: "h3", value: value, id: id, style: style, newline: newline));
+
+  String h3({
+    required String value,
+    String id = "",
+    String style = "",
+    bool newline = true,
+  }) {
+    return (tag(
+      tag: "h3",
+      value: value,
+      id: id,
+      style: style,
+      newline: newline,
+    ));
   }
 
-  String h4({required String value, String id = "", String style = "", bool newline = true}) {
-    return (tag(tag: "h4", value: value, id: id, style: style, newline: newline));
+  String h4({
+    required String value,
+    String id = "",
+    String style = "",
+    bool newline = true,
+  }) {
+    return (tag(
+      tag: "h4",
+      value: value,
+      id: id,
+      style: style,
+      newline: newline,
+    ));
   }
 
-  String div({required String value, String id = "", String style = "", bool newline = true}) {
-    return (tag(tag: "div", value: value, id: id, style: style, newline: newline));
+  String div({
+    required String value,
+    String id = "",
+    String style = "",
+    bool newline = true,
+  }) {
+    return (tag(
+      tag: "div",
+      value: value,
+      id: id,
+      style: style,
+      newline: newline,
+    ));
   }
 
-  String span({required String value, String id = "", String style = "", bool newline = false}) {
-    return (tag(tag: "span", value: value, id: id, style: style, newline: newline));
+  String span({
+    required String value,
+    String id = "",
+    String style = "",
+    bool newline = false,
+  }) {
+    return (tag(
+      tag: "span",
+      value: value,
+      id: id,
+      style: style,
+      newline: newline,
+    ));
   }
 
   String b(String value) {
@@ -105,17 +156,53 @@ class LibHtml {
     return (" $value ");
   }
 
-  String li({required String value, String id = "", String style = "", bool newline = true}) {
-    return (tag(tag: "li", value: value, id: id, style: style, newline: newline));
-  }
-
-  String liSpan({required String value, String id = "", String style = "", bool newline = true}) {
+  String li({
+    required String value,
+    String id = "",
+    String style = "",
+    bool newline = true,
+  }) {
     return (tag(
-        tag: "li", value: tag(tag: "span", value: value, id: id, style: style, newline: false), newline: newline));
+      tag: "li",
+      value: value,
+      id: id,
+      style: style,
+      newline: newline,
+    ));
   }
 
-  String ol({required String value, String id = "", String style = "", bool newline = true}) {
-    return (tag(tag: "ol", value: value, id: id, style: style, newline: newline));
+  String liSpan({
+    required String value,
+    String id = "",
+    String style = "",
+    bool newline = true,
+  }) {
+    return (tag(
+      tag: "li",
+      value: tag(
+        tag: "span",
+        value: value,
+        id: id,
+        style: style,
+        newline: false,
+      ),
+      newline: newline,
+    ));
+  }
+
+  String ol({
+    required String value,
+    String id = "",
+    String style = "",
+    bool newline = true,
+  }) {
+    return (tag(
+      tag: "ol",
+      value: value,
+      id: id,
+      style: style,
+      newline: newline,
+    ));
   }
 
   String sup(String value) {
@@ -127,32 +214,94 @@ class LibHtml {
   }
 
   // ----------------- TABLE ----------------
-  String table(
-      {required String value,
-      String id = "table table-sm table-bordered table-striped text-center",
-      String style = "",
-      bool newline = true}) {
-    return (tag(tag: "table", value: value, id: id, style: style, newline: newline));
+  String table({
+    required String value,
+    String id = "table table-sm table-bordered table-striped text-center",
+    String style = "",
+    bool newline = true,
+  }) {
+    return (tag(
+      tag: "table",
+      value: value,
+      id: id,
+      style: style,
+      newline: newline,
+    ));
   }
 
-  String thead({required String value, String id = "table-dark", String style = "", bool newline = true}) {
-    return (tag(tag: "thead", value: value, id: id, style: style, newline: newline));
+  String thead({
+    required String value,
+    String id = "table-dark",
+    String style = "",
+    bool newline = true,
+  }) {
+    return (tag(
+      tag: "thead",
+      value: value,
+      id: id,
+      style: style,
+      newline: newline,
+    ));
   }
 
-  String tbody({required String value, String id = "", String style = "", bool newline = true}) {
-    return (tag(tag: "tbody", value: value, id: id, style: style, newline: newline));
+  String tbody({
+    required String value,
+    String id = "",
+    String style = "",
+    bool newline = true,
+  }) {
+    return (tag(
+      tag: "tbody",
+      value: value,
+      id: id,
+      style: style,
+      newline: newline,
+    ));
   }
 
-  String th({required String value, String id = "", String style = "", bool newline = true}) {
-    return (tag(tag: "th", value: value, id: id, style: style, newline: newline));
+  String th({
+    required String value,
+    String id = "",
+    String style = "",
+    bool newline = true,
+  }) {
+    return (tag(
+      tag: "th",
+      value: value,
+      id: id,
+      style: style,
+      newline: newline,
+    ));
   }
 
-  String td({required String value, String id = "", String style = "", bool newline = true}) {
-    return (tag(tag: "td", value: value, id: id, style: style, newline: newline));
+  String td({
+    required String value,
+    String id = "",
+    String style = "",
+    bool newline = true,
+  }) {
+    return (tag(
+      tag: "td",
+      value: value,
+      id: id,
+      style: style,
+      newline: newline,
+    ));
   }
 
-  String tr({required String value, String id = "", String style = "", bool newline = true}) {
-    return (tag(tag: "tr", value: value, id: id, style: style, newline: newline));
+  String tr({
+    required String value,
+    String id = "",
+    String style = "",
+    bool newline = true,
+  }) {
+    return (tag(
+      tag: "tr",
+      value: value,
+      id: id,
+      style: style,
+      newline: newline,
+    ));
   }
 
   // ----------------- LATEX ----------------
@@ -175,37 +324,41 @@ class LibHtml {
   String texPercent() {
     return ('\\%');
   }
+
   String texLdots() {
     return ('\\ldots');
   }
+
   String texText({required String value}) {
     return ('\\text{$value}');
   }
+
   String texBold({required String value}) {
     return ('\\bold{$value}');
   }
+
   String texPhantom({required String value}) {
     return ('\\phantom{$value}');
   }
 
   String texNormalSize({required String value}) {
-    return ("\\normalsize" + (value.isEmpty ? "" : "{$value}"));
+    return ("\\normalsize${value.isEmpty ? "" : "{$value}"}");
   }
 
   String texSmall({required String value}) {
-    return ("\\small" + (value.isEmpty ? "" : "{$value}"));
+    return ("\\small${value.isEmpty ? "" : "{$value}"}");
   }
 
   String texFootNote({required String value}) {
-    return ("\\footnotesize" + (value.isEmpty ? "" : "{$value}"));
+    return ("\\footnotesize${value.isEmpty ? "" : "{$value}"}");
   }
 
   String texScriptSize({required String value}) {
-    return ("\\scriptsize" + (value.isEmpty ? "" : "{$value}"));
+    return ("\\scriptsize${value.isEmpty ? "" : "{$value}"}");
   }
 
   String texTiny({required String value}) {
-    return ("\\tiny" + (value.isEmpty ? "" : "{$value}"));
+    return ("\\tiny${value.isEmpty ? "" : "{$value}"}");
   }
 
   String texUnderline({required String value}) {
@@ -216,21 +369,31 @@ class LibHtml {
     return ('\\cancel{$value}');
   }
 
-  String texFrac({String value = "", required String numerator, required String denominator}) {
+  String texFrac({
+    String value = "",
+    required String numerator,
+    required String denominator,
+  }) {
     return ('$value\\frac{$numerator}{$denominator}');
   }
 
   String texAligned({required String value}) {
     return ('\\begin{aligned}$value\\end{aligned}');
   }
+
   String texFbox({required String value}) {
     return ('\\fbox{$value}');
   }
+
   String texGathered({required String value}) {
     return ('\\begin{gathered}$value\\end{gathered}');
   }
 
-  String texBr({String value = "\\\\", bool isNormal = true, String spacing = "[0.5em]"}) {
+  String texBr({
+    String value = "\\\\",
+    bool isNormal = true,
+    String spacing = "[0.5em]",
+  }) {
     return (isNormal ? value : "$value$spacing");
   }
 
@@ -239,18 +402,18 @@ class LibHtml {
   }
 
   String texColor({required String value, Color color = Colors.black}) {
-    if(color == Colors.black) {
+    if (color == Colors.black) {
       return ("{$value}");
-    }
-    else {
-      return ("\\textcolor{#${color.value.toRadixString(16).substring(2)}}{$value}");
+    } else {
+      return ("\\textcolor{#${color.toARGB32().toRadixString(16).substring(2)}}{$value}");
     }
   }
 
   String texMatrix({required String value}) {
     return ("\\begin{matrix}$value\\end{matrix}");
   }
-  String texArray({required String value, String arraySymbol="r"}) {
+
+  String texArray({required String value, String arraySymbol = "r"}) {
     return ("\\begin{array}{$arraySymbol}$value\\end{array}");
   }
 
@@ -263,16 +426,27 @@ class LibHtml {
     return (len);
   }
 
-  String listIntToString({required List<int> data, String separator = "", int start = 0, int spacing = 1}) {
+  String listIntToString({
+    required List<int> data,
+    String separator = "",
+    int start = 0,
+    int spacing = 1,
+  }) {
     String text = "";
     int size = data.length;
     for (int i = start; i < size; i += spacing) {
-      text += i < size - spacing ? data[i].toString() + separator : data[i].toString();
+      text += i < size - spacing
+          ? data[i].toString() + separator
+          : data[i].toString();
     }
     return (text);
   }
 
-  String listListIntToString({required List<List<int>> data, String separator1 = "", String separator2 = ""}) {
+  String listListIntToString({
+    required List<List<int>> data,
+    String separator1 = "",
+    String separator2 = "",
+  }) {
     String text = "";
     int size = data.length;
     for (int i = 0; i < size; i++) {
@@ -280,7 +454,9 @@ class LibHtml {
       int sizeItem = item.length;
       String strItem = "";
       for (int j = 0; j < sizeItem; j++) {
-        strItem += j < sizeItem - 1 ? item[j].toString() + separator2 : item[j].toString();
+        strItem += j < sizeItem - 1
+            ? item[j].toString() + separator2
+            : item[j].toString();
       }
       if (sizeItem > 1) {
         strItem = "($strItem)";
@@ -290,12 +466,13 @@ class LibHtml {
     return (text);
   }
 
-  String listListStringToString(
-      {required List<List<String>> data,
-      bool isTexText = true,
-      bool showGroup = true,
-      String separator1 = "",
-      String separator2 = ""}) {
+  String listListStringToString({
+    required List<List<String>> data,
+    bool isTexText = true,
+    bool showGroup = true,
+    String separator1 = "",
+    String separator2 = "",
+  }) {
     String text = "";
     int size = data.length;
     for (int i = 0; i < size; i++) {
@@ -314,8 +491,12 @@ class LibHtml {
     return (isTexText ? texText(value: text) : text);
   }
 
-  String listNumbersIntToString(
-      {required List<MyNumber> data, bool negativeGroup = true, String separator = ", ", String lastSeparator = ", "}) {
+  String listNumbersIntToString({
+    required List<MyNumber> data,
+    bool negativeGroup = true,
+    String separator = ", ",
+    String lastSeparator = ", ",
+  }) {
     String text = "";
     int size = data.length;
 
@@ -329,13 +510,19 @@ class LibHtml {
     return (text);
   }
 
-  String mapRankIntToString({required Map<int, int> data, String separator = "", bool showAll = false}) {
+  String mapRankIntToString({
+    required Map<int, int> data,
+    String separator = "",
+    bool showAll = false,
+  }) {
     String text = "";
     data.forEach((key, value) {
       if (showAll) {
         text += key.toString() + sup(value.toString()) + separator;
       } else {
-        text += value != 1 ? key.toString() + sup(value.toString()) + separator : key.toString() + separator;
+        text += value != 1
+            ? key.toString() + sup(value.toString()) + separator
+            : key.toString() + separator;
       }
     });
 
@@ -346,7 +533,11 @@ class LibHtml {
     return (div(value: text, id: idQuestionLabel));
   }
 
-  String showHtmlResult({required String label, required String input, required String result}) {
+  String showHtmlResult({
+    required String label,
+    required String input,
+    required String result,
+  }) {
     String html = span(id: idStepsLabel, value: sprintf(label, [input, br()]));
     html += span(id: idFinalAnswer, value: result);
     return (html);

@@ -5,7 +5,7 @@ class ModelSolution {
   String answer = "";
   String solution = "";
 
-  _init() {
+  void _init() {
     module = "";
     chapter = "";
     question = "";
@@ -13,7 +13,7 @@ class ModelSolution {
     solution = "";
   }
 
-  clone(ModelSolution other) {
+  void clone(ModelSolution other) {
     module = other.module;
     chapter = other.chapter;
     question = other.question;

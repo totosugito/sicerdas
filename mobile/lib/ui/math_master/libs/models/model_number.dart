@@ -25,7 +25,7 @@ class ModelNumber {
     this.spacingDen = 1,
   });
 
-  clone(ModelNumber m) {
+  void clone(ModelNumber m) {
     min = m.min;
     max = m.max;
     spacing = m.spacing;

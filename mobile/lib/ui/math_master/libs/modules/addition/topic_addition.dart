@@ -1,8 +1,6 @@
 import '../../base/base_mm_topic.dart';
 import '../../models/enums.dart';
 import '../../models/model_question.dart';
-import '../../models/cl_mm_chapter.dart';
-import '../../models/model_chapter.dart';
 import 'addition_1_digit.dart';
 
 class TopicAddition extends BaseMmTopic {
@@ -22,10 +20,16 @@ class TopicAddition extends BaseMmTopic {
     }
   }
 
-  ModelQuestion createQuestion({required KeyPadMode padMode, bool resetData = true}) {
+  ModelQuestion createQuestion({
+    required KeyPadMode padMode,
+    bool resetData = true,
+  }) {
     switch (keyChapter) {
       case KeyChapter.addition1Digit:
-        return _addition1digit.newQuestion(padMode: padMode, resetData: resetData);
+        return _addition1digit.newQuestion(
+          padMode: padMode,
+          resetData: resetData,
+        );
       default:
         return ModelQuestion.empty();
     }

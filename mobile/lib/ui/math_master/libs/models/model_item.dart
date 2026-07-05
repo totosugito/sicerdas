@@ -4,7 +4,12 @@ class ModelItem {
   String title = "";
   String assets = '';
 
-  ModelItem({required this.id, required this.key, required this.title, this.assets=''});
+  ModelItem({
+    required this.id,
+    required this.key,
+    required this.title,
+    this.assets = '',
+  });
 
   ModelItem.create() {
     id = 0;
@@ -17,7 +22,7 @@ class ModelItem {
     clone(old);
   }
 
-  clone(ModelItem old) {
+  void clone(ModelItem old) {
     id = old.id;
     key = old.key;
     title = old.title;
@@ -25,9 +30,9 @@ class ModelItem {
   }
 
   String getAssets() {
-    if(assets.isEmpty) {
-      return('');
+    if (assets.isEmpty) {
+      return ('');
     }
-    return('assets/images/math/$assets.png');
+    return ('assets/images/math/$assets.png');
   }
 }
