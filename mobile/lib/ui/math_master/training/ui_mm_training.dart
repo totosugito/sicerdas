@@ -278,63 +278,7 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
       );
     }
 
-    String questionText = _currentQuestion.question;
-    if (!questionText.contains('=')) {
-      if (_currentPadMode == KeyPadMode.padYesNo) {
-        final proposed = _currentQuestion.choicesBool.isNotEmpty
-            ? _currentQuestion.choicesBool[1].getText()
-            : '?';
-        questionText = '$questionText = $proposed ?';
-      } else {
-        if (_answered) {
-          final correctChoice = _currentQuestion.choices.firstWhere(
-            (c) => c.status,
-            orElse: () => _currentQuestion.choices.first,
-          );
-          questionText = '$questionText = ${correctChoice.value.toString()}';
-        } else if (_currentPadMode == KeyPadMode.padNumPad &&
-            _numInput.isNotEmpty) {
-          questionText = '$questionText = $_numInput';
-        } else if (_currentPadMode == KeyPadMode.pad4Pad &&
-            _selectedAnswer != null) {
-          questionText = '$questionText = $_selectedAnswer';
-        } else {
-          questionText = '$questionText = ..';
-        }
-      }
-    } else {
-      if (_currentPadMode == KeyPadMode.padYesNo) {
-        if (questionText.contains('..')) {
-          final proposed = _currentQuestion.choicesBool.isNotEmpty
-              ? _currentQuestion.choicesBool[1].getText()
-              : '?';
-          questionText = questionText.replaceAll('..', proposed);
-        }
-        if (!questionText.endsWith('?')) {
-          questionText = '$questionText ?';
-        }
-      } else {
-        if (_answered) {
-          final correctChoice = _currentQuestion.choices.firstWhere(
-            (c) => c.status,
-            orElse: () => _currentQuestion.choices.first,
-          );
-          questionText = questionText.replaceAll(
-            '..',
-            correctChoice.value.toString(),
-          );
-        } else if (_currentPadMode == KeyPadMode.padNumPad &&
-            _numInput.isNotEmpty) {
-          questionText = questionText.replaceAll('..', _numInput);
-        } else if (_currentPadMode == KeyPadMode.pad4Pad &&
-            _selectedAnswer != null) {
-          questionText = questionText.replaceAll(
-            '..',
-            _selectedAnswer.toString(),
-          );
-        }
-      }
-    }
+    final String questionText = _currentQuestion.question;
 
     return PopScope(
       canPop: false,

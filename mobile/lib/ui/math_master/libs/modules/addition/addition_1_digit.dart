@@ -26,14 +26,27 @@ class Addition1Digit extends BaseMmChapter {
   createDataValue(KeyPadMode padMode) {
     int selectedRangeIndex = getSelectedRangeIndex();
     numbers = [];
-    numbers.add(MyNumber.nextInt(myRandom: myRandom, minMax: getChapterNumRange(selectedRangeIndex, 0)));
-    numbers.add(MyNumber.nextInt(myRandom: myRandom, minMax: getChapterNumRange(selectedRangeIndex, 1)));
+    numbers.add(
+      MyNumber.nextInt(
+        myRandom: myRandom,
+        minMax: getChapterNumRange(selectedRangeIndex, 0),
+      ),
+    );
+    numbers.add(
+      MyNumber.nextInt(
+        myRandom: myRandom,
+        minMax: getChapterNumRange(selectedRangeIndex, 1),
+      ),
+    );
     answer = numbers[0] + numbers[1];
     choices = createChoiceInteger();
   }
 
   @override
-  ModelQuestion newQuestion({required KeyPadMode padMode, bool resetData = true}) {
+  ModelQuestion newQuestion({
+    required KeyPadMode padMode,
+    bool resetData = true,
+  }) {
     this.padMode = padMode;
     if (resetData) {
       createDataValue(padMode);
@@ -42,33 +55,49 @@ class Addition1Digit extends BaseMmChapter {
 
     switch (padMode) {
       case KeyPadMode.padYesNo:
-        question = createQuestionInRowInt(question: question, data: numbers, lastSymbol: choicesBool[1].getText());
+        question = createQuestionInRowInt(
+          question: question,
+          data: numbers,
+          lastSymbol: '${choicesBool[1].getText()} ?',
+        );
         break;
       default:
-        question = createQuestionInRowInt(question: question, data: numbers, lastSymbol: "..");
+        question = createQuestionInRowInt(
+          question: question,
+          data: numbers,
+          lastSymbol: "..",
+        );
         break;
     }
     return (ModelQuestion(
-        question: question,
-        hasSolution: mdChapter.hasSolution,
-        choices: choices,
-        choicesBool: choicesBool,
-        solution: ModelSolution()));
+      question: question,
+      hasSolution: mdChapter.hasSolution,
+      choices: choices,
+      choicesBool: choicesBool,
+      solution: ModelSolution(),
+    ));
   }
 
   late CalcAdditionSteps addSteps;
 
   @override
-  String createHtmlQuestion({String solveTheQuestionText = "Selesaikan pertanyaan berikut:"}) {
+  String createHtmlQuestion({
+    String solveTheQuestionText = "Selesaikan pertanyaan berikut:",
+  }) {
     String text = addSteps.divQuestionLabel(text: solveTheQuestionText);
     text += addSteps.tex(
-        value:
-            addSteps.listNumbersIntToString(data: numbers, separator: addSteps.plus(), lastSeparator: addSteps.plus()));
+      value: addSteps.listNumbersIntToString(
+        data: numbers,
+        separator: addSteps.plus(),
+        lastSeparator: addSteps.plus(),
+      ),
+    );
     return (text);
   }
 
   @override
-  updateSolution(ModelQuestion question, {
+  updateSolution(
+    ModelQuestion question, {
     required String solutionText,
     String solveTheQuestionText = "Selesaikan pertanyaan berikut:",
     String stepsAdditionTables = "Tabel Penjumlahan",
@@ -76,7 +105,9 @@ class Addition1Digit extends BaseMmChapter {
   }) {
     addSteps = CalcAdditionSteps(numbers: numbers, answer: answer);
     initSolution(question, solutionText: solutionText);
-    question.solution.question = createHtmlQuestion(solveTheQuestionText: solveTheQuestionText);
+    question.solution.question = createHtmlQuestion(
+      solveTheQuestionText: solveTheQuestionText,
+    );
     question.solution.solution = addSteps.htmlAddition1Digit(
       stepsAdditionTables: stepsAdditionTables,
       stepsThereforeResult: stepsThereforeResult,
