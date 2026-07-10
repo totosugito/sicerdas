@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/widgets/ads/ads_banner.dart';
+import 'package:bse/widgets/confirmation_dialog.dart';
 import '../libs/providers/math_tricks_repository.dart';
 import '../libs/tricks_question_generator.dart';
 import '../libs/widgets/keypad_mode.dart';
@@ -269,22 +270,17 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
         showPadToggle: _currentQuestion.supportedKeyPads.length > 1,
         onExitPressed: () {
           // Confirm exit
-          showShadDialog(
-            context: context,
-            builder: (context) => ShadDialog(
-              title: Text(l10n.math_tricks.training.exitTitle),
-              description: Text(l10n.math_tricks.training.exitDescription),
-              actions: [
-                ShadButton.outline(child: Text(l10n.common.cancel), onPressed: () => Navigator.of(context).pop()),
-                ShadButton.destructive(
-                  child: Text(l10n.math_tricks.training.exitButton),
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Dismiss dialog
-                    Navigator.of(context).pop(); // Exit screen
-                  },
-                ),
-              ],
-            ),
+          ConfirmationDialog.show(
+            context,
+            icon: LucideIcons.triangleAlert,
+            title: l10n.math_tricks.training.exitTitle,
+            description: l10n.math_tricks.training.exitDescription,
+            confirmLabel: l10n.math_tricks.training.exitButton,
+            cancelLabel: l10n.common.cancel,
+            onConfirm: () {
+              Navigator.of(context).pop(); // Dismiss dialog
+              Navigator.of(context).pop(); // Exit screen
+            },
           );
         },
         onPadModeToggle: () {

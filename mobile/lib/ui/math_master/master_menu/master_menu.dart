@@ -8,7 +8,7 @@ import '../libs/models/model_chapter.dart';
 import '../libs/models/cl_mm_chapter.dart';
 import '../libs/models/model_item.dart';
 import '../libs/providers/math_master_repository.dart';
-import '../ui/ui_mm_training.dart';
+import '../training/ui_mm_training.dart';
 import 'widgets/chapter_options_sheet.dart';
 import 'widgets/chapter_list_item.dart';
 import 'widgets/menu_app_bar.dart';

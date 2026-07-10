@@ -13,11 +13,11 @@ class UiMmStepsSolution extends StatefulWidget {
     required this.question,
   });
 
-  static void navigate({
+  static Future<dynamic> navigate({
     required BuildContext context,
     required ModelQuestion question,
   }) {
-    Navigator.push(
+    return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => UiMmStepsSolution(question: question),

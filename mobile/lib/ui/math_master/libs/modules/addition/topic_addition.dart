@@ -12,7 +12,14 @@ class TopicAddition extends BaseMmTopic {
 
   void initTopic() {
     switch (keyChapter) {
+      case KeyChapter.additionSequential:
       case KeyChapter.addition1Digit:
+      case KeyChapter.addition2Digit:
+      case KeyChapter.addition3Digit:
+      case KeyChapter.addition4Digit:
+      case KeyChapter.additionNegative:
+      case KeyChapter.additionMissingDigit:
+      case KeyChapter.additionSimple:
         _addition1digit = Addition1Digit.init(chapter, mdChapter);
         break;
       default:
@@ -25,7 +32,14 @@ class TopicAddition extends BaseMmTopic {
     bool resetData = true,
   }) {
     switch (keyChapter) {
+      case KeyChapter.additionSequential:
       case KeyChapter.addition1Digit:
+      case KeyChapter.addition2Digit:
+      case KeyChapter.addition3Digit:
+      case KeyChapter.addition4Digit:
+      case KeyChapter.additionNegative:
+      case KeyChapter.additionMissingDigit:
+      case KeyChapter.additionSimple:
         return _addition1digit.newQuestion(
           padMode: padMode,
           resetData: resetData,
@@ -37,7 +51,14 @@ class TopicAddition extends BaseMmTopic {
 
   void updateSolution(ModelQuestion question, {required String solutionText}) {
     switch (keyChapter) {
+      case KeyChapter.additionSequential:
       case KeyChapter.addition1Digit:
+      case KeyChapter.addition2Digit:
+      case KeyChapter.addition3Digit:
+      case KeyChapter.addition4Digit:
+      case KeyChapter.additionNegative:
+      case KeyChapter.additionMissingDigit:
+      case KeyChapter.additionSimple:
         _addition1digit.updateSolution(question, solutionText: solutionText);
         break;
       default:

@@ -11,6 +11,7 @@ class ConfirmationDialog extends StatelessWidget {
   final String? cancelLabel;
   final VoidCallback onConfirm;
   final bool isDestructive;
+  final bool showCancelButton;
 
   const ConfirmationDialog({
     super.key,
@@ -23,6 +24,7 @@ class ConfirmationDialog extends StatelessWidget {
     this.cancelLabel,
     required this.onConfirm,
     this.isDestructive = true,
+    this.showCancelButton = true,
   });
 
   @override
@@ -79,13 +81,15 @@ class ConfirmationDialog extends StatelessWidget {
           const SizedBox(height: 24),
           Row(
             children: [
-              Expanded(
-                child: ShadButton.outline(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(cancelLabel ?? 'Cancel'),
+              if (showCancelButton) ...[
+                Expanded(
+                  child: ShadButton.outline(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(cancelLabel ?? 'Cancel'),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
+                const SizedBox(width: 12),
+              ],
               Expanded(
                 child: isDestructive
                     ? ShadButton.destructive(
@@ -115,6 +119,7 @@ class ConfirmationDialog extends StatelessWidget {
     String? cancelLabel,
     required VoidCallback onConfirm,
     bool isDestructive = true,
+    bool showCancelButton = true,
   }) {
     showShadDialog(
       context: context,
@@ -128,6 +133,7 @@ class ConfirmationDialog extends StatelessWidget {
         cancelLabel: cancelLabel,
         onConfirm: onConfirm,
         isDestructive: isDestructive,
+        showCancelButton: showCancelButton,
       ),
     );
   }

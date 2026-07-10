@@ -14,6 +14,7 @@
   "select_all": "Pilih Semua",
   "unselect_all": "Batal Pilih Semua",
   "time_limit_of_questions": "Batas Waktu",
+  "question_progress": "Soal {index}/{total}",
   "number_of_questions": "Jumlah Soal",
   "questions_count": "{count} Soal",
   "start_text": "Mulai",
@@ -40,5 +41,7 @@
   "chapter_addition_4_digits": "Penjumlahan 4 Digit",
   "chapter_addition_negative": "Penjumlahan Negatif",
   "chapter_addition_missing_digit": "Penjumlahan Digit Hilang",
-  "chapter_addition_simple": "Penjumlahan Sederhana"
+  "chapter_addition_simple": "Penjumlahan Sederhana",
+  "training_completed": "Latihan Selesai!",
+  "back_to_dashboard": "Kembali ke Dashboard"
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
+import 'package:bse/widgets/confirmation_dialog.dart';
 import 'package:bse/core/utils/my_utils.dart';
 import '../../libs/providers/dictionary_package_provider.dart';
 import '../../libs/model/dictionary_package.dart';
@@ -83,40 +84,24 @@ class PackageItem extends ConsumerWidget {
                           hoverBackgroundColor: theme.colorScheme.destructive
                               .withValues(alpha: 0.1),
                           onPressed: () {
-                            showShadDialog(
-                              context: context,
-                              builder: (context) => ShadDialog(
-                                title: Text(
-                                  l10n
-                                      .dictionary
-                                      .packageList
-                                      .confirmDeleteTitle,
-                                ),
-                                description: Text(
-                                  l10n.dictionary.packageList.confirmDeleteDesc(
-                                    title: package.packTitle,
-                                  ),
-                                ),
-                                actions: [
-                                  ShadButton.ghost(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: Text(l10n.common.cancel),
-                                  ),
-                                  ShadButton.destructive(
-                                    onPressed: () async {
-                                      Navigator.pop(context);
-                                      await ref
-                                          .read(
-                                            dictionaryPackageManagerProvider,
-                                          )
-                                          .deletePackage(package);
-                                    },
-                                    child: Text(
-                                      l10n.dictionary.packageList.delete,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            ConfirmationDialog.show(
+                              context,
+                              icon: LucideIcons.trash2,
+                              title: l10n
+                                  .dictionary
+                                  .packageList
+                                  .confirmDeleteTitle,
+                              description: l10n.dictionary.packageList
+                                  .confirmDeleteDesc(title: package.packTitle),
+                              confirmLabel: l10n.dictionary.packageList.delete,
+                              cancelLabel: l10n.common.cancel,
+                              isDestructive: true,
+                              onConfirm: () async {
+                                Navigator.pop(context);
+                                await ref
+                                    .read(dictionaryPackageManagerProvider)
+                                    .deletePackage(package);
+                              },
                             );
                           },
                           child: Icon(

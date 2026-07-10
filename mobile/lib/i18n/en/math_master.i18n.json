@@ -14,6 +14,7 @@
   "select_all": "Select All",
   "unselect_all": "Unselect All",
   "time_limit_of_questions": "Time Limit",
+  "question_progress": "Question {index}/{total}",
   "number_of_questions": "Number of Questions",
   "questions_count": "{count} Questions",
   "start_text": "Start",
@@ -40,5 +41,7 @@
   "chapter_addition_4_digits": "4-Digit Addition",
   "chapter_addition_negative": "Negative Addition",
   "chapter_addition_missing_digit": "Missing Digit Addition",
-  "chapter_addition_simple": "Simple Addition"
+  "chapter_addition_simple": "Simple Addition",
+  "training_completed": "Training Completed!",
+  "back_to_dashboard": "Back to Dashboard"
 }

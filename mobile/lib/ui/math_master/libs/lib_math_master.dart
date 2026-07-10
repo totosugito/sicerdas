@@ -20,7 +20,10 @@ class LibMathMaster {
   late TopicAddition _topicAddition;
 
   LibMathMaster.init(this._chapter, this._mdChapter) {
-    KeyChapter keyChapter = _enumFromString(KeyChapter.values, _mdChapter.chapterKey)!;
+    KeyChapter keyChapter = _enumFromString(
+      KeyChapter.values,
+      _mdChapter.chapterKey,
+    )!;
     switch (_mdChapter.topic) {
       case KeyTopic.topicAddition:
         _topicAddition = TopicAddition(_chapter, _mdChapter, keyChapter);
@@ -30,10 +33,16 @@ class LibMathMaster {
     }
   }
 
-  ModelQuestion newQuestion({required KeyPadMode padMode, bool resetData = true}) {
+  ModelQuestion newQuestion({
+    required KeyPadMode padMode,
+    bool resetData = true,
+  }) {
     switch (_mdChapter.topic) {
       case KeyTopic.topicAddition:
-        return _topicAddition.createQuestion(padMode: padMode, resetData: resetData);
+        return _topicAddition.createQuestion(
+          padMode: padMode,
+          resetData: resetData,
+        );
       default:
         return ModelQuestion.empty();
     }

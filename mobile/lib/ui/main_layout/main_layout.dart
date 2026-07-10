@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/core/providers/navigation_provider.dart';
 import 'package:bse/i18n/strings.g.dart';
+import 'package:bse/widgets/confirmation_dialog.dart';
 import 'package:bse/core/providers/sync_provider.dart';
 import 'package:bse/core/config/app_constants.dart';
 import 'home_screen.dart';
@@ -49,47 +50,17 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
     );
 
     if (!status && mounted) {
-      final theme = ShadTheme.of(context);
       final l10n = Translations.of(context);
 
-      showShadDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => ShadDialog(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 320),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  LucideIcons.triangleAlert,
-                  size: 32,
-                  color: theme.colorScheme.destructive,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.common.error.title,
-                  style: theme.textTheme.large.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.common.error.createAppDir,
-                  style: theme.textTheme.muted.copyWith(fontSize: 14),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                ShadButton.destructive(
-                  width: double.infinity,
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(l10n.common.close),
-                ),
-              ],
-            ),
-          ),
-        ),
+      ConfirmationDialog.show(
+        context,
+        icon: LucideIcons.triangleAlert,
+        title: l10n.common.error.title,
+        description: l10n.common.error.createAppDir,
+        confirmLabel: l10n.common.close,
+        showCancelButton: false,
+        isDestructive: true,
+        onConfirm: () => Navigator.of(context).pop(),
       );
     }
 
