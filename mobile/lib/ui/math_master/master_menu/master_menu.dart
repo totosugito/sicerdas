@@ -14,6 +14,7 @@ import 'widgets/chapter_list_item.dart';
 import 'widgets/menu_app_bar.dart';
 import 'widgets/menu_filter_header.dart';
 import 'widgets/filter_picker_sheet.dart';
+import '../../../widgets/auto_height_grid_view.dart';
 
 class UiMathMaster extends ConsumerStatefulWidget {
   const UiMathMaster({super.key});
@@ -157,10 +158,10 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
       builder: (context) {
         return ChapterOptionsSheet(
           selectedChapter: selectedChapter,
-          onStart: (rangeIndex, timeMode, questionCount) {
+          onStart: (selectedRanges, timeMode, questionCount) {
             _startTraining(
               selectedChapter,
-              rangeIndex,
+              selectedRanges,
               timeMode,
               questionCount,
             );
@@ -172,7 +173,7 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
 
   void _startTraining(
     ModelChapter selectedChapter,
-    int rangeIndex,
+    List<bool> selectedRanges,
     int timeMode,
     int questionCount,
   ) {
@@ -180,9 +181,10 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
       ..correct = 0
       ..wrong = 0;
 
-    if (rangeIndex >= 0 && rangeIndex < clChapter.ranges.length) {
-      clChapter.ranges.fillRange(0, clChapter.ranges.length, false);
-      clChapter.ranges[rangeIndex] = true;
+    for (int i = 0; i < selectedRanges.length; i++) {
+      if (i < clChapter.ranges.length) {
+        clChapter.ranges[i] = selectedRanges[i];
+      }
     }
 
     UiMmTraining.navigate(
@@ -252,19 +254,15 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
                           ),
                         ),
                       ),
-                      GridView.builder(
+                      AutoHeightGridView(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
-                        gridDelegate:
-                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 220,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                              childAspectRatio: 1.3,
-                            ),
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
                         itemCount: entry.value.length,
-                        itemBuilder: (context, index) {
+                        builder: (context, index) {
                           final chapter = entry.value[index];
                           return ChapterListItem(
                             chapter: chapter,

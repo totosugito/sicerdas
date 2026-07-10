@@ -63,6 +63,7 @@
   "publishedYearLabel": "Published Year",
   "statusLabel": "Status",
   "bookIdLabel": "Book ID",
+  "online": "Online",
   "download": {
     "action": "Download Book",
     "started": "Starting book download...",

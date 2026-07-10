@@ -527,7 +527,7 @@ class BookDetailSheet extends ConsumerWidget {
             Expanded(
               child: _buildInfoItem(
                 context,
-                '${l10n.books.bookIdLabel} / Online',
+                '${l10n.books.bookIdLabel} / ${l10n.books.online}',
                 '${book.bookId}',
                 Icons.tag_outlined,
                 isDark,

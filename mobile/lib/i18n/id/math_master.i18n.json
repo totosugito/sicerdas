@@ -11,6 +11,8 @@
   "grades_class_n": "Kelas {number}",
   "topics_addition": "Penjumlahan",
   "select_difficulty_text": "Pilih Kesulitan",
+  "select_all": "Pilih Semua",
+  "unselect_all": "Batal Pilih Semua",
   "time_limit_of_questions": "Batas Waktu",
   "number_of_questions": "Jumlah Soal",
   "questions_count": "{count} Soal",

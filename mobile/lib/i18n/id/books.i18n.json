@@ -62,6 +62,7 @@
   "publishedYearLabel": "Tahun Terbit",
   "statusLabel": "Status",
   "bookIdLabel": "ID Buku",
+  "online": "Online",
   "download": {
     "action": "Unduh Buku",
     "started": "Memulai pengunduhan buku...",

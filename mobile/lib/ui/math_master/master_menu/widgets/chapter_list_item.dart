@@ -38,107 +38,144 @@ class ChapterListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-    return ShadCard(
-      padding: EdgeInsets.all(16.0),
-      child: InkWell(
-        onTap: onTap,
-        splashColor: theme.colorScheme.primary.withValues(alpha: 0.1),
-        highlightColor: theme.colorScheme.primary.withValues(alpha: 0.05),
-        child: Padding(
-          padding: const EdgeInsets.all(0.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            // crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                chapter.title,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.small.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 13.0,
-                  height: 1.2,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 6),
-              Container(
-                height: 38,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withValues(alpha: 0.07),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Math.tex(
-                      chapter.cover,
-                      textStyle: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 6),
-              // Footer Info
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? theme.colorScheme.card : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: theme.colorScheme.border.withValues(
+            alpha: isDark ? 0.35 : 0.65,
+          ),
+          width: 1.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            splashColor: theme.colorScheme.primary.withValues(alpha: 0.1),
+            highlightColor: theme.colorScheme.primary.withValues(alpha: 0.05),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Grade
-                  Expanded(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.school_rounded,
-                          size: 14.0,
-                          color: theme.colorScheme.mutedForeground,
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            _getGradeLabel(context, chapter.grade),
-                            style: theme.textTheme.muted.copyWith(
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                  Text(
+                    chapter.title,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.small.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13.0,
+                      height: 1.25,
+                      color: theme.colorScheme.foreground,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    height: 38,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Math.tex(
+                          chapter.cover,
+                          textStyle: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 4),
-                  // Score Info
+                  const SizedBox(height: 8),
+                  // Footer Info
                   Row(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.emoji_events_rounded,
-                        size: 14.0,
-                        color: theme.colorScheme.primary,
+                      // Grade
+                      Expanded(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.school_rounded,
+                              size: 13.0,
+                              color: theme.colorScheme.mutedForeground,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                _getGradeLabel(context, chapter.grade),
+                                style: theme.textTheme.muted.copyWith(
+                                  fontSize: 10.0,
+                                  fontWeight: FontWeight.w500,
+                                  color: theme.colorScheme.mutedForeground,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(width: 3),
-                      Text(
-                        '${chapter.correctAnswer}',
-                        style: theme.textTheme.muted.copyWith(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.primary,
+                      const SizedBox(width: 4),
+                      // Score Info
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.08,
+                          ),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.emoji_events_rounded,
+                              size: 11.0,
+                              color: theme.colorScheme.primary,
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              '${chapter.correctAnswer}',
+                              style: theme.textTheme.muted.copyWith(
+                                fontSize: 10.0,
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.primary,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),

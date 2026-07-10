@@ -11,6 +11,8 @@
   "grades_class_n": "Grade {number}",
   "topics_addition": "Addition",
   "select_difficulty_text": "Select Difficulty",
+  "select_all": "Select All",
+  "unselect_all": "Unselect All",
   "time_limit_of_questions": "Time Limit",
   "number_of_questions": "Number of Questions",
   "questions_count": "{count} Questions",
