@@ -258,6 +258,8 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
                         child: Text(
                           entry.key == KeyTopic.topicAddition
                               ? locale.topics_addition
+                              : entry.key == KeyTopic.topicClock
+                              ? locale.topics_clock
                               : entry.key.name,
                           style: theme.textTheme.large.copyWith(
                             fontWeight: FontWeight.bold,
