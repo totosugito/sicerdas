@@ -77,6 +77,7 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
   Future<void> _initDataView() async {
     final repo = ref.read(mathMasterRepositoryProvider);
     final summary = await repo.getTodayScores();
+    final chapterSummary = await repo.getChapterSummary();
 
     if (!mounted) return;
 
@@ -88,6 +89,15 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
       gradeList = DataMathMaster.createGradesList(context);
       topicList = DataMathMaster.createTopicsList(context);
       chapterList = DataMathMaster.createChapterList(context);
+
+      for (var chapter in chapterList) {
+        if (chapterSummary.containsKey(chapter.chapterKey)) {
+          chapter.correctAnswer =
+              chapterSummary[chapter.chapterKey]?['correct'] ?? 0;
+          chapter.wrongAnswer =
+              chapterSummary[chapter.chapterKey]?['wrong'] ?? 0;
+        }
+      }
 
       selectedGroup = groupList.first;
       selectedGrade = gradeList.first;

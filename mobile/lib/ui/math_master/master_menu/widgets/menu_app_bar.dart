@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
-import '../../ui/ui_mm_achievement.dart';
+import '../../achievement/ui_mm_achievement.dart';
 
 class MenuAppBar extends StatelessWidget {
   final int todayCorrect;

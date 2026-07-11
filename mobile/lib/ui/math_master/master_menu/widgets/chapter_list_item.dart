@@ -161,7 +161,9 @@ class ChapterListItem extends StatelessWidget {
                             ),
                             const SizedBox(width: 3),
                             Text(
-                              '${chapter.correctAnswer}',
+                              NumberFormat.decimalPattern().format(
+                                chapter.correctAnswer,
+                              ),
                               style: theme.textTheme.muted.copyWith(
                                 fontSize: 10.0,
                                 fontWeight: FontWeight.bold,

@@ -43,5 +43,21 @@
   "chapter_addition_missing_digit": "Missing Digit Addition",
   "chapter_addition_simple": "Simple Addition",
   "training_completed": "Training Completed!",
-  "back_to_dashboard": "Back to Dashboard"
+  "back_to_dashboard": "Back to Dashboard",
+  "completed_chapters": "Chapters Completed",
+  "learning_history": "Learning History",
+  "no_practice": "No Practice",
+  "correct_count": "{count} Correct",
+  "wrong_count": "{count} Wrong",
+  "no_data": "No practice data yet",
+  "practice_analysis": "Practice Analysis",
+  "practice_analysis_desc": "Showing answering performance over the last few days.",
+  "correct": "Correct",
+  "wrong": "Wrong",
+  "no_chart_data": "No practice history to display yet.",
+  "daily": "Daily",
+  "weekly": "Weekly",
+  "monthly": "Monthly",
+  "select_date_range": "Select Date Range",
+  "clear_filter": "Clear Filter"
 }

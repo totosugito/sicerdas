@@ -43,5 +43,21 @@
   "chapter_addition_missing_digit": "Penjumlahan Digit Hilang",
   "chapter_addition_simple": "Penjumlahan Sederhana",
   "training_completed": "Latihan Selesai!",
-  "back_to_dashboard": "Kembali ke Dashboard"
+  "back_to_dashboard": "Kembali ke Dashboard",
+  "completed_chapters": "Bab Selesai",
+  "learning_history": "Riwayat Pembelajaran",
+  "no_practice": "Belum Latihan",
+  "correct_count": "{count} Benar",
+  "wrong_count": "{count} Salah",
+  "no_data": "Belum ada data latihan",
+  "practice_analysis": "Analisis Latihan",
+  "practice_analysis_desc": "Menampilkan performa menjawab dalam beberapa hari terakhir.",
+  "correct": "Benar",
+  "wrong": "Salah",
+  "no_chart_data": "Belum ada riwayat latihan untuk ditampilkan.",
+  "daily": "Harian",
+  "weekly": "Mingguan",
+  "monthly": "Bulanan",
+  "select_date_range": "Pilih Rentang Tanggal",
+  "clear_filter": "Hapus Filter"
 }
