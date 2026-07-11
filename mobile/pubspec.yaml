@@ -64,4 +64,7 @@ flutter:
     - assets/periodic_dictionary/
     - assets/constitution/images/
     - assets/constitution/data/
+    - assets/katex-0.17.0/
+    - assets/katex-0.17.0/fonts/
+    - assets/katex-0.17.0/contrib/
 
