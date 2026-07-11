@@ -59,5 +59,19 @@
   "weekly": "Weekly",
   "monthly": "Monthly",
   "select_date_range": "Select Date Range",
-  "clear_filter": "Clear Filter"
+  "clear_filter": "Clear Filter",
+  "question_label": "Question",
+  "steps_label": "Steps of Solution",
+  "result_label": "Final Answer",
+  "type_answer": "Type your answer...",
+  "copyright": "© {year} Sicerdas - Math Master. All Rights Reserved.",
+  "solver": {
+    "addition_tables": "Addition Table",
+    "therefore_result": "Therefore, the result is",
+    "if_text": "if",
+    "do_the_calculation": "Do the calculation:",
+    "use_this_rule": "Use this rule:",
+    "therefore_missing_digit": "Therefore, the missing digit is:",
+    "solve_the_question": "Solve the following question:"
+  }
 }

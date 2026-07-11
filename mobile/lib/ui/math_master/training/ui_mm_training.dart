@@ -12,7 +12,7 @@ import '../libs/providers/math_master_repository.dart';
 import '../../math_tricks/libs/widgets/multiple_choice_pad.dart';
 import '../../math_tricks/libs/widgets/numeric_key_pad.dart';
 import '../../math_tricks/libs/widgets/yes_no_pad.dart';
-import '../ui/ui_mm_steps_solution.dart';
+import '../step_solutions/ui_mm_steps_solution.dart';
 import '../../../widgets/confirmation_dialog.dart';
 import 'widgets/training_finished_view.dart';
 import 'widgets/training_question_card.dart';

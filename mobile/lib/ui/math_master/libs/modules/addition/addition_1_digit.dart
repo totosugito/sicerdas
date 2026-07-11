@@ -6,6 +6,7 @@ import '../../models/model_chapter.dart';
 import '../../models/my_number.dart';
 import '../../models/model_solution.dart';
 import '../../solver/calc_addition_steps.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class Addition1Digit extends BaseMmChapter {
   Addition1Digit.init(ClMmChapter chapter, ModelChapter mdChapter) {
@@ -82,9 +83,10 @@ class Addition1Digit extends BaseMmChapter {
 
   @override
   String createHtmlQuestion({
-    String solveTheQuestionText = "Selesaikan pertanyaan berikut:",
+    String? solveTheQuestionText,
   }) {
-    String text = addSteps.divQuestionLabel(text: solveTheQuestionText);
+    final String textLabel = solveTheQuestionText ?? t.math_master.solver.solve_the_question;
+    String text = addSteps.divQuestionLabel(text: textLabel);
     text += addSteps.tex(
       value: addSteps.listNumbersIntToString(
         data: numbers,

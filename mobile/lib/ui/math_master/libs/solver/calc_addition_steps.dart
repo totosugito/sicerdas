@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:bse/i18n/strings.g.dart';
 import '../models/my_number.dart';
 import 'calc_steps.dart';
 
 class MathMasterLocale {
   static MathMasterLocale? of(dynamic context) => MathMasterLocale();
-  String get stepsAdditionTables => "Tabel Penjumlahan";
-  String get stepsThereforeResult => "Maka Hasilnya";
-  String get ifText => "jika";
-  String get stepsDoTheCalculation => "Lakukan perhitungan:";
-  String get stepsUseThisRule => "Gunakan aturan ini:";
-  String get stepsThereforeMissingDigit => "Maka Digit yang Hilang:";
+  String get stepsAdditionTables => t.math_master.solver.addition_tables;
+  String get stepsThereforeResult => t.math_master.solver.therefore_result;
+  String get ifText => t.math_master.solver.if_text;
+  String get stepsDoTheCalculation => t.math_master.solver.do_the_calculation;
+  String get stepsUseThisRule => t.math_master.solver.use_this_rule;
+  String get stepsThereforeMissingDigit => t.math_master.solver.therefore_missing_digit;
 }
 
 class CalcAdditionSteps extends CalcSteps {

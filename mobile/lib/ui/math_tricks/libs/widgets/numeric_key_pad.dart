@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class NumericKeyPad extends StatelessWidget {
   final String currentInput;
@@ -49,7 +50,7 @@ class NumericKeyPad extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: Text(
-            currentInput.isEmpty ? 'Ketik jawaban...' : currentInput,
+            currentInput.isEmpty ? t.math_master.type_answer : currentInput,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,

@@ -59,5 +59,19 @@
   "weekly": "Mingguan",
   "monthly": "Bulanan",
   "select_date_range": "Pilih Rentang Tanggal",
-  "clear_filter": "Hapus Filter"
+  "clear_filter": "Hapus Filter",
+  "question_label": "Pertanyaan",
+  "steps_label": "Langkah Penyelesaian",
+  "result_label": "Hasil Akhir",
+  "type_answer": "Ketik jawaban...",
+  "copyright": "© {year} Sicerdas - Math Master. Hak Cipta Dilindungi.",
+  "solver": {
+    "addition_tables": "Tabel Penjumlahan",
+    "therefore_result": "Maka Hasilnya",
+    "if_text": "jika",
+    "do_the_calculation": "Lakukan perhitungan:",
+    "use_this_rule": "Gunakan aturan ini:",
+    "therefore_missing_digit": "Maka Digit yang Hilang:",
+    "solve_the_question": "Selesaikan pertanyaan berikut:"
+  }
 }
