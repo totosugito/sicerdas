@@ -1,46 +1,15 @@
-import '../../base/base_mm_chapter.dart';
 import '../../models/enums.dart';
 import '../../models/model_question.dart';
-import '../../models/cl_mm_chapter.dart';
-import '../../models/model_chapter.dart';
-import '../../models/my_number.dart';
-import '../../models/model_solution.dart';
 import '../../solver/calc_addition_steps.dart';
 import 'package:bse/i18n/strings.g.dart';
+import 'addition_1_digit.dart';
 
-class Addition1Digit extends BaseMmChapter {
-  Addition1Digit.init(ClMmChapter chapter, ModelChapter mdChapter) {
-    init(chapter, mdChapter);
-  }
+class Addition2Digit extends Addition1Digit {
+  Addition2Digit.init(super.chapter, super.mdChapter) : super.init();
 
   @override
   String getQuestionTemplate() {
-    switch (padMode) {
-      case KeyPadMode.padYesNo:
-        return ("@0 + @1 = @2");
-      default:
-        return ("@0 + @1");
-    }
-  }
-
-  @override
-  createDataValue(KeyPadMode padMode) {
-    int selectedRangeIndex = getSelectedRangeIndex();
-    numbers = [];
-    numbers.add(
-      MyNumber.nextInt(
-        myRandom: myRandom,
-        minMax: getChapterNumRange(selectedRangeIndex, 0),
-      ),
-    );
-    numbers.add(
-      MyNumber.nextInt(
-        myRandom: myRandom,
-        minMax: getChapterNumRange(selectedRangeIndex, 1),
-      ),
-    );
-    answer = numbers[0] + numbers[1];
-    choices = createChoiceInteger();
+    return ("\\begin{aligned} @0 \\\\[-0.5em] \\underline{@1} &\\space \\tiny{_+}\\\\[-0.5em] @2 \\end{aligned}");
   }
 
   @override
@@ -56,30 +25,19 @@ class Addition1Digit extends BaseMmChapter {
 
     switch (padMode) {
       case KeyPadMode.padYesNo:
-        question = createQuestionInRowInt(
+        return createQuestionWithHorzLineInt(
           question: question,
           data: numbers,
-          lastSymbol: '${choicesBool[1].getText()} ?',
+          lastSymbol: choicesBool[1].getText(),
         );
-        break;
       default:
-        question = createQuestionInRowInt(
+        return createQuestionWithHorzLineInt(
           question: question,
           data: numbers,
           lastSymbol: "..",
         );
-        break;
     }
-    return (ModelQuestion(
-      question: question,
-      hasSolution: mdChapter.hasSolution,
-      choices: choices,
-      choicesBool: choicesBool,
-      solution: ModelSolution(),
-    ));
   }
-
-  late CalcAdditionSteps addSteps;
 
   @override
   String createHtmlQuestion({String? solveTheQuestionText}) {
@@ -110,9 +68,7 @@ class Addition1Digit extends BaseMmChapter {
       solveTheQuestionText:
           solveTheQuestionText ?? t.math_master.solver.solve_the_question,
     );
-    question.solution.solution = addSteps.htmlAddition1Digit(
-      stepsAdditionTables:
-          stepsAdditionTables ?? t.math_master.solver.addition_tables,
+    question.solution.solution = addSteps.htmlAddition(
       stepsThereforeResult:
           stepsThereforeResult ?? t.math_master.solver.therefore_result,
     );

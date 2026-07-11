@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class YesNoPad extends StatelessWidget {
   final bool answered;
-  final bool? userAnswerCorrect; // true if user chose yes when correct, or no when wrong
-  final bool? selectedYes; // true if user chose Yes, false if No, null if unchosen
+  final bool?
+  userAnswerCorrect; // true if user chose yes when correct, or no when wrong
+  final bool?
+  selectedYes; // true if user chose Yes, false if No, null if unchosen
   final ValueChanged<bool> onAnswer;
   final bool isDark;
 
@@ -18,6 +21,8 @@ class YesNoPad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = Translations.of(context);
+
     Color yesBtnColor = isDark
         ? Colors.white.withValues(alpha: 0.06)
         : Colors.grey.shade100;
@@ -28,25 +33,13 @@ class YesNoPad extends StatelessWidget {
     Color yesTextColor = isDark ? Colors.white : Colors.black87;
     Color noTextColor = isDark ? Colors.white : Colors.black87;
 
-    if (answered && selectedYes != null) {
+    if (answered) {
       if (selectedYes == true) {
-        // user clicked Yes
-        if (userAnswerCorrect == true) {
-          yesBtnColor = Colors.green.withValues(alpha: 0.8);
-          yesTextColor = Colors.white;
-        } else {
-          yesBtnColor = Colors.red.withValues(alpha: 0.8);
-          yesTextColor = Colors.white;
-        }
-      } else {
-        // user clicked No
-        if (userAnswerCorrect == true) {
-          noBtnColor = Colors.green.withValues(alpha: 0.8);
-          noTextColor = Colors.white;
-        } else {
-          noBtnColor = Colors.red.withValues(alpha: 0.8);
-          noTextColor = Colors.white;
-        }
+        yesBtnColor = userAnswerCorrect == true ? Colors.green : Colors.red;
+        yesTextColor = Colors.white;
+      } else if (selectedYes == false) {
+        noBtnColor = userAnswerCorrect == true ? Colors.green : Colors.red;
+        noTextColor = Colors.white;
       }
     }
 
@@ -64,18 +57,24 @@ class YesNoPad extends StatelessWidget {
                   color: answered && selectedYes == false
                       ? Colors.transparent
                       : (isDark
-                          ? Colors.white.withValues(alpha: 0.1)
-                          : Colors.grey.shade300),
+                            ? Colors.white.withValues(alpha: 0.1)
+                            : Colors.grey.shade300),
                 ),
               ),
               alignment: Alignment.center,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.close_rounded, color: answered && selectedYes == false ? Colors.white : Colors.red, size: 24),
+                  Icon(
+                    Icons.close_rounded,
+                    color: answered && selectedYes == false
+                        ? Colors.white
+                        : Colors.red,
+                    size: 24,
+                  ),
                   const SizedBox(width: 8),
                   Text(
-                    'Salah',
+                    l10n.math_master.wrong,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -100,18 +99,24 @@ class YesNoPad extends StatelessWidget {
                   color: answered && selectedYes == true
                       ? Colors.transparent
                       : (isDark
-                          ? Colors.white.withValues(alpha: 0.1)
-                          : Colors.grey.shade300),
+                            ? Colors.white.withValues(alpha: 0.1)
+                            : Colors.grey.shade300),
                 ),
               ),
               alignment: Alignment.center,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.check_rounded, color: answered && selectedYes == true ? Colors.white : Colors.green, size: 24),
+                  Icon(
+                    Icons.check_rounded,
+                    color: answered && selectedYes == true
+                        ? Colors.white
+                        : Colors.green,
+                    size: 24,
+                  ),
                   const SizedBox(width: 8),
                   Text(
-                    'Benar',
+                    l10n.math_master.correct,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

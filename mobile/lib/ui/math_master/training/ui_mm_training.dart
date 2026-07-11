@@ -337,7 +337,7 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
         ),
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.only(left: 24, right: 24, top: 10.0),
             child: Column(
               children: [
                 TrainingProgressHeader(

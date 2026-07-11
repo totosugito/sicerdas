@@ -71,40 +71,6 @@ class _UiMmStepsSolutionState extends State<UiMmStepsSolution> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageFinished: (String url) {
-            final correctAnswerText = _getCorrectAnswer();
-
-            final locale = Translations.of(context).math_master;
-
-            final currentYear = DateTime.now().year.toString();
-            final copyrightText = locale.copyright(year: currentYear);
-
-            // Generate the dynamic HTML layout from Dart template (enabling hot reload)
-            final htmlContent = getSolutionHtml(
-              module: widget.question.solution.module,
-              chapter: widget.question.solution.chapter,
-              question: widget.question.solution.question,
-              solution: widget.question.solution.solution,
-              answer: correctAnswerText,
-              labelCopyright: copyrightText,
-              labelQuestion: locale.question_label,
-              labelSteps: locale.steps_label,
-              labelResult: locale.result_label,
-            );
-
-            final data = {
-              'isDarkMode': isDark,
-              'html': htmlContent,
-              'module': widget.question.solution.module,
-              'chapter': widget.question.solution.chapter,
-              'question': widget.question.solution.question,
-              'solution': widget.question.solution.solution,
-              'answer': correctAnswerText,
-              'year': currentYear,
-            };
-            _webViewController.runJavaScript(
-              'updateContent(${jsonEncode(data)})',
-            );
-
             if (mounted) {
               setState(() {
                 _isPageFinished = true;
@@ -126,14 +92,36 @@ class _UiMmStepsSolutionState extends State<UiMmStepsSolution> {
       _webViewController.setBackgroundColor(
         isDark ? const Color(0xFF151515) : Colors.white,
       );
+
+      final correctAnswerText = _getCorrectAnswer();
+      final currentYear = DateTime.now().year.toString();
+      final copyrightText = locale.copyright(year: currentYear);
+
+      final htmlContent = getSolutionHtml(
+        module: widget.question.solution.module,
+        chapter: widget.question.solution.chapter,
+        question: widget.question.solution.question,
+        solution: widget.question.solution.solution,
+        answer: correctAnswerText,
+        labelCopyright: copyrightText,
+        labelQuestion: locale.question_label,
+        labelSteps: locale.steps_label,
+        labelResult: locale.result_label,
+      );
+
+      final data = {
+        'isDarkMode': isDark,
+        'html': htmlContent,
+        'module': widget.question.solution.module,
+        'chapter': widget.question.solution.chapter,
+        'question': widget.question.solution.question,
+        'solution': widget.question.solution.solution,
+        'answer': correctAnswerText,
+        'year': currentYear,
+      };
+
       _webViewController.runJavaScript('''
-        if ($isDark) {
-          document.documentElement.className = "dark";
-          document.body.className = "dark-mode dark";
-        } else {
-          document.documentElement.className = "";
-          document.body.className = "light-mode";
-        }
+        updateContent(${jsonEncode(data)});
       ''');
     }
 

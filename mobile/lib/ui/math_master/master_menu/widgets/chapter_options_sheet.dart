@@ -262,17 +262,16 @@ class _ChapterOptionsSheetState extends State<ChapterOptionsSheet> {
                 ),
               ),
               const SizedBox(height: 8),
-              Row(
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
                 children: [5, 10, 15, 20].map((qCount) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: _buildOptionButton(
-                      label: locale.questions_count(count: qCount),
-                      isSelected: _numberOfQuestions == qCount,
-                      onPressed: () =>
-                          setState(() => _numberOfQuestions = qCount),
-                      theme: theme,
-                    ),
+                  return _buildOptionButton(
+                    label: locale.questions_count(count: qCount),
+                    isSelected: _numberOfQuestions == qCount,
+                    onPressed: () =>
+                        setState(() => _numberOfQuestions = qCount),
+                    theme: theme,
                   );
                 }).toList(),
               ),

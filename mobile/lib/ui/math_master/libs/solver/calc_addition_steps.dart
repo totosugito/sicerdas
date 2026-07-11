@@ -520,7 +520,7 @@ class CalcAdditionSteps extends CalcSteps {
     return (html);
   }
 
-  String htmlAddition() {
+  String htmlAddition({String? stepsThereforeResult}) {
     String html = "";
 
     bool isNegative0 = numbers[0].isNegative();
@@ -535,7 +535,8 @@ class CalcAdditionSteps extends CalcSteps {
       html += htmlAdditionPosPos(label: label, data: numbers, result: answer);
 
       // show the result
-      String labelResult = MathMasterLocale.of(context)!.stepsThereforeResult;
+      String labelResult =
+          stepsThereforeResult ?? MathMasterLocale.of(context)!.stepsThereforeResult;
       String question = listNumbersIntToString(
         data: numbers,
         separator: plus(),
@@ -567,7 +568,8 @@ class CalcAdditionSteps extends CalcSteps {
       );
 
       // show the result
-      String labelResult = MathMasterLocale.of(context)!.stepsThereforeResult;
+      String labelResult =
+          stepsThereforeResult ?? MathMasterLocale.of(context)!.stepsThereforeResult;
       String question = listNumbersIntToString(
         data: numbers,
         separator: plus(),
@@ -599,7 +601,8 @@ class CalcAdditionSteps extends CalcSteps {
       );
 
       // show the result
-      String labelResult = MathMasterLocale.of(context)!.stepsThereforeResult;
+      String labelResult =
+          stepsThereforeResult ?? MathMasterLocale.of(context)!.stepsThereforeResult;
       String question = listNumbersIntToString(
         data: numbers,
         separator: plus(),
@@ -629,7 +632,8 @@ class CalcAdditionSteps extends CalcSteps {
       );
 
       // show the result
-      String labelResult = MathMasterLocale.of(context)!.stepsThereforeResult;
+      String labelResult =
+          stepsThereforeResult ?? MathMasterLocale.of(context)!.stepsThereforeResult;
       String question = listNumbersIntToString(
         data: numbers,
         separator: plus(),

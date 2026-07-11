@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
 class TrainingQuestionCard extends StatelessWidget {
   final String question;
@@ -18,6 +19,12 @@ class TrainingQuestionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
     final l10n = Translations.of(context);
+    final isLaTex =
+        question.contains('\\') ||
+        question.contains('{') ||
+        question.contains('}') ||
+        question.contains('_') ||
+        question.contains('^');
 
     return Expanded(
       child: Center(
@@ -27,14 +34,33 @@ class TrainingQuestionCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                question,
-                style: theme.textTheme.h1.copyWith(
-                  fontSize: 48,
-                  fontWeight: FontWeight.w800,
-                ),
-                textAlign: TextAlign.center,
-              ),
+              isLaTex
+                  ? FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Math.tex(
+                        question,
+                        textStyle: theme.textTheme.h1.copyWith(
+                          fontSize: 48,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        onErrorFallback: (error) => Text(
+                          question,
+                          style: theme.textTheme.h1.copyWith(
+                            fontSize: 48,
+                            fontWeight: FontWeight.w800,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  : Text(
+                      question,
+                      style: theme.textTheme.h1.copyWith(
+                        fontSize: 48,
+                        fontWeight: FontWeight.w800,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
               if (answered) ...[
                 const SizedBox(height: 24),
                 Row(
@@ -59,7 +85,7 @@ class TrainingQuestionCard extends StatelessWidget {
                     ),
                   ],
                 ),
-              ]
+              ],
             ],
           ),
         ),

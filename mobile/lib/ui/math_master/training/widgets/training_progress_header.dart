@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 class TrainingProgressHeader extends StatelessWidget {
   final int currentQuestionIndex;
@@ -23,6 +24,7 @@ class TrainingProgressHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = Translations.of(context);
 
     final progress = totalQuestions > 0
         ? (currentQuestionIndex) / totalQuestions
@@ -40,7 +42,7 @@ class TrainingProgressHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'PROGRESS',
+                  l10n.math_tricks.progress.toUpperCase(),
                   style: theme.textTheme.muted.copyWith(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
@@ -49,7 +51,10 @@ class TrainingProgressHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Soal ${currentQuestionIndex + 1} dari $totalQuestions',
+                  l10n.math_master.question_progress(
+                    index: currentQuestionIndex + 1,
+                    total: totalQuestions,
+                  ),
                   style: theme.textTheme.large.copyWith(
                     fontWeight: FontWeight.w800,
                     fontSize: 16,

@@ -2,9 +2,11 @@ import '../../base/base_mm_topic.dart';
 import '../../models/enums.dart';
 import '../../models/model_question.dart';
 import 'addition_1_digit.dart';
+import 'addition_2_digit.dart';
 
 class TopicAddition extends BaseMmTopic {
   late Addition1Digit _addition1digit;
+  late Addition2Digit _addition2digit;
 
   TopicAddition(super.chapter, super.mdChapter, super.keyChapter) {
     initTopic();
@@ -14,13 +16,15 @@ class TopicAddition extends BaseMmTopic {
     switch (keyChapter) {
       case KeyChapter.additionSequential:
       case KeyChapter.addition1Digit:
-      case KeyChapter.addition2Digit:
       case KeyChapter.addition3Digit:
       case KeyChapter.addition4Digit:
       case KeyChapter.additionNegative:
       case KeyChapter.additionMissingDigit:
       case KeyChapter.additionSimple:
         _addition1digit = Addition1Digit.init(chapter, mdChapter);
+        break;
+      case KeyChapter.addition2Digit:
+        _addition2digit = Addition2Digit.init(chapter, mdChapter);
         break;
       default:
         break;
@@ -34,13 +38,17 @@ class TopicAddition extends BaseMmTopic {
     switch (keyChapter) {
       case KeyChapter.additionSequential:
       case KeyChapter.addition1Digit:
-      case KeyChapter.addition2Digit:
       case KeyChapter.addition3Digit:
       case KeyChapter.addition4Digit:
       case KeyChapter.additionNegative:
       case KeyChapter.additionMissingDigit:
       case KeyChapter.additionSimple:
         return _addition1digit.newQuestion(
+          padMode: padMode,
+          resetData: resetData,
+        );
+      case KeyChapter.addition2Digit:
+        return _addition2digit.newQuestion(
           padMode: padMode,
           resetData: resetData,
         );
@@ -53,13 +61,15 @@ class TopicAddition extends BaseMmTopic {
     switch (keyChapter) {
       case KeyChapter.additionSequential:
       case KeyChapter.addition1Digit:
-      case KeyChapter.addition2Digit:
       case KeyChapter.addition3Digit:
       case KeyChapter.addition4Digit:
       case KeyChapter.additionNegative:
       case KeyChapter.additionMissingDigit:
       case KeyChapter.additionSimple:
         _addition1digit.updateSolution(question, solutionText: solutionText);
+        break;
+      case KeyChapter.addition2Digit:
+        _addition2digit.updateSolution(question, solutionText: solutionText);
         break;
       default:
         break;
