@@ -40,7 +40,8 @@ dependencies:
   share_plus: ^13.2.0
   google_mobile_ads: ^9.0.0
   webview_flutter: ^4.14.0
-  flutter_math_fork: ^0.7.4
+  flutter_math_fork:
+    path: packages/flutter_math_fork
   flutter_localizations:
     sdk: flutter
   collection: ^1.19.1

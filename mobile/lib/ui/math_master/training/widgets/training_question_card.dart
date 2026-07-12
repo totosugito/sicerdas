@@ -33,21 +33,26 @@ class TrainingQuestionCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 isLaTex
-                    ? FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Math.tex(
-                          question,
-                          textStyle: theme.textTheme.h1.copyWith(
-                            fontSize: 48,
-                            fontWeight: FontWeight.w800,
-                          ),
-                          onErrorFallback: (error) => Text(
+                    ? SizedBox(
+                        width: MediaQuery.of(context).size.width - 96,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Math.tex(
                             question,
-                            style: theme.textTheme.h1.copyWith(
+                            textStyle: theme.textTheme.h1.copyWith(
                               fontSize: 48,
                               fontWeight: FontWeight.w800,
                             ),
-                            textAlign: TextAlign.center,
+                            onErrorFallback: (error) {
+                              return Text(
+                                question,
+                                style: theme.textTheme.h1.copyWith(
+                                  fontSize: 48,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                                textAlign: TextAlign.center,
+                              );
+                            },
                           ),
                         ),
                       )
