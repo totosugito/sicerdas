@@ -8,6 +8,9 @@ class Addition2Digit extends Addition1Digit {
   Addition2Digit.init(super.chapter, super.mdChapter) : super.init();
 
   @override
+  bool get isLatexQuestion => true;
+
+  @override
   String getQuestionTemplate() {
     return ("\\begin{aligned} @0 \\\\[-0.5em] \\underline{@1} &\\space \\tiny{_+}\\\\[-0.5em] @2 \\end{aligned}");
   }

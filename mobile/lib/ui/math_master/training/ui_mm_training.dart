@@ -356,6 +356,7 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
                   question: questionText,
                   answered: _answered,
                   isCorrect: _questionResults[_currentQuestionIndex],
+                  isLatex: _currentQuestion.isLatex,
                 ),
 
                 const SizedBox(height: 24),

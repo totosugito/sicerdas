@@ -10,7 +10,7 @@ class ChapterClock {
     final locale = Translations.of(context).math_master;
     var topic = KeyTopic.topicClock;
     var baseTopicIndex = topic.index * 100;
-    
+
     return [
       ModelChapter(
         grade: KeyGrade.gradeThree,
@@ -20,7 +20,8 @@ class ChapterClock {
         topicLabel: locale.topics_clock,
         title: locale.chapter_clock_minutes_to_hours,
         pads: const [KeyPadMode.padYesNo, KeyPadMode.pad4Pad],
-        cover: "120 \\text{ ${locale.minutes_sort_text} = \\ldots ${locale.hours_sort_text}}",
+        cover:
+            "120 \\text{ ${locale.minutes_sort_text} = \\ldots ${locale.hours_sort_text}}",
         sort: baseTopicIndex + 4,
         ranges: [
           ChapterRange(
@@ -36,13 +37,14 @@ class ChapterClock {
                 maxNum: 0,
                 minDen: 60,
                 maxDen: 60,
-              )
+              ),
             ],
           ),
           ChapterRange(
             id: 1,
             title: locale.level_medium,
-            desc: "[1, 1\\frac{1}{2}, 2 \\ldots 10] \\text{ ${locale.hours_sort_text}}",
+            desc:
+                "[1, 1\\frac{1}{2}, 2 \\ldots 10] \\text{ ${locale.hours_sort_text}}",
             numRanges: [
               ModelNumber(
                 min: 1,
@@ -52,13 +54,14 @@ class ChapterClock {
                 maxNum: 60,
                 minDen: 60,
                 maxDen: 60,
-              )
+              ),
             ],
           ),
           ChapterRange(
             id: 2, // Note: changed from 3 to 2 for proper sequential indices
             title: locale.level_hard,
-            desc: "[1, 1\\frac{1}{4}, 1\\frac{2}{4} \\ldots 10] \\text{ ${locale.hours_sort_text}}",
+            desc:
+                "[1, 1\\frac{1}{4}, 1\\frac{2}{4} \\ldots 10] \\text{ ${locale.hours_sort_text}}",
             numRanges: [
               ModelNumber(
                 min: 1,
@@ -68,7 +71,7 @@ class ChapterClock {
                 maxNum: 60,
                 minDen: 60,
                 maxDen: 60,
-              )
+              ),
             ],
           ),
         ],
@@ -81,7 +84,8 @@ class ChapterClock {
         topicLabel: locale.topics_clock,
         title: locale.chapter_clock_hours_to_Minutes,
         pads: const [KeyPadMode.padYesNo, KeyPadMode.pad4Pad],
-        cover: "2 \\text{ ${locale.hours_sort_text} = \\ldots ${locale.minutes_sort_text}}",
+        cover:
+            "2 \\text{ ${locale.hours_sort_text} = \\ldots ${locale.minutes_sort_text}}",
         sort: baseTopicIndex + 5,
         ranges: [
           ChapterRange(
@@ -97,13 +101,14 @@ class ChapterClock {
                 maxNum: 0,
                 minDen: 60,
                 maxDen: 60,
-              )
+              ),
             ],
           ),
           ChapterRange(
             id: 1,
             title: locale.level_medium,
-            desc: "[1, 1\\frac{1}{2}, 2 \\ldots 10] \\text{ ${locale.hours_sort_text}}",
+            desc:
+                "[1, 1\\frac{1}{2}, 2 \\ldots 10] \\text{ ${locale.hours_sort_text}}",
             numRanges: [
               ModelNumber(
                 min: 1,
@@ -113,13 +118,14 @@ class ChapterClock {
                 maxNum: 60,
                 minDen: 60,
                 maxDen: 60,
-              )
+              ),
             ],
           ),
           ChapterRange(
             id: 2,
             title: locale.level_hard,
-            desc: "[1, 1\\frac{1}{4}, 1\\frac{2}{4} \\ldots 10] \\text{ ${locale.hours_sort_text}}",
+            desc:
+                "[1, 1\\frac{1}{4}, 1\\frac{2}{4} \\ldots 10] \\text{ ${locale.hours_sort_text}}",
             numRanges: [
               ModelNumber(
                 min: 1,
@@ -129,7 +135,7 @@ class ChapterClock {
                 maxNum: 60,
                 minDen: 60,
                 maxDen: 60,
-              )
+              ),
             ],
           ),
         ],
@@ -158,7 +164,7 @@ class ChapterClock {
                 maxNum: 0,
                 minDen: 60,
                 maxDen: 60,
-              )
+              ),
             ],
           ),
           ChapterRange(
@@ -174,7 +180,7 @@ class ChapterClock {
                 maxNum: 60,
                 minDen: 60,
                 maxDen: 60,
-              )
+              ),
             ],
           ),
           ChapterRange(
@@ -190,7 +196,7 @@ class ChapterClock {
                 maxNum: 60,
                 minDen: 60,
                 maxDen: 60,
-              )
+              ),
             ],
           ),
           ChapterRange(
@@ -206,7 +212,7 @@ class ChapterClock {
                 maxNum: 60,
                 minDen: 60,
                 maxDen: 60,
-              )
+              ),
             ],
           ),
           ChapterRange(
@@ -222,7 +228,7 @@ class ChapterClock {
                 maxNum: 60,
                 minDen: 60,
                 maxDen: 60,
-              )
+              ),
             ],
           ),
         ],

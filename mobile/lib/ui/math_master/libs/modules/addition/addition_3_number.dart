@@ -6,10 +6,10 @@ import 'package:bse/i18n/strings.g.dart';
 import 'addition_2_digit.dart';
 
 class Addition3Number extends Addition2Digit {
-  Addition3Number.init(
-    super.chapter,
-    super.mdChapter,
-  ) : super.init();
+  Addition3Number.init(super.chapter, super.mdChapter) : super.init();
+
+  @override
+  bool get isLatexQuestion => true;
 
   @override
   String getQuestionTemplate() {

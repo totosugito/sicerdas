@@ -17,8 +17,6 @@ class BaseMmChapter {
   late ClMmChapter chapter;
   late ModelChapter mdChapter;
   late MyRandom myRandom;
-  late String questionInLatex = "";
-
   late List<MyNumber> numbers;
   late MyNumber answer;
   late ModelQuestion question;
@@ -86,6 +84,8 @@ class BaseMmChapter {
     }
     return (r);
   }
+
+  bool get isLatexQuestion => false;
 
   String getQuestionTemplate() {
     return ("");
@@ -342,6 +342,7 @@ class BaseMmChapter {
       choices: choices,
       choicesBool: choicesBool,
       solution: ModelSolution(),
+      isLatex: isLatexQuestion,
     ));
   }
 
@@ -410,6 +411,7 @@ class BaseMmChapter {
       choices: choices,
       choicesBool: choicesBool,
       solution: ModelSolution(),
+      isLatex: isLatexQuestion,
     ));
   }
 

@@ -10,6 +10,9 @@ class ClockElapsedTime extends ClockHoursToMinutes {
   ClockElapsedTime.init(super.chapter, super.mdChapter) : super.init();
 
   @override
+  bool get isLatexQuestion => true;
+
+  @override
   String getQuestionTemplate() {
     switch (padMode) {
       case KeyPadMode.padYesNo:

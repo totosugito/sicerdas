@@ -76,6 +76,7 @@ class Addition1Digit extends BaseMmChapter {
       choices: choices,
       choicesBool: choicesBool,
       solution: ModelSolution(),
+      isLatex: isLatexQuestion,
     ));
   }
 

@@ -10,6 +10,9 @@ class ClockMinutesToHours extends Addition1Digit {
   ClockMinutesToHours.init(super.chapter, super.mdChapter) : super.init();
 
   @override
+  bool get isLatexQuestion => true;
+
+  @override
   String getQuestionTemplate() {
     switch (padMode) {
       case KeyPadMode.padYesNo:

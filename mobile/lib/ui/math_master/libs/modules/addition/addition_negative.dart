@@ -7,10 +7,16 @@ import 'package:bse/i18n/strings.g.dart';
 import 'addition_1_digit.dart';
 
 class AdditionNegative extends Addition1Digit {
-  AdditionNegative.init(
-    super.chapter,
-    super.mdChapter,
-  ) : super.init();
+  AdditionNegative.init(super.chapter, super.mdChapter) : super.init();
+
+  @override
+  bool get isLatexQuestion {
+    try {
+      return !isOneDigit();
+    } catch (_) {
+      return false;
+    }
+  }
 
   @override
   String getQuestionTemplate() {
@@ -72,6 +78,7 @@ class AdditionNegative extends Addition1Digit {
             choicesBool: choicesBool,
             hasSolution: mdChapter.hasSolution,
             solution: ModelSolution(),
+            isLatex: isLatexQuestion,
           );
         } else {
           return createQuestionWithHorzLineInt(
@@ -93,6 +100,7 @@ class AdditionNegative extends Addition1Digit {
             choicesBool: choicesBool,
             hasSolution: mdChapter.hasSolution,
             solution: ModelSolution(),
+            isLatex: isLatexQuestion,
           );
         } else {
           return createQuestionWithHorzLineInt(

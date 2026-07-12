@@ -7,10 +7,10 @@ import 'package:bse/i18n/strings.g.dart';
 import 'addition_1_digit.dart';
 
 class AdditionMissingDigit extends Addition1Digit {
-  AdditionMissingDigit.init(
-    super.chapter,
-    super.mdChapter,
-  ) : super.init();
+  AdditionMissingDigit.init(super.chapter, super.mdChapter) : super.init();
+
+  @override
+  bool get isLatexQuestion => true;
 
   @override
   String getQuestionTemplate() {
@@ -61,6 +61,7 @@ class AdditionMissingDigit extends Addition1Digit {
       choices: choices,
       choicesBool: choicesBool,
       solution: ModelSolution(),
+      isLatex: isLatexQuestion,
     );
   }
 

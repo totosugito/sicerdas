@@ -12,6 +12,7 @@ class ModelQuestion {
   List<ModelChoice> choices = [];
   List<ModelChoice> choicesBool = [];
   bool hasSolution = false;
+  bool isLatex = false;
 
   ModelQuestion.clone(ModelQuestion m) {
     empty();
@@ -30,6 +31,7 @@ class ModelQuestion {
     this.hasSolution = false,
     required this.solution,
     this.prefixAnswer = "=answer",
+    this.isLatex = false,
   });
 
   void empty({int maxChoice = 5}) {
@@ -42,6 +44,7 @@ class ModelQuestion {
     prefixAnswer = "=answer";
     choices = [];
     choicesBool = [];
+    isLatex = false;
     for (int i = 0; i < maxChoice; i++) {
       bool status = i == 0 ? true : false;
       ModelChoice m = ModelChoice(
@@ -69,6 +72,7 @@ class ModelQuestion {
     solution = m.solution;
     prefixAnswer = m.prefixAnswer;
     hasSolution = m.hasSolution;
+    isLatex = m.isLatex;
     for (int i = 0; i < m.choices.length; i++) {
       choices[i].cloneObject(m.choices[i]);
     }
