@@ -78,6 +78,7 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
   // Question / Answer states
   bool _answered = false;
   num? _selectedAnswer;
+  int? _selectedIndex;
   String _numInput = '';
   KeyPadMode _currentPadMode = KeyPadMode.pad4Pad;
 
@@ -138,6 +139,7 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
       );
       _answered = false;
       _selectedAnswer = null;
+      _selectedIndex = null;
       _numInput = '';
       _selectedYes = null;
       _userAnswerCorrect = null;
@@ -157,6 +159,30 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
     setState(() {
       _answered = true;
       _selectedAnswer = answer;
+      _questionResults[_currentQuestionIndex] = isCorrect;
+      if (isCorrect) {
+        _correctAnswers++;
+      } else {
+        _wrongAnswers++;
+      }
+    });
+
+    Future.delayed(const Duration(milliseconds: 1200), () {
+      if (mounted) {
+        _onNextQuestion();
+      }
+    });
+  }
+
+  void _submitChoiceAnswer(int index) {
+    if (_answered) return;
+
+    final choice = _currentQuestion.choices[index];
+    final isCorrect = choice.status;
+
+    setState(() {
+      _answered = true;
+      _selectedIndex = index;
       _questionResults[_currentQuestionIndex] = isCorrect;
       if (isCorrect) {
         _correctAnswers++;
@@ -373,19 +399,14 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
 
   Widget _buildKeypad(ShadThemeData theme, bool isDark) {
     if (_currentPadMode == KeyPadMode.pad4Pad) {
-      final choices = _currentQuestion.choices
-          .map((c) => c.value.value)
-          .toList();
-      final correctChoice = _currentQuestion.choices.firstWhere(
-        (c) => c.status,
-        orElse: () => _currentQuestion.choices.first,
-      );
+      final choices = _currentQuestion.choices.map((c) => c.getText()).toList();
+      final correctIndex = _currentQuestion.choices.indexWhere((c) => c.status);
       return MultipleChoicePad(
         choices: choices,
-        correctAnswer: correctChoice.value.value,
-        selectedAnswer: _selectedAnswer,
+        correctIndex: correctIndex != -1 ? correctIndex : 0,
+        selectedIndex: _selectedIndex,
         answered: _answered,
-        onChoiceSelected: (val) => _submitAnswer(val),
+        onChoiceSelected: (index) => _submitChoiceAnswer(index),
         isDark: isDark,
       );
     } else if (_currentPadMode == KeyPadMode.padYesNo) {

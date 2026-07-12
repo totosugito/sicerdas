@@ -59,7 +59,7 @@ class Addition1Digit extends BaseMmChapter {
         question = createQuestionInRowInt(
           question: question,
           data: numbers,
-          lastSymbol: '${choicesBool[1].getText()} ?',
+          lastSymbol: '${choicesBool[1].getText()} ',
         );
         break;
       default:

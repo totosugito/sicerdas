@@ -349,11 +349,11 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
     switch (_currentPadMode) {
       case KeyPadMode.multipleChoice:
         return MultipleChoicePad(
-          choices: _currentQuestion.choices,
-          correctAnswer: _currentQuestion.answer,
-          selectedAnswer: _selectedAnswer,
+          choices: _currentQuestion.choices.map((c) => '$c').toList(),
+          correctIndex: _currentQuestion.choices.indexOf(_currentQuestion.answer),
+          selectedIndex: _selectedAnswer != null ? _currentQuestion.choices.indexOf(_selectedAnswer!) : null,
           answered: _answered,
-          onChoiceSelected: _onAnswerSubmitted,
+          onChoiceSelected: (index) => _onAnswerSubmitted(_currentQuestion.choices[index]),
           isDark: isDark,
         );
       case KeyPadMode.numPad:

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
 class MultipleChoicePad extends StatelessWidget {
-  final List<num> choices;
-  final num correctAnswer;
-  final num? selectedAnswer;
+  final List<String> choices;
+  final int correctIndex;
+  final int? selectedIndex;
   final bool answered;
-  final ValueChanged<num> onChoiceSelected;
+  final ValueChanged<int> onChoiceSelected;
   final bool isDark;
 
   const MultipleChoicePad({
     super.key,
     required this.choices,
-    required this.correctAnswer,
-    required this.selectedAnswer,
+    required this.correctIndex,
+    required this.selectedIndex,
     required this.answered,
     required this.onChoiceSelected,
     required this.isDark,
@@ -31,9 +32,9 @@ class MultipleChoicePad extends StatelessWidget {
       ),
       itemCount: choices.length,
       itemBuilder: (context, index) {
-        final choice = choices[index];
-        final isSelected = selectedAnswer == choice;
-        final isCorrectChoice = choice == correctAnswer;
+        final choiceText = choices[index];
+        final isSelected = selectedIndex == index;
+        final isCorrectChoice = index == correctIndex;
 
         Color btnColor = isDark
             ? Colors.white.withValues(alpha: 0.06)
@@ -51,7 +52,7 @@ class MultipleChoicePad extends StatelessWidget {
         }
 
         return GestureDetector(
-          onTap: () => onChoiceSelected(choice),
+          onTap: () => onChoiceSelected(index),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             decoration: BoxDecoration(
@@ -66,12 +67,24 @@ class MultipleChoicePad extends StatelessWidget {
               ),
             ),
             alignment: Alignment.center,
-            child: Text(
-              choice is double ? choice.toStringAsFixed(2) : '$choice',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: textColor,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Math.tex(
+                choiceText,
+                textStyle: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
+                onErrorFallback: (error) => Text(
+                  choiceText,
+                  style: TextStyle(
+                     fontSize: 22,
+                     fontWeight: FontWeight.bold,
+                     color: textColor,
+                  ),
+                ),
               ),
             ),
           ),
