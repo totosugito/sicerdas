@@ -28,15 +28,24 @@ class TopicDivision extends BaseMmTopic {
     }
   }
 
-  ModelQuestion createQuestion({required KeyPadMode padMode, bool resetData = true}) {
+  ModelQuestion createQuestion({
+    required KeyPadMode padMode,
+    bool resetData = true,
+  }) {
     switch (keyChapter) {
       case KeyChapter.divisionSequential:
       case KeyChapter.division1Digit:
-        return (_division1Digit.newQuestion(padMode: padMode, resetData: resetData));
+        return (_division1Digit.newQuestion(
+          padMode: padMode,
+          resetData: resetData,
+        ));
       case KeyChapter.division2Digit:
       case KeyChapter.division3Digit:
       case KeyChapter.divisionSimple:
-        return (_division2Digit.newQuestion(padMode: padMode, resetData: resetData));
+        return (_division2Digit.newQuestion(
+          padMode: padMode,
+          resetData: resetData,
+        ));
       default:
         return (ModelQuestion.empty());
     }
