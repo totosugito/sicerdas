@@ -5,6 +5,8 @@ import 'models/model_question.dart';
 import 'modules/addition/topic_addition.dart';
 import 'modules/clock/topic_clock.dart';
 import 'modules/division/topic_division.dart';
+import 'modules/factorization/topic_factorization.dart';
+import 'modules/fractions/topic_fractions.dart';
 
 class LibMathMaster {
   static T? _enumFromString<T>(Iterable<T> values, String value) {
@@ -22,6 +24,8 @@ class LibMathMaster {
   late TopicAddition _topicAddition;
   late TopicClock _topicClock;
   late TopicDivision _topicDivision;
+  late TopicFactorization _topicFactorization;
+  late TopicFractions _topicFractions;
 
   LibMathMaster.init(this._chapter, this._mdChapter) {
     KeyChapter keyChapter = _enumFromString(
@@ -37,6 +41,12 @@ class LibMathMaster {
         break;
       case KeyTopic.topicDivision:
         _topicDivision = TopicDivision(_chapter, _mdChapter, keyChapter);
+        break;
+      case KeyTopic.topicPrimeFactorization:
+        _topicFactorization = TopicFactorization(_chapter, _mdChapter, keyChapter);
+        break;
+      case KeyTopic.topicFractions:
+        _topicFractions = TopicFractions(_chapter, _mdChapter, keyChapter);
         break;
       default:
         break;
@@ -63,6 +73,16 @@ class LibMathMaster {
           padMode: padMode,
           resetData: resetData,
         );
+      case KeyTopic.topicPrimeFactorization:
+        return _topicFactorization.createQuestion(
+          padMode: padMode,
+          resetData: resetData,
+        );
+      case KeyTopic.topicFractions:
+        return _topicFractions.createQuestion(
+          padMode: padMode,
+          resetData: resetData,
+        );
       default:
         return ModelQuestion.empty();
     }
@@ -78,6 +98,12 @@ class LibMathMaster {
         break;
       case KeyTopic.topicDivision:
         _topicDivision.updateSolution(question, solutionText: solutionText);
+        break;
+      case KeyTopic.topicPrimeFactorization:
+        _topicFactorization.updateSolution(question, solutionText: solutionText);
+        break;
+      case KeyTopic.topicFractions:
+        _topicFractions.updateSolution(question, solutionText: solutionText);
         break;
       default:
         break;

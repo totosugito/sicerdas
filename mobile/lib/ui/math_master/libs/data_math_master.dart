@@ -8,6 +8,8 @@ import 'models/achievement_parent.dart';
 import 'modules/addition/chapter_addition.dart';
 import 'modules/clock/chapter_clock.dart';
 import 'modules/division/chapter_division.dart';
+import 'modules/factorization/chapter_factorization.dart';
+import 'modules/fractions/chapter_fractions.dart';
 
 class DataMathMaster {
   static void _addChapter(
@@ -138,6 +140,18 @@ class DataMathMaster {
         title: locale.topics_division,
         assets: 'division',
       ),
+      ModelItem(
+        id: KeyTopic.topicPrimeFactorization.index,
+        key: KeyTopic.topicPrimeFactorization.name,
+        title: locale.topics_factorization,
+        assets: 'factorization',
+      ),
+      ModelItem(
+        id: KeyTopic.topicFractions.index,
+        key: KeyTopic.topicFractions.name,
+        title: locale.topics_fractions,
+        assets: 'fractions',
+      ),
     ];
     list.sort((a, b) => a.id.compareTo(b.id)); // sort by topic
     return list;
@@ -168,6 +182,8 @@ class DataMathMaster {
     _addChapter(list, ChapterAddition.create(context));
     _addChapter(list, ChapterClock.create(context));
     _addChapter(list, ChapterDivision.create(context));
+    _addChapter(list, ChapterFactorization.create(context));
+    _addChapter(list, ChapterFractions.create(context));
     return list;
   }
 }

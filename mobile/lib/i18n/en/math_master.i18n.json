@@ -86,10 +86,18 @@
   "topics_fractions": "Fractions",
   "chapter_fractions_simplest_form": "Simplest Form",
   "chapter_fractions_from_mixed": "From Mixed Fraction",
+  "chapter_fractions_to_mixed": "To Mixed Fraction",
+  "chapter_fractions_addition": "Fractions Addition",
+  "chapter_fractions_subtraction": "Fractions Subtraction",
+  "chapter_fractions_multiplication": "Fractions Multiplication",
+  "chapter_fractions_division": "Fractions Division",
   "steps_do_the_calculation": "Do the calculation:",
   "steps_clock_1": "Convert the following hours to minutes:",
   "steps_clock_2": "Convert the following minutes to hours:",
   "steps_clock_3": "Find the elapsed time between:",
+  "steps_fractions_1": "Simplify the following fraction:",
+  "steps_fractions_3": "Convert the following mixed fraction to improper fraction:",
+  "steps_fractions_4": "Convert the following improper fraction to mixed fraction:",
   "copyright": "© {year} Sicerdas - Math Master. All Rights Reserved.",
   "solver": {
     "addition_tables": "Addition Table",
@@ -100,6 +108,19 @@
     "do_the_calculation": "Do the calculation:",
     "use_this_rule": "Use this rule:",
     "therefore_missing_digit": "Therefore, the missing digit is:",
-    "solve_the_question": "Solve the following question:"
-  }
+    "solve_the_question": "Solve the following question:",
+    "and_text": "and",
+    "steps_no_solution": "No solution",
+    "steps_factorization_1": "Create factor tree of %s:%s",
+    "steps_factorization_2": "Prime factorization of %s:%s",
+    "steps_factorization_3": "Take the prime factor that has the same base and smallest power:%s",
+    "steps_factorization_4": "Therefore, GCF is:%s",
+    "steps_factorization_5": "Take all prime factors with the largest power:%s",
+    "steps_factorization_6": "Therefore, LCM is:%s",
+    "remainder_of_text": " remainder ",
+    "steps_fractions_2": "Simplest form of %s/%s by dividing numerator and denominator with GCF (%s):%s"
+  },
+  "topics_factorization": "Factorization",
+  "chapter_factorization_gcf": "Greatest Common Factor (GCF)",
+  "chapter_factorization_lcm": "Least Common Multiple (LCM)"
 }

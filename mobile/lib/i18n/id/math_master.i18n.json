@@ -86,10 +86,18 @@
   "topics_fractions": "Pecahan",
   "chapter_fractions_simplest_form": "Bentuk Paling Sederhana",
   "chapter_fractions_from_mixed": "Dari Pecahan Campuran",
+  "chapter_fractions_to_mixed": "Ke Pecahan Campuran",
+  "chapter_fractions_addition": "Penjumlahan Pecahan",
+  "chapter_fractions_subtraction": "Pengurangan Pecahan",
+  "chapter_fractions_multiplication": "Perkalian Pecahan",
+  "chapter_fractions_division": "Pembagian Pecahan",
   "steps_do_the_calculation": "Lakukan perhitungan:",
   "steps_clock_1": "Ubah jam berikut ke menit:",
   "steps_clock_2": "Ubah menit berikut ke jam:",
   "steps_clock_3": "Cari selang waktu antara:",
+  "steps_fractions_1": "Sederhanakan pecahan berikut:",
+  "steps_fractions_3": "Ubah pecahan campuran berikut ke pecahan biasa:",
+  "steps_fractions_4": "Ubah pecahan biasa berikut ke pecahan campuran:",
   "copyright": "© {year} Sicerdas - Math Master. Hak Cipta Dilindungi.",
   "solver": {
     "addition_tables": "Tabel Penjumlahan",
@@ -100,6 +108,19 @@
     "do_the_calculation": "Lakukan perhitungan:",
     "use_this_rule": "Gunakan aturan ini:",
     "therefore_missing_digit": "Maka Digit yang Hilang:",
-    "solve_the_question": "Selesaikan pertanyaan berikut:"
-  }
+    "solve_the_question": "Selesaikan pertanyaan berikut:",
+    "and_text": "dan",
+    "steps_no_solution": "Tidak ada penyelesaian",
+    "steps_factorization_1": "Buat pohon faktor dari %s:%s",
+    "steps_factorization_2": "Faktorisasi prima dari %s:%s",
+    "steps_factorization_3": "Ambil faktor prima yang memiliki basis sama dan pangkat terkecil:%s",
+    "steps_factorization_4": "Maka FPB adalah:%s",
+    "steps_factorization_5": "Ambil semua faktor prima dengan pangkat terbesar:%s",
+    "steps_factorization_6": "Maka KPK adalah:%s",
+    "remainder_of_text": " sisa ",
+    "steps_fractions_2": "Bentuk paling sederhana dari %s/%s dengan membagi pembilang dan penyebut dengan FPB (%s):%s"
+  },
+  "topics_factorization": "Faktorisasi",
+  "chapter_factorization_gcf": "Faktor Persekutuan Terbesar (FPB)",
+  "chapter_factorization_lcm": "Kelipatan Persekutuan Terkecil (KPK)"
 }
