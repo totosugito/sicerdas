@@ -93,7 +93,10 @@ class _UiMmStepsSolutionState extends State<UiMmStepsSolution> {
         isDark ? const Color(0xFF151515) : Colors.white,
       );
 
-      final correctAnswerText = _getCorrectAnswer();
+      final rawAnswer = _getCorrectAnswer();
+      final correctAnswerText = widget.question.isLatex
+          ? '\$$rawAnswer\$'
+          : rawAnswer;
       final currentYear = DateTime.now().year.toString();
       final copyrightText = locale.copyright(year: currentYear);
 

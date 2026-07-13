@@ -16,9 +16,9 @@ class ClockElapsedTime extends ClockHoursToMinutes {
   String getQuestionTemplate() {
     switch (padMode) {
       case KeyPadMode.padYesNo:
-        return ("\\begin{aligned}\\text{@0} - \\text{@1}\\ = @2\\end{aligned}");
+        return ("\\begin{gathered}\\text{@0} - \\text{@1}\\\\ = \\\\ @2\\end{gathered}");
       default:
-        return ("\\begin{aligned}\\text{@0} - \\text{@1}\\end{aligned}");
+        return ("\\begin{gathered}\\text{@0} - \\text{@1}\\end{gathered}");
     }
   }
 

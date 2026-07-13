@@ -77,7 +77,6 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
 
   // Question / Answer states
   bool _answered = false;
-  num? _selectedAnswer;
   int? _selectedIndex;
   String _numInput = '';
   KeyPadMode _currentPadMode = KeyPadMode.pad4Pad;
@@ -138,7 +137,6 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
         resetData: true,
       );
       _answered = false;
-      _selectedAnswer = null;
       _selectedIndex = null;
       _numInput = '';
       _selectedYes = null;
@@ -158,7 +156,6 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
 
     setState(() {
       _answered = true;
-      _selectedAnswer = answer;
       _questionResults[_currentQuestionIndex] = isCorrect;
       if (isCorrect) {
         _correctAnswers++;

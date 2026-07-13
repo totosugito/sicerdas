@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
-import 'package:intl/intl.dart';
 import '../libs/data_math_master.dart';
 import '../libs/models/achievement_parent.dart';
 import '../libs/providers/math_master_repository.dart';
@@ -86,7 +85,6 @@ class _UiMmAchievementState extends ConsumerState<UiMmAchievement> {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final locale = Translations.of(context).math_master;
     final formatter = NumberFormat.decimalPattern();
 
