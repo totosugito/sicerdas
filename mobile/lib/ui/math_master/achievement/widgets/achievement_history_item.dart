@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:intl/intl.dart';
 import 'package:bse/i18n/strings.g.dart';
 import '../../libs/models/achievement_parent.dart';
 

@@ -550,7 +550,7 @@ class EquationRowNode extends ParentableNode<GreenNode>
       flattenedBuildResults.length,
       (index) => LineElement(
         child: flattenedBuildResults[index].widget,
-        canBreakBefore: false, // TODO
+        canBreakBefore: false, // -TODO
         alignerOrSpacer: flattenedChildList[index] is SpaceNode &&
             (flattenedChildList[index] as SpaceNode).alignerOrSpacer,
         trailingMargin: childSpacingConfs[index].spacingAfter,
@@ -813,7 +813,6 @@ enum AtomType {
   inner,
 
   spacing, // symbols
-
 }
 
 /// Only for improvisional use during parsing. Do not use.

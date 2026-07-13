@@ -37,12 +37,12 @@ linter:
     - prefer_iterable_whereType
     - prefer_function_declarations_over_variables
     - unnecessary_lambdas
-    - prefer_equal_for_default_values
-    - #avoid_init_to_null
+    # - prefer_equal_for_default_values
+    # - avoid_init_to_null
     - unnecessary_getters_setters
     # - unnecessary_getters
     - prefer_expression_function_bodies
-    - #unnecessary_this
+    # - unnecessary_this
     - prefer_initializing_formals
     - type_init_formals
     - empty_constructor_bodies

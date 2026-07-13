@@ -274,6 +274,7 @@ class MathSelectionOverlay {
     // toolbar.
     // Derived from both iOS and Android.
     final midX = isMultiline
+        // ignore: dead_code
         ? editingRegion.width / 2
         : (endpoint1.dx + endpoint2.dx) / 2;
 

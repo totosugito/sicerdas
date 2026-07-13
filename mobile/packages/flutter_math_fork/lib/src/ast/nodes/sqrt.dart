@@ -12,8 +12,8 @@ import '../../render/layout/reset_baseline.dart';
 import '../../render/svg/delimiter.dart';
 import '../../render/svg/svg_geomertry.dart';
 import '../../render/svg/svg_string.dart';
-import '../../render/utils/render_box_offset.dart';
 import '../../render/utils/render_box_layout.dart';
+import '../../render/utils/render_box_offset.dart';
 import '../options.dart';
 import '../size.dart';
 import '../style.dart';
@@ -45,7 +45,7 @@ class SqrtNode extends SlotableNode {
     return BuildResult(
       options: options,
       widget: CustomLayout<_SqrtPos>(
-        delegate: SqrtLayoutDelegate(
+        delegate: _SqrtLayoutDelegate(
           options: options,
           baseOptions: baseResult.options,
           // indexOptions: indexResult?.options,
@@ -133,12 +133,12 @@ enum _SqrtPos {
 }
 
 // Square roots are handled in the TeXbook pg. 443, Rule 11.
-class SqrtLayoutDelegate extends CustomLayoutDelegate<_SqrtPos> {
+class _SqrtLayoutDelegate extends CustomLayoutDelegate<_SqrtPos> {
   final MathOptions options;
   final MathOptions baseOptions;
   // final MathOptions indexOptions;
 
-  SqrtLayoutDelegate({
+  _SqrtLayoutDelegate({
     required this.options,
     required this.baseOptions,
     // required this.indexOptions,
@@ -172,8 +172,8 @@ class SqrtLayoutDelegate extends CustomLayoutDelegate<_SqrtPos> {
     final index = childrenTable[_SqrtPos.ind];
     final surd = childrenTable[_SqrtPos.surd]!;
 
-    final Size baseSize = base.getLayoutSize(infiniteConstraint, dry: dry);
-    final Size indexSize = index?.getLayoutSize(
+    final baseSize = base.getLayoutSize(infiniteConstraint, dry: dry);
+    final indexSize = index?.getLayoutSize(
           infiniteConstraint,
           dry: dry,
         ) ??
@@ -196,7 +196,7 @@ class SqrtLayoutDelegate extends CustomLayoutDelegate<_SqrtPos> {
       minWidth: baseWidth,
       minHeight: minSqrtHeight,
     );
-    final Size surdSize = surd.getLayoutSize(surdConstraints, dry: dry);
+    final surdSize = surd.getLayoutSize(surdConstraints, dry: dry);
 
     final advanceWidth = getSqrtAdvanceWidth(minSqrtHeight, baseWidth, options);
 

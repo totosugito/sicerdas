@@ -296,7 +296,7 @@ class RenderEditableLine extends RenderLine {
 
   EquationRowNode node;
 
-  /// {@template flutter.rendering.editable.paintCursorOnTop}
+  /// Whether the cursor is painted on top of the text.
   bool get paintCursorAboveText => _paintCursorAboveText;
   bool _paintCursorAboveText;
   set paintCursorAboveText(bool value) {
