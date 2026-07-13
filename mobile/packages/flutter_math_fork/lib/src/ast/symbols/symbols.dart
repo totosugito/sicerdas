@@ -40,7 +40,9 @@ class SymbolId {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is SymbolId && other.symbol == symbol && other.variantForm == variantForm;
+    return other is SymbolId &&
+        other.symbol == symbol &&
+        other.variantForm == variantForm;
   }
 
   @override

@@ -11,13 +11,13 @@ class ResetDimension extends SingleChildRenderObjectWidget {
   final CrossAxisAlignment horizontalAlignment;
 
   const ResetDimension({
-    Key? key,
+    super.key,
     this.height,
     this.depth,
     this.width,
     this.horizontalAlignment = CrossAxisAlignment.center,
-    required Widget child,
-  }) : super(key: key, child: child);
+    required Widget super.child,
+  });
 
   @override
   RenderResetDimension createRenderObject(BuildContext context) =>

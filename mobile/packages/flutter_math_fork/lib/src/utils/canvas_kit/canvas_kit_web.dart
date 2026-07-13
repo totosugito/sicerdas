@@ -1,4 +1,4 @@
-// ignore: avoid_web_libraries_in_flutter
+// ignore: deprecated_member_use, avoid_web_libraries_in_flutter
 import 'dart:js';
 
 /// Whether the CanvasKit renderer is being used on web.

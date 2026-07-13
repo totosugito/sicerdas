@@ -290,6 +290,7 @@ class MathSelectionOverlay {
         link: toolbarLayerLink,
         showWhenUnlinked: false,
         offset: -editingRegion.topLeft,
+        // ignore: deprecated_member_use
         child: selectionControls!.buildToolbar(
           context,
           editingRegion,
