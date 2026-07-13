@@ -98,7 +98,7 @@ final _fracOptimizationEntries = [
       final res = TexCommandEncodeResult(
         command: '\\genfrac',
         args: <dynamic>[
-          // TODO
+          // -TODO
           leftRight.leftDelim == null
               ? null
               : SymbolNode(symbol: leftRight.leftDelim!),

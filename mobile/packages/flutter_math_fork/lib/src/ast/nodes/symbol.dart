@@ -87,7 +87,7 @@ class SymbolNode extends LeafNode {
       }
       return SyntaxNode(parent: null, value: res, pos: 0).buildWidget(options);
     } else {
-      // TODO: log a warning here.
+      // -TODO: log a warning here.
       return BuildResult(
         widget: const SizedBox.shrink(),
         options: options,

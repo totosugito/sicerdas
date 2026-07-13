@@ -266,7 +266,7 @@ class MathSelectionOverlay {
 
     final editingRegion = manager.getLocalEditingRegion();
 
-    final isMultiline = false; // TODO
+    final isMultiline = false; // -TODO
     // endpoints.last.point.dy - endpoints.first.point.dy >
     // manager.preferredLineHeight / 2;
 

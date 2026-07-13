@@ -24,7 +24,6 @@
 import 'dart:collection';
 import 'dart:ui';
 
-
 import '../../ast/nodes/multiscripts.dart';
 import '../../ast/nodes/over.dart';
 import '../../ast/nodes/style.dart';
@@ -70,8 +69,7 @@ class TexParser {
       macroExpander.beginGroup();
     }
     if (settings.colorIsTextColor) {
-      macroExpander
-          .macros
+      macroExpander.macros
           .set('\\color', MacroDefinition.fromString('\\textcolor'));
     }
     final parse = parseExpression(breakOnInfix: false);
@@ -383,8 +381,8 @@ class TexParser {
     } else {
       // If there exists a function with this name, parse the function.
       // Otherwise, just return a nucleus
-      result = parseFunction(breakOnTokenText, name, greediness) ??
-          _parseSymbol();
+      result =
+          parseFunction(breakOnTokenText, name, greediness) ?? _parseSymbol();
       if (result == null &&
           text[0] == '\\' &&
           !implicitCommands.contains(text)) {
@@ -465,8 +463,7 @@ class TexParser {
   void _assertOptionalBeforeReturn(dynamic value, {required bool optional}) {
     if (!optional && value == null) {
       throw ParseException(
-          'Expected group after ${currArgParsingContext.funcName}',
-          fetch());
+          'Expected group after ${currArgParsingContext.funcName}', fetch());
     }
   }
 
@@ -614,10 +611,8 @@ class TexParser {
     } else {
       return StyleNode(
         optionsDiff: OptionsDiff(style: MathStyle.text),
-        children: res?.children
-                .whereType<GreenNode>()
-                .toList(growable: false) ??
-            [],
+        children:
+            res?.children.whereType<GreenNode>().toList(growable: false) ?? [],
       );
     }
   }
@@ -813,7 +808,7 @@ class TexParser {
   }
 
   GreenNode _formatUnsuppotedCmd(String text) {
-    //TODO
+    //-TODO
     throw UnimplementedError();
   }
 }

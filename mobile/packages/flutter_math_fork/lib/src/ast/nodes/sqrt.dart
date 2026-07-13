@@ -317,7 +317,7 @@ Widget sqrtSvg({
   final extraViniculum = 0.0; //math.max(0.0, options)
   // final ruleWidth =
   //     options.fontMetrics.sqrtRuleThickness.cssEm.toLpUnder(options);
-  // TODO: support Settings.minRuleThickness.
+  // -TODO: support Settings.minRuleThickness.
 
   // These are the known height + depth for \u221A
   if (delimConf != null) {

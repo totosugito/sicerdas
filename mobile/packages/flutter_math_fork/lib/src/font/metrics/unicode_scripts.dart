@@ -51,7 +51,7 @@ const Map<String, List<List<int>>> scriptData = {
     [0x3000, 0x30FF], // CJK symbols and punctuation, Hiragana, Katakana
     [0x4E00, 0x9FAF], // CJK ideograms
     [0xFF00, 0xFF60], // Fullwidth punctuation
-    // TODO: add halfwidth Katakana and Romanji glyphs
+    // -TODO: add halfwidth Katakana and Romanji glyphs
   ],
 
   // Korean
