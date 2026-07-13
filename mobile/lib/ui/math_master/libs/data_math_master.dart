@@ -7,6 +7,7 @@ import 'models/model_item.dart';
 import 'models/achievement_parent.dart';
 import 'modules/addition/chapter_addition.dart';
 import 'modules/clock/chapter_clock.dart';
+import 'modules/division/chapter_division.dart';
 
 class DataMathMaster {
   static void _addChapter(
@@ -131,6 +132,12 @@ class DataMathMaster {
         title: locale.topics_clock,
         assets: 'clock',
       ),
+      ModelItem(
+        id: KeyTopic.topicDivision.index,
+        key: KeyTopic.topicDivision.name,
+        title: locale.topics_division,
+        assets: 'division',
+      ),
     ];
     list.sort((a, b) => a.id.compareTo(b.id)); // sort by topic
     return list;
@@ -160,6 +167,7 @@ class DataMathMaster {
     List<ModelChapter> list = [];
     _addChapter(list, ChapterAddition.create(context));
     _addChapter(list, ChapterClock.create(context));
+    _addChapter(list, ChapterDivision.create(context));
     return list;
   }
 }
