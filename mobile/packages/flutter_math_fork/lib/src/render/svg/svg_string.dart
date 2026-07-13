@@ -14,7 +14,7 @@ String svgStringFromPath(
     'viewBox='
     '"${viewBox.left} ${viewBox.top} ${viewBox.width} ${viewBox.height}" '
     '>'
-    '<path fill="rgb(${color.red},${color.green},${color.blue})" d="$path"></path>'
+    '<path fill="rgb(${(color.r * 255).round()},${(color.g * 255).round()},${(color.b * 255).round()})" d="$path"></path>'
     '</svg>';
 
 final _alignmentToString = {
@@ -50,7 +50,7 @@ Widget svgWidgetFromPath(
 
   final svgString = svgStringFromPath(path, viewPort, viewBox, color,
       preserveAspectRatio: preserveAspectRatio);
-  return Container(
+  return SizedBox(
     height: viewPort.height,
     width: viewPort.width,
     child: SvgPicture.string(
