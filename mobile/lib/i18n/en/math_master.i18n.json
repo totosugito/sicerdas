@@ -118,7 +118,7 @@
     "steps_factorization_5": "Find all prime factors with the largest power:%s",
     "steps_factorization_6": "Therefore, the LCM of %s is:%s",
     "remainder_of_text": " remainder ",
-    "steps_fractions_2": "Simplest form of %s/%s by dividing numerator and denominator with GCF (%s):%s"
+    "steps_fractions_2": "Simplify the fraction $\\\\frac\\\\{%s}\\\\{%s}$ by dividing both the numerator and denominator by their GCF of %s (divided by %s):"
   },
   "topics_factorization": "Factorization",
   "chapter_factorization_gcf": "Greatest Common Factor (GCF)",

@@ -118,7 +118,7 @@
     "steps_factorization_5": "Tentukan semua faktor prima dengan pangkat terbesar:%s",
     "steps_factorization_6": "KPK dari %s adalah:%s",
     "remainder_of_text": " sisa ",
-    "steps_fractions_2": "Bentuk paling sederhana dari %s/%s dengan membagi pembilang dan penyebut dengan FPB (%s):%s"
+    "steps_fractions_2": "Sederhanakan pecahan $\\\\frac\\\\{%s}\\\\{%s}$ dengan membagi pembilang dan penyebut dengan FPB-nya yaitu %s (dibagi %s):"
   },
   "topics_factorization": "Faktorisasi",
   "chapter_factorization_gcf": "Faktor Persekutuan Terbesar (FPB)",
