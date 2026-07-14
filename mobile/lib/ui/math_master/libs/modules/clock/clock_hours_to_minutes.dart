@@ -35,7 +35,7 @@ class ClockHoursToMinutes extends ClockMinutesToHours {
     number0.toSimplify();
     numbers.add(number0);
 
-    answer = MyNumber.clone(number0);
+    answer = MyNumber.toMinutes(number0);
     choices = createChoiceFractions(simplify: true, minMax: modelNumber0);
     for (var choice in choices) {
       choice.value.hoursToMinutes(); // convert to minutes

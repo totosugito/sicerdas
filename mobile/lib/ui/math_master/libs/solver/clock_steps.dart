@@ -21,95 +21,201 @@ class ClockSteps extends LibHtml {
     return (html);
   }
 
-  String _htmlCalcMinutesToHours(String label, MyNumber number) {
-    String htmlLabel = span(
-      id: idStepsLabel,
+  String _htmlCalcMinutesToHours(MyNumber number) {
+    String html = "";
+    int totalMinutes = number.getValI();
+
+    // Step 1: Divide by 60
+    html += liSpan(
       value:
-          "$label${tex(value: number.getValI().toString() + texText(value: " ${t.math_master.minutes_text.toLowerCase()}"))}${br()}\n",
+          span(
+            id: idStepsLabel,
+            value: t.math_master.solver.clock_min_to_hours_step_1 + br(),
+          ) +
+          tex(
+            value:
+                "$totalMinutes \\div 60 = ${totalMinutes ~/ 60}\\text{ ${t.math_master.solver.remainder_of_text} }${totalMinutes % 60}",
+          ),
     );
 
-    String html = "${texEqual()}${number.getValI()} : 60${texBr()}"; // = a : 60
-    if (answer.getNum() != 0) {
-      String v0 = answer.getValI().toString();
-      int residue = number.getValI() % 60;
-      String n0 = residue.toString();
+    // Step 2: Get quotient and remainder
+    int hours = totalMinutes ~/ 60;
+    int mins = totalMinutes % 60;
+    html += liSpan(
+      value:
+          span(
+            id: idStepsLabel,
+            value: t.math_master.solver.clock_min_to_hours_step_2 + br(),
+          ) +
+          tex(
+            value:
+                "$hours\\text{ ${t.math_master.hours_sort_text.toLowerCase()} } + $mins\\text{ ${t.math_master.minutes_sort_text.toLowerCase()} }",
+          ),
+    );
 
-      // show as text = 5 hr 30 min
-      html +=
-          texEqual() +
-          answer.getValI().toString() +
-          texText(value: " ${t.math_master.hours_sort_text.toLowerCase()} + ") +
-          residue.toString() +
-          texText(value: " ${t.math_master.minutes_sort_text.toLowerCase()}") +
-          texBr();
-
-      // show as fraction
-      html +=
-          texEqual() +
-          texFrac(value: v0, numerator: n0, denominator: "60") +
-          texBr(isNormal: false); // = a b/c
-
-      // simplest form
-      int gcf = libFactor.fastGcf([
-        MyNumber(value: residue),
-        MyNumber(value: 60),
-      ]);
-      if (residue != answer.getNum()) {
-        html +=
-            texEqual() +
-            texFrac(
-              value: v0,
-              numerator: n0 + divide() + gcf.toString(),
-              denominator: "60${divide()}$gcf",
+    if (mins != 0) {
+      // Step 3: Write remainder as fraction
+      html += liSpan(
+        value:
+            span(
+              id: idStepsLabel,
+              value: t.math_master.solver.clock_min_to_hours_step_3 + br(),
             ) +
-            texBr(isNormal: false); // = a b/c
+            tex(
+              value:
+                  "$hours\\frac{$mins}{60}\\text{ ${t.math_master.hours_sort_text.toLowerCase()} }",
+            ),
+      );
+
+      // Step 4: Simplify if GCF > 1
+      int gcf = libFactor.fastGcf([MyNumber(value: mins), MyNumber(value: 60)]);
+      if (gcf > 1) {
+        html += liSpan(
+          value:
+              span(
+                id: idStepsLabel,
+                value: t.math_master.solver.clock_min_to_hours_step_4 + br(),
+              ) +
+              tex(
+                value:
+                    "$hours\\frac{$mins \\div $gcf}{60 \\div $gcf} = ${answer.toString()}\\text{ ${t.math_master.hours_sort_text.toLowerCase()} }",
+              ),
+        );
       }
     }
-
-    // final result = 5 hours
-    html +=
-        texEqual() +
-        answer.toString() +
-        texText(value: " ${t.math_master.hours_sort_text.toLowerCase()}");
-
-    html = tex(value: texAligned(value: html));
-    return (htmlLabel + html);
+    return html;
   }
 
-  String _htmlCalcHoursToMinutes(String label, MyNumber number) {
-    String htmlLabel = span(
-      id: idStepsLabel,
-      value: "$label${tex(value: "${number.toString()}${texText(value: " ${t.math_master.hour_text.toLowerCase()}")}")}${br()}\n",
+  String _htmlCalcHoursToMinutes(MyNumber number) {
+    String html = "";
+    if (number.isFraction()) {
+      // Step 1: Separate integer and fraction parts
+      html += liSpan(
+        value:
+            span(
+              id: idStepsLabel,
+              value: t.math_master.solver.clock_hours_to_min_step_2_frac + br(),
+            ) +
+            tex(
+              value:
+                  "${number.toString()}\\text{ ${t.math_master.hour_text.toLowerCase()} } = ${number.getValI()}\\text{ ${t.math_master.hour_text.toLowerCase()} } + \\frac{${number.getNum()}}{${number.getDen()}}\\text{ ${t.math_master.hour_text.toLowerCase()} }",
+            ),
+      );
+
+      // Step 2: Multiply integer part by 60
+      int wholeMins = number.getValI() * 60;
+      html += liSpan(
+        value:
+            span(
+              id: idStepsLabel,
+              value: t.math_master.solver.clock_hours_to_min_step_3_frac + br(),
+            ) +
+            tex(
+              value:
+                  "${number.getValI()} \\times 60 = $wholeMins\\text{ ${t.math_master.minutes_sort_text.toLowerCase()} }",
+            ),
+      );
+
+      // Step 3: Multiply fraction part by 60
+      int fracMins = number.getNum() * 60 ~/ number.getDen();
+      html += liSpan(
+        value:
+            span(
+              id: idStepsLabel,
+              value: t.math_master.solver.clock_hours_to_min_step_4_frac + br(),
+            ) +
+            tex(
+              value:
+                  "\\frac{${number.getNum()}}{${number.getDen()}} \\times 60 = $fracMins\\text{ ${t.math_master.minutes_sort_text.toLowerCase()} }",
+            ),
+      );
+
+      // Step 4: Add together
+      html += liSpan(
+        value:
+            span(
+              id: idStepsLabel,
+              value: t.math_master.solver.clock_hours_to_min_step_5_frac + br(),
+            ) +
+            tex(
+              value:
+                  "$wholeMins + $fracMins = ${answer.toString()}\\text{ ${t.math_master.minutes_sort_text.toLowerCase()} }",
+            ),
+      );
+    } else {
+      // Simple multiplication
+      html += liSpan(
+        value:
+            span(
+              id: idStepsLabel,
+              value: t.math_master.solver.clock_hours_to_min_step_1 + br(),
+            ) +
+            tex(
+              value:
+                  "${number.getValI()} \\times 60 = ${answer.toString()}\\text{ ${t.math_master.minutes_sort_text.toLowerCase()} }",
+            ),
+      );
+    }
+    return html;
+  }
+
+  String _htmlCalcTimeElapsed() {
+    String html = "";
+    MyNumber start = numbers[1];
+    MyNumber end = numbers[0];
+
+    // Step 1: Subtract start from end
+    html += liSpan(
+      value:
+          span(
+            id: idStepsLabel,
+            value: t.math_master.solver.clock_elapsed_step_1 + br(),
+          ) +
+          tex(value: "${end.toString()} - ${start.toString()}"),
     );
 
-    // final result = 4 minutes x 60
-    String html = "${texEqual()}$number${texTimes()}60${texBr()}"; // = a : 60
+    // Step 2: Separate grouping
+    html += liSpan(
+      value:
+          span(
+            id: idStepsLabel,
+            value: t.math_master.solver.clock_elapsed_step_2 + br(),
+          ) +
+          tex(
+            value:
+                "(${texColor(value: end.getHourText(), color: Colors.blue)} - ${texColor(value: start.getHourText(), color: Colors.blue)})\\text{ ${t.math_master.hours_sort_text.toLowerCase()} } \\text{ ${t.math_master.solver.and_text} } (${texColor(value: end.getMinuteText(), color: Colors.purple)} - ${texColor(value: start.getMinuteText(), color: Colors.purple)})\\text{ ${t.math_master.minutes_sort_text.toLowerCase()} }",
+          ),
+    );
 
-    if (number.isFraction()) {
-      html += "${texEqual()}${parenthesis(value: "${number.getValI()}${texTimes()}60")}${plus()}${parenthesis(value: "${texFrac(numerator: number.getNum().toString(), denominator: number.getDen().toString())}${texTimes()}60")}${texBr(isNormal: false)}";
-      html += "${texEqual()}${number.getValI() * 60}${plus()}${number.getNum() * 60 ~/ number.getDen()}${texBr()}";
+    if (end.getNum() < start.getNum()) {
+      // Borrowing step
+      html += liSpan(
+        value:
+            span(
+              id: idStepsLabel,
+              value: t.math_master.solver.clock_elapsed_step_3_borrow + br(),
+            ) +
+            tex(
+              value:
+                  "((${texColor(value: end.getHourText(), color: Colors.blue)} - 1) - ${texColor(value: start.getHourText(), color: Colors.blue)})\\text{ ${t.math_master.hours_sort_text.toLowerCase()} } \\text{ ${t.math_master.solver.and_text} } ((60 + ${texColor(value: end.getMinuteText(), color: Colors.purple)}) - ${texColor(value: start.getMinuteText(), color: Colors.purple)})\\text{ ${t.math_master.minutes_sort_text.toLowerCase()} }",
+            ),
+      );
     }
 
-    // final result = 220 minutes
-    html += "${texEqual()}$answer${texText(value: " ${t.math_master.minutes_sort_text.toLowerCase()}")}";
+    // Step 4: Final calculation
+    html += liSpan(
+      value:
+          span(
+            id: idStepsLabel,
+            value: t.math_master.solver.clock_elapsed_step_4 + br(),
+          ) +
+          tex(
+            value:
+                "${answer.getValueText()}\\text{ ${t.math_master.hours_sort_text.toLowerCase()} } ${answer.getNumText()}\\text{ ${t.math_master.minutes_sort_text.toLowerCase()} }",
+          ),
+    );
 
-    html = tex(value: texAligned(value: html));
-    return (htmlLabel + html);
-  }
-
-  String _htmlCalcTimeElapsed(String label) {
-    String htmlLabel = span(id: idStepsLabel, value: "$label${br()}");
-    String html = "${texEqual()}${texColor(value: numbers[0].getHourText(), color: Colors.blue)}:${texColor(value: numbers[0].getMinuteText(), color: Colors.purple)}${minus()}${texColor(value: numbers[1].getHourText(), color: Colors.blue)}:${texColor(value: numbers[1].getMinuteText(), color: Colors.purple)}${texBr()}"; // = a:b - c:d
-    html += "${texEqual()}${parenthesis(value: "${texColor(value: numbers[0].getHourText(), color: Colors.blue)}${minus()}${texColor(value: numbers[1].getHourText(), color: Colors.blue)}")}${divide()}${parenthesis(value: "${texColor(value: numbers[0].getMinuteText(), color: Colors.purple)}${minus()}${texColor(value: numbers[1].getMinuteText(), color: Colors.purple)}")}${texBr()}"; // = (a-c):(b-d)
-
-    if (numbers[0].getNum() < numbers[1].getNum()) {
-      html += "${texEqual()}${parenthesis(value: texText(value: "${texColor(value: numbers[0].getHourText(), color: Colors.blue)}${texColor(value: "${minus()}1", color: Colors.red)}${minus()}${texColor(value: numbers[1].getHourText(), color: Colors.blue)}"))}${divide()}${parenthesis(value: texText(value: "${texColor(value: "60${plus()}", color: Colors.green)}${texColor(value: numbers[0].getMinuteText(), color: Colors.purple)}${minus()}${texColor(value: numbers[1].getMinuteText(), color: Colors.purple)}"))}${texBr()}"; // = (a-1-c):(b+60-d)
-    }
-
-    html += "${texEqual()}$answer${texBr()}"; // = e:f
-    html += "${texEqual()}${answer.getValueText()}${texText(value: spacing(t.math_master.hours_sort_text))}${answer.getNumText()}${texText(value: spacing(t.math_master.minutes_sort_text))}${texBr()}"; // = e jam f mnt
-    html = tex(value: texAligned(value: html));
-    return (htmlLabel + html);
+    return html;
   }
 
   String htmlMinutesToHours() {
@@ -133,8 +239,7 @@ class ClockSteps extends LibHtml {
     html += liSpan(value: _htmlClockWeKnow(label2));
 
     // 3. do calculation
-    String label3 = t.math_master.do_calculation_of_text;
-    html += liSpan(value: _htmlCalcMinutesToHours(label3, numbers[0]));
+    html += _htmlCalcMinutesToHours(numbers[0]);
     return (ol(value: html));
   }
 
@@ -160,8 +265,7 @@ class ClockSteps extends LibHtml {
     html += liSpan(value: _htmlClockWeKnow(label2));
 
     // 3. do calculation
-    String label3 = t.math_master.do_calculation_of_text;
-    html += liSpan(value: _htmlCalcHoursToMinutes(label3, numbers[0]));
+    html += _htmlCalcHoursToMinutes(numbers[0]);
 
     return (ol(value: html));
   }
@@ -174,8 +278,7 @@ class ClockSteps extends LibHtml {
     html += liSpan(value: _htmlClockWeKnow(label2));
 
     // 2. do calculation
-    String label3 = t.math_master.steps_do_the_calculation;
-    html += liSpan(value: _htmlCalcTimeElapsed(label3));
+    html += _htmlCalcTimeElapsed();
 
     return (ol(value: html));
   }

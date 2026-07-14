@@ -4,6 +4,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
 import '../libs/models/model_question.dart';
+import '../libs/models/enums.dart';
 import 'lib/solution_html.dart';
 
 class UiMmStepsSolution extends StatefulWidget {
@@ -46,6 +47,10 @@ class _UiMmStepsSolutionState extends State<UiMmStepsSolution> {
             (c) => c.status,
             orElse: () => widget.question.choicesBool.first,
           );
+
+    if (correctChoice.value.type == KeyDataType.clock) {
+      return correctChoice.getText();
+    }
 
     if (correctChoice.value.valueText.isNotEmpty) {
       return correctChoice.value.valueText;

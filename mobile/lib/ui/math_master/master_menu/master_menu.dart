@@ -85,6 +85,10 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
       todayCorrect = summary['correct'] ?? 0;
       todayWrong = summary['wrong'] ?? 0;
 
+      final prevGroupId = selectedGroup.id;
+      final prevGradeId = selectedGrade.id;
+      final prevTopicId = selectedTopic.id;
+
       groupList = DataMathMaster.createGroupList(context);
       gradeList = DataMathMaster.createGradesList(context);
       topicList = DataMathMaster.createTopicsList(context);
@@ -99,9 +103,21 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
         }
       }
 
-      selectedGroup = groupList.first;
-      selectedGrade = gradeList.first;
-      selectedTopic = topicList.first;
+      selectedGroup = groupList.firstWhere(
+        (item) => item.id == prevGroupId,
+        orElse: () =>
+            groupList.isNotEmpty ? groupList.first : ModelItem.create(),
+      );
+      selectedGrade = gradeList.firstWhere(
+        (item) => item.id == prevGradeId,
+        orElse: () =>
+            gradeList.isNotEmpty ? gradeList.first : ModelItem.create(),
+      );
+      selectedTopic = topicList.firstWhere(
+        (item) => item.id == prevTopicId,
+        orElse: () =>
+            topicList.isNotEmpty ? topicList.first : ModelItem.create(),
+      );
 
       _updateSelectedChapters();
     });
