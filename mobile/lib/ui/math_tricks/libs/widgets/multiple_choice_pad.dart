@@ -68,8 +68,8 @@ class MultipleChoicePad extends StatelessWidget {
             ),
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               child: Math.tex(
                 choiceText,
                 textStyle: TextStyle(

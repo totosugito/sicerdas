@@ -7,8 +7,8 @@ class TrainingProgressHeader extends StatelessWidget {
   final int totalQuestions;
   final int correctAnswers;
   final int wrongAnswers;
-  final String formattedTime;
-  final bool timeWarning;
+  final ValueNotifier<int> secondsNotifier;
+  final int timeLimitMode;
 
   const TrainingProgressHeader({
     super.key,
@@ -16,8 +16,8 @@ class TrainingProgressHeader extends StatelessWidget {
     required this.totalQuestions,
     required this.correctAnswers,
     required this.wrongAnswers,
-    required this.formattedTime,
-    required this.timeWarning,
+    required this.secondsNotifier,
+    required this.timeLimitMode,
   });
 
   @override
@@ -66,45 +66,55 @@ class TrainingProgressHeader extends StatelessWidget {
             Row(
               children: [
                 // Timer Pill
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: timeWarning
-                        ? Colors.red.withValues(alpha: isDark ? 0.15 : 0.08)
-                        : theme.colorScheme.muted,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: timeWarning
-                          ? Colors.red.withValues(alpha: 0.3)
-                          : theme.colorScheme.border,
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.timer_outlined,
-                        size: 14,
-                        color: timeWarning
-                            ? Colors.red
-                            : theme.colorScheme.foreground,
+                ValueListenableBuilder<int>(
+                  valueListenable: secondsNotifier,
+                  builder: (context, seconds, child) {
+                    final minutes = seconds ~/ 60;
+                    final displaySecs = seconds % 60;
+                    final formattedTime = '$minutes:${displaySecs.toString().padLeft(2, '0')}';
+                    final timeWarning = timeLimitMode > 0 && seconds < 15;
+
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        formattedTime,
-                        style: theme.textTheme.small.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                      decoration: BoxDecoration(
+                        color: timeWarning
+                            ? Colors.red.withValues(alpha: isDark ? 0.15 : 0.08)
+                            : theme.colorScheme.muted,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
                           color: timeWarning
-                              ? Colors.red
-                              : theme.colorScheme.foreground,
+                              ? Colors.red.withValues(alpha: 0.3)
+                              : theme.colorScheme.border,
+                          width: 1,
                         ),
                       ),
-                    ],
-                  ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.timer_outlined,
+                            size: 14,
+                            color: timeWarning
+                                ? Colors.red
+                                : theme.colorScheme.foreground,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            formattedTime,
+                            style: theme.textTheme.small.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              color: timeWarning
+                                  ? Colors.red
+                                  : theme.colorScheme.foreground,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(width: 8),
                 // Score Badge (Unified Correct/Wrong)

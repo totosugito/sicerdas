@@ -35,8 +35,8 @@ class TrainingQuestionCard extends StatelessWidget {
                 isLaTex
                     ? SizedBox(
                         width: MediaQuery.of(context).size.width - 96,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
                           child: Math.tex(
                             question,
                             textStyle: theme.textTheme.h1.copyWith(

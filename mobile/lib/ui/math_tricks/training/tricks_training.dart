@@ -61,7 +61,8 @@ class TricksTrainingScreen extends ConsumerStatefulWidget {
   }
 
   @override
-  ConsumerState<TricksTrainingScreen> createState() => _TricksTrainingScreenState();
+  ConsumerState<TricksTrainingScreen> createState() =>
+      _TricksTrainingScreenState();
 }
 
 class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
@@ -96,7 +97,8 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
     super.initState();
     _generateNextQuestion();
     final supported = _currentQuestion.supportedKeyPads;
-    if (widget.initialKeyPadMode != null && supported.contains(widget.initialKeyPadMode)) {
+    if (widget.initialKeyPadMode != null &&
+        supported.contains(widget.initialKeyPadMode)) {
       _currentPadMode = widget.initialKeyPadMode!;
     } else if (supported.isNotEmpty) {
       final preferredIndex = 0; //widget.level % supported.length;
@@ -124,7 +126,10 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
   }
 
   void _generateNextQuestion() {
-    _currentQuestion = TricksQuestionGenerator.generate(widget.chapterKey, widget.level);
+    _currentQuestion = TricksQuestionGenerator.generate(
+      widget.chapterKey,
+      widget.level,
+    );
     _answered = false;
     _selectedAnswer = null;
     _numInput = '';
@@ -135,7 +140,9 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
     if (showCorrect) {
       _proposedAnswer = _currentQuestion.answer;
     } else {
-      final distractors = _currentQuestion.choices.where((c) => c != _currentQuestion.answer).toList();
+      final distractors = _currentQuestion.choices
+          .where((c) => c != _currentQuestion.answer)
+          .toList();
       if (distractors.isNotEmpty) {
         _proposedAnswer = distractors[_random.nextInt(distractors.length)];
       } else {
@@ -167,7 +174,8 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
   void _onYesNoAnswered(bool chosenYes) {
     if (_answered) return;
 
-    final bool isProposedAnswerCorrect = (_proposedAnswer == _currentQuestion.answer);
+    final bool isProposedAnswerCorrect =
+        (_proposedAnswer == _currentQuestion.answer);
     final bool correct = (chosenYes == isProposedAnswerCorrect);
 
     setState(() {
@@ -248,11 +256,15 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
       _onAnswerSubmitted(_currentQuestion.answer + 1);
     }
 
-    SolutionSheet.show(context, htmlContent: _currentQuestion.buildSolutionHtml(context));
+    SolutionSheet.show(
+      context,
+      htmlContent: _currentQuestion.buildSolutionHtml(context),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    print("build");
     final theme = ShadTheme.of(context);
     final l10n = Translations.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -299,7 +311,8 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
       body: SafeArea(
         child: Builder(
           builder: (context) {
-            final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+            final isLandscape =
+                MediaQuery.of(context).orientation == Orientation.landscape;
             Widget content = Column(
               children: [
                 // Progress Dots Bar
@@ -327,7 +340,10 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
                 Padding(
                   padding: EdgeInsets.all(isLandscape ? 12.0 : 24.0),
                   child: Center(
-                    child: SizedBox(width: isLandscape ? 400 : double.infinity, child: _buildInputWidget(isDark)),
+                    child: SizedBox(
+                      width: isLandscape ? 400 : double.infinity,
+                      child: _buildInputWidget(isDark),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -350,10 +366,15 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
       case KeyPadMode.multipleChoice:
         return MultipleChoicePad(
           choices: _currentQuestion.choices.map((c) => '$c').toList(),
-          correctIndex: _currentQuestion.choices.indexOf(_currentQuestion.answer),
-          selectedIndex: _selectedAnswer != null ? _currentQuestion.choices.indexOf(_selectedAnswer!) : null,
+          correctIndex: _currentQuestion.choices.indexOf(
+            _currentQuestion.answer,
+          ),
+          selectedIndex: _selectedAnswer != null
+              ? _currentQuestion.choices.indexOf(_selectedAnswer!)
+              : null,
           answered: _answered,
-          onChoiceSelected: (index) => _onAnswerSubmitted(_currentQuestion.choices[index]),
+          onChoiceSelected: (index) =>
+              _onAnswerSubmitted(_currentQuestion.choices[index]),
           isDark: isDark,
         );
       case KeyPadMode.numPad:
@@ -397,7 +418,9 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
     }
 
     final isNextAvailable = stars > 0 && widget.level < 50;
-    final actionLabel = isNextAvailable ? l10n.math_tricks.training.nextLevel : l10n.math_tricks.training.retry;
+    final actionLabel = isNextAvailable
+        ? l10n.math_tricks.training.nextLevel
+        : l10n.math_tricks.training.retry;
 
     return TrainingFinishedView(
       correctAnswers: _correctAnswers,

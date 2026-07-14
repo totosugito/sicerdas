@@ -73,6 +73,7 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
   late Timer _timer;
   int _secondsElapsed = 0;
   int _secondsRemaining = 0;
+  final ValueNotifier<int> _secondsNotifier = ValueNotifier<int>(0);
   bool _isTimeUp = false;
 
   // Question / Answer states
@@ -98,6 +99,13 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
       _currentPadMode = widget.mdChapter.pads.first;
     }
 
+    if (widget.timeLimitMode > 0) {
+      _secondsRemaining = widget.timeLimitMode * 60;
+      _secondsNotifier.value = _secondsRemaining;
+    } else {
+      _secondsNotifier.value = 0;
+    }
+
     _generateNextQuestion();
     _startTimer();
   }
@@ -105,28 +113,28 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
   @override
   void dispose() {
     _timer.cancel();
+    _secondsNotifier.dispose();
     super.dispose();
   }
 
   void _startTimer() {
-    if (widget.timeLimitMode > 0) {
-      _secondsRemaining = widget.timeLimitMode * 60;
-    }
-
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_isFinished) return;
 
-      setState(() {
-        _secondsElapsed++;
-        if (widget.timeLimitMode > 0) {
-          if (_secondsRemaining > 0) {
-            _secondsRemaining--;
-          } else {
+      _secondsElapsed++;
+      if (widget.timeLimitMode > 0) {
+        if (_secondsRemaining > 0) {
+          _secondsRemaining--;
+          _secondsNotifier.value = _secondsRemaining;
+        } else {
+          setState(() {
             _isTimeUp = true;
             _finishTraining();
-          }
+          });
         }
-      });
+      } else {
+        _secondsNotifier.value = _secondsElapsed;
+      }
     });
   }
 
@@ -248,18 +256,6 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
     widget.onComplete();
   }
 
-  String _getFormattedTime() {
-    if (widget.timeLimitMode > 0) {
-      final minutes = _secondsRemaining ~/ 60;
-      final seconds = _secondsRemaining % 60;
-      return '$minutes:${seconds.toString().padLeft(2, '0')}';
-    } else {
-      final minutes = _secondsElapsed ~/ 60;
-      final seconds = _secondsElapsed % 60;
-      return '$minutes:${seconds.toString().padLeft(2, '0')}';
-    }
-  }
-
   void _changePadMode() {
     if (widget.mdChapter.pads.length <= 1) return;
     setState(() {
@@ -368,9 +364,8 @@ class _UiMmTrainingState extends ConsumerState<UiMmTraining> {
                   totalQuestions: widget.questionCount,
                   correctAnswers: _correctAnswers,
                   wrongAnswers: _wrongAnswers,
-                  formattedTime: _getFormattedTime(),
-                  timeWarning:
-                      widget.timeLimitMode > 0 && _secondsRemaining < 15,
+                  secondsNotifier: _secondsNotifier,
+                  timeLimitMode: widget.timeLimitMode,
                 ),
                 const SizedBox(height: 32),
 
