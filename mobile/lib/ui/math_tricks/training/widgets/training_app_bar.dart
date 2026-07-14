@@ -7,7 +7,7 @@ class TrainingAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String trickTitle;
   final Color themeColor;
   final KeyPadMode currentPadMode;
-  final String formattedTime;
+  final ValueNotifier<int> secondsNotifier;
   final bool showPadToggle;
   final VoidCallback onExitPressed;
   final VoidCallback onPadModeToggle;
@@ -18,7 +18,7 @@ class TrainingAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.trickTitle,
     required this.themeColor,
     required this.currentPadMode,
-    required this.formattedTime,
+    required this.secondsNotifier,
     required this.showPadToggle,
     required this.onExitPressed,
     required this.onPadModeToggle,
@@ -68,18 +68,28 @@ class TrainingAppBar extends StatelessWidget implements PreferredSizeWidget {
         Center(
           child: Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: Row(
-              children: [
-                const Icon(Icons.timer_outlined, size: 16),
-                const SizedBox(width: 4),
-                Text(
-                  formattedTime,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
+            child: ValueListenableBuilder<int>(
+              valueListenable: secondsNotifier,
+              builder: (context, seconds, child) {
+                final int minutes = seconds ~/ 60;
+                final int secs = seconds % 60;
+                final formattedTime =
+                    '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
+
+                return Row(
+                  children: [
+                    const Icon(Icons.timer_outlined, size: 16),
+                    const SizedBox(width: 4),
+                    Text(
+                      formattedTime,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),

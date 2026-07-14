@@ -80,6 +80,7 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
   // Timer
   late Timer _timer;
   int _secondsElapsed = 0;
+  final ValueNotifier<int> _secondsNotifier = ValueNotifier<int>(0);
 
   // State management
   bool _answered = false;
@@ -95,6 +96,7 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
   @override
   void initState() {
     super.initState();
+    _secondsNotifier.value = 0;
     _generateNextQuestion();
     final supported = _currentQuestion.supportedKeyPads;
     if (widget.initialKeyPadMode != null &&
@@ -112,15 +114,15 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
   @override
   void dispose() {
     _timer.cancel();
+    _secondsNotifier.dispose();
     super.dispose();
   }
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!_isTrainingFinished) {
-        setState(() {
-          _secondsElapsed++;
-        });
+        _secondsElapsed++;
+        _secondsNotifier.value = _secondsElapsed;
       }
     });
   }
@@ -244,12 +246,6 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
     widget.onComplete();
   }
 
-  String _formatTime(int totalSeconds) {
-    final int minutes = totalSeconds ~/ 60;
-    final int seconds = totalSeconds % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-  }
-
   void _showSolutionBottomSheet(BuildContext context) {
     if (!_answered) {
       // Viewing the solution before answering counts as a wrong answer
@@ -264,7 +260,6 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("build");
     final theme = ShadTheme.of(context);
     final l10n = Translations.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -278,7 +273,7 @@ class _TricksTrainingScreenState extends ConsumerState<TricksTrainingScreen> {
         trickTitle: widget.trickTitle,
         themeColor: widget.themeColor,
         currentPadMode: _currentPadMode,
-        formattedTime: _formatTime(_secondsElapsed),
+        secondsNotifier: _secondsNotifier,
         showPadToggle: _currentQuestion.supportedKeyPads.length > 1,
         onExitPressed: () {
           // Confirm exit
