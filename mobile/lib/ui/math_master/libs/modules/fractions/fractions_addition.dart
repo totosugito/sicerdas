@@ -8,8 +8,7 @@ import '../../solver/fraction_steps.dart';
 import 'fractions_simplest_form.dart';
 
 class FractionsAddition extends FractionsSimplestForm {
-  FractionsAddition.init(super.chapter, super.mdChapter)
-      : super.init();
+  FractionsAddition.init(super.chapter, super.mdChapter) : super.init();
 
   @override
   String getQuestionTemplate() {
@@ -26,14 +25,15 @@ class FractionsAddition extends FractionsSimplestForm {
     int maxNum = answer.numerator + 5;
     int denominator = answer.denominator;
     return (ModelNumber(
-        min: mn0.min,
-        max: mn0.max,
-        minNum: minNum,
-        spacingNum: mn0.spacingNum,
-        maxNum: maxNum,
-        minDen: denominator,
-        spacingDen: mn0.spacingDen,
-        maxDen: denominator));
+      min: mn0.min,
+      max: mn0.max,
+      minNum: minNum,
+      spacingNum: mn0.spacingNum,
+      maxNum: maxNum,
+      minDen: denominator,
+      spacingDen: mn0.spacingDen,
+      maxDen: denominator,
+    ));
   }
 
   @override
@@ -41,8 +41,14 @@ class FractionsAddition extends FractionsSimplestForm {
     int selectedRangeIndex = getSelectedRangeIndex();
 
     ModelNumber modelNumber0 = getChapterNumRange(selectedRangeIndex, 0);
-    MyNumber number0 = MyNumber.nextFractions(myRandom: myRandom, minMax: modelNumber0);
-    MyNumber number1 = MyNumber.nextFractions(myRandom: myRandom, minMax: modelNumber0);
+    MyNumber number0 = MyNumber.nextFractions(
+      myRandom: myRandom,
+      minMax: modelNumber0,
+    );
+    MyNumber number1 = MyNumber.nextFractions(
+      myRandom: myRandom,
+      minMax: modelNumber0,
+    );
     number0.toSimplify();
     number1.toSimplify();
 
@@ -58,16 +64,20 @@ class FractionsAddition extends FractionsSimplestForm {
 
   @override
   String createHtmlQuestion() {
-    String text = steps.divQuestionLabel(text: t.math_master.solver.solve_the_question);
+    String text = steps.divQuestionLabel(
+      text: t.math_master.solver.solve_the_question,
+    );
     text += steps.tex(
-        value: steps.htmlCalcTwoFractions(
-            number1: numbers[0],
-            number2: numbers[1],
-            calcSymbol: steps.plus(),
-            colorNum1: Colors.black,
-            colorDen1: Colors.black,
-            colorNum2: Colors.black,
-            colorDen2: Colors.black));
+      value: steps.htmlCalcTwoFractions(
+        number1: numbers[0],
+        number2: numbers[1],
+        calcSymbol: steps.plus(),
+        colorNum1: Colors.black,
+        colorDen1: Colors.black,
+        colorNum2: Colors.black,
+        colorDen2: Colors.black,
+      ),
+    );
     return (text);
   }
 
@@ -81,6 +91,8 @@ class FractionsAddition extends FractionsSimplestForm {
   }) {
     steps = FractionSteps(numbers: numbers, answer: answer);
     initSolution(question, solutionText: solutionText);
-    question.solution.solution = steps.htmlFractionsAddition(steps.plus(spacing: ""));
+    question.solution.solution = steps.htmlFractionsAddition(
+      steps.plus(spacing: ""),
+    );
   }
 }

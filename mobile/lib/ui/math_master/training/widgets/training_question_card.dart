@@ -35,24 +35,26 @@ class TrainingQuestionCard extends StatelessWidget {
                 isLaTex
                     ? SizedBox(
                         width: MediaQuery.of(context).size.width - 96,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Math.tex(
-                            question,
-                            textStyle: theme.textTheme.h1.copyWith(
-                              fontSize: 48,
-                              fontWeight: FontWeight.w800,
+                        child: Center(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Math.tex(
+                              question,
+                              textStyle: theme.textTheme.h1.copyWith(
+                                fontSize: 48,
+                                fontWeight: FontWeight.w800,
+                              ),
+                              onErrorFallback: (error) {
+                                return Text(
+                                  question,
+                                  style: theme.textTheme.h1.copyWith(
+                                    fontSize: 48,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                );
+                              },
                             ),
-                            onErrorFallback: (error) {
-                              return Text(
-                                question,
-                                style: theme.textTheme.h1.copyWith(
-                                  fontSize: 48,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                                textAlign: TextAlign.center,
-                              );
-                            },
                           ),
                         ),
                       )

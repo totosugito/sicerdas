@@ -42,6 +42,9 @@ class FractionsSimplestForm extends BaseMmChapter {
   }
 
   @override
+  bool get isLatexQuestion => true;
+
+  @override
   ModelQuestion newQuestion({required KeyPadMode padMode, bool resetData = true}) {
     this.padMode = padMode;
     if (resetData) {
@@ -62,7 +65,8 @@ class FractionsSimplestForm extends BaseMmChapter {
         choices: choices,
         choicesBool: choicesBool,
         hasSolution: mdChapter.hasSolution,
-        solution: ModelSolution()));
+        solution: ModelSolution(),
+        isLatex: isLatexQuestion));
   }
 
   late FractionSteps steps;
