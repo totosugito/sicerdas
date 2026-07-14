@@ -16,9 +16,9 @@ class ClockMinutesToHours extends Addition1Digit {
   String getQuestionTemplate() {
     switch (padMode) {
       case KeyPadMode.padYesNo:
-        return ("\\begin{gathered}@0 \\text{ ${t.math_master.minutes_sort_text} } \\\\[-0.2em]= @1 \\text{ ${t.math_master.hours_sort_text} }\\end{gathered}");
+        return ("\\begin{gathered}@0 \\text{ ${t.math_master.minutes_sort_text} } \\\\ = \\\\ @1 \\text{ ${t.math_master.hours_sort_text} }\\end{gathered}");
       default:
-        return ("\\begin{gathered}@0 \\text{ ${t.math_master.minutes_sort_text} } \\\\[-0.2em]= \\ldots \\text{ ${t.math_master.hours_sort_text} }\\end{gathered}");
+        return ("\\begin{gathered}@0 \\text{ ${t.math_master.minutes_sort_text} } \\\\ = \\\\ \\ldots \\text{ ${t.math_master.hours_sort_text} }\\end{gathered}");
     }
   }
 

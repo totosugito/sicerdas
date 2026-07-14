@@ -86,6 +86,7 @@ class Division2Digit extends Division1Digit {
       choicesBool: choicesBool,
       hasSolution: mdChapter.hasSolution,
       solution: ModelSolution(),
+      isLatex: isLatexQuestion,
     ));
   }
 

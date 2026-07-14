@@ -39,13 +39,17 @@ class _AchievementHistoryItemState extends State<AchievementHistoryItem> {
           ),
         ],
       ),
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          dividerColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-        ),
-        child: ExpansionTile(
+      child: Material(
+        color: Colors.transparent,
+        clipBehavior: Clip.antiAlias,
+        borderRadius: BorderRadius.circular(16),
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            dividerColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
+          child: ExpansionTile(
           key: PageStorageKey<String>(widget.parent.title),
           initiallyExpanded: _isExpanded,
           onExpansionChanged: (expanded) {
@@ -184,6 +188,7 @@ class _AchievementHistoryItemState extends State<AchievementHistoryItem> {
           }).toList(),
         ),
       ),
-    );
+    ),
+  );
   }
 }
