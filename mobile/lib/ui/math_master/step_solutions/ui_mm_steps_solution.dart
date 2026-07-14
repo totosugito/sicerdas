@@ -129,21 +129,14 @@ class _UiMmStepsSolutionState extends State<UiMmStepsSolution> {
     }
 
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              title: Text(locale.solution_text),
-              pinned: true,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_rounded),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
-          ];
-        },
-        body: WebViewWidget(controller: _webViewController),
+      appBar: AppBar(
+        title: Text(locale.solution_text),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
+      body: WebViewWidget(controller: _webViewController),
     );
   }
 }
