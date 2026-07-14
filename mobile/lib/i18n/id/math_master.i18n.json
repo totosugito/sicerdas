@@ -122,5 +122,7 @@
   },
   "topics_factorization": "Faktorisasi",
   "chapter_factorization_gcf": "Faktor Persekutuan Terbesar (FPB)",
-  "chapter_factorization_lcm": "Kelipatan Persekutuan Terkecil (KPK)"
+  "chapter_factorization_gcf_short": "FPB",
+  "chapter_factorization_lcm": "Kelipatan Persekutuan Terkecil (KPK)",
+  "chapter_factorization_lcm_short": "KPK"
 }

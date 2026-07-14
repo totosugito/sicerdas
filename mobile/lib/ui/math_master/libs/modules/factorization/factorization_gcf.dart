@@ -25,7 +25,10 @@ class FactorizationGcf extends BaseMmChapter {
         ? sprintf("(@0, @1, @2)", [])
         : sprintf("(@0, @1)", []);
     String sstranswer = chapterRangeLength > 3 ? " = @3" : " = @2";
-    sstr = sprintf("\\text{%s} %s", [t.math_master.chapter_factorization_gcf, sstr]);
+    sstr = sprintf("\\text{%s} %s", [
+      t.math_master.chapter_factorization_gcf_short,
+      sstr,
+    ]);
     switch (padMode) {
       case KeyPadMode.padYesNo:
         sstr = sprintf("%s%s", [sstr, sstranswer]);
@@ -48,7 +51,10 @@ class FactorizationGcf extends BaseMmChapter {
     ModelNumber mn0 = getChapterNumRange(selectedRangeIndex, 0);
     ModelNumber mn1 = getChapterNumRange(selectedRangeIndex, 1);
     ModelNumber mn2 = getChapterNumRange(selectedRangeIndex, 2);
-    ModelNumber mnm = getChapterNumRange(selectedRangeIndex, chapterRangeLength - 1);
+    ModelNumber mnm = getChapterNumRange(
+      selectedRangeIndex,
+      chapterRangeLength - 1,
+    );
 
     int val0 = myRandom.nextInt(min: mn0.getMinI(), max: mn0.getMaxI());
     int mult0 = myRandom.nextInt(min: mn1.getMinI(), max: mn1.getMaxI());
@@ -78,7 +84,13 @@ class FactorizationGcf extends BaseMmChapter {
   }
 
   @override
-  ModelQuestion newQuestion({required KeyPadMode padMode, bool resetData = true}) {
+  bool get isLatexQuestion => true;
+
+  @override
+  ModelQuestion newQuestion({
+    required KeyPadMode padMode,
+    bool resetData = true,
+  }) {
     this.padMode = padMode;
     if (resetData) {
       createDataValue(padMode);
@@ -87,18 +99,28 @@ class FactorizationGcf extends BaseMmChapter {
 
     switch (padMode) {
       case KeyPadMode.padYesNo:
-        question = createQuestionInRowInt(question: question, data: numbers, lastSymbol: choicesBool[1].getText());
+        question = createQuestionInRowInt(
+          question: question,
+          data: numbers,
+          lastSymbol: choicesBool[1].getText(),
+        );
         break;
       default:
-        question = createQuestionInRowInt(question: question, data: numbers, lastSymbol: "..");
+        question = createQuestionInRowInt(
+          question: question,
+          data: numbers,
+          lastSymbol: "..",
+        );
         break;
     }
     return (ModelQuestion(
-        question: question,
-        choices: choices,
-        choicesBool: choicesBool,
-        hasSolution: mdChapter.hasSolution,
-        solution: ModelSolution()));
+      question: question,
+      choices: choices,
+      choicesBool: choicesBool,
+      hasSolution: mdChapter.hasSolution,
+      solution: ModelSolution(),
+      isLatex: isLatexQuestion,
+    ));
   }
 
   late FactorizationSteps steps;
@@ -106,8 +128,13 @@ class FactorizationGcf extends BaseMmChapter {
   @override
   String createHtmlQuestion({String? solveTheQuestionText}) {
     String numbersText = steps.listNumbersIntToString(
-        data: numbers, lastSeparator: sprintf("%s ", [","]));
-    String text = sprintf("%s (%s)", [t.math_master.chapter_factorization_gcf, numbersText]);
+      data: numbers,
+      lastSeparator: sprintf("%s ", [","]),
+    );
+    String text = sprintf("%s (%s)", [
+      t.math_master.chapter_factorization_gcf_short,
+      numbersText,
+    ]);
     return (text);
   }
 

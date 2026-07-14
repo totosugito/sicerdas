@@ -15,7 +15,7 @@ class FactorizationLcm extends FactorizationGcf {
         : sprintf("(@0, @1)", []);
     String sstranswer = chapterRangeLength > 3 ? " = @3" : " = @2";
     sstr = sprintf("\\text{%s} %s", [
-      t.math_master.chapter_factorization_lcm,
+      t.math_master.chapter_factorization_lcm_short,
       sstr,
     ]);
     switch (padMode) {
@@ -40,7 +40,7 @@ class FactorizationLcm extends FactorizationGcf {
       lastSeparator: sprintf("%s ", [","]),
     );
     String text = sprintf("%s (%s)", [
-      t.math_master.chapter_factorization_lcm,
+      t.math_master.chapter_factorization_lcm_short,
       numbersText,
     ]);
     return (text);

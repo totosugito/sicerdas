@@ -256,11 +256,15 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0, bottom: 0.0),
                         child: Text(
-                          entry.key == KeyTopic.topicAddition
-                              ? locale.topics_addition
-                              : entry.key == KeyTopic.topicClock
-                              ? locale.topics_clock
-                              : entry.key.name,
+                          switch (entry.key) {
+                            KeyTopic.topicAddition => locale.topics_addition,
+                            KeyTopic.topicClock => locale.topics_clock,
+                            KeyTopic.topicDivision => locale.topics_division,
+                            KeyTopic.topicPrimeFactorization =>
+                              locale.topics_factorization,
+                            KeyTopic.topicFractions => locale.topics_fractions,
+                            _ => entry.key.name,
+                          },
                           style: theme.textTheme.large.copyWith(
                             fontWeight: FontWeight.bold,
                           ),

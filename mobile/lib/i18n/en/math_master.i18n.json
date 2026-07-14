@@ -122,5 +122,7 @@
   },
   "topics_factorization": "Factorization",
   "chapter_factorization_gcf": "Greatest Common Factor (GCF)",
-  "chapter_factorization_lcm": "Least Common Multiple (LCM)"
+  "chapter_factorization_gcf_short": "GCF",
+  "chapter_factorization_lcm": "Least Common Multiple (LCM)",
+  "chapter_factorization_lcm_short": "LCM"
 }
