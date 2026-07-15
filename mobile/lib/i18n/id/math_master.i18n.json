@@ -147,9 +147,9 @@
   "steps_table_weight": "Konversi satuan berat",
   "steps_measurement_1": "Jadi, %s = %s",
   "topics_weight": "Satuan Berat",
-  "chapter_weight_conversion": "Satuan Berat",
-  "chapter_weight_addition": "Penjumlahan Berat",
-  "chapter_weight_subtraction": "Pengurangan Berat",
-  "chapter_weight_comparison": "Perbandingan Berat",
+  "chapter_weight_conversion": "Konversi Satuan Berat",
+  "chapter_weight_addition": "Penjumlahan Satuan Berat",
+  "chapter_weight_subtraction": "Pengurangan Satuan Berat",
+  "chapter_weight_comparison": "Perbandingan Satuan Berat",
   "steps_measurement_ladder_desc": "Setiap turun 1 anak tangga: dikali 10 (×10)<br/>Setiap naik 1 anak tangga: dibagi 10 (÷10)"
 }

@@ -81,7 +81,7 @@ class LibHtml {
 
   // ----------------- GENERAL ----------------
   String br() {
-    return ('</br>\n');
+    return ('<br/>\n');
   }
 
   String image({required String value, String style = ""}) {

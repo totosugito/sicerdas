@@ -280,6 +280,7 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
                               locale.topics_factorization,
                             KeyTopic.topicFractions => locale.topics_fractions,
                             KeyTopic.topicLength => locale.topics_length,
+                            KeyTopic.topicWeight => locale.topics_weight,
                             _ => entry.key.name,
                           },
                           style: theme.textTheme.large.copyWith(
