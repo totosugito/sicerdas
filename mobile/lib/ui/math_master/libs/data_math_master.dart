@@ -12,6 +12,7 @@ import 'modules/factorization/chapter_factorization.dart';
 import 'modules/fractions/chapter_fractions.dart';
 import 'modules/length/chapter_length.dart';
 import 'modules/weight/chapter_weight.dart';
+import 'modules/roman/chapter_roman.dart';
 
 class DataMathMaster {
   static void _addChapter(
@@ -166,6 +167,12 @@ class DataMathMaster {
         title: locale.topics_weight,
         assets: 'weight',
       ),
+      ModelItem(
+        id: KeyTopic.topicRoman.index,
+        key: KeyTopic.topicRoman.name,
+        title: locale.topics_roman,
+        assets: 'roman',
+      ),
     ];
     list.sort((a, b) => a.id.compareTo(b.id)); // sort by topic
     return list;
@@ -200,6 +207,7 @@ class DataMathMaster {
     _addChapter(list, ChapterFractions.create(context));
     _addChapter(list, ChapterLength.create(context));
     _addChapter(list, ChapterWeight.create(context));
+    _addChapter(list, ChapterRoman.create(context));
     return list;
   }
 }

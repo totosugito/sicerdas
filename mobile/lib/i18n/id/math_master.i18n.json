@@ -151,5 +151,21 @@
   "chapter_weight_addition": "Penjumlahan Satuan Berat",
   "chapter_weight_subtraction": "Pengurangan Satuan Berat",
   "chapter_weight_comparison": "Perbandingan Satuan Berat",
-  "steps_measurement_ladder_desc": "Setiap turun 1 anak tangga: dikali 10 (×10)<br/>Setiap naik 1 anak tangga: dibagi 10 (÷10)"
+  "steps_measurement_ladder_desc": "Setiap turun 1 anak tangga: dikali 10 (×10)<br/>Setiap naik 1 anak tangga: dibagi 10 (÷10)",
+  "roman_text": "Romawi",
+  "number_text": "Angka",
+  "topics_roman": "Bilangan Romawi",
+  "chapter_roman_number_to_roman": "Angka ke Romawi",
+  "chapter_roman_roman_to_number": "Romawi ke Angka",
+  "chapter_roman_addition": "Penjumlahan Romawi",
+  "chapter_roman_subtraction": "Pengurangan Romawi",
+  "steps_roman_1": "Tuliskan bilangan dalam romawi",
+  "steps_roman_2": "Tabel konversi bilangan romawi %s\n",
+  "steps_roman_3": "Uraikan bilangan %s dan tulis dalam romawi menggunakan tabel %s\n",
+  "steps_roman_4": "Jadi, romawi dari %s adalah %s\n",
+  "steps_roman_5": "Tulis bilangan cacah dari romawi",
+  "steps_roman_6": "Uraikan bilangan romawi %s. <b>Jika bilangan yang lebih besar dibelakang dan bilangan lebih kecil di depan maka dikurangi</b>.%s\n",
+  "steps_roman_7": "Jadi, bilangan cacah dari romawi %s adalah %s\n",
+  "steps_roman_8": "Jadi, hasil dari %s adalah %s\n",
+  "steps_roman_9": "Tuliskan bilangan romawi %s sebagai bilangan cacah %s\n"
 }

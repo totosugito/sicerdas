@@ -151,5 +151,21 @@
   "chapter_weight_addition": "Addition of Weight",
   "chapter_weight_subtraction": "Subtraction of Weight",
   "chapter_weight_comparison": "Weight Comparison",
-  "steps_measurement_ladder_desc": "Every step down: multiply by 10 (×10)<br/>Every step up: divide by 10 (÷10)"
+  "steps_measurement_ladder_desc": "Every step down: multiply by 10 (×10)<br/>Every step up: divide by 10 (÷10)",
+  "roman_text": "Roman",
+  "number_text": "Number",
+  "topics_roman": "Roman Numerals",
+  "chapter_roman_number_to_roman": "Number to Roman",
+  "chapter_roman_roman_to_number": "Roman to Number",
+  "chapter_roman_addition": "Addition of Roman",
+  "chapter_roman_subtraction": "Subtraction of Roman",
+  "steps_roman_1": "Write the number to roman numerals",
+  "steps_roman_2": "Roman numerals table %s\n",
+  "steps_roman_3": "Break the number %s then perform each conversion using the table %s\n",
+  "steps_roman_4": "Therefore, the roman numerals of %s is %s\n",
+  "steps_roman_5": "Write the number of roman numerals",
+  "steps_roman_6": "Break the number %s. <b>If the largest symbol appears second, subtract the value of the symbol before it from its value</b>.%s\n",
+  "steps_roman_7": "Therefore, the number of roman numeral %s is %s\n",
+  "steps_roman_8": "Therefore, the result of %s is %s\n",
+  "steps_roman_9": "Write the roman numerals %s as number%s\n"
 }

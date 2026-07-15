@@ -9,6 +9,7 @@ import 'modules/factorization/topic_factorization.dart';
 import 'modules/fractions/topic_fractions.dart';
 import 'modules/length/topic_length.dart';
 import 'modules/weight/topic_weight.dart';
+import 'modules/roman/topic_roman.dart';
 
 
 
@@ -32,6 +33,7 @@ class LibMathMaster {
   late TopicFractions _topicFractions;
   late TopicLength _topicLength;
   late TopicWeight _topicWeight;
+  late TopicRoman _topicRoman;
 
 
   LibMathMaster.init(this._chapter, this._mdChapter) {
@@ -60,6 +62,9 @@ class LibMathMaster {
         break;
       case KeyTopic.topicWeight:
         _topicWeight = TopicWeight(_chapter, _mdChapter, keyChapter);
+        break;
+      case KeyTopic.topicRoman:
+        _topicRoman = TopicRoman(_chapter, _mdChapter, keyChapter);
         break;
       default:
         break;
@@ -106,6 +111,11 @@ class LibMathMaster {
           padMode: padMode,
           resetData: resetData,
         );
+      case KeyTopic.topicRoman:
+        return _topicRoman.createQuestion(
+          padMode: padMode,
+          resetData: resetData,
+        );
       default:
         return ModelQuestion.empty();
     }
@@ -133,6 +143,9 @@ class LibMathMaster {
         break;
       case KeyTopic.topicWeight:
         _topicWeight.updateSolution(question, solutionText: solutionText);
+        break;
+      case KeyTopic.topicRoman:
+        _topicRoman.updateSolution(question, solutionText: solutionText);
         break;
       default:
         break;
