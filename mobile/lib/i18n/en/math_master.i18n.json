@@ -162,10 +162,10 @@
   "steps_roman_1": "Write the number to roman numerals",
   "steps_roman_2": "Roman numerals table %s\n",
   "steps_roman_3": "Break the number %s then perform each conversion using the table %s\n",
-  "steps_roman_4": "Therefore, the roman numerals of %s is %s\n",
+  "steps_roman_4": "Therefore, the roman numerals of %s is %s",
   "steps_roman_5": "Write the number of roman numerals",
   "steps_roman_6": "Break the number %s. <b>If the largest symbol appears second, subtract the value of the symbol before it from its value</b>.%s\n",
-  "steps_roman_7": "Therefore, the number of roman numeral %s is %s\n",
+  "steps_roman_7": "Therefore, the number of roman numeral %s is %s",
   "steps_roman_8": "Therefore, the result of %s is %s\n",
   "steps_roman_9": "Write the roman numerals %s as number%s\n"
 }

@@ -162,10 +162,10 @@
   "steps_roman_1": "Tuliskan bilangan dalam romawi",
   "steps_roman_2": "Tabel konversi bilangan romawi %s\n",
   "steps_roman_3": "Uraikan bilangan %s dan tulis dalam romawi menggunakan tabel %s\n",
-  "steps_roman_4": "Jadi, romawi dari %s adalah %s\n",
+  "steps_roman_4": "Jadi, romawi dari %s adalah %s",
   "steps_roman_5": "Tulis bilangan cacah dari romawi",
   "steps_roman_6": "Uraikan bilangan romawi %s. <b>Jika bilangan yang lebih besar dibelakang dan bilangan lebih kecil di depan maka dikurangi</b>.%s\n",
-  "steps_roman_7": "Jadi, bilangan cacah dari romawi %s adalah %s\n",
+  "steps_roman_7": "Jadi, bilangan cacah dari romawi %s adalah %s",
   "steps_roman_8": "Jadi, hasil dari %s adalah %s\n",
   "steps_roman_9": "Tuliskan bilangan romawi %s sebagai bilangan cacah %s\n"
 }

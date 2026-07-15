@@ -16,8 +16,9 @@ class RomanRomanToNumber extends RomanNumberToRoman {
     int selectedRangeIndex = getSelectedRangeIndex();
     numbers = [];
     MyNumber val0 = MyNumber.nextInt(
-        myRandom: myRandom,
-        minMax: getChapterNumRange(selectedRangeIndex, 0));
+      myRandom: myRandom,
+      minMax: getChapterNumRange(selectedRangeIndex, 0),
+    );
     answer = MyNumber.clone(val0);
     val0.setRomanText(libRoman); // set roman string
 

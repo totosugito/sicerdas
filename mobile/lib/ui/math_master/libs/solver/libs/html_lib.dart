@@ -538,7 +538,7 @@ class LibHtml {
     required String input,
     required String result,
   }) {
-    String html = span(id: idStepsLabel, value: sprintf(label, [input, br()]));
+    String html = span(id: idStepsLabel, value: sprintf(label, [input]));
     html += span(id: idFinalAnswer, value: result);
     return (html);
   }

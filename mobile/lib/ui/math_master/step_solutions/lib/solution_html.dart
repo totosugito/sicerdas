@@ -298,10 +298,198 @@ String getSolutionHtml({
       margin: 0;
     }
     
+     /* Custom Module Components (Roman & Measurement) */
+    .roman-card {
+      background-color: #f8fafc;
+      border-left: 4px solid #3b82f6;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .dark .roman-card {
+      background-color: rgba(30, 41, 59, 0.45);
+      border-left-color: #3b82f6;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .roman-card-val {
+      font-weight: 600;
+      color: #334155;
+      font-size: 15px;
+    }
+    .dark .roman-card-val {
+      color: #e2e8f0;
+    }
+    .roman-card-roman {
+      font-weight: 700;
+      color: #1e40af;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+    }
+    .dark .roman-card-roman {
+      color: #60a5fa;
+    }
+    
+    .roman-pos-card {
+      background-color: #ecfdf5;
+      border-left: 4px solid #10b981;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .dark .roman-pos-card {
+      background-color: rgba(6, 78, 59, 0.2);
+      border-left-color: #10b981;
+    }
+    .roman-pos-text {
+      color: #047857;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .dark .roman-pos-text {
+      color: #34d399;
+    }
+    
+    .roman-neg-card {
+      background-color: #fef2f2;
+      border-left: 4px solid #ef4444;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .dark .roman-neg-card {
+      background-color: rgba(127, 29, 29, 0.25);
+      border-left-color: #ef4444;
+    }
+    .roman-neg-text {
+      color: #b91c1c;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .dark .roman-neg-text {
+      color: #f87171;
+    }
+
+    .roman-table {
+      width: 100%;
+      max-width: 320px;
+      border-collapse: collapse;
+      text-align: center;
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 12px 0;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    .dark .roman-table {
+      border-color: rgba(68, 64, 60, 0.6);
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+    }
+    .roman-th {
+      padding: 10px;
+      font-weight: 600;
+      color: #475569;
+      font-size: 14px;
+      text-align: center;
+      background-color: #f8fafc;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .dark .roman-th {
+      background-color: rgba(28, 25, 23, 0.8);
+      color: #d6d3d1;
+      border-bottom-color: rgba(68, 64, 60, 0.6);
+    }
+    .roman-tr-even {
+      background-color: #fcfdfe;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .dark .roman-tr-even {
+      background-color: rgba(28, 25, 23, 0.4);
+      border-bottom-color: rgba(68, 64, 60, 0.4);
+    }
+    .roman-tr-odd {
+      background-color: #ffffff;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .dark .roman-tr-odd {
+      background-color: transparent;
+      border-bottom-color: rgba(68, 64, 60, 0.4);
+    }
+    .roman-td-num {
+      padding: 8px 10px;
+      color: #334155;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+    }
+    .dark .roman-td-num {
+      color: #d6d3d1;
+    }
+    .roman-td-sym {
+      padding: 8px 10px;
+      color: #0f172a;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .dark .roman-td-sym {
+      color: #ffffff;
+    }
+
+    .measurement-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 12px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .dark .measurement-table {
+      border-color: rgba(68, 64, 60, 0.6);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .measurement-th {
+      border: 1px solid #ddd;
+      padding: 8px;
+      font-weight: bold;
+      background-color: #f7f9fa;
+      color: #334155;
+    }
+    .dark .measurement-th {
+      border-color: rgba(68, 64, 60, 0.6);
+      background-color: rgba(28, 25, 23, 0.8);
+      color: #d6d3d1;
+    }
+    .measurement-td {
+      padding: 12px;
+      font-size: 13px;
+      color: #555;
+      background-color: #fcfdfe;
+      line-height: 1.6;
+    }
+    .dark .measurement-td {
+      color: #d6d3d1;
+      background-color: rgba(28, 25, 23, 0.4);
+    }
     /* Footer */
     .footer {
       text-align: center;
-      font-size: 10px;
+      font-size: 12px;
       color: var(--text-muted);
       padding-top: 1.5rem;
       border-top: 1px solid var(--border-color);

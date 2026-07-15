@@ -12,25 +12,22 @@ class RomanSteps extends LibHtml {
   }
 
   String _htmlRomanNumeralTable(String label) {
-    String html = span(id: idStepsLabel, value: sprintf(label, [br()]));
+    String htmlLabel = span(id: idStepsLabel, value: sprintf(label, [br()]));
     String numberText = t.math_master.number_text;
     String romanText = t.math_master.roman_text;
-    // create table header
-    String header = thead(
-      value: tr(
-        value: th(
-          value:
-              numberText +
-              th(value: romanText) +
-              th(
-                value: th(value: numberText + th(value: romanText)),
-              ),
-        ),
-      ),
-    );
 
-    //create table body
-    String body = "";
+    String headerRow =
+        '''
+      <tr>
+        <th class="roman-th">$numberText</th>
+        <th class="roman-th">$romanText</th>
+        <th style="width: 20px; background-color: transparent; border: none;"></th>
+        <th class="roman-th">$numberText</th>
+        <th class="roman-th">$romanText</th>
+      </tr>
+    ''';
+
+    String bodyRows = "";
     int nsize = lib.numbers.length;
     int nrow = (nsize / 2).ceil();
     for (int i = nrow - 1; i >= 0; i--) {
@@ -45,13 +42,40 @@ class RomanSteps extends LibHtml {
         valNumberR = lib.numbers[idx2].toString();
         valSymbolR = tex(value: texText(value: lib.numbersSymbol[idx2]));
       }
-      body += tr(
-        value:
-            "${td(value: valNumberL)}${td(value: valSymbolL)}${td(value: "")}${td(value: valNumberR)}${td(value: valSymbolR)}\n",
-      );
+
+      String trClass = (i % 2 == 0) ? "roman-tr-even" : "roman-tr-odd";
+
+      bodyRows +=
+          '''
+        <tr class="$trClass">
+          <td class="roman-td-num">$valNumberL</td>
+          <td class="roman-td-sym">$valSymbolL</td>
+          <td style="background-color: transparent; border: none;"></td>
+          <td class="roman-td-num">$valNumberR</td>
+          <td class="roman-td-sym">$valSymbolR</td>
+        </tr>
+      ''';
     }
-    body = tbody(value: body);
-    return (html + table(value: header + body, style: "width: 270px"));
+
+    String tableHtml =
+        '''
+      <table class="roman-table">
+        <thead>
+          $headerRow
+        </thead>
+        <tbody>
+          $bodyRows
+        </tbody>
+      </table>
+    ''';
+
+    return (htmlLabel + tableHtml);
+  }
+
+  String _arrowSvg({String color = "#94a3b8", double size = 16}) {
+    return '''
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="$color" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: ${size}px; height: ${size}px; display: inline-block; vertical-align: middle; margin: 0 4px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+''';
   }
 
   String _htmlSeparateNumberByUnits(
@@ -66,33 +90,41 @@ class RomanSteps extends LibHtml {
       value: sprintf(label, [b(value.toString()), br()]),
     );
 
-    String textGroup =
-        tex(
-          value: equal() + listIntToString(data: unitGroup, separator: plus()),
-        ) +
-        br();
-    String textGroups =
-        tex(
-          value:
-              equal() +
-              listListIntToString(
-                data: unitGroups,
-                separator1: plus(),
-                separator2: plus(),
-              ),
-        ) +
-        br();
-    String textSymbols =
-        tex(
-          value:
-              equal() +
-              listListStringToString(
-                data: unitSymbols,
-                separator1: plus(),
-                separator2: plus(),
-              ),
-        ) +
-        br();
+    String cards =
+        '<div style="margin: 12px 0; display: flex; flex-direction: column; gap: 8px; max-width: 320px;">';
+    for (int i = 0; i < unitGroup.length; i++) {
+      int val = unitGroup[i];
+      if (val == 0) continue;
+      String roman = lib.numberToRoman(val);
+
+      String detail = "";
+      if (unitGroups[i].length > 1) {
+        String breakdownMath = unitGroups[i]
+            .map((e) => e.toString())
+            .join(" + ");
+        String breakdownRoman = unitSymbols[i].join(" + ");
+        String detailArrow = _arrowSvg(color: "#cbd5e1", size: 12);
+        detail =
+            '<span style="font-size: 12px; color: #64748b; margin-left: 8px;">($breakdownMath $detailArrow $breakdownRoman)</span>';
+      }
+
+      String cardArrow = _arrowSvg(color: "#3b82f6", size: 16);
+      cards +=
+          '''
+  <div class="roman-card">
+    <div>
+      <span class="roman-card-val">$val</span>
+      $detail
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      $cardArrow
+      <span class="roman-card-roman">$roman</span>
+    </div>
+  </div>
+''';
+    }
+    cards += '</div>';
+
     String textFinal =
         tex(
           value:
@@ -101,23 +133,8 @@ class RomanSteps extends LibHtml {
         ) +
         br();
 
-    html += span(id: idStepsValue, value: textGroup);
-    if (textGroup != textGroups) {
-      html += span(id: idStepsValue, value: textGroups);
-    }
-    html += span(id: idStepsValue, value: textSymbols);
-    if (textSymbols != textFinal) {
-      html += span(id: idStepsValue, value: textFinal);
-    }
-    return (html);
-  }
-
-  String _htmlRomanCharToMathAddition(List<String> roman) {
-    int size = roman.length;
-    String html = "";
-    for (int i = 0; i < size; i++) {
-      html += texText(value: roman[i]) + (i < size - 1 ? plus() : "");
-    }
+    html += cards;
+    html += span(id: idStepsValue, value: textFinal);
     return (html);
   }
 
@@ -142,10 +159,33 @@ class RomanSteps extends LibHtml {
     List<String> romanChar = romanText.split('');
     List<int> romanCharVal = lib.romanCharToInt(romanChar);
 
-    String textCharRoman = _htmlRomanCharToMathAddition(romanChar);
-    String textCharNumber = _htmlRomanIntToMathAddition(romanCharVal);
+    String cards =
+        '<div style="margin: 12px 0; display: flex; flex-direction: column; gap: 8px; max-width: 320px;">';
+    for (int i = 0; i < romanChar.length; i++) {
+      String char = romanChar[i];
+      int val = romanCharVal[i];
 
-    html += tex(value: equal() + textCharRoman) + br();
+      bool isNegative = val < 0;
+      String cardClass = isNegative ? "roman-neg-card" : "roman-pos-card";
+      String textClass = isNegative ? "roman-neg-text" : "roman-pos-text";
+
+      cards +=
+          '''
+  <div class="$cardClass">
+    <div>
+      <span style="font-weight: 700; color: var(--text-heading); font-size: 16px;">$char</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="$textClass">${isNegative ? '-' : '+'}</span>
+      <span class="$textClass">${val.abs()}</span>
+    </div>
+  </div>
+''';
+    }
+    cards += '</div>';
+
+    String textCharNumber = _htmlRomanIntToMathAddition(romanCharVal);
+    html += cards;
     html += tex(value: equal() + textCharNumber) + br();
     if (value.getValI().toString() != textCharNumber) {
       html += tex(value: equal() + value.getValI().toString()) + br();
@@ -157,6 +197,7 @@ class RomanSteps extends LibHtml {
   String _htmlDoTheCalculation(bool isSubtract, String label) {
     String html = span(id: idStepsLabel, value: sprintf(label, [br()]));
     html +=
+        br() +
         equal() +
         tex(
           value:

@@ -26,18 +26,12 @@ class MeasurementSteps extends LibHtml {
       units = ["kg", "hg (ons)", "dag", "g", "dg", "cg", "mg"];
     }
 
-    String headerRow = units
-        .map(
-          (u) =>
-              '<th style="border: 1px solid #ddd; padding: 8px; font-weight: bold; background-color: #f7f9fa;">$u</th>',
-        )
-        .join();
-
+    String headerRow = units.map((u) => '<th class="measurement-th">$u</th>').join();
     String desc = t.math_master.steps_measurement_ladder_desc;
 
     String html =
         '''
-<table style="width: 100%; border-collapse: collapse; text-align: center; font-family: system-ui, -apple-system, sans-serif; margin: 12px 0; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+<table class="measurement-table">
   <thead>
     <tr>
       $headerRow
@@ -45,7 +39,7 @@ class MeasurementSteps extends LibHtml {
   </thead>
   <tbody>
     <tr>
-      <td colspan="${units.length}" style="padding: 12px; font-size: 13px; color: #555; background-color: #fcfdfe; line-height: 1.6;">
+      <td colspan="${units.length}" class="measurement-td">
         $desc
       </td>
     </tr>
