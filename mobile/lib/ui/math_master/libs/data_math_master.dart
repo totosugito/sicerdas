@@ -10,6 +10,8 @@ import 'modules/clock/chapter_clock.dart';
 import 'modules/division/chapter_division.dart';
 import 'modules/factorization/chapter_factorization.dart';
 import 'modules/fractions/chapter_fractions.dart';
+import 'modules/length/chapter_length.dart';
+
 
 class DataMathMaster {
   static void _addChapter(
@@ -152,6 +154,12 @@ class DataMathMaster {
         title: locale.topics_fractions,
         assets: 'fractions',
       ),
+      ModelItem(
+        id: KeyTopic.topicLength.index,
+        key: KeyTopic.topicLength.name,
+        title: locale.topics_length,
+        assets: 'length',
+      ),
     ];
     list.sort((a, b) => a.id.compareTo(b.id)); // sort by topic
     return list;
@@ -184,6 +192,7 @@ class DataMathMaster {
     _addChapter(list, ChapterDivision.create(context));
     _addChapter(list, ChapterFactorization.create(context));
     _addChapter(list, ChapterFractions.create(context));
+    _addChapter(list, ChapterLength.create(context));
     return list;
   }
 }

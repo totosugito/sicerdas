@@ -137,5 +137,18 @@
   "chapter_factorization_gcf": "Greatest Common Factor (GCF)",
   "chapter_factorization_gcf_short": "GCF",
   "chapter_factorization_lcm": "Least Common Multiple (LCM)",
-  "chapter_factorization_lcm_short": "LCM"
+  "chapter_factorization_lcm_short": "LCM",
+  "topics_length": "Units of Length",
+  "chapter_length_conversion": "Length Conversion",
+  "chapter_length_addition": "Addition of Length",
+  "chapter_length_subtraction": "Subtraction of Length",
+  "chapter_length_comparison": "Length Comparison",
+  "steps_table_length": "Unit of length conversion charts",
+  "steps_table_weight": "Unit of weight conversion charts",
+  "steps_measurement_1": "Therefore, %s = %s",
+  "topics_weight": "Units of Weight",
+  "chapter_weight_conversion": "Weight Conversion",
+  "chapter_weight_addition": "Addition of Weight",
+  "chapter_weight_subtraction": "Subtraction of Weight",
+  "chapter_weight_comparison": "Weight Comparison"
 }

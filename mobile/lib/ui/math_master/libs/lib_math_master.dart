@@ -7,6 +7,9 @@ import 'modules/clock/topic_clock.dart';
 import 'modules/division/topic_division.dart';
 import 'modules/factorization/topic_factorization.dart';
 import 'modules/fractions/topic_fractions.dart';
+import 'modules/length/topic_length.dart';
+
+
 
 class LibMathMaster {
   static T? _enumFromString<T>(Iterable<T> values, String value) {
@@ -26,6 +29,8 @@ class LibMathMaster {
   late TopicDivision _topicDivision;
   late TopicFactorization _topicFactorization;
   late TopicFractions _topicFractions;
+  late TopicLength _topicLength;
+
 
   LibMathMaster.init(this._chapter, this._mdChapter) {
     KeyChapter keyChapter = _enumFromString(
@@ -47,6 +52,9 @@ class LibMathMaster {
         break;
       case KeyTopic.topicFractions:
         _topicFractions = TopicFractions(_chapter, _mdChapter, keyChapter);
+        break;
+      case KeyTopic.topicLength:
+        _topicLength = TopicLength(_chapter, _mdChapter, keyChapter);
         break;
       default:
         break;
@@ -83,6 +91,11 @@ class LibMathMaster {
           padMode: padMode,
           resetData: resetData,
         );
+      case KeyTopic.topicLength:
+        return _topicLength.createQuestion(
+          padMode: padMode,
+          resetData: resetData,
+        );
       default:
         return ModelQuestion.empty();
     }
@@ -104,6 +117,9 @@ class LibMathMaster {
         break;
       case KeyTopic.topicFractions:
         _topicFractions.updateSolution(question, solutionText: solutionText);
+        break;
+      case KeyTopic.topicLength:
+        _topicLength.updateSolution(question, solutionText: solutionText);
         break;
       default:
         break;

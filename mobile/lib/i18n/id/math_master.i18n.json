@@ -137,5 +137,18 @@
   "chapter_factorization_gcf": "Faktor Persekutuan Terbesar (FPB)",
   "chapter_factorization_gcf_short": "FPB",
   "chapter_factorization_lcm": "Kelipatan Persekutuan Terkecil (KPK)",
-  "chapter_factorization_lcm_short": "KPK"
+  "chapter_factorization_lcm_short": "KPK",
+  "topics_length": "Satuan Panjang",
+  "chapter_length_conversion": "Satuan Panjang",
+  "chapter_length_addition": "Penjumlahan Panjang",
+  "chapter_length_subtraction": "Pengurangan Panjang",
+  "chapter_length_comparison": "Perbandingan Panjang",
+  "steps_table_length": "Konversi satuan panjang",
+  "steps_table_weight": "Konversi satuan berat",
+  "steps_measurement_1": "Jadi, %s = %s",
+  "topics_weight": "Satuan Berat",
+  "chapter_weight_conversion": "Satuan Berat",
+  "chapter_weight_addition": "Penjumlahan Berat",
+  "chapter_weight_subtraction": "Pengurangan Berat",
+  "chapter_weight_comparison": "Perbandingan Berat"
 }

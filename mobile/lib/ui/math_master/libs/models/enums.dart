@@ -125,3 +125,8 @@ enum KeyPadMode {
   pad4Pad,
   padNumPad,
 }
+
+enum KeyMeasurement { length, weight }
+
+enum KeyCalcMethod { add, sub, mul, div }
+
