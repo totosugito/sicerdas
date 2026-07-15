@@ -29,11 +29,11 @@ import {
   useRevokeUserSessionMutation,
   type RevokeSessionResponse,
   type UpdateUserResponse,
+  type UserSession
 } from "@/api/users/user";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
 import { string_to_date } from "@/lib/my-utils";
 import { useAuth } from "@/hooks/use-auth";
-import type { UserSession } from "@/api/users/user/sessions";
 
 import { authClient } from "@/lib/auth-client";
 import { PageTitle } from "@/components/app";

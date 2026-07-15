@@ -10,6 +10,7 @@ import 'modules/fractions/topic_fractions.dart';
 import 'modules/length/topic_length.dart';
 import 'modules/weight/topic_weight.dart';
 import 'modules/roman/topic_roman.dart';
+import 'modules/percents/topic_percents.dart';
 
 
 
@@ -34,6 +35,7 @@ class LibMathMaster {
   late TopicLength _topicLength;
   late TopicWeight _topicWeight;
   late TopicRoman _topicRoman;
+  late TopicPercents _topicPercents;
 
 
   LibMathMaster.init(this._chapter, this._mdChapter) {
@@ -65,6 +67,9 @@ class LibMathMaster {
         break;
       case KeyTopic.topicRoman:
         _topicRoman = TopicRoman(_chapter, _mdChapter, keyChapter);
+        break;
+      case KeyTopic.topicPercents:
+        _topicPercents = TopicPercents(_chapter, _mdChapter, keyChapter);
         break;
       default:
         break;
@@ -116,6 +121,11 @@ class LibMathMaster {
           padMode: padMode,
           resetData: resetData,
         );
+      case KeyTopic.topicPercents:
+        return _topicPercents.createQuestion(
+          padMode: padMode,
+          resetData: resetData,
+        );
       default:
         return ModelQuestion.empty();
     }
@@ -146,6 +156,9 @@ class LibMathMaster {
         break;
       case KeyTopic.topicRoman:
         _topicRoman.updateSolution(question, solutionText: solutionText);
+        break;
+      case KeyTopic.topicPercents:
+        _topicPercents.updateSolution(question, solutionText: solutionText);
         break;
       default:
         break;

@@ -282,6 +282,7 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
                             KeyTopic.topicLength => locale.topics_length,
                             KeyTopic.topicWeight => locale.topics_weight,
                             KeyTopic.topicRoman => locale.topics_roman,
+                            KeyTopic.topicPercents => locale.topics_percents,
                             _ => entry.key.name,
                           },
                           style: theme.textTheme.large.copyWith(

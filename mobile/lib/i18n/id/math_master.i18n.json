@@ -167,5 +167,12 @@
   "steps_roman_6": "Uraikan bilangan romawi %s. <b>Jika bilangan yang lebih besar dibelakang dan bilangan lebih kecil di depan maka dikurangi</b>.%s\n",
   "steps_roman_7": "Jadi, bilangan cacah dari romawi %s adalah %s",
   "steps_roman_8": "Jadi, hasil dari %s adalah %s\n",
-  "steps_roman_9": "Tuliskan bilangan romawi %s sebagai bilangan cacah %s\n"
+  "steps_roman_9": "Tuliskan bilangan romawi %s sebagai bilangan cacah %s\n",
+  "topics_percents": "Persen",
+  "chapter_percents_of_number": "Persen dari Bilangan",
+  "chapter_percents_from_fractions": "Mengubah Pecahan ke Persen",
+  "chapter_percents_to_fractions": "Mengubah Persen ke Pecahan",
+  "of_text": "dari",
+  "steps_percents_1": "Ubah pecahan biasa berikut ke persen:",
+  "steps_percents_2": "Ubah persen berikut ke pecahan biasa:"
 }

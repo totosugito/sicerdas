@@ -13,6 +13,7 @@ import 'modules/fractions/chapter_fractions.dart';
 import 'modules/length/chapter_length.dart';
 import 'modules/weight/chapter_weight.dart';
 import 'modules/roman/chapter_roman.dart';
+import 'modules/percents/chapter_percents.dart';
 
 class DataMathMaster {
   static void _addChapter(
@@ -173,6 +174,12 @@ class DataMathMaster {
         title: locale.topics_roman,
         assets: 'roman',
       ),
+      ModelItem(
+        id: KeyTopic.topicPercents.index,
+        key: KeyTopic.topicPercents.name,
+        title: locale.topics_percents,
+        assets: 'percents',
+      ),
     ];
     list.sort((a, b) => a.id.compareTo(b.id)); // sort by topic
     return list;
@@ -208,6 +215,7 @@ class DataMathMaster {
     _addChapter(list, ChapterLength.create(context));
     _addChapter(list, ChapterWeight.create(context));
     _addChapter(list, ChapterRoman.create(context));
+    _addChapter(list, ChapterPercents.create(context));
     return list;
   }
 }

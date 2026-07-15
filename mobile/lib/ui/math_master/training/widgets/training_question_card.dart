@@ -71,8 +71,8 @@ class TrainingQuestionCard extends StatelessWidget {
                     ? SizedBox(
                         width: MediaQuery.of(context).size.width - 96,
                         child: Center(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
                             child: Math.tex(
                               question,
                               textStyle: theme.textTheme.h1.copyWith(
