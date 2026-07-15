@@ -139,10 +139,10 @@
   "chapter_factorization_lcm": "Kelipatan Persekutuan Terkecil (KPK)",
   "chapter_factorization_lcm_short": "KPK",
   "topics_length": "Satuan Panjang",
-  "chapter_length_conversion": "Satuan Panjang",
-  "chapter_length_addition": "Penjumlahan Panjang",
-  "chapter_length_subtraction": "Pengurangan Panjang",
-  "chapter_length_comparison": "Perbandingan Panjang",
+  "chapter_length_conversion": "Konversi Satuan Panjang",
+  "chapter_length_addition": "Penjumlahan Satuan Panjang",
+  "chapter_length_subtraction": "Pengurangan Satuan Panjang",
+  "chapter_length_comparison": "Perbandingan Satuan Panjang",
   "steps_table_length": "Konversi satuan panjang",
   "steps_table_weight": "Konversi satuan berat",
   "steps_measurement_1": "Jadi, %s = %s",
@@ -150,5 +150,6 @@
   "chapter_weight_conversion": "Satuan Berat",
   "chapter_weight_addition": "Penjumlahan Berat",
   "chapter_weight_subtraction": "Pengurangan Berat",
-  "chapter_weight_comparison": "Perbandingan Berat"
+  "chapter_weight_comparison": "Perbandingan Berat",
+  "steps_measurement_ladder_desc": "Setiap turun 1 anak tangga: dikali 10 (×10)<br/>Setiap naik 1 anak tangga: dibagi 10 (÷10)"
 }

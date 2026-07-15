@@ -150,5 +150,6 @@
   "chapter_weight_conversion": "Weight Conversion",
   "chapter_weight_addition": "Addition of Weight",
   "chapter_weight_subtraction": "Subtraction of Weight",
-  "chapter_weight_comparison": "Weight Comparison"
+  "chapter_weight_comparison": "Weight Comparison",
+  "steps_measurement_ladder_desc": "Every step down: multiply by 10 (×10)<br/>Every step up: divide by 10 (÷10)"
 }

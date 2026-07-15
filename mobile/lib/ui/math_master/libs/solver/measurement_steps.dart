@@ -9,10 +9,8 @@ class MeasurementSteps extends LibHtml {
   late MeasurementLib lib;
   late List<MyNumber> multiplier;
 
-  MeasurementSteps({
-    required List<MyNumber> numbers,
-    required MyNumber answer,
-  }) : super(numbers, answer);
+  MeasurementSteps({required List<MyNumber> numbers, required MyNumber answer})
+    : super(numbers, answer);
 
   void setLibrary(MeasurementLib lib_) {
     lib = lib_;
@@ -21,11 +19,39 @@ class MeasurementSteps extends LibHtml {
   String _htmlMeasurementUnitTable(String label) {
     String htmlLabel = span(id: idStepsLabel, value: label + br());
 
-    String html = image(
-      value: lib.keyMeasurement == KeyMeasurement.length
-          ? "images/unit_of_length.png"
-          : "images/unit_of_weight.png",
-    );
+    List<String> units = [];
+    if (lib.keyMeasurement == KeyMeasurement.length) {
+      units = ["km", "hm", "dam", "m", "dm", "cm", "mm"];
+    } else {
+      units = ["kg", "hg (ons)", "dag", "g", "dg", "cg", "mg"];
+    }
+
+    String headerRow = units
+        .map(
+          (u) =>
+              '<th style="border: 1px solid #ddd; padding: 8px; font-weight: bold; background-color: #f7f9fa;">$u</th>',
+        )
+        .join();
+
+    String desc = t.math_master.steps_measurement_ladder_desc;
+
+    String html =
+        '''
+<table style="width: 100%; border-collapse: collapse; text-align: center; font-family: system-ui, -apple-system, sans-serif; margin: 12px 0; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <thead>
+    <tr>
+      $headerRow
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td colspan="${units.length}" style="padding: 12px; font-size: 13px; color: #555; background-color: #fcfdfe; line-height: 1.6;">
+        $desc
+      </td>
+    </tr>
+  </tbody>
+</table>
+''';
     return (htmlLabel + html);
   }
 
@@ -47,14 +73,16 @@ class MeasurementSteps extends LibHtml {
         denominator: 0,
         type: KeyDataType.measurement,
       );
-      html += texColor(
-            value: "1" + texText(value: " " + fromValue.getUnit()),
+      html +=
+          texColor(
+            value: "1${texText(value: " ${fromValue.getUnit()}")}",
             color: color,
           ) +
           texEqual() +
           texColor(
-            value: numMult.getValueIText() +
-                texText(value: " " + toValue.getUnit()),
+            value:
+                numMult.getValueIText() +
+                texText(value: " ${toValue.getUnit()}"),
             color: color,
           );
     } else {
@@ -67,8 +95,9 @@ class MeasurementSteps extends LibHtml {
         denominator: dMul.toInt(),
         type: KeyDataType.measurement,
       );
-      html += texColor(
-            value: "1" + texText(value: " " + fromValue.getUnit()),
+      html +=
+          texColor(
+            value: "1${texText(value: " ${fromValue.getUnit()}")}",
             color: color,
           ) +
           texEqual() +
@@ -84,15 +113,13 @@ class MeasurementSteps extends LibHtml {
     MyNumber fromValue2,
     MyNumber toValue,
   ) {
-    String htmlLabel = span(
-          id: idStepsLabel,
-          value: sprintf(label, ["\n"]),
-        ) +
-        br();
+    String htmlLabel =
+        span(id: idStepsLabel, value: sprintf(label, ["\n"])) + br();
 
     String html = _htmlUnitConversionFormula(fromValue1, toValue, autoColor[0]);
-    if (numbers.length > 1) {
-      html += texBr() +
+    if (numbers.length > 1 && fromValue1.id != fromValue2.id) {
+      html +=
+          texBr() +
           _htmlUnitConversionFormula(fromValue2, toValue, autoColor[1]);
     }
 
@@ -107,27 +134,26 @@ class MeasurementSteps extends LibHtml {
   ) {
     String htmlLabel = span(id: idStepsLabel, value: sprintf(label, [br()]));
 
-    String html = texColor(
-          value: fromValue.getValueIText(),
-          color: autoColor[1],
-        ) +
+    String html =
+        texColor(value: fromValue.getValueIText(), color: autoColor[1]) +
         texColor(
-          value: texText(value: " " + fromValue.getUnit()),
+          value: texText(value: " ${fromValue.getUnit()}"),
           color: autoColor[0],
         );
-    html += texEqual() +
+    html +=
+        texEqual() +
         texColor(value: fromValue.getValueIText(), color: autoColor[1]) +
         texTimes() +
         texColor(value: multiplier[0].toString(), color: autoColor[0]) +
         texBr();
-    html +=
-        texEqual() + answer.toString() + texText(value: " " + answer.getUnit());
+    html += texEqual() + answer.toString();
     html = tex(value: texAligned(value: html));
     return (htmlLabel + html);
   }
 
   String htmlMeasurementConversionQuestion() {
-    String html = numbers[0].toString() +
+    String html =
+        numbers[0].toString() +
         texEqual(isAlign: false) +
         texLdots() +
         texText(value: answer.getUnit());
@@ -191,72 +217,75 @@ class MeasurementSteps extends LibHtml {
   ) {
     String htmlLabel = span(id: idStepsLabel, value: sprintf(label, [br()]));
 
-    String html = equal() +
+    final mult0 = multiplier[0];
+    final mult1 = multiplier.length > 1 ? multiplier[1] : multiplier[0];
+
+    String html =
+        equal() +
         texColor(value: fromValue1.getValueIText(), color: autoColor[2]) +
         texColor(
-          value: texText(value: " " + fromValue1.getUnit()),
+          value: texText(value: " ${fromValue1.getUnit()}"),
           color: autoColor[0],
         ) +
         symbol +
         texColor(value: fromValue2.getValueIText(), color: autoColor[3]) +
         texColor(
-          value: texText(value: " " + fromValue2.getUnit()),
+          value: texText(value: " ${fromValue2.getUnit()}"),
           color: autoColor[1],
         ) +
         texBr();
 
-    String var1NoMult = texColor(
-          value: fromValue1.getValueIText(),
-          color: autoColor[2],
-        ) +
+    String var1NoMult =
+        texColor(value: fromValue1.getValueIText(), color: autoColor[2]) +
         texColor(
-          value: texText(value: " " + multiplier[0].getUnit()),
+          value: texText(value: " ${mult0.getUnit()}"),
           color: autoColor[0],
         );
     String var1Mult = parenthesis(
-      value: texColor(value: fromValue1.getValueIText(), color: autoColor[2]) +
+      value:
+          texColor(value: fromValue1.getValueIText(), color: autoColor[2]) +
           texTimes() +
-          texColor(value: multiplier[0].toString(), color: autoColor[0]),
+          texColor(value: mult0.toString(), color: autoColor[0]),
     );
-    String var1 = multiplier[0].getValI() == 1 ? var1NoMult : var1Mult;
+    String var1 = mult0.getValI() == 1 ? var1NoMult : var1Mult;
 
-    String var2NoMult = texColor(
-          value: fromValue2.getValueIText(),
-          color: autoColor[3],
-        ) +
+    String var2NoMult =
+        texColor(value: fromValue2.getValueIText(), color: autoColor[3]) +
         texColor(
-          value: texText(value: " " + multiplier[1].getUnit()),
+          value: texText(value: " ${mult1.getUnit()}"),
           color: autoColor[1],
         );
     String var2Mult = parenthesis(
-      value: texColor(value: fromValue2.getValueIText(), color: autoColor[3]) +
+      value:
+          texColor(value: fromValue2.getValueIText(), color: autoColor[3]) +
           texTimes() +
-          texColor(value: multiplier[1].toString(), color: autoColor[1]),
+          texColor(value: mult1.toString(), color: autoColor[1]),
     );
-    String var2 = multiplier[1].getValI() == 1 ? var2NoMult : var2Mult;
+    String var2 = mult1.getValI() == 1 ? var2NoMult : var2Mult;
     html += equal() + var1 + symbol + var2 + texBr();
 
-    int val1 = multiplier[0].getValI() == 0
-        ? fromValue1.getValI() ~/ multiplier[0].getDen()
-        : fromValue1.getValI() * multiplier[0].getValI();
-    int val2 = multiplier[1].getValI() == 0
-        ? fromValue2.getValI() ~/ multiplier[1].getDen()
-        : fromValue2.getValI() * multiplier[1].getValI();
-    html += equal() +
+    int val1 = mult0.getValI() == 0
+        ? fromValue1.getValI() ~/ mult0.getDen()
+        : fromValue1.getValI() * mult0.getValI();
+    int val2 = mult1.getValI() == 0
+        ? fromValue2.getValI() ~/ mult1.getDen()
+        : fromValue2.getValI() * mult1.getValI();
+    html +=
+        equal() +
         val1.toString() +
-        texText(value: " " + answer.getUnit()) +
+        texText(value: " ${answer.getUnit()}") +
         symbol +
         val2.toString() +
-        texText(value: " " + answer.getUnit()) +
+        texText(value: " ${answer.getUnit()}") +
         texBr();
-    html +=
-        equal() + answer.toString() + texText(value: " " + answer.getUnit());
+    html += equal() + answer.toString();
     html = tex(value: html);
     return (htmlLabel + html);
   }
 
   String htmlMeasurementCalculationQuestion(String symbol) {
-    String html = numbers[0].toString() +
+    String html =
+        numbers[0].toString() +
         symbol +
         numbers[1].toString() +
         texEqual(isAlign: false) +
@@ -297,7 +326,9 @@ class MeasurementSteps extends LibHtml {
       module: badgePreviousModule,
       br: br(),
     );
-    html += liSpan(value: span(id: idStepsLabel, value: label1));
+    html += liSpan(
+      value: span(id: idStepsLabel, value: label1),
+    );
 
     // do the conversion
     String label2 = t.math_master.we_know_text;
@@ -328,5 +359,16 @@ class MeasurementSteps extends LibHtml {
       ),
     );
     return (ol(value: html));
+  }
+
+  @override
+  String showHtmlResult({
+    required String label,
+    required String input,
+    required String result,
+  }) {
+    String html = span(id: idStepsLabel, value: sprintf(label, [input, ""]));
+    html += span(id: idFinalAnswer, value: result);
+    return (html);
   }
 }
