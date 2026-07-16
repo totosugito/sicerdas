@@ -82,7 +82,7 @@
   "hour_text": "Hour",
   "we_know_text": "We know that:",
   "do_calculation_of_text": "Do the calculation of:",
-  "steps_complete_prev_module": "Complete the previous module: {module}{br}",
+  "steps_complete_prev_module": "Study the previous module: {module}{br}",
   "topics_fractions": "Fractions",
   "chapter_fractions_simplest_form": "Simplest Form",
   "chapter_fractions_from_mixed": "From Mixed Fraction",
@@ -131,7 +131,10 @@
     "clock_elapsed_step_1": "Subtract the start time from the end time:",
     "clock_elapsed_step_2": "Group the hours and minutes subtraction separately:",
     "clock_elapsed_step_3_borrow": "Since the end minutes is smaller than the start minutes, borrow 1 hour (60 minutes) from the end hour:",
-    "clock_elapsed_step_4": "Perform the subtraction to get the final result:"
+    "clock_elapsed_step_4": "Perform the subtraction to get the final result:",
+    "percents_to_fractions_step_1": "Convert the percent to a fraction with a denominator of 100:",
+    "percents_to_fractions_step_2": "Simplify the fraction by dividing both the numerator and denominator by their GCF of {gcf}:",
+    "percents_to_fractions_step_2_simple": "The fraction is already in its simplest form."
   },
   "topics_factorization": "Factorization",
   "chapter_factorization_gcf": "Greatest Common Factor (GCF)",

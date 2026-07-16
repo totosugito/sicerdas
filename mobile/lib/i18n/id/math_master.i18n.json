@@ -82,7 +82,7 @@
   "hour_text": "Jam",
   "we_know_text": "Kita tahu bahwa:",
   "do_calculation_of_text": "Lakukan perhitungan dari:",
-  "steps_complete_prev_module": "Selesaikan modul sebelumnya: {module}{br}",
+  "steps_complete_prev_module": "Pelajari modul sebelumnya: {module}{br}",
   "topics_fractions": "Pecahan",
   "chapter_fractions_simplest_form": "Bentuk Paling Sederhana",
   "chapter_fractions_from_mixed": "Dari Pecahan Campuran",
@@ -131,7 +131,10 @@
     "clock_elapsed_step_1": "Kurangi waktu mulai dari waktu selesai:",
     "clock_elapsed_step_2": "Kelompokkan pengurangan jam dan menit secara terpisah:",
     "clock_elapsed_step_3_borrow": "Karena menit waktu selesai lebih kecil dari menit waktu mulai, pinjam 1 jam (60 menit) dari jam waktu selesai:",
-    "clock_elapsed_step_4": "Lakukan pengurangan untuk mendapatkan hasil akhir:"
+    "clock_elapsed_step_4": "Lakukan pengurangan untuk mendapatkan hasil akhir:",
+    "percents_to_fractions_step_1": "Ubah persen menjadi pecahan dengan penyebut 100:",
+    "percents_to_fractions_step_2": "Sederhanakan pecahan dengan membagi pembilang dan penyebut dengan FPB-nya yaitu {gcf}:",
+    "percents_to_fractions_step_2_simple": "Pecahan sudah dalam bentuk paling sederhana."
   },
   "topics_factorization": "Faktorisasi",
   "chapter_factorization_gcf": "Faktor Persekutuan Terbesar (FPB)",

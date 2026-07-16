@@ -103,52 +103,6 @@ class PercentSteps extends LibHtml {
     return (htmlLabel + html);
   }
 
-  String _htmlPercentToFraction(String label) {
-    String htmlLabel =
-        span(id: idStepsLabel, value: sprintf(label, ["\n"])) + br();
-
-    String html =
-        texColor(value: numbers[0].getValI().toString(), color: Colors.green) +
-        texColor(value: texPercent(), color: Colors.red) +
-        texEqual() +
-        texFrac(
-          numerator: texColor(
-            value: numbers[0].getValI().toString(),
-            color: Colors.green,
-          ),
-          denominator: texColor(value: "100", color: Colors.red),
-        ) +
-        texBr(isNormal: false); // 10% = 10/100
-
-    int denominator = 100 ~/ answer.getDen();
-    if (denominator != 1) {
-      html +=
-          texEqual() +
-          texFrac(
-            numerator:
-                texColor(
-                  value: numbers[0].getValI().toString(),
-                  color: Colors.green,
-                ) +
-                texColor(
-                  value: divide() + denominator.toString(),
-                  color: Colors.blue,
-                ),
-            denominator:
-                texColor(value: "100", color: Colors.red) +
-                texColor(
-                  value: divide() + denominator.toString(),
-                  color: Colors.blue,
-                ),
-          ) +
-          texBr(isNormal: false); // 2*100/5
-    }
-
-    html += texEqual() + answer.toString(); // 1/10
-    html = tex(value: texAligned(value: html));
-    return (htmlLabel + html);
-  }
-
   String htmlPercentsOfNumber() {
     String html = "";
 
@@ -211,13 +165,80 @@ class PercentSteps extends LibHtml {
       value: span(id: idStepsLabel, value: label1),
     );
 
-    // 2. we know the formula
-    String label2 = t.math_master.we_know_text;
-    html += liSpan(value: _htmlPercentWeKnow(label2));
+    // 2. Convert percent to fraction with denominator 100
+    String label2 = t.math_master.solver.percents_to_fractions_step_1;
+    String step2Html =
+        texColor(value: numbers[0].getValI().toString(), color: Colors.green) +
+        texColor(value: texPercent(), color: Colors.red) +
+        texEqual() +
+        texFrac(
+          numerator: texColor(
+            value: numbers[0].getValI().toString(),
+            color: Colors.green,
+          ),
+          denominator: texColor(value: "100", color: Colors.red),
+        );
+    html += liSpan(
+      value:
+          span(id: idStepsLabel, value: label2) +
+          br() +
+          tex(value: texAligned(value: step2Html)),
+    );
 
-    // 3. do the calculation
-    String label3 = t.math_master.steps_do_the_calculation;
-    html += liSpan(value: _htmlPercentToFraction(label3));
+    // 3. Simplify the fraction if GCD is not 1
+    int denominator = 100 ~/ answer.getDen();
+    if (denominator != 1) {
+      String label3 = t.math_master.solver.percents_to_fractions_step_2(
+        gcf: denominator.toString(),
+      );
+      String step3Html =
+          texFrac(
+            numerator:
+                texColor(
+                  value: numbers[0].getValI().toString(),
+                  color: Colors.green,
+                ) +
+                texColor(
+                  value: divide() + denominator.toString(),
+                  color: Colors.blue,
+                ),
+            denominator:
+                texColor(value: "100", color: Colors.red) +
+                texColor(
+                  value: divide() + denominator.toString(),
+                  color: Colors.blue,
+                ),
+          ) +
+          texEqual() +
+          answer.toString();
+      html += liSpan(
+        value:
+            span(id: idStepsLabel, value: label3) +
+            br() +
+            tex(value: texAligned(value: step3Html)),
+      );
+    } else {
+      String label3 = t.math_master.solver.percents_to_fractions_step_2_simple;
+      html += liSpan(
+        value:
+            span(id: idStepsLabel, value: label3) +
+            br() +
+            tex(
+              value: texAligned(
+                value:
+                    texFrac(
+                      numerator: texColor(
+                        value: numbers[0].getValI().toString(),
+                        color: Colors.green,
+                      ),
+                      denominator: texColor(value: "100", color: Colors.red),
+                    ) +
+                    texEqual() +
+                    answer.toString(),
+              ),
+            ),
+      );
+    }
 
     return (ol(value: html));
   }
