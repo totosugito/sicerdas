@@ -12,7 +12,6 @@ import 'package:bse/core/config/app_constants.dart';
 import 'home_screen.dart';
 import '../books/book_screen/books_screen.dart';
 import '../profile/profile_screen.dart';
-import '../periodic_table/periodic_dictionary/periodic_dictionary.dart';
 import 'widgets/sync_overlay.dart';
 import 'widgets/custom_bottom_nav_bar.dart';
 import 'package:flutter/services.dart';
@@ -111,30 +110,35 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
     });
 
     // Check for cold start pending PDF path
-    _pdfPlatform.invokeMethod<String>('getPendingPdfPath').then((filePath) {
-      if (filePath != null && mounted) {
-        _openPdfViewer(filePath);
-      }
-    }).catchError((e) {
-      debugPrint("Error fetching pending PDF path: $e");
-    });
+    _pdfPlatform
+        .invokeMethod<String>('getPendingPdfPath')
+        .then((filePath) {
+          if (filePath != null && mounted) {
+            _openPdfViewer(filePath);
+          }
+        })
+        .catchError((e) {
+          debugPrint("Error fetching pending PDF path: $e");
+        });
   }
 
   void _openPdfViewer(String filePath) {
     if (_isPdfViewerOpen) return;
     _isPdfViewerOpen = true;
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => PdfViewerScreen(
-          filePath: filePath,
-          title: p.basename(filePath),
-          exitOnClose: true,
-        ),
-      ),
-    ).then((_) {
-      _isPdfViewerOpen = false;
-    });
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => PdfViewerScreen(
+              filePath: filePath,
+              title: p.basename(filePath),
+              exitOnClose: true,
+            ),
+          ),
+        )
+        .then((_) {
+          _isPdfViewerOpen = false;
+        });
   }
 
   @override
@@ -156,7 +160,9 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
         ShadToaster.of(context).show(
           ShadToast(
             title: Text(l10n.books.badgeNew),
-            description: Text(l10n.books.sync.successMessage(count: next.booksAdded)),
+            description: Text(
+              l10n.books.sync.successMessage(count: next.booksAdded),
+            ),
           ),
         );
       }
@@ -197,7 +203,6 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                 children: [
                   const HomeScreen(),
                   const BooksScreen(),
-                  const ChemistryDictionaryScreen(),
                   const ProfileScreen(),
                 ],
               ),
@@ -220,11 +225,6 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                     icon: Icons.menu_book_outlined,
                     activeIcon: Icons.menu_book,
                     label: l10n.books.navBooks,
-                  ),
-                  CustomBottomNavBarItem(
-                    icon: Icons.translate_outlined,
-                    activeIcon: Icons.translate,
-                    label: l10n.common.nav.dictionary,
                   ),
                   CustomBottomNavBarItem(
                     icon: Icons.person_outline,

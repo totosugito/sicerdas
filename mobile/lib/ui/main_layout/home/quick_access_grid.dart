@@ -83,19 +83,19 @@ class QuickAccessGrid extends ConsumerWidget {
           );
         },
       },
-      {
-        'title': l10n.common.aiAssistant,
-        'icon': Icons.auto_awesome_rounded,
-        'colors': [const Color(0xFF10B981), const Color(0xFF059669)],
-        'onTap': () {
-          ShadToaster.of(context).show(
-            ShadToast(
-              title: Text(l10n.common.aiAssistant),
-              description: const Text('Feature under development'),
-            ),
-          );
-        },
-      },
+      // {
+      //   'title': l10n.common.aiAssistant,
+      //   'icon': Icons.auto_awesome_rounded,
+      //   'colors': [const Color(0xFF10B981), const Color(0xFF059669)],
+      //   'onTap': () {
+      //     ShadToaster.of(context).show(
+      //       ShadToast(
+      //         title: Text(l10n.common.aiAssistant),
+      //         description: const Text('Feature under development'),
+      //       ),
+      //     );
+      //   },
+      // },
     ];
 
     return GridView.builder(

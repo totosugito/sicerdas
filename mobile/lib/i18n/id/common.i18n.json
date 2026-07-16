@@ -62,5 +62,13 @@
   "elementComparisonSortAuto": "Otomatis",
   "elementComparisonShowLess": "Tampilkan Lebih Sedikit",
   "elementComparisonShowMore": "Tampilkan Lebih Banyak",
-  "pressBackAgainToExit": "Tekan sekali lagi untuk keluar"
+  "pressBackAgainToExit": "Tekan sekali lagi untuk keluar",
+  "settingsResetProgress": "Reset Skor & Progress",
+  "settingsResetProgressDescription": "Hapus semua skor permainan dan progress level Anda.",
+  "settingsResetProgressConfirm": "Apakah Anda yakin ingin menghapus semua skor permainan dan progress level?",
+  "settingsResetLibrary": "Reset Basis Data Aplikasi",
+  "settingsResetLibraryDescription": "Hapus cache data aplikasi (buku, kategori, tabel periodik, catatan) dan riwayat sinkronisasi untuk mengunduh ulang data terbaru.",
+  "settingsResetLibraryConfirm": "Apakah Anda yakin ingin mereset dan mengunduh ulang basis data aplikasi?",
+  "settingsResetLibrarySuccess": "Basis data berhasil di-reset.",
+  "settingsResetProgressSuccess": "Skor dan progress berhasil di-reset."
 }

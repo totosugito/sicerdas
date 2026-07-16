@@ -62,5 +62,13 @@
   "elementComparisonSortAuto": "Auto",
   "elementComparisonShowLess": "Show Less",
   "elementComparisonShowMore": "Show More",
-  "pressBackAgainToExit": "Press back again to exit"
+  "pressBackAgainToExit": "Press back again to exit",
+  "settingsResetProgress": "Reset Scores & Progress",
+  "settingsResetProgressDescription": "Delete all your game scores and level progress.",
+  "settingsResetProgressConfirm": "Are you sure you want to reset all game scores and level progress?",
+  "settingsResetLibrary": "Reset App Database",
+  "settingsResetLibraryDescription": "Delete app data cache (books, categories, periodic elements, notes) and sync history to redownload the latest data.",
+  "settingsResetLibraryConfirm": "Are you sure you want to reset and redownload the app database?",
+  "settingsResetLibrarySuccess": "Database successfully reset.",
+  "settingsResetProgressSuccess": "Scores and progress successfully reset."
 }

@@ -5,6 +5,9 @@ import 'package:bse/core/providers/settings_provider.dart';
 import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/core/services/version_service.dart';
 import 'package:bse/widgets/confirmation_dialog.dart';
+import 'package:bse/widgets/ads/ads_native.dart';
+import 'package:bse/core/providers/package_info_provider.dart';
+import 'package:bse/core/utils/toast_utils.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -12,6 +15,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
+    final packageInfo = ref.watch(packageInfoProvider);
     final l10n = Translations.of(context);
 
     return Scaffold(
@@ -137,9 +141,17 @@ class SettingsScreen extends ConsumerWidget {
                     context,
                     icon: LucideIcons.info,
                     title: l10n.common.appVersion,
-                    trailing: const Text(
-                      "1.0.0",
-                      style: TextStyle(color: Colors.grey),
+                    trailing: packageInfo.when(
+                      data: (info) => Text(
+                        "${info.version}+${info.buildNumber}",
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      loading: () => const SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      error: (_, __) => const Text("—"),
                     ),
                   ),
                   const Divider(height: 1),
@@ -153,6 +165,10 @@ class SettingsScreen extends ConsumerWidget {
             ),
 
             const SizedBox(height: 32),
+
+            const AdsNative(templateType: AdsTemplateType.small),
+
+            const SizedBox(height: 8),
 
             // Danger Zone Section
             _buildSectionTitle(
@@ -168,10 +184,19 @@ class SettingsScreen extends ConsumerWidget {
                   _buildSettingItem(
                     context,
                     icon: LucideIcons.databaseBackup,
-                    title: l10n.books.settingsResetLibrary,
-                    subtitle: l10n.books.settingsResetLibraryDescription,
+                    title: l10n.common.settingsResetLibrary,
+                    subtitle: l10n.common.settingsResetLibraryDescription,
                     isDanger: true,
                     onTap: () => _showResetConfirmation(context, ref),
+                  ),
+                  const Divider(height: 1),
+                  _buildSettingItem(
+                    context,
+                    icon: LucideIcons.trophy,
+                    title: l10n.common.settingsResetProgress,
+                    subtitle: l10n.common.settingsResetProgressDescription,
+                    isDanger: true,
+                    onTap: () => _showResetProgressConfirmation(context, ref),
                   ),
                 ],
               ),
@@ -189,14 +214,44 @@ class SettingsScreen extends ConsumerWidget {
     ConfirmationDialog.show(
       context,
       icon: LucideIcons.triangleAlert,
-      title: l10n.books.settingsResetLibrary,
-      description: l10n.books.settingsResetLibraryConfirm,
+      title: l10n.common.settingsResetLibrary,
+      description: l10n.common.settingsResetLibraryConfirm,
       confirmLabel: l10n.books.settingsResetAction,
       cancelLabel: l10n.common.cancel,
       onConfirm: () async {
         Navigator.of(context).pop(); // Close dialog
-        Navigator.of(context).pop(); // Go back to profile/main
         await ref.read(versionServiceProvider).resetDatabase();
+        if (context.mounted) {
+          ToastUtils.showSuccess(
+            context,
+            title: l10n.common.successTitle,
+            message: l10n.common.settingsResetLibrarySuccess,
+          );
+        }
+      },
+    );
+  }
+
+  void _showResetProgressConfirmation(BuildContext context, WidgetRef ref) {
+    final l10n = Translations.of(context);
+
+    ConfirmationDialog.show(
+      context,
+      icon: LucideIcons.triangleAlert,
+      title: l10n.common.settingsResetProgress,
+      description: l10n.common.settingsResetProgressConfirm,
+      confirmLabel: l10n.books.settingsResetAction,
+      cancelLabel: l10n.common.cancel,
+      onConfirm: () async {
+        Navigator.of(context).pop(); // Close dialog
+        await ref.read(versionServiceProvider).resetUserProgress();
+        if (context.mounted) {
+          ToastUtils.showSuccess(
+            context,
+            title: l10n.common.successTitle,
+            message: l10n.common.settingsResetProgressSuccess,
+          );
+        }
       },
     );
   }

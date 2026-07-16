@@ -35,7 +35,7 @@ class AppDatabase extends _$AppDatabase {
 
   // --- Global Helpers ---
 
-  Future<void> clearAllData() async {
+  Future<void> clearLibraryData() async {
     await transaction(() async {
       await delete(books).go();
       await delete(appVersions).go();
@@ -44,10 +44,22 @@ class AppDatabase extends _$AppDatabase {
       await delete(bookGroups).go();
       await delete(periodicElements).go();
       await delete(periodicElementNotes).go();
+    });
+  }
+
+  Future<void> clearUserProgress() async {
+    await transaction(() async {
       await delete(mathMasterScores).go();
-      // await delete(mathTrickChapters).go();
-      // await delete(mathTrickLevels).go();
-      // await delete(mathTrickDailyScores).go();
+      await delete(mathTrickChapters).go();
+      await delete(mathTrickLevels).go();
+      await delete(mathTrickDailyScores).go();
+    });
+  }
+
+  Future<void> clearAllData() async {
+    await transaction(() async {
+      await clearLibraryData();
+      await clearUserProgress();
     });
   }
 

@@ -37,7 +37,7 @@ class VersionService {
     final prefs = await SharedPreferences.getInstance();
     
     // 1. Clear database
-    await _db.clearAllData();
+    await _db.clearLibraryData();
     
     // 2. Clear last check timestamp and settings
     await prefs.remove(_lastCheckKey);
@@ -63,6 +63,10 @@ class VersionService {
         }
       }
     } catch (_) {}
+  }
+
+  Future<void> resetUserProgress() async {
+    await _db.clearUserProgress();
   }
 
   Future<void> checkAndSync({bool force = false}) async {
