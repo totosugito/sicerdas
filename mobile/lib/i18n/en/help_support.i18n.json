@@ -1,0 +1,29 @@
+{
+  "title": "Help & Support",
+  "description": "Find answers to frequently asked questions or contact us for further assistance.",
+  "contactTitle": "Contact Us",
+  "contactHours": "Working Hours: Monday - Friday, 09:00 - 17:00 WIB",
+  "faqTitle": "Frequently Asked Questions (FAQ)",
+  "faqs": {
+    "whatIsSicerdas": {
+      "question": "What is SiCerdas?",
+      "answer": "SiCerdas is a digital education platform providing access to thousands of books, quizzes, and other learning resources for students across Indonesia."
+    },
+    "howToRegister": {
+      "question": "How do I register for an account?",
+      "answer": "You can register for an account by clicking the 'Register' button in the top right corner of the page, then completing the registration form with the required information."
+    },
+    "isThereCost": {
+      "question": "Is it free to use this platform?",
+      "answer": "SiCerdas offers both free and paid plans. Free plans provide basic access to most content, while paid plans provide full access to all features and premium content."
+    },
+    "offlineAccess": {
+      "question": "Can I access content offline?",
+      "answer": "Yes, with our Android app, you can download books and materials to access them offline anytime."
+    },
+    "supportContact": {
+      "question": "How do I contact support?",
+      "answer": "You can contact our support team via email at support@sicerdas.com or through the contact form on the Support page."
+    }
+  }
+}

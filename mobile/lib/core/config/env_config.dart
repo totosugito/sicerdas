@@ -17,4 +17,6 @@ class EnvConfig {
   // Using the original Web Client ID that works on the website
   static const String googleWebClientId =
       '11816434001-4a3b0qpvsdtfq3347vjnu110cp704t0p.apps.googleusercontent.com';
+
+  static const String supportEmail = 'support@sicerdas.com';
 }

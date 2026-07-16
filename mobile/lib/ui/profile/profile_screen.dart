@@ -8,6 +8,8 @@ import 'package:bse/i18n/strings.g.dart';
 import 'package:bse/widgets/confirmation_dialog.dart';
 import '../auth/sign_in_screen.dart';
 import '../settings/settings_screen.dart';
+import '../privacy_policy/privacy_policy_screen.dart';
+import '../help_support/help_support_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -79,6 +81,7 @@ class ProfileScreen extends ConsumerWidget {
 
             // Settings Group
             ShadCard(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Column(
                 children: [
                   _buildProfileItem(
@@ -106,14 +109,28 @@ class ProfileScreen extends ConsumerWidget {
                     context,
                     icon: LucideIcons.info,
                     title: l10n.common.helpSupport,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HelpSupportScreen(),
+                        ),
+                      );
+                    },
                   ),
                   const Divider(height: 1),
                   _buildProfileItem(
                     context,
                     icon: LucideIcons.shieldCheck,
                     title: l10n.common.privacyPolicy,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PrivacyPolicyScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -170,11 +187,7 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  void _handleLogout(
-    BuildContext context,
-    WidgetRef ref,
-    Translations l10n,
-  ) {
+  void _handleLogout(BuildContext context, WidgetRef ref, Translations l10n) {
     ConfirmationDialog.show(
       context,
       icon: LucideIcons.logOut,
