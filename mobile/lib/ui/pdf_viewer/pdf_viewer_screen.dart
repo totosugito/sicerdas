@@ -309,13 +309,49 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: !_isSearching,
+          titleSpacing: _isSearching ? 4 : null,
           title: _isSearching
-              ? PdfSearchBarField(
-                  controller: _searchController,
-                  placeholder: l10n.common.searchText,
-                  onSubmitted: (value) {
-                    _performSearch(value);
-                  },
+              ? Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () {
+                        setState(() {
+                          _isSearching = false;
+                          _searchController.clear();
+                          _searchResult.clear();
+                        });
+                      },
+                    ),
+                    Expanded(
+                      child: PdfSearchBarField(
+                        controller: _searchController,
+                        placeholder: l10n.common.searchText,
+                        caseSensitive: _caseSensitive,
+                        wholeWords: _wholeWords,
+                        onCaseSensitiveChanged: (value) {
+                          setState(() {
+                            _caseSensitive = value;
+                            if (_searchController.text.isNotEmpty) {
+                              _performSearch(_searchController.text);
+                            }
+                          });
+                        },
+                        onWholeWordsChanged: (value) {
+                          setState(() {
+                            _wholeWords = value;
+                            if (_searchController.text.isNotEmpty) {
+                              _performSearch(_searchController.text);
+                            }
+                          });
+                        },
+                        onSubmitted: (value) {
+                          _performSearch(value);
+                        },
+                      ),
+                    ),
+                  ],
                 )
               : Text(
                   widget.title,
@@ -331,48 +367,6 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
           actions: [
             if (_isSearching) ...[
               IconButton(
-                icon: Text(
-                  'Aa',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: _caseSensitive
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.mutedForeground,
-                  ),
-                ),
-                tooltip: 'Match Case',
-                onPressed: () {
-                  setState(() {
-                    _caseSensitive = !_caseSensitive;
-                    if (_searchController.text.isNotEmpty) {
-                      _performSearch(_searchController.text);
-                    }
-                  });
-                },
-              ),
-              IconButton(
-                icon: Text(
-                  'W',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: _wholeWords
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.mutedForeground,
-                  ),
-                ),
-                tooltip: 'Whole Words',
-                onPressed: () {
-                  setState(() {
-                    _wholeWords = !_wholeWords;
-                    if (_searchController.text.isNotEmpty) {
-                      _performSearch(_searchController.text);
-                    }
-                  });
-                },
-              ),
-              IconButton(
                 icon: const Icon(Icons.navigate_before),
                 onPressed: () {
                   _searchResult.previousInstance();
@@ -382,16 +376,6 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                 icon: const Icon(Icons.navigate_next),
                 onPressed: () {
                   _searchResult.nextInstance();
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  setState(() {
-                    _isSearching = false;
-                    _searchController.clear();
-                    _searchResult.clear();
-                  });
                 },
               ),
             ],
@@ -408,62 +392,74 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                 pageLayoutMode: _pageLayoutMode,
                 scrollDirection: _scrollDirection,
                 onTap: (action) {
-                  if (action == 'Search') {
-                    setState(() {
-                      _isSearching = true;
-                    });
-                  } else if (action == 'Bookmarks') {
-                    _pdfViewerKey.currentState?.openBookmarkView();
-                  } else if (action == 'Pan mode') {
-                    setState(() {
-                      _interactionMode =
-                          _interactionMode == PdfInteractionMode.selection
-                          ? PdfInteractionMode.pan
-                          : PdfInteractionMode.selection;
-                    });
-                  } else if (action == 'Annotations') {
-                    setState(() {
-                      _isAnnotationMode = !_isAnnotationMode;
-                      if (_isAnnotationMode) {
-                        _isSettingsMode = false;
-                      }
-                      _pdfViewerController.annotationMode = _isAnnotationMode
-                          ? PdfAnnotationMode.highlight
-                          : PdfAnnotationMode.none;
-                    });
-                  } else if (action == 'View settings') {
-                    setState(() {
-                      _isSettingsMode = !_isSettingsMode;
-                      if (_isSettingsMode) {
-                        _isAnnotationMode = false;
-                        _pdfViewerController.annotationMode =
-                            PdfAnnotationMode.none;
-                      }
-                    });
-                  } else if (action.toString().startsWith('PageLayoutMode:')) {
-                    final layout = action.toString().split(':')[1];
-                    setState(() {
-                      if (layout == 'continuous') {
+                  switch (action) {
+                    case PdfToolbarAction.search:
+                      setState(() {
+                        _isSearching = true;
+                      });
+                      break;
+                    case PdfToolbarAction.bookmarks:
+                      _pdfViewerKey.currentState?.openBookmarkView();
+                      break;
+                    case PdfToolbarAction.panMode:
+                      setState(() {
+                        _interactionMode =
+                            _interactionMode == PdfInteractionMode.selection
+                                ? PdfInteractionMode.pan
+                                : PdfInteractionMode.selection;
+                      });
+                      break;
+                    case PdfToolbarAction.annotations:
+                      setState(() {
+                        _isAnnotationMode = !_isAnnotationMode;
+                        if (_isAnnotationMode) {
+                          _isSettingsMode = false;
+                        }
+                        _pdfViewerController.annotationMode = _isAnnotationMode
+                            ? PdfAnnotationMode.highlight
+                            : PdfAnnotationMode.none;
+                      });
+                      break;
+                    case PdfToolbarAction.viewSettings:
+                      setState(() {
+                        _isSettingsMode = !_isSettingsMode;
+                        if (_isSettingsMode) {
+                          _isAnnotationMode = false;
+                          _pdfViewerController.annotationMode =
+                              PdfAnnotationMode.none;
+                        }
+                      });
+                      break;
+                    case PdfToolbarAction.pageLayoutContinuous:
+                      setState(() {
                         _pageLayoutMode = PdfPageLayoutMode.continuous;
                         _scrollDirection = PdfScrollDirection.vertical;
-                      } else {
+                      });
+                      break;
+                    case PdfToolbarAction.pageLayoutSingle:
+                      setState(() {
                         _pageLayoutMode = PdfPageLayoutMode.single;
                         _scrollDirection = PdfScrollDirection.horizontal;
-                      }
-                    });
-                  } else if (action.toString().startsWith('ScrollDirection:')) {
-                    final scroll = action.toString().split(':')[1];
-                    setState(() {
-                      if (scroll == 'vertical') {
+                      });
+                      break;
+                    case PdfToolbarAction.scrollVertical:
+                      setState(() {
                         _scrollDirection = PdfScrollDirection.vertical;
-                      } else {
+                      });
+                      break;
+                    case PdfToolbarAction.scrollHorizontal:
+                      setState(() {
                         _scrollDirection = PdfScrollDirection.horizontal;
-                      }
-                    });
-                  } else if (action == 'Save') {
-                    _savePdfDocument();
-                  } else if (action == 'Save As') {
-                    _saveAsPdfDocument();
+                      });
+                      break;
+                    case PdfToolbarAction.save:
+                      _savePdfDocument();
+                      break;
+                    case PdfToolbarAction.saveAs:
+                      _saveAsPdfDocument();
+                      break;
+                    default:
+                      break;
                   }
                 },
               ),

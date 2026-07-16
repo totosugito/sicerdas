@@ -25,7 +25,14 @@
     "errorLoading": "Gagal memuat PDF"
   },
   "toolbar": {
-    "pageLayout": "Tata Letak Halaman:",
+    "search": "Cari Teks",
+    "bookmarks": "Bookmark",
+    "panMode": "Mode Geser",
+    "annotations": "Anotasi",
+    "viewSettings": "Pengaturan Tampilan",
+    "save": "Simpan",
+    "saveAs": "Simpan Sebagai",
+    "pageLayout": "Layout:",
     "continuousPage": "Halaman Berkelanjutan",
     "pageByPage": "Halaman per halaman",
     "scroll": "Gulir:",

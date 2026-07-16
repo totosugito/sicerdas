@@ -25,7 +25,14 @@
     "errorLoading": "Error loading PDF"
   },
   "toolbar": {
-    "pageLayout": "Page Layout:",
+    "search": "Search Text",
+    "bookmarks": "Bookmarks",
+    "panMode": "Pan Mode",
+    "annotations": "Annotations",
+    "viewSettings": "View Settings",
+    "save": "Save",
+    "saveAs": "Save As",
+    "pageLayout": "Layout:",
     "continuousPage": "Continuous Page",
     "pageByPage": "Page by page",
     "scroll": "Scroll:",

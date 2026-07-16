@@ -3,7 +3,25 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
 
-typedef TapCallback = void Function(Object item);
+enum PdfToolbarAction {
+  search,
+  bookmarks,
+  panMode,
+  annotations,
+  viewSettings,
+  save,
+  saveAs,
+  pageLayoutContinuous,
+  pageLayoutSingle,
+  scrollVertical,
+  scrollHorizontal,
+  annotationHighlight,
+  annotationUnderline,
+  annotationStrikethrough,
+  annotationSquiggly,
+}
+
+typedef TapCallback = void Function(PdfToolbarAction action);
 
 class PdfTopToolbar extends StatefulWidget {
   final PdfViewerController controller;
@@ -46,11 +64,14 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
     _zoomLevel = widget.controller.zoomLevel;
   }
 
+  final ShadPopoverController _popoverController = ShadPopoverController();
+
   @override
   void dispose() {
     widget.controller.removeListener(_pageChanged);
     _textEditingController.dispose();
     _focusNode.dispose();
+    _popoverController.dispose();
     super.dispose();
   }
 
@@ -89,6 +110,143 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
     }
   }
 
+  Widget _buildMoreActionsPopover(
+    BuildContext context,
+    ShadThemeData theme,
+    Color iconColor,
+  ) {
+    final t = Translations.of(context).pdf_viewer.toolbar;
+    return ShadPopover(
+      controller: _popoverController,
+      popover: (context) => Container(
+        width: 200,
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildPopoverMenuItem(
+              icon: Icons.search,
+              label: t.search,
+              onPressed: () {
+                _popoverController.hide();
+                widget.onTap?.call(PdfToolbarAction.search);
+              },
+              theme: theme,
+            ),
+            _buildPopoverMenuItem(
+              icon: Icons.bookmark_border,
+              label: t.bookmarks,
+              onPressed: () {
+                _popoverController.hide();
+                widget.onTap?.call(PdfToolbarAction.bookmarks);
+              },
+              theme: theme,
+            ),
+            _buildPopoverMenuItem(
+              icon: Icons.pan_tool_rounded,
+              label: t.panMode,
+              active: widget.interactionMode == PdfInteractionMode.pan,
+              onPressed: () {
+                _popoverController.hide();
+                widget.onTap?.call(PdfToolbarAction.panMode);
+              },
+              theme: theme,
+            ),
+            _buildPopoverMenuItem(
+              icon: Icons.draw,
+              label: t.annotations,
+              active: widget.isAnnotationMode,
+              onPressed: () {
+                _popoverController.hide();
+                widget.onTap?.call(PdfToolbarAction.annotations);
+              },
+              theme: theme,
+            ),
+            _buildPopoverMenuItem(
+              icon: Icons.settings,
+              label: t.viewSettings,
+              active: widget.isSettingsMode,
+              onPressed: () {
+                _popoverController.hide();
+                widget.onTap?.call(PdfToolbarAction.viewSettings);
+              },
+              theme: theme,
+            ),
+            const Divider(height: 8),
+            _buildPopoverMenuItem(
+              icon: Icons.save,
+              label: t.save,
+              disabled: _pageCount == 0,
+              onPressed: () {
+                _popoverController.hide();
+                widget.onTap?.call(PdfToolbarAction.save);
+              },
+              theme: theme,
+            ),
+            _buildPopoverMenuItem(
+              icon: Icons.save_as,
+              label: t.saveAs,
+              disabled: _pageCount == 0,
+              onPressed: () {
+                _popoverController.hide();
+                widget.onTap?.call(PdfToolbarAction.saveAs);
+              },
+              theme: theme,
+            ),
+          ],
+        ),
+      ),
+      child: ShadButton.ghost(
+        width: 36,
+        height: 36,
+        padding: EdgeInsets.zero,
+        onPressed: () {
+          _popoverController.toggle();
+        },
+        child: Icon(Icons.more_vert, color: iconColor),
+      ),
+    );
+  }
+
+  Widget _buildPopoverMenuItem({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+    required ShadThemeData theme,
+    bool active = false,
+    bool disabled = false,
+  }) {
+    final fgColor = disabled
+        ? theme.colorScheme.mutedForeground
+        : (active ? theme.colorScheme.primary : theme.colorScheme.foreground);
+
+    return InkWell(
+      onTap: disabled ? null : onPressed,
+      borderRadius: BorderRadius.circular(4),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        color: active ? theme.colorScheme.accent : null,
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: fgColor),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
+                textAlign: TextAlign.start,
+                style: theme.textTheme.small.copyWith(
+                  color: fgColor,
+                  fontWeight: active ? FontWeight.w600 : FontWeight.normal,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
@@ -111,299 +269,176 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
         children: [
           SizedBox(
             height: 47.5,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minWidth: MediaQuery.of(context).size.width - 16,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Page navigation section
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Previous page
-                        ShadButton.ghost(
-                          width: 36,
-                          height: 36,
-                          padding: EdgeInsets.zero,
-                          onPressed: canJumpToPreviousPage
-                              ? () {
-                                  widget.controller.previousPage();
-                                }
-                              : null,
-                          child: Icon(
-                            Icons.keyboard_arrow_left,
-                            color: canJumpToPreviousPage
-                                ? iconColor
-                                : disabledIconColor,
-                          ),
-                        ),
-
-                        // Page input field
-                        SizedBox(
-                          width: (_pageCount.toString().length * 8.0 + 32.0)
-                              .clamp(48.0, 80.0),
-                          height: 32,
-                          child: ShadInput(
-                            controller: _textEditingController,
-                            focusNode: _focusNode,
-                            keyboardType: TextInputType.number,
-                            textAlign: TextAlign.center,
-                            alignment: Alignment.center,
-                            style: theme.textTheme.small.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: iconColor,
-                              height: 1.0,
-                            ),
-                            decoration: ShadDecoration(
-                              border: ShadBorder.all(
-                                width: 1,
-                                color: theme.colorScheme.border,
-                                radius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            onSubmitted: _onPageNumberSubmitted,
-                          ),
-                        ),
-
-                        const SizedBox(width: 6),
-
-                        // Total page count
-                        Text(
-                          '/ $_pageCount',
-                          style: theme.textTheme.small.copyWith(
-                            color: theme.colorScheme.mutedForeground,
-                          ),
-                        ),
-
-                        // Next page
-                        ShadButton.ghost(
-                          width: 36,
-                          height: 36,
-                          padding: EdgeInsets.zero,
-                          onPressed: canJumpToNextPage
-                              ? () {
-                                  widget.controller.nextPage();
-                                }
-                              : null,
-                          child: Icon(
-                            Icons.keyboard_arrow_right,
-                            color: canJumpToNextPage
-                                ? iconColor
-                                : disabledIconColor,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    // Zoom and action tools section
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Zoom percentage dropdown
-                        SizedBox(
-                          width: 76,
-                          height: 32,
-                          child: ShadSelect<double>(
-                            initialValue: _zoomLevel,
-                            selectedOptionBuilder: (context, value) => Text(
-                              '${(value * 100).floor()}%',
-                              style: theme.textTheme.small.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: iconColor,
-                              ),
-                            ),
-                            onChanged: (value) {
-                              if (value != null) {
-                                setState(() {
-                                  _zoomLevel = value;
-                                  widget.controller.zoomLevel = value;
-                                });
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Page navigation section
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Previous page
+                      ShadButton.ghost(
+                        width: 32,
+                        height: 32,
+                        padding: EdgeInsets.zero,
+                        onPressed: canJumpToPreviousPage
+                            ? () {
+                                widget.controller.previousPage();
                               }
-                            },
-                            options: const [
-                              ShadOption(value: 1.0, child: Text('100%')),
-                              ShadOption(value: 1.25, child: Text('125%')),
-                              ShadOption(value: 1.5, child: Text('150%')),
-                              ShadOption(value: 2.0, child: Text('200%')),
-                              ShadOption(value: 3.0, child: Text('300%')),
-                            ],
-                          ),
+                            : null,
+                        child: Icon(
+                          Icons.keyboard_arrow_left,
+                          color: canJumpToPreviousPage
+                              ? iconColor
+                              : disabledIconColor,
                         ),
-                        // Zoom out
-                        ShadButton.ghost(
-                          width: 36,
-                          height: 36,
-                          padding: EdgeInsets.zero,
-                          onPressed: _pageCount != 0 && _zoomLevel > 1.0
-                              ? () {
-                                  widget.controller.zoomLevel =
-                                      (_zoomLevel - 0.25).clamp(1.0, 3.0);
-                                }
-                              : null,
-                          child: Icon(
-                            Icons.zoom_out,
-                            color: _pageCount != 0 && _zoomLevel > 1.0
-                                ? iconColor
-                                : disabledIconColor,
-                          ),
-                        ),
-                        // Zoom in
-                        ShadButton.ghost(
-                          width: 36,
-                          height: 36,
-                          padding: EdgeInsets.zero,
-                          onPressed: _pageCount != 0 && _zoomLevel < 3.0
-                              ? () {
-                                  widget.controller.zoomLevel =
-                                      (_zoomLevel + 0.25).clamp(1.0, 3.0);
-                                }
-                              : null,
-                          child: Icon(
-                            Icons.zoom_in,
-                            color: _pageCount != 0 && _zoomLevel < 3.0
-                                ? iconColor
-                                : disabledIconColor,
-                          ),
-                        ),
+                      ),
 
-                        const SizedBox(width: 4),
-                        Container(
-                          width: 1,
-                          height: 24,
-                          color: theme.colorScheme.border,
+                      // Page input field
+                      SizedBox(
+                        width: (_pageCount.toString().length * 8.0 + 32.0)
+                            .clamp(44.0, 72.0),
+                        height: 32,
+                        child: ShadInput(
+                          controller: _textEditingController,
+                          focusNode: _focusNode,
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          alignment: Alignment.center,
+                          style: theme.textTheme.small.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: iconColor,
+                            height: 1.0,
+                          ),
+                          decoration: ShadDecoration(
+                            border: ShadBorder.all(
+                              width: 1,
+                              color: theme.colorScheme.border,
+                              radius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          onSubmitted: _onPageNumberSubmitted,
                         ),
-                        const SizedBox(width: 4),
+                      ),
 
-                        // Pan mode toggle
-                        ShadButton.ghost(
-                          width: 36,
-                          height: 36,
-                          padding: EdgeInsets.zero,
-                          backgroundColor:
-                              widget.interactionMode == PdfInteractionMode.pan
-                              ? theme.colorScheme.accent
-                              : null,
-                          onPressed: () {
-                            widget.onTap?.call('Pan mode');
+                      const SizedBox(width: 6),
+
+                      // Total page count
+                      Text(
+                        '/ $_pageCount',
+                        style: theme.textTheme.small.copyWith(
+                          color: theme.colorScheme.mutedForeground,
+                        ),
+                      ),
+
+                      // Next page
+                      ShadButton.ghost(
+                        width: 32,
+                        height: 32,
+                        padding: EdgeInsets.zero,
+                        onPressed: canJumpToNextPage
+                            ? () {
+                                widget.controller.nextPage();
+                              }
+                            : null,
+                        child: Icon(
+                          Icons.keyboard_arrow_right,
+                          color: canJumpToNextPage
+                              ? iconColor
+                              : disabledIconColor,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // Zoom and action tools section
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Zoom percentage dropdown
+                      SizedBox(
+                        width: 68,
+                        height: 32,
+                        child: ShadSelect<double>(
+                          initialValue: _zoomLevel,
+                          selectedOptionBuilder: (context, value) => Text(
+                            '${(value * 100).floor()}%',
+                            style: theme.textTheme.small.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: iconColor,
+                            ),
+                          ),
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() {
+                                _zoomLevel = value;
+                                widget.controller.zoomLevel = value;
+                              });
+                            }
                           },
-                          child: Icon(
-                            Icons.pan_tool_rounded,
-                            color:
-                                widget.interactionMode == PdfInteractionMode.pan
-                                ? theme.colorScheme.accentForeground
-                                : iconColor,
-                          ),
+                          options: const [
+                            ShadOption(value: 1.0, child: Text('100%')),
+                            ShadOption(value: 1.25, child: Text('125%')),
+                            ShadOption(value: 1.5, child: Text('150%')),
+                            ShadOption(value: 2.0, child: Text('200%')),
+                            ShadOption(value: 3.0, child: Text('300%')),
+                          ],
                         ),
+                      ),
+                      // Zoom out
+                      ShadButton.ghost(
+                        width: 32,
+                        height: 32,
+                        padding: EdgeInsets.zero,
+                        onPressed: _pageCount != 0 && _zoomLevel > 1.0
+                            ? () {
+                                widget.controller.zoomLevel =
+                                    (_zoomLevel - 0.25).clamp(1.0, 3.0);
+                              }
+                            : null,
+                        child: Icon(
+                          Icons.zoom_out,
+                          size: 18,
+                          color: _pageCount != 0 && _zoomLevel > 1.0
+                              ? iconColor
+                              : disabledIconColor,
+                        ),
+                      ),
+                      // Zoom in
+                      ShadButton.ghost(
+                        width: 32,
+                        height: 32,
+                        padding: EdgeInsets.zero,
+                        onPressed: _pageCount != 0 && _zoomLevel < 3.0
+                            ? () {
+                                widget.controller.zoomLevel =
+                                    (_zoomLevel + 0.25).clamp(1.0, 3.0);
+                              }
+                            : null,
+                        child: Icon(
+                          Icons.zoom_in,
+                          size: 18,
+                          color: _pageCount != 0 && _zoomLevel < 3.0
+                              ? iconColor
+                              : disabledIconColor,
+                        ),
+                      ),
 
-                        // Annotations toggle
-                        ShadButton.ghost(
-                          width: 36,
-                          height: 36,
-                          padding: EdgeInsets.zero,
-                          backgroundColor: widget.isAnnotationMode
-                              ? theme.colorScheme.accent
-                              : null,
-                          onPressed: () {
-                            widget.onTap?.call('Annotations');
-                          },
-                          child: Icon(
-                            Icons.draw,
-                            color: widget.isAnnotationMode
-                                ? theme.colorScheme.accentForeground
-                                : iconColor,
-                          ),
-                        ),
+                      const SizedBox(width: 4),
+                      Container(
+                        width: 1,
+                        height: 20,
+                        color: theme.colorScheme.border,
+                      ),
+                      const SizedBox(width: 4),
 
-                        // View settings
-                        ShadButton.ghost(
-                          width: 36,
-                          height: 36,
-                          padding: EdgeInsets.zero,
-                          backgroundColor: widget.isSettingsMode
-                              ? theme.colorScheme.accent
-                              : null,
-                          onPressed: _pageCount != 0
-                              ? () {
-                                  widget.controller.clearSelection();
-                                  widget.onTap?.call('View settings');
-                                }
-                              : null,
-                          child: Icon(
-                            Icons.settings,
-                            color: widget.isSettingsMode
-                                ? theme.colorScheme.accentForeground
-                                : (_pageCount != 0
-                                      ? iconColor
-                                      : disabledIconColor),
-                          ),
-                        ),
-
-                        // Bookmarks toggle
-                        ShadButton.ghost(
-                          width: 36,
-                          height: 36,
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
-                            widget.onTap?.call('Bookmarks');
-                          },
-                          child: Icon(Icons.bookmark_border, color: iconColor),
-                        ),
-
-                        // Search toggle
-                        ShadButton.ghost(
-                          width: 36,
-                          height: 36,
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
-                            widget.onTap?.call('Search');
-                          },
-                          child: Icon(Icons.search, color: iconColor),
-                        ),
-
-                        // Save
-                        ShadButton.ghost(
-                          width: 36,
-                          height: 36,
-                          padding: EdgeInsets.zero,
-                          onPressed: _pageCount != 0
-                              ? () {
-                                  widget.onTap?.call('Save');
-                                }
-                              : null,
-                          child: Icon(
-                            Icons.save,
-                            color: _pageCount != 0
-                                ? iconColor
-                                : disabledIconColor,
-                          ),
-                        ),
-
-                        // Save As
-                        ShadButton.ghost(
-                          width: 36,
-                          height: 36,
-                          padding: EdgeInsets.zero,
-                          onPressed: _pageCount != 0
-                              ? () {
-                                  widget.onTap?.call('Save As');
-                                }
-                              : null,
-                          child: Icon(
-                            Icons.save_as,
-                            color: _pageCount != 0
-                                ? iconColor
-                                : disabledIconColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                      // More Actions Popover
+                      _buildMoreActionsPopover(context, theme, iconColor),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -457,6 +492,16 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                     ).pdf_viewer.toolbar.squiggly,
                     theme: theme,
                   ),
+                  const Spacer(),
+                  ShadButton.ghost(
+                    width: 32,
+                    height: 32,
+                    padding: EdgeInsets.zero,
+                    onPressed: () {
+                      widget.onTap?.call(PdfToolbarAction.annotations);
+                    },
+                    child: Icon(Icons.close, size: 18, color: iconColor),
+                  ),
                 ],
               ),
             ),
@@ -484,7 +529,7 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                       context,
                     ).pdf_viewer.toolbar.continuousPage,
                     onPressed: () {
-                      widget.onTap?.call('PageLayoutMode:continuous');
+                      widget.onTap?.call(PdfToolbarAction.pageLayoutContinuous);
                     },
                     theme: theme,
                   ),
@@ -496,7 +541,7 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                       context,
                     ).pdf_viewer.toolbar.pageByPage,
                     onPressed: () {
-                      widget.onTap?.call('PageLayoutMode:single');
+                      widget.onTap?.call(PdfToolbarAction.pageLayoutSingle);
                     },
                     theme: theme,
                   ),
@@ -523,7 +568,7 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                       context,
                     ).pdf_viewer.toolbar.verticalScrolling,
                     onPressed: () {
-                      widget.onTap?.call('ScrollDirection:vertical');
+                      widget.onTap?.call(PdfToolbarAction.scrollVertical);
                     },
                     theme: theme,
                   ),
@@ -536,9 +581,19 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                       context,
                     ).pdf_viewer.toolbar.horizontalScrolling,
                     onPressed: () {
-                      widget.onTap?.call('ScrollDirection:horizontal');
+                      widget.onTap?.call(PdfToolbarAction.scrollHorizontal);
                     },
                     theme: theme,
+                  ),
+                  const Spacer(),
+                  ShadButton.ghost(
+                    width: 32,
+                    height: 32,
+                    padding: EdgeInsets.zero,
+                    onPressed: () {
+                      widget.onTap?.call(PdfToolbarAction.viewSettings);
+                    },
+                    child: Icon(Icons.close, size: 18, color: iconColor),
                   ),
                 ],
               ),
@@ -567,7 +622,15 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
         setState(() {
           widget.controller.annotationMode = mode;
         });
-        widget.onTap?.call('AnnotationMode:${mode.name}');
+        final action = switch (mode) {
+          PdfAnnotationMode.highlight => PdfToolbarAction.annotationHighlight,
+          PdfAnnotationMode.underline => PdfToolbarAction.annotationUnderline,
+          PdfAnnotationMode.strikethrough =>
+            PdfToolbarAction.annotationStrikethrough,
+          PdfAnnotationMode.squiggly => PdfToolbarAction.annotationSquiggly,
+          _ => PdfToolbarAction.annotations,
+        };
+        widget.onTap?.call(action);
       },
       child: Icon(
         icon,
