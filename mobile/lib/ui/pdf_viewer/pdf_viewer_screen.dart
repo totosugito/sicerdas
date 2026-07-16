@@ -35,6 +35,10 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   final GlobalKey<SfPdfViewerState> _pdfViewerKey =
       GlobalKey<SfPdfViewerState>();
   PdfInteractionMode _interactionMode = PdfInteractionMode.selection;
+  bool _isAnnotationMode = false;
+  bool _isSettingsMode = false;
+  PdfPageLayoutMode _pageLayoutMode = PdfPageLayoutMode.continuous;
+  PdfScrollDirection _scrollDirection = PdfScrollDirection.vertical;
 
   @override
   void initState() {
@@ -206,6 +210,10 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
               PdfTopToolbar(
                 controller: _pdfViewerController,
                 interactionMode: _interactionMode,
+                isAnnotationMode: _isAnnotationMode,
+                isSettingsMode: _isSettingsMode,
+                pageLayoutMode: _pageLayoutMode,
+                scrollDirection: _scrollDirection,
                 onTap: (action) {
                   if (action == 'Search') {
                     setState(() {
@@ -220,6 +228,45 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                               ? PdfInteractionMode.pan
                               : PdfInteractionMode.selection;
                     });
+                  } else if (action == 'Annotations') {
+                    setState(() {
+                      _isAnnotationMode = !_isAnnotationMode;
+                      if (_isAnnotationMode) {
+                        _isSettingsMode = false;
+                      }
+                      _pdfViewerController.annotationMode = _isAnnotationMode
+                          ? PdfAnnotationMode.highlight
+                          : PdfAnnotationMode.none;
+                    });
+                  } else if (action == 'View settings') {
+                    setState(() {
+                      _isSettingsMode = !_isSettingsMode;
+                      if (_isSettingsMode) {
+                        _isAnnotationMode = false;
+                        _pdfViewerController.annotationMode =
+                            PdfAnnotationMode.none;
+                      }
+                    });
+                  } else if (action.toString().startsWith('PageLayoutMode:')) {
+                    final layout = action.toString().split(':')[1];
+                    setState(() {
+                      if (layout == 'continuous') {
+                        _pageLayoutMode = PdfPageLayoutMode.continuous;
+                        _scrollDirection = PdfScrollDirection.vertical;
+                      } else {
+                        _pageLayoutMode = PdfPageLayoutMode.single;
+                        _scrollDirection = PdfScrollDirection.horizontal;
+                      }
+                    });
+                  } else if (action.toString().startsWith('ScrollDirection:')) {
+                    final scroll = action.toString().split(':')[1];
+                    setState(() {
+                      if (scroll == 'vertical') {
+                        _scrollDirection = PdfScrollDirection.vertical;
+                      } else {
+                        _scrollDirection = PdfScrollDirection.horizontal;
+                      }
+                    });
                   }
                 },
               ),
@@ -229,6 +276,8 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                 key: _pdfViewerKey,
                 controller: _pdfViewerController,
                 interactionMode: _interactionMode,
+                pageLayoutMode: _pageLayoutMode,
+                scrollDirection: _scrollDirection,
                 canShowTextSelectionMenu:
                     false, // Disable native menu to show custom contextual toolbar
                 canShowScrollHead: true,
