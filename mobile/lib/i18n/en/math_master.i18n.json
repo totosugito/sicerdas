@@ -134,7 +134,10 @@
     "clock_elapsed_step_4": "Perform the subtraction to get the final result:",
     "percents_to_fractions_step_1": "Convert the percent to a fraction with a denominator of 100:",
     "percents_to_fractions_step_2": "Simplify the fraction by dividing both the numerator and denominator by their GCF of {gcf}:",
-    "percents_to_fractions_step_2_simple": "The fraction is already in its simplest form."
+    "percents_to_fractions_step_2_simple": "The fraction is already in its simplest form.",
+    "fractions_to_percents_step_1": "Multiply the fraction by 100%:",
+    "fractions_to_percents_step_2": "Calculate the numerator:",
+    "fractions_to_percents_step_3": "Divide to get the final result:"
   },
   "topics_factorization": "Factorization",
   "chapter_factorization_gcf": "Greatest Common Factor (GCF)",

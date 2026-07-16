@@ -134,7 +134,10 @@
     "clock_elapsed_step_4": "Lakukan pengurangan untuk mendapatkan hasil akhir:",
     "percents_to_fractions_step_1": "Ubah persen menjadi pecahan dengan penyebut 100:",
     "percents_to_fractions_step_2": "Sederhanakan pecahan dengan membagi pembilang dan penyebut dengan FPB-nya yaitu {gcf}:",
-    "percents_to_fractions_step_2_simple": "Pecahan sudah dalam bentuk paling sederhana."
+    "percents_to_fractions_step_2_simple": "Pecahan sudah dalam bentuk paling sederhana.",
+    "fractions_to_percents_step_1": "Kalikan pecahan dengan 100%:",
+    "fractions_to_percents_step_2": "Hitung pembilang:",
+    "fractions_to_percents_step_3": "Bagi untuk mendapatkan hasil akhir:"
   },
   "topics_factorization": "Faktorisasi",
   "chapter_factorization_gcf": "Faktor Persekutuan Terbesar (FPB)",

@@ -51,40 +51,8 @@ class PercentSteps extends LibHtml {
     return (htmlLabel + html);
   }
 
-  String _htmlFractionsToPercents(String label) {
-    String htmlLabel =
-        span(id: idStepsLabel, value: sprintf(label, ["\n"])) + br();
-    String html =
-        texEqual() +
-        numbers[0].toString() +
-        texColor(
-          value: "${texTimes()}100${texPercent()}",
-          color: Colors.green,
-        ) +
-        texBr(isNormal: false); // 2/5 * 100%
-    html +=
-        texEqual() +
-        texFrac(
-          numerator:
-              numbers[0].getNumText() +
-              texColor(value: "${texTimes()}100", color: Colors.green),
-          denominator: numbers[0].getDenText(),
-        ) +
-        texColor(value: texPercent(), color: Colors.green) +
-        texBr(isNormal: false); // 2*100/5
-    html +=
-        texEqual() +
-        texFrac(
-          numerator: (numbers[0].getNum() * 100).toString(),
-          denominator: numbers[0].getDenText(),
-        ) +
-        texColor(value: texPercent(), color: Colors.green) +
-        texBr(isNormal: false); // 200/5
 
-    html += texEqual() + answer.toString() /* + texPercent()*/; // 40%
-    html = tex(value: texAligned(value: html));
-    return (htmlLabel + html);
-  }
+
 
   String _htmlPercentWeKnow(String label) {
     String htmlLabel = span(
@@ -144,9 +112,57 @@ class PercentSteps extends LibHtml {
       value: span(id: idStepsLabel, value: label1),
     );
 
-    // 2. do the calculation
-    String label2 = t.math_master.steps_do_the_calculation;
-    html += liSpan(value: _htmlFractionsToPercents(label2));
+    // 2. Multiply the fraction by 100%
+    String label2 = t.math_master.solver.fractions_to_percents_step_1;
+    String step2Html =
+        texEqual() +
+        numbers[0].toString() +
+        texColor(
+          value: "${texTimes()}100${texPercent()}",
+          color: Colors.green,
+        );
+    html += liSpan(
+      value:
+          span(id: idStepsLabel, value: label2) +
+          br() +
+          tex(value: texAligned(value: step2Html)),
+    );
+
+    // 3. Calculate the numerator
+    String label3 = t.math_master.solver.fractions_to_percents_step_2;
+    String step3Html =
+        texEqual() +
+        texFrac(
+          numerator:
+              numbers[0].getNumText() +
+              texColor(value: "${texTimes()}100", color: Colors.green),
+          denominator: numbers[0].getDenText(),
+        ) +
+        texColor(value: texPercent(), color: Colors.green) +
+        texBr(isNormal: false) +
+        texEqual() +
+        texFrac(
+          numerator: (numbers[0].getNum() * 100).toString(),
+          denominator: numbers[0].getDenText(),
+        ) +
+        texColor(value: texPercent(), color: Colors.green);
+    html += liSpan(
+      value:
+          span(id: idStepsLabel, value: label3) +
+          br() +
+          tex(value: texAligned(value: step3Html)),
+    );
+
+    // 4. Divide to get the final result
+    String label4 = t.math_master.solver.fractions_to_percents_step_3;
+    String step4Html =
+        texEqual() + answer.toString();
+    html += liSpan(
+      value:
+          span(id: idStepsLabel, value: label4) +
+          br() +
+          tex(value: texAligned(value: step4Html)),
+    );
 
     return (ol(value: html));
   }
