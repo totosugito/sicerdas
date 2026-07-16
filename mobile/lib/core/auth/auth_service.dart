@@ -107,6 +107,7 @@ class AuthService {
       final response = await _dio.post(
         ApiEndpoints.signInEmail,
         data: FormData.fromMap({'email': email, 'password': password}),
+        options: Options(contentType: 'multipart/form-data'),
       );
 
       final success = response.statusCode == 200;
@@ -151,6 +152,93 @@ class AuthService {
     }
   }
 
+  Future<UserModel?> fetchUserProfile() async {
+    try {
+      final response = await _dio.get(ApiEndpoints.userDetails);
+      if (response.statusCode == 200 &&
+          response.data != null &&
+          response.data['data'] != null) {
+        final user = UserModel.fromMap(response.data['data']);
+        await _prefs.setString(_userKey, user.toJson());
+        await _updateAppSettingsShowAds(user.showAds);
+        return user;
+      }
+    } catch (e) {
+      _logger.e('Error fetching user profile: $e');
+    }
+    return null;
+  }
+
+  Future<UserModel?> updateProfile({
+    required String name,
+    String? school,
+    String? educationLevel,
+    String? grade,
+    String? phone,
+    String? address,
+    String? bio,
+    String? dateOfBirth,
+  }) async {
+    try {
+      final data = <String, dynamic>{'name': name};
+      if (school != null) data['school'] = school;
+      if (educationLevel != null) data['educationLevel'] = educationLevel;
+      if (grade != null) data['grade'] = grade;
+      if (phone != null) data['phone'] = phone;
+      if (address != null) data['address'] = address;
+      if (bio != null) data['bio'] = bio;
+      if (dateOfBirth != null) data['dateOfBirth'] = dateOfBirth;
+
+      final response = await _dio.put(
+        ApiEndpoints.userUpdate,
+        data: FormData.fromMap(data),
+        options: Options(contentType: 'multipart/form-data'),
+      );
+
+      if (response.statusCode == 200 &&
+          response.data != null &&
+          response.data['data'] != null) {
+        final user = UserModel.fromMap(response.data['data']);
+        await _prefs.setString(_userKey, user.toJson());
+        await _updateAppSettingsShowAds(user.showAds);
+        return user;
+      }
+    } catch (e) {
+      _logger.e('Error updating profile: $e');
+    }
+    return null;
+  }
+
+  Future<(bool, String)> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await _dio.put(
+        ApiEndpoints.userChangePassword,
+        data: {'currentPassword': currentPassword, 'newPassword': newPassword},
+      );
+      final data = response.data;
+      final message = (data is Map && data['message'] != null)
+          ? data['message'].toString()
+          : 'Password changed successfully';
+      return (
+        response.statusCode == 200 || response.statusCode == 201,
+        message,
+      );
+    } catch (e) {
+      _logger.e('Error changing password: $e');
+      String errorMessage = 'Failed to change password';
+      if (e is DioException) {
+        final data = e.response?.data;
+        if (data is Map && data['message'] != null) {
+          errorMessage = data['message'].toString();
+        }
+      }
+      return (false, errorMessage);
+    }
+  }
+
   Future<void> signOut() async {
     try {
       await _dio.post(ApiEndpoints.signOut, data: {});
@@ -171,10 +259,25 @@ final authServiceProvider = Provider<AuthService>((ref) {
 });
 
 // A provider to easily access the current user across the app
-final currentUserProvider = Provider<UserModel?>((ref) {
-  final authService = ref.watch(authServiceProvider);
-  final isAuthenticated = ref.watch(authStateProvider);
+final currentUserProvider = NotifierProvider<CurrentUserNotifier, UserModel?>(
+  CurrentUserNotifier.new,
+);
 
-  if (!isAuthenticated) return null;
-  return authService.getCachedUser();
-});
+class CurrentUserNotifier extends Notifier<UserModel?> {
+  @override
+  UserModel? build() {
+    final authService = ref.watch(authServiceProvider);
+    final isAuthenticated = ref.watch(authStateProvider);
+
+    if (!isAuthenticated) return null;
+    return authService.getCachedUser();
+  }
+
+  void refresh() {
+    ref.invalidateSelf();
+  }
+
+  void update(UserModel user) {
+    state = user;
+  }
+}

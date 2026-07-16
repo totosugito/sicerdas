@@ -10,6 +10,7 @@ import '../auth/sign_in_screen.dart';
 import '../settings/settings_screen.dart';
 import '../privacy_policy/privacy_policy_screen.dart';
 import '../help_support/help_support_screen.dart';
+import 'widgets/account_settings_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -20,6 +21,12 @@ class ProfileScreen extends ConsumerWidget {
     final isLoggedIn = ref.watch(authStateProvider);
     final currentUser = ref.watch(currentUserProvider);
     final theme = ShadTheme.of(context);
+
+    final String? userImageUrl = currentUser?.image != null
+        ? currentUser!.image!
+              .replaceAll('127.0.0.1', '10.0.2.2')
+              .replaceAll('localhost', '10.0.2.2')
+        : null;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.common.nav.profile), centerTitle: true),
@@ -45,9 +52,9 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(50),
-                      child: currentUser?.image != null
+                      child: userImageUrl != null
                           ? CachedNetworkImage(
-                              imageUrl: currentUser!.image!,
+                              imageUrl: userImageUrl,
                               fit: BoxFit.cover,
                               placeholder: (context, url) => const Center(
                                 child: CircularProgressIndicator(),
@@ -88,7 +95,23 @@ class ProfileScreen extends ConsumerWidget {
                     context,
                     icon: LucideIcons.user,
                     title: l10n.common.accountSettings,
-                    onTap: () {},
+                    onTap: () {
+                      if (isLoggedIn) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AccountSettingsScreen(),
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SignInScreen(),
+                          ),
+                        );
+                      }
+                    },
                   ),
                   const Divider(height: 1),
                   _buildProfileItem(

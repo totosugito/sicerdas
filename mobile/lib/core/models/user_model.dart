@@ -8,6 +8,13 @@ class UserModel {
   final String? role;
   final bool showAds;
   final String? tierId;
+  final String? school;
+  final String? educationLevel;
+  final String? grade;
+  final String? phone;
+  final String? address;
+  final String? bio;
+  final String? dateOfBirth;
 
   UserModel({
     required this.id,
@@ -17,6 +24,13 @@ class UserModel {
     this.role,
     this.showAds = true,
     this.tierId,
+    this.school,
+    this.educationLevel,
+    this.grade,
+    this.phone,
+    this.address,
+    this.bio,
+    this.dateOfBirth,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,6 +42,13 @@ class UserModel {
       'role': role,
       'showAds': showAds,
       'tierId': tierId,
+      'school': school,
+      'educationLevel': educationLevel,
+      'grade': grade,
+      'phone': phone,
+      'address': address,
+      'bio': bio,
+      'dateOfBirth': dateOfBirth,
     };
   }
 
@@ -40,6 +61,13 @@ class UserModel {
       role: map['role'],
       showAds: map['showAds'] ?? true,
       tierId: map['tierId'],
+      school: map['school'],
+      educationLevel: map['educationLevel'],
+      grade: map['grade'],
+      phone: map['phone'],
+      address: map['address'],
+      bio: map['bio'],
+      dateOfBirth: map['dateOfBirth'],
     );
   }
 

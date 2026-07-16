@@ -11,6 +11,11 @@ class ApiEndpoints {
   static const String signInEmail = '/api/auth/sign-in-email';
   static const String signUpEmail = '/api/auth/sign-up/email';
 
+  // User Profile
+  static const String userDetails = '/api/users/user/details';
+  static const String userUpdate = '/api/users/user/update';
+  static const String userChangePassword = '/api/users/user/change-password';
+
   // Books
   static const String listBook = '/api/book/list-book';
   static const String detailBook = '/api/book/detail-book';
