@@ -7,6 +7,8 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:bse/core/utils/toast_utils.dart';
 import 'package:bse/i18n/strings.g.dart';
+// ignore: depend_on_referenced_packages
+import 'package:syncfusion_flutter_core/theme.dart';
 import 'widgets/pdf_context_menu.dart';
 import 'widgets/pdf_top_toolbar.dart';
 import 'widgets/pdf_search_bar_field.dart';
@@ -138,14 +140,17 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
           onBrowseAndSave: (newName) async {
             final t = Translations.of(context);
             try {
-              final List<int> savedBytes = await _pdfViewerController.saveDocument();
+              final List<int> savedBytes = await _pdfViewerController
+                  .saveDocument();
               final tempDir = Directory.systemTemp;
               final tempFile = File('${tempDir.path}/$newName');
               await tempFile.writeAsBytes(savedBytes);
 
               await SharePlus.instance.share(
                 ShareParams(
-                  text: t.pdf_viewer.saveAsDialog.shareTextPrefix(name: newName),
+                  text: t.pdf_viewer.saveAsDialog.shareTextPrefix(
+                    name: newName,
+                  ),
                   files: [XFile(tempFile.path)],
                 ),
               );
@@ -154,7 +159,9 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                 ToastUtils.showError(
                   context,
                   title: t.pdf_viewer.saveAsDialog.title,
-                  message: t.pdf_viewer.saveAsDialog.errorExport(error: e.toString()),
+                  message: t.pdf_viewer.saveAsDialog.errorExport(
+                    error: e.toString(),
+                  ),
                 );
               }
             }
@@ -165,14 +172,17 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
             final String newPath = '$dir/$newName';
 
             try {
-              final List<int> savedBytes = await _pdfViewerController.saveDocument();
+              final List<int> savedBytes = await _pdfViewerController
+                  .saveDocument();
               final newFile = File(newPath);
               await newFile.writeAsBytes(savedBytes);
               if (mounted) {
                 ToastUtils.showSuccess(
                   context,
                   title: t.pdf_viewer.saveAsDialog.title,
-                  message: t.pdf_viewer.saveAsDialog.successLocal(name: newName),
+                  message: t.pdf_viewer.saveAsDialog.successLocal(
+                    name: newName,
+                  ),
                 );
               }
             } catch (e) {
@@ -180,7 +190,9 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                 ToastUtils.showError(
                   context,
                   title: t.pdf_viewer.saveAsDialog.title,
-                  message: t.pdf_viewer.saveAsDialog.errorSave(error: e.toString()),
+                  message: t.pdf_viewer.saveAsDialog.errorSave(
+                    error: e.toString(),
+                  ),
                 );
               }
             }
@@ -457,53 +469,58 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                 },
               ),
             Expanded(
-              child: SfPdfViewer.file(
-                File(widget.filePath),
-                key: _pdfViewerKey,
-                controller: _pdfViewerController,
-                interactionMode: _interactionMode,
-                pageLayoutMode: _pageLayoutMode,
-                scrollDirection: _scrollDirection,
-                canShowPasswordDialog: false,
-                password: _password,
-                onDocumentLoadFailed: (PdfDocumentLoadFailedDetails details) {
-                  if (details.description.contains('password')) {
+              child: SfPdfViewerTheme(
+                data: SfPdfViewerThemeData(
+                  backgroundColor: theme.colorScheme.background,
+                ),
+                child: SfPdfViewer.file(
+                  File(widget.filePath),
+                  key: _pdfViewerKey,
+                  controller: _pdfViewerController,
+                  interactionMode: _interactionMode,
+                  pageLayoutMode: _pageLayoutMode,
+                  scrollDirection: _scrollDirection,
+                  canShowPasswordDialog: false,
+                  password: _password,
+                  onDocumentLoadFailed: (PdfDocumentLoadFailedDetails details) {
+                    if (details.description.contains('password')) {
+                      setState(() {
+                        _passwordErrorText = _password != null
+                            ? l10n.pdf_viewer.passwordDialog.errorInvalid
+                            : '';
+                      });
+                      _showPasswordDialog();
+                    } else {
+                      ToastUtils.showError(
+                        context,
+                        title: l10n.pdf_viewer.screen.errorLoading,
+                        message: details.description,
+                      );
+                    }
+                  },
+                  canShowTextSelectionMenu:
+                      false, // Disable native menu to show custom contextual toolbar
+                  canShowScrollHead: true,
+                  canShowScrollStatus: true,
+                  onDocumentLoaded: (PdfDocumentLoadedDetails details) {
                     setState(() {
-                      _passwordErrorText = _password != null
-                          ? l10n.pdf_viewer.passwordDialog.errorInvalid
-                          : '';
+                      _totalPages = details.document.pages.count;
                     });
-                    _showPasswordDialog();
-                  } else {
-                    ToastUtils.showError(
-                      context,
-                      title: l10n.pdf_viewer.screen.errorLoading,
-                      message: details.description,
-                    );
-                  }
-                },
-                canShowTextSelectionMenu:
-                    false, // Disable native menu to show custom contextual toolbar
-                canShowScrollHead: true,
-                canShowScrollStatus: true,
-                onDocumentLoaded: (PdfDocumentLoadedDetails details) {
-                  setState(() {
-                    _totalPages = details.document.pages.count;
-                  });
-                },
-                onPageChanged: (PdfPageChangedDetails details) {
-                  // Handled by top toolbar listener reactively
-                },
-                onTextSelectionChanged:
-                    (PdfTextSelectionChangedDetails details) {
-                      if (_overlayEntry != null) {
-                        _overlayEntry!.remove();
-                        _overlayEntry = null;
-                      }
-                      if (details.selectedText != null) {
-                        _showContextMenu(context, details);
-                      }
-                    },
+                  },
+                  onPageChanged: (PdfPageChangedDetails details) {
+                    // Handled by top toolbar listener reactively
+                  },
+                  onTextSelectionChanged:
+                      (PdfTextSelectionChangedDetails details) {
+                        if (_overlayEntry != null) {
+                          _overlayEntry!.remove();
+                          _overlayEntry = null;
+                        }
+                        if (details.selectedText != null) {
+                          _showContextMenu(context, details);
+                        }
+                      },
+                ),
               ),
             ),
           ],
