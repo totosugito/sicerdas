@@ -24,6 +24,7 @@ dependencies:
   shadcn_ui: ^0.55.0
   cached_network_image: ^3.4.1
   syncfusion_flutter_pdfviewer: ^33.2.5
+  syncfusion_flutter_pdf: ^33.2.5
   syncfusion_flutter_charts: ^33.2.5
   intl: ^0.20.2
   slang: ^4.16.0

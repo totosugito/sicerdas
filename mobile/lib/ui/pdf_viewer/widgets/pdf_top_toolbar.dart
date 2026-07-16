@@ -361,6 +361,38 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                           },
                           child: Icon(Icons.search, color: iconColor),
                         ),
+
+                        // Save
+                        ShadButton.ghost(
+                          width: 36,
+                          height: 36,
+                          padding: EdgeInsets.zero,
+                          onPressed: _pageCount != 0
+                              ? () {
+                                  widget.onTap?.call('Save');
+                                }
+                              : null,
+                          child: Icon(
+                            Icons.save,
+                            color: _pageCount != 0 ? iconColor : disabledIconColor,
+                          ),
+                        ),
+
+                        // Save As
+                        ShadButton.ghost(
+                          width: 36,
+                          height: 36,
+                          padding: EdgeInsets.zero,
+                          onPressed: _pageCount != 0
+                              ? () {
+                                  widget.onTap?.call('Save As');
+                                }
+                              : null,
+                          child: Icon(
+                            Icons.save_as,
+                            color: _pageCount != 0 ? iconColor : disabledIconColor,
+                          ),
+                        ),
                       ],
                     ),
                   ],
