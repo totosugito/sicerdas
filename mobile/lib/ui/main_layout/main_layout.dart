@@ -17,6 +17,7 @@ import 'widgets/sync_overlay.dart';
 import 'widgets/custom_bottom_nav_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:bse/core/utils/toast_utils.dart';
+import '../pdf_viewer/pdf_viewer_screen.dart';
 
 class MainLayout extends ConsumerStatefulWidget {
   const MainLayout({super.key});
@@ -27,6 +28,8 @@ class MainLayout extends ConsumerStatefulWidget {
 
 class _MainLayoutState extends ConsumerState<MainLayout> {
   DateTime? _lastPressedAt;
+  static const _pdfPlatform = MethodChannel('fahim_edu.bse/pdf_open');
+  bool _isPdfViewerOpen = false;
 
   @override
   void initState() {
@@ -36,6 +39,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
       if (success && mounted) {
         ref.read(syncProvider.notifier).checkInitial();
       }
+      _initPdfListener();
     });
   }
 
@@ -94,6 +98,43 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
     } catch (e) {
       return false;
     }
+  }
+
+  void _initPdfListener() {
+    _pdfPlatform.setMethodCallHandler((call) async {
+      if (call.method == 'onPdfOpened') {
+        final String? filePath = call.arguments as String?;
+        if (filePath != null && mounted) {
+          _openPdfViewer(filePath);
+        }
+      }
+    });
+
+    // Check for cold start pending PDF path
+    _pdfPlatform.invokeMethod<String>('getPendingPdfPath').then((filePath) {
+      if (filePath != null && mounted) {
+        _openPdfViewer(filePath);
+      }
+    }).catchError((e) {
+      debugPrint("Error fetching pending PDF path: $e");
+    });
+  }
+
+  void _openPdfViewer(String filePath) {
+    if (_isPdfViewerOpen) return;
+    _isPdfViewerOpen = true;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => PdfViewerScreen(
+          filePath: filePath,
+          title: p.basename(filePath),
+          exitOnClose: true,
+        ),
+      ),
+    ).then((_) {
+      _isPdfViewerOpen = false;
+    });
   }
 
   @override

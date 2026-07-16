@@ -9,11 +9,13 @@ import 'package:bse/i18n/strings.g.dart';
 class PdfViewerScreen extends StatefulWidget {
   final String filePath;
   final String title;
+  final bool exitOnClose;
 
   const PdfViewerScreen({
     super.key,
     required this.filePath,
     required this.title,
+    this.exitOnClose = false,
   });
 
   @override
@@ -134,169 +136,181 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     final theme = ShadTheme.of(context);
     final l10n = Translations.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: _isSearching
-            ? TextField(
-                controller: _searchController,
-                autofocus: true,
-                decoration: InputDecoration(
-                  hintText: l10n.common.searchText,
-                  border: InputBorder.none,
-                ),
-                style: theme.textTheme.p.copyWith(
-                  color: theme.colorScheme.foreground,
-                ),
-                onSubmitted: (value) {
-                  if (value.isNotEmpty) {
-                    _searchResult = _pdfViewerController.searchText(value);
-                    if (_searchResult.totalInstanceCount == 0) {
-                      ToastUtils.showInfo(
-                        context,
-                        title: l10n.common.infoTitle,
-                        message: l10n.common.textNotFound,
-                      );
+    return PopScope(
+      canPop: !widget.exitOnClose,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        if (widget.exitOnClose) {
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: _isSearching
+              ? TextField(
+                  controller: _searchController,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    hintText: l10n.common.searchText,
+                    border: InputBorder.none,
+                  ),
+                  style: theme.textTheme.p.copyWith(
+                    color: theme.colorScheme.foreground,
+                  ),
+                  onSubmitted: (value) {
+                    if (value.isNotEmpty) {
+                      _searchResult = _pdfViewerController.searchText(value);
+                      if (_searchResult.totalInstanceCount == 0) {
+                        ToastUtils.showInfo(
+                          context,
+                          title: l10n.common.infoTitle,
+                          message: l10n.common.textNotFound,
+                        );
+                      }
+                      setState(() {});
                     }
-                    setState(() {});
-                  }
+                  },
+                )
+              : Text(
+                  widget.title,
+                  style: theme.textTheme.large.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+          backgroundColor: theme.colorScheme.background,
+          elevation: 0,
+          iconTheme: IconThemeData(color: theme.colorScheme.foreground),
+          actions: [
+            if (_isSearching) ...[
+              IconButton(
+                icon: const Icon(Icons.navigate_before),
+                onPressed: () {
+                  _searchResult.previousInstance();
                 },
-              )
-            : Text(
-                widget.title,
-                style: theme.textTheme.large.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
-        backgroundColor: theme.colorScheme.background,
-        elevation: 0,
-        iconTheme: IconThemeData(color: theme.colorScheme.foreground),
-        actions: [
-          if (_isSearching) ...[
-            IconButton(
-              icon: const Icon(Icons.navigate_before),
-              onPressed: () {
-                _searchResult.previousInstance();
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.navigate_next),
-              onPressed: () {
-                _searchResult.nextInstance();
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                setState(() {
-                  _isSearching = false;
-                  _searchController.clear();
-                  _searchResult.clear();
-                });
-              },
-            ),
-          ] else ...[
-            IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                setState(() {
-                  _isSearching = true;
-                });
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.zoom_out),
-              onPressed: () {
-                _pdfViewerController.zoomLevel =
-                    (_pdfViewerController.zoomLevel - 0.25).clamp(1.0, 3.0);
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.zoom_in),
-              onPressed: () {
-                _pdfViewerController.zoomLevel =
-                    (_pdfViewerController.zoomLevel + 0.25).clamp(1.0, 3.0);
-              },
-            ),
+              IconButton(
+                icon: const Icon(Icons.navigate_next),
+                onPressed: () {
+                  _searchResult.nextInstance();
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  setState(() {
+                    _isSearching = false;
+                    _searchController.clear();
+                    _searchResult.clear();
+                  });
+                },
+              ),
+            ] else ...[
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {
+                  setState(() {
+                    _isSearching = true;
+                  });
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.zoom_out),
+                onPressed: () {
+                  _pdfViewerController.zoomLevel =
+                      (_pdfViewerController.zoomLevel - 0.25).clamp(1.0, 3.0);
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.zoom_in),
+                onPressed: () {
+                  _pdfViewerController.zoomLevel =
+                      (_pdfViewerController.zoomLevel + 0.25).clamp(1.0, 3.0);
+                },
+              ),
+            ],
           ],
-        ],
-      ),
-      body: SfPdfViewer.file(
-        File(widget.filePath),
-        controller: _pdfViewerController,
-        canShowTextSelectionMenu:
-            false, // Disable native menu to show custom contextual toolbar
-        canShowScrollHead: true,
-        canShowScrollStatus: true,
-        onDocumentLoaded: (PdfDocumentLoadedDetails details) {
-          setState(() {
-            _totalPages = details.document.pages.count;
-          });
-        },
-        onPageChanged: (PdfPageChangedDetails details) {
-          setState(() {
-            _currentPage = details.newPageNumber;
-          });
-        },
-        onTextSelectionChanged: (PdfTextSelectionChangedDetails details) {
-          if (_overlayEntry != null) {
-            _overlayEntry!.remove();
-            _overlayEntry = null;
-          }
-          if (details.selectedText != null) {
-            _showContextMenu(context, details);
-          }
-        },
-      ),
-      bottomNavigationBar: _totalPages > 0
-          ? Container(
-              height: 56,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.card,
-                border: Border(
-                  top: BorderSide(color: theme.colorScheme.border, width: 0.5),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.first_page),
-                    onPressed: _currentPage > 1
-                        ? () => _pdfViewerController.jumpToPage(1)
-                        : null,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.chevron_left),
-                    onPressed: _currentPage > 1
-                        ? () => _pdfViewerController.previousPage()
-                        : null,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    '$_currentPage / $_totalPages',
-                    style: theme.textTheme.small.copyWith(
-                      fontWeight: FontWeight.w600,
+        ),
+        body: SfPdfViewer.file(
+          File(widget.filePath),
+          controller: _pdfViewerController,
+          canShowTextSelectionMenu:
+              false, // Disable native menu to show custom contextual toolbar
+          canShowScrollHead: true,
+          canShowScrollStatus: true,
+          onDocumentLoaded: (PdfDocumentLoadedDetails details) {
+            setState(() {
+              _totalPages = details.document.pages.count;
+            });
+          },
+          onPageChanged: (PdfPageChangedDetails details) {
+            setState(() {
+              _currentPage = details.newPageNumber;
+            });
+          },
+          onTextSelectionChanged: (PdfTextSelectionChangedDetails details) {
+            if (_overlayEntry != null) {
+              _overlayEntry!.remove();
+              _overlayEntry = null;
+            }
+            if (details.selectedText != null) {
+              _showContextMenu(context, details);
+            }
+          },
+        ),
+        bottomNavigationBar: _totalPages > 0
+            ? Container(
+                height: 56,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.card,
+                  border: Border(
+                    top: BorderSide(
+                      color: theme.colorScheme.border,
+                      width: 0.5,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  IconButton(
-                    icon: const Icon(Icons.chevron_right),
-                    onPressed: _currentPage < _totalPages
-                        ? () => _pdfViewerController.nextPage()
-                        : null,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.last_page),
-                    onPressed: _currentPage < _totalPages
-                        ? () => _pdfViewerController.jumpToPage(_totalPages)
-                        : null,
-                  ),
-                ],
-              ),
-            )
-          : null,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.first_page),
+                      onPressed: _currentPage > 1
+                          ? () => _pdfViewerController.jumpToPage(1)
+                          : null,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.chevron_left),
+                      onPressed: _currentPage > 1
+                          ? () => _pdfViewerController.previousPage()
+                          : null,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      '$_currentPage / $_totalPages',
+                      style: theme.textTheme.small.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    IconButton(
+                      icon: const Icon(Icons.chevron_right),
+                      onPressed: _currentPage < _totalPages
+                          ? () => _pdfViewerController.nextPage()
+                          : null,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.last_page),
+                      onPressed: _currentPage < _totalPages
+                          ? () => _pdfViewerController.jumpToPage(_totalPages)
+                          : null,
+                    ),
+                  ],
+                ),
+              )
+            : null,
+      ),
     );
   }
 }
