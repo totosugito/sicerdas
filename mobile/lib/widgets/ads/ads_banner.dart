@@ -7,8 +7,14 @@ import 'ads_config.dart';
 class AdsBanner extends ConsumerWidget {
   final String? adsUnit;
   final bool showDivider;
+  final EdgeInsetsGeometry? padding;
 
-  const AdsBanner({super.key, this.adsUnit, this.showDivider = true});
+  const AdsBanner({
+    super.key,
+    this.adsUnit,
+    this.showDivider = true,
+    this.padding,
+  });
 
   /// Builds the ads banner widget if ads are enabled in the settings.
   /// Otherwise, returns null to avoid layout issues in Scaffold.
@@ -16,12 +22,17 @@ class AdsBanner extends ConsumerWidget {
     WidgetRef ref, {
     String? adsUnit,
     bool showDivider = true,
+    EdgeInsetsGeometry? padding,
   }) {
     final showBanner = ref.watch(showBannerAdsProvider);
     final isEnabled = adsUnit?.isNotEmpty ?? showBanner;
     if (!isEnabled) return null;
 
-    return AdsBanner(adsUnit: adsUnit, showDivider: showDivider);
+    return AdsBanner(
+      adsUnit: adsUnit,
+      showDivider: showDivider,
+      padding: padding,
+    );
   }
 
   @override
@@ -43,16 +54,19 @@ class AdsBanner extends ConsumerWidget {
       //   break;
     }
 
-    if (showDivider) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Divider(height: 1, thickness: 1, color: theme.colorScheme.border),
-          banner,
-        ],
-      );
-    }
+    final content = showDivider
+        ? Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Divider(height: 1, thickness: 1, color: theme.colorScheme.border),
+              banner,
+            ],
+          )
+        : banner;
 
-    return banner;
+    return Padding(
+      padding: padding ?? const EdgeInsets.only(top: 4),
+      child: content,
+    );
   }
 }

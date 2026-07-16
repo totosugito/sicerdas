@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:bse/widgets/ads/ads_banner.dart';
 import '../libs/models/model_question.dart';
 import '../libs/models/enums.dart';
 import 'lib/solution_html.dart';
 
-class UiMmStepsSolution extends StatefulWidget {
+class UiMmStepsSolution extends ConsumerStatefulWidget {
   final ModelQuestion question;
 
   const UiMmStepsSolution({super.key, required this.question});
@@ -25,10 +27,10 @@ class UiMmStepsSolution extends StatefulWidget {
   }
 
   @override
-  State<UiMmStepsSolution> createState() => _UiMmStepsSolutionState();
+  ConsumerState<UiMmStepsSolution> createState() => _UiMmStepsSolutionState();
 }
 
-class _UiMmStepsSolutionState extends State<UiMmStepsSolution> {
+class _UiMmStepsSolutionState extends ConsumerState<UiMmStepsSolution> {
   late final WebViewController _webViewController;
   bool _isPageFinished = false;
 
@@ -146,6 +148,7 @@ class _UiMmStepsSolutionState extends State<UiMmStepsSolution> {
         ),
       ),
       body: WebViewWidget(controller: _webViewController),
+      bottomNavigationBar: AdsBanner.buildBottomBar(ref),
     );
   }
 }

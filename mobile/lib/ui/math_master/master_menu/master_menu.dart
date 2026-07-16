@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:bse/i18n/strings.g.dart';
+import 'package:bse/widgets/ads/ads_banner.dart';
 import '../libs/data_math_master.dart';
 import '../libs/models/enums.dart';
 import '../libs/models/model_chapter.dart';
@@ -315,6 +316,7 @@ class _UiMathMasterState extends ConsumerState<UiMathMaster> {
           ),
         ],
       ),
+      bottomNavigationBar: AdsBanner.buildBottomBar(ref),
     );
   }
 }

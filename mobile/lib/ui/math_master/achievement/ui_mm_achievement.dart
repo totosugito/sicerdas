@@ -5,11 +5,12 @@ import 'package:bse/i18n/strings.g.dart';
 import '../libs/data_math_master.dart';
 import '../libs/models/achievement_parent.dart';
 import '../libs/providers/math_master_repository.dart';
-import '../../../../core/database/database.dart';
+import 'package:bse/core/database/database.dart';
 import 'widgets/achievement_stat_card.dart';
 import 'widgets/achievement_today_card.dart';
 import 'widgets/achievement_history_item.dart';
 import 'widgets/achievement_progress_chart.dart';
+import 'package:bse/widgets/ads/ads_native.dart';
 
 class UiMmAchievement extends ConsumerStatefulWidget {
   const UiMmAchievement({super.key});
@@ -87,6 +88,7 @@ class _UiMmAchievementState extends ConsumerState<UiMmAchievement> {
     final theme = ShadTheme.of(context);
     final locale = Translations.of(context).math_master;
     final formatter = NumberFormat.decimalPattern();
+    final showAds = ref.watch(showNativeAdsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -143,7 +145,12 @@ class _UiMmAchievementState extends ConsumerState<UiMmAchievement> {
 
                     // Progress Chart (Daily, Weekly, Monthly)
                     AchievementProgressChart(scores: recentScores),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 20),
+
+                    if (showAds) ...[
+                      const AdsNative(templateType: AdsTemplateType.small),
+                      const SizedBox(height: 20),
+                    ],
 
                     // Learning History Header
                     Row(

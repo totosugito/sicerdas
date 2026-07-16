@@ -22,7 +22,11 @@
   },
   "screen": {
     "successSave": "Document saved successfully",
-    "errorLoading": "Error loading PDF"
+    "errorLoading": "Error loading PDF",
+    "unsavedChangesTitle": "File modified",
+    "unsavedChangesPrompt": "Do you want to save?",
+    "yesSave": "Yes",
+    "cancelExit": "Cancel"
   },
   "toolbar": {
     "search": "Search Text",

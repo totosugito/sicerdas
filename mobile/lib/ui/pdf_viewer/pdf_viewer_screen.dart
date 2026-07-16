@@ -8,11 +8,14 @@ import 'package:share_plus/share_plus.dart';
 import 'package:bse/core/utils/toast_utils.dart';
 import 'package:bse/i18n/strings.g.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:bse/widgets/confirmation_dialog.dart';
+import 'package:bse/widgets/ads/ads_banner.dart';
 import 'widgets/pdf_top_toolbar.dart';
 import 'widgets/pdf_search_bar_field.dart';
 import 'widgets/pdf_save_as_dialog.dart';
 
-class PdfViewerScreen extends StatefulWidget {
+class PdfViewerScreen extends ConsumerStatefulWidget {
   final String filePath;
   final String title;
   final bool exitOnClose;
@@ -25,14 +28,15 @@ class PdfViewerScreen extends StatefulWidget {
   });
 
   @override
-  State<PdfViewerScreen> createState() => _PdfViewerScreenState();
+  ConsumerState<PdfViewerScreen> createState() => _PdfViewerScreenState();
 }
 
-class _PdfViewerScreenState extends State<PdfViewerScreen> {
+class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
   late PdfViewerController _pdfViewerController;
   late PdfTextSearchResult _searchResult;
   bool _isSearching = false;
   bool _showToolbars = true;
+  bool _isModified = false;
   final TextEditingController _searchController = TextEditingController();
   int _totalPages = 0;
   final GlobalKey<SfPdfViewerState> _pdfViewerKey =
@@ -78,6 +82,9 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
       final List<int> savedBytes = await _pdfViewerController.saveDocument();
       final file = File(widget.filePath);
       await file.writeAsBytes(savedBytes);
+      setState(() {
+        _isModified = false;
+      });
       if (mounted) {
         ToastUtils.showSuccess(
           context,
@@ -114,6 +121,9 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
               final tempDir = Directory.systemTemp;
               final tempFile = File('${tempDir.path}/$newName');
               await tempFile.writeAsBytes(savedBytes);
+              setState(() {
+                _isModified = false;
+              });
 
               await SharePlus.instance.share(
                 ShareParams(
@@ -145,6 +155,9 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                   .saveDocument();
               final newFile = File(newPath);
               await newFile.writeAsBytes(savedBytes);
+              setState(() {
+                _isModified = false;
+              });
               if (mounted) {
                 ToastUtils.showSuccess(
                   context,
@@ -185,16 +198,54 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     super.dispose();
   }
 
+  Future<bool> _showExitConfirmationDialog() async {
+    final l10n = Translations.of(context);
+    bool shouldSave = false;
+
+    await showShadDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return ConfirmationDialog(
+          icon: Icons.save_rounded,
+          title: l10n.pdf_viewer.screen.unsavedChangesTitle,
+          description: l10n.pdf_viewer.screen.unsavedChangesPrompt,
+          confirmLabel: l10n.pdf_viewer.screen.yesSave,
+          cancelLabel: l10n.pdf_viewer.screen.cancelExit,
+          isDestructive: false,
+          onConfirm: () {
+            shouldSave = true;
+            Navigator.of(dialogContext).pop();
+          },
+        );
+      },
+    );
+
+    if (shouldSave) {
+      await _savePdfDocument();
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
     final l10n = Translations.of(context);
 
     return PopScope(
-      canPop: !widget.exitOnClose,
-      onPopInvokedWithResult: (didPop, result) {
+      canPop: !_isModified && !widget.exitOnClose,
+      onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        if (widget.exitOnClose) {
+        if (_isModified) {
+          final shouldPop = await _showExitConfirmationDialog();
+          if (shouldPop && context.mounted) {
+            if (widget.exitOnClose) {
+              SystemNavigator.pop();
+            } else {
+              Navigator.of(context).pop();
+            }
+          }
+        } else if (widget.exitOnClose) {
           SystemNavigator.pop();
         }
       },
@@ -278,41 +329,67 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
           children: [
             // PDF Document View (Full Screen)
             Positioned.fill(
-              child: SfPdfViewerTheme(
-                data: SfPdfViewerThemeData(
-                  backgroundColor: theme.colorScheme.background,
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  textSelectionTheme: TextSelectionThemeData(
+                    selectionColor: theme.colorScheme.primary.withValues(
+                      alpha: 0.3,
+                    ),
+                    selectionHandleColor: theme.colorScheme.primary,
+                  ),
                 ),
-                child: SfPdfViewer.file(
-                  File(widget.filePath),
-                  key: _pdfViewerKey,
-                  controller: _pdfViewerController,
-                  interactionMode: _interactionMode,
-                  pageLayoutMode: _pageLayoutMode,
-                  scrollDirection: _scrollDirection,
-                  canShowPasswordDialog: true,
-                  onTap: (PdfGestureDetails details) {
-                    setState(() {
-                      _showToolbars = !_showToolbars;
-                    });
-                  },
-                  onDocumentLoadFailed: (PdfDocumentLoadFailedDetails details) {
-                    ToastUtils.showError(
-                      context,
-                      title: l10n.pdf_viewer.screen.errorLoading,
-                      message: details.description,
-                    );
-                  },
-                  canShowTextSelectionMenu: true,
-                  canShowScrollHead: true,
-                  canShowScrollStatus: true,
-                  onDocumentLoaded: (PdfDocumentLoadedDetails details) {
-                    setState(() {
-                      _totalPages = details.document.pages.count;
-                    });
-                  },
-                  onPageChanged: (PdfPageChangedDetails details) {
-                    // Handled by top toolbar listener reactively
-                  },
+                child: SfPdfViewerTheme(
+                  data: SfPdfViewerThemeData(
+                    backgroundColor: theme.colorScheme.background,
+                  ),
+                  child: SfPdfViewer.file(
+                    File(widget.filePath),
+                    key: _pdfViewerKey,
+                    controller: _pdfViewerController,
+                    interactionMode: _interactionMode,
+                    pageLayoutMode: _pageLayoutMode,
+                    scrollDirection: _scrollDirection,
+                    canShowPasswordDialog: true,
+                    onTap: (PdfGestureDetails details) {
+                      setState(() {
+                        _showToolbars = !_showToolbars;
+                      });
+                    },
+                    onDocumentLoadFailed:
+                        (PdfDocumentLoadFailedDetails details) {
+                          ToastUtils.showError(
+                            context,
+                            title: l10n.pdf_viewer.screen.errorLoading,
+                            message: details.description,
+                          );
+                        },
+                    canShowTextSelectionMenu: true,
+                    canShowScrollHead: true,
+                    canShowScrollStatus: true,
+                    onDocumentLoaded: (PdfDocumentLoadedDetails details) {
+                      setState(() {
+                        _totalPages = details.document.pages.count;
+                      });
+                    },
+                    onPageChanged: (PdfPageChangedDetails details) {
+                      // Handled by top toolbar listener reactively
+                    },
+                    onAnnotationAdded: (annotation) {
+                      setState(() {
+                        _isModified = true;
+                      });
+                    },
+                    onAnnotationEdited: (annotation) {
+                      setState(() {
+                        _isModified = true;
+                      });
+                    },
+                    onAnnotationRemoved: (annotation) {
+                      setState(() {
+                        _isModified = true;
+                      });
+                    },
+                  ),
                 ),
               ),
             ),
@@ -411,6 +488,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
               ),
           ],
         ),
+        bottomNavigationBar: AdsBanner.buildBottomBar(ref),
       ),
     );
   }

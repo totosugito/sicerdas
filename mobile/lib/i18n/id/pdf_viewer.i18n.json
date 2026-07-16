@@ -22,7 +22,11 @@
   },
   "screen": {
     "successSave": "Dokumen berhasil disimpan",
-    "errorLoading": "Gagal memuat PDF"
+    "errorLoading": "Gagal memuat PDF",
+    "unsavedChangesTitle": "File diubah",
+    "unsavedChangesPrompt": "Apakah Anda ingin menyimpan?",
+    "yesSave": "Ya",
+    "cancelExit": "Batal"
   },
   "toolbar": {
     "search": "Cari Teks",
