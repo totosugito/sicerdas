@@ -11,7 +11,13 @@ class PercentsFromFractions extends PercentsOfNumber {
 
   @override
   String getQuestionTemplate() {
-    return ("@0 = @1\\%");
+    switch (padMode) {
+      case KeyPadMode.padYesNo:
+      case KeyPadMode.pad4Pad:
+        return ("@0 = @1");
+      default:
+        return ("@0 = @1\\%");
+    }
   }
 
   @override
@@ -21,7 +27,10 @@ class PercentsFromFractions extends PercentsOfNumber {
     ModelNumber val0 = getChapterNumRange(selectedRangeIndex, 0);
     numbers = [];
     numbers.add(MyNumber.nextFractions(myRandom: myRandom, minMax: val0));
-    answer = MyNumber(value: numbers[0].getValueAsPercents());
+    answer = MyNumber(
+      value: numbers[0].getValueAsPercents(),
+      type: KeyDataType.percents,
+    );
 
     int spacingVal = val0.spacingNum * 100 ~/ val0.minDen;
     choices = createChoiceIntegerSimple(spacing: spacingVal);

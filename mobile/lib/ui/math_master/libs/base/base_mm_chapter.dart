@@ -178,6 +178,7 @@ class BaseMmChapter {
         rawList: rawChoices,
         checkNumber: checkAnswer,
         spacing: spacing,
+        type: answer.type,
       );
       rawChoices.add(number);
     }
@@ -226,6 +227,7 @@ class BaseMmChapter {
         rawList: rawChoices,
         checkNumber: checkAnswer,
         spacing: spacing,
+        type: answer.type,
       );
       rawChoices.add(number);
     }

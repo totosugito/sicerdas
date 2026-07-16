@@ -52,6 +52,10 @@ class _UiMmStepsSolutionState extends State<UiMmStepsSolution> {
       return correctChoice.getText();
     }
 
+    if (correctChoice.value.type == KeyDataType.percents) {
+      return correctChoice.value.toString();
+    }
+
     if (correctChoice.value.valueText.isNotEmpty) {
       return correctChoice.value.valueText;
     }
