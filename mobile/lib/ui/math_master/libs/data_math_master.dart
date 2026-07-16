@@ -14,6 +14,7 @@ import 'modules/length/chapter_length.dart';
 import 'modules/weight/chapter_weight.dart';
 import 'modules/roman/chapter_roman.dart';
 import 'modules/percents/chapter_percents.dart';
+import 'modules/multiplication/chapter_multiplication.dart';
 
 class DataMathMaster {
   static void _addChapter(
@@ -133,6 +134,12 @@ class DataMathMaster {
         assets: 'addition',
       ),
       ModelItem(
+        id: KeyTopic.topicMultiplication.index,
+        key: KeyTopic.topicMultiplication.name,
+        title: locale.topics_multiplication,
+        assets: 'multiplication',
+      ),
+      ModelItem(
         id: KeyTopic.topicClock.index,
         key: KeyTopic.topicClock.name,
         title: locale.topics_clock,
@@ -216,6 +223,7 @@ class DataMathMaster {
     _addChapter(list, ChapterWeight.create(context));
     _addChapter(list, ChapterRoman.create(context));
     _addChapter(list, ChapterPercents.create(context));
+    _addChapter(list, ChapterMultiplication.create(context));
     return list;
   }
 }
