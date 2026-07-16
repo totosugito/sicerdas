@@ -15,6 +15,7 @@ import 'modules/weight/chapter_weight.dart';
 import 'modules/roman/chapter_roman.dart';
 import 'modules/percents/chapter_percents.dart';
 import 'modules/multiplication/chapter_multiplication.dart';
+import 'modules/subtraction/chapter_subtraction.dart';
 
 class DataMathMaster {
   static void _addChapter(
@@ -134,6 +135,12 @@ class DataMathMaster {
         assets: 'addition',
       ),
       ModelItem(
+        id: KeyTopic.topicSubtraction.index,
+        key: KeyTopic.topicSubtraction.name,
+        title: locale.topics_subtraction,
+        assets: 'subtraction',
+      ),
+      ModelItem(
         id: KeyTopic.topicMultiplication.index,
         key: KeyTopic.topicMultiplication.name,
         title: locale.topics_multiplication,
@@ -224,6 +231,7 @@ class DataMathMaster {
     _addChapter(list, ChapterRoman.create(context));
     _addChapter(list, ChapterPercents.create(context));
     _addChapter(list, ChapterMultiplication.create(context));
+    _addChapter(list, ChapterSubtraction.create(context));
     return list;
   }
 }

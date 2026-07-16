@@ -12,8 +12,7 @@ import 'modules/weight/topic_weight.dart';
 import 'modules/roman/topic_roman.dart';
 import 'modules/percents/topic_percents.dart';
 import 'modules/multiplication/topic_multiplication.dart';
-
-
+import 'modules/subtraction/topic_subtraction.dart';
 
 class LibMathMaster {
   static T? _enumFromString<T>(Iterable<T> values, String value) {
@@ -38,7 +37,7 @@ class LibMathMaster {
   late TopicRoman _topicRoman;
   late TopicPercents _topicPercents;
   late TopicMultiplication _topicMultiplication;
-
+  late TopicSubtraction _topicSubtraction;
 
   LibMathMaster.init(this._chapter, this._mdChapter) {
     KeyChapter keyChapter = _enumFromString(
@@ -56,7 +55,11 @@ class LibMathMaster {
         _topicDivision = TopicDivision(_chapter, _mdChapter, keyChapter);
         break;
       case KeyTopic.topicPrimeFactorization:
-        _topicFactorization = TopicFactorization(_chapter, _mdChapter, keyChapter);
+        _topicFactorization = TopicFactorization(
+          _chapter,
+          _mdChapter,
+          keyChapter,
+        );
         break;
       case KeyTopic.topicFractions:
         _topicFractions = TopicFractions(_chapter, _mdChapter, keyChapter);
@@ -74,7 +77,14 @@ class LibMathMaster {
         _topicPercents = TopicPercents(_chapter, _mdChapter, keyChapter);
         break;
       case KeyTopic.topicMultiplication:
-        _topicMultiplication = TopicMultiplication(_chapter, _mdChapter, keyChapter);
+        _topicMultiplication = TopicMultiplication(
+          _chapter,
+          _mdChapter,
+          keyChapter,
+        );
+        break;
+      case KeyTopic.topicSubtraction:
+        _topicSubtraction = TopicSubtraction(_chapter, _mdChapter, keyChapter);
         break;
       default:
         break;
@@ -136,6 +146,11 @@ class LibMathMaster {
           padMode: padMode,
           resetData: resetData,
         );
+      case KeyTopic.topicSubtraction:
+        return _topicSubtraction.createQuestion(
+          padMode: padMode,
+          resetData: resetData,
+        );
       default:
         return ModelQuestion.empty();
     }
@@ -153,7 +168,10 @@ class LibMathMaster {
         _topicDivision.updateSolution(question, solutionText: solutionText);
         break;
       case KeyTopic.topicPrimeFactorization:
-        _topicFactorization.updateSolution(question, solutionText: solutionText);
+        _topicFactorization.updateSolution(
+          question,
+          solutionText: solutionText,
+        );
         break;
       case KeyTopic.topicFractions:
         _topicFractions.updateSolution(question, solutionText: solutionText);
@@ -171,7 +189,13 @@ class LibMathMaster {
         _topicPercents.updateSolution(question, solutionText: solutionText);
         break;
       case KeyTopic.topicMultiplication:
-        _topicMultiplication.updateSolution(question, solutionText: solutionText);
+        _topicMultiplication.updateSolution(
+          question,
+          solutionText: solutionText,
+        );
+        break;
+      case KeyTopic.topicSubtraction:
+        _topicSubtraction.updateSolution(question, solutionText: solutionText);
         break;
       default:
         break;
