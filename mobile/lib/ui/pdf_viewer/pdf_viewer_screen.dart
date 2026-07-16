@@ -34,6 +34,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   late PdfViewerController _pdfViewerController;
   late PdfTextSearchResult _searchResult;
   bool _isSearching = false;
+  bool _showToolbars = true;
   final TextEditingController _searchController = TextEditingController();
   int _totalPages = 0;
   OverlayEntry? _overlayEntry;
@@ -308,6 +309,8 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: theme.colorScheme.background,
         appBar: AppBar(
           automaticallyImplyLeading: !_isSearching,
           titleSpacing: _isSearching ? 4 : null,
@@ -381,89 +384,10 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
             ],
           ],
         ),
-        body: Column(
+        body: Stack(
           children: [
-            if (_totalPages > 0)
-              PdfTopToolbar(
-                controller: _pdfViewerController,
-                interactionMode: _interactionMode,
-                isAnnotationMode: _isAnnotationMode,
-                isSettingsMode: _isSettingsMode,
-                pageLayoutMode: _pageLayoutMode,
-                scrollDirection: _scrollDirection,
-                onTap: (action) {
-                  switch (action) {
-                    case PdfToolbarAction.search:
-                      setState(() {
-                        _isSearching = true;
-                      });
-                      break;
-                    case PdfToolbarAction.bookmarks:
-                      _pdfViewerKey.currentState?.openBookmarkView();
-                      break;
-                    case PdfToolbarAction.panMode:
-                      setState(() {
-                        _interactionMode =
-                            _interactionMode == PdfInteractionMode.selection
-                                ? PdfInteractionMode.pan
-                                : PdfInteractionMode.selection;
-                      });
-                      break;
-                    case PdfToolbarAction.annotations:
-                      setState(() {
-                        _isAnnotationMode = !_isAnnotationMode;
-                        if (_isAnnotationMode) {
-                          _isSettingsMode = false;
-                        }
-                        _pdfViewerController.annotationMode = _isAnnotationMode
-                            ? PdfAnnotationMode.highlight
-                            : PdfAnnotationMode.none;
-                      });
-                      break;
-                    case PdfToolbarAction.viewSettings:
-                      setState(() {
-                        _isSettingsMode = !_isSettingsMode;
-                        if (_isSettingsMode) {
-                          _isAnnotationMode = false;
-                          _pdfViewerController.annotationMode =
-                              PdfAnnotationMode.none;
-                        }
-                      });
-                      break;
-                    case PdfToolbarAction.pageLayoutContinuous:
-                      setState(() {
-                        _pageLayoutMode = PdfPageLayoutMode.continuous;
-                        _scrollDirection = PdfScrollDirection.vertical;
-                      });
-                      break;
-                    case PdfToolbarAction.pageLayoutSingle:
-                      setState(() {
-                        _pageLayoutMode = PdfPageLayoutMode.single;
-                        _scrollDirection = PdfScrollDirection.horizontal;
-                      });
-                      break;
-                    case PdfToolbarAction.scrollVertical:
-                      setState(() {
-                        _scrollDirection = PdfScrollDirection.vertical;
-                      });
-                      break;
-                    case PdfToolbarAction.scrollHorizontal:
-                      setState(() {
-                        _scrollDirection = PdfScrollDirection.horizontal;
-                      });
-                      break;
-                    case PdfToolbarAction.save:
-                      _savePdfDocument();
-                      break;
-                    case PdfToolbarAction.saveAs:
-                      _saveAsPdfDocument();
-                      break;
-                    default:
-                      break;
-                  }
-                },
-              ),
-            Expanded(
+            // PDF Document View (Full Screen)
+            Positioned.fill(
               child: SfPdfViewerTheme(
                 data: SfPdfViewerThemeData(
                   backgroundColor: theme.colorScheme.background,
@@ -477,6 +401,11 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                   scrollDirection: _scrollDirection,
                   canShowPasswordDialog: false,
                   password: _password,
+                  onTap: (PdfGestureDetails details) {
+                    setState(() {
+                      _showToolbars = !_showToolbars;
+                    });
+                  },
                   onDocumentLoadFailed: (PdfDocumentLoadFailedDetails details) {
                     if (details.description.contains('password')) {
                       setState(() {
@@ -517,6 +446,99 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                 ),
               ),
             ),
+            // Floating Overlay Toolbar Panel (PdfTopToolbar only, view/hidden on tap)
+            if (_totalPages > 0)
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+                top: _showToolbars ? 0 : -200,
+                left: 0,
+                right: 0,
+                child: Material(
+                  elevation: 4,
+                  color: theme.colorScheme.background,
+                  child: PdfTopToolbar(
+                    controller: _pdfViewerController,
+                    interactionMode: _interactionMode,
+                    isAnnotationMode: _isAnnotationMode,
+                    isSettingsMode: _isSettingsMode,
+                    pageLayoutMode: _pageLayoutMode,
+                    scrollDirection: _scrollDirection,
+                    onTap: (action) {
+                      switch (action) {
+                        case PdfToolbarAction.search:
+                          setState(() {
+                            _isSearching = true;
+                          });
+                          break;
+                        case PdfToolbarAction.bookmarks:
+                          _pdfViewerKey.currentState?.openBookmarkView();
+                          break;
+                        case PdfToolbarAction.panMode:
+                          setState(() {
+                            _interactionMode =
+                                _interactionMode == PdfInteractionMode.selection
+                                ? PdfInteractionMode.pan
+                                : PdfInteractionMode.selection;
+                          });
+                          break;
+                        case PdfToolbarAction.annotations:
+                          setState(() {
+                            _isAnnotationMode = !_isAnnotationMode;
+                            if (_isAnnotationMode) {
+                              _isSettingsMode = false;
+                            }
+                            _pdfViewerController.annotationMode =
+                                _isAnnotationMode
+                                ? PdfAnnotationMode.highlight
+                                : PdfAnnotationMode.none;
+                          });
+                          break;
+                        case PdfToolbarAction.viewSettings:
+                          setState(() {
+                            _isSettingsMode = !_isSettingsMode;
+                            if (_isSettingsMode) {
+                              _isAnnotationMode = false;
+                              _pdfViewerController.annotationMode =
+                                  PdfAnnotationMode.none;
+                            }
+                          });
+                          break;
+                        case PdfToolbarAction.pageLayoutContinuous:
+                          setState(() {
+                            _pageLayoutMode = PdfPageLayoutMode.continuous;
+                            _scrollDirection = PdfScrollDirection.vertical;
+                          });
+                          break;
+                        case PdfToolbarAction.pageLayoutSingle:
+                          setState(() {
+                            _pageLayoutMode = PdfPageLayoutMode.single;
+                            _scrollDirection = PdfScrollDirection.horizontal;
+                          });
+                          break;
+                        case PdfToolbarAction.scrollVertical:
+                          setState(() {
+                            _scrollDirection = PdfScrollDirection.vertical;
+                          });
+                          break;
+                        case PdfToolbarAction.scrollHorizontal:
+                          setState(() {
+                            _scrollDirection = PdfScrollDirection.horizontal;
+                          });
+                          break;
+                        case PdfToolbarAction.save:
+                          _savePdfDocument();
+                          break;
+                        case PdfToolbarAction.saveAs:
+                          _saveAsPdfDocument();
+                          break;
+                        default:
+                          break;
+                      }
+                    },
+                  ),
+                ),
+              ),
           ],
         ),
       ),
