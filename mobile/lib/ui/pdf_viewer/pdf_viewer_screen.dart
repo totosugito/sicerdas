@@ -8,10 +8,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:bse/core/utils/toast_utils.dart';
 import 'package:bse/i18n/strings.g.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
-import 'widgets/pdf_context_menu.dart';
 import 'widgets/pdf_top_toolbar.dart';
 import 'widgets/pdf_search_bar_field.dart';
-import 'widgets/pdf_password_dialog.dart';
 import 'widgets/pdf_save_as_dialog.dart';
 
 class PdfViewerScreen extends StatefulWidget {
@@ -37,7 +35,6 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   bool _showToolbars = true;
   final TextEditingController _searchController = TextEditingController();
   int _totalPages = 0;
-  OverlayEntry? _overlayEntry;
   final GlobalKey<SfPdfViewerState> _pdfViewerKey =
       GlobalKey<SfPdfViewerState>();
   PdfInteractionMode _interactionMode = PdfInteractionMode.selection;
@@ -47,34 +44,6 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   PdfScrollDirection _scrollDirection = PdfScrollDirection.vertical;
   bool _caseSensitive = false;
   bool _wholeWords = false;
-  String? _password;
-  String _passwordErrorText = '';
-
-  void _showPasswordDialog() {
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return PdfPasswordDialog(
-          errorText: _passwordErrorText,
-          onSubmit: (password) {
-            setState(() {
-              _password = password;
-            });
-            Navigator.of(context).pop();
-          },
-          onCancel: () {
-            Navigator.of(context).pop();
-            if (!widget.exitOnClose) {
-              Navigator.of(context).pop();
-            } else {
-              SystemNavigator.pop();
-            }
-          },
-        );
-      },
-    );
-  }
 
   void _performSearch(String value) {
     if (value.isNotEmpty) {
@@ -211,88 +180,9 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
 
   @override
   void dispose() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
     _pdfViewerController.dispose();
     _searchController.dispose();
     super.dispose();
-  }
-
-  void _showContextMenu(
-    BuildContext context,
-    PdfTextSelectionChangedDetails details,
-  ) {
-    final l10n = Translations.of(context);
-    final OverlayState overlayState = Overlay.of(context);
-    _overlayEntry = OverlayEntry(
-      builder: (context) {
-        return Positioned(
-          top: details.globalSelectedRegion!.top - 60,
-          left:
-              (details.globalSelectedRegion!.left +
-                      details.globalSelectedRegion!.right) /
-                  2 -
-              135,
-          child: PdfContextMenu(
-            onCopy: () {
-              Clipboard.setData(
-                ClipboardData(text: details.selectedText ?? ''),
-              );
-              _pdfViewerController.clearSelection();
-              ToastUtils.showSuccess(
-                context,
-                title: l10n.common.successTitle,
-                message: l10n.common.textCopied,
-              );
-            },
-            onHighlight: () {
-              final selectedLines = _pdfViewerKey.currentState
-                  ?.getSelectedTextLines();
-              if (selectedLines != null && selectedLines.isNotEmpty) {
-                _pdfViewerController.addAnnotation(
-                  HighlightAnnotation(textBoundsCollection: selectedLines),
-                );
-              }
-              _pdfViewerController.clearSelection();
-            },
-            onUnderline: () {
-              final selectedLines = _pdfViewerKey.currentState
-                  ?.getSelectedTextLines();
-              if (selectedLines != null && selectedLines.isNotEmpty) {
-                _pdfViewerController.addAnnotation(
-                  UnderlineAnnotation(textBoundsCollection: selectedLines),
-                );
-              }
-              _pdfViewerController.clearSelection();
-            },
-            onStrikethrough: () {
-              final selectedLines = _pdfViewerKey.currentState
-                  ?.getSelectedTextLines();
-              if (selectedLines != null && selectedLines.isNotEmpty) {
-                _pdfViewerController.addAnnotation(
-                  StrikethroughAnnotation(textBoundsCollection: selectedLines),
-                );
-              }
-              _pdfViewerController.clearSelection();
-            },
-            onSquiggly: () {
-              final selectedLines = _pdfViewerKey.currentState
-                  ?.getSelectedTextLines();
-              if (selectedLines != null && selectedLines.isNotEmpty) {
-                _pdfViewerController.addAnnotation(
-                  SquigglyAnnotation(textBoundsCollection: selectedLines),
-                );
-              }
-              _pdfViewerController.clearSelection();
-            },
-            onClose: () {
-              _pdfViewerController.clearSelection();
-            },
-          ),
-        );
-      },
-    );
-    overlayState.insert(_overlayEntry!);
   }
 
   @override
@@ -399,30 +289,20 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                   interactionMode: _interactionMode,
                   pageLayoutMode: _pageLayoutMode,
                   scrollDirection: _scrollDirection,
-                  canShowPasswordDialog: false,
-                  password: _password,
+                  canShowPasswordDialog: true,
                   onTap: (PdfGestureDetails details) {
                     setState(() {
                       _showToolbars = !_showToolbars;
                     });
                   },
                   onDocumentLoadFailed: (PdfDocumentLoadFailedDetails details) {
-                    if (details.description.contains('password')) {
-                      setState(() {
-                        _passwordErrorText = _password != null
-                            ? l10n.pdf_viewer.passwordDialog.errorInvalid
-                            : '';
-                      });
-                      _showPasswordDialog();
-                    } else {
-                      ToastUtils.showError(
-                        context,
-                        title: l10n.pdf_viewer.screen.errorLoading,
-                        message: details.description,
-                      );
-                    }
+                    ToastUtils.showError(
+                      context,
+                      title: l10n.pdf_viewer.screen.errorLoading,
+                      message: details.description,
+                    );
                   },
-                  canShowTextSelectionMenu: false,
+                  canShowTextSelectionMenu: true,
                   canShowScrollHead: true,
                   canShowScrollStatus: true,
                   onDocumentLoaded: (PdfDocumentLoadedDetails details) {
@@ -433,16 +313,6 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                   onPageChanged: (PdfPageChangedDetails details) {
                     // Handled by top toolbar listener reactively
                   },
-                  onTextSelectionChanged:
-                      (PdfTextSelectionChangedDetails details) {
-                        if (_overlayEntry != null) {
-                          _overlayEntry!.remove();
-                          _overlayEntry = null;
-                        }
-                        if (details.selectedText != null) {
-                          _showContextMenu(context, details);
-                        }
-                      },
                 ),
               ),
             ),
