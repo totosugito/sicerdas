@@ -1,0 +1,40 @@
+{
+  "passwordDialog": {
+    "title": "Sandi Diperlukan",
+    "prompt": "Dokumen ini dilindungi sandi. Silakan masukkan sandi untuk membukanya.",
+    "hint": "Masukkan sandi",
+    "errorEmpty": "Sandi tidak boleh kosong",
+    "errorInvalid": "Sandi salah",
+    "cancel": "Batal",
+    "open": "Buka"
+  },
+  "saveAsDialog": {
+    "title": "Simpan Sebagai",
+    "prompt": "Masukkan nama baru untuk dokumen:",
+    "hint": "namafile.pdf",
+    "errorEmpty": "Nama file tidak boleh kosong",
+    "shareTextPrefix": "Membagikan PDF: {name}",
+    "browseSave": "Telusuri & Simpan",
+    "saveLocal": "Simpan Lokal",
+    "successLocal": "Dokumen disimpan secara lokal sebagai: {name}",
+    "errorSave": "Gagal menyimpan dokumen: {error}",
+    "errorExport": "Gagal mengekspor dokumen: {error}"
+  },
+  "screen": {
+    "successSave": "Dokumen berhasil disimpan",
+    "errorLoading": "Gagal memuat PDF"
+  },
+  "toolbar": {
+    "pageLayout": "Tata Letak Halaman:",
+    "continuousPage": "Halaman Berkelanjutan",
+    "pageByPage": "Halaman per halaman",
+    "scroll": "Gulir:",
+    "verticalScrolling": "Gulir Vertikal",
+    "horizontalScrolling": "Gulir Horizontal",
+    "annotation": "Anotasi:",
+    "highlight": "Sorotan",
+    "underline": "Garis Bawah",
+    "strikethrough": "Coret",
+    "squiggly": "Garis Bergelombang"
+  }
+}

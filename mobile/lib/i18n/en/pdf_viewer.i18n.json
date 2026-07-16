@@ -1,0 +1,40 @@
+{
+  "passwordDialog": {
+    "title": "Password Required",
+    "prompt": "This document is password protected. Please enter the password to open it.",
+    "hint": "Enter password",
+    "errorEmpty": "Password cannot be empty",
+    "errorInvalid": "Invalid password",
+    "cancel": "Cancel",
+    "open": "Open"
+  },
+  "saveAsDialog": {
+    "title": "Save As",
+    "prompt": "Enter a new name for the document:",
+    "hint": "filename.pdf",
+    "errorEmpty": "Filename cannot be empty",
+    "shareTextPrefix": "Sharing PDF: {name}",
+    "browseSave": "Browse & Save",
+    "saveLocal": "Save Local",
+    "successLocal": "Document saved locally as: {name}",
+    "errorSave": "Failed to save document: {error}",
+    "errorExport": "Failed to export document: {error}"
+  },
+  "screen": {
+    "successSave": "Document saved successfully",
+    "errorLoading": "Error loading PDF"
+  },
+  "toolbar": {
+    "pageLayout": "Page Layout:",
+    "continuousPage": "Continuous Page",
+    "pageByPage": "Page by page",
+    "scroll": "Scroll:",
+    "verticalScrolling": "Vertical Scrolling",
+    "horizontalScrolling": "Horizontal Scrolling",
+    "annotation": "Annotation:",
+    "highlight": "Highlight",
+    "underline": "Underline",
+    "strikethrough": "Strikethrough",
+    "squiggly": "Squiggly"
+  }
+}

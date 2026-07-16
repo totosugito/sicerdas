@@ -4,11 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:bse/core/utils/toast_utils.dart';
 import 'package:bse/i18n/strings.g.dart';
 import 'widgets/pdf_context_menu.dart';
 import 'widgets/pdf_top_toolbar.dart';
 import 'widgets/pdf_search_bar_field.dart';
+import 'widgets/pdf_password_dialog.dart';
+import 'widgets/pdf_save_as_dialog.dart';
 
 class PdfViewerScreen extends StatefulWidget {
   final String filePath;
@@ -43,124 +46,28 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   bool _caseSensitive = false;
   bool _wholeWords = false;
   String? _password;
-  final TextEditingController _passwordController = TextEditingController();
-  final GlobalKey<FormState> _passwordFormKey = GlobalKey<FormState>();
-  bool _passwordVisible = true;
   String _passwordErrorText = '';
-  bool _hasPasswordDialog = false;
 
   void _showPasswordDialog() {
-    _hasPasswordDialog = true;
     showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        final theme = ShadTheme.of(context);
-        return StatefulBuilder(
-          builder: (context, setStateDialog) {
-            return AlertDialog(
-              backgroundColor: theme.colorScheme.card,
-              title: Text(
-                'Password Required',
-                style: theme.textTheme.large.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.foreground,
-                ),
-              ),
-              content: SizedBox(
-                width: 320,
-                child: Form(
-                  key: _passwordFormKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'This document is password protected. Please enter the password to open it.',
-                        style: theme.textTheme.p.copyWith(
-                          color: theme.colorScheme.mutedForeground,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _passwordController,
-                        obscureText: _passwordVisible,
-                        autofocus: true,
-                        style: TextStyle(color: theme.colorScheme.foreground),
-                        decoration: InputDecoration(
-                          hintText: 'Enter password',
-                          hintStyle: TextStyle(
-                            color: theme.colorScheme.mutedForeground,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: theme.colorScheme.mutedForeground,
-                            ),
-                            onPressed: () {
-                              setStateDialog(() {
-                                _passwordVisible = !_passwordVisible;
-                              });
-                            },
-                          ),
-                        ),
-                        validator: (value) {
-                          if (_passwordErrorText.isNotEmpty) {
-                            return _passwordErrorText;
-                          }
-                          if (value == null || value.isEmpty) {
-                            return 'Password cannot be empty';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          if (_passwordErrorText.isNotEmpty) {
-                            setState(() {
-                              _passwordErrorText = '';
-                            });
-                            _passwordFormKey.currentState?.validate();
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    _hasPasswordDialog = false;
-                    _passwordController.clear();
-                    Navigator.of(context).pop();
-                    if (!widget.exitOnClose) {
-                      Navigator.of(context).pop();
-                    } else {
-                      SystemNavigator.pop();
-                    }
-                  },
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(color: theme.colorScheme.mutedForeground),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    if (_passwordFormKey.currentState?.validate() ?? false) {
-                      setState(() {
-                        _password = _passwordController.text;
-                        _hasPasswordDialog = false;
-                      });
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  child: Text(
-                    'Open',
-                    style: TextStyle(color: theme.colorScheme.primary),
-                  ),
-                ),
-              ],
-            );
+        return PdfPasswordDialog(
+          errorText: _passwordErrorText,
+          onSubmit: (password) {
+            setState(() {
+              _password = password;
+            });
+            Navigator.of(context).pop();
+          },
+          onCancel: () {
+            Navigator.of(context).pop();
+            if (!widget.exitOnClose) {
+              Navigator.of(context).pop();
+            } else {
+              SystemNavigator.pop();
+            }
           },
         );
       },
@@ -195,6 +102,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   }
 
   Future<void> _savePdfDocument() async {
+    final t = Translations.of(context);
     try {
       final List<int> savedBytes = await _pdfViewerController.saveDocument();
       final file = File(widget.filePath);
@@ -202,16 +110,16 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
       if (mounted) {
         ToastUtils.showSuccess(
           context,
-          title: 'Success',
-          message: 'Document saved successfully',
+          title: t.common.successTitle,
+          message: t.pdf_viewer.screen.successSave,
         );
       }
     } catch (e) {
       if (mounted) {
         ToastUtils.showError(
           context,
-          title: 'Error',
-          message: 'Failed to save document: $e',
+          title: t.common.error.title,
+          message: t.pdf_viewer.saveAsDialog.errorSave(error: e.toString()),
         );
       }
     }
@@ -220,111 +128,63 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   Future<void> _saveAsPdfDocument() async {
     final originalFile = File(widget.filePath);
     final originalName = originalFile.uri.pathSegments.last;
-    final TextEditingController nameController = TextEditingController(
-      text: originalName,
-    );
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     showDialog<void>(
       context: context,
       barrierDismissible: true,
-      builder: (BuildContext context) {
-        final theme = ShadTheme.of(context);
-        return AlertDialog(
-          backgroundColor: theme.colorScheme.card,
-          title: Text(
-            'Save As',
-            style: theme.textTheme.large.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.colorScheme.foreground,
-            ),
-          ),
-          content: SizedBox(
-            width: 320,
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Enter a new name for the document:',
-                    style: theme.textTheme.p.copyWith(
-                      color: theme.colorScheme.mutedForeground,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: nameController,
-                    autofocus: true,
-                    style: TextStyle(color: theme.colorScheme.foreground),
-                    decoration: InputDecoration(
-                      hintText: 'filename.pdf',
-                      hintStyle: TextStyle(
-                        color: theme.colorScheme.mutedForeground,
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Filename cannot be empty';
-                      }
-                      return null;
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: theme.colorScheme.mutedForeground),
-              ),
-            ),
-            TextButton(
-              onPressed: () async {
-                if (formKey.currentState?.validate() ?? false) {
-                  var newName = nameController.text.trim();
-                  if (!newName.toLowerCase().endsWith('.pdf')) {
-                    newName += '.pdf';
-                  }
-                  final String dir = originalFile.parent.path;
-                  final String newPath = '$dir/$newName';
+      builder: (dialogContext) {
+        return PdfSaveAsDialog(
+          initialName: originalName,
+          onBrowseAndSave: (newName) async {
+            final t = Translations.of(context);
+            try {
+              final List<int> savedBytes = await _pdfViewerController.saveDocument();
+              final tempDir = Directory.systemTemp;
+              final tempFile = File('${tempDir.path}/$newName');
+              await tempFile.writeAsBytes(savedBytes);
 
-                  Navigator.of(context).pop();
+              await SharePlus.instance.share(
+                ShareParams(
+                  text: t.pdf_viewer.saveAsDialog.shareTextPrefix(name: newName),
+                  files: [XFile(tempFile.path)],
+                ),
+              );
+            } catch (e) {
+              if (mounted) {
+                ToastUtils.showError(
+                  context,
+                  title: t.pdf_viewer.saveAsDialog.title,
+                  message: t.pdf_viewer.saveAsDialog.errorExport(error: e.toString()),
+                );
+              }
+            }
+          },
+          onSaveLocal: (newName) async {
+            final t = Translations.of(context);
+            final String dir = originalFile.parent.path;
+            final String newPath = '$dir/$newName';
 
-                  try {
-                    final List<int> savedBytes = await _pdfViewerController
-                        .saveDocument();
-                    final newFile = File(newPath);
-                    await newFile.writeAsBytes(savedBytes);
-                    if (mounted) {
-                      ToastUtils.showSuccess(
-                        this.context,
-                        title: 'Success',
-                        message: 'Document saved as: $newName',
-                      );
-                    }
-                  } catch (e) {
-                    if (mounted) {
-                      ToastUtils.showError(
-                        this.context,
-                        title: 'Error',
-                        message: 'Failed to save document: $e',
-                      );
-                    }
-                  }
-                }
-              },
-              child: Text(
-                'Save',
-                style: TextStyle(color: theme.colorScheme.primary),
-              ),
-            ),
-          ],
+            try {
+              final List<int> savedBytes = await _pdfViewerController.saveDocument();
+              final newFile = File(newPath);
+              await newFile.writeAsBytes(savedBytes);
+              if (mounted) {
+                ToastUtils.showSuccess(
+                  context,
+                  title: t.pdf_viewer.saveAsDialog.title,
+                  message: t.pdf_viewer.saveAsDialog.successLocal(name: newName),
+                );
+              }
+            } catch (e) {
+              if (mounted) {
+                ToastUtils.showError(
+                  context,
+                  title: t.pdf_viewer.saveAsDialog.title,
+                  message: t.pdf_viewer.saveAsDialog.errorSave(error: e.toString()),
+                );
+              }
+            }
+          },
         );
       },
     );
@@ -343,7 +203,6 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     _overlayEntry = null;
     _pdfViewerController.dispose();
     _searchController.dispose();
-    _passwordController.dispose();
     super.dispose();
   }
 
@@ -609,20 +468,16 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                 password: _password,
                 onDocumentLoadFailed: (PdfDocumentLoadFailedDetails details) {
                   if (details.description.contains('password')) {
-                    if (_hasPasswordDialog) {
-                      setState(() {
-                        _passwordErrorText = 'Invalid password';
-                        _passwordFormKey.currentState?.validate();
-                        _passwordController.clear();
-                      });
-                    } else {
-                      _passwordErrorText = '';
-                      _showPasswordDialog();
-                    }
+                    setState(() {
+                      _passwordErrorText = _password != null
+                          ? l10n.pdf_viewer.passwordDialog.errorInvalid
+                          : '';
+                    });
+                    _showPasswordDialog();
                   } else {
                     ToastUtils.showError(
                       context,
-                      title: 'Error loading PDF',
+                      title: l10n.pdf_viewer.screen.errorLoading,
                       message: details.description,
                     );
                   }

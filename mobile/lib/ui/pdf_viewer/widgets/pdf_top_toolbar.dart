@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:bse/i18n/strings.g.dart';
 
 typedef TapCallback = void Function(Object item);
 
@@ -408,7 +409,7 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
               child: Row(
                 children: [
                   Text(
-                    'Annotation:',
+                    Translations.of(context).pdf_viewer.toolbar.annotation,
                     style: theme.textTheme.small.copyWith(
                       fontWeight: FontWeight.w600,
                       color: theme.colorScheme.mutedForeground,
@@ -418,28 +419,28 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                   _buildAnnotationModeButton(
                     mode: PdfAnnotationMode.highlight,
                     icon: Icons.border_color,
-                    tooltip: 'Highlight',
+                    tooltip: Translations.of(context).pdf_viewer.toolbar.highlight,
                     theme: theme,
                   ),
                   const SizedBox(width: 8),
                   _buildAnnotationModeButton(
                     mode: PdfAnnotationMode.underline,
                     icon: Icons.format_underlined,
-                    tooltip: 'Underline',
+                    tooltip: Translations.of(context).pdf_viewer.toolbar.underline,
                     theme: theme,
                   ),
                   const SizedBox(width: 8),
                   _buildAnnotationModeButton(
                     mode: PdfAnnotationMode.strikethrough,
                     icon: Icons.format_strikethrough,
-                    tooltip: 'Strikethrough',
+                    tooltip: Translations.of(context).pdf_viewer.toolbar.strikethrough,
                     theme: theme,
                   ),
                   const SizedBox(width: 8),
                   _buildAnnotationModeButton(
                     mode: PdfAnnotationMode.squiggly,
                     icon: Icons.gesture,
-                    tooltip: 'Squiggly',
+                    tooltip: Translations.of(context).pdf_viewer.toolbar.squiggly,
                     theme: theme,
                   ),
                 ],
@@ -454,7 +455,7 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
               child: Row(
                 children: [
                   Text(
-                    'Page Layout:',
+                    Translations.of(context).pdf_viewer.toolbar.pageLayout,
                     style: theme.textTheme.small.copyWith(
                       fontWeight: FontWeight.w600,
                       color: theme.colorScheme.mutedForeground,
@@ -465,7 +466,7 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                     active:
                         widget.pageLayoutMode == PdfPageLayoutMode.continuous,
                     icon: Icons.splitscreen,
-                    tooltip: 'Continuous Page',
+                    tooltip: Translations.of(context).pdf_viewer.toolbar.continuousPage,
                     onPressed: () {
                       widget.onTap?.call('PageLayoutMode:continuous');
                     },
@@ -475,7 +476,7 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                   _buildSettingsButton(
                     active: widget.pageLayoutMode == PdfPageLayoutMode.single,
                     icon: Icons.file_copy,
-                    tooltip: 'Page by page',
+                    tooltip: Translations.of(context).pdf_viewer.toolbar.pageByPage,
                     onPressed: () {
                       widget.onTap?.call('PageLayoutMode:single');
                     },
@@ -489,7 +490,7 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                   ),
                   const SizedBox(width: 16),
                   Text(
-                    'Scroll:',
+                    Translations.of(context).pdf_viewer.toolbar.scroll,
                     style: theme.textTheme.small.copyWith(
                       fontWeight: FontWeight.w600,
                       color: theme.colorScheme.mutedForeground,
@@ -500,7 +501,7 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                     active:
                         widget.scrollDirection == PdfScrollDirection.vertical,
                     icon: Icons.swap_vert,
-                    tooltip: 'Vertical Scrolling',
+                    tooltip: Translations.of(context).pdf_viewer.toolbar.verticalScrolling,
                     onPressed: () {
                       widget.onTap?.call('ScrollDirection:vertical');
                     },
@@ -511,7 +512,7 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                     active:
                         widget.scrollDirection == PdfScrollDirection.horizontal,
                     icon: Icons.swap_horiz,
-                    tooltip: 'Horizontal Scrolling',
+                    tooltip: Translations.of(context).pdf_viewer.toolbar.horizontalScrolling,
                     onPressed: () {
                       widget.onTap?.call('ScrollDirection:horizontal');
                     },
