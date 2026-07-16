@@ -7,7 +7,6 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:bse/core/utils/toast_utils.dart';
 import 'package:bse/i18n/strings.g.dart';
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'widgets/pdf_context_menu.dart';
 import 'widgets/pdf_top_toolbar.dart';
@@ -498,8 +497,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                       );
                     }
                   },
-                  canShowTextSelectionMenu:
-                      false, // Disable native menu to show custom contextual toolbar
+                  canShowTextSelectionMenu: false,
                   canShowScrollHead: true,
                   canShowScrollStatus: true,
                   onDocumentLoaded: (PdfDocumentLoadedDetails details) {

@@ -145,18 +145,20 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
 
                         // Page input field
                         SizedBox(
-                          width: 48,
+                          width: (_pageCount.toString().length * 8.0 + 32.0)
+                              .clamp(48.0, 80.0),
                           height: 32,
                           child: ShadInput(
                             controller: _textEditingController,
                             focusNode: _focusNode,
                             keyboardType: TextInputType.number,
                             textAlign: TextAlign.center,
+                            alignment: Alignment.center,
                             style: theme.textTheme.small.copyWith(
                               fontWeight: FontWeight.w600,
                               color: iconColor,
+                              height: 1.0,
                             ),
-                            padding: const EdgeInsets.symmetric(vertical: 4),
                             decoration: ShadDecoration(
                               border: ShadBorder.all(
                                 width: 1,
@@ -375,7 +377,9 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                               : null,
                           child: Icon(
                             Icons.save,
-                            color: _pageCount != 0 ? iconColor : disabledIconColor,
+                            color: _pageCount != 0
+                                ? iconColor
+                                : disabledIconColor,
                           ),
                         ),
 
@@ -391,7 +395,9 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                               : null,
                           child: Icon(
                             Icons.save_as,
-                            color: _pageCount != 0 ? iconColor : disabledIconColor,
+                            color: _pageCount != 0
+                                ? iconColor
+                                : disabledIconColor,
                           ),
                         ),
                       ],
@@ -419,28 +425,36 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                   _buildAnnotationModeButton(
                     mode: PdfAnnotationMode.highlight,
                     icon: Icons.border_color,
-                    tooltip: Translations.of(context).pdf_viewer.toolbar.highlight,
+                    tooltip: Translations.of(
+                      context,
+                    ).pdf_viewer.toolbar.highlight,
                     theme: theme,
                   ),
                   const SizedBox(width: 8),
                   _buildAnnotationModeButton(
                     mode: PdfAnnotationMode.underline,
                     icon: Icons.format_underlined,
-                    tooltip: Translations.of(context).pdf_viewer.toolbar.underline,
+                    tooltip: Translations.of(
+                      context,
+                    ).pdf_viewer.toolbar.underline,
                     theme: theme,
                   ),
                   const SizedBox(width: 8),
                   _buildAnnotationModeButton(
                     mode: PdfAnnotationMode.strikethrough,
                     icon: Icons.format_strikethrough,
-                    tooltip: Translations.of(context).pdf_viewer.toolbar.strikethrough,
+                    tooltip: Translations.of(
+                      context,
+                    ).pdf_viewer.toolbar.strikethrough,
                     theme: theme,
                   ),
                   const SizedBox(width: 8),
                   _buildAnnotationModeButton(
                     mode: PdfAnnotationMode.squiggly,
                     icon: Icons.gesture,
-                    tooltip: Translations.of(context).pdf_viewer.toolbar.squiggly,
+                    tooltip: Translations.of(
+                      context,
+                    ).pdf_viewer.toolbar.squiggly,
                     theme: theme,
                   ),
                 ],
@@ -466,7 +480,9 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                     active:
                         widget.pageLayoutMode == PdfPageLayoutMode.continuous,
                     icon: Icons.splitscreen,
-                    tooltip: Translations.of(context).pdf_viewer.toolbar.continuousPage,
+                    tooltip: Translations.of(
+                      context,
+                    ).pdf_viewer.toolbar.continuousPage,
                     onPressed: () {
                       widget.onTap?.call('PageLayoutMode:continuous');
                     },
@@ -476,7 +492,9 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                   _buildSettingsButton(
                     active: widget.pageLayoutMode == PdfPageLayoutMode.single,
                     icon: Icons.file_copy,
-                    tooltip: Translations.of(context).pdf_viewer.toolbar.pageByPage,
+                    tooltip: Translations.of(
+                      context,
+                    ).pdf_viewer.toolbar.pageByPage,
                     onPressed: () {
                       widget.onTap?.call('PageLayoutMode:single');
                     },
@@ -501,7 +519,9 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                     active:
                         widget.scrollDirection == PdfScrollDirection.vertical,
                     icon: Icons.swap_vert,
-                    tooltip: Translations.of(context).pdf_viewer.toolbar.verticalScrolling,
+                    tooltip: Translations.of(
+                      context,
+                    ).pdf_viewer.toolbar.verticalScrolling,
                     onPressed: () {
                       widget.onTap?.call('ScrollDirection:vertical');
                     },
@@ -512,7 +532,9 @@ class _PdfTopToolbarState extends State<PdfTopToolbar> {
                     active:
                         widget.scrollDirection == PdfScrollDirection.horizontal,
                     icon: Icons.swap_horiz,
-                    tooltip: Translations.of(context).pdf_viewer.toolbar.horizontalScrolling,
+                    tooltip: Translations.of(
+                      context,
+                    ).pdf_viewer.toolbar.horizontalScrolling,
                     onPressed: () {
                       widget.onTap?.call('ScrollDirection:horizontal');
                     },

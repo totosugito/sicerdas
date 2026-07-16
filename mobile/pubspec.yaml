@@ -46,6 +46,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   collection: ^1.19.1
+  syncfusion_flutter_core: ^33.2.15
   
 dev_dependencies:
   flutter_test:
