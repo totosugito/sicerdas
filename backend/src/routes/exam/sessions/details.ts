@@ -10,7 +10,6 @@ import { examPackageSections } from "../../../db/schema/exam/package-sections.ts
 import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
 import { eq, and } from "drizzle-orm";
 import { educationGrades } from "../../../db/schema/education/index.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const Params = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -76,8 +75,7 @@ const detailsSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Params: typeof Params.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const userId = (request as any).session.user.id;
+            const userId = (request as any).session.user.id;
       const { id } = request.params;
 
       // 1. Fetch the session
@@ -96,7 +94,7 @@ const detailsSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!sessionData) {
-        return reply.notFound(t(($) => $.exam.sessions.errors.notFound));
+        return reply.notFound(request.t(($) => $.exam.sessions.errors.notFound));
       }
 
       const { session, packageTitle, sectionTitle, gradeName } = sessionData;

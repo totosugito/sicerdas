@@ -7,7 +7,6 @@ import { examPackageEventStats } from "../../../../db/schema/exam/index.ts";
 import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { eq, sql } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
 import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";
 
@@ -73,8 +72,7 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Params: typeof DetailPackageParams.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
 
       const latestVersionId = (app as any).versionCache.get(EnumContentType.EXAM);
 
@@ -107,14 +105,14 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!result) {
-        return reply.notFound(t(($) => $.exam.packages.detail.notFound));
+        return reply.notFound(request.t(($) => $.exam.packages.detail.notFound));
       }
 
       const pkg = result.package;
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.packages.detail.success),
+        message: request.t(($) => $.exam.packages.detail.success),
         data: {
           ...pkg,
           thumbnail: getPackageThumbnailUrl(pkg.thumbnail),

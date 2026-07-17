@@ -4,7 +4,6 @@ import { db } from "../../db/db-pool.ts";
 import { users, verifications } from "../../db/schema/user/index.ts";
 import { eq, and, gte, count } from "drizzle-orm";
 import config from "../../config/env.config.ts";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 /**
  * Request password reset
@@ -47,13 +46,12 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async (req, reply) => {
-      const { t } = getTypedI18n(req);
-      // Extract data directly from request body for JSON input
+            // Extract data directly from request body for JSON input
       const { email, redirectTo } = req.body as { email: string; redirectTo?: string };
 
       // Validate required fields using Fastify Sensible badRequest
       if (!email) {
-        return reply.badRequest(t(($) => $.auth.emailRequired));
+        return reply.badRequest(req.t(($) => $.auth.emailRequired));
       }
 
       // Check if email exists in users table and get user ID
@@ -63,7 +61,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         .where(eq(users.email, email));
 
       if (existingUser.length === 0) {
-        return reply.notFound(t(($) => $.auth.userNotFound));
+        return reply.notFound(req.t(($) => $.auth.userNotFound));
       }
 
       const userId = existingUser[0].id;
@@ -81,7 +79,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const requestCount = requestCountResult[0]?.count || 0;
 
       if (requestCount >= config.limits.passwordResetRateLimit) {
-        return reply.tooManyRequests(t(($) => $.auth.passwordResetRateLimitExceeded));
+        return reply.tooManyRequests(req.t(($) => $.auth.passwordResetRateLimitExceeded));
       }
 
       // Use Fastify's built-in inject method to call the better-auth API
@@ -106,8 +104,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           success: response.statusCode >= 200 && response.statusCode < 300,
           message:
             response.statusCode >= 200 && response.statusCode < 300
-              ? t(($) => $.auth.passwordResetEmailSent)
-              : t(($) => $.auth.passwordResetFailed),
+              ? req.t(($) => $.auth.passwordResetEmailSent)
+              : req.t(($) => $.auth.passwordResetFailed),
         });
     },
   });

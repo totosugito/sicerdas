@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const CreateSubjectBody = Type.Object({
   name: Type.String({ minLength: 1 }),
@@ -50,8 +49,7 @@ const createSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof CreateSubjectBody.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { name, description, isActive } = request.body;
+            const { name, description, isActive } = request.body;
 
       // Check if name already exists
       const existingSubject = await db.query.examSubjects.findFirst({
@@ -59,7 +57,7 @@ const createSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (existingSubject) {
-        return reply.badRequest(t(($) => $.exam.subjects.create.exists));
+        return reply.badRequest(request.t(($) => $.exam.subjects.create.exists));
       }
 
       const userId = request.session.user.id;
@@ -76,7 +74,7 @@ const createSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: t(($) => $.exam.subjects.create.success),
+        message: request.t(($) => $.exam.subjects.create.success),
         data: {
           ...newSubject,
           createdAt: newSubject.createdAt.toISOString(),

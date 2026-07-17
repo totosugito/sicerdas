@@ -4,7 +4,6 @@ import { aiApiLogs, aiModels } from '../../../../db/schema/ai/index.ts';
 import { db } from '../../../../db/db-pool.ts';
 import { eq, desc, asc, and, gte, lte, sql } from 'drizzle-orm';
 import { Type } from '@sinclair/typebox';
-import { getTypedI18n } from '../../../../utils/i18n-typed.ts';
 
 const StatsQueryWrapper = Type.Object({
     modelId: Type.Optional(Type.String()),
@@ -64,8 +63,7 @@ const modelsAiStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
             req: FastifyRequest<{ Querystring: typeof StatsQueryWrapper.static }>,
             reply: FastifyReply
         ): Promise<typeof GetStatsResponse.static> {
-            const { t } = getTypedI18n(req);
-            const {
+                        const {
                 modelId,
                 periodStart,
                 periodEnd,
@@ -132,7 +130,7 @@ const modelsAiStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.chatAi.model.stats.success),
+                message: req.t($ => $.chatAi.model.stats.success),
                 data: result,
                 meta: {
                     total,

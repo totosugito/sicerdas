@@ -9,7 +9,6 @@ import {
 import { eq, and, gt } from "drizzle-orm";
 import { EnumContentType } from "../../../db/schema/enum/enum-app.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const FilterParamsResponseItem = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -58,8 +57,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest,
       reply: FastifyReply,
     ): Promise<typeof FilterParamsResponse.static> {
-      const { t } = getTypedI18n(req);
-
+      
       // Query categories and their related grade stats
       const result = await db
         .select({
@@ -115,7 +113,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.packages.list.success),
+        message: req.t(($) => $.exam.packages.list.success),
         data: Array.from(categoriesMap.values()),
       });
     },

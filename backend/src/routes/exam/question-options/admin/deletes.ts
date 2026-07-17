@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examQuestionOptions } from "../../../../db/schema/exam/question-options.ts";
 import { inArray } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { syncQuestionMaxScore } from "../../../../services/exam/index.ts";
 
 const DeleteMultipleQuestionOptionsBody = Type.Object({
@@ -39,8 +38,7 @@ const deleteMultipleQuestionOptionsRoute: FastifyPluginAsyncTypebox = async (app
       request: FastifyRequest<{ Body: typeof DeleteMultipleQuestionOptionsBody.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { ids } = request.body;
+            const { ids } = request.body;
 
       // Identify affected questions before delete
       const affectedQuestions = await db
@@ -60,7 +58,7 @@ const deleteMultipleQuestionOptionsRoute: FastifyPluginAsyncTypebox = async (app
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.question_options.delete.successMultiple),
+        message: request.t(($) => $.exam.question_options.delete.successMultiple),
       });
     },
   });

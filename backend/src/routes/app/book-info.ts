@@ -5,7 +5,6 @@ import { books } from "../../db/schema/book/index.ts";
 import { and, eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getBookPdfUrl } from "../../utils/book-utils.ts";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const BookInfoQuery = Type.Object({
   bookId: Type.Number(),
@@ -54,8 +53,7 @@ const bookInfoRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Querystring: { bookId: number; page: number } }>,
       reply: FastifyReply,
     ): Promise<typeof BookInfoResponse.static> {
-      const { t } = getTypedI18n(req);
-      const { bookId, page } = req.query;
+            const { bookId, page } = req.query;
 
       // Select book from database matching bookId and totalPages = page
       const result = await db
@@ -80,7 +78,7 @@ const bookInfoRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!result || result.length === 0) {
-        return reply.notFound(t(($) => $.book.detail.notFound));
+        return reply.notFound(req.t(($) => $.book.detail.notFound));
       }
 
       const book = result[0];
@@ -100,7 +98,7 @@ const bookInfoRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.book.detail.success),
+        message: req.t(($) => $.book.detail.success),
         data: processedBook,
       });
     },

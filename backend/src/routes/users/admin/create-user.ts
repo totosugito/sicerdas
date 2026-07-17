@@ -2,7 +2,6 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { users, usersProfile, accounts, EnumUserRole } from "../../../db/schema/user/index.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
@@ -46,8 +45,7 @@ const createUser: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof CreateBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof CreateResponse.static> {
-      const { t } = getTypedI18n(req);
-      const auth = getAuthInstance(app);
+            const auth = getAuthInstance(app);
 
       // Explicit destructuring for Mass Assignment Protection
       const { name, email, role = EnumUserRole.USER, password } = req.body;
@@ -58,7 +56,7 @@ const createUser: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (existingUser) {
-        return reply.badRequest(t(($) => $.user.management.create.emailExists));
+        return reply.badRequest(req.t(($) => $.user.management.create.emailExists));
       }
 
       // Get auth context for password hashing
@@ -100,7 +98,7 @@ const createUser: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: t(($) => $.user.management.create.success),
+        message: req.t(($) => $.user.management.create.success),
         data: {
           id: newUser.id,
           name: newUser.name,

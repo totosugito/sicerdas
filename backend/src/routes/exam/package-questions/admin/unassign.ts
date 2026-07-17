@@ -5,7 +5,6 @@ import { db } from "../../../../db/db-pool.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { and, eq, inArray } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { syncSection, syncPackage } from "../../../../services/exam/index.ts";
 
 const UnassignPackageQuestionsBody = Type.Object({
@@ -35,8 +34,7 @@ const unassignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => 
       request: FastifyRequest<{ Body: typeof UnassignPackageQuestionsBody.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { packageId, questionIds } = request.body;
+            const { packageId, questionIds } = request.body;
 
       await db.transaction(async (tx) => {
         // 1. Get info about questions being unassigned (only those actually in this package)
@@ -78,7 +76,7 @@ const unassignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => 
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.package_questions.unassign.success),
+        message: request.t(($) => $.exam.package_questions.unassign.success),
       });
     },
   });

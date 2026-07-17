@@ -5,7 +5,6 @@ import { db } from "../../../db/db-pool.ts";
 import { examPackageSections, examPackages, examSessions } from "../../../db/schema/exam/index.ts";
 import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
 import { and, desc, eq, sql } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
@@ -56,8 +55,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof SectionListQuery.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(req);
-      const { packageId } = req.body;
+            const { packageId } = req.body;
 
       // Manually fetch session
       const session = await getAuthInstance(app).api.getSession({
@@ -70,7 +68,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
         columns: { id: true },
       });
 
-      if (!pkg) return reply.notFound(t(($) => $.exam.packages.detail.notFound));
+      if (!pkg) return reply.notFound(req.t(($) => $.exam.packages.detail.notFound));
 
       const sectionColumns = {
         id: examPackageSections.id,
@@ -154,7 +152,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.package_sections.list.success),
+        message: req.t(($) => $.exam.package_sections.list.success),
         data: sections,
       });
     },

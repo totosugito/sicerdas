@@ -7,7 +7,6 @@ import { examPackages } from "../../../db/schema/exam/packages.ts";
 import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
 import { db } from "../../../db/db-pool.ts";
 import { eq, sql } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
 const DeleteVersionParams = Type.Object({
@@ -42,15 +41,14 @@ const deleteVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Params: typeof DeleteVersionParams.static }>,
       reply: FastifyReply,
     ): Promise<typeof DeleteVersionResponse.static> {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
 
       const existingVersion = await db.query.appVersion.findFirst({
         where: eq(appVersion.id, id),
       });
 
       if (!existingVersion) {
-        return reply.notFound(t(($) => $.version.notFound));
+        return reply.notFound(request.t(($) => $.version.notFound));
       }
 
       // Referential Integrity Checks
@@ -59,7 +57,7 @@ const deleteVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .from(books)
         .where(eq(books.versionId, id));
       if (Number(bookCount.count) > 0) {
-        return reply.badRequest(t(($) => $.version.delete.inUse));
+        return reply.badRequest(request.t(($) => $.version.delete.inUse));
       }
 
       const [packageCount] = await db
@@ -67,7 +65,7 @@ const deleteVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .from(examPackages)
         .where(eq(examPackages.versionId, id));
       if (Number(packageCount.count) > 0) {
-        return reply.badRequest(t(($) => $.version.delete.inUse));
+        return reply.badRequest(request.t(($) => $.version.delete.inUse));
       }
 
       const [sectionCount] = await db
@@ -75,7 +73,7 @@ const deleteVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .from(examPackageSections)
         .where(eq(examPackageSections.versionId, id));
       if (Number(sectionCount.count) > 0) {
-        return reply.badRequest(t(($) => $.version.delete.inUse));
+        return reply.badRequest(request.t(($) => $.version.delete.inUse));
       }
 
       await db.delete(appVersion).where(eq(appVersion.id, id));
@@ -87,7 +85,7 @@ const deleteVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.version.delete.success),
+        message: request.t(($) => $.version.delete.success),
       });
     },
   });

@@ -9,7 +9,6 @@ import { examQuestionTags } from "../../../../db/schema/exam/question-tags.ts";
 import { educationTags } from "../../../../db/schema/education/tags.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { desc, and, sql, eq, count, getTableColumns } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import {
   EnumDifficultyLevel,
   EnumQuestionType,
@@ -116,8 +115,7 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof QuestionListQuery.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const {
+            const {
         subjectId,
         difficulty,
         type,
@@ -231,7 +229,7 @@ const listQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.questions.list.success),
+        message: request.t(($) => $.exam.questions.list.success),
         data: {
           items: items.map((q) => ({
             id: q.id,

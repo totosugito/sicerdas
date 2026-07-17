@@ -2,7 +2,6 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { users, usersProfile } from "../../../db/schema/user/index.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { eq } from "drizzle-orm";
 import { getUserAvatarUrl } from "../../../utils/user-utils.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
@@ -61,8 +60,7 @@ const detailsUser: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Params: typeof Params.static }>,
       reply: FastifyReply,
     ): Promise<typeof DetailsResponse.static> {
-      const { t } = getTypedI18n(req);
-      const { id } = req.params;
+            const { id } = req.params;
 
       const userWithProfile = await db
         .select({
@@ -91,12 +89,12 @@ const detailsUser: FastifyPluginAsyncTypebox = async (app) => {
       const user = userWithProfile[0];
 
       if (!user) {
-        return reply.notFound(t(($) => $.user.userNotFound));
+        return reply.notFound(req.t(($) => $.user.userNotFound));
       }
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.user.management.details.success),
+        message: req.t(($) => $.user.management.details.success),
         data: {
           ...user,
           image: getUserAvatarUrl(user.id, user.image),

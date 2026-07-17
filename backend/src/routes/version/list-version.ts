@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { appVersion } from "../../db/schema/app/app-version.ts";
 import { db } from "../../db/db-pool.ts";
 import { and, desc, asc, sql, ilike, eq } from "drizzle-orm";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import { EnumContentType, EnumContentStatus } from "../../db/schema/enum/enum-app.ts";
 
 const ListVersionBody = Type.Object({
@@ -67,8 +66,7 @@ const listVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof ListVersionBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof ListVersionResponse.static> {
-      const { t } = getTypedI18n(request);
-      const {
+            const {
         page = 1,
         limit = 10,
         search,
@@ -135,7 +133,7 @@ const listVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.version.listSuccess),
+        message: request.t(($) => $.version.listSuccess),
         data: {
           items: items.map((item) => ({
             ...item,

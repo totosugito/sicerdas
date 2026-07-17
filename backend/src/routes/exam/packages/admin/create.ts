@@ -7,7 +7,6 @@ import { educationCategories } from "../../../../db/schema/education/categories.
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
 import { eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
 import { recalculateEducationStats } from "../../../../utils/education-stats-utils.ts";
 
@@ -53,8 +52,7 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof CreatePackageBody.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const {
+            const {
         categoryId,
         title,
         examType,
@@ -71,7 +69,7 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingCategory) {
-        return reply.notFound(t(($) => $.education.categories.update.notFound));
+        return reply.notFound(request.t(($) => $.education.categories.update.notFound));
       }
 
       // 2. Check if education grade exists (if provided)
@@ -81,7 +79,7 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
         });
 
         if (!existingGrade) {
-          return reply.notFound(t(($) => $.education.grades.update.notFound));
+          return reply.notFound(request.t(($) => $.education.grades.update.notFound));
         }
       }
 
@@ -116,7 +114,7 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: t(($) => $.exam.packages.create.success),
+        message: request.t(($) => $.exam.packages.create.success),
         data: {
           id: newPackage.id,
         },

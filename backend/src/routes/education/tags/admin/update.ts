@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { eq, and, ne } from 'drizzle-orm';
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdateTagParams = Type.Object({
     id: Type.String({ format: 'uuid' })
@@ -55,8 +54,7 @@ const updateTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof UpdateTagParams.static, Body: typeof UpdateTagBody.static }>,
             reply: FastifyReply
         ) {
-            const { t } = getTypedI18n(request);
-            const { id } = request.params;
+                        const { id } = request.params;
             const { name, description, isActive } = request.body;
 
             // Ensure tag exists
@@ -65,7 +63,7 @@ const updateTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingTag) {
-                return reply.notFound(t($ => $.education.tags.update.notFound));
+                return reply.notFound(request.t($ => $.education.tags.update.notFound));
             }
 
             // Check if new name conflicts with another existing tag
@@ -77,7 +75,7 @@ const updateTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (nameConflict) {
-                return reply.badRequest(t($ => $.education.tags.update.exists));
+                return reply.badRequest(request.t($ => $.education.tags.update.exists));
             }
 
             const [updatedTag] = await db.update(educationTags)
@@ -92,7 +90,7 @@ const updateTagRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.education.tags.update.success),
+                message: request.t($ => $.education.tags.update.success),
                 data: {
                     ...updatedTag,
                     createdAt: updatedTag.createdAt.toISOString(),

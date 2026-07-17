@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { eq, and, ne } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdateEducationGradeParams = Type.Object({
   id: Type.Number(),
@@ -60,8 +59,7 @@ const updateEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
       const { name, desc, extra, isDefault } = request.body;
 
       // Ensure grade exists
@@ -70,7 +68,7 @@ const updateEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingGradeDetail) {
-        return reply.notFound(t(($) => $.education.grades.update.notFound));
+        return reply.notFound(request.t(($) => $.education.grades.update.notFound));
       }
 
       // Check if new name conflicts with another existing grade
@@ -80,7 +78,7 @@ const updateEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
         });
 
         if (nameConflict) {
-          return reply.badRequest(t(($) => $.education.grades.update.exists));
+          return reply.badRequest(request.t(($) => $.education.grades.update.exists));
         }
       }
 
@@ -98,7 +96,7 @@ const updateEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.education.grades.update.success),
+        message: request.t(($) => $.education.grades.update.success),
         data: {
           ...updatedGrade,
           createdAt: updatedGrade.createdAt ? updatedGrade.createdAt.toISOString() : null,

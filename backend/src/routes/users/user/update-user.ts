@@ -6,7 +6,6 @@ import { eq, sql } from "drizzle-orm";
 import { processChangeAvatar } from "./avatar-user.ts";
 import type { UploadedFile } from "../../../types/file.ts";
 import { getUserAvatarUrl } from "../../../utils/user-utils.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 // Response schemas
 const UpdateUserResponse = Type.Object({
@@ -83,8 +82,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async (req, reply) => {
-      const { t } = getTypedI18n(req);
-      // Get user ID from session (verified by user.hook.ts)
+            // Get user ID from session (verified by user.hook.ts)
       const userId = req.session.user.id;
 
       // Initialize variables for form data
@@ -171,7 +169,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // If no valid updates are provided and no image was uploaded, return early
       if (Object.keys(safeUpdateData).length === 0 && !imageFile) {
-        return reply.badRequest(t(($) => $.user.noValidUpdateData));
+        return reply.badRequest(req.t(($) => $.user.noValidUpdateData));
       }
 
       // Separate user and profile data
@@ -209,7 +207,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         // Check if user was actually updated
         if (!updatedUserResult) {
-          return reply.notFound(t(($) => $.user.userNotFound));
+          return reply.notFound(req.t(($) => $.user.userNotFound));
         }
       }
 
@@ -232,7 +230,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         // Check if profile was actually updated/inserted
         if (!updatedProfileResult) {
-          return reply.notFound(t(($) => $.user.userNotFound));
+          return reply.notFound(req.t(($) => $.user.userNotFound));
         }
       }
 
@@ -267,12 +265,12 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       const userResult = userWithAllData[0];
 
       if (!userResult) {
-        return reply.notFound(t(($) => $.user.userNotFound));
+        return reply.notFound(req.t(($) => $.user.userNotFound));
       }
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.user.userUpdatedSuccessfully),
+        message: req.t(($) => $.user.userUpdatedSuccessfully),
         data: {
           ...userResult,
           image: getUserAvatarUrl(userResult.id, userResult.image),

@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
 import { examSubjects } from '../../../db/schema/exam/subjects.ts';
 import { and, eq, asc, sql, ilike } from 'drizzle-orm';
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const SubjectSimpleQuery = Type.Object({
     search: Type.Optional(Type.String()),
@@ -48,8 +47,7 @@ const listSubjectsSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof SubjectSimpleQuery.static }>,
             reply: FastifyReply
         ) {
-            const { t } = getTypedI18n(request);
-            const { search, page = 1, limit = 1000 } = request.body;
+                        const { search, page = 1, limit = 1000 } = request.body;
             const offset = (page - 1) * limit;
 
             const conditions = [eq(examSubjects.isActive, true)];
@@ -80,7 +78,7 @@ const listSubjectsSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.exam.subjects.list.success),
+                message: request.t($ => $.exam.subjects.list.success),
                 data: {
                     items,
                     meta: {

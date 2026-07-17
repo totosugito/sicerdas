@@ -10,7 +10,6 @@ import { desc, ilike, and, sql, eq, asc } from "drizzle-orm";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from "../../../../db/schema/index.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
 import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";
 
@@ -101,8 +100,7 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof PackageListQuery.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      // Determine user role from session
+            // Determine user role from session
       const session = await getAuthInstance(app).api.getSession({
         headers: fromNodeHeaders(request.headers),
       });
@@ -277,7 +275,7 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.packages.list.success),
+        message: request.t(($) => $.exam.packages.list.success),
         data: {
           items: items.map((r) => {
             const p = r.package;

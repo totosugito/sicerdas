@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { eq, or } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const CreateEducationGradeBody = Type.Object({
   grade: Type.String({ minLength: 1, maxLength: 32 }),
@@ -53,8 +52,7 @@ const createEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof CreateEducationGradeBody.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { grade, name, desc, extra, isDefault } = request.body;
+            const { grade, name, desc, extra, isDefault } = request.body;
 
       // Check if grade or name already exists
       const existingGrade = await db.query.educationGrades.findFirst({
@@ -62,7 +60,7 @@ const createEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (existingGrade) {
-        return reply.badRequest(t(($) => $.education.grades.create.exists));
+        return reply.badRequest(request.t(($) => $.education.grades.create.exists));
       }
 
       const userId = request.session.user.id;
@@ -81,7 +79,7 @@ const createEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: t(($) => $.education.grades.create.success),
+        message: request.t(($) => $.education.grades.create.success),
         data: {
           ...newGrade,
           createdAt: newGrade.createdAt ? newGrade.createdAt.toISOString() : null,

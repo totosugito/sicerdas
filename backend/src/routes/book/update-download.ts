@@ -9,7 +9,6 @@ import { and, eq, desc, sql } from "drizzle-orm";
 import { fromNodeHeaders } from "better-auth/node";
 import config from "../../config/env.config.ts";
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const UpdateDownloadParams = Type.Object({
   id: Type.Optional(
@@ -50,8 +49,7 @@ const updateDownloadRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof UpdateDownloadParams.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(req);
-      const { id, bookId } = req.body;
+            const { id, bookId } = req.body;
 
       // History Tracking Logic
       let referenceId = id;
@@ -64,7 +62,7 @@ const updateDownloadRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       if (!referenceId) {
-        return reply.notFound(t(($) => $.book.detail.notFound));
+        return reply.notFound(req.t(($) => $.book.detail.notFound));
       }
 
       const session = await getAuthInstance(app).api.getSession({
@@ -151,7 +149,7 @@ const updateDownloadRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.send({
         success: true,
-        message: t(($) => $.book.download.updated),
+        message: req.t(($) => $.book.download.updated),
         data: { downloadCount: currentDownloadCount },
       });
     },

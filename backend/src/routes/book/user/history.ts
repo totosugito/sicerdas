@@ -12,7 +12,6 @@ import { educationGrades } from "../../../db/schema/education/grades.ts";
 import { and, eq, sql, desc, gt } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getBookCoverUrl } from "../../../utils/book-utils.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const HistoryBookResponseItem = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -72,8 +71,7 @@ const listHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ): Promise<typeof HistoryBooksResponse.static> {
-      const { t } = getTypedI18n(req);
-      const userId = (req as any).session.user.id;
+            const userId = (req as any).session.user.id;
       const { page, pageSize } = req.query;
       const offset = (page - 1) * pageSize;
 
@@ -122,7 +120,7 @@ const listHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.book.list.success),
+        message: req.t(($) => $.book.list.success),
         data: history.map((item) => ({
           id: item.id,
           bookId: item.bookId,

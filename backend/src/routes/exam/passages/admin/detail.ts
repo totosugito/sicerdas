@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { resolveBlockNoteUrls } from "../../../../utils/blocknote-utils.ts";
 
 const DetailPassageParams = Type.Object({
@@ -52,20 +51,19 @@ const detailPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Params: typeof DetailPassageParams.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
 
       const passage = await db.query.examPassages.findFirst({
         where: eq(examPassages.id, id),
       });
 
       if (!passage) {
-        return reply.notFound(t(($) => $.exam.passages.update.notFound));
+        return reply.notFound(request.t(($) => $.exam.passages.update.notFound));
       }
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.passages.list.success),
+        message: request.t(($) => $.exam.passages.list.success),
         data: {
           ...passage,
           content: resolveBlockNoteUrls(passage.content as Record<string, unknown>[]),

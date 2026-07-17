@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { examUserStatsGlobal } from "../../../db/schema/exam/user-stats-global.ts";
 import { eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const GlobalStatsResponse = Type.Object({
   success: Type.Boolean(),
@@ -36,8 +35,7 @@ const getGlobalStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async function handler(request: FastifyRequest, reply: FastifyReply) {
-      const { t } = getTypedI18n(request);
-      const userId = (request as any).session.user.id;
+            const userId = (request as any).session.user.id;
 
       const [stats] = await db
         .select()
@@ -48,7 +46,7 @@ const getGlobalStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (!stats) {
         return reply.status(200).send({
           success: true,
-          message: t(($) => $.exam.user_stats.global.notFound),
+          message: request.t(($) => $.exam.user_stats.global.notFound),
           data: null,
         });
       }
@@ -59,7 +57,7 @@ const getGlobalStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.user_stats.global.success),
+        message: request.t(($) => $.exam.user_stats.global.success),
         data: {
           ...stats,
           accuracyRate,

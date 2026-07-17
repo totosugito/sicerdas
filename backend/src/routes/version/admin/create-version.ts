@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { appVersion as tableAppVersion } from "../../../db/schema/app/app-version.ts";
 import { db } from "../../../db/db-pool.ts";
 import { and, eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { EnumContentType, EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
 const CreateVersionBody = Type.Object({
@@ -59,8 +58,7 @@ const createVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof CreateVersionBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof CreateVersionResponse.static> {
-      const { t } = getTypedI18n(request);
-      const {
+            const {
         appVersion: appVer,
         dbVersion: dbVer,
         dataType,
@@ -79,7 +77,7 @@ const createVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (existingVersion) {
-        return reply.badRequest(t(($) => $.version.create.exists));
+        return reply.badRequest(request.t(($) => $.version.create.exists));
       }
 
       const [newVersion] = await db
@@ -102,7 +100,7 @@ const createVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: t(($) => $.version.create.success),
+        message: request.t(($) => $.version.create.success),
         data: {
           ...newVersion,
           note: newVersion.note as Record<string, unknown>[],

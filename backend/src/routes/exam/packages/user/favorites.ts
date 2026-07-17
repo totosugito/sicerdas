@@ -11,7 +11,6 @@ import { educationCategories } from "../../../../db/schema/education/index.ts";
 import { and, eq, desc, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const FavoritePackageResponseItem = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -77,8 +76,7 @@ const listFavoritesRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ): Promise<typeof FavoritePackagesResponse.static> {
-      const { t } = getTypedI18n(req);
-      const userId = (req as any).session.user.id;
+            const userId = (req as any).session.user.id;
       const { page, pageSize } = req.query;
       const offset = (page - 1) * pageSize;
 
@@ -122,7 +120,7 @@ const listFavoritesRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.packages.list.success),
+        message: req.t(($) => $.exam.packages.list.success),
         data: favorites.map((item) => ({
           id: item.id,
           title: item.title,

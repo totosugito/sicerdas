@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
 import { and, inArray, eq } from 'drizzle-orm';
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UnassignQuestionTagsBody = Type.Object({
     questionId: Type.String({ format: 'uuid' }),
@@ -39,8 +38,7 @@ const unassignQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof UnassignQuestionTagsBody.static }>,
             reply: FastifyReply
         ) {
-            const { t } = getTypedI18n(request);
-            const { questionId, tagIds } = request.body;
+                        const { questionId, tagIds } = request.body;
 
             await db.delete(examQuestionTags)
                 .where(
@@ -52,7 +50,7 @@ const unassignQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.exam.question_tags.unassign.success),
+                message: request.t($ => $.exam.question_tags.unassign.success),
             });
         },
     });

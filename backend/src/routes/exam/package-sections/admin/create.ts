@@ -5,7 +5,6 @@ import { db } from "../../../../db/db-pool.ts";
 import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
 import { eq, sql } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const CreateSectionBody = Type.Object({
   packageId: Type.String({ format: "uuid" }),
@@ -43,8 +42,7 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof CreateSectionBody.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const {
+            const {
         packageId,
         title,
         groupName,
@@ -62,7 +60,7 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingPackage) {
-        return reply.notFound(t(($) => $.exam.packages.update.notFound));
+        return reply.notFound(request.t(($) => $.exam.packages.update.notFound));
       }
 
       // 2. Handle auto-order if order is < 0
@@ -118,7 +116,7 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: t(($) => $.exam.package_sections.create.success),
+        message: request.t(($) => $.exam.package_sections.create.success),
         data: {
           id: newSectionId,
         },

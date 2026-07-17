@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
 import { educationTags } from '../../../db/schema/education/tags.ts';
 import { asc, sql, eq } from 'drizzle-orm';
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const TagSimpleQuery = Type.Object({
     page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
@@ -47,8 +46,7 @@ const listTagsSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof TagSimpleQuery.static }>,
             reply: FastifyReply
         ) {
-            const { t } = getTypedI18n(request);
-            const { page = 1, limit = 1000 } = request.body;
+                        const { page = 1, limit = 1000 } = request.body;
             const offset = (page - 1) * limit;
 
             // Only list active tags for simple selection
@@ -78,7 +76,7 @@ const listTagsSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.education.tags.list.success),
+                message: request.t($ => $.education.tags.list.success),
                 data: {
                     items,
                     meta: {

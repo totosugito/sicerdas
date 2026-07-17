@@ -6,7 +6,6 @@ import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { and, desc, sql, eq, notExists } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumDifficultyLevel, EnumQuestionType } from "../../../../db/schema/exam/enums.ts";
 
 const QuestionListQuery = Type.Object({
@@ -74,8 +73,7 @@ const listSimpleQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof QuestionListQuery.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const {
+            const {
         subjectId,
         difficulty,
         type,
@@ -175,7 +173,7 @@ const listSimpleQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.questions.list.success),
+        message: request.t(($) => $.exam.questions.list.success),
         data: {
           items: items.map((q) => ({
             id: q.id,

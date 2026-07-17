@@ -3,7 +3,6 @@ import { Type } from "@fastify/type-provider-typebox";
 import { db } from "../../../db/db-pool.ts";
 import { eq, and, ne } from "drizzle-orm";
 import { sessions } from "../../../db/schema/user/index.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 // Request schema
 const RevokeOtherSessionsRequest = Type.Object({
@@ -43,8 +42,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async (req, reply) => {
-      const { t } = getTypedI18n(req);
-      // Get the session token from the request body
+            // Get the session token from the request body
       const { token } = req.body as { token: string };
 
       // Get user ID from session (already verified by user.hook.ts)
@@ -61,7 +59,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (!tokenSession.length || tokenSession[0].userId !== userId) {
         return reply.status(403).send({
           success: false,
-          message: t(($) => $.auth.forbidden),
+          message: req.t(($) => $.auth.forbidden),
         });
       }
 
@@ -73,7 +71,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.auth.sessions_revoked, { count: deletedSessions.length }),
+        message: req.t(($) => $.auth.sessions_revoked, { count: deletedSessions.length }),
       });
     },
   });

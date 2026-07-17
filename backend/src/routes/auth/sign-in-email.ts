@@ -4,7 +4,6 @@ import { db } from "../../db/db-pool.ts";
 import { users, usersProfile } from "../../db/schema/user/index.ts";
 import { eq } from "drizzle-orm";
 import { getUserAvatarUrl } from "../../utils/user-utils.ts";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 // Response schemas
 const UserResponse = Type.Object({
@@ -60,8 +59,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async (req, reply) => {
-      const { t } = getTypedI18n(req);
-      // Parse form data into a key-value object
+            // Parse form data into a key-value object
       const formData = new Map<string, string>();
       if (typeof req.parts === "function") {
         for await (const part of req.parts()) {
@@ -74,7 +72,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Validate required fields using Fastify Sensible badRequest
       if (!email || !password) {
-        return reply.badRequest(t(($) => $.auth.emailAndPasswordRequired));
+        return reply.badRequest(req.t(($) => $.auth.emailAndPasswordRequired));
       }
 
       // Use Fastify's built-in inject method
@@ -95,7 +93,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const authData = response.json();
 
       if (!authData.user) {
-        return reply.badRequest(t(($) => $.auth.invalidCredentials));
+        return reply.badRequest(req.t(($) => $.auth.invalidCredentials));
       }
 
       // Fetch the user with role and tier from the database
@@ -119,7 +117,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const userWithRole = userRecord.length > 0 ? userRecord[0] : null;
 
       if (!userWithRole) {
-        return reply.notFound(t(($) => $.auth.userNotFound));
+        return reply.notFound(req.t(($) => $.auth.userNotFound));
       }
 
       const tierId = userWithRole.tierId || "free";

@@ -4,7 +4,6 @@ import { db } from "../../../db/db-pool.ts";
 import { books, bookEventStats, bookInteractions } from "../../../db/schema/book/index.ts";
 import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const UpdateBookmarkRequest = Type.Object({
   bookId: Type.Number(),
@@ -45,8 +44,7 @@ const userBookmarkRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof UpdateBookmarkRequest.static }>,
       reply: FastifyReply,
     ): Promise<typeof UpdateBookmarkResponse.static> {
-      const { t } = getTypedI18n(req);
-      const userId = (req as any).session.user.id;
+            const userId = (req as any).session.user.id;
       const { bookId, bookmarked } = req.body;
 
       // Find the book UUID based on the integer bookId
@@ -57,7 +55,7 @@ const userBookmarkRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (bookList.length === 0) {
-        return reply.notFound(t(($) => $.book.detail.notFound));
+        return reply.notFound(req.t(($) => $.book.detail.notFound));
       }
 
       const bookUUID = bookList[0].id;
@@ -78,7 +76,7 @@ const userBookmarkRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         return reply.status(200).send({
           success: true,
-          message: t(($) => $.book.bookmark.noChange),
+          message: req.t(($) => $.book.bookmark.noChange),
           data: {
             bookmarked: currentlyBookmarked,
             bookmarkCount: currentStats?.bookmarkCount ?? 0,
@@ -133,7 +131,7 @@ const userBookmarkRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.book.bookmark.updated),
+        message: req.t(($) => $.book.bookmark.updated),
         data: {
           bookmarked,
           bookmarkCount: finalStats?.bookmarkCount ?? 0,

@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { eq, and, ne } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { stringToKey } from "../../../../utils/my-utils.ts";
 
 const UpdateCategoryParams = Type.Object({
@@ -60,8 +59,7 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
       const { name, key, description, isActive } = request.body;
 
       // Ensure category exists
@@ -70,7 +68,7 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingCategory) {
-        return reply.notFound(t(($) => $.education.categories.update.notFound));
+        return reply.notFound(request.t(($) => $.education.categories.update.notFound));
       }
 
       // Determine the key to use
@@ -83,7 +81,7 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (nameConflict) {
-        return reply.badRequest(t(($) => $.education.categories.update.exists));
+        return reply.badRequest(request.t(($) => $.education.categories.update.exists));
       }
 
       // Check if new key conflicts
@@ -92,7 +90,7 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (keyConflict) {
-        return reply.badRequest(t(($) => $.education.categories.update.exists));
+        return reply.badRequest(request.t(($) => $.education.categories.update.exists));
       }
 
       const [updatedCategory] = await db
@@ -109,7 +107,7 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.education.categories.update.success),
+        message: request.t(($) => $.education.categories.update.success),
         data: {
           ...updatedCategory,
           createdAt: updatedCategory.createdAt.toISOString(),

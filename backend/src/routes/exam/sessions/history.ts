@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { examSessions } from "../../../db/schema/exam/sessions.ts";
 import { eq, and, desc, sql } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const HistoryBody = Type.Object({
   packageId: Type.String({ format: "uuid" }),
@@ -66,8 +65,7 @@ const sessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const userId = (request as any).session.user.id;
+            const userId = (request as any).session.user.id;
       const { packageId, sectionId, page = 1, limit = 5 } = request.body;
 
       const offset = (page - 1) * limit;
@@ -110,7 +108,7 @@ const sessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.sessions.history.success),
+        message: request.t(($) => $.exam.sessions.history.success),
         data: {
           items: history.map((h) => ({
             ...h,

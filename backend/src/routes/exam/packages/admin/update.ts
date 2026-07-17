@@ -6,7 +6,6 @@ import { examPackages } from "../../../../db/schema/exam/packages.ts";
 import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
 import { recalculateEducationStats } from "../../../../utils/education-stats-utils.ts";
@@ -52,8 +51,7 @@ const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
       const {
         categoryId,
         title,
@@ -70,7 +68,7 @@ const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existing) {
-        return reply.notFound(t(($) => $.exam.packages.update.notFound));
+        return reply.notFound(request.t(($) => $.exam.packages.update.notFound));
       }
 
       // 1. Check if category exists if provided
@@ -80,7 +78,7 @@ const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
         });
 
         if (!existingCategory) {
-          return reply.notFound(t(($) => $.education.categories.update.notFound));
+          return reply.notFound(request.t(($) => $.education.categories.update.notFound));
         }
       }
 
@@ -91,7 +89,7 @@ const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
         });
 
         if (!existingGrade) {
-          return reply.notFound(t(($) => $.education.grades.update.notFound));
+          return reply.notFound(request.t(($) => $.education.grades.update.notFound));
         }
       }
 
@@ -158,7 +156,7 @@ const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.packages.update.success),
+        message: request.t(($) => $.exam.packages.update.success),
       });
     },
   });

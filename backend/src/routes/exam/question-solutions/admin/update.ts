@@ -6,7 +6,6 @@ import { examQuestionSolutions } from "../../../../db/schema/exam/question-solut
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
   processBlockNoteFiles,
@@ -62,8 +61,7 @@ const updateQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Params: typeof UpdateQuestionSolutionParams.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
 
       // Ensure solution exists
       const existingSolution = await db.query.examQuestionSolutions.findFirst({
@@ -71,7 +69,7 @@ const updateQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingSolution) {
-        return reply.notFound(t(($) => $.exam.question_solutions.update.notFound));
+        return reply.notFound(request.t(($) => $.exam.question_solutions.update.notFound));
       }
 
       // Parse multipart data
@@ -105,7 +103,7 @@ const updateQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
           where: eq(examQuestions.id, questionId),
         });
         if (!existingQuestion) {
-          return reply.badRequest(t(($) => $.exam.question_solutions.update.invalidQuestion));
+          return reply.badRequest(request.t(($) => $.exam.question_solutions.update.invalidQuestion));
         }
       }
 
@@ -163,7 +161,7 @@ const updateQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.question_solutions.update.success),
+        message: request.t(($) => $.exam.question_solutions.update.success),
         data: {
           ...updatedSolution,
           content: resolveBlockNoteUrls(updatedSolution.content as any[]),

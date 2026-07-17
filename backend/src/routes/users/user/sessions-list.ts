@@ -3,7 +3,6 @@ import { Type } from "@fastify/type-provider-typebox";
 import { db } from "../../../db/db-pool.ts";
 import { eq } from "drizzle-orm";
 import { sessions } from "../../../db/schema/user/index.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 // Response schemas
 const SessionListResponse = Type.Object({
@@ -49,8 +48,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async (req, reply) => {
-      const { t } = getTypedI18n(req);
-
+      
       // Get user ID from session (already verified by user.hook.ts)
       const userId = req.session.user.id;
 
@@ -70,7 +68,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.user.sessionsList.success),
+        message: req.t(($) => $.user.sessionsList.success),
         data: userSessions.map((session) => ({
           ...session,
           expiresAt: session.expiresAt.toISOString(),

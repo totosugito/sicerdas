@@ -5,7 +5,6 @@ import { db } from "../../../../db/db-pool.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { deleteStorageDirectory } from "../../../../platform/storage/storage.ts";
 import { syncSection, syncPassage, syncPackage } from "../../../../services/exam/index.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
@@ -42,8 +41,7 @@ const deleteQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Params: typeof DeleteQuestionParams.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
 
       // Ensure question exists
       const existingQuestion = await db.query.examQuestions.findFirst({
@@ -51,7 +49,7 @@ const deleteQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingQuestion) {
-        return reply.notFound(t(($) => $.exam.questions.delete.notFound));
+        return reply.notFound(request.t(($) => $.exam.questions.delete.notFound));
       }
 
       await db.transaction(async (tx) => {
@@ -95,7 +93,7 @@ const deleteQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.questions.delete.success),
+        message: request.t(($) => $.exam.questions.delete.success),
       });
     },
   });

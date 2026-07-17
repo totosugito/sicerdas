@@ -2,7 +2,6 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { users } from "../../../db/schema/user/index.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import env from "../../../config/env.config.ts";
@@ -41,12 +40,11 @@ const deleteUser: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Params: typeof Params.static }>,
       reply: FastifyReply,
     ): Promise<typeof DeleteResponse.static> {
-      const { t } = getTypedI18n(req);
-      const { id } = req.params;
+            const { id } = req.params;
 
       // Prevent self-deletion
       if (id === req.session.user.id) {
-        return reply.badRequest(t(($) => $.user.errors.accessDenied));
+        return reply.badRequest(req.t(($) => $.user.errors.accessDenied));
       }
 
       // Check if user exists
@@ -55,7 +53,7 @@ const deleteUser: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!user) {
-        return reply.notFound(t(($) => $.user.userNotFound));
+        return reply.notFound(req.t(($) => $.user.userNotFound));
       }
 
       try {
@@ -66,12 +64,12 @@ const deleteUser: FastifyPluginAsyncTypebox = async (app) => {
 
         return reply.status(200).send({
           success: true,
-          message: t(($) => $.user.management.delete.success),
+          message: req.t(($) => $.user.management.delete.success),
         });
       } catch (error: any) {
         // PostgreSQL error code for foreign key violation is 23503
         if (error && typeof error === "object" && "code" in error && error.code === "23503") {
-          return reply.badRequest(t(($) => $.user.management.delete.inUse));
+          return reply.badRequest(req.t(($) => $.user.management.delete.inUse));
         }
         throw error;
       }

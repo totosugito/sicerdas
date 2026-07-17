@@ -16,7 +16,6 @@ import config from "../../../config/env.config.ts";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumExamPackageUserStatus, EnumExamType } from "../../../db/schema/exam/enums.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const PackageDetailResponse = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -95,8 +94,7 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Params: { id: string } }>,
       reply: FastifyReply,
     ): Promise<typeof PackageDetailResponseWrapper.static> {
-      const { t } = getTypedI18n(req);
-      const { id } = req.params;
+            const { id } = req.params;
       const session = await getAuthInstance(app).api.getSession({
         headers: fromNodeHeaders(req.headers),
       });
@@ -177,7 +175,7 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
       const result = await baseQuery;
 
       if (!result || result.length === 0) {
-        return reply.notFound(t(($) => $.exam.packages.detail.notFound));
+        return reply.notFound(req.t(($) => $.exam.packages.detail.notFound));
       }
 
       const pkg = result[0];
@@ -293,7 +291,7 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (isLoggedIn && pkg.liked !== undefined) {
         return reply.status(200).send({
           success: true,
-          message: t(($) => $.exam.packages.detail.success),
+          message: req.t(($) => $.exam.packages.detail.success),
           data: {
             ...processedPackage,
             userInteraction: {
@@ -324,7 +322,7 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.packages.detail.success),
+        message: req.t(($) => $.exam.packages.detail.success),
         data: processedPackage,
       });
     },

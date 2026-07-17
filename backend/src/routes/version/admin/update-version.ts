@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { appVersion as tableAppVersion } from "../../../db/schema/app/app-version.ts";
 import { db } from "../../../db/db-pool.ts";
 import { eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
 const UpdateVersionParams = Type.Object({
@@ -66,8 +65,7 @@ const updateVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ): Promise<typeof UpdateVersionResponse.static> {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
       const { appVersion: appVer, dbVersion: dbVer, status, name, note, extra } = request.body;
 
       const existingVersion = await db.query.appVersion.findFirst({
@@ -75,7 +73,7 @@ const updateVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingVersion) {
-        return reply.notFound(t(($) => $.version.notFound));
+        return reply.notFound(request.t(($) => $.version.notFound));
       }
 
       const [updatedVersion] = await db
@@ -99,7 +97,7 @@ const updateVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.version.update.success),
+        message: request.t(($) => $.version.update.success),
         data: {
           ...updatedVersion,
           note: updatedVersion.note as Record<string, unknown>[],

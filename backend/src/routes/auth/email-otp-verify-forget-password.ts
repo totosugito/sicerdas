@@ -3,7 +3,6 @@ import { Type } from '@fastify/type-provider-typebox';
 import { db } from "../../db/db-pool.ts";
 import { verifications } from "../../db/schema/user/index.ts";
 import { eq, desc } from "drizzle-orm";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 /**
  * Verify forget password OTP
@@ -48,16 +47,15 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
     },
     handler: async (req, reply) => {
-      const { t } = getTypedI18n(req);
-      const { email, otp } = req.body as { email: string; otp: string };
+            const { email, otp } = req.body as { email: string; otp: string };
 
       // Validate required fields using Fastify Sensible badRequest
       if (!email) {
-        return reply.badRequest(t($ => $.auth.emailRequired));
+        return reply.badRequest(req.t($ => $.auth.emailRequired));
       }
 
       if (!otp) {
-        return reply.badRequest(t($ => $.auth.otpRequired));
+        return reply.badRequest(req.t($ => $.auth.otpRequired));
       }
 
       // Check if token exists in verifications table and is not expired
@@ -72,7 +70,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         .orderBy(desc(verifications.updatedAt));
 
       if (verificationResult.length === 0) {
-        return reply.notFound(t($ => $.auth.invalidOTP));
+        return reply.notFound(req.t($ => $.auth.invalidOTP));
       }
 
       const verification = verificationResult[0];
@@ -81,7 +79,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       // The database stores the token in format "token:something" (e.g., "591255:0"), but the user sends just "591255"
       // So we need to check if the stored value starts with the provided otp followed by ":"
       if (!verification.value.startsWith(`${otp}:`)) {
-        return reply.notFound(t($ => $.auth.invalidOTP));
+        return reply.notFound(req.t($ => $.auth.invalidOTP));
       }
 
       // Check if token is expired
@@ -89,12 +87,12 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const isExpired = verification.expiresAt < now;
 
       if (isExpired) {
-        return reply.notFound(t($ => $.auth.expiredOTP));
+        return reply.notFound(req.t($ => $.auth.expiredOTP));
       }
 
       return reply.status(200).send({
         success: true,
-        message: t($ => $.auth.validOTP),
+        message: req.t($ => $.auth.validOTP),
         data: {
           valid: true
         }

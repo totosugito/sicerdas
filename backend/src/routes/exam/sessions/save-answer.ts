@@ -7,7 +7,6 @@ import { examSessionAnswers } from "../../../db/schema/exam/session-answers.ts";
 import { examQuestionOptions } from "../../../db/schema/exam/question-options.ts";
 import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
 import { eq, and } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const SaveAnswerBody = Type.Object({
   sessionId: Type.String({ format: "uuid" }),
@@ -48,8 +47,7 @@ const saveAnswerRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof SaveAnswerBody.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const userId = (request as any).session.user.id;
+            const userId = (request as any).session.user.id;
       const { sessionId, questionId, selectedOptionId, textAnswer, isDoubtful, elapsedSeconds } =
         request.body;
 
@@ -65,11 +63,11 @@ const saveAnswerRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!session) {
-        return reply.notFound(t(($) => $.exam.sessions.saveAnswer.notFound));
+        return reply.notFound(request.t(($) => $.exam.sessions.saveAnswer.notFound));
       }
 
       if (session.status !== EnumExamSessionStatus.IN_PROGRESS) {
-        return reply.forbidden(t(($) => $.exam.sessions.saveAnswer.finished));
+        return reply.forbidden(request.t(($) => $.exam.sessions.saveAnswer.finished));
       }
 
       // 2. Sync elapsedSeconds to session
@@ -93,7 +91,7 @@ const saveAnswerRoute: FastifyPluginAsyncTypebox = async (app) => {
           .limit(1);
 
         if (existingAnswer?.selectedOptionId) {
-          return reply.forbidden(t(($) => $.exam.sessions.saveAnswer.studyLocked));
+          return reply.forbidden(request.t(($) => $.exam.sessions.saveAnswer.studyLocked));
         }
       }
 
@@ -128,7 +126,7 @@ const saveAnswerRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.sessions.saveAnswer.success),
+        message: request.t(($) => $.exam.sessions.saveAnswer.success),
         data: { sessionId, questionId },
       });
     },

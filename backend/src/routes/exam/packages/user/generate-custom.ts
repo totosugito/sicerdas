@@ -10,7 +10,6 @@ import {
 } from "../../../../db/schema/exam/index.ts";
 import { and, eq, sql, inArray } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
 
 const GenerateCustomRequest = Type.Object({
@@ -56,8 +55,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof GenerateCustomRequest.static }>,
       reply: FastifyReply,
     ): Promise<typeof GenerateCustomResponse.static> {
-      const { t } = getTypedI18n(req);
-      const userId = (req as any).session.user.id;
+            const userId = (req as any).session.user.id;
       const { 
         categoryId, 
         educationGradeId, 
@@ -85,7 +83,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(limit);
 
       if (selectedQuestions.length === 0) {
-        return reply.notFound(t(($) => $.exam.packages.generateCustom.noQuestions));
+        return reply.notFound(req.t(($) => $.exam.packages.generateCustom.noQuestions));
       }
 
       // 2. Create the package
@@ -133,7 +131,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: t(($) => $.exam.packages.generateCustom.success),
+        message: req.t(($) => $.exam.packages.generateCustom.success),
         data: {
           packageId: newPackage.id,
           sectionId: newSection.id,

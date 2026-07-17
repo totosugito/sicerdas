@@ -3,7 +3,6 @@ import { Type } from '@fastify/type-provider-typebox';
 import { db } from "../../db/db-pool.ts";
 import { users, verifications } from "../../db/schema/user/index.ts";
 import { eq, and, gte } from "drizzle-orm";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 /**
  * Check if user has pending OTP verification
@@ -46,20 +45,19 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
     },
     handler: async (req, reply) => {
-      const { t } = getTypedI18n(req);
-      // Extract email and identifier from request body, default identifier to 'forget-password-otp-' if not provided
+            // Extract email and identifier from request body, default identifier to 'forget-password-otp-' if not provided
       const { email, identifier: identifierPrefix = 'forget-password-otp-' } = req.body as { email: string; identifier?: string; };
 
       // Validate required fields using Fastify Sensible badRequest
       if (!email) {
-        return reply.badRequest(t($ => $.auth.emailRequired));
+        return reply.badRequest(req.t($ => $.auth.emailRequired));
       }
 
       // Check if email exists in users table and get user ID
       const existingUser = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.email, email));
 
       if (existingUser.length === 0) {
-        return reply.notFound(t($ => $.auth.userNotFound));
+        return reply.notFound(req.t($ => $.auth.userNotFound));
       }
 
       // Check if user has pending verification in the verifications table
@@ -85,8 +83,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           success: true,
           hasOtp: hasOtp,
           message: hasOtp
-            ? t($ => $.auth.pendingVerificationFound)
-            : t($ => $.auth.noPendingVerification)
+            ? req.t($ => $.auth.pendingVerificationFound)
+            : req.t($ => $.auth.noPendingVerification)
         });
     },
   });

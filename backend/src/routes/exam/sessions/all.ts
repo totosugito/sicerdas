@@ -7,7 +7,6 @@ import { examPackages } from "../../../db/schema/exam/packages.ts";
 import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
 import { EnumExamSessionStatus } from "../../../db/schema/exam/enums.ts";
 import { eq, desc, sql, and } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const AllHistoryBody = Type.Object({
   page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
@@ -63,8 +62,7 @@ const allSessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const userId = (request as any).session.user.id;
+            const userId = (request as any).session.user.id;
       const { page = 1, limit = 10, status } = request.body;
 
       const offset = (page - 1) * limit;
@@ -111,7 +109,7 @@ const allSessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.sessions.history.success),
+        message: request.t(($) => $.exam.sessions.history.success),
         data: {
           items: history.map((h) => ({
             ...h,

@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { and, eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const SyncPackageQuestionsOrderBody = Type.Object({
   packageId: Type.String({ format: "uuid" }),
@@ -40,8 +39,7 @@ const syncPackageQuestionsOrderRoute: FastifyPluginAsyncTypebox = async (app) =>
       request: FastifyRequest<{ Body: typeof SyncPackageQuestionsOrderBody.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { packageId, sectionId, updates } = request.body;
+            const { packageId, sectionId, updates } = request.body;
 
       await db.transaction(async (tx) => {
         for (const update of updates) {
@@ -60,7 +58,7 @@ const syncPackageQuestionsOrderRoute: FastifyPluginAsyncTypebox = async (app) =>
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.package_questions.assign.success),
+        message: request.t(($) => $.exam.package_questions.assign.success),
       });
     },
   });

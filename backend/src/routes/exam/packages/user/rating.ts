@@ -8,7 +8,6 @@ import {
 } from "../../../../db/schema/exam/index.ts";
 import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdateRatingRequest = Type.Object({
   packageId: Type.String({ format: "uuid" }),
@@ -52,8 +51,7 @@ const ratingRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof UpdateRatingRequest.static }>,
       reply: FastifyReply,
     ): Promise<typeof UpdateRatingResponse.static> {
-      const { t } = getTypedI18n(req);
-      const userId = (req as any).session.user.id;
+            const userId = (req as any).session.user.id;
       const { packageId, rating } = req.body;
 
       // Verify package existence
@@ -64,7 +62,7 @@ const ratingRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (pkgList.length === 0) {
-        return reply.notFound(t(($) => $.exam.packages.detail.notFound));
+        return reply.notFound(req.t(($) => $.exam.packages.detail.notFound));
       }
 
       // Check existing interaction
@@ -88,7 +86,7 @@ const ratingRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         return reply.status(200).send({
           success: true,
-          message: t(($) => $.exam.packages.detail.success),
+          message: req.t(($) => $.exam.packages.detail.success),
           data: {
             rating: currentStats?.rating ? parseFloat(currentStats.rating.toString()) : 0,
             ratingCount: currentStats?.ratingCount ?? 0,
@@ -154,7 +152,7 @@ const ratingRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.packages.detail.success),
+        message: req.t(($) => $.exam.packages.detail.success),
         data: {
           rating: finalStats?.rating ? parseFloat(finalStats.rating.toString()) : 0,
           ratingCount: finalStats?.ratingCount ?? 0,

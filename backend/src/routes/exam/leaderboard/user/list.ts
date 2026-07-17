@@ -5,7 +5,6 @@ import { db } from "../../../../db/db-pool.ts";
 import { examUserStatsGlobal } from "../../../../db/schema/exam/user-stats-global.ts";
 import { users } from "../../../../db/schema/user/users.ts";
 import { eq, desc } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const LeaderboardResponse = Type.Object({
   success: Type.Boolean(),
@@ -34,8 +33,7 @@ const leaderboardRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async function handler(request: FastifyRequest, reply: FastifyReply) {
-      const { t } = getTypedI18n(request);
-      // Get top 50 users by average score
+            // Get top 50 users by average score
       const ranking = await db
         .select({
           userId: examUserStatsGlobal.userId,
@@ -50,7 +48,7 @@ const leaderboardRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.leaderboard.list.success),
+        message: request.t(($) => $.exam.leaderboard.list.success),
         data: ranking.map((r, index) => ({
           ...r,
           rank: index + 1,

@@ -7,7 +7,6 @@ import { eq, and } from 'drizzle-orm';
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from '../../../db/schema/index.ts';
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const DetailSubjectParams = Type.Object({
     id: Type.String({ format: 'uuid' }),
@@ -45,8 +44,7 @@ const detailSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof DetailSubjectParams.static }>,
             reply: FastifyReply
         ) {
-            const { t } = getTypedI18n(request);
-            const { id } = request.params;
+                        const { id } = request.params;
 
             // Determine user role from session
             const session = await getAuthInstance(app).api.getSession({
@@ -67,12 +65,12 @@ const detailSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!subject) {
-                return reply.notFound(t($ => $.exam.subjects.detail.notFound));
+                return reply.notFound(request.t($ => $.exam.subjects.detail.notFound));
             }
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.exam.subjects.detail.success),
+                message: request.t($ => $.exam.subjects.detail.success),
                 data: {
                     ...subject,
                     createdAt: subject.createdAt.toISOString(),

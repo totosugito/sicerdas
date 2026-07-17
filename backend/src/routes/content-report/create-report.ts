@@ -5,7 +5,6 @@ import { EnumReportReason } from "../../db/schema/enum/enum-general.ts";
 import { EnumContentType } from "../../db/schema/enum/enum-app.ts";
 import { contentReport } from "../../db/schema/content-report/index.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
 
@@ -49,8 +48,7 @@ const createReportRoute: FastifyPluginAsyncTypebox = async (app) => {
             req: FastifyRequest<{ Body: typeof CreateReportBody.static }>,
             reply: FastifyReply
         ) {
-            const { t } = getTypedI18n(req);
-            const { name, email, title, contentType, referenceId, reason, description, extra } = req.body;
+                        const { name, email, title, contentType, referenceId, reason, description, extra } = req.body;
 
             // Attempt to retrieve user ID if available (safe cast)
             // Attempt to retrieve user ID if available (safe cast)
@@ -72,12 +70,12 @@ const createReportRoute: FastifyPluginAsyncTypebox = async (app) => {
             }).returning({ id: contentReport.id });
 
             if (!newReport) {
-                return reply.internalServerError(t($ => $.report.create.error));
+                return reply.internalServerError(req.t($ => $.report.create.error));
             }
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.report.create.success),
+                message: req.t($ => $.report.create.success),
                 data: {
                     id: newReport.id
                 }

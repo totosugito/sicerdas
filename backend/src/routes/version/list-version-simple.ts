@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../db/db-pool.ts";
 import { appVersion } from "../../db/schema/app/app-version.ts";
 import { and, eq, asc, sql, ilike } from "drizzle-orm";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import { EnumContentStatus, EnumContentType } from "../../db/schema/enum/enum-app.ts";
 
 const VersionSimpleQuery = Type.Object({
@@ -57,8 +56,7 @@ const listVersionSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof VersionSimpleQuery.static }>,
       reply: FastifyReply,
     ): Promise<typeof ListVersionSimpleResponse.static> {
-      const { t } = getTypedI18n(request);
-      const { dataType, search, page = 1, limit = 1000 } = request.body;
+            const { dataType, search, page = 1, limit = 1000 } = request.body;
       const offset = (page - 1) * limit;
 
       const conditions = [
@@ -94,7 +92,7 @@ const listVersionSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.version.listSuccess),
+        message: request.t(($) => $.version.listSuccess),
         data: {
           items: items.map((item) => ({
             id: item.id,

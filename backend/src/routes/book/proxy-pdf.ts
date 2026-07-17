@@ -2,7 +2,6 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
 import axios from "axios";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 
 const ProxyParams = Type.Object({
@@ -41,8 +40,7 @@ const proxyRoute: FastifyPluginAsyncTypebox = async (app) => {
             req: FastifyRequest<{ Querystring: { url: string; file?: string; id?: string, bookId?: number }; Params: { filename?: string } }>,
             reply: FastifyReply
         ) {
-            const { t } = getTypedI18n(req);
-            const { url, file } = req.query;
+                        const { url, file } = req.query;
             const { filename } = req.params;
 
             try {
@@ -62,7 +60,7 @@ const proxyRoute: FastifyPluginAsyncTypebox = async (app) => {
                 });
 
                 if (response.status >= 400) {
-                    const message = t($ => $.book.proxyPdf.error, { message: `S3 returned ${response.status}` });
+                    const message = req.t($ => $.book.proxyPdf.error, { message: `S3 returned ${response.status}` });
                     if (response.status === 403) return reply.forbidden(message);
                     if (response.status === 404) return reply.notFound(message);
                     return reply.badGateway(message);
@@ -88,7 +86,7 @@ const proxyRoute: FastifyPluginAsyncTypebox = async (app) => {
 
                 return reply.send(response.data);
             } catch (error: any) {
-                return reply.internalServerError(t($ => $.book.proxyPdf.error, { message: error.message }));
+                return reply.internalServerError(req.t($ => $.book.proxyPdf.error, { message: error.message }));
             }
         },
     });

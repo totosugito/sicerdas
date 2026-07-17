@@ -10,7 +10,6 @@ import { examQuestionOptions } from "../../../db/schema/exam/question-options.ts
 import { examQuestionSolutions } from "../../../db/schema/exam/question-solutions.ts";
 import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
 import { eq, and, inArray } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { resolveBlockNoteUrls, blocknoteToHtml } from "../../../utils/blocknote-utils.ts";
 
 const Params = Type.Object({
@@ -83,8 +82,7 @@ const questionSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Params: typeof Params.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const userId = (request as any).session.user.id;
+            const userId = (request as any).session.user.id;
       const { id: sessionId, questionId } = request.params;
 
       // 1. Fetch the session and verify ownership
@@ -95,7 +93,7 @@ const questionSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!session) {
-        return reply.notFound(t(($) => $.exam.sessions.errors.notFound));
+        return reply.notFound(request.t(($) => $.exam.sessions.errors.notFound));
       }
 
       // 2. Verify that this question is part of the user's session answers
@@ -111,7 +109,7 @@ const questionSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!answerRecord) {
-        return reply.notFound(t(($) => $.exam.sessions.errors.notFound));
+        return reply.notFound(request.t(($) => $.exam.sessions.errors.notFound));
       }
 
       // 3. Fetch the actual question details
@@ -122,7 +120,7 @@ const questionSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!question) {
-        return reply.notFound(t(($) => $.exam.sessions.errors.notFound));
+        return reply.notFound(request.t(($) => $.exam.sessions.errors.notFound));
       }
 
       // 4. Fetch the passage if it exists

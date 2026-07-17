@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { eq, sql, inArray, and } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { syncSection, syncPackage } from "../../../../services/exam/index.ts";
 
 const AssignPackageQuestionsBody = Type.Object({
@@ -41,8 +40,7 @@ const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof AssignPackageQuestionsBody.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { packageId, sectionId, questionIds } = request.body;
+            const { packageId, sectionId, questionIds } = request.body;
 
       let totalAssigned = 0;
       let totalSkipped = 0;
@@ -99,7 +97,7 @@ const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.package_questions.assign.success),
+        message: request.t(($) => $.exam.package_questions.assign.success),
         data: {
           totalAssigned,
           totalSkipped,

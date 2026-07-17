@@ -1,5 +1,4 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { db } from "../../../db/db-pool.ts";
 import { Type } from "@fastify/type-provider-typebox";
@@ -56,8 +55,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async (req, reply) => {
-      const { t } = getTypedI18n(req);
-      const auth = getAuthInstance(app);
+            const auth = getAuthInstance(app);
       const { currentPassword, newPassword } = req.body as {
         currentPassword: string;
         newPassword: string;
@@ -65,15 +63,15 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // Validate input using Fastify Sensible badRequest
       if (!currentPassword) {
-        return reply.badRequest(t(($) => $.user.currentPasswordRequired));
+        return reply.badRequest(req.t(($) => $.user.currentPasswordRequired));
       }
 
       if (!newPassword) {
-        return reply.badRequest(t(($) => $.user.newPasswordRequired));
+        return reply.badRequest(req.t(($) => $.user.newPasswordRequired));
       }
 
       if (currentPassword === newPassword) {
-        return reply.badRequest(t(($) => $.user.passwordsMustBeDifferent));
+        return reply.badRequest(req.t(($) => $.user.passwordsMustBeDifferent));
       }
 
       // Get user ID from session (already verified by user.hook.ts)
@@ -87,13 +85,13 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!userAccount) {
-        return reply.notFound(t(($) => $.user.accountNotFound));
+        return reply.notFound(req.t(($) => $.user.accountNotFound));
       }
 
       const context = await auth.$context;
 
       if (!userAccount.password) {
-        return reply.badRequest(t(($) => $.user.accountHasNoPassword));
+        return reply.badRequest(req.t(($) => $.user.accountHasNoPassword));
       }
 
       // Verify current password
@@ -103,7 +101,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!isPasswordValid) {
-        return reply.forbidden(t(($) => $.user.currentPasswordIncorrect));
+        return reply.forbidden(req.t(($) => $.user.currentPasswordIncorrect));
       }
 
       // Hash new password
@@ -120,7 +118,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.user.passwordUpdatedSuccessfully),
+        message: req.t(($) => $.user.passwordUpdatedSuccessfully),
       });
     },
   });

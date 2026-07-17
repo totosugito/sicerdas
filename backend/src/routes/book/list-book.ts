@@ -15,7 +15,6 @@ import { EnumContentStatus, EnumContentType } from "../../db/schema/enum/enum-ap
 import { getBookCoverUrl } from "../../utils/book-utils.ts";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const BookListQuery = Type.Object({
   category: Type.Optional(Type.Array(Type.Number())),
@@ -120,8 +119,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof BookListQuery.static }>,
       reply: FastifyReply,
     ): Promise<typeof BookListResponse.static> {
-      const { t } = getTypedI18n(req);
-      const {
+            const {
         category,
         group,
         grade,
@@ -318,7 +316,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.book.list.success),
+        message: req.t(($) => $.book.list.success),
         data: {
           items: items.map((item: any) => {
             const processedItem = {

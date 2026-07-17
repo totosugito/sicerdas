@@ -5,7 +5,6 @@ import { eq } from "drizzle-orm";
 import sharp from "sharp";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { createUniqueFileName } from "../../../../utils/my-utils.ts";
 import {
   getPackageThumbnailUrl,
@@ -60,8 +59,7 @@ const thumbnailRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
       const { action } = request.query;
 
       // Check if package exists
@@ -76,7 +74,7 @@ const thumbnailRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!existingPackage) {
-        return reply.notFound(t(($) => $.exam.packages.delete.notFound));
+        return reply.notFound(request.t(($) => $.exam.packages.delete.notFound));
       }
 
       // Handle REMOVE action
@@ -93,7 +91,7 @@ const thumbnailRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         return {
           success: true,
-          message: t(($) => $.exam.packages.thumbnail.removeSuccess),
+          message: request.t(($) => $.exam.packages.thumbnail.removeSuccess),
           data: {
             id: updated.id,
             thumbnail: null,
@@ -104,7 +102,7 @@ const thumbnailRoute: FastifyPluginAsyncTypebox = async (app) => {
       // Handle UPLOAD action
       const data = await request.file();
       if (!data) {
-        return reply.badRequest(t(($) => $.exam.packages.thumbnail.noFileUploaded));
+        return reply.badRequest(request.t(($) => $.exam.packages.thumbnail.noFileUploaded));
       }
 
       const file: UploadedFile = {
@@ -116,13 +114,13 @@ const thumbnailRoute: FastifyPluginAsyncTypebox = async (app) => {
       // Validate file type
       const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
       if (!allowedMimeTypes.includes(file.mimetype)) {
-        return reply.badRequest(t(($) => $.exam.packages.thumbnail.invalidFileType));
+        return reply.badRequest(request.t(($) => $.exam.packages.thumbnail.invalidFileType));
       }
 
       // Validate file size (5MB max for package thumbnails)
       const maxSize = 5 * 1024 * 1024;
       if (file.buffer.length > maxSize) {
-        return reply.badRequest(t(($) => $.exam.packages.thumbnail.fileSizeTooLarge));
+        return reply.badRequest(request.t(($) => $.exam.packages.thumbnail.fileSizeTooLarge));
       }
 
       // If existing thumbnail, delete it first
@@ -161,7 +159,7 @@ const thumbnailRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return {
         success: true,
-        message: t(($) => $.exam.packages.thumbnail.uploadSuccess),
+        message: request.t(($) => $.exam.packages.thumbnail.uploadSuccess),
         data: {
           id: updated.id,
           thumbnail: getPackageThumbnailUrl(updated.thumbnail),

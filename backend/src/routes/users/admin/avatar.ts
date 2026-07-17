@@ -7,7 +7,6 @@ import { createUniqueFileName } from "../../../utils/my-utils.ts";
 import { Type } from "@sinclair/typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../utils/user-utils.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const AvatarResponse = Type.Object({
   success: Type.Boolean({ default: true }),
@@ -46,8 +45,7 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async (req: FastifyRequest, reply: FastifyReply) => {
-      const { t } = getTypedI18n(req);
-
+      
       let targetUserId = (req.query as any).id as string | undefined;
       let action = (req.query as any).action as string | undefined;
       let uploadedFile: any = null;
@@ -78,7 +76,7 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
         });
 
         if (!currentUser) {
-          return reply.notFound(t(($) => $.user.userNotFound));
+          return reply.notFound(req.t(($) => $.user.userNotFound));
         }
 
         if (currentUser.image) {
@@ -100,7 +98,7 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
 
         return reply.status(200).send({
           success: true,
-          message: t(($) => $.user.avatarRemovedSuccessfully),
+          message: req.t(($) => $.user.avatarRemovedSuccessfully),
           data: {
             id: updatedUser.id,
             name: updatedUser.name,
@@ -111,7 +109,7 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
 
       // If not removing, then we MUST have a file
       if (!uploadedFile) {
-        return reply.badRequest(t(($) => $.user.noFileUploaded));
+        return reply.badRequest(req.t(($) => $.user.noFileUploaded));
       }
 
       const {
@@ -127,13 +125,13 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
       // Validate file type
       const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
       if (!allowedMimeTypes.includes(mimetype)) {
-        return reply.badRequest(t(($) => $.user.invalidFileType));
+        return reply.badRequest(req.t(($) => $.user.invalidFileType));
       }
 
       // Validate file size (2MB max)
       const maxSize = 2 * 1024 * 1024;
       if (buffer.length > maxSize) {
-        return reply.badRequest(t(($) => $.user.fileSizeTooLarge));
+        return reply.badRequest(req.t(($) => $.user.fileSizeTooLarge));
       }
 
       // Get current user to check for existing avatar and get createdAt for folder structure
@@ -142,7 +140,7 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!currentUser) {
-        return reply.notFound(t(($) => $.user.userNotFound));
+        return reply.notFound(req.t(($) => $.user.userNotFound));
       }
 
       // Delete old file if exists
@@ -181,7 +179,7 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.user.avatarUpdatedSuccessfully),
+        message: req.t(($) => $.user.avatarUpdatedSuccessfully),
         data: {
           id: updatedUser.id,
           name: updatedUser.name,

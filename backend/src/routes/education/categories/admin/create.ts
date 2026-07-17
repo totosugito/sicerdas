@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { stringToKey } from "../../../../utils/my-utils.ts";
 
 const CreateCategoryBody = Type.Object({
@@ -52,8 +51,7 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof CreateCategoryBody.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { name, key, description, isActive } = request.body;
+            const { name, key, description, isActive } = request.body;
 
       const userId = request.session.user.id;
       const categoryKey = key || stringToKey(name);
@@ -64,7 +62,7 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (existingByName) {
-        return reply.badRequest(t(($) => $.education.categories.create.exists));
+        return reply.badRequest(request.t(($) => $.education.categories.create.exists));
       }
 
       // Check if key already exists
@@ -73,7 +71,7 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (existingByKey) {
-        return reply.badRequest(t(($) => $.education.categories.create.exists)); // Re-use generic exists message or add new one
+        return reply.badRequest(request.t(($) => $.education.categories.create.exists)); // Re-use generic exists message or add new one
       }
 
       const [newCategory] = await db
@@ -89,7 +87,7 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: t(($) => $.education.categories.create.success),
+        message: request.t(($) => $.education.categories.create.success),
         data: {
           ...newCategory,
           createdAt: newCategory.createdAt.toISOString(),

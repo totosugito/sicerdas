@@ -6,7 +6,6 @@ import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
   processBlockNoteFiles,
@@ -51,8 +50,7 @@ const createPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async function handler(request: FastifyRequest, reply: FastifyReply) {
-      const { t } = getTypedI18n(request);
-      const userId = request.session.user.id;
+            const userId = request.session.user.id;
 
       // Parse multipart data
       const parts = request.parts();
@@ -80,7 +78,7 @@ const createPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
       const { title, content, isActive, subjectId } = body;
 
       if (!subjectId) {
-        return reply.badRequest(t(($) => $.exam.subjects.detail.notFound));
+        return reply.badRequest(request.t(($) => $.exam.subjects.detail.notFound));
       }
 
       // Ensure subject exists
@@ -89,7 +87,7 @@ const createPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingSubject) {
-        return reply.notFound(t(($) => $.exam.subjects.detail.notFound));
+        return reply.notFound(request.t(($) => $.exam.subjects.detail.notFound));
       }
 
       // Create the passage record first to get the ID
@@ -129,7 +127,7 @@ const createPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: t(($) => $.exam.passages.create.success),
+        message: request.t(($) => $.exam.passages.create.success),
         data: {
           ...newPassage,
           content: resolveBlockNoteUrls(finalContent),

@@ -1,7 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../db/db-pool.ts";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import { periodicElements, periodicElementNotes } from "../../db/schema/periodic-table/index.ts";
 
 const ElementItem = Type.Object({
@@ -61,8 +60,7 @@ const periodicTableRoute: FastifyPluginAsyncTypebox = async (app) => {
       req,
       reply,
     ): Promise<typeof PeriodicTableResponse.static> {
-      const { t } = getTypedI18n(req);
-
+      
       const elements = await db
         .select({
           id: periodicElements.id,
@@ -93,7 +91,7 @@ const periodicTableRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.periodic.success),
+        message: req.t(($) => $.periodic.success),
         data: {
           elements: elements.map((el) => ({
             ...el,

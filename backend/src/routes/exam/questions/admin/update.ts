@@ -8,7 +8,6 @@ import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import {
   syncSection,
   syncPackage,
@@ -85,8 +84,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
 
       // Ensure question exists
       const existingQuestion = await db.query.examQuestions.findFirst({
@@ -94,7 +92,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingQuestion) {
-        return reply.notFound(t(($) => $.exam.questions.update.notFound));
+        return reply.notFound(request.t(($) => $.exam.questions.update.notFound));
       }
 
       // Parse multipart data
@@ -140,7 +138,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
           where: eq(examSubjects.id, subjectId),
         });
         if (!existingSubject) {
-          return reply.badRequest(t(($) => $.exam.questions.update.invalidSubject));
+          return reply.badRequest(request.t(($) => $.exam.questions.update.invalidSubject));
         }
       }
 
@@ -150,7 +148,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
           where: eq(examPassages.id, passageId),
         });
         if (!existingPassage) {
-          return reply.badRequest(t(($) => $.exam.questions.update.invalidPassage));
+          return reply.badRequest(request.t(($) => $.exam.questions.update.invalidPassage));
         }
       }
 
@@ -276,7 +274,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.questions.update.success),
+        message: request.t(($) => $.exam.questions.update.success),
         data: {
           ...updatedQuestion,
           content: resolveBlockNoteUrls(updatedQuestion.content as any[]),

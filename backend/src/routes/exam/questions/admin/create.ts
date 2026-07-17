@@ -7,7 +7,6 @@ import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import {
   EnumDifficultyLevel,
   EnumQuestionType,
@@ -72,8 +71,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async function handler(request: FastifyRequest, reply: FastifyReply) {
-      const { t } = getTypedI18n(request);
-      const userId = request.session.user.id;
+            const userId = request.session.user.id;
 
       // Parse multipart data
       const parts = request.parts();
@@ -113,7 +111,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       } = body;
 
       if (!subjectId) {
-        return reply.badRequest(t(($) => $.exam.questions.create.invalidSubject));
+        return reply.badRequest(request.t(($) => $.exam.questions.create.invalidSubject));
       }
 
       // 1. Verify that the subject exists
@@ -122,7 +120,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingSubject) {
-        return reply.badRequest(t(($) => $.exam.questions.create.invalidSubject));
+        return reply.badRequest(request.t(($) => $.exam.questions.create.invalidSubject));
       }
 
       // 2. Verify passage exists (if provided)
@@ -131,7 +129,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
           where: eq(examPassages.id, passageId),
         });
         if (!existingPassage) {
-          return reply.badRequest(t(($) => $.exam.questions.create.invalidPassage));
+          return reply.badRequest(request.t(($) => $.exam.questions.create.invalidPassage));
         }
       }
 
@@ -203,7 +201,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: t(($) => $.exam.questions.create.success),
+        message: request.t(($) => $.exam.questions.create.success),
         data: {
           ...newQuestion,
           content: finalContent,

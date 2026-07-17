@@ -1,4 +1,5 @@
 import { Session } from '@better-auth/core';
+import type { AppLocale } from '../locales/locales.ts';
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -6,6 +7,7 @@ declare module 'fastify' {
     i18n: {
       t: (key: string, options?: Record<string, any>) => string;
     };
+    t: (selector: (obj: AppLocale) => any, options?: any) => string;
   }
 
   interface FastifySchema {

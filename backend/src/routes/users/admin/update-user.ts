@@ -2,7 +2,6 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { users, EnumUserRole } from "../../../db/schema/user/index.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
@@ -43,8 +42,7 @@ const updateUser: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof UpdateBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof UpdateResponse.static> {
-      const { t } = getTypedI18n(req);
-
+      
       // Explicitly destructure for Mass Assignment Protection
       const { id, name, email, role } = req.body;
 
@@ -54,7 +52,7 @@ const updateUser: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!user) {
-        return reply.notFound(t(($) => $.user.userNotFound));
+        return reply.notFound(req.t(($) => $.user.userNotFound));
       }
 
       // If email is being changed, check if new email is already taken
@@ -64,7 +62,7 @@ const updateUser: FastifyPluginAsyncTypebox = async (app) => {
         });
 
         if (existingUser) {
-          return reply.conflict(t(($) => $.user.management.update.emailExists));
+          return reply.conflict(req.t(($) => $.user.management.update.emailExists));
         }
       }
 
@@ -85,7 +83,7 @@ const updateUser: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.user.management.update.success),
+        message: req.t(($) => $.user.management.update.success),
       });
     },
   });

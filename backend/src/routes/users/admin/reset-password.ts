@@ -2,7 +2,6 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { accounts } from "../../../db/schema/user/index.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
@@ -43,8 +42,7 @@ const resetPassword: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof ResetPasswordBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof ResetPasswordResponse.static> {
-      const { t } = getTypedI18n(req);
-      const { id, newPassword } = req.body;
+            const { id, newPassword } = req.body;
       const auth = getAuthInstance(app);
 
       // Check if user exists
@@ -53,7 +51,7 @@ const resetPassword: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!user) {
-        return reply.notFound(t(($) => $.user.userNotFound));
+        return reply.notFound(req.t(($) => $.user.userNotFound));
       }
 
       // Check if account exists for the user
@@ -64,7 +62,7 @@ const resetPassword: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!userAccount) {
-        return reply.notFound(t(($) => $.user.accountNotFound));
+        return reply.notFound(req.t(($) => $.user.accountNotFound));
       }
 
       // Get auth context for password hashing
@@ -82,7 +80,7 @@ const resetPassword: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.user.passwordUpdatedSuccessfully),
+        message: req.t(($) => $.user.passwordUpdatedSuccessfully),
       });
     },
   });

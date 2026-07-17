@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { eq, asc } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import {
   EnumDifficultyLevel,
   EnumQuestionType,
@@ -112,8 +111,7 @@ const getQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Params: typeof GetQuestionParams.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
 
       const [question] = await db
         .select({
@@ -142,7 +140,7 @@ const getQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!question) {
-        return reply.notFound(t(($) => $.exam.questions.update.notFound));
+        return reply.notFound(request.t(($) => $.exam.questions.update.notFound));
       }
 
       // Fetch Options
@@ -198,7 +196,7 @@ const getQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.questions.list.success),
+        message: request.t(($) => $.exam.questions.list.success),
         data: {
           ...question,
           variableFormulas:

@@ -6,25 +6,23 @@ import sharp from "sharp";
 import type { UploadedFile } from "../../../types/file.ts";
 import { createUniqueFileName } from "../../../utils/my-utils.ts";
 import { Type } from "@sinclair/typebox";
-import type { FastifyReply } from "fastify";
+import type { FastifyReply, FastifyRequest } from "fastify";
 import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../utils/user-utils.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 export const processChangeAvatar = async (
-  req: any,
+  req: FastifyRequest,
   reply: FastifyReply,
   userId: string,
   file: UploadedFile,
 ) => {
-  const { t } = getTypedI18n(req);
-  const { buffer, filename: originalName, mimetype } = file;
+    const { buffer, filename: originalName, mimetype } = file;
 
   // Validate file type
   const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
   if (!allowedMimeTypes.includes(mimetype)) {
     return reply.status(400).send({
       success: false,
-      message: t(($) => $.user.invalidFileType),
+      message: req.t(($) => $.user.invalidFileType),
     });
   }
 
@@ -33,7 +31,7 @@ export const processChangeAvatar = async (
   if (buffer.length > maxSize) {
     return reply.status(400).send({
       success: false,
-      message: t(($) => $.user.fileSizeTooLarge),
+      message: req.t(($) => $.user.fileSizeTooLarge),
     });
   }
 
@@ -87,7 +85,7 @@ export const processChangeAvatar = async (
 
   return {
     success: true,
-    message: t(($) => $.user.avatarUpdatedSuccessfully),
+    message: req.t(($) => $.user.avatarUpdatedSuccessfully),
     data: {
       id: updatedUser.id,
       name: updatedUser.name,
@@ -130,7 +128,6 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async (req, reply) => {
-      const { t } = getTypedI18n(req);
       // User ID is available from the session (handled by user.hook.ts)
       const userId = req.session.user.id;
 
@@ -163,7 +160,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         return reply.status(200).send({
           success: true,
-          message: t(($) => $.user.avatarRemovedSuccessfully),
+          message: req.t(($) => $.user.avatarRemovedSuccessfully),
           data: {
             id: updatedUser.id,
             name: updatedUser.name,
@@ -176,7 +173,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       const data = await req.file();
 
       if (!data) {
-        return reply.badRequest(t(($) => $.user.noFileUploaded));
+        return reply.badRequest(req.t(($) => $.user.noFileUploaded));
       }
 
       // Convert to our UploadedFile type

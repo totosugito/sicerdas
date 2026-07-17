@@ -5,7 +5,6 @@ import { db } from '../../../../db/db-pool.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
 import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { eq } from 'drizzle-orm';
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const QuestionTagListQuery = Type.Object({
     questionId: Type.Optional(Type.String({ format: 'uuid' })),
@@ -49,8 +48,7 @@ const listQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof QuestionTagListQuery.static }>,
             reply: FastifyReply
         ) {
-            const { t } = getTypedI18n(request);
-            const { questionId, tagId } = request.body;
+                        const { questionId, tagId } = request.body;
 
             let query = db.select({
                 questionId: examQuestionTags.questionId,
@@ -73,7 +71,7 @@ const listQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.exam.question_tags.list.success),
+                message: request.t($ => $.exam.question_tags.list.success),
                 data: items.map(item => ({
                     questionId: item.questionId,
                     tagId: item.tagId,

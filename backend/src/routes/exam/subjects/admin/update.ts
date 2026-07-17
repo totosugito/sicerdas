@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
 import { eq, and, ne } from 'drizzle-orm';
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdateSubjectParams = Type.Object({
     id: Type.String({ format: 'uuid' })
@@ -55,8 +54,7 @@ const updateSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof UpdateSubjectParams.static, Body: typeof UpdateSubjectBody.static }>,
             reply: FastifyReply
         ) {
-            const { t } = getTypedI18n(request);
-            const { id } = request.params;
+                        const { id } = request.params;
             const { name, description, isActive } = request.body;
 
             // Ensure subject exists
@@ -65,7 +63,7 @@ const updateSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingSubject) {
-                return reply.notFound(t($ => $.exam.subjects.update.notFound));
+                return reply.notFound(request.t($ => $.exam.subjects.update.notFound));
             }
 
             // Check if new name conflicts with another existing subject
@@ -77,7 +75,7 @@ const updateSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (nameConflict) {
-                return reply.badRequest(t($ => $.exam.subjects.update.exists));
+                return reply.badRequest(request.t($ => $.exam.subjects.update.exists));
             }
 
             const [updatedSubject] = await db.update(examSubjects)
@@ -92,7 +90,7 @@ const updateSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.exam.subjects.update.success),
+                message: request.t($ => $.exam.subjects.update.success),
                 data: {
                     ...updatedSubject,
                     createdAt: updatedSubject.createdAt.toISOString(),

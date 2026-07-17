@@ -5,7 +5,6 @@ import { db } from "../../../db/db-pool.ts";
 import { examUserStatsSubject } from "../../../db/schema/exam/user-stats-subject.ts";
 import { examSubjects } from "../../../db/schema/exam/subjects.ts";
 import { eq, desc, asc, sql } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const SubjectStatsQuery = Type.Object({
   page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
@@ -56,8 +55,7 @@ const getSubjectStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const userId = (request as any).session.user.id;
+            const userId = (request as any).session.user.id;
       const { page = 1, limit = 10, sortBy = "accuracyRate", order = "desc" } = request.body;
 
       const offset = (page - 1) * limit;
@@ -99,7 +97,7 @@ const getSubjectStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.user_stats.subjects.success),
+        message: request.t(($) => $.exam.user_stats.subjects.success),
         data: {
           items: stats.map((s) => ({
             ...s,

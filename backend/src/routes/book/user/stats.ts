@@ -4,7 +4,6 @@ import { db } from "../../../db/db-pool.ts";
 import { bookInteractions } from "../../../db/schema/book/index.ts";
 import { eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const BookStatsResponse = Type.Object({
   success: Type.Boolean(),
@@ -31,8 +30,7 @@ const getBookStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest,
       reply: FastifyReply,
     ): Promise<typeof BookStatsResponse.static> {
-      const { t } = getTypedI18n(req);
-      const userId = (req as any).session.user.id;
+            const userId = (req as any).session.user.id;
 
       const [stats] = await db
         .select({
@@ -45,7 +43,7 @@ const getBookStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.book.list.success),
+        message: req.t(($) => $.book.list.success),
         data: {
           totalFavorites: stats?.totalFavorites ?? 0,
           totalMaterialsRead: stats?.totalMaterialsRead ?? 0,

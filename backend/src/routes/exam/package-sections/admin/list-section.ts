@@ -8,7 +8,6 @@ import { and, eq, sql, desc, ilike } from "drizzle-orm";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from "../../../../db/schema/index.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
 
 const SectionListQuery = Type.Object({
@@ -82,8 +81,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof SectionListQuery.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      // Determine user role from session
+            // Determine user role from session
       const session = await getAuthInstance(app).api.getSession({
         headers: fromNodeHeaders(request.headers),
       });
@@ -120,7 +118,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
         });
 
         if (!existingPackage) {
-          return reply.notFound(t(($) => $.exam.packages.detail.notFound));
+          return reply.notFound(request.t(($) => $.exam.packages.detail.notFound));
         }
 
         returnPackageId = existingPackage.id;
@@ -235,7 +233,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.package_sections.list.success),
+        message: request.t(($) => $.exam.package_sections.list.success),
         data: {
           package: {
             packageId: returnPackageId,

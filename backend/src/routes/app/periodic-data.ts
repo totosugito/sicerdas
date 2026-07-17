@@ -1,7 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import env from "../../config/env.config.ts";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import axios from "axios";
 
 const periodicDataRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -28,8 +27,7 @@ const periodicDataRoute: FastifyPluginAsyncTypebox = async (app) => {
       req,
       reply,
     ) {
-      const { t } = getTypedI18n(req);
-      const s3Url = env.server.s3Storage.publicUrl;
+            const s3Url = env.server.s3Storage.publicUrl;
       const url = `${s3Url}/table-periodic/periodic-table.zip`.replace(/([^:]\/)\/+/g, "$1");
 
       try {
@@ -64,7 +62,7 @@ const periodicDataRoute: FastifyPluginAsyncTypebox = async (app) => {
         req.log.error(error, "Failed to proxy periodic table zip from storage");
         return reply.status(500).send({
           success: false,
-          message: t(($) => $.periodic.downloadFailed),
+          message: req.t(($) => $.periodic.downloadFailed),
         });
       }
     },

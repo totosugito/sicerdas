@@ -2,7 +2,6 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { users } from "../../../db/schema/user/index.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { inArray } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import env from "../../../config/env.config.ts";
@@ -44,8 +43,7 @@ const bulkDeleteUsers: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof DeletesBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof DeletesResponse.static> {
-      const { t } = getTypedI18n(req);
-      const { ids } = req.body;
+            const { ids } = req.body;
 
       try {
         // Fetch target users to get their createdAt dates for directory cleanup
@@ -63,12 +61,12 @@ const bulkDeleteUsers: FastifyPluginAsyncTypebox = async (app) => {
 
         return reply.status(200).send({
           success: true,
-          message: t(($) => $.user.management.delete.success),
+          message: req.t(($) => $.user.management.delete.success),
         });
       } catch (error: any) {
         // Handle referential integrity errors (23503)
         if (error.code === "23503") {
-          return reply.badRequest(t(($) => $.user.management.delete.inUse));
+          return reply.badRequest(req.t(($) => $.user.management.delete.inUse));
         }
         throw error;
       }

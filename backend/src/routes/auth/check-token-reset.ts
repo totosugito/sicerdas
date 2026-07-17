@@ -3,7 +3,6 @@ import { Type } from '@fastify/type-provider-typebox';
 import { db } from "../../db/db-pool.ts";
 import { verifications } from "../../db/schema/user/index.ts";
 import { eq } from "drizzle-orm";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 /**
  * Check password reset token
@@ -45,12 +44,11 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
         },
         handler: async (req, reply) => {
-            const { t } = getTypedI18n(req);
-            const { token } = req.body as { token: string };
+                        const { token } = req.body as { token: string };
 
             // Validate required fields using Fastify Sensible badRequest
             if (!token) {
-                return reply.badRequest(t($ => $.auth.tokenRequired));
+                return reply.badRequest(req.t($ => $.auth.tokenRequired));
             }
 
             // Check if token exists in verifications table and is not expired
@@ -60,7 +58,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
                 .where(eq(verifications.identifier, `reset-password:${token}`));
 
             if (verificationResult.length === 0) {
-                return reply.notFound(t($ => $.auth.invalidToken));
+                return reply.notFound(req.t($ => $.auth.invalidToken));
             }
 
             const verification = verificationResult[0];
@@ -70,12 +68,12 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             const isExpired = verification.expiresAt < now;
 
             if (isExpired) {
-                return reply.notFound(t($ => $.auth.expiredToken));
+                return reply.notFound(req.t($ => $.auth.expiredToken));
             }
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.auth.validToken),
+                message: req.t($ => $.auth.validToken),
                 data: {
                     valid: true
                 }

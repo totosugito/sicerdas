@@ -2,7 +2,6 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { users } from "../../../db/schema/user/index.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
@@ -43,8 +42,7 @@ const banUser: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof BanBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof BanResponse.static> {
-      const { t } = getTypedI18n(req);
-      const { id, banned, banReason } = req.body;
+            const { id, banned, banReason } = req.body;
 
       // Determine user role from session
       const session = await getAuthInstance(app).api.getSession({
@@ -53,7 +51,7 @@ const banUser: FastifyPluginAsyncTypebox = async (app) => {
       const adminId = session?.user?.id;
 
       if (adminId === id) {
-        return reply.badRequest(t(($) => $.user.management.update.cannotBanSelf));
+        return reply.badRequest(req.t(($) => $.user.management.update.cannotBanSelf));
       }
 
       const user = await db.query.users.findFirst({
@@ -61,7 +59,7 @@ const banUser: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!user) {
-        return reply.notFound(t(($) => $.user.userNotFound));
+        return reply.notFound(req.t(($) => $.user.userNotFound));
       }
 
       await db
@@ -75,7 +73,7 @@ const banUser: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) =>
+        message: req.t(($) =>
           banned ? $.user.management.update.success : $.user.management.update.success,
         ),
       });

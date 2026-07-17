@@ -8,7 +8,6 @@ import {
 } from "../../../../db/schema/exam/index.ts";
 import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdateBookmarkRequest = Type.Object({
   packageId: Type.String({ format: "uuid" }),
@@ -49,8 +48,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof UpdateBookmarkRequest.static }>,
       reply: FastifyReply,
     ): Promise<typeof UpdateBookmarkResponse.static> {
-      const { t } = getTypedI18n(req);
-      const userId = (req as any).session.user.id;
+            const userId = (req as any).session.user.id;
       const { packageId, bookmarked } = req.body;
 
       // Check if package exists
@@ -60,7 +58,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!pkg) {
-        return reply.notFound(t(($) => $.exam.packages.detail.notFound));
+        return reply.notFound(req.t(($) => $.exam.packages.detail.notFound));
       }
 
       // Check existing interaction
@@ -82,7 +80,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         return reply.status(200).send({
           success: true,
-          message: t(($) => $.exam.packages.bookmark.noChange),
+          message: req.t(($) => $.exam.packages.bookmark.noChange),
           data: {
             bookmarked: currentlyBookmarked,
             bookmarkCount: currentStats?.bookmarkCount ?? 0,
@@ -131,7 +129,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.packages.bookmark?.updated || "Bookmark updated"),
+        message: req.t(($) => $.exam.packages.bookmark?.updated || "Bookmark updated"),
         data: {
           bookmarked,
           bookmarkCount: finalStats?.bookmarkCount ?? 0,

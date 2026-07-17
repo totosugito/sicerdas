@@ -6,7 +6,6 @@ import { examQuestionOptions } from "../../../../db/schema/exam/question-options
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
   processBlockNoteFiles,
@@ -51,8 +50,7 @@ const createQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async function handler(request: FastifyRequest, reply: FastifyReply) {
-      const { t } = getTypedI18n(request);
-
+      
       // Parse multipart data
       const parts = request.parts();
       let body: any = {};
@@ -79,7 +77,7 @@ const createQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
       const { questionId, content, isCorrect, score, order } = body;
 
       if (!questionId) {
-        return reply.badRequest(t(($) => $.exam.question_options.create.invalidQuestion));
+        return reply.badRequest(request.t(($) => $.exam.question_options.create.invalidQuestion));
       }
 
       // Verify that the parent question exists
@@ -88,7 +86,7 @@ const createQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingQuestion) {
-        return reply.badRequest(t(($) => $.exam.question_options.create.invalidQuestion));
+        return reply.badRequest(request.t(($) => $.exam.question_options.create.invalidQuestion));
       }
 
       // Create the option first to get the ID
@@ -131,7 +129,7 @@ const createQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: t(($) => $.exam.question_options.create.success),
+        message: request.t(($) => $.exam.question_options.create.success),
         data: {
           ...newOption,
           content: resolveBlockNoteUrls(finalContent),

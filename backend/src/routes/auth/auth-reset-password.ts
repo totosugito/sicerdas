@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 /**
  * Reset password
@@ -42,13 +41,12 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
     },
     handler: async (req, reply) => {
-      const { t } = getTypedI18n(req);
-      // Extract data directly from request body for JSON input
+            // Extract data directly from request body for JSON input
       const { token, newPassword } = req.body as { token: string; newPassword: string };
 
       // Validate required fields using Fastify Sensible badRequest
       if (!token || !newPassword) {
-        return reply.badRequest(t($ => $.auth.tokenAndPasswordRequired));
+        return reply.badRequest(req.t($ => $.auth.tokenAndPasswordRequired));
       }
 
       // Use Fastify's built-in inject method to call the better-auth API
@@ -72,8 +70,8 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         .send({
           success: response.statusCode >= 200 && response.statusCode < 300,
           message: response.statusCode >= 200 && response.statusCode < 300
-            ? t($ => $.auth.passwordResetSuccess)
-            : t($ => $.auth.passwordResetFailed)
+            ? req.t($ => $.auth.passwordResetSuccess)
+            : req.t($ => $.auth.passwordResetFailed)
         });
     },
   });

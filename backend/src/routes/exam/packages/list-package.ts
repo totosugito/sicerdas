@@ -13,7 +13,6 @@ import { EnumContentType } from "../../../db/schema/enum/enum-app.ts";
 import { getPackageThumbnailUrl } from "../../../utils/exam-utils.ts";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { EnumExamPackageUserStatus, EnumExamType } from "../../../db/schema/exam/enums.ts";
 
 const PackageListQuery = Type.Object({
@@ -115,8 +114,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof PackageListQuery.static }>,
       reply: FastifyReply,
     ): Promise<typeof PackageListResponse.static> {
-      const { t } = getTypedI18n(req);
-      const {
+            const {
         categoryId,
         categoryKey,
         educationGradeIds,
@@ -271,7 +269,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.packages.list.success),
+        message: req.t(($) => $.exam.packages.list.success),
         data: {
           items: items.map((item: any) => {
             const processedItem = {

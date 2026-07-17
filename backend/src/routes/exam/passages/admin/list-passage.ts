@@ -5,7 +5,6 @@ import { db } from "../../../../db/db-pool.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { desc, ilike, and, sql, eq, getTableColumns } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const PassageListQuery = Type.Object({
   search: Type.Optional(Type.String({ description: "Search term for passage title" })),
@@ -72,8 +71,7 @@ const listPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof PassageListQuery.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const {
+            const {
         search,
         isActive,
         sortBy = "updatedAt",
@@ -147,7 +145,7 @@ const listPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.passages.list.success),
+        message: request.t(($) => $.exam.passages.list.success),
         data: {
           items: items.map((p) => ({
             id: p.id,

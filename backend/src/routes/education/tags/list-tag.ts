@@ -8,7 +8,6 @@ import { desc, ilike, or, and, sql, eq, count, getTableColumns, asc } from 'driz
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from '../../../db/schema/index.ts';
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const TagListQuery = Type.Object({
     search: Type.Optional(Type.String({ description: 'Search term for tag name or description' })),
@@ -66,8 +65,7 @@ const listTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof TagListQuery.static }>,
             reply: FastifyReply
         ) {
-            const { t } = getTypedI18n(request);
-            // Determine user role from session
+                        // Determine user role from session
             const session = await getAuthInstance(app).api.getSession({
                 headers: fromNodeHeaders(request.headers),
             });
@@ -151,7 +149,7 @@ const listTagRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.education.tags.list.success),
+                message: request.t($ => $.education.tags.list.success),
                 data: {
                     items: items.map(tag => ({
                         ...tag,

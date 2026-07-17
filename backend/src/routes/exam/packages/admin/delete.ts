@@ -7,7 +7,6 @@ import { examSessions } from "../../../../db/schema/exam/sessions.ts";
 import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { deletePackageDirectory } from "../../../../utils/exam-utils.ts";
 import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
@@ -39,15 +38,14 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Params: typeof DeletePackageParams.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
 
       const existing = await db.query.examPackages.findFirst({
         where: eq(examPackages.id, id),
       });
 
       if (!existing) {
-        return reply.notFound(t(($) => $.exam.packages.delete.notFound));
+        return reply.notFound(request.t(($) => $.exam.packages.delete.notFound));
       }
 
       // Check if package is in use by any sessions
@@ -56,7 +54,7 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (inUseCheck) {
-        return reply.badRequest(t(($) => $.exam.packages.delete.inUse));
+        return reply.badRequest(request.t(($) => $.exam.packages.delete.inUse));
       }
 
       // Check if package has sections or question assignments
@@ -66,7 +64,7 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
       ]);
 
       if (hasContent) {
-        return reply.badRequest(t(($) => $.exam.packages.delete.hasContent));
+        return reply.badRequest(request.t(($) => $.exam.packages.delete.hasContent));
       }
 
       // Perform Hard Delete
@@ -76,7 +74,7 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
       deletePackageDirectory(existing.id, existing.createdAt).catch((err) => {
         request.log.error(
           { err, id: existing.id },
-          t(($) => $.exam.packages.delete.cleanupError),
+          request.t(($) => $.exam.packages.delete.cleanupError),
         );
       });
 
@@ -96,7 +94,7 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.packages.delete.success),
+        message: request.t(($) => $.exam.packages.delete.success),
       });
     },
   });

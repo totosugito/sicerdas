@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { educationGrades } from "../../../db/schema/education/grades.ts";
 import { desc, ilike, or, and, sql, asc } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const EducationGradeListQuery = Type.Object({
   search: Type.Optional(Type.String({ description: "Search term for grade name or desc" })),
@@ -69,8 +68,7 @@ const listEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof EducationGradeListQuery.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const {
+            const {
         search,
         sortBy = "updatedAt",
         sortOrder = "desc",
@@ -149,7 +147,7 @@ const listEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.education.grades.list.success),
+        message: request.t(($) => $.education.grades.list.success),
         data: {
           items: items.map((grade) => ({
             ...grade,

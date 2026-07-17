@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examPassages } from '../../../../db/schema/exam/passages.ts';
 import { and, eq, asc, sql, ilike } from 'drizzle-orm';
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const PassageSimpleQuery = Type.Object({
     subjectId: Type.Optional(Type.String({ format: 'uuid' })),
@@ -49,8 +48,7 @@ const listPassagesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof PassageSimpleQuery.static }>,
             reply: FastifyReply
         ) {
-            const { t } = getTypedI18n(request);
-            const { subjectId, search, page = 1, limit = 1000 } = request.body;
+                        const { subjectId, search, page = 1, limit = 1000 } = request.body;
             const offset = (page - 1) * limit;
 
             const conditions = [eq(examPassages.isActive, true)];
@@ -83,7 +81,7 @@ const listPassagesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.exam.passages.list.success),
+                message: request.t($ => $.exam.passages.list.success),
                 data: {
                     items,
                     meta: {

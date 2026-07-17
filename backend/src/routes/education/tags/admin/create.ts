@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { educationTags } from "../../../../db/schema/education/tags.ts";
 import { eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const CreateTagBody = Type.Object({
   name: Type.String({ minLength: 1 }),
@@ -50,8 +49,7 @@ const createTagRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof CreateTagBody.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { name, description, isActive } = request.body;
+            const { name, description, isActive } = request.body;
 
       // Check if name already exists
       const existingTag = await db.query.educationTags.findFirst({
@@ -59,7 +57,7 @@ const createTagRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (existingTag) {
-        return reply.badRequest(t(($) => $.education.tags.create.exists));
+        return reply.badRequest(request.t(($) => $.education.tags.create.exists));
       }
 
       const userId = request.session.user.id;
@@ -76,7 +74,7 @@ const createTagRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: t(($) => $.education.tags.create.success),
+        message: request.t(($) => $.education.tags.create.success),
         data: {
           ...newTag,
           createdAt: newTag.createdAt.toISOString(),

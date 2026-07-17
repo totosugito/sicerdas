@@ -5,7 +5,6 @@ import { db } from "../../../db/db-pool.ts";
 import { examSessions } from "../../../db/schema/exam/sessions.ts";
 import { EnumExamSessionStatus } from "../../../db/schema/exam/enums.ts";
 import { eq, and } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const AbandonParams = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -40,8 +39,7 @@ const abandonSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Params: typeof AbandonParams.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const userId = (request as any).session.user.id;
+            const userId = (request as any).session.user.id;
       const { id } = request.params;
 
       const [session] = await db
@@ -57,12 +55,12 @@ const abandonSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .returning({ id: examSessions.id });
 
       if (!session) {
-        return reply.notFound(t(($) => $.exam.sessions.abandon.notFound));
+        return reply.notFound(request.t(($) => $.exam.sessions.abandon.notFound));
       }
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.sessions.abandon.success),
+        message: request.t(($) => $.exam.sessions.abandon.success),
         data: { id: session.id },
       });
     },

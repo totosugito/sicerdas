@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const PackageItem = Type.Object({
     packId: Type.Integer(),
@@ -45,8 +44,7 @@ const dictionaryDataRoute: FastifyPluginAsyncTypebox = async (app) => {
             req,
             reply,
         ): Promise<typeof DictionaryDataResponse.static> {
-            const { t } = getTypedI18n(req);
-
+            
             const packages = [
                 {
                     packId: 3,
@@ -88,7 +86,7 @@ const dictionaryDataRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: t(($) => $.dictionary.success),
+                message: req.t(($) => $.dictionary.success),
                 data: packages,
             });
         },

@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { educationCategories } from "../../../db/schema/education/categories.ts";
 import { and, eq, asc, sql } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const CategorySimpleQuery = Type.Object({
   page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
@@ -48,8 +47,7 @@ const listCategoriesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof CategorySimpleQuery.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { page = 1, limit = 1000 } = request.body;
+            const { page = 1, limit = 1000 } = request.body;
       const offset = (page - 1) * limit;
 
       const conditions = [eq(educationCategories.isActive, true)];
@@ -78,7 +76,7 @@ const listCategoriesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.education.categories.list.success),
+        message: request.t(($) => $.education.categories.list.success),
         data: {
           items,
           meta: {

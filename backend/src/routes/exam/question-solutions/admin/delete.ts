@@ -5,7 +5,6 @@ import { db } from "../../../../db/db-pool.ts";
 import { examQuestionSolutions } from "../../../../db/schema/exam/question-solutions.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { cleanupBlockNoteFiles } from "../../../../utils/blocknote-utils.ts";
 
 const DeleteQuestionSolutionParams = Type.Object({
@@ -40,8 +39,7 @@ const deleteQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Params: typeof DeleteQuestionSolutionParams.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
 
       // Ensure solution exists
       const existingSolution = await db.query.examQuestionSolutions.findFirst({
@@ -49,7 +47,7 @@ const deleteQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingSolution) {
-        return reply.notFound(t(($) => $.exam.question_solutions.delete.notFound));
+        return reply.notFound(request.t(($) => $.exam.question_solutions.delete.notFound));
       }
 
       // Perform Hard Delete
@@ -66,7 +64,7 @@ const deleteQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.question_solutions.delete.success),
+        message: request.t(($) => $.exam.question_solutions.delete.success),
       });
     },
   });

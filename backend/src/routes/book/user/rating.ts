@@ -4,7 +4,6 @@ import { db } from "../../../db/db-pool.ts";
 import { books, bookEventStats, bookInteractions } from "../../../db/schema/book/index.ts";
 import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const UpdateRatingRequest = Type.Object({
   bookId: Type.Number(),
@@ -48,8 +47,7 @@ const userRatingRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof UpdateRatingRequest.static }>,
       reply: FastifyReply,
     ): Promise<typeof UpdateRatingResponse.static> {
-      const { t } = getTypedI18n(req);
-      const userId = (req as any).session.user.id;
+            const userId = (req as any).session.user.id;
       const { bookId, rating } = req.body;
 
       // Find the book UUID based on the integer bookId
@@ -60,7 +58,7 @@ const userRatingRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (bookList.length === 0) {
-        return reply.notFound(t(($) => $.book.detail.notFound));
+        return reply.notFound(req.t(($) => $.book.detail.notFound));
       }
 
       const bookUUID = bookList[0].id;
@@ -83,7 +81,7 @@ const userRatingRoute: FastifyPluginAsyncTypebox = async (app) => {
 
         return reply.status(200).send({
           success: true,
-          message: t(($) => $.book.detail.success),
+          message: req.t(($) => $.book.detail.success),
           data: {
             rating: currentStats?.rating ? parseFloat(currentStats.rating.toString()) : 0,
             ratingCount: currentStats?.ratingCount ?? 0,
@@ -156,7 +154,7 @@ const userRatingRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.book.detail.success),
+        message: req.t(($) => $.book.detail.success),
         data: {
           rating: finalStats?.rating ? parseFloat(finalStats.rating.toString()) : 0,
           ratingCount: finalStats?.ratingCount ?? 0,

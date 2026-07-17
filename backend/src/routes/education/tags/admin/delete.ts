@@ -5,7 +5,6 @@ import { db } from '../../../../db/db-pool.ts';
 import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
 import { eq } from 'drizzle-orm';
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteTagParams = Type.Object({
     id: Type.String({ format: 'uuid' })
@@ -39,8 +38,7 @@ const deleteTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Params: typeof DeleteTagParams.static }>,
             reply: FastifyReply
         ) {
-            const { t } = getTypedI18n(request);
-            const { id } = request.params;
+                        const { id } = request.params;
 
             // Ensure tag exists
             const existingTag = await db.query.educationTags.findFirst({
@@ -48,7 +46,7 @@ const deleteTagRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (!existingTag) {
-                return reply.notFound(t($ => $.education.tags.delete.notFound));
+                return reply.notFound(request.t($ => $.education.tags.delete.notFound));
             }
 
             // Optional Check: Is this tag in use by any exam questions?
@@ -59,7 +57,7 @@ const deleteTagRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             if (inUseCheck) {
                 // Return a friendly error using Sensible, instead of raw pg constraint error
-                return reply.badRequest(t($ => $.education.tags.delete.inUse));
+                return reply.badRequest(request.t($ => $.education.tags.delete.inUse));
             }
 
             // Perform Hard Delete
@@ -67,7 +65,7 @@ const deleteTagRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.education.tags.delete.success),
+                message: request.t($ => $.education.tags.delete.success),
             });
         },
     });

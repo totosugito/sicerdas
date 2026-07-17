@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examQuestionSolutions } from "../../../../db/schema/exam/question-solutions.ts";
 import { desc, and, sql, eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { resolveBlockNoteUrls } from "../../../../utils/blocknote-utils.ts";
 
 const QuestionSolutionListQuery = Type.Object({
@@ -73,8 +72,7 @@ const listQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof QuestionSolutionListQuery.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const {
+            const {
         questionId,
         solutionType,
         requiredTier,
@@ -132,7 +130,7 @@ const listQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.question_solutions.list.success),
+        message: request.t(($) => $.exam.question_solutions.list.success),
         data: {
           items: items.map((sol) => ({
             ...sol,

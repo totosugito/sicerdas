@@ -5,7 +5,6 @@ import { db } from "../../../../db/db-pool.ts";
 import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
 import { eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
 import { sql } from "drizzle-orm";
 
@@ -56,8 +55,7 @@ const detailSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
       const latestVersionId = (app as any).versionCache?.get(EnumContentType.EXAM);
 
       // 1. Get Section & Package Information
@@ -77,14 +75,14 @@ const detailSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!sectionResult) {
-        return reply.notFound(t(($) => $.exam.package_sections.detail.notFound));
+        return reply.notFound(request.t(($) => $.exam.package_sections.detail.notFound));
       }
 
       const section = sectionResult.section;
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.package_sections.detail.success),
+        message: request.t(($) => $.exam.package_sections.detail.success),
         data: {
           id: section.id,
           packageId: section.packageId,

@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { appVersion } from "../../../db/schema/app/app-version.ts";
 import { db } from "../../../db/db-pool.ts";
 import { eq } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const DetailVersionParams = Type.Object({
   id: Type.Number(),
@@ -52,20 +51,19 @@ const detailVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Params: typeof DetailVersionParams.static }>,
       reply: FastifyReply,
     ): Promise<typeof DetailVersionResponse.static> {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
 
       const item = await db.query.appVersion.findFirst({
         where: eq(appVersion.id, id),
       });
 
       if (!item) {
-        return reply.notFound(t(($) => $.version.notFound));
+        return reply.notFound(request.t(($) => $.version.notFound));
       }
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.version.detailSuccess),
+        message: request.t(($) => $.version.detailSuccess),
         data: {
           ...item,
           note: item.note as Record<string, unknown>[],

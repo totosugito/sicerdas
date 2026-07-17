@@ -6,7 +6,6 @@ import { examQuestionOptions } from "../../../../db/schema/exam/question-options
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
   processBlockNoteFiles,
@@ -62,8 +61,7 @@ const updateQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
 
       // Ensure option exists
       const existingOption = await db.query.examQuestionOptions.findFirst({
@@ -71,7 +69,7 @@ const updateQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingOption) {
-        return reply.notFound(t(($) => $.exam.question_options.update.notFound));
+        return reply.notFound(request.t(($) => $.exam.question_options.update.notFound));
       }
 
       // Parse multipart data
@@ -105,7 +103,7 @@ const updateQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
           where: eq(examQuestions.id, questionId),
         });
         if (!existingQuestion) {
-          return reply.badRequest(t(($) => $.exam.question_options.update.invalidQuestion));
+          return reply.badRequest(request.t(($) => $.exam.question_options.update.invalidQuestion));
         }
       }
 
@@ -163,7 +161,7 @@ const updateQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.question_options.update.success),
+        message: request.t(($) => $.exam.question_options.update.success),
         data: {
           ...updatedOption,
           content: resolveBlockNoteUrls(updatedOption.content as any[]),

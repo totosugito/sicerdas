@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { aiModels } from '../../../../db/schema/ai/index.ts';
 import { db } from '../../../../db/db-pool.ts';
 import { eq, or, and } from 'drizzle-orm';
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 
 const CreateModelBody = Type.Object({
@@ -79,8 +78,7 @@ const createModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
             request: FastifyRequest<{ Body: typeof CreateModelBody.static }>,
             reply: FastifyReply
         ): Promise<typeof CreateModelResponse.static> {
-            const { t } = getTypedI18n(request);
-            const { name, provider, modelIdentifier } = request.body;
+                        const { name, provider, modelIdentifier } = request.body;
 
             const existingModel = await db.query.aiModels.findFirst({
                 where: or(
@@ -93,7 +91,7 @@ const createModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
             });
 
             if (existingModel) {
-                return reply.badRequest(t($ => $.chatAi.model.create.exists));
+                return reply.badRequest(request.t($ => $.chatAi.model.create.exists));
             }
 
             const [newModel] = await db.insert(aiModels).values({
@@ -107,7 +105,7 @@ const createModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.chatAi.model.create.success),
+                message: request.t($ => $.chatAi.model.create.success),
                 data: {
                     ...newModel,
                     description: newModel.description || undefined,

@@ -7,7 +7,6 @@ import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { and, eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
   processBlockNoteFiles,
@@ -63,8 +62,7 @@ const updatePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const { id } = request.params;
+            const { id } = request.params;
 
       // Ensure passage exists
       const existingPassage = await db.query.examPassages.findFirst({
@@ -72,7 +70,7 @@ const updatePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!existingPassage) {
-        return reply.notFound(t(($) => $.exam.passages.update.notFound));
+        return reply.notFound(request.t(($) => $.exam.passages.update.notFound));
       }
 
       // Parse multipart data
@@ -134,7 +132,7 @@ const updatePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
           });
 
           if (activeQuestion) {
-            return reply.badRequest(t(($) => $.exam.passages.update.hasActiveQuestions));
+            return reply.badRequest(request.t(($) => $.exam.passages.update.hasActiveQuestions));
           }
         }
         updatePayload.isActive = isActive;
@@ -147,7 +145,7 @@ const updatePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
         });
 
         if (!existingSubject) {
-          return reply.notFound(t(($) => $.exam.subjects.detail.notFound));
+          return reply.notFound(request.t(($) => $.exam.subjects.detail.notFound));
         }
 
         updatePayload.subjectId = subjectId;
@@ -172,7 +170,7 @@ const updatePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.passages.update.success),
+        message: request.t(($) => $.exam.passages.update.success),
         data: {
           ...updatedPassage,
           content: resolveBlockNoteUrls(updatedPassage.content as any[]),

@@ -9,7 +9,6 @@ import { educationCategories, educationGrades } from "../../../../db/schema/educ
 import { and, eq, desc, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";
-import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumExamPackageUserStatus, EnumExamType } from "../../../../db/schema/exam/enums.ts";
 
 const CustomPackageResponseItem = Type.Object({
@@ -75,8 +74,7 @@ const listCustomRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ): Promise<typeof CustomPackagesListResponse.static> {
-      const { t } = getTypedI18n(req);
-      const userId = (req as any).session.user.id;
+            const userId = (req as any).session.user.id;
       const { page, pageSize } = req.query;
       const offset = (page - 1) * pageSize;
 
@@ -126,7 +124,7 @@ const listCustomRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.packages.list.success),
+        message: req.t(($) => $.exam.packages.list.success),
         data: items.map((item) => ({
           id: item.id,
           title: item.title,

@@ -11,7 +11,6 @@ import { examQuestions } from "../../../db/schema/exam/questions.ts";
 import { examQuestionOptions } from "../../../db/schema/exam/question-options.ts";
 import { EnumExamSessionStatus, EnumExamSessionMode, EnumExamType } from "../../../db/schema/exam/enums.ts";
 import { eq, and, inArray, or } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { shuffleArray } from "../../../utils/my-utils.ts";
 
 const StartSessionBody = Type.Object({
@@ -53,8 +52,7 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Body: typeof StartSessionBody.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const userId = (request as any).session.user.id;
+            const userId = (request as any).session.user.id;
       const { packageId, sectionId, mode } = request.body;
 
       // 1. Check if package and section exist and are active
@@ -77,7 +75,7 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!section) {
-        return reply.notFound(t(($) => $.exam.packages.update.notFound));
+        return reply.notFound(request.t(($) => $.exam.packages.update.notFound));
       }
 
       // 2. Check for existing IN_PROGRESS session (Resume Capability)
@@ -98,7 +96,7 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
       if (existingSession) {
         return reply.status(200).send({
           success: true,
-          message: t(($) => $.exam.sessions.start.success),
+          message: request.t(($) => $.exam.sessions.start.success),
           data: {
             sessionId: existingSession.id,
             isResumed: true,
@@ -171,7 +169,7 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: t(($) => $.exam.sessions.start.success),
+        message: request.t(($) => $.exam.sessions.start.success),
         data: {
           sessionId: newSession.id,
           isResumed: false,

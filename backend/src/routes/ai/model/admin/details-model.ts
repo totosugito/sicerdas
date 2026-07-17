@@ -4,7 +4,6 @@ import { aiModels, aiApiLogs } from '../../../../db/schema/ai/index.ts';
 import { db } from '../../../../db/db-pool.ts';
 import { eq, getTableColumns, desc } from 'drizzle-orm';
 import { Type } from '@sinclair/typebox';
-import { getTypedI18n } from '../../../../utils/i18n-typed.ts';
 
 const ModelItem = Type.Object({
     id: Type.String(),
@@ -62,8 +61,7 @@ const detailsModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
             req: FastifyRequest<{ Params: { id: string } }>,
             reply: FastifyReply
         ): Promise<typeof GetModelResponse.static> {
-            const { t } = getTypedI18n(req);
-            const { id } = req.params;
+                        const { id } = req.params;
 
             // This route is protected by adminHook, so only admins can access it
             // Exclude apiKey from response
@@ -77,7 +75,7 @@ const detailsModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
                 .where(eq(aiModels.id, id));
 
             if (!model) {
-                return reply.notFound(t($ => $.chatAi.model.detail.notFound));
+                return reply.notFound(req.t($ => $.chatAi.model.detail.notFound));
             }
 
             let stats: any = undefined;
@@ -103,7 +101,7 @@ const detailsModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
 
             return reply.status(200).send({
                 success: true,
-                message: t($ => $.chatAi.model.detail.success),
+                message: req.t($ => $.chatAi.model.detail.success),
                 data: {
                     ...model,
                     description: model.description || undefined,

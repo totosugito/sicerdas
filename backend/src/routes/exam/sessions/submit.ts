@@ -14,7 +14,6 @@ import { examUserStatsSubject } from "../../../db/schema/exam/user-stats-subject
 import { examUserStatsTag } from "../../../db/schema/exam/user-stats-tag.ts";
 import { EnumExamSessionStatus, EnumExamPackageUserStatus } from "../../../db/schema/exam/enums.ts";
 import { eq, and, inArray, sql } from "drizzle-orm";
-import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const SubmitSessionParams = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -57,8 +56,7 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
       request: FastifyRequest<{ Params: typeof SubmitSessionParams.static }>,
       reply: FastifyReply,
     ) {
-      const { t } = getTypedI18n(request);
-      const userId = (request as any).session.user.id;
+            const userId = (request as any).session.user.id;
       const { id } = request.params;
 
       // 1. Get Session
@@ -69,11 +67,11 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .limit(1);
 
       if (!session) {
-        return reply.notFound(t(($) => $.exam.sessions.submit.notFound));
+        return reply.notFound(request.t(($) => $.exam.sessions.submit.notFound));
       }
 
       if (session.status !== EnumExamSessionStatus.IN_PROGRESS) {
-        return reply.forbidden(t(($) => $.exam.sessions.submit.alreadySubmitted));
+        return reply.forbidden(request.t(($) => $.exam.sessions.submit.alreadySubmitted));
       }
 
       // 2. Fetch all answers, correct options, question weights, and user selection scores
@@ -96,7 +94,7 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         .where(eq(examSessionAnswers.sessionId, id));
 
       if (studentAnswers.length === 0) {
-        return reply.badRequest(t(($) => $.exam.sessions.submit.noQuestions));
+        return reply.badRequest(request.t(($) => $.exam.sessions.submit.noQuestions));
       }
 
       const questionIds = studentAnswers.map((a) => a.questionId);
@@ -340,7 +338,7 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: t(($) => $.exam.sessions.submit.success),
+        message: request.t(($) => $.exam.sessions.submit.success),
         data: {
           score: finalScore,
           earnedPoints,
