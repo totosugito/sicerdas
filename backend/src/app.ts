@@ -49,8 +49,8 @@ export async function buildApp(options?: FastifyServerOptions) {
   server.register(fastifyStatic, {
     root: uploadDir,
     prefix: "/uploads/",
-    setHeaders: (res, _path) => {
-      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    setHeaders: (reply, _path) => {
+      reply.header("Cross-Origin-Resource-Policy", "cross-origin");
     },
   });
 
