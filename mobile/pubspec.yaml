@@ -56,6 +56,7 @@ dev_dependencies:
   drift_dev: ^2.33.0
   build_runner: ^2.15.0
   slang_build_runner: ^4.16.0
+  flutter_launcher_icons: ^0.14.3
 
 flutter:
   uses-material-design: true
@@ -70,4 +71,10 @@ flutter:
     - assets/katex-0.17.0/
     - assets/katex-0.17.0/fonts/
     - assets/katex-0.17.0/contrib/
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  image_path: "assets/images/ic_launcher.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/images/ic_launcher.png"
 

@@ -19,9 +19,6 @@ import 'ui/main_layout/main_layout.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize AdMob
-  await MobileAds.instance.initialize();
-
   // Initialize Firebase
   await Firebase.initializeApp();
 
@@ -56,9 +53,6 @@ void main() async {
   // Set global logger level - disables logs in release mode
   Logger.level = kReleaseMode ? Level.off : Level.debug;
 
-  // Initialize according to Flutter Authors' example
-  await GoogleSignIn.instance.initialize(serverClientId: EnvConfig.googleWebClientId);
-
   runApp(
     slang.TranslationProvider(
       child: ProviderScope(
@@ -67,6 +61,10 @@ void main() async {
       ),
     ),
   );
+
+  // Initialize non-blocking services asynchronously in the background
+  MobileAds.instance.initialize();
+  GoogleSignIn.instance.initialize(serverClientId: EnvConfig.googleWebClientId);
 }
 
 class MyApp extends ConsumerWidget {
