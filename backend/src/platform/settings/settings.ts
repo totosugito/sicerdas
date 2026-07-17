@@ -1,4 +1,4 @@
-import envConfig from "../config/env.config.ts";
+import envConfig from "../../config/env.config.ts";
 
 function createAdPlacement(id?: string, enabled?: boolean) {
   const adId = id || "";

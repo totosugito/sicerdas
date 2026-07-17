@@ -1,8 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
 
-import { getSafeBody } from '../../utils/request-utils.ts';
-
 async function errorHandlerPlugin(fastify: FastifyInstance) {
   fastify.setErrorHandler((error, request, reply) => {
     // Type guard to check if error has expected properties
@@ -23,7 +21,7 @@ async function errorHandlerPlugin(fastify: FastifyInstance) {
           url: request.url,
           query: request.query,
           params: request.params,
-          body: getSafeBody(request),
+          body: request.getSafeBody(),
         },
       };
 

@@ -8,8 +8,6 @@ import { defaultLocale } from "./locales/locales.ts";
 import fs from "fs";
 import envConfig from "./config/env.config.ts";
 
-import { getSafeBody } from "./utils/request-utils.ts";
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export async function buildApp(options?: FastifyServerOptions) {
@@ -74,7 +72,7 @@ export async function buildApp(options?: FastifyServerOptions) {
             url: request.url,
             query: request.query,
             params: request.params,
-            body: getSafeBody(request),
+            body: request.getSafeBody(),
           },
         },
         "Resource not found",
@@ -99,7 +97,7 @@ export async function buildApp(options?: FastifyServerOptions) {
             url: request.url,
             query: request.query,
             params: request.params,
-            body: getSafeBody(request),
+            body: request.getSafeBody(),
           },
         },
         "Slow request detected",

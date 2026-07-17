@@ -13,7 +13,7 @@ import { blocknoteToHtml, resolveBlockNoteUrls } from "../../utils/blocknote-uti
 import { usersProfile } from "../../db/schema/user/profiles.ts";
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
 import { fromNodeHeaders } from "better-auth/node";
-import { getAppSettings } from "../../utils/settings-utils.ts";
+import { getAppSettings } from "../../platform/settings/settings.ts";
 
 const AppLatestBody = Type.Object({
   dbVersion: Type.Number(),

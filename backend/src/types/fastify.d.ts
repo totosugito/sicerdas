@@ -8,6 +8,7 @@ declare module 'fastify' {
       t: (key: string, options?: Record<string, any>) => string;
     };
     t: (selector: (obj: AppLocale) => any, options?: any) => string;
+    getSafeBody: () => any;
   }
 
   interface FastifySchema {
