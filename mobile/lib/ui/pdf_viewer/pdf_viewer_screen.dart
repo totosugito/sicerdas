@@ -11,6 +11,7 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bse/widgets/confirmation_dialog.dart';
 import 'package:bse/widgets/ads/ads_banner.dart';
+import 'package:bse/core/providers/settings_provider.dart';
 import 'widgets/pdf_top_toolbar.dart';
 import 'widgets/pdf_search_bar_field.dart';
 import 'widgets/pdf_save_as_dialog.dart';
@@ -191,8 +192,27 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
     _searchResult = PdfTextSearchResult();
   }
 
+  String _getStorageKey() {
+    // Generate a stable hash of the file path to keep the storage key short and avoid length limits
+    int hash = 5381;
+    for (int i = 0; i < widget.filePath.length; i++) {
+      hash = ((hash << 5) + hash) + widget.filePath.codeUnitAt(i);
+    }
+    return 'pdf_page_$hash';
+  }
+
+  void _saveCurrentPage(int page) {
+    try {
+      final prefs = ref.read(sharedPreferencesProvider);
+      prefs.setInt(_getStorageKey(), page);
+    } catch (_) {}
+  }
+
   @override
   void dispose() {
+    if (_pdfViewerController.pageNumber > 0) {
+      _saveCurrentPage(_pdfViewerController.pageNumber);
+    }
     _pdfViewerController.dispose();
     _searchController.dispose();
     super.dispose();
@@ -370,9 +390,19 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
                       setState(() {
                         _totalPages = details.document.pages.count;
                       });
+                      try {
+                        final prefs = ref.read(sharedPreferencesProvider);
+                        final savedPage = prefs.getInt(_getStorageKey());
+                        if (savedPage != null &&
+                            savedPage > 0 &&
+                            savedPage <= _totalPages) {
+                          _pdfViewerController.jumpToPage(savedPage);
+                        }
+                      } catch (_) {}
                     },
                     onPageChanged: (PdfPageChangedDetails details) {
                       // Handled by top toolbar listener reactively
+                      _saveCurrentPage(details.newPageNumber);
                     },
                     onAnnotationAdded: (annotation) {
                       setState(() {

@@ -8,6 +8,8 @@ import 'package:bse/widgets/confirmation_dialog.dart';
 import 'package:bse/widgets/ads/ads_native.dart';
 import 'package:bse/core/providers/package_info_provider.dart';
 import 'package:bse/core/utils/toast_utils.dart';
+import 'widgets/setting_item.dart';
+import 'widgets/setting_section_title.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -26,14 +28,13 @@ class SettingsScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Appearance Section
-            _buildSectionTitle(context, l10n.common.appearance),
+            SettingSectionTitle(title: l10n.common.appearance),
             const SizedBox(height: 12),
             ShadCard(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Column(
                 children: [
-                  _buildSettingItem(
-                    context,
+                  SettingItem(
                     icon: LucideIcons.palette,
                     title: l10n.common.themeMode,
                     trailing: ShadSelect<ThemeMode>(
@@ -73,8 +74,7 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                   ),
                   const Divider(height: 1),
-                  _buildSettingItem(
-                    context,
+                  SettingItem(
                     icon: LucideIcons.languages,
                     title: l10n.common.language,
                     trailing: ShadSelect<Locale>(
@@ -131,14 +131,13 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 32),
 
             // About Section
-            _buildSectionTitle(context, l10n.common.aboutSection),
+            SettingSectionTitle(title: l10n.common.aboutSection),
             const SizedBox(height: 12),
             ShadCard(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Column(
                 children: [
-                  _buildSettingItem(
-                    context,
+                  SettingItem(
                     icon: LucideIcons.info,
                     title: l10n.common.appVersion,
                     trailing: packageInfo.when(
@@ -151,12 +150,11 @@ class SettingsScreen extends ConsumerWidget {
                         height: 12,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       ),
-                      error: (_, __) => const Text("—"),
+                      error: (_, _) => const Text("—"),
                     ),
                   ),
                   const Divider(height: 1),
-                  _buildSettingItem(
-                    context,
+                  SettingItem(
                     icon: LucideIcons.heart,
                     title: l10n.common.madeBy,
                   ),
@@ -171,9 +169,8 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 8),
 
             // Danger Zone Section
-            _buildSectionTitle(
-              context,
-              l10n.common.settingsDangerZone,
+            SettingSectionTitle(
+              title: l10n.common.settingsDangerZone,
               isDanger: true,
             ),
             const SizedBox(height: 12),
@@ -181,8 +178,7 @@ class SettingsScreen extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Column(
                 children: [
-                  _buildSettingItem(
-                    context,
+                  SettingItem(
                     icon: LucideIcons.databaseBackup,
                     title: l10n.common.settingsResetLibrary,
                     subtitle: l10n.common.settingsResetLibraryDescription,
@@ -190,8 +186,7 @@ class SettingsScreen extends ConsumerWidget {
                     onTap: () => _showResetConfirmation(context, ref),
                   ),
                   const Divider(height: 1),
-                  _buildSettingItem(
-                    context,
+                  SettingItem(
                     icon: LucideIcons.trophy,
                     title: l10n.common.settingsResetProgress,
                     subtitle: l10n.common.settingsResetProgressDescription,
@@ -253,80 +248,6 @@ class SettingsScreen extends ConsumerWidget {
           );
         }
       },
-    );
-  }
-
-  Widget _buildSectionTitle(
-    BuildContext context,
-    String title, {
-    bool isDanger = false,
-  }) {
-    final theme = ShadTheme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(left: 4.0),
-      child: Text(
-        title.toUpperCase(),
-        style: theme.textTheme.muted.copyWith(
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 1.2,
-          color: isDanger ? theme.colorScheme.destructive : null,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSettingItem(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    String? subtitle,
-    Widget? trailing,
-    bool isDanger = false,
-    VoidCallback? onTap,
-  }) {
-    final theme = ShadTheme.of(context);
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 52),
-        padding: const EdgeInsets.symmetric(vertical: 6.0),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: isDanger
-                  ? theme.colorScheme.destructive
-                  : theme.colorScheme.primary,
-              size: 20,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15,
-                      color: isDanger ? theme.colorScheme.destructive : null,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  if (subtitle != null)
-                    Text(
-                      subtitle,
-                      style: theme.textTheme.muted.copyWith(fontSize: 12),
-                    ),
-                ],
-              ),
-            ),
-            trailing ?? const SizedBox.shrink(),
-          ],
-        ),
-      ),
     );
   }
 }

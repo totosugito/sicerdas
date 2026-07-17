@@ -189,62 +189,65 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: ShadCard(
                     padding: EdgeInsets.zero,
-                    child: Theme(
-                      data: Theme.of(
-                        context,
-                      ).copyWith(dividerColor: Colors.transparent),
-                      child: ExpansionTile(
-                        key: PageStorageKey<int>(index),
-                        initiallyExpanded: isExpanded,
-                        onExpansionChanged: (expanded) {
-                          setState(() {
-                            _expandedFaqs[index] = expanded;
-                          });
-                        },
-                        leading: Icon(
-                          LucideIcons.helpCircle,
-                          color: isExpanded
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.mutedForeground,
-                          size: 20,
-                        ),
-                        title: Text(
-                          faq.question,
-                          style: theme.textTheme.small.copyWith(
-                            fontWeight: FontWeight.bold,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Theme(
+                        data: Theme.of(
+                          context,
+                        ).copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          key: PageStorageKey<int>(index),
+                          initiallyExpanded: isExpanded,
+                          onExpansionChanged: (expanded) {
+                            setState(() {
+                              _expandedFaqs[index] = expanded;
+                            });
+                          },
+                          leading: Icon(
+                            LucideIcons.helpCircle,
                             color: isExpanded
                                 ? theme.colorScheme.primary
-                                : theme.colorScheme.foreground,
+                                : theme.colorScheme.mutedForeground,
+                            size: 20,
                           ),
-                        ),
-                        trailing: Icon(
-                          isExpanded
-                              ? LucideIcons.chevronUp
-                              : LucideIcons.chevronDown,
-                          size: 16,
-                          color: theme.colorScheme.mutedForeground,
-                        ),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                              16.0,
-                              0,
-                              16.0,
-                              16.0,
+                          title: Text(
+                            faq.question,
+                            style: theme.textTheme.small.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: isExpanded
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.foreground,
                             ),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                faq.answer,
-                                style: theme.textTheme.p.copyWith(
-                                  color: theme.colorScheme.foreground
-                                      .withValues(alpha: 0.8),
-                                  height: 1.5,
+                          ),
+                          trailing: Icon(
+                            isExpanded
+                                ? LucideIcons.chevronUp
+                                : LucideIcons.chevronDown,
+                            size: 16,
+                            color: theme.colorScheme.mutedForeground,
+                          ),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                16.0,
+                                0,
+                                16.0,
+                                16.0,
+                              ),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  faq.answer,
+                                  style: theme.textTheme.p.copyWith(
+                                    color: theme.colorScheme.foreground
+                                        .withValues(alpha: 0.8),
+                                    height: 1.5,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -2,7 +2,7 @@ name: 'bse'
 description: 'Buku Sekolah Elektronik'
 publish_to: 'none'
 
-version: 06.05.21+37
+version: 06.07.20+38
 
 environment:
   sdk: ^3.11.5
@@ -48,7 +48,6 @@ dependencies:
     sdk: flutter
   collection: ^1.19.1
   syncfusion_flutter_core: ^33.2.15
-  
 dev_dependencies:
   flutter_test:
     sdk: flutter
