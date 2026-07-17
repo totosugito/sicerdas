@@ -143,7 +143,7 @@ function RouteComponent() {
     if (userProfile?.data) {
       populateForms(userProfile.data);
     }
-  }, [userProfile, profileForm, personalInfoForm, privacyForm]);
+  }, [userProfile]);
 
   // Form submission handlers
   const updateUserProfileMutation = useUpdateProfileMutation();

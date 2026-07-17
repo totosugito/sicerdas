@@ -53,7 +53,12 @@ export const FormSelect = ({
             {item.label}
             {item.required && <span className="text-red-500">*</span>}
           </FormLabel>
-          <Select onValueChange={field.onChange} value={field.value} {...props}>
+          <Select
+            key={`${item.name}-${field.value}`}
+            onValueChange={field.onChange}
+            value={field.value}
+            {...props}
+          >
             <FormControl>
               <SelectTrigger className={cn("w-full", props?.className)}>
                 <SelectValue placeholder={item.placeholder}>
