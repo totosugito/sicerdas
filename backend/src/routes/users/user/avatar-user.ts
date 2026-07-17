@@ -1,5 +1,4 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { db } from "../../../db/db-pool.ts";
 import { users } from "../../../db/schema/user/index.ts";
 import { eq } from "drizzle-orm";
@@ -130,7 +129,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async (req, reply) => {
+    handler: async (req, reply) => {
       const { t } = getTypedI18n(req);
       // User ID is available from the session (handled by user.hook.ts)
       const userId = req.session.user.id;
@@ -188,7 +187,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       };
 
       return processChangeAvatar(req, reply, userId, file);
-    }),
+    },
   });
 };
 

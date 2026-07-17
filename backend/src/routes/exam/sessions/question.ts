@@ -10,7 +10,6 @@ import { examQuestionOptions } from "../../../db/schema/exam/question-options.ts
 import { examQuestionSolutions } from "../../../db/schema/exam/question-solutions.ts";
 import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
 import { eq, and, inArray } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { resolveBlockNoteUrls, blocknoteToHtml } from "../../../utils/blocknote-utils.ts";
 
@@ -80,7 +79,7 @@ const questionSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Params: typeof Params.static }>,
       reply: FastifyReply,
     ) {
@@ -250,7 +249,7 @@ const questionSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
           textAnswer: answerRecord.textAnswer,
         },
       });
-    }),
+    },
   });
 };
 

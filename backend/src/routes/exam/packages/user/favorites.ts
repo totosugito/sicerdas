@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { db } from "../../../../db/db-pool.ts";
 import {
   examPackages,
@@ -72,7 +71,7 @@ const listFavoritesRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req: FastifyRequest<{
         Querystring: { page: number; pageSize: number };
       }>,
@@ -149,7 +148,7 @@ const listFavoritesRoute: FastifyPluginAsyncTypebox = async (app) => {
           totalPages: Math.ceil(total / pageSize),
         },
       });
-    }),
+    },
   });
 };
 

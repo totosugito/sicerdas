@@ -5,7 +5,6 @@ import { db } from "../../../../db/db-pool.ts";
 import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
 import { eq, sql } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdateSectionParams = Type.Object({
@@ -42,7 +41,7 @@ const updateSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
         "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{
         Params: typeof UpdateSectionParams.static;
         Body: typeof UpdateSectionBody.static;
@@ -167,7 +166,7 @@ const updateSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
         success: true,
         message: t(($) => $.exam.package_sections.update.success),
       });
-    }),
+    },
   });
 };
 

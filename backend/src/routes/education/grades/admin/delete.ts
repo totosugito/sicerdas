@@ -7,7 +7,6 @@ import { books } from '../../../../db/schema/book/books.ts';
 import { examPackages } from '../../../../db/schema/exam/packages.ts';
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { eq } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteEducationGradeParams = Type.Object({
@@ -38,7 +37,7 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Params: typeof DeleteEducationGradeParams.static }>,
             reply: FastifyReply
         ) {
@@ -85,7 +84,7 @@ const deleteEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
                 success: true,
                 message: t($ => $.education.grades.delete.success),
             });
-        }),
+        },
     });
 };
 

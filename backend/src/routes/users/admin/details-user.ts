@@ -2,7 +2,6 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { users, usersProfile } from "../../../db/schema/user/index.ts";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { eq } from "drizzle-orm";
 import { getUserAvatarUrl } from "../../../utils/user-utils.ts";
@@ -58,7 +57,7 @@ const detailsUser: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req: FastifyRequest<{ Params: typeof Params.static }>,
       reply: FastifyReply,
     ): Promise<typeof DetailsResponse.static> {
@@ -107,7 +106,7 @@ const detailsUser: FastifyPluginAsyncTypebox = async (app) => {
           banExpires: user.banExpires?.toISOString() || null,
         },
       });
-    }),
+    },
   });
 };
 

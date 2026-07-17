@@ -5,7 +5,6 @@ import { db } from "../../../db/db-pool.ts";
 import { examUserStatsTag } from "../../../db/schema/exam/user-stats-tag.ts";
 import { educationTags } from "../../../db/schema/education/tags.ts";
 import { eq, desc } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const TagStatsResponse = Type.Object({
@@ -35,7 +34,7 @@ const getTagStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
         200: TagStatsResponse,
       },
     },
-    handler: withErrorHandler(async function handler(request: FastifyRequest, reply: FastifyReply) {
+    handler: async function handler(request: FastifyRequest, reply: FastifyReply) {
       const { t } = getTypedI18n(request);
       const userId = (request as any).session.user.id;
 
@@ -63,7 +62,7 @@ const getTagStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: s.updatedAt.toISOString(),
         })),
       });
-    }),
+    },
   });
 };
 

@@ -5,7 +5,6 @@ import { db } from "../../../../db/db-pool.ts";
 import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
 import { and, eq, sql, desc, ilike } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from "../../../../db/schema/index.ts";
@@ -79,7 +78,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
         "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof SectionListQuery.static }>,
       reply: FastifyReply,
     ) {
@@ -261,7 +260,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
           },
         },
       });
-    }),
+    },
   });
 };
 

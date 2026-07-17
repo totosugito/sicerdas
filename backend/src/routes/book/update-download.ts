@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { db } from "../../db/db-pool.ts";
 import { appEventHistory } from "../../db/schema/app/app-event-history.ts";
@@ -47,7 +46,7 @@ const updateDownloadRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req: FastifyRequest<{ Body: typeof UpdateDownloadParams.static }>,
       reply: FastifyReply,
     ) {
@@ -155,7 +154,7 @@ const updateDownloadRoute: FastifyPluginAsyncTypebox = async (app) => {
         message: t(($) => $.book.download.updated),
         data: { downloadCount: currentDownloadCount },
       });
-    }),
+    },
   });
 };
 

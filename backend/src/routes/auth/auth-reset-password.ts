@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 /**
@@ -42,7 +41,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         })
       }
     },
-    handler: withErrorHandler(async (req, reply) => {
+    handler: async (req, reply) => {
       const { t } = getTypedI18n(req);
       // Extract data directly from request body for JSON input
       const { token, newPassword } = req.body as { token: string; newPassword: string };
@@ -76,7 +75,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             ? t($ => $.auth.passwordResetSuccess)
             : t($ => $.auth.passwordResetFailed)
         });
-    }),
+    },
   });
 };
 

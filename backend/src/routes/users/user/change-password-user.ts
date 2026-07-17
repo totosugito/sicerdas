@@ -1,5 +1,4 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { db } from "../../../db/db-pool.ts";
@@ -56,7 +55,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async (req, reply) => {
+    handler: async (req, reply) => {
       const { t } = getTypedI18n(req);
       const auth = getAuthInstance(app);
       const { currentPassword, newPassword } = req.body as {
@@ -123,7 +122,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         success: true,
         message: t(($) => $.user.passwordUpdatedSuccessfully),
       });
-    }),
+    },
   });
 };
 

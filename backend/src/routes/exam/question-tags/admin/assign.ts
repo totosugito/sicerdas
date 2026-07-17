@@ -3,7 +3,6 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const AssignQuestionTagsBody = Type.Object({
@@ -35,7 +34,7 @@ const assignQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Body: typeof AssignQuestionTagsBody.static }>,
             reply: FastifyReply
         ) {
@@ -56,7 +55,7 @@ const assignQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 success: true,
                 message: t($ => $.exam.question_tags.assign.success),
             });
-        }),
+        },
     });
 };
 

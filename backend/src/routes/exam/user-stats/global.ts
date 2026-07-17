@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { examUserStatsGlobal } from "../../../db/schema/exam/user-stats-global.ts";
 import { eq } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const GlobalStatsResponse = Type.Object({
@@ -36,7 +35,7 @@ const getGlobalStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
         200: GlobalStatsResponse,
       },
     },
-    handler: withErrorHandler(async function handler(request: FastifyRequest, reply: FastifyReply) {
+    handler: async function handler(request: FastifyRequest, reply: FastifyReply) {
       const { t } = getTypedI18n(request);
       const userId = (request as any).session.user.id;
 
@@ -68,7 +67,7 @@ const getGlobalStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: stats.updatedAt.toISOString(),
         },
       });
-    }),
+    },
   });
 };
 

@@ -7,7 +7,6 @@ import { examPackages } from "../../../db/schema/exam/packages.ts";
 import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
 import { EnumExamSessionStatus } from "../../../db/schema/exam/enums.ts";
 import { eq, desc, sql, and } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const AllHistoryBody = Type.Object({
@@ -58,7 +57,7 @@ const allSessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
         200: AllHistoryResponse,
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{
         Body: typeof AllHistoryBody.static;
       }>,
@@ -130,7 +129,7 @@ const allSessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
           },
         },
       });
-    }),
+    },
   });
 };
 

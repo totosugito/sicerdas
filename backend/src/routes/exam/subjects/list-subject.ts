@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../db/db-pool.ts';
 import { examSubjects } from '../../../db/schema/exam/subjects.ts';
 import { desc, ilike, or, and, sql, eq, asc } from 'drizzle-orm';
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from '../../../db/schema/index.ts';
@@ -61,7 +60,7 @@ const listSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Body: typeof SubjectListQuery.static }>,
             reply: FastifyReply
         ) {
@@ -158,7 +157,7 @@ const listSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
                     }
                 }
             });
-        }),
+        },
     });
 };
 

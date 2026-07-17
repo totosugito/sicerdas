@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { examSessions } from "../../../db/schema/exam/sessions.ts";
 import { eq, and, desc, sql } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const HistoryBody = Type.Object({
@@ -61,7 +60,7 @@ const sessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{
         Body: typeof HistoryBody.static;
       }>,
@@ -129,7 +128,7 @@ const sessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
           },
         },
       });
-    }),
+    },
   });
 };
 

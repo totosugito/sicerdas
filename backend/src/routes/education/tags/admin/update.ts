@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { eq, and, ne } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdateTagParams = Type.Object({
@@ -52,7 +51,7 @@ const updateTagRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Params: typeof UpdateTagParams.static, Body: typeof UpdateTagBody.static }>,
             reply: FastifyReply
         ) {
@@ -100,7 +99,7 @@ const updateTagRoute: FastifyPluginAsyncTypebox = async (app) => {
                     updatedAt: updatedTag.updatedAt.toISOString(),
                 }
             });
-        }),
+        },
     });
 };
 

@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { and, eq } from "drizzle-orm";
 import { periodicElements, periodicElementNotes } from "../../db/schema/periodic-table/index.ts";
@@ -86,7 +85,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         })
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req: FastifyRequest<{ Params: typeof GetElementParams.static }>,
       reply: FastifyReply
     ) {
@@ -214,7 +213,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           navigation
         }
       });
-    }),
+    },
   });
 };
 

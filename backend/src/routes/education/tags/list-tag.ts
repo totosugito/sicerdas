@@ -5,7 +5,6 @@ import { db } from '../../../db/db-pool.ts';
 import { educationTags } from '../../../db/schema/education/tags.ts';
 import { examQuestionTags } from '../../../db/schema/exam/question-tags.ts';
 import { desc, ilike, or, and, sql, eq, count, getTableColumns, asc } from 'drizzle-orm';
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from '../../../db/schema/index.ts';
@@ -63,7 +62,7 @@ const listTagRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Body: typeof TagListQuery.static }>,
             reply: FastifyReply
         ) {
@@ -167,7 +166,7 @@ const listTagRoute: FastifyPluginAsyncTypebox = async (app) => {
                     }
                 }
             });
-        }),
+        },
     });
 };
 

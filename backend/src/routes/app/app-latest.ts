@@ -8,7 +8,6 @@ import { bookCategory } from "../../db/schema/book/category.ts";
 import { bookGroupStats } from "../../db/schema/book/group-stats.ts";
 import { db } from "../../db/db-pool.ts";
 import { and, gt, eq, asc, sql } from "drizzle-orm";
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import { EnumContentStatus } from "../../db/schema/enum/enum-app.ts";
 import { blocknoteToHtml, resolveBlockNoteUrls } from "../../utils/blocknote-utils.ts";
@@ -129,7 +128,7 @@ export default async function appLatestRoute(app: FastifyInstance) {
         }),
       },
     },
-    handler: withErrorHandler(async (req, reply) => {
+    handler: async (req, reply) => {
       const i18n = getTypedI18n(req);
       const { dbVersion: currentDbVersion } = req.body as any;
       const session = await getAuthInstance(app).api.getSession({
@@ -271,6 +270,6 @@ export default async function appLatestRoute(app: FastifyInstance) {
           groups: bookGroups,
         },
       };
-    }),
+    },
   });
 }

@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { eq, asc } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import {
   EnumDifficultyLevel,
@@ -109,7 +108,7 @@ const getQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Params: typeof GetQuestionParams.static }>,
       reply: FastifyReply,
     ) {
@@ -232,7 +231,7 @@ const getQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
             : null,
         },
       });
-    }),
+    },
   });
 };
 

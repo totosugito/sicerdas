@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { appVersion as tableAppVersion } from "../../../db/schema/app/app-version.ts";
 import { db } from "../../../db/db-pool.ts";
 import { and, eq } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { EnumContentType, EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
@@ -56,7 +55,7 @@ const createVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof CreateVersionBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof CreateVersionResponse.static> {
@@ -112,7 +111,7 @@ const createVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: newVersion.updatedAt?.toISOString(),
         },
       });
-    }),
+    },
   });
 };
 

@@ -6,7 +6,6 @@ import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { and, desc, sql, eq, notExists } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumDifficultyLevel, EnumQuestionType } from "../../../../db/schema/exam/enums.ts";
 
@@ -71,7 +70,7 @@ const listSimpleQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof QuestionListQuery.static }>,
       reply: FastifyReply,
     ) {
@@ -194,7 +193,7 @@ const listSimpleQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
           },
         },
       });
-    }),
+    },
   });
 };
 

@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { appTier } from '../../../db/schema/app/index.ts';
 import { db } from '../../../db/db-pool.ts';
 import { eq, ne, and, or } from 'drizzle-orm';
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from '../../../utils/i18n-typed.ts';
 
 const UpdateTierParams = Type.Object({
@@ -64,7 +63,7 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Params: typeof UpdateTierParams.static, Body: typeof UpdateTierBody.static }>,
             reply: FastifyReply
         ): Promise<typeof UpdateTierResponse.static> {
@@ -131,7 +130,7 @@ const updateTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
                     updatedAt: updatedTier.updatedAt.toISOString(),
                 }
             });
-        }),
+        },
     });
 };
 

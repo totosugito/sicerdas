@@ -5,7 +5,6 @@ import { db } from '../../../../db/db-pool.ts';
 import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
 import { examQuestions } from '../../../../db/schema/exam/questions.ts';
 import { eq } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteSubjectParams = Type.Object({
@@ -36,7 +35,7 @@ const deleteSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Params: typeof DeleteSubjectParams.static }>,
             reply: FastifyReply
         ) {
@@ -70,7 +69,7 @@ const deleteSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
                 success: true,
                 message: t($ => $.exam.subjects.delete.success),
             });
-        }),
+        },
     });
 };
 

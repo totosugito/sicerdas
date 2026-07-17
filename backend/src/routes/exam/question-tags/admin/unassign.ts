@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
 import { and, inArray, eq } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UnassignQuestionTagsBody = Type.Object({
@@ -36,7 +35,7 @@ const unassignQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Body: typeof UnassignQuestionTagsBody.static }>,
             reply: FastifyReply
         ) {
@@ -55,7 +54,7 @@ const unassignQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 success: true,
                 message: t($ => $.exam.question_tags.unassign.success),
             });
-        }),
+        },
     });
 };
 

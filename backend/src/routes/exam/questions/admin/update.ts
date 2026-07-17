@@ -8,7 +8,6 @@ import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import {
   syncSection,
@@ -80,7 +79,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{
         Params: typeof UpdateQuestionParams.static;
       }>,
@@ -286,7 +285,7 @@ const updateQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: updatedQuestion.updatedAt.toISOString(),
         },
       });
-    }),
+    },
   });
 };
 

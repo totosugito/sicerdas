@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { db } from "../../../db/db-pool.ts";
 import { books, bookEventStats, bookInteractions } from "../../../db/schema/book/index.ts";
 import { and, eq, sql } from "drizzle-orm";
@@ -42,7 +41,7 @@ const userBookmarkRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req: FastifyRequest<{ Body: typeof UpdateBookmarkRequest.static }>,
       reply: FastifyReply,
     ): Promise<typeof UpdateBookmarkResponse.static> {
@@ -140,7 +139,7 @@ const userBookmarkRoute: FastifyPluginAsyncTypebox = async (app) => {
           bookmarkCount: finalStats?.bookmarkCount ?? 0,
         },
       });
-    }),
+    },
   });
 };
 

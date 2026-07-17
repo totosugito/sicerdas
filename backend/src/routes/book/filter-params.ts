@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { bookCategory, bookGroup, bookGroupStats } from "../../db/schema/book/index.ts";
 import { eq, and, gt, isNotNull, or, isNull } from "drizzle-orm";
@@ -51,7 +50,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         })
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req: FastifyRequest,
       reply: FastifyReply
     ): Promise<typeof FilterParamsResponse.static> {
@@ -122,7 +121,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         message: t($ => $.book.filterParams.success),
         data: categoriesWithGroups,
       });
-    }),
+    },
   });
 };
 

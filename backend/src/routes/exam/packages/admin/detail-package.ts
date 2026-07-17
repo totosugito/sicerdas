@@ -7,7 +7,6 @@ import { examPackageEventStats } from "../../../../db/schema/exam/index.ts";
 import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { eq, sql } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
 import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";
@@ -70,7 +69,7 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
         "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Params: typeof DetailPackageParams.static }>,
       reply: FastifyReply,
     ) {
@@ -143,7 +142,7 @@ const detailPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: pkg.updatedAt.toISOString(),
         },
       });
-    }),
+    },
   });
 };
 

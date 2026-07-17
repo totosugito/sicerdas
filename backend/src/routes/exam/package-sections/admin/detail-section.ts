@@ -5,7 +5,6 @@ import { db } from "../../../../db/db-pool.ts";
 import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
 import { eq } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
 import { sql } from "drizzle-orm";
@@ -51,7 +50,7 @@ const detailSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
         "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{
         Params: typeof DetailSectionParams.static;
       }>,
@@ -104,7 +103,7 @@ const detailSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: section.updatedAt.toISOString(),
         },
       });
-    }),
+    },
   });
 };
 

@@ -5,7 +5,6 @@ import { db } from '../../../db/db-pool.ts';
 import { educationTags } from '../../../db/schema/education/tags.ts';
 import { examQuestionTags } from '../../../db/schema/exam/question-tags.ts';
 import { eq, and, count, getTableColumns } from 'drizzle-orm';
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from 'better-auth/node';
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from '../../../db/schema/index.ts';
@@ -44,7 +43,7 @@ const detailTagRoute: FastifyPluginAsyncTypebox = async (app) => {
                 '5xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Params: typeof DetailTagParams.static }>,
             reply: FastifyReply
         ) {
@@ -88,7 +87,7 @@ const detailTagRoute: FastifyPluginAsyncTypebox = async (app) => {
                     updatedAt: result.updatedAt.toISOString(),
                 }
             });
-        }),
+        },
     });
 };
 

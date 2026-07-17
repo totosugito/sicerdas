@@ -5,7 +5,6 @@ import { db } from '../../../../db/db-pool.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
 import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { eq } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const QuestionTagListQuery = Type.Object({
@@ -46,7 +45,7 @@ const listQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Body: typeof QuestionTagListQuery.static }>,
             reply: FastifyReply
         ) {
@@ -81,7 +80,7 @@ const listQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
                     tag: item.tag ? { id: item.tag.id, name: item.tag.name } : undefined
                 })) as any
             });
-        }),
+        },
     });
 };
 

@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { eq, sql } from "drizzle-orm";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
@@ -40,7 +39,7 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
         "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof CreateSectionBody.static }>,
       reply: FastifyReply,
     ) {
@@ -124,7 +123,7 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
           id: newSectionId,
         },
       });
-    }),
+    },
   });
 };
 

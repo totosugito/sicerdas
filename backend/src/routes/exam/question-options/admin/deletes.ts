@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examQuestionOptions } from "../../../../db/schema/exam/question-options.ts";
 import { inArray } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { syncQuestionMaxScore } from "../../../../services/exam/index.ts";
 
@@ -36,7 +35,7 @@ const deleteMultipleQuestionOptionsRoute: FastifyPluginAsyncTypebox = async (app
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof DeleteMultipleQuestionOptionsBody.static }>,
       reply: FastifyReply,
     ) {
@@ -63,7 +62,7 @@ const deleteMultipleQuestionOptionsRoute: FastifyPluginAsyncTypebox = async (app
         success: true,
         message: t(($) => $.exam.question_options.delete.successMultiple),
       });
-    }),
+    },
   });
 };
 

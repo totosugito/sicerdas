@@ -5,7 +5,6 @@ import { db } from "../../../../db/db-pool.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
 import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
 import { eq } from "drizzle-orm";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
@@ -50,7 +49,7 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof CreatePackageBody.static }>,
       reply: FastifyReply,
     ) {
@@ -122,7 +121,7 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
           id: newPackage.id,
         },
       });
-    }),
+    },
   });
 };
 

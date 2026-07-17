@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../db/db-pool.ts";
 import { appVersion } from "../../db/schema/app/app-version.ts";
 import { and, eq, asc, sql, ilike } from "drizzle-orm";
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import { EnumContentStatus, EnumContentType } from "../../db/schema/enum/enum-app.ts";
 
@@ -54,7 +53,7 @@ const listVersionSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof VersionSimpleQuery.static }>,
       reply: FastifyReply,
     ): Promise<typeof ListVersionSimpleResponse.static> {
@@ -110,7 +109,7 @@ const listVersionSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
           },
         },
       });
-    }),
+    },
   });
 };
 

@@ -5,7 +5,6 @@ import { db } from "../../../db/db-pool.ts";
 import { examUserStatsSubject } from "../../../db/schema/exam/user-stats-subject.ts";
 import { examSubjects } from "../../../db/schema/exam/subjects.ts";
 import { eq, desc, asc, sql } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const SubjectStatsQuery = Type.Object({
@@ -51,7 +50,7 @@ const getSubjectStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
         200: SubjectStatsResponse,
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{
         Body: typeof SubjectStatsQuery.static;
       }>,
@@ -114,7 +113,7 @@ const getSubjectStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
           },
         },
       });
-    }),
+    },
   });
 };
 

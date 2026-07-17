@@ -5,7 +5,6 @@ import { db } from "../../../db/db-pool.ts";
 import { examSessions } from "../../../db/schema/exam/sessions.ts";
 import { EnumExamSessionStatus } from "../../../db/schema/exam/enums.ts";
 import { eq, and } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const AbandonParams = Type.Object({
@@ -37,7 +36,7 @@ const abandonSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Params: typeof AbandonParams.static }>,
       reply: FastifyReply,
     ) {
@@ -66,7 +65,7 @@ const abandonSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         message: t(($) => $.exam.sessions.abandon.success),
         data: { id: session.id },
       });
-    }),
+    },
   });
 };
 

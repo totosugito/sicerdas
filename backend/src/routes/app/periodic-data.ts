@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import env from "../../config/env.config.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import axios from "axios";
@@ -25,7 +24,7 @@ const periodicDataRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req,
       reply,
     ) {
@@ -68,7 +67,7 @@ const periodicDataRoute: FastifyPluginAsyncTypebox = async (app) => {
           message: t(($) => $.periodic.downloadFailed),
         });
       }
-    }),
+    },
   });
 };
 

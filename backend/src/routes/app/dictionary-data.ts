@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
 
 const PackageItem = Type.Object({
@@ -42,7 +41,7 @@ const dictionaryDataRoute: FastifyPluginAsyncTypebox = async (app) => {
                 }),
             },
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             req,
             reply,
         ): Promise<typeof DictionaryDataResponse.static> {
@@ -92,7 +91,7 @@ const dictionaryDataRoute: FastifyPluginAsyncTypebox = async (app) => {
                 message: t(($) => $.dictionary.success),
                 data: packages,
             });
-        }),
+        },
     });
 };
 

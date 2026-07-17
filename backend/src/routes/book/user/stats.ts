@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { db } from "../../../db/db-pool.ts";
 import { bookInteractions } from "../../../db/schema/book/index.ts";
 import { eq, sql } from "drizzle-orm";
@@ -28,7 +27,7 @@ const getBookStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
         200: BookStatsResponse,
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req: FastifyRequest,
       reply: FastifyReply,
     ): Promise<typeof BookStatsResponse.static> {
@@ -53,7 +52,7 @@ const getBookStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
           totalDownloads: stats?.totalDownloads ?? 0,
         },
       });
-    }),
+    },
   });
 };
 

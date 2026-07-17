@@ -3,7 +3,6 @@ import type { FastifyRequest, FastifyReply } from 'fastify';
 import { aiApiLogs, aiModels } from '../../../../db/schema/ai/index.ts';
 import { db } from '../../../../db/db-pool.ts';
 import { eq, desc, asc, and, gte, lte, sql } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { Type } from '@sinclair/typebox';
 import { getTypedI18n } from '../../../../utils/i18n-typed.ts';
 
@@ -61,7 +60,7 @@ const modelsAiStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             req: FastifyRequest<{ Querystring: typeof StatsQueryWrapper.static }>,
             reply: FastifyReply
         ): Promise<typeof GetStatsResponse.static> {
@@ -141,7 +140,7 @@ const modelsAiStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
                     offset
                 }
             });
-        }),
+        },
     });
 };
 

@@ -14,7 +14,6 @@ import { examUserStatsSubject } from "../../../db/schema/exam/user-stats-subject
 import { examUserStatsTag } from "../../../db/schema/exam/user-stats-tag.ts";
 import { EnumExamSessionStatus, EnumExamPackageUserStatus } from "../../../db/schema/exam/enums.ts";
 import { eq, and, inArray, sql } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const SubmitSessionParams = Type.Object({
@@ -54,7 +53,7 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Params: typeof SubmitSessionParams.static }>,
       reply: FastifyReply,
     ) {
@@ -352,7 +351,7 @@ const submitSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
           totalQuestions,
         },
       });
-    }),
+    },
   });
 };
 

@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import axios from "axios";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
@@ -38,7 +37,7 @@ const proxyRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             },
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             req: FastifyRequest<{ Querystring: { url: string; file?: string; id?: string, bookId?: number }; Params: { filename?: string } }>,
             reply: FastifyReply
         ) {
@@ -91,7 +90,7 @@ const proxyRoute: FastifyPluginAsyncTypebox = async (app) => {
             } catch (error: any) {
                 return reply.internalServerError(t($ => $.book.proxyPdf.error, { message: error.message }));
             }
-        }),
+        },
     });
 };
 

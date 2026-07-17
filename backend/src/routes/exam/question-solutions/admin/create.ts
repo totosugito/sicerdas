@@ -6,7 +6,6 @@ import { examQuestionSolutions } from "../../../../db/schema/exam/question-solut
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
@@ -53,7 +52,7 @@ const createQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(request: FastifyRequest, reply: FastifyReply) {
+    handler: async function handler(request: FastifyRequest, reply: FastifyReply) {
       const { t } = getTypedI18n(request);
 
       // Parse multipart data
@@ -140,7 +139,7 @@ const createQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: newSolution.updatedAt.toISOString(),
         },
       });
-    }),
+    },
   });
 };
 

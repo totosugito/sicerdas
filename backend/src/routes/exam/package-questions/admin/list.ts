@@ -7,7 +7,6 @@ import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { eq, and, sql } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const PackageQuestionListQuery = Type.Object({
@@ -64,7 +63,7 @@ const listPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
         "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof PackageQuestionListQuery.static }>,
       reply: FastifyReply,
     ) {
@@ -127,7 +126,7 @@ const listPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
           },
         },
       });
-    }),
+    },
   });
 };
 

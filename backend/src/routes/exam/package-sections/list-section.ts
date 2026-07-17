@@ -5,7 +5,6 @@ import { db } from "../../../db/db-pool.ts";
 import { examPackageSections, examPackages, examSessions } from "../../../db/schema/exam/index.ts";
 import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
 import { and, desc, eq, sql } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 import { fromNodeHeaders } from "better-auth/node";
@@ -53,7 +52,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req: FastifyRequest<{ Body: typeof SectionListQuery.static }>,
       reply: FastifyReply,
     ) {
@@ -158,7 +157,7 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
         message: t(($) => $.exam.package_sections.list.success),
         data: sections,
       });
-    }),
+    },
   });
 };
 

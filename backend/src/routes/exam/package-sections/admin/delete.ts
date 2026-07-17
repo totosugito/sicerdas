@@ -6,7 +6,6 @@ import { examPackageSections } from "../../../../db/schema/exam/package-sections
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
 import { eq, sql } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteSectionParams = Type.Object({
@@ -31,7 +30,7 @@ const deleteSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
         "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Params: typeof DeleteSectionParams.static }>,
       reply: FastifyReply,
     ) {
@@ -79,7 +78,7 @@ const deleteSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
         success: true,
         message: t(($) => $.exam.package_sections.delete.success),
       });
-    }),
+    },
   });
 };
 

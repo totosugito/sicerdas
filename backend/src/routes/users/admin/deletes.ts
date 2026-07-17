@@ -2,7 +2,6 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { users } from "../../../db/schema/user/index.ts";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { inArray } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
@@ -41,7 +40,7 @@ const bulkDeleteUsers: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req: FastifyRequest<{ Body: typeof DeletesBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof DeletesResponse.static> {
@@ -73,7 +72,7 @@ const bulkDeleteUsers: FastifyPluginAsyncTypebox = async (app) => {
         }
         throw error;
       }
-    }),
+    },
   });
 };
 

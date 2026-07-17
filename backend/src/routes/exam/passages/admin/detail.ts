@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { eq } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { resolveBlockNoteUrls } from "../../../../utils/blocknote-utils.ts";
 
@@ -49,7 +48,7 @@ const detailPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Params: typeof DetailPassageParams.static }>,
       reply: FastifyReply,
     ) {
@@ -74,7 +73,7 @@ const detailPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: passage.updatedAt.toISOString(),
         },
       });
-    }),
+    },
   });
 };
 

@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@sinclair/typebox';
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { EnumReportReason } from "../../db/schema/enum/enum-general.ts";
 import { EnumContentType } from "../../db/schema/enum/enum-app.ts";
@@ -46,7 +45,7 @@ const createReportRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             req: FastifyRequest<{ Body: typeof CreateReportBody.static }>,
             reply: FastifyReply
         ) {
@@ -83,7 +82,7 @@ const createReportRoute: FastifyPluginAsyncTypebox = async (app) => {
                     id: newReport.id
                 }
             });
-        })
+        }
     });
 };
 

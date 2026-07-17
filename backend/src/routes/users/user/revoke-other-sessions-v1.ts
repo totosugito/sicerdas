@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@fastify/type-provider-typebox";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { db } from "../../../db/db-pool.ts";
 import { eq, and, ne } from "drizzle-orm";
 import { sessions } from "../../../db/schema/user/index.ts";
@@ -43,7 +42,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async (req, reply) => {
+    handler: async (req, reply) => {
       const { t } = getTypedI18n(req);
       // Get the session token from the request body
       const { token } = req.body as { token: string };
@@ -76,7 +75,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         success: true,
         message: t(($) => $.auth.sessions_revoked, { count: deletedSessions.length }),
       });
-    }),
+    },
   });
 };
 

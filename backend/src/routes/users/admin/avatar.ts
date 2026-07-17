@@ -1,5 +1,4 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { db } from "../../../db/db-pool.ts";
 import { users } from "../../../db/schema/user/index.ts";
 import { eq } from "drizzle-orm";
@@ -46,7 +45,7 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async (req: FastifyRequest, reply: FastifyReply) => {
+    handler: async (req: FastifyRequest, reply: FastifyReply) => {
       const { t } = getTypedI18n(req);
 
       let targetUserId = (req.query as any).id as string | undefined;
@@ -189,7 +188,7 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
           image: getUserAvatarUrl(targetUserId as string, updatedUser.image),
         },
       });
-    }),
+    },
   });
 };
 

@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { db } from "../../../db/db-pool.ts";
 import {
   examPackages,
@@ -92,7 +91,7 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req: FastifyRequest<{ Params: { id: string } }>,
       reply: FastifyReply,
     ): Promise<typeof PackageDetailResponseWrapper.static> {
@@ -328,7 +327,7 @@ const packageDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
         message: t(($) => $.exam.packages.detail.success),
         data: processedPackage,
       });
-    }),
+    },
   });
 };
 

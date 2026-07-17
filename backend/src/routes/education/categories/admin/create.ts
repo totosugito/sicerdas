@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { eq } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { stringToKey } from "../../../../utils/my-utils.ts";
 
@@ -49,7 +48,7 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof CreateCategoryBody.static }>,
       reply: FastifyReply,
     ) {
@@ -97,7 +96,7 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: newCategory.updatedAt.toISOString(),
         },
       });
-    }),
+    },
   });
 };
 

@@ -3,7 +3,6 @@ import type { FastifyRequest, FastifyReply } from 'fastify';
 import { aiModels, aiApiLogs } from '../../../../db/schema/ai/index.ts';
 import { db } from '../../../../db/db-pool.ts';
 import { eq, getTableColumns, desc } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { Type } from '@sinclair/typebox';
 import { getTypedI18n } from '../../../../utils/i18n-typed.ts';
 
@@ -59,7 +58,7 @@ const detailsModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             req: FastifyRequest<{ Params: { id: string } }>,
             reply: FastifyReply
         ): Promise<typeof GetModelResponse.static> {
@@ -114,7 +113,7 @@ const detailsModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
                     ...(stats ? { stats } : {})
                 }
             });
-        }),
+        },
     });
 };
 

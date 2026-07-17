@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { eq, and, ne } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const UpdateEducationGradeParams = Type.Object({
@@ -54,7 +53,7 @@ const updateEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{
         Params: typeof UpdateEducationGradeParams.static;
         Body: typeof UpdateEducationGradeBody.static;
@@ -106,7 +105,7 @@ const updateEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: updatedGrade.updatedAt ? updatedGrade.updatedAt.toISOString() : null,
         },
       });
-    }),
+    },
   });
 };
 

@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@fastify/type-provider-typebox";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { db } from "../../../db/db-pool.ts";
 import { eq } from "drizzle-orm";
 import { users, usersProfile, accounts } from "../../../db/schema/user/index.ts";
@@ -49,7 +48,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async (req, reply) => {
+    handler: async (req, reply) => {
       const { t } = getTypedI18n(req);
       // Get user ID from session (already verified by user.hook.ts)
       const userId = req.session.user.id;
@@ -103,7 +102,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
           extra: userResult.extra || {},
         },
       });
-    }, 422),
+    },
   });
 };
 

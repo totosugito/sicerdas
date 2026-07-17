@@ -7,7 +7,6 @@ import { examSessions } from "../../../../db/schema/exam/sessions.ts";
 import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { eq } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { deletePackageDirectory } from "../../../../utils/exam-utils.ts";
 import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
@@ -36,7 +35,7 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
         "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Params: typeof DeletePackageParams.static }>,
       reply: FastifyReply,
     ) {
@@ -99,7 +98,7 @@ const deletePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
         success: true,
         message: t(($) => $.exam.packages.delete.success),
       });
-    }),
+    },
   });
 };
 

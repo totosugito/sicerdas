@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examQuestionSolutions } from '../../../../db/schema/exam/question-solutions.ts';
 import { inArray } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteMultipleQuestionSolutionsBody = Type.Object({
@@ -35,7 +34,7 @@ const deleteMultipleQuestionSolutionsRoute: FastifyPluginAsyncTypebox = async (a
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Body: typeof DeleteMultipleQuestionSolutionsBody.static }>,
             reply: FastifyReply
         ) {
@@ -49,7 +48,7 @@ const deleteMultipleQuestionSolutionsRoute: FastifyPluginAsyncTypebox = async (a
                 success: true,
                 message: t($ => $.exam.question_solutions.delete.successMultiple),
             });
-        }),
+        },
     });
 };
 

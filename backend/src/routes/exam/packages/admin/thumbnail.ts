@@ -5,7 +5,6 @@ import { eq } from "drizzle-orm";
 import sharp from "sharp";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { createUniqueFileName } from "../../../../utils/my-utils.ts";
 import {
@@ -54,7 +53,7 @@ const thumbnailRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{
         Params: typeof ThumbnailParams.static;
         Querystring: typeof ThumbnailQuery.static;
@@ -168,7 +167,7 @@ const thumbnailRoute: FastifyPluginAsyncTypebox = async (app) => {
           thumbnail: getPackageThumbnailUrl(updated.thumbnail),
         },
       };
-    }),
+    },
   });
 };
 

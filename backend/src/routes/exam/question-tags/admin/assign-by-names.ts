@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { educationTags } from "../../../../db/schema/education/tags.ts";
 import { examQuestionTags } from "../../../../db/schema/exam/question-tags.ts";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { eq, sql } from "drizzle-orm";
 
@@ -37,7 +36,7 @@ const assignQuestionTagsByNameRoute: FastifyPluginAsyncTypebox = async (app) => 
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof AssignQuestionTagsByNameBody.static }>,
       reply: FastifyReply,
     ) {
@@ -85,7 +84,7 @@ const assignQuestionTagsByNameRoute: FastifyPluginAsyncTypebox = async (app) => 
         success: true,
         message: t(($) => $.exam.question_tags.assign.success),
       });
-    }),
+    },
   });
 };
 

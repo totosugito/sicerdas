@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@fastify/type-provider-typebox";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { db } from "../../../db/db-pool.ts";
 import { users, usersProfile, accounts } from "../../../db/schema/user/index.ts";
 import { eq, sql } from "drizzle-orm";
@@ -27,6 +26,7 @@ const UpdateUserResponse = Type.Object({
     educationLevel: Type.Union([Type.String(), Type.Null()]),
     dateOfBirth: Type.Union([Type.String(), Type.Null()]),
 
+    providerId: Type.String(),
     extra: Type.Object({}, { additionalProperties: true }),
     createdAt: Type.String({ format: "date-time" }),
     updatedAt: Type.String({ format: "date-time" }),
@@ -82,7 +82,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async (req, reply) => {
+    handler: async (req, reply) => {
       const { t } = getTypedI18n(req);
       // Get user ID from session (verified by user.hook.ts)
       const userId = req.session.user.id;
@@ -286,7 +286,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
           extra: userResult.extra || {},
         },
       });
-    }),
+    },
   });
 };
 

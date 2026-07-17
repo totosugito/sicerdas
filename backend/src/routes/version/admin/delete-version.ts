@@ -7,7 +7,6 @@ import { examPackages } from "../../../db/schema/exam/packages.ts";
 import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
 import { db } from "../../../db/db-pool.ts";
 import { eq, sql } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
@@ -39,7 +38,7 @@ const deleteVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Params: typeof DeleteVersionParams.static }>,
       reply: FastifyReply,
     ): Promise<typeof DeleteVersionResponse.static> {
@@ -90,7 +89,7 @@ const deleteVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
         success: true,
         message: t(($) => $.version.delete.success),
       });
-    }),
+    },
   });
 };
 

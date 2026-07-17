@@ -11,7 +11,6 @@ import { examQuestions } from "../../../db/schema/exam/questions.ts";
 import { examQuestionOptions } from "../../../db/schema/exam/question-options.ts";
 import { EnumExamSessionStatus, EnumExamSessionMode, EnumExamType } from "../../../db/schema/exam/enums.ts";
 import { eq, and, inArray, or } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { shuffleArray } from "../../../utils/my-utils.ts";
 
@@ -50,7 +49,7 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof StartSessionBody.static }>,
       reply: FastifyReply,
     ) {
@@ -178,7 +177,7 @@ const startSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
           isResumed: false,
         },
       });
-    }),
+    },
   });
 };
 

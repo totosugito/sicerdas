@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { educationTags } from "../../../../db/schema/education/tags.ts";
 import { eq } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const CreateTagBody = Type.Object({
@@ -47,7 +46,7 @@ const createTagRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof CreateTagBody.static }>,
       reply: FastifyReply,
     ) {
@@ -84,7 +83,7 @@ const createTagRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: newTag.updatedAt.toISOString(),
         },
       });
-    }),
+    },
   });
 };
 

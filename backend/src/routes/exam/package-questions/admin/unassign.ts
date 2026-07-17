@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { and, eq, inArray } from "drizzle-orm";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { syncSection, syncPackage } from "../../../../services/exam/index.ts";
@@ -32,7 +31,7 @@ const unassignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => 
         "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof UnassignPackageQuestionsBody.static }>,
       reply: FastifyReply,
     ) {
@@ -81,7 +80,7 @@ const unassignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => 
         success: true,
         message: t(($) => $.exam.package_questions.unassign.success),
       });
-    }),
+    },
   });
 };
 

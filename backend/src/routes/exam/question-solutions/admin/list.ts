@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examQuestionSolutions } from "../../../../db/schema/exam/question-solutions.ts";
 import { desc, and, sql, eq } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { resolveBlockNoteUrls } from "../../../../utils/blocknote-utils.ts";
 
@@ -70,7 +69,7 @@ const listQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof QuestionSolutionListQuery.static }>,
       reply: FastifyReply,
     ) {
@@ -149,7 +148,7 @@ const listQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
           },
         },
       });
-    }),
+    },
   });
 };
 

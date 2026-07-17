@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { educationCategories } from "../../../db/schema/education/categories.ts";
 import { and, eq, asc, sql } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const CategorySimpleQuery = Type.Object({
@@ -45,7 +44,7 @@ const listCategoriesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
         "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof CategorySimpleQuery.static }>,
       reply: FastifyReply,
     ) {
@@ -90,7 +89,7 @@ const listCategoriesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
           },
         },
       });
-    }),
+    },
   });
 };
 

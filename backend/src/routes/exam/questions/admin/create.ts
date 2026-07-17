@@ -7,7 +7,6 @@ import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import {
   EnumDifficultyLevel,
@@ -72,7 +71,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(request: FastifyRequest, reply: FastifyReply) {
+    handler: async function handler(request: FastifyRequest, reply: FastifyReply) {
       const { t } = getTypedI18n(request);
       const userId = request.session.user.id;
 
@@ -213,7 +212,7 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: newQuestion.updatedAt.toISOString(),
         },
       });
-    }),
+    },
   });
 };
 

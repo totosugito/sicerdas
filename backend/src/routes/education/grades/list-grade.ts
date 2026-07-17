@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { educationGrades } from "../../../db/schema/education/grades.ts";
 import { desc, ilike, or, and, sql, asc } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const EducationGradeListQuery = Type.Object({
@@ -66,7 +65,7 @@ const listEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof EducationGradeListQuery.static }>,
       reply: FastifyReply,
     ) {
@@ -165,7 +164,7 @@ const listEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
           },
         },
       });
-    }),
+    },
   });
 };
 

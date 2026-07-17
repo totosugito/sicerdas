@@ -6,7 +6,6 @@ import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { deleteStorageDirectory } from "../../../../utils/storage.ts";
 
@@ -38,7 +37,7 @@ const deletePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Params: typeof DeletePassageParams.static }>,
       reply: FastifyReply,
     ) {
@@ -78,7 +77,7 @@ const deletePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
         success: true,
         message: t(($) => $.exam.passages.delete.success),
       });
-    }),
+    },
   });
 };
 

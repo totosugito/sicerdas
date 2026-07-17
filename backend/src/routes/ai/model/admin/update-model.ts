@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { aiModels } from '../../../../db/schema/ai/index.ts';
 import { db } from '../../../../db/db-pool.ts';
 import { eq, ne, and, or } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 
@@ -81,7 +80,7 @@ const updateModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Params: typeof UpdateModelParams.static, Body: typeof UpdateModelBody.static }>,
             reply: FastifyReply
         ): Promise<typeof UpdateModelResponse.static> {
@@ -139,7 +138,7 @@ const updateModelAiRoute: FastifyPluginAsyncTypebox = async (app) => {
                     updatedAt: updatedModel.updatedAt.toISOString(),
                 }
             });
-        }),
+        },
     });
 };
 

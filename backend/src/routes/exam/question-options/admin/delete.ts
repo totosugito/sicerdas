@@ -5,7 +5,6 @@ import { db } from "../../../../db/db-pool.ts";
 import { examQuestionOptions } from "../../../../db/schema/exam/question-options.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 import { cleanupBlockNoteFiles } from "../../../../utils/blocknote-utils.ts";
 import { syncQuestionMaxScore } from "../../../../services/exam/index.ts";
@@ -38,7 +37,7 @@ const deleteQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Params: typeof DeleteQuestionOptionParams.static }>,
       reply: FastifyReply,
     ) {
@@ -73,7 +72,7 @@ const deleteQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
         success: true,
         message: t(($) => $.exam.question_options.delete.success),
       });
-    }),
+    },
   });
 };
 

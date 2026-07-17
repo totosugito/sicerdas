@@ -5,7 +5,6 @@ import { db } from '../../../../db/db-pool.ts';
 import { educationCategories } from '../../../../db/schema/education/categories.ts';
 import { examPackages } from '../../../../db/schema/exam/packages.ts';
 import { eq } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteCategoryParams = Type.Object({
@@ -36,7 +35,7 @@ const deleteCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Params: typeof DeleteCategoryParams.static }>,
             reply: FastifyReply
         ) {
@@ -68,7 +67,7 @@ const deleteCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
                 success: true,
                 message: t($ => $.education.categories.delete.success),
             });
-        }),
+        },
     });
 };
 

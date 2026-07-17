@@ -4,7 +4,6 @@ import { Type } from "@sinclair/typebox";
 import { appVersion } from "../../../db/schema/app/app-version.ts";
 import { db } from "../../../db/db-pool.ts";
 import { eq } from "drizzle-orm";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 
 const DetailVersionParams = Type.Object({
@@ -49,7 +48,7 @@ const detailVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Params: typeof DetailVersionParams.static }>,
       reply: FastifyReply,
     ): Promise<typeof DetailVersionResponse.static> {
@@ -75,7 +74,7 @@ const detailVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
           updatedAt: item.updatedAt?.toISOString(),
         },
       });
-    }),
+    },
   });
 };
 

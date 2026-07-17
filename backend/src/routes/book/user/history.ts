@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { db } from "../../../db/db-pool.ts";
 import {
   books,
@@ -67,7 +66,7 @@ const listHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
         200: HistoryBooksResponse,
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req: FastifyRequest<{
         Querystring: { page: number; pageSize: number };
       }>,
@@ -149,7 +148,7 @@ const listHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
           totalPages: Math.ceil(total / pageSize),
         },
       });
-    }),
+    },
   });
 };
 

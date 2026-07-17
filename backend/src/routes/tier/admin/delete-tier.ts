@@ -6,7 +6,6 @@ import { usersProfile } from '../../../db/schema/user/index.ts';
 import { aiModels } from '../../../db/schema/ai/index.ts';
 import { db } from '../../../db/db-pool.ts';
 import { eq, count } from 'drizzle-orm';
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from '../../../utils/i18n-typed.ts';
 
 const DeleteTierResponse = Type.Object({
@@ -35,7 +34,7 @@ const deleteTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Params: { slug: string } }>,
             reply: FastifyReply
         ): Promise<typeof DeleteTierResponse.static> {
@@ -86,7 +85,7 @@ const deleteTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
                 success: true,
                 message: t($ => $.appTier.delete.success),
             });
-        }),
+        },
     });
 };
 

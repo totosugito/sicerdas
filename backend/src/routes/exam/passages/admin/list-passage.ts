@@ -5,7 +5,6 @@ import { db } from "../../../../db/db-pool.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { desc, ilike, and, sql, eq, getTableColumns } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const PassageListQuery = Type.Object({
@@ -69,7 +68,7 @@ const listPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof PassageListQuery.static }>,
       reply: FastifyReply,
     ) {
@@ -170,7 +169,7 @@ const listPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
           },
         },
       });
-    }),
+    },
   });
 };
 

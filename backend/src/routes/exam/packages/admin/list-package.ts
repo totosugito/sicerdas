@@ -7,7 +7,6 @@ import { examPackageEventStats } from "../../../../db/schema/exam/index.ts";
 import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { desc, ilike, and, sql, eq, asc } from "drizzle-orm";
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from "../../../../db/schema/index.ts";
@@ -98,7 +97,7 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
         "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       request: FastifyRequest<{ Body: typeof PackageListQuery.static }>,
       reply: FastifyReply,
     ) {
@@ -310,7 +309,7 @@ const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
           },
         },
       });
-    }),
+    },
   });
 };
 

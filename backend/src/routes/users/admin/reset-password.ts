@@ -2,7 +2,6 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { accounts } from "../../../db/schema/user/index.ts";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { eq } from "drizzle-orm";
@@ -40,7 +39,7 @@ const resetPassword: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req: FastifyRequest<{ Body: typeof ResetPasswordBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof ResetPasswordResponse.static> {
@@ -85,7 +84,7 @@ const resetPassword: FastifyPluginAsyncTypebox = async (app) => {
         success: true,
         message: t(($) => $.user.passwordUpdatedSuccessfully),
       });
-    }),
+    },
   });
 };
 

@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examQuestionOptions } from '../../../../db/schema/exam/question-options.ts';
 import { desc, and, sql, eq } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const QuestionOptionListQuery = Type.Object({
@@ -58,7 +57,7 @@ const listQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Body: typeof QuestionOptionListQuery.static }>,
             reply: FastifyReply
         ) {
@@ -126,7 +125,7 @@ const listQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
                     }
                 }
             });
-        }),
+        },
     });
 };
 

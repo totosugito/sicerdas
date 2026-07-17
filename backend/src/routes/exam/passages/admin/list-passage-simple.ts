@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox';
 import { db } from '../../../../db/db-pool.ts';
 import { examPassages } from '../../../../db/schema/exam/passages.ts';
 import { and, eq, asc, sql, ilike } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const PassageSimpleQuery = Type.Object({
@@ -46,7 +45,7 @@ const listPassagesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
                 '5xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Body: typeof PassageSimpleQuery.static }>,
             reply: FastifyReply
         ) {
@@ -95,7 +94,7 @@ const listPassagesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
                     }
                 }
             });
-        }),
+        },
     });
 };
 

@@ -1,7 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../db/db-pool.ts";
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../utils/i18n-typed.ts";
 import { periodicElements, periodicElementNotes } from "../../db/schema/periodic-table/index.ts";
 
@@ -58,7 +57,7 @@ const periodicTableRoute: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req,
       reply,
     ): Promise<typeof PeriodicTableResponse.static> {
@@ -106,7 +105,7 @@ const periodicTableRoute: FastifyPluginAsyncTypebox = async (app) => {
           notes,
         },
       });
-    }),
+    },
   });
 };
 

@@ -5,7 +5,6 @@ import { db } from '../../../../db/db-pool.ts';
 import { educationTags } from '../../../../db/schema/education/tags.ts';
 import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
 import { eq } from 'drizzle-orm';
-import { withErrorHandler } from "../../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
 
 const DeleteTagParams = Type.Object({
@@ -36,7 +35,7 @@ const deleteTagRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async function handler(
+        handler: async function handler(
             request: FastifyRequest<{ Params: typeof DeleteTagParams.static }>,
             reply: FastifyReply
         ) {
@@ -70,7 +69,7 @@ const deleteTagRoute: FastifyPluginAsyncTypebox = async (app) => {
                 success: true,
                 message: t($ => $.education.tags.delete.success),
             });
-        }),
+        },
     });
 };
 

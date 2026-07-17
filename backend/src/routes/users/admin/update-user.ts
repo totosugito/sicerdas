@@ -2,7 +2,6 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { users, EnumUserRole } from "../../../db/schema/user/index.ts";
-import { withErrorHandler } from "../../../utils/withErrorHandler.ts";
 import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
@@ -40,7 +39,7 @@ const updateUser: FastifyPluginAsyncTypebox = async (app) => {
         }),
       },
     },
-    handler: withErrorHandler(async function handler(
+    handler: async function handler(
       req: FastifyRequest<{ Body: typeof UpdateBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof UpdateResponse.static> {
@@ -88,7 +87,7 @@ const updateUser: FastifyPluginAsyncTypebox = async (app) => {
         success: true,
         message: t(($) => $.user.management.update.success),
       });
-    }),
+    },
   });
 };
 

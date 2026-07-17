@@ -1,6 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
-import { withErrorHandler } from "../../utils/withErrorHandler.ts";
 import { db } from "../../db/db-pool.ts";
 import { verifications } from "../../db/schema/user/index.ts";
 import { eq } from "drizzle-orm";
@@ -45,7 +44,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
                 })
             }
         },
-        handler: withErrorHandler(async (req, reply) => {
+        handler: async (req, reply) => {
             const { t } = getTypedI18n(req);
             const { token } = req.body as { token: string };
 
@@ -81,7 +80,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
                     valid: true
                 }
             });
-        }),
+        },
     });
 };
 
