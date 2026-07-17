@@ -13,7 +13,7 @@ import {
   cleanupBlockNoteFiles,
   resolveBlockNoteUrls,
   stripBlockNoteUrls,
-} from "../../../../utils/blocknote-utils.ts";
+} from "../../../../utils/blocknote/blocknote-utils.ts";
 import { syncQuestionMaxScore } from "../../../../services/exam/index.ts";
 
 const UpdateQuestionOptionParams = Type.Object({

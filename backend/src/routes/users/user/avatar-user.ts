@@ -7,7 +7,7 @@ import type { UploadedFile } from "../../../types/file.ts";
 import { createUniqueFileName } from "../../../utils/my-utils.ts";
 import { Type } from "@sinclair/typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../utils/user-utils.ts";
+import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../utils/user/user-utils.ts";
 
 export const processChangeAvatar = async (
   req: FastifyRequest,

@@ -7,10 +7,10 @@ import { examSessions } from "../../../../db/schema/exam/sessions.ts";
 import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 import { eq } from "drizzle-orm";
-import { deletePackageDirectory } from "../../../../utils/exam-utils.ts";
+import { deletePackageDirectory } from "../../../../utils/exam/exam-utils.ts";
 import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
-import { recalculateEducationStats } from "../../../../utils/education-stats-utils.ts";
+import { recalculateEducationStats } from "../../../../utils/education/education-stats-utils.ts";
 
 const DeletePackageParams = Type.Object({
   id: Type.String({ format: "uuid" }),

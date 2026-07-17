@@ -21,7 +21,7 @@ import {
   cleanupBlockNoteFiles,
   resolveBlockNoteUrls,
   stripBlockNoteUrls,
-} from "../../../../utils/blocknote-utils.ts";
+} from "../../../../utils/blocknote/blocknote-utils.ts";
 
 const VariableFormulasType = Type.Optional(
   Type.Object({

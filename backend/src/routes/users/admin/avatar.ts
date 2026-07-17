@@ -6,7 +6,7 @@ import sharp from "sharp";
 import { createUniqueFileName } from "../../../utils/my-utils.ts";
 import { Type } from "@sinclair/typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../utils/user-utils.ts";
+import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../utils/user/user-utils.ts";
 
 const AvatarResponse = Type.Object({
   success: Type.Boolean({ default: true }),

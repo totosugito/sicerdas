@@ -11,7 +11,7 @@ import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from "../../../../db/schema/index.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
-import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";
+import { getPackageThumbnailUrl } from "../../../../utils/exam/exam-utils.ts";
 
 const PackageListQuery = Type.Object({
   search: Type.Optional(Type.String({ description: "Search term for package title" })),

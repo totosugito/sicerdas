@@ -17,7 +17,7 @@ import {
   processBlockNoteFiles,
   replaceBlockNoteUrls,
   stripBlockNoteUrls,
-} from "../../../../utils/blocknote-utils.ts";
+} from "../../../../utils/blocknote/blocknote-utils.ts";
 import { syncPassage } from "../../../../services/exam/index.ts";
 
 const VariableFormulasType = Type.Optional(

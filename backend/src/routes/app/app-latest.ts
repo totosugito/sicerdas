@@ -9,7 +9,7 @@ import { bookGroupStats } from "../../db/schema/book/group-stats.ts";
 import { db } from "../../db/db-pool.ts";
 import { and, gt, eq, asc, sql } from "drizzle-orm";
 import { EnumContentStatus } from "../../db/schema/enum/enum-app.ts";
-import { blocknoteToHtml, resolveBlockNoteUrls } from "../../utils/blocknote-utils.ts";
+import { blocknoteToHtml, resolveBlockNoteUrls } from "../../utils/blocknote/blocknote-utils.ts";
 import { usersProfile } from "../../db/schema/user/profiles.ts";
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
 import { fromNodeHeaders } from "better-auth/node";

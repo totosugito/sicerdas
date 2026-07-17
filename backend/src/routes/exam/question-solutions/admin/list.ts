@@ -4,7 +4,7 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examQuestionSolutions } from "../../../../db/schema/exam/question-solutions.ts";
 import { desc, and, sql, eq } from "drizzle-orm";
-import { resolveBlockNoteUrls } from "../../../../utils/blocknote-utils.ts";
+import { resolveBlockNoteUrls } from "../../../../utils/blocknote/blocknote-utils.ts";
 
 const QuestionSolutionListQuery = Type.Object({
   questionId: Type.Optional(

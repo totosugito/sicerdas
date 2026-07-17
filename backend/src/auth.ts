@@ -9,7 +9,7 @@ import { fileURLToPath } from "url";
 
 // Brevo email client
 import { BrevoClient } from "@getbrevo/brevo";
-import { getUserAvatarUrl } from "./utils/user-utils.ts";
+import { getUserAvatarUrl } from "./utils/user/user-utils.ts";
 import { eq } from "drizzle-orm";
 import { users, usersProfile } from "./db/schema/user/index.ts";
 

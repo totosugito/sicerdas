@@ -4,7 +4,7 @@ import { db } from "../../db/db-pool.ts";
 import { and, eq } from "drizzle-orm";
 import { periodicElements, periodicElementNotes } from "../../db/schema/periodic-table/index.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getAtomicImages } from "../../utils/table-periodic-utils.ts";
+import { getAtomicImages } from "../../utils/periodic-table/table-periodic-utils.ts";
 
 const GetElementParams = Type.Object({
   atomicNumber: Type.Integer({ description: 'Atomic number of the element to retrieve' })

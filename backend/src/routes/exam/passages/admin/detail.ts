@@ -4,7 +4,7 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../../db/db-pool.ts";
 import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { eq } from "drizzle-orm";
-import { resolveBlockNoteUrls } from "../../../../utils/blocknote-utils.ts";
+import { resolveBlockNoteUrls } from "../../../../utils/blocknote/blocknote-utils.ts";
 
 const DetailPassageParams = Type.Object({
   id: Type.String({ format: "uuid" }),

@@ -1,9 +1,9 @@
-import { db } from "../db/db-pool.ts";
-import { educationCategoryGradeStats } from "../db/schema/education/index.ts";
-import { examPackages } from "../db/schema/exam/index.ts";
+import { db } from "../../db/db-pool.ts";
+import { educationCategoryGradeStats } from "../../db/schema/education/index.ts";
+import { examPackages } from "../../db/schema/exam/index.ts";
 import { eq, and, count, gt } from "drizzle-orm";
-import { EnumContentType } from "../db/schema/enum/enum-app.ts";
-import { EnumExamType } from "../db/schema/exam/enums.ts";
+import { EnumContentType } from "../../db/schema/enum/enum-app.ts";
+import { EnumExamType } from "../../db/schema/exam/enums.ts";
 
 /**
  * Recalculates and updates the educationCategoryGradeStats for a specific combo.

@@ -5,7 +5,7 @@ import { db } from "../../../../db/db-pool.ts";
 import { examQuestionSolutions } from "../../../../db/schema/exam/question-solutions.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { cleanupBlockNoteFiles } from "../../../../utils/blocknote-utils.ts";
+import { cleanupBlockNoteFiles } from "../../../../utils/blocknote/blocknote-utils.ts";
 
 const DeleteQuestionSolutionParams = Type.Object({
   id: Type.String({ format: "uuid" }),

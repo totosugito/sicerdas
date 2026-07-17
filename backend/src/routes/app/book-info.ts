@@ -4,7 +4,7 @@ import { db } from "../../db/db-pool.ts";
 import { books } from "../../db/schema/book/index.ts";
 import { and, eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getBookPdfUrl } from "../../utils/book-utils.ts";
+import { getBookPdfUrl } from "../../utils/book/book-utils.ts";
 
 const BookInfoQuery = Type.Object({
   bookId: Type.Number(),

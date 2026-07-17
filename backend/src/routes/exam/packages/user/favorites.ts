@@ -10,7 +10,7 @@ import { educationCategories } from "../../../../db/schema/education/index.ts";
 
 import { and, eq, desc, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";
+import { getPackageThumbnailUrl } from "../../../../utils/exam/exam-utils.ts";
 
 const FavoritePackageResponseItem = Type.Object({
   id: Type.String({ format: "uuid" }),

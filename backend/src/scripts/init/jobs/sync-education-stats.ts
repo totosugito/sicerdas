@@ -7,7 +7,7 @@ import { EnumContentType } from "../../../db/schema/enum/enum-app.ts";
 import { EnumExamType } from "../../../db/schema/exam/enums.ts";
 import envConfig from "../../../config/env.config.ts";
 import dotenv from "dotenv";
-import { recalculateEducationStats } from "../../../utils/education-stats-utils.ts";
+import { recalculateEducationStats } from "../../../utils/education/education-stats-utils.ts";
 
 // Load environment variables
 dotenv.config({ path: process.env.NODE_ENV === "development" ? ".env.devel" : ".env" });

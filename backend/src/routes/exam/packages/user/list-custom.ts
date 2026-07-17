@@ -8,7 +8,7 @@ import {
 import { educationCategories, educationGrades } from "../../../../db/schema/education/index.ts";
 import { and, eq, desc, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getPackageThumbnailUrl } from "../../../../utils/exam-utils.ts";
+import { getPackageThumbnailUrl } from "../../../../utils/exam/exam-utils.ts";
 import { EnumExamPackageUserStatus, EnumExamType } from "../../../../db/schema/exam/enums.ts";
 
 const CustomPackageResponseItem = Type.Object({

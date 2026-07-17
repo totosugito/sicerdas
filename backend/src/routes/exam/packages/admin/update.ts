@@ -8,7 +8,7 @@ import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { eq } from "drizzle-orm";
 import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
-import { recalculateEducationStats } from "../../../../utils/education-stats-utils.ts";
+import { recalculateEducationStats } from "../../../../utils/education/education-stats-utils.ts";
 
 const UpdatePackageParams = Type.Object({
   id: Type.String({ format: "uuid" }),

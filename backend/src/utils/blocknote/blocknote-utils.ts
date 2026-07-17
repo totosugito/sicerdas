@@ -1,7 +1,7 @@
-import { saveFile, deleteFile } from "../platform/storage/storage.ts";
-import env from "../config/env.config.ts";
-import { createUniqueFileName } from "./my-utils.ts";
-import type { UploadedFile } from "../types/file.ts";
+import { saveFile, deleteFile } from "../../platform/storage/storage.ts";
+import env from "../../config/env.config.ts";
+import { createUniqueFileName } from "../my-utils.ts";
+import type { UploadedFile } from "../../types/file.ts";
 import { ServerBlockNoteEditor } from "@blocknote/server-util";
 import {
   BlockNoteSchema,

@@ -12,7 +12,7 @@ import {
   replaceBlockNoteUrls,
   resolveBlockNoteUrls,
   stripBlockNoteUrls,
-} from "../../../../utils/blocknote-utils.ts";
+} from "../../../../utils/blocknote/blocknote-utils.ts";
 
 const PassageResponseItem = Type.Object({
   id: Type.String({ format: "uuid" }),

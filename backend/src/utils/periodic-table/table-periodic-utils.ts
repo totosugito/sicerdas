@@ -1,4 +1,4 @@
-import env from "../config/env.config.ts";
+import env from "../../config/env.config.ts";
 
 type AtomicImageSource = {
   atomic: string;

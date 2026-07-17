@@ -10,7 +10,7 @@ import { examQuestionOptions } from "../../../db/schema/exam/question-options.ts
 import { examQuestionSolutions } from "../../../db/schema/exam/question-solutions.ts";
 import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
 import { eq, and, inArray } from "drizzle-orm";
-import { resolveBlockNoteUrls, blocknoteToHtml } from "../../../utils/blocknote-utils.ts";
+import { resolveBlockNoteUrls, blocknoteToHtml } from "../../../utils/blocknote/blocknote-utils.ts";
 
 const Params = Type.Object({
   id: Type.String({ format: "uuid" }),

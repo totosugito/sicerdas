@@ -10,7 +10,7 @@ import { educationCategories, educationGrades } from "../../../db/schema/educati
 import { and, eq, sql, ilike, desc, asc, inArray, gt } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { EnumContentType } from "../../../db/schema/enum/enum-app.ts";
-import { getPackageThumbnailUrl } from "../../../utils/exam-utils.ts";
+import { getPackageThumbnailUrl } from "../../../utils/exam/exam-utils.ts";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumExamPackageUserStatus, EnumExamType } from "../../../db/schema/exam/enums.ts";

@@ -1,5 +1,5 @@
-import { saveFile, deleteFile } from "../platform/storage/storage.ts";
-import env from "../config/env.config.ts";
+import { saveFile, deleteFile } from "../../platform/storage/storage.ts";
+import env from "../../config/env.config.ts";
 
 /**
  * Returns the public URL for a user's avatar.

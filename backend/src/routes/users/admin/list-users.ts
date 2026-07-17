@@ -4,7 +4,7 @@ import { db } from "../../../db/db-pool.ts";
 import { users, usersProfile, EnumUserRole } from "../../../db/schema/user/index.ts";
 import { and, asc, desc, eq, ilike, or, sql, inArray } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getUserAvatarUrl } from "../../../utils/user-utils.ts";
+import { getUserAvatarUrl } from "../../../utils/user/user-utils.ts";
 
 const ListBody = Type.Object({
   page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),

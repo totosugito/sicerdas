@@ -1,5 +1,5 @@
-import { Md5 } from "./md5.ts";
-import env from "../config/env.config.ts";
+import { Md5 } from "../md5.ts";
+import env from "../../config/env.config.ts";
 
 export const getBookCoverUrl = ({
   bookId,

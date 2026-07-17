@@ -17,7 +17,7 @@ import { examPassages } from "../../../../db/schema/exam/passages.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { educationTags } from "../../../../db/schema/education/tags.ts";
-import { resolveBlockNoteUrls } from "../../../../utils/blocknote-utils.ts";
+import { resolveBlockNoteUrls } from "../../../../utils/blocknote/blocknote-utils.ts";
 
 const VariableFormulasType = Type.Optional(
   Type.Object({

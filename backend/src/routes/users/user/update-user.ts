@@ -5,7 +5,7 @@ import { users, usersProfile, accounts } from "../../../db/schema/user/index.ts"
 import { eq, sql } from "drizzle-orm";
 import { processChangeAvatar } from "./avatar-user.ts";
 import type { UploadedFile } from "../../../types/file.ts";
-import { getUserAvatarUrl } from "../../../utils/user-utils.ts";
+import { getUserAvatarUrl } from "../../../utils/user/user-utils.ts";
 
 // Response schemas
 const UpdateUserResponse = Type.Object({

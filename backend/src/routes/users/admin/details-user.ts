@@ -3,7 +3,7 @@ import { Type } from "@sinclair/typebox";
 import { db } from "../../../db/db-pool.ts";
 import { users, usersProfile } from "../../../db/schema/user/index.ts";
 import { eq } from "drizzle-orm";
-import { getUserAvatarUrl } from "../../../utils/user-utils.ts";
+import { getUserAvatarUrl } from "../../../utils/user/user-utils.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { EnumUserRole } from "../../../db/schema/user/types.ts";
 

@@ -8,7 +8,7 @@ import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
 import { eq } from "drizzle-orm";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
-import { recalculateEducationStats } from "../../../../utils/education-stats-utils.ts";
+import { recalculateEducationStats } from "../../../../utils/education/education-stats-utils.ts";
 
 const CreatePackageBody = Type.Object({
   categoryId: Type.String({ format: "uuid" }),

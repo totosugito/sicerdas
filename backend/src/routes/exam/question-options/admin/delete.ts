@@ -5,7 +5,7 @@ import { db } from "../../../../db/db-pool.ts";
 import { examQuestionOptions } from "../../../../db/schema/exam/question-options.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
-import { cleanupBlockNoteFiles } from "../../../../utils/blocknote-utils.ts";
+import { cleanupBlockNoteFiles } from "../../../../utils/blocknote/blocknote-utils.ts";
 import { syncQuestionMaxScore } from "../../../../services/exam/index.ts";
 
 const DeleteQuestionOptionParams = Type.Object({

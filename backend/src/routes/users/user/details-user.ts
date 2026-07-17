@@ -3,7 +3,7 @@ import { Type } from "@fastify/type-provider-typebox";
 import { db } from "../../../db/db-pool.ts";
 import { eq } from "drizzle-orm";
 import { users, usersProfile, accounts } from "../../../db/schema/user/index.ts";
-import { getUserAvatarUrl } from "../../../utils/user-utils.ts";
+import { getUserAvatarUrl } from "../../../utils/user/user-utils.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({

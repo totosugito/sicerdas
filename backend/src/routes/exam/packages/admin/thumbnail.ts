@@ -10,7 +10,7 @@ import {
   getPackageThumbnailUrl,
   savePackageThumbnail,
   deletePackageThumbnail,
-} from "../../../../utils/exam-utils.ts";
+} from "../../../../utils/exam/exam-utils.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 
 const ThumbnailParams = Type.Object({
