@@ -48,7 +48,7 @@ class TrainingAppBar extends StatelessWidget implements PreferredSizeWidget {
                   : (currentPadMode == KeyPadMode.numPad
                         ? Icons.dialpad_outlined
                         : Icons.rule_rounded),
-              color: themeColor,
+              // color: themeColor,
             ),
             tooltip: currentPadMode == KeyPadMode.multipleChoice
                 ? l10n.math_tricks.training.tooltipPadNum
@@ -60,7 +60,7 @@ class TrainingAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: Icon(
             Icons.lightbulb_outline_rounded,
-            color: themeColor,
+            // color: themeColor,
           ),
           tooltip: l10n.math_tricks.training.tooltipSolution,
           onPressed: onShowSolution,
