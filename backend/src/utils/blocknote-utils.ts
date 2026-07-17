@@ -1,7 +1,7 @@
 import { join } from "node:path";
 import { writeFile, unlink } from "node:fs/promises";
 import { existsSync, mkdirSync } from "node:fs";
-import { s3Client, PutObjectCommand, DeleteObjectCommand } from "./storage.ts";
+import { s3Client, PutObjectCommand, DeleteObjectCommand } from "../platform/storage/storage.ts";
 import env from "../config/env.config.ts";
 import { createUniqueFileName } from "./my-utils.ts";
 import type { UploadedFile } from "../types/file.ts";

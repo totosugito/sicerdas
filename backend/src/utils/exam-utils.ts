@@ -7,7 +7,7 @@ import {
   DeleteObjectCommand,
   ListObjectsV2Command,
   DeleteObjectsCommand,
-} from "./storage.ts";
+} from "../platform/storage/storage.ts";
 import env from "../config/env.config.ts";
 
 /**

@@ -5,7 +5,7 @@ import {
   ListObjectsV2Command,
   DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
-import env from "../config/env.config.ts";
+import env from "../../config/env.config.ts";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { rm } from "node:fs/promises";

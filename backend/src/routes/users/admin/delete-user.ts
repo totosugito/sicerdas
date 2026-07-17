@@ -6,7 +6,7 @@ import { getTypedI18n } from "../../../utils/i18n-typed.ts";
 import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import env from "../../../config/env.config.ts";
-import { deleteStorageDirectory } from "../../../utils/storage.ts";
+import { deleteStorageDirectory } from "../../../platform/storage/storage.ts";
 
 const Params = Type.Object({
   id: Type.String({ format: "uuid", description: "User ID to delete" }),

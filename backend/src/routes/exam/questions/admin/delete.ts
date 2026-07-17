@@ -6,7 +6,7 @@ import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import { deleteStorageDirectory } from "../../../../utils/storage.ts";
+import { deleteStorageDirectory } from "../../../../platform/storage/storage.ts";
 import { syncSection, syncPassage, syncPackage } from "../../../../services/exam/index.ts";
 import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
 

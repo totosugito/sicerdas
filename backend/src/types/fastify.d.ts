@@ -7,4 +7,10 @@ declare module 'fastify' {
       t: (key: string, options?: Record<string, any>) => string;
     };
   }
+
+  interface FastifySchema {
+    tags?: string[];
+    summary?: string;
+    description?: string;
+  }
 }

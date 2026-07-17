@@ -7,7 +7,7 @@ import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { eq } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
 import { getTypedI18n } from "../../../../utils/i18n-typed.ts";
-import { deleteStorageDirectory } from "../../../../utils/storage.ts";
+import { deleteStorageDirectory } from "../../../../platform/storage/storage.ts";
 
 const DeletePassageParams = Type.Object({
   id: Type.String({ format: "uuid" }),
