@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
-import { UpdateUserResponse } from "../types";
+import { UpdateProfileResponse } from "../types";
 
-export interface UpdateUserData {
+export interface UpdateProfileData {
   name?: string;
   school?: string;
   educationLevel?: string;
@@ -16,10 +16,10 @@ export interface UpdateUserData {
   extra?: any;
 }
 
-export const useUpdateUserProfileMutation = () => {
+export const useUpdateProfileMutation = () => {
   return useMutation({
-    mutationKey: ["update-user-profile"],
-    mutationFn: async ({ body }: { body: UpdateUserData }) => {
+    mutationKey: ["update-profile"],
+    mutationFn: async ({ body }: { body: UpdateProfileData }) => {
       // Create FormData object
       const formData = new FormData();
 
@@ -36,11 +36,11 @@ export const useUpdateUserProfileMutation = () => {
 
       const response = await fetchApi({
         method: "PUT",
-        url: AppApi.users.user.update,
+        url: AppApi.users.user.updateProfile,
         body: formData,
         headers: { "Content-Type": "multipart/form-data" },
       });
-      return response as UpdateUserResponse;
+      return response as UpdateProfileResponse;
     },
   });
 };

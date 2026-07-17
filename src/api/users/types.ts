@@ -33,8 +33,8 @@ export interface UserSessionsResponse extends BaseResponse {
   data: Backend.SessionData[];
 }
 
-export interface UpdateUserResponse extends BaseResponse {
-  data: Required<Backend.UpdateUserResponse>["data"];
+export interface UpdateProfileResponse extends BaseResponse {
+  data: Required<Backend.UpdateProfileResponse>["data"];
 }
 
 export interface UpdateUserAvatarResponse extends BaseResponse {

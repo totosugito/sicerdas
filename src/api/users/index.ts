@@ -5,9 +5,9 @@ export * from "./types";
 export { useUserProfileQuery } from "./user/details-user";
 export { useUserSessionsQuery } from "./user/sessions";
 export {
-  useUpdateUserProfileMutation,
-  type UpdateUserData,
-} from "./user/update-user";
+  useUpdateProfileMutation,
+  type UpdateProfileData,
+} from "./user/update-profile";
 export {
   useChangeUserPasswordMutation,
   type ChangePasswordData,

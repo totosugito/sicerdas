@@ -36,7 +36,7 @@ export const AppApi = {
     },
     user: {
       details: APP_URL_API + "/users/user/details",
-      update: APP_URL_API + "/users/user/update",
+      updateProfile: APP_URL_API + "/users/user/update-profile",
       changePassword: APP_URL_API + "/users/user/change-password",
       avatar: APP_URL_API + "/users/user/avatar",
       sessions: APP_URL_API + "/users/user/sessions-list",

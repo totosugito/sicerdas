@@ -8,3 +8,4 @@ export * from "./services/change-password.service.ts";
 export * from "./services/get-user-details.service.ts";
 export * from "./services/sessions.service.ts";
 export * from "./services/avatar.service.ts";
+export * from "./services/update-profile.service.ts";

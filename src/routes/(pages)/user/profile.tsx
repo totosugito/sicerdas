@@ -22,11 +22,11 @@ import {
 } from "@/components/pages/user/profile";
 import {
   useUserProfileQuery,
-  useUpdateUserProfileMutation,
+  useUpdateProfileMutation,
   useChangeUserPasswordMutation,
   useUserSessionsQuery,
   useRevokeUserSessionMutation,
-  type UpdateUserResponse,
+  type UpdateProfileResponse,
   type SessionData,
 } from "@/api/users";
 import type { BaseResponse } from "backend/src/types/index.ts";
@@ -146,7 +146,7 @@ function RouteComponent() {
   }, [userProfile, profileForm, personalInfoForm, privacyForm]);
 
   // Form submission handlers
-  const updateUserProfileMutation = useUpdateUserProfileMutation();
+  const updateUserProfileMutation = useUpdateProfileMutation();
   const changeUserPasswordMutation = useChangeUserPasswordMutation();
   const revokeUserSessionMutation = useRevokeUserSessionMutation();
   const [profileUpdateError, setProfileUpdateError] = React.useState<string | null>(null);
@@ -172,7 +172,7 @@ function RouteComponent() {
     updateUserProfileMutation.mutate(
       { body: submissionData },
       {
-        onSuccess: (success: UpdateUserResponse) => {
+        onSuccess: (success: UpdateProfileResponse) => {
           // Reset image state when submission is successful
           if (profileInfoFormRef.current) {
             profileInfoFormRef.current.resetImageState();
@@ -213,7 +213,7 @@ function RouteComponent() {
     updateUserProfileMutation.mutate(
       { body: values },
       {
-        onSuccess: (success: UpdateUserResponse) => {
+        onSuccess: (success: UpdateProfileResponse) => {
           const successMessage =
             success?.message || t(($) => $.user.profile.personalInfo.updateSuccess);
           showNotifSuccess({ message: successMessage });
@@ -270,7 +270,7 @@ function RouteComponent() {
     updateUserProfileMutation.mutate(
       { body: extra },
       {
-        onSuccess: (success: UpdateUserResponse) => {
+        onSuccess: (success: UpdateProfileResponse) => {
           const successMessage = success?.message || t(($) => $.user.profile.privacy.updateSuccess);
           showNotifSuccess({ message: successMessage });
 

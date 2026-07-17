@@ -1,10 +1,10 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@fastify/type-provider-typebox";
 import type { UploadedFile } from "../../../types/file.ts";
-import { updateUserService } from "../../../modules/user/index.ts";
+import { updateProfileService } from "../../../modules/user/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
-const UpdateUserResponse = Type.Intersect([
+const UpdateProfileResponseSchema = Type.Intersect([
   BaseResponseSchema,
   Type.Object({
     data: Type.Object({
@@ -30,7 +30,7 @@ const UpdateUserResponse = Type.Intersect([
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
-    url: "/update",
+    url: "/update-profile",
     method: "PUT",
     schema: {
       tags: ["User"],
@@ -39,7 +39,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         "Update the current user's profile information. Expected multipart/form-data fields: name, school, grade, phone, address, bio, dateOfBirth, image (all optional). Invalid dateOfBirth formats will be ignored.",
       consumes: ["multipart/form-data"],
       response: {
-        200: UpdateUserResponse,
+        200: UpdateProfileResponseSchema,
         "4xx": ErrorResponseSchema,
       },
     },
@@ -91,61 +91,16 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         .filter(([key]) => !restrictedFields.includes(key))
         .reduce(
           (obj, [key, value]) => {
-            if (key === "dateOfBirth") {
-              const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-              if (dateRegex.test(value)) {
-                obj[key] = new Date(value as string);
-              } else {
-                obj[key] = null;
-              }
-            } else if (key === "extra") {
-              try {
-                obj[key] = JSON.parse(value as string);
-              } catch (e) {
-                console.warn("Failed to parse extra field:", e);
-              }
-            } else {
-              obj[key] = value;
-            }
+            obj[key] = value;
             return obj;
           },
           {} as Record<string, any>,
         );
 
-      // If no valid updates are provided and no image was uploaded, return early
-      if (Object.keys(safeUpdateData).length === 0 && !imageFile) {
-        return reply.badRequest(req.t(($) => $.user.noValidUpdateData));
-      }
-
-      // Separate user and profile data
-      const userFields = ["name"];
-      const profileFields = [
-        "school",
-        "grade",
-        "phone",
-        "address",
-        "bio",
-        "dateOfBirth",
-        "extra",
-        "educationLevel",
-      ];
-
-      const userData: Record<string, any> = {};
-      const profileData: Record<string, any> = {};
-
-      Object.entries(safeUpdateData).forEach(([key, value]) => {
-        if (userFields.includes(key)) {
-          userData[key] = value;
-        } else if (profileFields.includes(key)) {
-          profileData[key] = value;
-        }
-      });
-
-      const result = await updateUserService({
+      const result = await updateProfileService({
         id: userId,
-        name: userData.name,
         file: imageFile || undefined,
-        profile: Object.keys(profileData).length > 0 ? profileData : undefined,
+        ...safeUpdateData,
       });
 
       if (!result.success || !result.data) {
