@@ -48,8 +48,8 @@ class HomeHeader extends ConsumerWidget {
             ),
             Row(
               children: [
-                _HeaderIconButton(icon: LucideIcons.bell, onPressed: () {}),
-                const SizedBox(width: 4),
+                // _HeaderIconButton(icon: LucideIcons.bell, onPressed: () {}),
+                // const SizedBox(width: 4),
                 _HeaderIconButton(
                   icon: LucideIcons.settings,
                   onPressed: () {

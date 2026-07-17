@@ -10,7 +10,12 @@ import '../auth/sign_in_screen.dart';
 import '../settings/settings_screen.dart';
 import '../privacy_policy/privacy_policy_screen.dart';
 import '../help_support/help_support_screen.dart';
+import 'package:bse/core/config/env_config.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'widgets/account_settings_screen.dart';
+import 'package:bse/core/providers/achievements_provider.dart';
+import 'package:bse/ui/math_master/achievement/ui_mm_achievement.dart';
+import 'package:bse/ui/math_tricks/achievement/tricks_achievement.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -20,6 +25,7 @@ class ProfileScreen extends ConsumerWidget {
     final l10n = Translations.of(context);
     final isLoggedIn = ref.watch(authStateProvider);
     final currentUser = ref.watch(currentUserProvider);
+    final achievementsAsync = ref.watch(userAchievementsProvider);
     final theme = ShadTheme.of(context);
 
     final String? userImageUrl = currentUser?.image != null
@@ -86,7 +92,40 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 40),
 
+            // Learning Achievements & Stats Section
+            _buildSectionTitle(context, l10n.math_master.achievements),
+            achievementsAsync.when(
+              data: (stats) => ShadCard(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Column(
+                  children: [
+                    _buildProfileItem(
+                      context,
+                      icon: LucideIcons.trophy,
+                      iconColor: Colors.amber,
+                      title: 'Math Master',
+                      subtitle: '${stats.mathMasterCorrect} ${l10n.math_tricks.achievement.correct}',
+                      onTap: () => UiMmAchievement.navigate(context),
+                    ),
+                    const Divider(height: 1),
+                    _buildProfileItem(
+                      context,
+                      icon: LucideIcons.star,
+                      iconColor: Colors.orange,
+                      title: 'Math Tricks',
+                      subtitle: '${stats.mathTricksStarsEarned} ⭐',
+                      onTap: () => TricksAchievementScreen.navigate(context),
+                    ),
+                  ],
+                ),
+              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (err, stack) => const SizedBox.shrink(),
+            ),
+            const SizedBox(height: 32),
+
             // Settings Group
+            _buildSectionTitle(context, l10n.common.settings),
             ShadCard(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Column(
@@ -155,6 +194,18 @@ class ProfileScreen extends ConsumerWidget {
                       );
                     },
                   ),
+                  const Divider(height: 1),
+                  _buildProfileItem(
+                    context,
+                    icon: LucideIcons.globe,
+                    title: l10n.common.visitWebsite,
+                    onTap: () async {
+                      final url = Uri.parse(EnvConfig.websiteUrl);
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url, mode: LaunchMode.externalApplication);
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
@@ -192,18 +243,39 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
+  Widget _buildSectionTitle(BuildContext context, String title) {
+    final theme = ShadTheme.of(context);
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 4.0, bottom: 12.0),
+        child: Text(
+          title.toUpperCase(),
+          style: theme.textTheme.muted.copyWith(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.2,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildProfileItem(
     BuildContext context, {
     required IconData icon,
     required String title,
+    String? subtitle,
+    Color? iconColor,
     required VoidCallback onTap,
   }) {
     final theme = ShadTheme.of(context);
     return Material(
       type: MaterialType.transparency,
       child: ListTile(
-        leading: Icon(icon, color: theme.colorScheme.primary, size: 20),
+        leading: Icon(icon, color: iconColor ?? theme.colorScheme.primary, size: 20),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+        subtitle: subtitle != null ? Text(subtitle, style: theme.textTheme.muted.copyWith(fontSize: 12)) : null,
         trailing: const Icon(LucideIcons.chevronRight, size: 16),
         onTap: onTap,
       ),

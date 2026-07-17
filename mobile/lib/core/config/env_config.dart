@@ -19,4 +19,5 @@ class EnvConfig {
       '11816434001-4a3b0qpvsdtfq3347vjnu110cp704t0p.apps.googleusercontent.com';
 
   static const String supportEmail = 'support@sicerdas.com';
+  static const String websiteUrl = 'https://sicerdas.com';
 }
