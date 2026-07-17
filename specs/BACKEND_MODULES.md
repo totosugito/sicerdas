@@ -118,9 +118,10 @@ const listVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
 ---
 
-## 5. Frontend API & Type Sharing Pattern
-
 In the frontend, import types directly from the backend via the `"backend/*"` path-alias. 
+
+### Compiler Configuration Requirement:
+Since backend files resolve relative imports containing `.ts` extensions (e.g. `import { x } from "./y.ts"`), you **must** enable `"allowImportingTsExtensions": true` in the frontend `tsconfig.json` inside the `compilerOptions` section so that the frontend bundler can parse the backend TS files correctly without throwing extension-related errors.
 
 ### Critical Local Scope Requirement:
 When types imported from the backend are referenced inside the frontend `types.ts` file itself (e.g. extending interfaces or as array types), you **must** import them into local scope first, and then export them. Do not use direct `export type { ... } from "backend/..."` exports.
