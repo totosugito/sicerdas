@@ -1,15 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
+import type { BaseResponse } from "backend/src/types/index.ts";
 
 export interface ChangePasswordData {
   currentPassword: string;
   newPassword: string;
-}
-
-export interface ChangePasswordResponse {
-  success: boolean;
-  message: string;
 }
 
 export const useChangeUserPasswordMutation = () => {
@@ -21,7 +17,7 @@ export const useChangeUserPasswordMutation = () => {
         url: AppApi.users.user.changePassword,
         body: body,
       });
-      return response as ChangePasswordResponse;
+      return response as BaseResponse;
     },
   });
 };

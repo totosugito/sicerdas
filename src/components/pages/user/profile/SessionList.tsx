@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { enUS, id } from "date-fns/locale";
-import type { UserSession } from "@/api/users/user/sessions";
+import type { SessionData } from "@/api/users";
 import { useState } from "react";
 import { ModalProps, DialogModal } from "@/components/custom/components";
 import { RiQuestionLine } from "react-icons/ri";
@@ -93,7 +93,7 @@ const formatDateDistance = (dateString: string, locale: string) => {
 };
 
 interface SessionListProps {
-  sessions?: UserSession[];
+  sessions?: SessionData[];
   isLoading: boolean;
   isError: boolean;
   currentToken: string | null;

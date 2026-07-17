@@ -1,14 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
+import type { BaseResponse } from "backend/src/types/index.ts";
 
 export interface RevokeSessionData {
   sessionToken: string;
-}
-
-export interface RevokeSessionResponse {
-  success: boolean;
-  message: string;
 }
 
 export const useRevokeUserSessionMutation = () => {
@@ -20,7 +16,7 @@ export const useRevokeUserSessionMutation = () => {
         url: AppApi.users.user.revokeSession,
         body: body,
       });
-      return response as RevokeSessionResponse;
+      return response as BaseResponse;
     },
   });
 };

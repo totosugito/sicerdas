@@ -1,19 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ListUsersResponse } from "./types";
+import { ListUsersResponse, ListUsersParams } from "../types";
 
-export interface ListUsersRequest {
-  search?: string;
-  roles?: string[];
-  banned?: boolean;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
-  page?: number;
-  limit?: number;
-}
-
-export const useListUsers = (params: ListUsersRequest) => {
+export const useListUsers = (params: ListUsersParams) => {
   return useQuery({
     queryKey: ["users-list", params],
     queryFn: async () => {

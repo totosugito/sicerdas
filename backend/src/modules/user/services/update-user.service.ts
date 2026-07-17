@@ -1,0 +1,230 @@
+import { db } from "../../../db/db-pool.ts";
+import { users, usersProfile, accounts, EnumUserRole } from "../../../db/schema/user/index.ts";
+import { eq, sql } from "drizzle-orm";
+import type { ServiceResponse } from "../../../types/response.ts";
+import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../utils/user/user-utils.ts";
+import sharp from "sharp";
+import { createUniqueFileName } from "../../../utils/my-utils.ts";
+
+export interface UpdateUserParams {
+  id: string;
+  name?: string;
+  email?: string;
+  role?: typeof EnumUserRole[keyof typeof EnumUserRole];
+  image?: string | null; // For removing/resetting avatar
+  file?: {               // For uploading new avatar
+    buffer: Buffer;
+    filename: string;
+    mimetype: string;
+  };
+  profile?: {
+    school?: string | null;
+    grade?: string | null;
+    phone?: string | null;
+    address?: string | null;
+    bio?: string | null;
+    educationLevel?: string | null;
+    dateOfBirth?: Date | null;
+    extra?: Record<string, any> | null;
+  };
+}
+
+export interface UpdateUserResponse extends ServiceResponse {
+  data?: {
+    id: string;
+    email: string;
+    name: string | null;
+    image: string | null;
+    emailVerified: boolean;
+    school: string | null;
+    educationLevel: string | null;
+    grade: string | null;
+    phone: string | null;
+    address: string | null;
+    bio: string | null;
+    dateOfBirth: string | null;
+    providerId: string;
+    extra: Record<string, any>;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+export async function updateUserService(params: UpdateUserParams): Promise<UpdateUserResponse> {
+  const { id, name, email, role, image, file, profile } = params;
+
+  // Check if user exists
+  const user = await db.query.users.findFirst({
+    where: (fields) => eq(fields.id, id),
+  });
+
+  if (!user) {
+    return {
+      success: false,
+      statusCode: 404,
+      errorKey: ($) => $.user.userNotFound,
+    };
+  }
+
+  // If email is being changed, check if new email is already taken
+  if (email && email !== user.email) {
+    const existingUser = await db.query.users.findFirst({
+      where: (fields) => eq(fields.email, email),
+    });
+
+    if (existingUser) {
+      return {
+        success: false,
+        statusCode: 409,
+        errorKey: ($) => $.user.management.update.emailExists,
+      };
+    }
+  }
+
+  // Handle avatar upload if provided
+  let newImagePath: string | null | undefined = image;
+  if (file) {
+    const { buffer, filename: originalName, mimetype } = file;
+
+    // Validate file type
+    const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedMimeTypes.includes(mimetype)) {
+      return {
+        success: false,
+        statusCode: 400,
+        errorKey: ($) => $.user.invalidFileType,
+      };
+    }
+
+    // Validate file size (2MB max)
+    const maxSize = 2 * 1024 * 1024;
+    if (buffer.length > maxSize) {
+      return {
+        success: false,
+        statusCode: 400,
+        errorKey: ($) => $.user.fileSizeTooLarge,
+      };
+    }
+
+    // Delete old avatar file if it exists
+    if (user.image) {
+      try {
+        await deleteUserAvatar(user.image);
+      } catch (_error) {
+        // Continue even if deletion fails
+      }
+    }
+
+    // Process image with Sharp
+    const fileName = createUniqueFileName(originalName, "avatar", "jpg");
+    const processedImage = await sharp(buffer)
+      .resize(400)
+      .jpeg({ quality: 90, force: false })
+      .toBuffer();
+
+    newImagePath = await saveUserAvatar(
+      id,
+      processedImage,
+      fileName,
+      "image/jpeg",
+      user.createdAt,
+    );
+  } else if (image === null && user.image) {
+    // Handle explicit remove avatar request
+    try {
+      await deleteUserAvatar(user.image);
+    } catch (_error) {
+      // Continue even if deletion fails
+    }
+  }
+
+  await db.transaction(async (tx) => {
+    // 1. Update users table if needed
+    const userUpdates: Record<string, any> = {};
+    if (name !== undefined) userUpdates.name = name;
+    if (email !== undefined) userUpdates.email = email;
+    if (role !== undefined) userUpdates.role = role;
+    if (newImagePath !== undefined) userUpdates.image = newImagePath;
+
+    if (Object.keys(userUpdates).length > 0) {
+      userUpdates.updatedAt = new Date();
+      await tx.update(users).set(userUpdates).where(eq(users.id, id));
+    }
+
+    // 2. Update user profile table if needed
+    if (profile && Object.keys(profile).length > 0) {
+      const profileUpdates: Record<string, any> = { ...profile };
+      profileUpdates.updatedAt = new Date();
+
+      await tx
+        .insert(usersProfile)
+        .values({ id, ...profileUpdates })
+        .onConflictDoUpdate({
+          target: usersProfile.id,
+          set: profileUpdates.extra
+            ? {
+                ...profileUpdates,
+                extra: sql`${usersProfile.extra} || ${JSON.stringify(profileUpdates.extra)}::jsonb`,
+              }
+            : profileUpdates,
+        });
+    }
+  });
+
+  // Fetch updated user with profile and accounts info
+  const userWithAllData = await db
+    .select({
+      id: users.id,
+      email: users.email,
+      name: users.name,
+      image: users.image,
+      emailVerified: users.emailVerified,
+      userCreatedAt: users.createdAt,
+      userUpdatedAt: users.updatedAt,
+      providerId: accounts.providerId,
+      school: usersProfile.school,
+      educationLevel: usersProfile.educationLevel,
+      grade: usersProfile.grade,
+      phone: usersProfile.phone,
+      address: usersProfile.address,
+      bio: usersProfile.bio,
+      dateOfBirth: usersProfile.dateOfBirth,
+      extra: usersProfile.extra,
+    })
+    .from(users)
+    .leftJoin(accounts, eq(users.id, accounts.userId))
+    .leftJoin(usersProfile, eq(users.id, usersProfile.id))
+    .where(eq(users.id, id))
+    .limit(1);
+
+  const updatedUser = userWithAllData[0];
+  if (!updatedUser) {
+    return {
+      success: false,
+      statusCode: 404,
+      errorKey: ($) => $.user.userNotFound,
+    };
+  }
+
+  return {
+    success: true,
+    data: {
+      id: updatedUser.id,
+      email: updatedUser.email,
+      name: updatedUser.name,
+      image: getUserAvatarUrl(updatedUser.id, updatedUser.image),
+      emailVerified: Boolean(updatedUser.emailVerified),
+      school: updatedUser.school || null,
+      educationLevel: updatedUser.educationLevel || null,
+      grade: updatedUser.grade || null,
+      phone: updatedUser.phone || null,
+      address: updatedUser.address || null,
+      bio: updatedUser.bio || null,
+      dateOfBirth: updatedUser.dateOfBirth ? updatedUser.dateOfBirth.toISOString().split("T")[0] : null,
+      providerId: updatedUser.providerId || "",
+      extra: (updatedUser.extra as Record<string, any>) || {},
+      createdAt: updatedUser.userCreatedAt.toISOString(),
+      updatedAt: updatedUser.userUpdatedAt.toISOString(),
+    },
+  };
+}

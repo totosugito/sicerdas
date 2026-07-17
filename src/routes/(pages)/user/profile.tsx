@@ -25,12 +25,11 @@ import {
   useUpdateUserProfileMutation,
   useChangeUserPasswordMutation,
   useUserSessionsQuery,
-  type ChangePasswordResponse,
   useRevokeUserSessionMutation,
-  type RevokeSessionResponse,
   type UpdateUserResponse,
-  type UserSession
-} from "@/api/users/user";
+  type SessionData,
+} from "@/api/users";
+import type { BaseResponse } from "backend/src/types/index.ts";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
 import { string_to_date } from "@/lib/my-utils";
 import { useAuth } from "@/hooks/use-auth";
@@ -248,7 +247,7 @@ function RouteComponent() {
     changeUserPasswordMutation.mutate(
       { body: { currentPassword: values.currentPassword, newPassword: values.newPassword } },
       {
-        onSuccess: (success: ChangePasswordResponse) => {
+        onSuccess: (success: BaseResponse) => {
           const successMessage =
             success?.message || t(($) => $.user.profile.security.updateSuccess);
           showNotifSuccess({ message: successMessage });
@@ -303,7 +302,7 @@ function RouteComponent() {
     revokeUserSessionMutation.mutate(
       { body: { sessionToken: sessionToken } },
       {
-        onSuccess: (success: RevokeSessionResponse) => {
+        onSuccess: (success: BaseResponse) => {
           showNotifSuccess({
             message: success.message || t(($) => $.user.profile.sessions.sessionRevoked),
           });
@@ -394,7 +393,7 @@ function RouteComponent() {
 
                   {/* show session list */}
                   <SessionList
-                    sessions={sessions?.data as UserSession[]}
+                    sessions={sessions?.data as SessionData[]}
                     isLoading={sessionsLoading}
                     isError={sessionsError}
                     currentToken={authUser?.token || null}

@@ -1,12 +1,10 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { GenericResponse } from "./types";
+import { CreateUserParams, GenericResponse } from "../types";
 
-export interface CreateUserRequest {
-  name: string;
-  email: string;
-  role: string;
+// Extends CreateUserParams locally with password since backend createUserService gets hashedPassword, but the route body gets raw password
+export interface CreateUserRequest extends Omit<CreateUserParams, "hashedPassword"> {
   password: string;
 }
 

@@ -1,11 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import { users, usersProfile } from "../../../db/schema/user/index.ts";
-import { eq } from "drizzle-orm";
-import { getUserAvatarUrl } from "../../../utils/user/user-utils.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { EnumUserRole } from "../../../db/schema/user/types.ts";
+import { getUserDetailsService } from "../../../modules/user/index.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const Params = Type.Object({
   id: Type.String({ format: "uuid", description: "User ID to retrieve" }),
@@ -14,7 +12,7 @@ const Params = Type.Object({
 const UserData = Type.Object({
   id: Type.String({ format: "uuid" }),
   email: Type.String({ format: "email" }),
-  name: Type.String(),
+  name: Type.Union([Type.String(), Type.Null()]),
   role: Type.Enum(EnumUserRole),
   image: Type.Union([Type.String(), Type.Null()]),
   emailVerified: Type.Boolean(),
@@ -30,11 +28,12 @@ const UserData = Type.Object({
   extra: Type.Union([Type.Unknown(), Type.Null()]),
 });
 
-const DetailsResponse = Type.Object({
-  success: Type.Boolean({ default: true }),
-  message: Type.String(),
-  data: UserData,
-});
+const DetailsResponse = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: UserData,
+  }),
+]);
 
 const detailsUser: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -46,63 +45,26 @@ const detailsUser: FastifyPluginAsyncTypebox = async (app) => {
       params: Params,
       response: {
         200: DetailsResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       req: FastifyRequest<{ Params: typeof Params.static }>,
       reply: FastifyReply,
     ): Promise<typeof DetailsResponse.static> {
-            const { id } = req.params;
+      const { id } = req.params;
 
-      const userWithProfile = await db
-        .select({
-          id: users.id,
-          email: users.email,
-          name: users.name,
-          role: users.role,
-          image: users.image,
-          emailVerified: users.emailVerified,
-          banned: users.banned,
-          banReason: users.banReason,
-          banExpires: users.banExpires,
-          createdAt: users.createdAt,
-          updatedAt: users.updatedAt,
-          phone: usersProfile.phone,
-          address: usersProfile.address,
-          bio: usersProfile.bio,
-          dateOfBirth: usersProfile.dateOfBirth,
-          extra: usersProfile.extra,
-        })
-        .from(users)
-        .leftJoin(usersProfile, eq(users.id, usersProfile.id))
-        .where(eq(users.id, id))
-        .limit(1);
+      const result = await getUserDetailsService(id);
 
-      const user = userWithProfile[0];
-
-      if (!user) {
-        return reply.notFound(req.t(($) => $.user.userNotFound));
+      if (!result.success || !result.data) {
+        const message = req.t(result.errorKey!);
+        return reply.notFound(message);
       }
 
       return reply.status(200).send({
         success: true,
         message: req.t(($) => $.user.management.details.success),
-        data: {
-          ...user,
-          image: getUserAvatarUrl(user.id, user.image),
-          createdAt: user.createdAt.toISOString(),
-          updatedAt: user.updatedAt.toISOString(),
-          dateOfBirth: user.dateOfBirth?.toISOString() || null,
-          banExpires: user.banExpires?.toISOString() || null,
-        },
+        data: result.data as any,
       });
     },
   });

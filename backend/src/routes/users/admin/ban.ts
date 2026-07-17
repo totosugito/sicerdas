@@ -1,21 +1,15 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import { users } from "../../../db/schema/user/index.ts";
-import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { fromNodeHeaders } from "better-auth/node";
+import { banUserService } from "../../../modules/user/index.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const BanBody = Type.Object({
   id: Type.String({ format: "uuid", description: "User ID to ban/unban" }),
   banned: Type.Boolean({ description: "True to ban, false to unban" }),
   banReason: Type.Optional(Type.String({ description: "Reason for the ban" })),
-});
-
-const BanResponse = Type.Object({
-  success: Type.Boolean({ default: true }),
-  message: Type.String(),
 });
 
 const banUser: FastifyPluginAsyncTypebox = async (app) => {
@@ -27,22 +21,15 @@ const banUser: FastifyPluginAsyncTypebox = async (app) => {
       summary: "Ban or unban a user (Admin only)",
       body: BanBody,
       response: {
-        200: BanResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        200: BaseResponseSchema,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       req: FastifyRequest<{ Body: typeof BanBody.static }>,
       reply: FastifyReply,
-    ): Promise<typeof BanResponse.static> {
-            const { id, banned, banReason } = req.body;
+    ): Promise<typeof BaseResponseSchema.static> {
+      const { id, banned, banReason } = req.body;
 
       // Determine user role from session
       const session = await getAuthInstance(app).api.getSession({
@@ -50,32 +37,24 @@ const banUser: FastifyPluginAsyncTypebox = async (app) => {
       });
       const adminId = session?.user?.id;
 
-      if (adminId === id) {
-        return reply.badRequest(req.t(($) => $.user.management.update.cannotBanSelf));
-      }
-
-      const user = await db.query.users.findFirst({
-        where: (fields) => eq(fields.id, id),
+      const result = await banUserService({
+        id,
+        banned,
+        banReason,
+        adminId,
       });
 
-      if (!user) {
-        return reply.notFound(req.t(($) => $.user.userNotFound));
+      if (!result.success) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
-
-      await db
-        .update(users)
-        .set({
-          banned,
-          banReason: banned ? (banReason ?? null) : null,
-          updatedAt: new Date(),
-        })
-        .where(eq(users.id, id));
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) =>
-          banned ? $.user.management.update.success : $.user.management.update.success,
-        ),
+        message: req.t(($) => $.user.management.update.success),
       });
     },
   });

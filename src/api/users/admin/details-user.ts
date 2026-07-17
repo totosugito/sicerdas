@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { UserDetailResponse } from "./types";
+import { UserDetailResponse } from "../types";
 
 export const useUserDetails = (id: string, enabled = true) => {
   return useQuery({

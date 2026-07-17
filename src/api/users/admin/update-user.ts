@@ -1,18 +1,11 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { GenericResponse } from "./types";
-
-export interface UpdateUserRequest {
-  id: string;
-  name?: string;
-  email?: string;
-  role?: string;
-}
+import { UpdateUserParams, GenericResponse } from "../types";
 
 export const useUpdateUser = () => {
   return useMutation({
-    mutationFn: async (data: UpdateUserRequest) => {
+    mutationFn: async (data: UpdateUserParams) => {
       const response = await fetchApi({
         method: "PATCH",
         url: AppApi.users.admin.update,

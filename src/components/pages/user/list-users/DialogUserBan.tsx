@@ -1,4 +1,4 @@
-import { UserItem, useBanUser } from "@/api/users/admin";
+import { UserResponseItem, useBanUser } from "@/api/users";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 interface DialogUserBanProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  user: UserItem | null;
+  user: UserResponseItem | null;
 }
 
 const FormBan = ({ values, form }: any) => {

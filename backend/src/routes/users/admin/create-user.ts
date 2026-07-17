@@ -1,10 +1,10 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import { users, usersProfile, accounts, EnumUserRole } from "../../../db/schema/user/index.ts";
+import { EnumUserRole } from "../../../db/schema/user/index.ts";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
-import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { createUserService } from "../../../modules/user/index.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const CreateBody = Type.Object({
   name: Type.String({ description: "The full name of the user" }),
@@ -15,11 +15,12 @@ const CreateBody = Type.Object({
   password: Type.String({ minLength: 6, description: "Initial password for the user" }),
 });
 
-const CreateResponse = Type.Object({
-  success: Type.Boolean({ default: true }),
-  message: Type.String(),
-  data: Type.Optional(Type.Any()),
-});
+const CreateResponse = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: Type.Optional(Type.Any()),
+  }),
+]);
 
 const createUser: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -31,82 +32,41 @@ const createUser: FastifyPluginAsyncTypebox = async (app) => {
       body: CreateBody,
       response: {
         201: CreateResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       req: FastifyRequest<{ Body: typeof CreateBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof CreateResponse.static> {
-            const auth = getAuthInstance(app);
+      const auth = getAuthInstance(app);
 
       // Explicit destructuring for Mass Assignment Protection
       const { name, email, role = EnumUserRole.USER, password } = req.body;
-
-      // Check if email already exists
-      const existingUser = await db.query.users.findFirst({
-        where: (fields) => eq(fields.email, email),
-      });
-
-      if (existingUser) {
-        return reply.badRequest(req.t(($) => $.user.management.create.emailExists));
-      }
 
       // Get auth context for password hashing
       const context = await auth.$context;
       const hashedPassword = await context.password.hash(password);
 
-      // Start a transaction for atomicity
-      const newUser = await db.transaction(async (tx) => {
-        // 1. Create User
-        const [insertedUser] = await tx
-          .insert(users)
-          .values({
-            name,
-            email,
-            role,
-            emailVerified: true, // Manual admin creation skips verification
-            updatedAt: new Date(),
-          })
-          .returning();
-
-        // 2. Create Profile
-        await tx.insert(usersProfile).values({
-          id: insertedUser.id,
-          updatedAt: new Date(),
-        });
-
-        // 3. Create Account (for better-auth email/password login)
-        await tx.insert(accounts).values({
-          userId: insertedUser.id,
-          accountId: insertedUser.id,
-          providerId: "credential",
-          password: hashedPassword,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        } as any);
-
-        return insertedUser;
+      const result = await createUserService({
+        name,
+        email,
+        role,
+        hashedPassword,
       });
+
+      if (!result.success || !result.data) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
+      }
 
       return reply.status(201).send({
         success: true,
         message: req.t(($) => $.user.management.create.success),
-        data: {
-          id: newUser.id,
-          name: newUser.name,
-          email: newUser.email,
-          role: newUser.role,
-          createdAt: newUser.createdAt.toISOString(),
-          updatedAt: newUser.updatedAt.toISOString(),
-        },
+        data: result.data,
       });
     },
   });

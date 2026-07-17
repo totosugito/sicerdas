@@ -3,12 +3,12 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import { ControlForm } from "@/components/custom/forms";
 import {
-  UserItem,
+  UserResponseItem,
   useCreateUser,
   useUpdateUser,
   CreateUserRequest,
-  UpdateUserRequest,
-} from "@/api/users/admin";
+  UpdateUserParams,
+} from "@/api/users";
 import { EnumUserRole } from "backend/src/db/schema/user/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
@@ -16,7 +16,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 export type DialogUserCreateProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  user?: UserItem | null;
+  user?: UserResponseItem | null;
 };
 
 const FormUser = ({ values, form }: any) => {
@@ -125,7 +125,7 @@ export const DialogUserCreate = ({ open, onOpenChange, user }: DialogUserCreateP
       try {
         if (user) {
           const { password, ...updateData } = values as any;
-          await updateMutation.mutateAsync({ id: user.id, ...updateData } as UpdateUserRequest, {
+          await updateMutation.mutateAsync({ id: user.id, ...updateData } as UpdateUserParams, {
             onSuccess: (res) => {
               showNotifSuccess({
                 message: res.message || t(($) => $.user.management.notifications.updateSuccess),

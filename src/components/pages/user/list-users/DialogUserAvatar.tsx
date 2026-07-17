@@ -1,4 +1,4 @@
-import { UserItem, useUpdateUserAvatar } from "@/api/users/admin";
+import { UserResponseItem, useUpdateUserAvatar } from "@/api/users";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
@@ -20,7 +20,7 @@ import { Trash2, Camera, Loader2 } from "lucide-react";
 interface DialogUserAvatarProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  user: UserItem | null;
+  user: UserResponseItem | null;
 }
 
 export function DialogUserAvatar({ open, onOpenChange, user }: DialogUserAvatarProps) {

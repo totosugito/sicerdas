@@ -1,9 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import { users, EnumUserRole } from "../../../db/schema/user/index.ts";
-import { eq } from "drizzle-orm";
+import { EnumUserRole } from "../../../db/schema/user/index.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { updateUserService } from "../../../modules/user/index.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const UpdateBody = Type.Object({
   id: Type.String({ format: "uuid", description: "User ID to update" }),
@@ -12,11 +12,12 @@ const UpdateBody = Type.Object({
   role: Type.Optional(Type.Enum(EnumUserRole, { description: "New user role" })),
 });
 
-const UpdateResponse = Type.Object({
-  success: Type.Boolean({ default: true }),
-  message: Type.String(),
-  data: Type.Optional(Type.Any()),
-});
+const UpdateResponse = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: Type.Optional(Type.Any()),
+  }),
+]);
 
 const updateUser: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -28,62 +29,38 @@ const updateUser: FastifyPluginAsyncTypebox = async (app) => {
       body: UpdateBody,
       response: {
         200: UpdateResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       req: FastifyRequest<{ Body: typeof UpdateBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof UpdateResponse.static> {
-      
       // Explicitly destructure for Mass Assignment Protection
       const { id, name, email, role } = req.body;
 
-      // Check if user exists
-      const user = await db.query.users.findFirst({
-        where: (fields) => eq(fields.id, id),
+      const result = await updateUserService({
+        id,
+        name,
+        email,
+        role,
       });
 
-      if (!user) {
-        return reply.notFound(req.t(($) => $.user.userNotFound));
-      }
-
-      // If email is being changed, check if new email is already taken
-      if (email && email !== user.email) {
-        const existingUser = await db.query.users.findFirst({
-          where: (fields) => eq(fields.email, email),
-        });
-
-        if (existingUser) {
-          return reply.conflict(req.t(($) => $.user.management.update.emailExists));
+      if (!result.success) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 409) {
+          return reply.conflict(message);
         }
-      }
-
-      await db.transaction(async (tx) => {
-        // Update users table with explicit field assignment
-        if (name !== undefined || email !== undefined || role !== undefined) {
-          await tx
-            .update(users)
-            .set({
-              ...(name !== undefined && { name }),
-              ...(email !== undefined && { email }),
-              ...(role !== undefined && { role }),
-              updatedAt: new Date(),
-            })
-            .where(eq(users.id, id));
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
         }
-      });
+        return reply.badRequest(message);
+      }
 
       return reply.status(200).send({
         success: true,
         message: req.t(($) => $.user.management.update.success),
+        data: result.data,
       });
     },
   });

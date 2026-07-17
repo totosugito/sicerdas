@@ -1,4 +1,4 @@
-import { UserItem, ListUsersResponse } from "@/api/users/admin";
+import { UserResponseItem, ListUsersResponse } from "@/api/users";
 import {
   DataTable,
   useDataTable,
@@ -61,11 +61,11 @@ interface UserTableProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
-  onEdit: (user: UserItem) => void;
-  onDelete: (user: UserItem) => void;
-  onResetPassword: (user: UserItem) => void;
-  onToggleBan: (user: UserItem) => void;
-  onUpdateAvatar: (user: UserItem) => void;
+  onEdit: (user: UserResponseItem) => void;
+  onDelete: (user: UserResponseItem) => void;
+  onResetPassword: (user: UserResponseItem) => void;
+  onToggleBan: (user: UserResponseItem) => void;
+  onUpdateAvatar: (user: UserResponseItem) => void;
 }
 
 export function UserTable({
@@ -92,8 +92,8 @@ export function UserTable({
     value: role,
   }));
 
-  const columns: ColumnDef<UserItem>[] = [
-    createRowNumberColumn<UserItem>({
+  const columns: ColumnDef<UserResponseItem>[] = [
+    createRowNumberColumn<UserResponseItem>({
       id: "no",
       size: 50,
       paginationData: paginationData,

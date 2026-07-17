@@ -13,7 +13,7 @@ export type {
   UpdateVersionRequest,
 };
 
-export type { BaseResponse, PaginationMeta };
+
 
 export interface AppVersionDetailResponse extends BaseResponse {
   data: AppVersion;

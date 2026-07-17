@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useListUsers, useDeleteUser, useUpdateUser, UserItem } from "@/api/users/admin";
+import { useListUsers, useDeleteUser, useUpdateUser, UserResponseItem } from "@/api/users";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from "react";
@@ -62,7 +62,7 @@ function AdminUsersPage() {
   const [showBanDialog, setShowBanDialog] = useState(false);
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false);
   const [showAvatarDialog, setShowAvatarDialog] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserResponseItem | null>(null);
 
   // Handlers
   const handleAdd = () => {
@@ -70,27 +70,27 @@ function AdminUsersPage() {
     setShowDialog(true);
   };
 
-  const handleEdit = (user: UserItem) => {
+  const handleEdit = (user: UserResponseItem) => {
     setSelectedUser(user);
     setShowDialog(true);
   };
 
-  const handleResetPassword = (user: UserItem) => {
+  const handleResetPassword = (user: UserResponseItem) => {
     setSelectedUser(user);
     setShowResetPasswordDialog(true);
   };
 
-  const handleToggleBan = (user: UserItem) => {
+  const handleToggleBan = (user: UserResponseItem) => {
     setSelectedUser(user);
     setShowBanDialog(true);
   };
 
-  const handleDelete = (user: UserItem) => {
+  const handleDelete = (user: UserResponseItem) => {
     setSelectedUser(user);
     setShowDeleteDialog(true);
   };
 
-  const handleUpdateAvatar = (user: UserItem) => {
+  const handleUpdateAvatar = (user: UserResponseItem) => {
     setSelectedUser(user);
     setShowAvatarDialog(true);
   };

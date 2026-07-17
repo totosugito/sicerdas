@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { GenericResponse } from "./types";
+import { GenericResponse } from "../types";
 
 export interface ResetPasswordRequest {
   id: string;

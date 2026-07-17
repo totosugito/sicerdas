@@ -8,7 +8,7 @@ export type UserRole = typeof EnumUserRole[keyof typeof EnumUserRole];
 /**
  * A reusable preHandler hook creator to enforce user authentication and role authorization.
  */
-export function requireRoles(fastify: FastifyInstance, allowedRoles: UserRole[]) {
+export function requireRoles(fastify: FastifyInstance, allowedRoles?: UserRole[]) {
   return async (req: FastifyRequest, res: FastifyReply) => {
     const session = await getAuthInstance(fastify).api.getSession({
       headers: fromNodeHeaders(req.headers),
@@ -18,8 +18,10 @@ export function requireRoles(fastify: FastifyInstance, allowedRoles: UserRole[])
       return res.unauthorized(req.t(($) => $.user.hook.unauthorized));
     }
 
-    if (!allowedRoles.includes(session.user.role as UserRole)) {
-      return res.forbidden(req.t(($) => $.user.hook.forbidden));
+    if (allowedRoles && allowedRoles.length > 0) {
+      if (!allowedRoles.includes(session.user.role as UserRole)) {
+        return res.forbidden(req.t(($) => $.user.hook.forbidden));
+      }
     }
 
     req.setDecorator("session", session);

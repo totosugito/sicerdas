@@ -1,19 +1,13 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import { accounts } from "../../../db/schema/user/index.ts";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
-import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { resetPasswordService } from "../../../modules/user/index.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const ResetPasswordBody = Type.Object({
   id: Type.String({ format: "uuid", description: "User ID to reset password" }),
   newPassword: Type.String({ minLength: 6, description: "New password" }),
-});
-
-const ResetPasswordResponse = Type.Object({
-  success: Type.Boolean({ default: true }),
-  message: Type.String(),
 });
 
 const resetPassword: FastifyPluginAsyncTypebox = async (app) => {
@@ -23,60 +17,36 @@ const resetPassword: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Users Management"],
       summary: "Reset user password (Admin only)",
-      description:
-        "Forcefully reset any user password by ID. Does not require the current password.",
+      description: "Forcefully reset any user password by ID. Does not require the current password.",
       body: ResetPasswordBody,
       response: {
-        200: ResetPasswordResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        200: BaseResponseSchema,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       req: FastifyRequest<{ Body: typeof ResetPasswordBody.static }>,
       reply: FastifyReply,
-    ): Promise<typeof ResetPasswordResponse.static> {
-            const { id, newPassword } = req.body;
+    ): Promise<typeof BaseResponseSchema.static> {
+      const { id, newPassword } = req.body;
       const auth = getAuthInstance(app);
-
-      // Check if user exists
-      const user = await db.query.users.findFirst({
-        where: (fields) => eq(fields.id, id),
-      });
-
-      if (!user) {
-        return reply.notFound(req.t(($) => $.user.userNotFound));
-      }
-
-      // Check if account exists for the user
-      const [userAccount] = await db
-        .select()
-        .from(accounts)
-        .where(eq(accounts.userId, id))
-        .limit(1);
-
-      if (!userAccount) {
-        return reply.notFound(req.t(($) => $.user.accountNotFound));
-      }
 
       // Get auth context for password hashing
       const context = await auth.$context;
       const hashedPassword = await context.password.hash(newPassword);
 
-      // Update password in accounts table
-      await db
-        .update(accounts)
-        .set({
-          password: hashedPassword,
-          updatedAt: new Date(),
-        })
-        .where(eq(accounts.userId, id));
+      const result = await resetPasswordService({
+        id,
+        hashedPassword,
+      });
+
+      if (!result.success) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
+      }
 
       return reply.status(200).send({
         success: true,

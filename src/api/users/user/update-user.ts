@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
+import { UpdateUserResponse } from "../types";
 
 export interface UpdateUserData {
   name?: string;
@@ -13,29 +14,6 @@ export interface UpdateUserData {
   dateOfBirth?: string;
   image?: File;
   extra?: any;
-}
-
-export interface UpdateUserResponse {
-  success: boolean;
-  message: string;
-  data: {
-    id: string;
-    email: string;
-    name: string | null;
-    image: string | null;
-    emailVerified: boolean;
-    school: string | null;
-    grade: string | null;
-    phone: string | null;
-    address: string | null;
-    bio: string | null;
-    educationLevel: string | null;
-    dateOfBirth: string | null;
-    extra: any;
-    createdAt: string;
-    updatedAt: string;
-    providerId: string;
-  };
 }
 
 export const useUpdateUserProfileMutation = () => {

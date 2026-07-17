@@ -1,19 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import { users } from "../../../db/schema/user/index.ts";
-import { eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import env from "../../../config/env.config.ts";
-import { deleteStorageDirectory } from "../../../platform/storage/storage.ts";
+import { deleteUserService } from "../../../modules/user/index.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const Params = Type.Object({
   id: Type.String({ format: "uuid", description: "User ID to delete" }),
-});
-
-const DeleteResponse = Type.Object({
-  success: Type.Boolean({ default: true }),
-  message: Type.String(),
 });
 
 const deleteUser: FastifyPluginAsyncTypebox = async (app) => {
@@ -25,54 +17,35 @@ const deleteUser: FastifyPluginAsyncTypebox = async (app) => {
       summary: "Delete a user (Admin only)",
       params: Params,
       response: {
-        200: DeleteResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        200: BaseResponseSchema,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       req: FastifyRequest<{ Params: typeof Params.static }>,
       reply: FastifyReply,
-    ): Promise<typeof DeleteResponse.static> {
-            const { id } = req.params;
+    ): Promise<typeof BaseResponseSchema.static> {
+      const { id } = req.params;
 
       // Prevent self-deletion
       if (id === req.session.user.id) {
         return reply.badRequest(req.t(($) => $.user.errors.accessDenied));
       }
 
-      // Check if user exists
-      const user = await db.query.users.findFirst({
-        where: (fields) => eq(fields.id, id),
-      });
+      const result = await deleteUserService({ id, logger: req.log });
 
-      if (!user) {
-        return reply.notFound(req.t(($) => $.user.userNotFound));
-      }
-
-      try {
-        await db.delete(users).where(eq(users.id, id));
-
-        // Clean up user directory from disk (avatars, etc.)
-        await deleteStorageDirectory(env.server.uploadsUserDir, id, user.createdAt, req.log);
-
-        return reply.status(200).send({
-          success: true,
-          message: req.t(($) => $.user.management.delete.success),
-        });
-      } catch (error: any) {
-        // PostgreSQL error code for foreign key violation is 23503
-        if (error && typeof error === "object" && "code" in error && error.code === "23503") {
-          return reply.badRequest(req.t(($) => $.user.management.delete.inUse));
+      if (!result.success) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
         }
-        throw error;
+        return reply.badRequest(message);
       }
+
+      return reply.status(200).send({
+        success: true,
+        message: req.t(($) => $.user.management.delete.success),
+      });
     },
   });
 };

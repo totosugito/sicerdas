@@ -1,22 +1,14 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import { users } from "../../../db/schema/user/index.ts";
-import { inArray } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import env from "../../../config/env.config.ts";
-import { deleteStorageDirectory } from "../../../platform/storage/storage.ts";
+import { deleteUserService } from "../../../modules/user/index.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const DeletesBody = Type.Object({
   ids: Type.Array(Type.String({ format: "uuid" }), {
     minItems: 1,
     description: "List of User IDs to delete",
   }),
-});
-
-const DeletesResponse = Type.Object({
-  success: Type.Boolean({ default: true }),
-  message: Type.String(),
 });
 
 const bulkDeleteUsers: FastifyPluginAsyncTypebox = async (app) => {
@@ -28,48 +20,30 @@ const bulkDeleteUsers: FastifyPluginAsyncTypebox = async (app) => {
       summary: "Bulk delete users (Admin only)",
       body: DeletesBody,
       response: {
-        200: DeletesResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        200: BaseResponseSchema,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       req: FastifyRequest<{ Body: typeof DeletesBody.static }>,
       reply: FastifyReply,
-    ): Promise<typeof DeletesResponse.static> {
-            const { ids } = req.body;
+    ): Promise<typeof BaseResponseSchema.static> {
+      const { ids } = req.body;
 
-      try {
-        // Fetch target users to get their createdAt dates for directory cleanup
-        const targetUsers = await db
-          .select({ id: users.id, createdAt: users.createdAt })
-          .from(users)
-          .where(inArray(users.id, ids));
+      const result = await deleteUserService({ ids, logger: req.log });
 
-        await db.delete(users).where(inArray(users.id, ids));
-
-        // Clean up directories for all deleted users
-        for (const user of targetUsers) {
-          await deleteStorageDirectory(env.server.uploadsUserDir, user.id, user.createdAt, req.log);
+      if (!result.success) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
         }
-
-        return reply.status(200).send({
-          success: true,
-          message: req.t(($) => $.user.management.delete.success),
-        });
-      } catch (error: any) {
-        // Handle referential integrity errors (23503)
-        if (error.code === "23503") {
-          return reply.badRequest(req.t(($) => $.user.management.delete.inUse));
-        }
-        throw error;
+        return reply.badRequest(message);
       }
+
+      return reply.status(200).send({
+        success: true,
+        message: req.t(($) => $.user.management.delete.success),
+      });
     },
   });
 };

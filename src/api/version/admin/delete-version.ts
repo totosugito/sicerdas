@@ -2,7 +2,7 @@ import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
 
-import { BaseResponse } from "../types";
+import type { BaseResponse } from "backend/src/types/index.ts";
 
 export const useDeleteVersion = () => {
   return useMutation({

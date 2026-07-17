@@ -27,6 +27,6 @@ export type PaginationMeta = Static<typeof PaginationMetaSchema>;
 
 export interface ServiceResponse {
   success: boolean;
-  statusCode?: 400 | 401 | 403 | 404 | 500;
+  statusCode?: 400 | 401 | 403 | 404 | 409 | 500;
   errorKey?: (locale: AppLocale) => any;
 }

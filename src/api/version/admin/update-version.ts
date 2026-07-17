@@ -2,7 +2,8 @@ import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
 
-import { UpdateVersionRequest, BaseResponse } from "../types";
+import type { BaseResponse } from "backend/src/types/index.ts";
+import { UpdateVersionRequest } from "../types";
 
 export const useUpdateVersion = (id: string | number) => {
   return useMutation({
