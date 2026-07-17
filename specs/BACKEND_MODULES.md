@@ -80,16 +80,31 @@ Services must deal with pure TypeScript interfaces (`interface`/`type`) instead 
 
 ## 4. Backend Routes Pattern
 
-Backend routes use Fastify and Typebox schemas to validate runtime requests and responses. They call the services and map return values:
+Backend routes use Fastify and Typebox schemas to validate runtime requests and responses. They call the services and map return values. 
+
+### Guidelines:
+1. **Extend Base Response:** Do not manually redeclare `success` and `message` properties on response schemas. Instead, extend them from `BaseResponseSchema` (imported from `backend/src/types/response.ts`) using `Type.Intersect`.
+2. **Direct Schema Usage:** For simple responses that only return `success` and `message` (e.g., delete actions), reference `BaseResponseSchema` directly in the route `response` block and handler return type. Do not declare a redundant wrapper/alias constant.
+3. **No 5xx Schemas:** Do not define `5xx` response schemas at the route level. All 5xx server-level errors are handled and formatted globally by the server's error handler.
 
 ```typescript
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { listVersionService } from "../../modules/version/services/list-version.service.ts";
-import { ErrorResponseSchema, PaginationMetaSchema } from "../../types/response.ts";
+import { BaseResponseSchema, ErrorResponseSchema, PaginationMetaSchema } from "../../types/response.ts";
 
 // Route validation schemas...
+
+const ListVersionResponse = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: Type.Object({
+      items: Type.Array(VersionResponseItem),
+      meta: PaginationMetaSchema,
+    }),
+  }),
+]);
 
 const listVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -101,10 +116,12 @@ const listVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       response: {
         200: ListVersionResponse,
         "4xx": ErrorResponseSchema,
-        "5xx": ErrorResponseSchema,
       },
     },
-    handler: async function handler(request, reply) {
+    handler: async function handler(
+      request: FastifyRequest<{ Body: typeof ListVersionBody.static }>,
+      reply: FastifyReply,
+    ): Promise<typeof ListVersionResponse.static> {
       const result = await listVersionService(request.body);
       return reply.status(200).send({
         success: true,
@@ -185,6 +202,32 @@ if (!result.success || !result.data) {
 }
 ```
 This pattern provides semantic transport handling (using helper functions like `reply.notFound` and `reply.badRequest`) while maintaining full compile-time safety for localization keys.
+
+---
+
+## 7. Role-Based Route Authorization (Hooks)
+
+To enforce authentication and restrict access by user roles, use the centralized `requireRoles` preHandler hook creator located in `backend/src/hooks/auth.hook.ts`.
+
+### Guidelines:
+1. **Never Duplicate Hook Logic:** Do not manually check sessions or user roles inside directory hooks. Always use `requireRoles`.
+2. **Support Multiple Roles:** Pass an array of allowed roles from `EnumUserRole` (e.g. `[EnumUserRole.ADMIN]` or `[EnumUserRole.ADMIN, EnumUserRole.TEACHER]`).
+
+### Example (`admin.hook.ts`):
+```typescript
+import type { FastifyInstance } from "fastify";
+import { EnumUserRole } from "../../../db/schema/user/types.ts";
+import { requireRoles } from "../../../hooks/auth.hook.ts";
+
+async function adminHook(fastify: FastifyInstance) {
+  fastify.decorateRequest("session");
+
+  // Enforce that the user must have the ADMIN role
+  fastify.addHook("preHandler", requireRoles(fastify, [EnumUserRole.ADMIN]));
+}
+
+export default adminHook;
+```
 
 
 

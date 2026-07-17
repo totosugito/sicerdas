@@ -3,7 +3,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { EnumContentType } from "../../db/schema/enum/enum-app.ts";
 import { listVersionSimpleService } from "../../modules/version/services/list-version-simple.service.ts";
-import { ErrorResponseSchema, PaginationMetaSchema } from "../../types/response.ts";
+import { BaseResponseSchema, ErrorResponseSchema, PaginationMetaSchema } from "../../types/response.ts";
 
 const VersionSimpleQuery = Type.Object({
   dataType: Type.Enum(EnumContentType),
@@ -18,14 +18,15 @@ const VersionSimpleResponseItem = Type.Object({
   published: Type.Boolean(),
 });
 
-const ListVersionSimpleResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Object({
-    items: Type.Array(VersionSimpleResponseItem),
-    meta: PaginationMetaSchema,
+const ListVersionSimpleResponse = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: Type.Object({
+      items: Type.Array(VersionSimpleResponseItem),
+      meta: PaginationMetaSchema,
+    }),
   }),
-});
+]);
 
 const listVersionSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -37,7 +38,6 @@ const listVersionSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
       response: {
         200: ListVersionSimpleResponse,
         "4xx": ErrorResponseSchema,
-        "5xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(

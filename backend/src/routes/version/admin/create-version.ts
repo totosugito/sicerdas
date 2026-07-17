@@ -3,7 +3,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { EnumContentType, EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 import { createVersionService } from "../../../modules/version/services/create-version.service.ts";
-import { ErrorResponseSchema } from "../../../types/response.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const CreateVersionBody = Type.Object({
   appVersion: Type.Number(),
@@ -28,11 +28,12 @@ const VersionResponseItem = Type.Object({
   updatedAt: Type.String({ format: "date-time" }),
 });
 
-const CreateVersionResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: VersionResponseItem,
-});
+const CreateVersionResponse = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: VersionResponseItem,
+  }),
+]);
 
 const createVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -44,7 +45,6 @@ const createVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       response: {
         201: CreateVersionResponse,
         "4xx": ErrorResponseSchema,
-        "5xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(

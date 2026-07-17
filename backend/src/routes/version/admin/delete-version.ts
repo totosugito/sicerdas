@@ -3,15 +3,10 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 import { deleteVersionService } from "../../../modules/version/services/delete-version.service.ts";
-import { ErrorResponseSchema } from "../../../types/response.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const DeleteVersionParams = Type.Object({
   id: Type.Number(),
-});
-
-const DeleteVersionResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
 });
 
 const deleteVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -22,15 +17,14 @@ const deleteVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       tags: ["Version"],
       params: DeleteVersionParams,
       response: {
-        200: DeleteVersionResponse,
+        200: BaseResponseSchema,
         "4xx": ErrorResponseSchema,
-        "5xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Params: typeof DeleteVersionParams.static }>,
       reply: FastifyReply,
-    ): Promise<typeof DeleteVersionResponse.static> {
+    ): Promise<typeof BaseResponseSchema.static> {
       const { id } = request.params;
 
       const result = await deleteVersionService(id);
