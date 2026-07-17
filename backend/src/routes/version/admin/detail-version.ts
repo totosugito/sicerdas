@@ -1,9 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { appVersion } from "../../../db/schema/app/app-version.ts";
-import { db } from "../../../db/db-pool.ts";
-import { eq } from "drizzle-orm";
+import { detailVersionService } from "../../../modules/version/services/detail-version.service.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const DetailVersionParams = Type.Object({
   id: Type.Number(),
@@ -37,40 +36,26 @@ const detailVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       params: DetailVersionParams,
       response: {
         200: DetailVersionResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
+        "5xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Params: typeof DetailVersionParams.static }>,
       reply: FastifyReply,
     ): Promise<typeof DetailVersionResponse.static> {
-            const { id } = request.params;
+      const { id } = request.params;
 
-      const item = await db.query.appVersion.findFirst({
-        where: eq(appVersion.id, id),
-      });
+      const result = await detailVersionService(id);
 
-      if (!item) {
-        return reply.notFound(request.t(($) => $.version.notFound));
+      if (!result.success || !result.data) {
+        return reply.notFound(request.t(result.errorKey!));
       }
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.version.detailSuccess),
-        data: {
-          ...item,
-          note: item.note as Record<string, unknown>[],
-          extra: (item.extra as Record<string, unknown>) || {},
-          createdAt: item.createdAt?.toISOString(),
-          updatedAt: item.updatedAt?.toISOString(),
-        },
+        data: result.data,
       });
     },
   });

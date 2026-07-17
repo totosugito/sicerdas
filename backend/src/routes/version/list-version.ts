@@ -1,10 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { appVersion } from "../../db/schema/app/app-version.ts";
-import { db } from "../../db/db-pool.ts";
-import { and, desc, asc, sql, ilike, eq } from "drizzle-orm";
 import { EnumContentType, EnumContentStatus } from "../../db/schema/enum/enum-app.ts";
+import { listVersionService } from "../../modules/version/services/list-version.service.ts";
+import { ErrorResponseSchema, PaginationMetaSchema } from "../../types/response.ts";
 
 const ListVersionBody = Type.Object({
   page: Type.Optional(Type.Number({ default: 1 })),
@@ -34,12 +33,7 @@ const ListVersionResponse = Type.Object({
   message: Type.String(),
   data: Type.Object({
     items: Type.Array(VersionResponseItem),
-    meta: Type.Object({
-      total: Type.Number(),
-      page: Type.Number(),
-      limit: Type.Number(),
-      totalPages: Type.Number(),
-    }),
+    meta: PaginationMetaSchema,
   }),
 });
 
@@ -52,21 +46,15 @@ const listVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       body: ListVersionBody,
       response: {
         200: ListVersionResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
+        "5xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Body: typeof ListVersionBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof ListVersionResponse.static> {
-            const {
+      const {
         page = 1,
         limit = 10,
         search,
@@ -76,79 +64,20 @@ const listVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
         sortOrder = "desc",
       } = request.body;
 
-      const offset = (page - 1) * limit;
-
-      const conditions = [];
-      if (search) {
-        conditions.push(ilike(appVersion.name, `%${search}%`));
-      }
-      if (dataType) {
-        conditions.push(eq(appVersion.dataType, dataType));
-      }
-      if (status) {
-        conditions.push(eq(appVersion.status, status));
-      }
-
-      const baseQuery = db.select().from(appVersion);
-
-      if (conditions.length > 0) {
-        baseQuery.where(and(...conditions));
-      }
-
-      const order = sortOrder === "asc" ? asc : desc;
-      let queryWithSort;
-
-      switch (sortBy) {
-        case "appVersion":
-          queryWithSort = baseQuery.orderBy(order(appVersion.appVersion));
-          break;
-        case "dbVersion":
-          queryWithSort = baseQuery.orderBy(order(appVersion.dbVersion));
-          break;
-        case "name":
-          queryWithSort = baseQuery.orderBy(order(appVersion.name));
-          break;
-        case "status":
-          queryWithSort = baseQuery.orderBy(order(appVersion.status));
-          break;
-        case "dataType":
-          queryWithSort = baseQuery.orderBy(order(appVersion.dataType));
-          break;
-        case "updatedAt":
-          queryWithSort = baseQuery.orderBy(order(appVersion.updatedAt));
-          break;
-        case "createdAt":
-        default:
-          queryWithSort = baseQuery.orderBy(order(appVersion.createdAt));
-          break;
-      }
-
-      const countResult = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(queryWithSort.as("subquery"));
-
-      const total = Number(countResult[0]?.count || 0);
-
-      const items = await queryWithSort.limit(limit).offset(offset);
+      const result = await listVersionService({
+        page,
+        limit,
+        search,
+        dataType,
+        status,
+        sortBy,
+        sortOrder,
+      });
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.version.listSuccess),
-        data: {
-          items: items.map((item) => ({
-            ...item,
-            note: item.note as Record<string, unknown>[],
-            extra: (item.extra as Record<string, unknown>) || {},
-            createdAt: item.createdAt?.toISOString(),
-            updatedAt: item.updatedAt?.toISOString(),
-          })),
-          meta: {
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-          },
-        },
+        data: result,
       });
     },
   });

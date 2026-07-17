@@ -2,7 +2,7 @@ import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
 
-import { CreateVersionRequest, AppVersionResponse } from "../types";
+import { CreateVersionRequest, BaseResponse } from "../types";
 
 export const useCreateVersion = () => {
   return useMutation({
@@ -14,7 +14,7 @@ export const useCreateVersion = () => {
         body: body,
         withCredentials: true,
       });
-      return response as AppVersionResponse;
+      return response as BaseResponse;
     },
   });
 };

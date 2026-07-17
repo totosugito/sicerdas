@@ -1,10 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { appVersion as tableAppVersion } from "../../../db/schema/app/app-version.ts";
-import { db } from "../../../db/db-pool.ts";
-import { eq } from "drizzle-orm";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
+import { updateVersionService } from "../../../modules/version/services/update-version.service.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const UpdateVersionParams = Type.Object({
   id: Type.Number(),
@@ -48,14 +47,8 @@ const updateVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       body: UpdateVersionBody,
       response: {
         200: UpdateVersionResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
+        "5xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
@@ -65,46 +58,31 @@ const updateVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       }>,
       reply: FastifyReply,
     ): Promise<typeof UpdateVersionResponse.static> {
-            const { id } = request.params;
+      const { id } = request.params;
       const { appVersion: appVer, dbVersion: dbVer, status, name, note, extra } = request.body;
 
-      const existingVersion = await db.query.appVersion.findFirst({
-        where: eq(tableAppVersion.id, id),
+      const result = await updateVersionService(id, {
+        appVersion: appVer,
+        dbVersion: dbVer,
+        status,
+        name,
+        note,
+        extra,
       });
 
-      if (!existingVersion) {
-        return reply.notFound(request.t(($) => $.version.notFound));
+      if (!result.success || !result.data) {
+        return reply.notFound(request.t(result.errorKey!));
       }
 
-      const [updatedVersion] = await db
-        .update(tableAppVersion)
-        .set({
-          appVersion: appVer !== undefined ? appVer : undefined,
-          dbVersion: dbVer !== undefined ? dbVer : undefined,
-          status: status !== undefined ? status : undefined,
-          name: name !== undefined ? name : undefined,
-          note: note !== undefined ? note : undefined,
-          extra: extra !== undefined ? extra : undefined,
-          updatedAt: new Date(),
-        })
-        .where(eq(tableAppVersion.id, id))
-        .returning();
-
       // Refresh cache if it is now published or changed while published
-      if (updatedVersion.status === EnumContentStatus.PUBLISHED) {
-        await app.versionCache.refresh(updatedVersion.dataType);
+      if (result.data.status === EnumContentStatus.PUBLISHED) {
+        await app.versionCache.refresh(result.data.dataType as any);
       }
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.version.update.success),
-        data: {
-          ...updatedVersion,
-          note: updatedVersion.note as Record<string, unknown>[],
-          extra: (updatedVersion.extra as Record<string, unknown>) || {},
-          createdAt: updatedVersion.createdAt?.toISOString(),
-          updatedAt: updatedVersion.updatedAt?.toISOString(),
-        },
+        data: result.data,
       });
     },
   });

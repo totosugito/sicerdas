@@ -1,10 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { appVersion as tableAppVersion } from "../../../db/schema/app/app-version.ts";
-import { db } from "../../../db/db-pool.ts";
-import { and, eq } from "drizzle-orm";
 import { EnumContentType, EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
+import { createVersionService } from "../../../modules/version/services/create-version.service.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const CreateVersionBody = Type.Object({
   appVersion: Type.Number(),
@@ -44,21 +43,15 @@ const createVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       body: CreateVersionBody,
       response: {
         201: CreateVersionResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
+        "5xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Body: typeof CreateVersionBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof CreateVersionResponse.static> {
-            const {
+      const {
         appVersion: appVer,
         dbVersion: dbVer,
         dataType,
@@ -68,46 +61,29 @@ const createVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
         extra,
       } = request.body;
 
-      const existingVersion = await db.query.appVersion.findFirst({
-        where: and(
-          eq(tableAppVersion.appVersion, appVer),
-          eq(tableAppVersion.dbVersion, dbVer),
-          eq(tableAppVersion.dataType, dataType),
-        ),
+      const result = await createVersionService({
+        appVersion: appVer,
+        dbVersion: dbVer,
+        dataType,
+        status,
+        name,
+        note,
+        extra,
       });
 
-      if (existingVersion) {
-        return reply.badRequest(request.t(($) => $.version.create.exists));
+      if (!result.success || !result.data) {
+        return reply.badRequest(request.t(result.errorKey!));
       }
 
-      const [newVersion] = await db
-        .insert(tableAppVersion)
-        .values({
-          appVersion: appVer,
-          dbVersion: dbVer,
-          dataType,
-          status: status || EnumContentStatus.UNPUBLISHED,
-          name,
-          note: note || [],
-          extra: extra || {},
-        })
-        .returning();
-
       // Refresh cache if published
-      if (newVersion.status === EnumContentStatus.PUBLISHED) {
-        await app.versionCache.refresh(newVersion.dataType);
+      if (result.data.status === EnumContentStatus.PUBLISHED) {
+        await app.versionCache.refresh(result.data.dataType as any);
       }
 
       return reply.status(201).send({
         success: true,
         message: request.t(($) => $.version.create.success),
-        data: {
-          ...newVersion,
-          note: newVersion.note as Record<string, unknown>[],
-          extra: (newVersion.extra as Record<string, unknown>) || {},
-          createdAt: newVersion.createdAt?.toISOString(),
-          updatedAt: newVersion.updatedAt?.toISOString(),
-        },
+        data: result.data,
       });
     },
   });

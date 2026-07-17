@@ -1,13 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { appVersion } from "../../../db/schema/app/app-version.ts";
-import { books } from "../../../db/schema/book/books.ts";
-import { examPackages } from "../../../db/schema/exam/packages.ts";
-import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
-import { db } from "../../../db/db-pool.ts";
-import { eq, sql } from "drizzle-orm";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
+import { deleteVersionService } from "../../../modules/version/services/delete-version.service.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const DeleteVersionParams = Type.Object({
   id: Type.Number(),
@@ -27,60 +23,29 @@ const deleteVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       params: DeleteVersionParams,
       response: {
         200: DeleteVersionResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
+        "5xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Params: typeof DeleteVersionParams.static }>,
       reply: FastifyReply,
     ): Promise<typeof DeleteVersionResponse.static> {
-            const { id } = request.params;
+      const { id } = request.params;
 
-      const existingVersion = await db.query.appVersion.findFirst({
-        where: eq(appVersion.id, id),
-      });
+      const result = await deleteVersionService(id);
 
-      if (!existingVersion) {
-        return reply.notFound(request.t(($) => $.version.notFound));
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
-
-      // Referential Integrity Checks
-      const [bookCount] = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(books)
-        .where(eq(books.versionId, id));
-      if (Number(bookCount.count) > 0) {
-        return reply.badRequest(request.t(($) => $.version.delete.inUse));
-      }
-
-      const [packageCount] = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(examPackages)
-        .where(eq(examPackages.versionId, id));
-      if (Number(packageCount.count) > 0) {
-        return reply.badRequest(request.t(($) => $.version.delete.inUse));
-      }
-
-      const [sectionCount] = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(examPackageSections)
-        .where(eq(examPackageSections.versionId, id));
-      if (Number(sectionCount.count) > 0) {
-        return reply.badRequest(request.t(($) => $.version.delete.inUse));
-      }
-
-      await db.delete(appVersion).where(eq(appVersion.id, id));
 
       // Refresh cache if it was published
-      if (existingVersion.status === EnumContentStatus.PUBLISHED) {
-        await app.versionCache.refresh(existingVersion.dataType);
+      if (result.status === EnumContentStatus.PUBLISHED && result.dataType) {
+        await app.versionCache.refresh(result.dataType as any);
       }
 
       return reply.status(200).send({

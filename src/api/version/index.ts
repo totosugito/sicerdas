@@ -1,6 +1,6 @@
 export {
   type AppVersion,
-  type AppVersionResponse,
+  type BaseResponse,
   type AppVersionDetailResponse,
   type ListVersionResponse,
   type VersionSimpleItem,

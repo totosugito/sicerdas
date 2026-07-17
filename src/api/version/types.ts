@@ -1,70 +1,34 @@
-export interface AppVersion {
-  id: number;
-  appVersion: number;
-  dbVersion: number;
-  dataType: string;
-  status: string;
-  name: string;
-  note: Record<string, unknown>[];
-  extra: Record<string, unknown>;
-  createdAt: string;
-  updatedAt: string;
-}
+import type {
+  AppVersion,
+  VersionSimpleItem,
+  CreateVersionRequest,
+  UpdateVersionRequest,
+} from "backend/src/modules/version/index.ts";
+import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
 
-export interface AppVersionResponse {
-  success: boolean;
-  message: string;
-}
+export type {
+  AppVersion,
+  VersionSimpleItem,
+  CreateVersionRequest,
+  UpdateVersionRequest,
+};
 
-export interface AppVersionDetailResponse extends AppVersionResponse {
+export type { BaseResponse, PaginationMeta };
+
+export interface AppVersionDetailResponse extends BaseResponse {
   data: AppVersion;
 }
 
-export interface ListVersionResponse extends AppVersionResponse {
+export interface ListVersionResponse extends BaseResponse {
   data: {
     items: AppVersion[];
-    meta: {
-      total: number;
-      page: number;
-      limit: number;
-      totalPages: number;
-    };
+    meta: PaginationMeta;
   };
 }
 
-export interface VersionSimpleItem {
-  id: number;
-  name: string;
-  published: boolean;
-}
-
-export interface ListVersionSimpleResponse extends AppVersionResponse {
+export interface ListVersionSimpleResponse extends BaseResponse {
   data: {
     items: VersionSimpleItem[];
-    meta: {
-      total: number;
-      page: number;
-      limit: number;
-      totalPages: number;
-    };
+    meta: PaginationMeta;
   };
-}
-
-export interface CreateVersionRequest {
-  appVersion: number;
-  dbVersion: number;
-  dataType: string;
-  status?: string;
-  name: string;
-  note?: Record<string, unknown>[];
-  extra?: Record<string, unknown>;
-}
-
-export interface UpdateVersionRequest {
-  appVersion?: number;
-  dbVersion?: number;
-  status?: string;
-  name?: string;
-  note?: Record<string, unknown>[];
-  extra?: Record<string, unknown>;
 }

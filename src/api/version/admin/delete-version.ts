@@ -2,7 +2,7 @@ import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
 
-import { AppVersionResponse } from "../types";
+import { BaseResponse } from "../types";
 
 export const useDeleteVersion = () => {
   return useMutation({
@@ -13,7 +13,7 @@ export const useDeleteVersion = () => {
         url: AppApi.version.admin.delete.replace(":id", id.toString()),
         withCredentials: true,
       });
-      return response as AppVersionResponse;
+      return response as BaseResponse;
     },
   });
 };
