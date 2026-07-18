@@ -1,41 +1,35 @@
-export interface GlobalStats {
-  userId: string;
-  totalExamsTaken: number;
-  totalQuestionsAnswered: number;
-  totalCorrectAnswers: number;
-  totalWrongAnswers: number;
-  averageScore: string;
-  accuracyRate: string;
-  lastActiveAt: string | null;
-  updatedAt: string;
+import type {
+  GlobalStatsData,
+  SubjectStatsData,
+  TagStatsData,
+  ActivityData,
+  SubjectStatsParams,
+} from "backend/src/modules/exam/user-stats/index.ts";
+import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+
+export type {
+  GlobalStatsData,
+  SubjectStatsData,
+  TagStatsData,
+  ActivityData,
+  SubjectStatsParams,
+};
+
+export interface GlobalStatsResponse extends BaseResponse {
+  data: GlobalStatsData | null;
 }
 
-export interface SubjectStats {
-  id: string;
-  subjectId: string;
-  subjectName: string;
-  totalQuestionsAnswered: number;
-  totalCorrect: number;
-  totalWrong: number;
-  accuracyRate: string;
-  updatedAt: string;
+export interface SubjectStatsResponse extends BaseResponse {
+  data: {
+    items: SubjectStatsData[];
+    meta: PaginationMeta;
+  };
 }
 
-export interface TagStats {
-  id: string;
-  tagId: string;
-  tagName: string;
-  totalQuestionsAnswered: number;
-  totalCorrect: number;
-  totalWrong: number;
-  accuracyRate: string;
-  updatedAt: string;
+export interface TagStatsResponse extends BaseResponse {
+  data: TagStatsData[];
 }
 
-export interface ActivityStats {
-  date: string;
-  totalQuestions: number;
-  totalCorrect: number;
-  totalWrong: number;
-  totalSessions: number;
+export interface ActivityStatsResponse extends BaseResponse {
+  data: ActivityData[];
 }

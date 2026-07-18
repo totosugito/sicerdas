@@ -72,7 +72,7 @@ function ExamDashboardComponent() {
   const { data: profileRes } = useUserProfileQuery();
   const profile = profileRes?.data;
 
-  const { data: subjectStatsRes } = useSubjectStats({ days: activityDays }, { enabled: activeTab === "overview" });
+  const { data: subjectStatsRes } = useSubjectStats({ page: 1, limit: activityDays }, { enabled: activeTab === "overview" });
   const subjectStats = subjectStatsRes?.data?.items || [];
 
   // Active Sessions (Overview Tab)

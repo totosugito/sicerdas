@@ -1,5 +1,5 @@
 import { ReactECharts } from "@/components/custom/charts/ReactECharts";
-import { SubjectStats } from "@/api/exam/user-stats/types";
+import { SubjectStatsData } from "@/api/exam/user-stats/types";
 import { useTheme } from "@/lib/theme-provider";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useMemo } from "react";
@@ -10,7 +10,7 @@ import { Target, AlertCircle, Calendar } from "lucide-react";
 import { string_to_locale_date } from "@/lib/my-utils";
 
 interface SubjectRadarChartProps {
-  stats: SubjectStats[];
+  stats: SubjectStatsData[];
   className?: string;
 }
 

@@ -1,13 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import type { TagStats } from "./types";
-
-export interface TagStatsResponse {
-  success: boolean;
-  message: string;
-  data: TagStats[];
-}
+import type { TagStatsResponse } from "./types";
 
 export const useTagStats = () => {
   return useQuery({

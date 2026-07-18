@@ -1,13 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
-import type { ActivityStats } from "./types";
-
-export interface ActivityStatsResponse {
-  success: boolean;
-  message: string;
-  data: ActivityStats[];
-}
+import type { ActivityStatsResponse } from "./types";
 
 export const useActivityStats = (params?: { days?: number }, options: Partial<UseQueryOptions<ActivityStatsResponse, Error>> = {}) => {
   const days = params?.days ?? 7;
@@ -22,7 +16,7 @@ export const useActivityStats = (params?: { days?: number }, options: Partial<Us
       });
       return response as ActivityStatsResponse;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
     ...options,
   });
 };
