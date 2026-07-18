@@ -1,17 +1,10 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { AppTier } from "../types";
-import { CreateTierRequest } from "./create-tier";
+import { UpdateTierParams, TierResponse } from "../types";
 
-export type UpdateTierRequest = Partial<CreateTierRequest> & {
+export type UpdateTierRequest = UpdateTierParams & {
     slug: string;
-};
-
-export type UpdateTierResponse = {
-    success: boolean;
-    message: string;
-    data: AppTier;
 };
 
 export const useUpdateTier = () => {
@@ -25,7 +18,7 @@ export const useUpdateTier = () => {
                 body: body,
                 withCredentials: true,
             });
-            return response as UpdateTierResponse;
+            return response as TierResponse;
         },
     });
 };

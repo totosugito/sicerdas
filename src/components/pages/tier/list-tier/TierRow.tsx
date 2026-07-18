@@ -4,21 +4,29 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { AppTier } from "@/api/tier";
+import { TierItem } from "@/api/tier";
 import { Link } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { AppRoute } from "@/constants/app-route";
 import { to_decimal_formatted } from "@/lib/my-utils";
 
 interface TierRowProps {
-  tier: AppTier;
+  tier: TierItem;
   onDelete: (slug: string, name: string) => void;
 }
 
 export const TierRow = ({ tier, onDelete }: TierRowProps) => {
   const { t } = useAppTranslation();
   const price = parseFloat(tier.price);
-  const isUnlimited = tier.limits.chatAi.daily_messages === -1;
+  
+  const limits = tier.limits as {
+    chatAi?: {
+      daily_messages?: number;
+      max_tokens?: number;
+    };
+  } | undefined;
+  
+  const isUnlimited = limits?.chatAi?.daily_messages === -1;
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: tier.slug,
@@ -143,8 +151,8 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <Zap className="w-3.5 h-3.5" />
-              {tier.limits.chatAi.max_tokens
-                ? to_decimal_formatted(tier.limits.chatAi.max_tokens, 0)
+              {limits?.chatAi?.max_tokens
+                ? to_decimal_formatted(limits.chatAi.max_tokens, 0)
                 : "N/A"}{" "}
               {t(($) => $.tier.list.tokens)}
             </span>
@@ -152,7 +160,7 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
               <MessageSquare className="w-3.5 h-3.5" />
               {isUnlimited
                 ? t(($) => $.tier.list.unlimited)
-                : `${tier.limits.chatAi.daily_messages ?? "N/A"}${t(($) => $.tier.list.perDay)}`}
+                : `${limits?.chatAi?.daily_messages ?? "N/A"}${t(($) => $.tier.list.perDay)}`}
             </span>
           </div>
         </div>

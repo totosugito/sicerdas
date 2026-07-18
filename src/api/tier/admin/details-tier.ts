@@ -1,13 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { AppTier } from "../types";
-
-export type GetTierResponse = {
-    success: boolean;
-    message: string;
-    data: AppTier;
-};
+import { TierResponse } from "../types";
 
 export const useDetailsTier = (slug: string) => {
     return useQuery({
@@ -18,7 +12,7 @@ export const useDetailsTier = (slug: string) => {
                 url: `${AppApi.tier.admin.crud}/${slug}`,
                 withCredentials: true,
             });
-            return response as GetTierResponse;
+            return response as TierResponse;
         },
         enabled: !!slug,
     });

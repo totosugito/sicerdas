@@ -1,79 +1,45 @@
-import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import type { FastifyReply, FastifyRequest } from 'fastify';
-import { Type } from '@sinclair/typebox';
-import { appTier } from '../../../db/schema/app/index.ts';
-import { db } from '../../../db/db-pool.ts';
-import { eq } from 'drizzle-orm';
-
-const TierResponseItem = Type.Object({
-    slug: Type.String(),
-    name: Type.String(),
-    price: Type.String(),
-    currency: Type.String(),
-    billingCycle: Type.String(),
-    features: Type.Array(Type.String()),
-    limits: Type.Record(Type.String(), Type.Unknown()),
-    isActive: Type.Boolean(),
-    sortOrder: Type.Number(),
-    isPopular: Type.Boolean(),
-    createdAt: Type.String({ format: 'date-time' }),
-    updatedAt: Type.String({ format: 'date-time' }),
-});
-
-const GetTierResponse = Type.Object({
-    success: Type.Boolean(),
-    message: Type.String(),
-    data: TierResponseItem,
-});
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { Type } from "@sinclair/typebox";
+import { detailsTierService, TierResponse } from "../../../modules/tier/index.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const detailsTierPricingRoute: FastifyPluginAsyncTypebox = async (app) => {
-    app.route({
-        url: '/:slug',
-        method: 'GET',
-        schema: {
-            tags: ['App Tier'],
-            params: Type.Object({
-                slug: Type.String(),
-            }),
-            response: {
-                200: GetTierResponse,
-                '4xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                }),
-                '5xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                })
-            }
-        },
-        handler: async function handler(
-            request: FastifyRequest<{ Params: { slug: string } }>,
-            reply: FastifyReply
-        ): Promise<typeof GetTierResponse.static> {
-                        const { slug } = request.params;
+  app.route({
+    url: "/:slug",
+    method: "GET",
+    schema: {
+      tags: ["App Tier"],
+      params: Type.Object({
+        slug: Type.String(),
+      }),
+      response: {
+        200: TierResponse,
+        "4xx": ErrorResponseSchema,
+      },
+    },
+    handler: async function handler(
+      request: FastifyRequest<{ Params: { slug: string } }>,
+      reply: FastifyReply
+    ): Promise<typeof TierResponse.static> {
+      const { slug } = request.params;
+      const result = await detailsTierService(slug);
 
-            const tier = await db.query.appTier.findFirst({
-                where: eq(appTier.slug, slug)
-            });
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
+      }
 
-            if (!tier) {
-                return reply.notFound(request.t($ => $.appTier.details.notFound));
-            }
-
-            return reply.status(200).send({
-                success: true,
-                message: request.t($ => $.appTier.details.found),
-                data: {
-                    ...tier,
-                    features: tier.features || [],
-                    limits: tier.limits || {},
-                    createdAt: tier.createdAt.toISOString(),
-                    updatedAt: tier.updatedAt.toISOString(),
-                }
-            });
-        },
-    });
+      return reply.status(200).send({
+        success: true,
+        message: request.t(($) => $.appTier.details.found),
+        data: result.data,
+      });
+    },
+  });
 };
 
 export default detailsTierPricingRoute;

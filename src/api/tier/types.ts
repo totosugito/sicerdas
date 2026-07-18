@@ -1,20 +1,12 @@
-export type AppTier = {
-    slug: string;
-    name: string;
-    price: string;
-    currency: string;
-    billingCycle: string;
-    features: string[];
-    limits: {
-        chatAi: {
-            daily_messages?: number;
-            max_tokens?: number;
-            [key: string]: unknown;
-        };
-    };
-    isActive: boolean;
-    sortOrder: number;
-    isPopular: boolean;
-    createdAt: string;
-    updatedAt: string;
-};
+import type { BaseResponse } from "backend/src/types/index.ts";
+import type {
+    TierItem,
+    CreateTierParams,
+    UpdateTierParams,
+} from "backend/src/modules/tier/index.ts";
+
+export type { TierItem, CreateTierParams, UpdateTierParams, BaseResponse };
+
+export interface TierResponse<T = TierItem> extends BaseResponse {
+    data: T;
+}

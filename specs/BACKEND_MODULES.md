@@ -135,7 +135,12 @@ const listVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
 
 ---
 
+## 5. Frontend Type Sharing Pattern
+
 In the frontend, import types directly from the backend via the `"backend/*"` path-alias. 
+
+### Directory Organization:
+Create a single `types.ts` file inside the frontend API module folder (e.g. `src/api/<module>/types.ts`) to manage type imports, extensions, and exports for that module.
 
 ### Compiler Configuration Requirement:
 Since backend files resolve relative imports containing `.ts` extensions (e.g. `import { x } from "./y.ts"`), you **must** enable `"allowImportingTsExtensions": true` in the frontend `tsconfig.json` inside the `compilerOptions` section so that the frontend bundler can parse the backend TS files correctly without throwing extension-related errors.
@@ -143,31 +148,34 @@ Since backend files resolve relative imports containing `.ts` extensions (e.g. `
 ### Critical Local Scope Requirement:
 When types imported from the backend are referenced inside the frontend `types.ts` file itself (e.g. extending interfaces or as array types), you **must** import them into local scope first, and then export them. Do not use direct `export type { ... } from "backend/..."` exports.
 
+### No Duplicate Response Envelopes:
+Do not define redundant response wrappers like `CreateTierResponse` or `UpdateTierResponse` if they are structurally identical (e.g., just returning `success`, `message`, and `data`). Instead, declare a single generic response type (e.g. `TierResponse<T = TierItem>`) extending `BaseResponse` and reuse it for all handlers.
+
 ```typescript
 // 1. Import locally to make them available in the scope of this file
 import type {
   AppVersion,
   VersionSimpleItem,
-  CreateVersionRequest,
-  UpdateVersionRequest,
+  CreateVersionParams,
+  UpdateVersionParams,
 } from "backend/src/modules/version/index.ts";
-import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+import type { BaseResponse } from "backend/src/types/index.ts";
 
 // 2. Export them for other frontend components to consume
 export type {
   AppVersion,
   VersionSimpleItem,
-  CreateVersionRequest,
-  UpdateVersionRequest,
+  CreateVersionParams,
+  UpdateVersionParams,
   BaseResponse,
-  PaginationMeta,
 };
 
-// 3. Extend/use them locally
-export interface AppVersionDetailResponse extends BaseResponse {
-  data: AppVersion;
+// 3. Define a single generic response type instead of duplicates
+export interface VersionResponse<T = AppVersion> extends BaseResponse {
+  data: T;
 }
 ```
+
 
 ---
 
@@ -228,6 +236,58 @@ async function adminHook(fastify: FastifyInstance) {
 
 export default adminHook;
 ```
+
+---
+
+## 8. Schema Design and Code Duplication Prevention (TypeBox Patterns)
+
+To prevent code duplication when creating schemas for both `Create` and `Update` operations, follow these pattern guidelines:
+
+### 1. Extract Base Fields
+Define the core shared fields in a private plain JavaScript/TypeScript object. This avoids duplicating field definitions (such as strings, arrays, objects) across multiple schemas:
+
+```typescript
+const TierBaseFields = {
+  name: Type.String({ minLength: 4 }),
+  price: Type.String(),
+  currency: Type.String(),
+  billingCycle: Type.String(),
+  features: Type.Array(Type.String()),
+  limits: TierLimitsSchema,
+  isActive: Type.Boolean(),
+  sortOrder: Type.Number(),
+  isPopular: Type.Boolean(),
+};
+```
+
+### 2. Extend with TypeBox Helpers
+Compose the final validation schemas using Typebox utilities (`Type.Object`, `Type.Partial`, etc.):
+- **Create Schema:** Combines the shared base fields, adding any fields unique to creation (such as `slug`) or applying defaults:
+  ```typescript
+  export const CreateTierBody = Type.Object({
+    slug: Type.String({ minLength: 4 }),
+    name: TierBaseFields.name,
+    price: TierBaseFields.price,
+    currency: Type.String({ default: "USD" }),
+    // ...other base fields with defaults
+  });
+  ```
+- **Update Schema:** Makes the base fields optional using `Type.Partial`:
+  ```typescript
+  export const UpdateTierBody = Type.Partial(Type.Object(TierBaseFields));
+  ```
+
+### 3. Generate and Alias Static Types
+Derive static TypeScript types from the composed schemas and export clean type aliases that match frontend expectations (such as `CreateTierParams` and `UpdateTierParams`):
+```typescript
+export type CreateTierBodyType = Static<typeof CreateTierBody>;
+export type UpdateTierBodyType = Static<typeof UpdateTierBody>;
+
+export type CreateTierParams = CreateTierBodyType;
+export type UpdateTierParams = UpdateTierBodyType;
+```
+This ensures type safety on both sides while eliminating definition redundancies.
+
 
 
 

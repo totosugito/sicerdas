@@ -1,6 +1,6 @@
 import { TierList, TierListSkeleton, TierEmptyState } from "@/components/pages/tier/list-tier";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useListTier, useDeleteTier, useUpdateTier, AppTier } from "@/api/tier";
+import { useListTier, useDeleteTier, useUpdateTier, TierItem } from "@/api/tier";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useEffect, useState } from "react";
@@ -24,7 +24,7 @@ function AdminTierPricingPage() {
   const updateMutation = useUpdateTier();
   const queryClient = useQueryClient();
 
-  const [items, setItems] = useState<AppTier[]>([]);
+  const [items, setItems] = useState<TierItem[]>([]);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [tierToDelete, setTierToDelete] = useState<{ slug: string; name: string } | null>(null);
 

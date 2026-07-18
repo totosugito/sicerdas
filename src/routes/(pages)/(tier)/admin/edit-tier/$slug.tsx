@@ -7,7 +7,7 @@ import { AppRoute } from "@/constants/app-route";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useDetailsTier } from "@/api/tier/admin/details-tier";
 import { useUpdateTier } from "@/api/tier/admin/update-tier";
-import { CreateTierRequest } from "@/api/tier/admin/create-tier";
+import { CreateTierParams } from "@/api/tier";
 import { CreateTierForm } from "@/components/pages/tier/create-tier";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -24,7 +24,7 @@ function EditTierPage() {
   const { data, isLoading, isError, error } = useDetailsTier(slug);
   const updateMutation = useUpdateTier();
 
-  const initialValues: Partial<CreateTierRequest> = useMemo(() => {
+  const initialValues: Partial<CreateTierParams> = useMemo(() => {
     if (!data?.data) return {};
     return {
       slug: data.data.slug,
@@ -40,13 +40,14 @@ function EditTierPage() {
     };
   }, [data?.data]);
 
-  const onSubmit = async (values: CreateTierRequest) => {
+  const onSubmit = async (values: CreateTierParams) => {
     updateMutation.mutate({ ...values, slug }, {
       onSuccess: (res) => {
         showNotifSuccess({
           message: res.message || t(($) => $.tier.edit.messages.success),
         });
         queryClient.invalidateQueries({ queryKey: ["admin-app-tier-details", slug] });
+        queryClient.invalidateQueries({ queryKey: ["admin-app-tier-list"] });
         navigate({ to: AppRoute.app.tier.admin.list.url });
       },
       onError: (err: any) => {

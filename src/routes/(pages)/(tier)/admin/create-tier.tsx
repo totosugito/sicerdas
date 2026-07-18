@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
+import { useQueryClient } from "@tanstack/react-query";
 import { PageTitle } from "@/components/app";
 import { CreateTierForm } from "@/components/pages/tier/create-tier";
-import { useCreateTier, CreateTierRequest } from "@/api/tier/admin/create-tier";
+import { useCreateTier, CreateTierParams } from "@/api/tier";
 import { showNotifSuccess } from "@/lib/show-notif";
 import { AppRoute } from "@/constants/app-route";
 
@@ -14,16 +15,18 @@ export const Route = createFileRoute("/(pages)/(tier)/admin/create-tier")({
 function CreateTierPage() {
   const { t } = useAppTranslation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const createMutation = useCreateTier();
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (data: CreateTierRequest) => {
+  const handleSubmit = (data: CreateTierParams) => {
     setError(null);
     createMutation.mutate(data, {
       onSuccess: (response) => {
         showNotifSuccess({
           message: response.message || t(($) => $.tier.create.messages.success),
         });
+        queryClient.invalidateQueries({ queryKey: ["admin-app-tier-list"] });
         navigate({ to: AppRoute.app.tier.admin.list.url });
       },
       onError: (error: any) => {

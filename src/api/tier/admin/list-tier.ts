@@ -1,13 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { AppTier } from "../types";
-
-export type ListTierResponse = {
-    success: boolean;
-    message: string;
-    data: AppTier[];
-};
+import { TierItem, TierResponse } from "../types";
 
 export const useListTier = () => {
     return useQuery({
@@ -19,7 +13,7 @@ export const useListTier = () => {
                 url: AppApi.tier.admin.list,
                 withCredentials: true,
             });
-            return response as ListTierResponse;
+            return response as TierResponse<TierItem[]>;
         },
     });
 };

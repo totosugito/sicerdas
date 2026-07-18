@@ -1,11 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-
-export type DeleteTierResponse = {
-    success: boolean;
-    message: string;
-};
+import type { BaseResponse } from "backend/src/types/index.ts";
 
 export const useDeleteTier = () => {
     return useMutation({
@@ -16,7 +12,7 @@ export const useDeleteTier = () => {
                 url: `${AppApi.tier.admin.crud}/${slug}`,
                 withCredentials: true,
             });
-            return response as DeleteTierResponse;
+            return response as BaseResponse;
         },
     });
 };
