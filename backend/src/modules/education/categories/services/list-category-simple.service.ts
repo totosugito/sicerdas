@@ -1,7 +1,7 @@
-import { db } from "../../../db/db-pool.ts";
-import { educationCategories } from "../../../db/schema/education/categories.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { and, eq, asc, sql } from "drizzle-orm";
-import type { ServiceResponse } from "../../../types/index.ts";
+import type { ServiceResponse } from "../../../../types/index.ts";
 import type { CategorySimpleData } from "../education.schema.ts";
 
 export interface ListCategorySimpleResult extends ServiceResponse {

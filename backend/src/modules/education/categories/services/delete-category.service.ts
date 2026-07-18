@@ -1,8 +1,8 @@
-import { db } from "../../../db/db-pool.ts";
-import { educationCategories } from "../../../db/schema/education/categories.ts";
-import { examPackages } from "../../../db/schema/exam/packages.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { educationCategories } from "../../../../db/schema/education/categories.ts";
+import { examPackages } from "../../../../db/schema/exam/packages.ts";
 import { eq } from "drizzle-orm";
-import type { ServiceResponse } from "../../../types/index.ts";
+import type { ServiceResponse } from "../../../../types/index.ts";
 
 export interface DeleteCategoryResult extends ServiceResponse {}
 

@@ -3,8 +3,8 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from "../../../db/schema/index.ts";
-import { listCategoryService } from "../../../modules/education/services/list-category.service.ts";
-import { CategoryListBody, CategoryResponse } from "../../../modules/education/education.schema.ts";
+import { listCategoryService } from "../../../modules/education/categories/services/list-category.service.ts";
+import { CategoryListBody, CategoryResponse } from "../../../modules/education/categories/education.schema.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {

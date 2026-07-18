@@ -1,5 +1,5 @@
 import { Type, type Static } from "@sinclair/typebox";
-import { BaseResponseSchema, PaginationMetaSchema } from "../../types/response.ts";
+import { BaseResponseSchema, PaginationMetaSchema } from "../../../types/response.ts";
 
 const CategoryBaseFields = {
   id: Type.String({ format: "uuid" }),

@@ -1,8 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { updateCategoryService } from "../../../../modules/education/services/update-category.service.ts";
-import { UpdateCategoryBody, UpdateCategoryResponse } from "../../../../modules/education/education.schema.ts";
+import { updateCategoryService } from "../../../../modules/education/categories/services/update-category.service.ts";
+import { UpdateCategoryBody, UpdateCategoryResponse } from "../../../../modules/education/categories/education.schema.ts";
 import { ErrorResponseSchema } from "../../../../types/response.ts";
 
 const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {

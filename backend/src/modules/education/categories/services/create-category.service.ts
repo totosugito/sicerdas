@@ -1,8 +1,8 @@
-import { db } from "../../../db/db-pool.ts";
-import { educationCategories } from "../../../db/schema/education/categories.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { eq } from "drizzle-orm";
-import { stringToKey } from "../../../utils/my-utils.ts";
-import type { ServiceResponse } from "../../../types/index.ts";
+import { stringToKey } from "../../../../utils/my-utils.ts";
+import type { ServiceResponse } from "../../../../types/index.ts";
 import type { CreateCategoryParams, CategoryData } from "../education.schema.ts";
 
 export interface CreateCategoryResult extends ServiceResponse {
