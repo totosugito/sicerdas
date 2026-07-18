@@ -1,109 +1,40 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from '@sinclair/typebox';
-import { db } from "../../../db/db-pool.ts";
-import { bookGroup, bookGroupStats, books } from "../../../db/schema/book/index.ts";
-import { eq, count, and } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
-
-const UpdateGroupStatsParams = Type.Object({
-  groupId: Type.Number({ description: 'ID of the book group to update stats for' })
-});
-
-const UpdateGroupStatsResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Object({
-    groupId: Type.Number(),
-    bookTotal: Type.Number(),
-    updatedAt: Type.String({ format: 'date-time' })
-  })
-});
+import { Type } from "@sinclair/typebox";
+import { updateGroupStatsService } from "../../../modules/book/services/update-group-stats.service.ts";
+import { GroupStatsResponse } from "../../../modules/book/book.schema.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const adminRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
-    url: '/update-group-stats/:groupId',
-    method: 'POST',
+    url: "/update-group-stats/:groupId",
+    method: "POST",
     schema: {
-      tags: ['Admin/Book'],
-      summary: 'Update book group statistics',
-      description: 'Recalculate and update the book total count for a specific book group',
-      params: UpdateGroupStatsParams,
-      response: {
-        200: UpdateGroupStatsResponse,
-      },
+      tags: ["Admin/Book"],
+      summary: "Update book group statistics",
+      description: "Recalculate and update the book total count for a specific book group",
+      params: Type.Object({ groupId: Type.Number() }),
+      response: { 200: GroupStatsResponse, "4xx": ErrorResponseSchema },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Params: typeof UpdateGroupStatsParams.static }>,
-      reply: FastifyReply
-    ): Promise<typeof UpdateGroupStatsResponse.static> {
-            const { groupId } = req.params;
+      req: FastifyRequest<{ Params: { groupId: number } }>,
+      reply: FastifyReply,
+    ): Promise<typeof GroupStatsResponse.static> {
+      const { groupId } = req.params;
+      const result = await updateGroupStatsService(groupId);
 
-      // Verify the book group exists
-      const existingGroup = await db
-        .select()
-        .from(bookGroup)
-        .where(eq(bookGroup.id, groupId))
-        .limit(1);
-
-      if (existingGroup.length === 0) {
-        return reply.status(404).send({
-          success: false,
-          message: req.t($ => $.book.groupStats.notFound),
-          data: null
-        });
-      }
-
-      // Count the total number of published books in this group
-      const bookCountResult = await db
-        .select({ count: count() })
-        .from(books)
-        .where(and(
-          eq(books.bookGroupId, groupId),
-          eq(books.status, EnumContentStatus.PUBLISHED)
-        ));
-
-      const bookTotal = Number(bookCountResult[0].count);
-
-      // Check if stats record already exists for this group
-      const existingStats = await db
-        .select()
-        .from(bookGroupStats)
-        .where(eq(bookGroupStats.bookGroupId, groupId))
-        .limit(1);
-
-      let updatedStats;
-      if (existingStats.length > 0) {
-        // Update existing stats record
-        updatedStats = await db
-          .update(bookGroupStats)
-          .set({
-            bookTotal,
-            updatedAt: new Date()
-          })
-          .where(eq(bookGroupStats.bookGroupId, groupId))
-          .returning();
-      } else {
-        // Create new stats record
-        updatedStats = await db
-          .insert(bookGroupStats)
-          .values({
-            bookGroupId: groupId,
-            bookTotal
-          })
-          .returning();
+      if (!result.success || !result.data) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 404) return reply.notFound(message);
+        return reply.internalServerError(message);
       }
 
       return reply.status(200).send({
         success: true,
-        message: req.t($ => $.book.groupStats.updateSuccess),
-        data: {
-          groupId: updatedStats[0].bookGroupId,
-          bookTotal: updatedStats[0].bookTotal,
-          updatedAt: updatedStats[0].updatedAt?.toISOString() || new Date().toISOString()
-        }
+        message: req.t(($) => $.book.groupStats.updateSuccess),
+        data: result.data,
       });
-    }
+    },
   });
 };
 

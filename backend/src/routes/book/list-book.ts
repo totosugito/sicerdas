@@ -1,98 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../db/db-pool.ts";
-import {
-  books,
-  bookCategory,
-  bookGroup,
-  bookEventStats,
-  bookInteractions,
-} from "../../db/schema/book/index.ts";
-import { educationGrades } from "../../db/schema/education/grades.ts";
-import { and, eq, inArray, sql, or, ilike, desc } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { EnumContentStatus, EnumContentType } from "../../db/schema/enum/enum-app.ts";
-import { getBookCoverUrl } from "../../utils/book/book-utils.ts";
+import { EnumContentType } from "../../db/schema/enum/enum-app.ts";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
-
-const BookListQuery = Type.Object({
-  category: Type.Optional(Type.Array(Type.Number())),
-  group: Type.Optional(Type.Array(Type.Number())),
-  grade: Type.Optional(Type.Array(Type.Number())),
-  search: Type.Optional(Type.String({ description: "Search term for book title or author" })),
-  sortBy: Type.Optional(
-    Type.String({
-      description: "Sort field: createdAt, title, rating, viewCount, updatedAt",
-      default: "createdAt",
-    }),
-  ),
-  sortOrder: Type.Optional(
-    Type.String({ description: "Sort order: asc or desc", default: "desc" }),
-  ),
-  page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
-  limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 20 })),
-});
-
-const BookResponse = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  bookId: Type.Number(),
-  title: Type.String(),
-  description: Type.Optional(Type.String()),
-  author: Type.Optional(Type.String()),
-  publishedYear: Type.String(),
-  totalPages: Type.Number(),
-  size: Type.Number(),
-  status: Type.String(),
-  rating: Type.Optional(Type.Number()),
-  viewCount: Type.Optional(Type.Number()),
-  downloadCount: Type.Optional(Type.Number()),
-  bookmarkCount: Type.Optional(Type.Number()),
-  cover: Type.Object({
-    xs: Type.String(),
-    lg: Type.String(),
-  }),
-  category: Type.Object({
-    id: Type.Number(),
-    name: Type.String(),
-  }),
-  group: Type.Object({
-    id: Type.Number(),
-    name: Type.String(),
-    shortName: Type.String(),
-  }),
-  grade: Type.Object({
-    id: Type.Number(),
-    name: Type.String(),
-    grade: Type.String(),
-  }),
-  // User interaction data (only present when user is logged in)
-  userInteraction: Type.Optional(
-    Type.Object({
-      liked: Type.Boolean(),
-      disliked: Type.Boolean(),
-      rating: Type.Number(),
-      bookmarked: Type.Boolean(),
-    }),
-  ),
-  isNew: Type.Boolean(),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
-const BookListResponse = Type.Object({
-  success: Type.Boolean({ default: true }),
-  message: Type.String({ default: "Success" }),
-  data: Type.Object({
-    items: Type.Array(BookResponse),
-    meta: Type.Object({
-      total: Type.Number(),
-      page: Type.Number(),
-      limit: Type.Number(),
-      totalPages: Type.Number(),
-    }),
-  }),
-});
+import { listBookService } from "../../modules/book/services/list-book.service.ts";
+import { BookListBody, BookListResponse } from "../../modules/book/book.schema.ts";
+import { ErrorResponseSchema } from "../../types/response.ts";
 
 const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -102,257 +15,27 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       tags: ["V1/Book"],
       summary: "List books",
       description: "Get a paginated list of books with filtering and sorting options",
-      body: BookListQuery,
-      response: {
-        200: BookListResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-      },
+      body: BookListBody,
+      response: { 200: BookListResponse, "4xx": ErrorResponseSchema },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Body: typeof BookListQuery.static }>,
+      req: FastifyRequest<{ Body: typeof BookListBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof BookListResponse.static> {
-            const {
-        category,
-        group,
-        grade,
-        search,
-        sortBy = "createdAt",
-        sortOrder = "desc",
-        page = 1,
-        limit = 10,
-      } = req.body;
-      const offset = (page - 1) * limit;
+      const session = await getAuthInstance(app).api.getSession({ headers: fromNodeHeaders(req.headers) });
+      const userId = session?.user?.id || null;
+      const latestVersionId = app.versionCache.get(EnumContentType.BOOK) ?? undefined;
 
-      const session = await getAuthInstance(app).api.getSession({
-        headers: fromNodeHeaders(req.headers),
-      });
+      const result = await listBookService(req.body, userId, latestVersionId);
 
-      // Check if user is logged in
-      const isLoggedIn = !!session?.user;
-      const userId = isLoggedIn ? session?.user?.id : null;
-
-      // Helper function to build base select query
-      const buildBaseSelect = (
-        includeStats: boolean = false,
-        includeUserInteraction: boolean = false,
-        userId: string | null = null,
-      ) => {
-        const latestVersionId = app.versionCache.get(EnumContentType.BOOK);
-
-        const baseSelect: any = {
-          id: books.id,
-          bookId: books.bookId,
-          title: books.title,
-          description: books.description,
-          author: books.author,
-          publishedYear: books.publishedYear,
-          totalPages: books.totalPages,
-          size: books.size,
-          status: books.status,
-          rating: includeStats ? bookEventStats.rating : sql<number | null>`NULL`.as("rating"),
-          viewCount: includeStats
-            ? bookEventStats.viewCount
-            : sql<number | null>`NULL`.as("viewCount"),
-          downloadCount: includeStats
-            ? bookEventStats.downloadCount
-            : sql<number | null>`NULL`.as("downloadCount"),
-          bookmarkCount: includeStats
-            ? bookEventStats.bookmarkCount
-            : sql<number | null>`NULL`.as("bookmarkCount"),
-          isNew: latestVersionId
-            ? sql<boolean>`${books.versionId} = ${latestVersionId}`.as("isNew")
-            : sql<boolean>`false`.as("isNew"),
-          createdAt: books.createdAt,
-          updatedAt: books.updatedAt,
-          category: {
-            id: bookCategory.id,
-            name: bookCategory.name,
-          },
-          group: {
-            id: bookGroup.id,
-            name: bookGroup.name,
-            shortName: bookGroup.shortName,
-          },
-          grade: {
-            id: educationGrades.id,
-            name: educationGrades.name,
-            grade: educationGrades.grade,
-          },
-        };
-
-        // Add user interaction data if user is logged in
-        if (includeUserInteraction && userId) {
-          baseSelect.liked = bookInteractions.liked;
-          baseSelect.disliked = bookInteractions.disliked;
-          baseSelect.userRating = bookInteractions.rating;
-          baseSelect.bookmarked = bookInteractions.bookmarked;
-        }
-
-        return baseSelect;
-      };
-
-      // Build the base query
-      // Start with base conditions that are always applied
-      const conditions = [];
-      conditions.push(eq(books.status, EnumContentStatus.PUBLISHED));
-
-      // Add search condition if search term is provided
-      if (search && search.trim() !== "") {
-        const searchTerm: string = `%${search.trim().toLowerCase()}%`;
-
-        conditions.push(or(ilike(books.title, searchTerm), ilike(books.author, searchTerm)));
+      if (!result.success || !result.data) {
+        return reply.internalServerError(req.t(($) => $.book.list.success));
       }
-
-      if (category?.length) {
-        // Only use the first category if multiple categories are provided
-        const categoryFilter = category.length > 1 ? [category[0]] : category;
-
-        if (categoryFilter[0] === 0) {
-          // When category is 0, we want to get books with the latest versionId
-          const latestId = app.versionCache.get(EnumContentType.BOOK);
-          if (latestId) {
-            conditions.push(eq(books.versionId, latestId));
-          }
-        } else if (categoryFilter[0] > 0) {
-          conditions.push(inArray(bookCategory.id, categoryFilter));
-
-          if (group?.length) {
-            conditions.push(inArray(bookGroup.id, group));
-          }
-
-          if (grade?.length) {
-            conditions.push(inArray(educationGrades.id, grade));
-          }
-        }
-      }
-
-      // Build base query with joins
-      let baseQuery = db
-        .select(buildBaseSelect(true, isLoggedIn, userId))
-        .from(books)
-        .leftJoin(bookGroup, eq(books.bookGroupId, bookGroup.id))
-        .leftJoin(bookCategory, eq(bookGroup.categoryId, bookCategory.id))
-        .leftJoin(educationGrades, eq(books.educationGradeId, educationGrades.id))
-        .leftJoin(bookEventStats, eq(books.id, bookEventStats.bookId));
-
-      // Add user interaction join if user is logged in
-      if (isLoggedIn && userId) {
-        baseQuery = baseQuery.leftJoin(
-          bookInteractions,
-          and(eq(books.id, bookInteractions.bookId), eq(bookInteractions.userId, userId)),
-        );
-      }
-
-      const queryWithWhere = baseQuery.where(and(...conditions));
-
-      // Add sorting
-      const order = sortOrder === "asc" ? "asc" : "desc";
-      let query;
-
-      switch (sortBy) {
-        case "title":
-          query =
-            order === "asc"
-              ? queryWithWhere.orderBy(books.title)
-              : queryWithWhere.orderBy(desc(books.title));
-          break;
-        case "rating":
-          query =
-            order === "asc"
-              ? queryWithWhere.orderBy(bookEventStats.rating)
-              : queryWithWhere.orderBy(desc(bookEventStats.rating));
-          break;
-        case "viewCount":
-          query =
-            order === "asc"
-              ? queryWithWhere.orderBy(bookEventStats.viewCount)
-              : queryWithWhere.orderBy(desc(bookEventStats.viewCount));
-          break;
-        case "downloadCount":
-          query =
-            order === "asc"
-              ? queryWithWhere.orderBy(bookEventStats.downloadCount)
-              : queryWithWhere.orderBy(desc(bookEventStats.downloadCount));
-          break;
-        case "bookmarkCount":
-          query =
-            order === "asc"
-              ? queryWithWhere.orderBy(bookEventStats.bookmarkCount)
-              : queryWithWhere.orderBy(desc(bookEventStats.bookmarkCount));
-          break;
-        case "updatedAt":
-          query =
-            order === "asc"
-              ? queryWithWhere.orderBy(books.updatedAt)
-              : queryWithWhere.orderBy(desc(books.updatedAt));
-          break;
-        case "createdAt":
-        default:
-          query =
-            order === "asc"
-              ? queryWithWhere.orderBy(books.createdAt)
-              : queryWithWhere.orderBy(desc(books.createdAt));
-          break;
-      }
-
-      // Get total count for pagination
-      const countResult = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(query.as("subquery"));
-
-      const total = Number(countResult[0]?.count || 0);
-      const totalPages = Math.ceil(total / limit);
-
-      // Apply pagination
-      const items = await query.limit(limit).offset(offset);
 
       return reply.status(200).send({
         success: true,
         message: req.t(($) => $.book.list.success),
-        data: {
-          items: items.map((item: any) => {
-            const processedItem = {
-              ...item,
-              isNew: !!item.isNew,
-              cover: getBookCoverUrl({ bookId: item?.bookId }),
-              createdAt: item?.createdAt ? item?.createdAt.toISOString() : new Date().toISOString(),
-              updatedAt: item?.updatedAt ? item?.updatedAt.toISOString() : new Date().toISOString(),
-            };
-
-            // Add user interaction data if user is logged in
-            if (isLoggedIn && "liked" in item) {
-              return {
-                ...processedItem,
-                userInteraction: {
-                  liked: (item as any).liked !== undefined ? (item as any).liked : false,
-                  disliked: (item as any).disliked !== undefined ? (item as any).disliked : false,
-                  rating:
-                    (item as any).userRating !== undefined && (item as any).userRating !== null
-                      ? parseFloat((item as any).userRating.toString())
-                      : 0,
-                  bookmarked:
-                    (item as any).bookmarked !== undefined ? (item as any).bookmarked : false,
-                },
-              };
-            }
-
-            return processedItem;
-          }),
-          meta: {
-            total,
-            page,
-            limit,
-            totalPages,
-          },
-        },
+        data: result.data,
       });
     },
   });
