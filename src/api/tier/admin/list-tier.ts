@@ -5,7 +5,7 @@ import { TierItem, TierResponse } from "../types";
 
 export const useListTier = () => {
     return useQuery({
-        queryKey: ["admin-app-tier-list"],
+        queryKey: ["admin-tier-list"],
         staleTime: 5 * 60 * 1000,
         queryFn: async () => {
             const response = await fetchApi({

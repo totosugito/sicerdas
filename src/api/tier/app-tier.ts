@@ -5,7 +5,7 @@ import { TierItem, TierResponse } from "./types";
 
 export const usePublicAppTier = () => {
     return useQuery({
-        queryKey: ["public-app-tier"],
+        queryKey: ["public-tier"],
         queryFn: async () => {
             const response = await fetchApi({
                 method: "GET",

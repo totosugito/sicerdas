@@ -54,7 +54,7 @@ function AdminTierPricingPage() {
     deleteMutation.mutate(tierToDelete.slug, {
       onSuccess: (data) => {
         showNotifSuccess({ message: data.message });
-        queryClient.invalidateQueries({ queryKey: ["admin-app-tier-list"] });
+        queryClient.invalidateQueries({ queryKey: ["admin-tier-list"] });
         setShowDeleteDialog(false);
         setTierToDelete(null);
       },
@@ -93,11 +93,11 @@ function AdminTierPricingPage() {
         )
           .then((success: any) => {
             showNotifSuccess({ message: success.message || t(($) => $.tier.list.orderSuccess) });
-            queryClient.invalidateQueries({ queryKey: ["admin-app-tier-list"] });
+            queryClient.invalidateQueries({ queryKey: ["admin-tier-list"] });
           })
           .catch((error: any) => {
             showNotifError({ message: error.message || t(($) => $.tier.list.orderError) });
-            queryClient.invalidateQueries({ queryKey: ["admin-app-tier-list"] });
+            queryClient.invalidateQueries({ queryKey: ["admin-tier-list"] });
           });
 
         return updatedItems;

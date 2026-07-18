@@ -5,7 +5,7 @@ import type { BaseResponse } from "backend/src/types/index.ts";
 
 export const useDeleteTier = () => {
     return useMutation({
-        mutationKey: ["admin-app-tier-delete"],
+        mutationKey: ["admin-tier-delete"],
         mutationFn: async (slug: string) => {
             const response = await fetchApi({
                 method: "DELETE",

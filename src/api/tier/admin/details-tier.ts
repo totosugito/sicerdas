@@ -5,7 +5,7 @@ import { TierResponse } from "../types";
 
 export const useDetailsTier = (slug: string) => {
     return useQuery({
-        queryKey: ["admin-app-tier-details", slug],
+        queryKey: ["admin-tier-details", slug],
         queryFn: async () => {
             const response = await fetchApi({
                 method: "GET",

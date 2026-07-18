@@ -26,7 +26,7 @@ function CreateTierPage() {
         showNotifSuccess({
           message: response.message || t(($) => $.tier.create.messages.success),
         });
-        queryClient.invalidateQueries({ queryKey: ["admin-app-tier-list"] });
+        queryClient.invalidateQueries({ queryKey: ["admin-tier-list"] });
         navigate({ to: AppRoute.app.tier.admin.list.url });
       },
       onError: (error: any) => {

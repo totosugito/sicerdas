@@ -46,8 +46,8 @@ function EditTierPage() {
         showNotifSuccess({
           message: res.message || t(($) => $.tier.edit.messages.success),
         });
-        queryClient.invalidateQueries({ queryKey: ["admin-app-tier-details", slug] });
-        queryClient.invalidateQueries({ queryKey: ["admin-app-tier-list"] });
+        queryClient.invalidateQueries({ queryKey: ["admin-tier-details", slug] });
+        queryClient.invalidateQueries({ queryKey: ["admin-tier-list"] });
         navigate({ to: AppRoute.app.tier.admin.list.url });
       },
       onError: (err: any) => {

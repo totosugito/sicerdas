@@ -20,7 +20,7 @@ export const AppApi = {
       list: APP_URL_API + "/tier/admin/list-tier",
       crud: APP_URL_API + "/tier/admin",
     },
-    list: APP_URL_API + "/app-tier",
+    list: APP_URL_API + "/tier",
   },
   users: {
     admin: {

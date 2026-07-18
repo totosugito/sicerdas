@@ -5,7 +5,7 @@ import { CreateTierParams, TierResponse } from "../types";
 
 export const useCreateTier = () => {
     return useMutation({
-        mutationKey: ["admin-app-tier-create"],
+        mutationKey: ["admin-tier-create"],
         mutationFn: async (data: CreateTierParams) => {
             const response = await fetchApi({
                 method: "POST",
