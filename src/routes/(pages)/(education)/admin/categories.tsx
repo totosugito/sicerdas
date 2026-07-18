@@ -2,8 +2,8 @@ import { createFileRoute } from '@tanstack/react-router';
 import {
     useListCategory,
     useDeleteCategory,
-    ExamCategory,
-    ListCategoryResponse
+    CategoryData,
+    CategoryListResponse
 } from '@/api/education/categories';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
@@ -55,7 +55,7 @@ function AdminExamCategoriesPage() {
     // Dialog & Modal States
     const [showDialog, setShowDialog] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState<ExamCategory | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<CategoryData | null>(null);
 
     // Handlers
     const handleAdd = () => {
@@ -63,12 +63,12 @@ function AdminExamCategoriesPage() {
         setShowDialog(true);
     };
 
-    const handleEdit = (category: ExamCategory) => {
+    const handleEdit = (category: CategoryData) => {
         setSelectedCategory(category);
         setShowDialog(true);
     };
 
-    const handleDelete = (category: ExamCategory) => {
+    const handleDelete = (category: CategoryData) => {
         setSelectedCategory(category);
         setShowDeleteDialog(true);
     };
@@ -101,7 +101,7 @@ function AdminExamCategoriesPage() {
             </div>
 
             <CategoryTable
-                data={data as ListCategoryResponse}
+                data={data as CategoryListResponse}
                 isLoading={isLoading}
                 paginationData={data?.data.meta as PaginationData}
                 onPaginationChange={(pagination: { page: number; limit: number }) => {

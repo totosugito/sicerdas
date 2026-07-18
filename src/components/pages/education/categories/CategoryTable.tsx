@@ -1,4 +1,4 @@
-import { ExamCategory, ListCategoryResponse } from "@/api/education/categories";
+import { CategoryData, CategoryListResponse } from "@/api/education/categories";
 import {
   DataTable,
   useDataTable,
@@ -25,7 +25,7 @@ import { string_to_locale_date } from "@/lib/my-utils";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 interface CategoryTableProps {
-  data: ListCategoryResponse;
+  data: CategoryListResponse;
   isLoading: boolean;
   paginationData: PaginationData;
   onPaginationChange?: (pagination: { page: number; limit: number }) => void;
@@ -33,8 +33,8 @@ interface CategoryTableProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
-  onEdit: (category: ExamCategory) => void;
-  onDelete: (category: ExamCategory) => void;
+  onEdit: (category: CategoryData) => void;
+  onDelete: (category: CategoryData) => void;
 }
 
 export function CategoryTable({
@@ -51,8 +51,8 @@ export function CategoryTable({
 }: CategoryTableProps) {
   const { t } = useAppTranslation();
 
-  const columns: ColumnDef<ExamCategory>[] = [
-    createRowNumberColumn<ExamCategory>({
+  const columns: ColumnDef<CategoryData>[] = [
+    createRowNumberColumn<CategoryData>({
       id: "no",
       size: 50,
       paginationData: paginationData,

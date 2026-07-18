@@ -3,10 +3,10 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import { ControlForm } from "@/components/custom/forms";
 import {
-    ExamCategory,
+    CategoryData,
     useCreateCategory,
     useUpdateCategory,
-    CreateCategoryRequest,
+    CreateCategoryParams,
     UpdateCategoryRequest
 } from "@/api/education/categories";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 export type DialogCategoryCreateProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    category?: ExamCategory | null;
+    category?: CategoryData | null;
 };
 
 const FormCategory = ({ values, form }: any) => {
@@ -90,7 +90,7 @@ export const DialogCategoryCreate = ({ open, onOpenChange, category }: DialogCat
                     }
                 });
             } else {
-                await createMutation.mutateAsync(values as CreateCategoryRequest, {
+                await createMutation.mutateAsync(values as CreateCategoryParams, {
                     onSuccess: (res) => {
                         showNotifSuccess({ message: res.message || t($ => $.education.categories.notifications.createSuccess) });
                         queryClient.invalidateQueries({ queryKey: ["education-categories-list"] });
