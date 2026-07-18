@@ -3,11 +3,11 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import { ControlForm } from "@/components/custom/forms";
 import {
-  EducationGrade,
+  GradeData,
   useCreateEducationGrade,
   useUpdateEducationGrade,
-  CreateEducationGradeRequest,
-  UpdateEducationGradeRequest,
+  CreateGradeParams,
+  UpdateGradeRequest,
 } from "@/api/education/grades";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
@@ -15,7 +15,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 export type DialogGradeCreateProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  gradeData?: EducationGrade | null;
+  gradeData?: GradeData | null;
 };
 
 const FormGrade = ({ values, form }: any) => {
@@ -121,7 +121,7 @@ export const DialogGradeCreate = ({ open, onOpenChange, gradeData }: DialogGrade
         const { grade, ...payloadWithoutGrade } = values as any;
 
         await updateMutation.mutateAsync(
-          { id: gradeData.id, ...payloadWithoutGrade } as UpdateEducationGradeRequest,
+          { id: gradeData.id, ...payloadWithoutGrade } as UpdateGradeRequest,
           {
             onSuccess: (res) => {
               showNotifSuccess({
@@ -136,7 +136,7 @@ export const DialogGradeCreate = ({ open, onOpenChange, gradeData }: DialogGrade
           },
         );
       } else {
-        await createMutation.mutateAsync(values as CreateEducationGradeRequest, {
+        await createMutation.mutateAsync(values as CreateGradeParams, {
           onSuccess: (res) => {
             showNotifSuccess({
               message: res.message || t(($) => $.education.grade.notifications.createSuccess),

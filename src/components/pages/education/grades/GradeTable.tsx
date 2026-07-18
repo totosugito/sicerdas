@@ -1,4 +1,4 @@
-import { EducationGrade, ListEducationGradeResponse } from "@/api/education/grades";
+import { GradeData, GradeListResponse } from "@/api/education/grades";
 import {
   DataTable,
   useDataTable,
@@ -25,7 +25,7 @@ import { string_to_locale_date } from "@/lib/my-utils";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 interface GradeTableProps {
-  data: ListEducationGradeResponse;
+  data: GradeListResponse;
   isLoading: boolean;
   paginationData: PaginationData;
   onPaginationChange?: (pagination: { page: number; limit: number }) => void;
@@ -33,8 +33,8 @@ interface GradeTableProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
-  onEdit: (grade: EducationGrade) => void;
-  onDelete: (grade: EducationGrade) => void;
+  onEdit: (grade: GradeData) => void;
+  onDelete: (grade: GradeData) => void;
 }
 
 export function GradeTable({
@@ -51,8 +51,8 @@ export function GradeTable({
 }: GradeTableProps) {
   const { t } = useAppTranslation();
 
-  const columns: ColumnDef<EducationGrade>[] = [
-    createRowNumberColumn<EducationGrade>({
+  const columns: ColumnDef<GradeData>[] = [
+    createRowNumberColumn<GradeData>({
       id: "no",
       size: 50,
       paginationData: paginationData,

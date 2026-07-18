@@ -1,37 +1,18 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { EducationGrade } from "./types";
-import { PaginationData } from "@/components/custom/table";
+import type { GradeListParams, GradeListResponse } from "./types";
 
-export interface ListEducationGradeRequest {
-    search?: string;
-    sortBy?: string;
-    sortOrder?: 'asc' | 'desc';
-    page?: number;
-    limit?: number;
-}
-
-export interface ListEducationGradeResponse {
-    success: boolean;
-    message: string;
-    data: {
-        items: EducationGrade[];
-        meta: PaginationData;
-    };
-}
-
-export const useListEducationGrade = (params: ListEducationGradeRequest) => {
-    return useQuery({
-        queryKey: ["education-grade-list", params],
-        queryFn: async () => {
-            const response = await fetchApi({
-                method: "POST",
-                url: AppApi.education.grade.list,
-                body: params,
-                withCredentials: true,
-            });
-            return response as ListEducationGradeResponse;
-        },
-    });
+export const useListEducationGrade = (params: GradeListParams) => {
+  return useQuery({
+    queryKey: ["education-grade-list", params],
+    queryFn: async () => {
+      const response = await fetchApi({
+        method: "POST",
+        url: AppApi.education.grade.list,
+        body: params,
+      });
+      return response as GradeListResponse;
+    },
+  });
 };

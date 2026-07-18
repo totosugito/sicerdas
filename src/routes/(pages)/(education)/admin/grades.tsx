@@ -2,8 +2,8 @@ import { createFileRoute } from '@tanstack/react-router';
 import {
   useListEducationGrade,
   useDeleteEducationGrade,
-  EducationGrade,
-  ListEducationGradeResponse
+  GradeData,
+  GradeListResponse
 } from '@/api/education/grades';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
@@ -25,10 +25,10 @@ export const Route = createFileRoute('/(pages)/(education)/admin/grades')({
     sortBy: z.string().optional().catch(undefined),
     sortOrder: z.enum(['asc', 'desc']).optional().catch(undefined),
   }),
-  component: AdminEducationGradesPage,
+  component: AdminGradeDatasPage,
 });
 
-function AdminEducationGradesPage() {
+function AdminGradeDatasPage() {
   const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const navigate = Route.useNavigate();
@@ -55,7 +55,7 @@ function AdminEducationGradesPage() {
   // Dialog & Modal States
   const [showDialog, setShowDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [selectedGrade, setSelectedGrade] = useState<EducationGrade | null>(null);
+  const [selectedGrade, setSelectedGrade] = useState<GradeData | null>(null);
 
   // Handlers
   const handleAdd = () => {
@@ -63,12 +63,12 @@ function AdminEducationGradesPage() {
     setShowDialog(true);
   };
 
-  const handleEdit = (grade: EducationGrade) => {
+  const handleEdit = (grade: GradeData) => {
     setSelectedGrade(grade);
     setShowDialog(true);
   };
 
-  const handleDelete = (grade: EducationGrade) => {
+  const handleDelete = (grade: GradeData) => {
     setSelectedGrade(grade);
     setShowDeleteDialog(true);
   };
@@ -101,7 +101,7 @@ function AdminEducationGradesPage() {
       </div>
 
       <GradeTable
-        data={data as ListEducationGradeResponse}
+        data={data as GradeListResponse}
         isLoading={isLoading}
         paginationData={data?.data.meta as PaginationData}
         onPaginationChange={(pagination: { page: number; limit: number }) => {

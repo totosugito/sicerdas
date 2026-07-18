@@ -1,27 +1,18 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { EducationGradeDetailResponse } from "../types";
-
-export interface CreateEducationGradeRequest {
-  grade: string;
-  name: string;
-  desc?: string;
-  extra?: any;
-  isDefault?: boolean;
-}
+import type { CreateGradeParams, GradeResponse } from "../types";
 
 export const useCreateEducationGrade = () => {
   return useMutation({
     mutationKey: ["admin-education-grade-create"],
-    mutationFn: async (body: CreateEducationGradeRequest) => {
+    mutationFn: async (body: CreateGradeParams) => {
       const response = await fetchApi({
         method: "POST",
         url: AppApi.education.grade.admin.create,
         body,
-        withCredentials: true,
       });
-      return response as EducationGradeDetailResponse;
+      return response as GradeResponse;
     },
   });
 };
