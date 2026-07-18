@@ -1,4 +1,4 @@
-import { ExamSubject, ListSubjectResponse } from "@/api/exam/subjects";
+import { SubjectData, SubjectListResponse } from "@/api/exam/subjects";
 import {
   DataTable,
   useDataTable,
@@ -25,7 +25,7 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface SubjectTableProps {
-  data: ListSubjectResponse;
+  data: SubjectListResponse;
   isLoading: boolean;
   paginationData: PaginationData;
   onPaginationChange?: (pagination: { page: number; limit: number }) => void;
@@ -33,8 +33,8 @@ interface SubjectTableProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
-  onEdit: (subject: ExamSubject) => void;
-  onDelete: (subject: ExamSubject) => void;
+  onEdit: (subject: SubjectData) => void;
+  onDelete: (subject: SubjectData) => void;
 }
 
 export function SubjectTable({
@@ -51,8 +51,8 @@ export function SubjectTable({
 }: SubjectTableProps) {
   const { t } = useAppTranslation();
 
-  const columns: ColumnDef<ExamSubject>[] = [
-    createRowNumberColumn<ExamSubject>({
+  const columns: ColumnDef<SubjectData>[] = [
+    createRowNumberColumn<SubjectData>({
       id: "no",
       size: 50,
       paginationData: paginationData,

@@ -1,24 +1,17 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { ExamSubjectDetailResponse } from "../types";
-
-export interface CreateSubjectRequest {
-    name: string;
-    description?: string;
-    isActive?: boolean;
-}
+import type { CreateSubjectParams, SubjectResponse } from "../types";
 
 export const useCreateSubject = () => {
-    return useMutation({
-        mutationFn: async (body: CreateSubjectRequest) => {
-            const response = await fetchApi({
-                method: "POST",
-                url: AppApi.exam.subjects.admin.create,
-                body,
-                withCredentials: true,
-            });
-            return response as ExamSubjectDetailResponse;
-        },
-    });
+  return useMutation({
+    mutationFn: async (body: CreateSubjectParams) => {
+      const response = await fetchApi({
+        method: "POST",
+        url: AppApi.exam.subjects.admin.create,
+        body,
+      });
+      return response as SubjectResponse;
+    },
+  });
 };

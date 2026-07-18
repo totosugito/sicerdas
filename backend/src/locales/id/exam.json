@@ -6,7 +6,8 @@
         "exists": "Mata pelajaran dengan nama tersebut sudah ada"
       },
       "list": {
-        "success": "Berhasil mengambil daftar mata pelajaran ujian"
+        "success": "Berhasil mengambil daftar mata pelajaran ujian",
+        "error": "Gagal mengambil daftar mata pelajaran ujian"
       },
       "update": {
         "success": "Mata pelajaran ujian berhasil diperbarui",

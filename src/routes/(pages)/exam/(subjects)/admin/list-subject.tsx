@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   useListSubject,
   useDeleteSubject,
-  ExamSubject,
-  ListSubjectResponse,
+  SubjectData,
+  SubjectListResponse,
 } from "@/api/exam/subjects";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
@@ -55,7 +55,7 @@ function AdminExamSubjectsPage() {
   // Dialog & Modal States
   const [showDialog, setShowDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState<ExamSubject | null>(null);
+  const [selectedSubject, setSelectedSubject] = useState<SubjectData | null>(null);
 
   // Handlers
   const handleAdd = () => {
@@ -63,12 +63,12 @@ function AdminExamSubjectsPage() {
     setShowDialog(true);
   };
 
-  const handleEdit = (subject: ExamSubject) => {
+  const handleEdit = (subject: SubjectData) => {
     setSelectedSubject(subject);
     setShowDialog(true);
   };
 
-  const handleDelete = (subject: ExamSubject) => {
+  const handleDelete = (subject: SubjectData) => {
     setSelectedSubject(subject);
     setShowDeleteDialog(true);
   };
@@ -101,7 +101,7 @@ function AdminExamSubjectsPage() {
       </div>
 
       <SubjectTable
-        data={data as ListSubjectResponse}
+        data={data as SubjectListResponse}
         isLoading={isLoading}
         paginationData={data?.data.meta as PaginationData}
         onPaginationChange={(pagination: { page: number; limit: number }) => {

@@ -1,25 +1,17 @@
-export {
-    type ExamSubject,
-    type ExamSubjectResponse,
-    type ExamSubjectDetailResponse,
+export type {
+  SubjectData,
+  SubjectSimpleData,
+  SubjectListParams,
+  CreateSubjectParams,
+  UpdateSubjectParams,
+  SubjectListResponse,
+  SubjectSimpleResponse,
+  SubjectResponse,
 } from "./types";
-export {
-    type ListSubjectRequest,
-    type ListSubjectResponse,
-    useListSubject,
-} from "./list-subject";
+export type { UpdateSubjectRequest } from "./admin/update-subject";
+export { useListSubject } from "./list-subject";
+export { useListSubjectSimple } from "./list-subject-simple";
 export { useDetailSubject } from "./detail-subject";
-export {
-    type CreateSubjectRequest,
-    useCreateSubject,
-} from "./admin/create-subject";
-export {
-    type UpdateSubjectRequest,
-    useUpdateSubject,
-} from "./admin/update-subject";
-export {
-    type ListSubjectSimpleRequest,
-    type ListSubjectsSimpleResponse,
-    useListSubjectSimple,
-} from "./list-subject-simple";
+export { useCreateSubject } from "./admin/create-subject";
+export { useUpdateSubject } from "./admin/update-subject";
 export { useDeleteSubject } from "./admin/delete-subject";

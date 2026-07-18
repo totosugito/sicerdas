@@ -1,104 +1,41 @@
-import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import type { FastifyReply, FastifyRequest } from 'fastify';
-import { Type } from '@sinclair/typebox';
-import { db } from '../../../../db/db-pool.ts';
-import { examSubjects } from '../../../../db/schema/exam/subjects.ts';
-import { eq, and, ne } from 'drizzle-orm';
-
-const UpdateSubjectParams = Type.Object({
-    id: Type.String({ format: 'uuid' })
-});
-
-const UpdateSubjectBody = Type.Object({
-    name: Type.String({ minLength: 1 }),
-    description: Type.Optional(Type.String()),
-    isActive: Type.Optional(Type.Boolean()),
-});
-
-const SubjectResponseItem = Type.Object({
-    id: Type.String({ format: 'uuid' }),
-    name: Type.String(),
-    description: Type.Union([Type.String(), Type.Null()]),
-    isActive: Type.Boolean(),
-    createdAt: Type.String({ format: 'date-time' }),
-    updatedAt: Type.String({ format: 'date-time' }),
-});
-
-const UpdateSubjectResponse = Type.Object({
-    success: Type.Boolean(),
-    message: Type.String(),
-    data: SubjectResponseItem,
-});
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { Type } from "@sinclair/typebox";
+import { updateSubjectService } from "../../../../modules/exam/subjects/services/update-subject.service.ts";
+import { UpdateSubjectBody, SubjectDetailResponse } from "../../../../modules/exam/subjects/education.schema.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 
 const updateSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
-    app.route({
-        url: '/update/:id',
-        method: 'PUT',
-        schema: {
-            tags: ['Admin Exam Subjects'],
-            params: UpdateSubjectParams,
-            body: UpdateSubjectBody,
-            response: {
-                200: UpdateSubjectResponse,
-                '4xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                }),
-                '5xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                })
-            }
-        },
-        handler: async function handler(
-            request: FastifyRequest<{ Params: typeof UpdateSubjectParams.static, Body: typeof UpdateSubjectBody.static }>,
-            reply: FastifyReply
-        ) {
-                        const { id } = request.params;
-            const { name, description, isActive } = request.body;
+  app.route({
+    url: "/update/:id",
+    method: "PUT",
+    schema: {
+      tags: ["Admin Exam Subjects"],
+      params: Type.Object({ id: Type.String({ format: "uuid" }) }),
+      body: UpdateSubjectBody,
+      response: { 200: SubjectDetailResponse, "4xx": ErrorResponseSchema },
+    },
+    handler: async function handler(
+      request: FastifyRequest<{ Params: { id: string }; Body: typeof UpdateSubjectBody.static }>,
+      reply: FastifyReply,
+    ): Promise<typeof SubjectDetailResponse.static> {
+      const { id } = request.params;
+      const result = await updateSubjectService(id, request.body);
 
-            // Ensure subject exists
-            const existingSubject = await db.query.examSubjects.findFirst({
-                where: eq(examSubjects.id, id)
-            });
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) return reply.notFound(message);
+        if (result.statusCode === 409) return reply.badRequest(message);
+        return reply.internalServerError(message);
+      }
 
-            if (!existingSubject) {
-                return reply.notFound(request.t($ => $.exam.subjects.update.notFound));
-            }
-
-            // Check if new name conflicts with another existing subject
-            const nameConflict = await db.query.examSubjects.findFirst({
-                where: and(
-                    eq(examSubjects.name, name),
-                    ne(examSubjects.id, id)
-                )
-            });
-
-            if (nameConflict) {
-                return reply.badRequest(request.t($ => $.exam.subjects.update.exists));
-            }
-
-            const [updatedSubject] = await db.update(examSubjects)
-                .set({
-                    name,
-                    description,
-                    isActive,
-                    updatedAt: new Date()
-                })
-                .where(eq(examSubjects.id, id))
-                .returning();
-
-            return reply.status(200).send({
-                success: true,
-                message: request.t($ => $.exam.subjects.update.success),
-                data: {
-                    ...updatedSubject,
-                    createdAt: updatedSubject.createdAt.toISOString(),
-                    updatedAt: updatedSubject.updatedAt.toISOString(),
-                }
-            });
-        },
-    });
+      return reply.status(200).send({
+        success: true,
+        message: request.t(($) => $.exam.subjects.update.success),
+        data: result.data,
+      });
+    },
+  });
 };
 
 export default updateSubjectRoute;

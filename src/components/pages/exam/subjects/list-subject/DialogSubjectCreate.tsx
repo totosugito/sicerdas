@@ -3,10 +3,10 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import { ControlForm } from "@/components/custom/forms";
 import {
-    ExamSubject,
+    SubjectData,
     useCreateSubject,
     useUpdateSubject,
-    CreateSubjectRequest,
+    CreateSubjectParams,
     UpdateSubjectRequest
 } from "@/api/exam/subjects";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 export type DialogSubjectCreateProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    subject?: ExamSubject | null;
+    subject?: SubjectData | null;
 };
 
 const FormSubject = ({ values, form }: any) => {
@@ -91,7 +91,7 @@ export const DialogSubjectCreate = ({ open, onOpenChange, subject }: DialogSubje
                     }
                 });
             } else {
-                await createMutation.mutateAsync(values as CreateSubjectRequest, {
+                await createMutation.mutateAsync(values as CreateSubjectParams, {
                     onSuccess: (res) => {
                         showNotifSuccess({ message: res.message || t($ => $.exam.subjects.notifications.createSuccess) });
                         queryClient.invalidateQueries({ queryKey: ["exam-subjects-list"] });

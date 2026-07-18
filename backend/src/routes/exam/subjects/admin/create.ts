@@ -1,30 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
-import { eq } from "drizzle-orm";
-
-const CreateSubjectBody = Type.Object({
-  name: Type.String({ minLength: 1 }),
-  description: Type.Optional(Type.String()),
-  isActive: Type.Optional(Type.Boolean({ default: true })),
-});
-
-const SubjectResponseItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  name: Type.String(),
-  description: Type.Union([Type.String(), Type.Null()]),
-  isActive: Type.Boolean(),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
-const CreateSubjectResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: SubjectResponseItem,
-});
+import { createSubjectService } from "../../../../modules/exam/subjects/services/create-subject.service.ts";
+import { CreateSubjectBody, SubjectDetailResponse } from "../../../../modules/exam/subjects/education.schema.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 
 const createSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -33,53 +11,25 @@ const createSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Admin Exam Subjects"],
       body: CreateSubjectBody,
-      response: {
-        201: CreateSubjectResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-      },
+      response: { 201: SubjectDetailResponse, "4xx": ErrorResponseSchema },
     },
     handler: async function handler(
       request: FastifyRequest<{ Body: typeof CreateSubjectBody.static }>,
       reply: FastifyReply,
-    ) {
-            const { name, description, isActive } = request.body;
-
-      // Check if name already exists
-      const existingSubject = await db.query.examSubjects.findFirst({
-        where: eq(examSubjects.name, name),
-      });
-
-      if (existingSubject) {
-        return reply.badRequest(request.t(($) => $.exam.subjects.create.exists));
-      }
-
+    ): Promise<typeof SubjectDetailResponse.static> {
       const userId = request.session.user.id;
+      const result = await createSubjectService(request.body, userId);
 
-      const [newSubject] = await db
-        .insert(examSubjects)
-        .values({
-          name,
-          description,
-          isActive: isActive ?? true,
-          createdByUserId: userId,
-        })
-        .returning();
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 409) return reply.badRequest(message);
+        return reply.internalServerError(message);
+      }
 
       return reply.status(201).send({
         success: true,
         message: request.t(($) => $.exam.subjects.create.success),
-        data: {
-          ...newSubject,
-          createdAt: newSubject.createdAt.toISOString(),
-          updatedAt: newSubject.updatedAt.toISOString(),
-        },
+        data: result.data,
       });
     },
   });

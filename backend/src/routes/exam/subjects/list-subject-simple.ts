@@ -1,96 +1,36 @@
-import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import type { FastifyReply, FastifyRequest } from 'fastify';
-import { Type } from '@sinclair/typebox';
-import { db } from '../../../db/db-pool.ts';
-import { examSubjects } from '../../../db/schema/exam/subjects.ts';
-import { and, eq, asc, sql, ilike } from 'drizzle-orm';
-
-const SubjectSimpleQuery = Type.Object({
-    search: Type.Optional(Type.String()),
-    page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
-    limit: Type.Optional(Type.Number({ default: 1000, minimum: 1, maximum: 2000 })),
-});
-
-const SubjectSimpleResponseItem = Type.Object({
-    value: Type.String({ format: 'uuid' }),
-    label: Type.String(),
-});
-
-const ListSubjectsSimpleResponse = Type.Object({
-    success: Type.Boolean(),
-    message: Type.String(),
-    data: Type.Object({
-        items: Type.Array(SubjectSimpleResponseItem),
-        meta: Type.Object({
-            total: Type.Number(),
-            page: Type.Number(),
-            limit: Type.Number(),
-            totalPages: Type.Number(),
-        })
-    }),
-});
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { listSubjectSimpleService } from "../../../modules/exam/subjects/services/list-subject-simple.service.ts";
+import { SubjectSimpleBody, SubjectSimpleResponse } from "../../../modules/exam/subjects/education.schema.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const listSubjectsSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
-    app.route({
-        url: '/list-simple',
-        method: 'POST',
-        schema: {
-            tags: ['Exam Subjects'],
-            body: SubjectSimpleQuery,
-            response: {
-                200: ListSubjectsSimpleResponse,
-                '4xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-                '5xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-            }
-        },
-        handler: async function handler(
-            request: FastifyRequest<{ Body: typeof SubjectSimpleQuery.static }>,
-            reply: FastifyReply
-        ) {
-                        const { search, page = 1, limit = 1000 } = request.body;
-            const offset = (page - 1) * limit;
+  app.route({
+    url: "/list-simple",
+    method: "POST",
+    schema: {
+      tags: ["Exam Subjects"],
+      body: SubjectSimpleBody,
+      response: { 200: SubjectSimpleResponse, "4xx": ErrorResponseSchema },
+    },
+    handler: async function handler(
+      request: FastifyRequest<{ Body: typeof SubjectSimpleBody.static }>,
+      reply: FastifyReply,
+    ): Promise<typeof SubjectSimpleResponse.static> {
+      const { search, page = 1, limit = 1000 } = request.body;
+      const result = await listSubjectSimpleService(search, page, limit);
 
-            const conditions = [eq(examSubjects.isActive, true)];
+      if (!result.success || !result.data) {
+        return reply.internalServerError(request.t(($) => $.exam.subjects.list.error));
+      }
 
-            if (search && search.trim() !== '') {
-                conditions.push(ilike(examSubjects.name, `%${search.trim().toLowerCase()}%`));
-            }
-
-            // Count
-            const countResult = await db
-                .select({ count: sql<number>`count(*)` })
-                .from(examSubjects)
-                .where(and(...conditions));
-
-            const total = Number(countResult[0]?.count || 0);
-            const totalPages = Math.ceil(total / limit);
-
-            // Fetch
-            const items = await db.select({
-                value: examSubjects.id,
-                label: examSubjects.name,
-            })
-                .from(examSubjects)
-                .where(and(...conditions))
-                .orderBy(asc(examSubjects.name))
-                .limit(limit)
-                .offset(offset);
-
-            return reply.status(200).send({
-                success: true,
-                message: request.t($ => $.exam.subjects.list.success),
-                data: {
-                    items,
-                    meta: {
-                        total,
-                        page,
-                        limit,
-                        totalPages,
-                    }
-                }
-            });
-        },
-    });
+      return reply.status(200).send({
+        success: true,
+        message: request.t(($) => $.exam.subjects.list.success),
+        data: result.data,
+      });
+    },
+  });
 };
 
 export default listSubjectsSimpleRoute;
