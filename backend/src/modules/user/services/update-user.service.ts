@@ -5,6 +5,7 @@ import type { ServiceResponse } from "../../../types/response.ts";
 import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../utils/user/user-utils.ts";
 import sharp from "sharp";
 import { createUniqueFileName } from "../../../utils/my-utils.ts";
+import type { UserProfileData } from "../user.schema.ts";
 
 export interface UpdateUserParams {
   id: string;
@@ -30,24 +31,7 @@ export interface UpdateUserParams {
 }
 
 export interface UpdateUserResponse extends ServiceResponse {
-  data?: {
-    id: string;
-    email: string;
-    name: string | null;
-    image: string | null;
-    emailVerified: boolean;
-    school: string | null;
-    educationLevel: string | null;
-    grade: string | null;
-    phone: string | null;
-    address: string | null;
-    bio: string | null;
-    dateOfBirth: string | null;
-    providerId: string;
-    extra: Record<string, any>;
-    createdAt: string;
-    updatedAt: string;
-  };
+  data?: UserProfileData;
 }
 
 export async function updateUserService(params: UpdateUserParams): Promise<UpdateUserResponse> {

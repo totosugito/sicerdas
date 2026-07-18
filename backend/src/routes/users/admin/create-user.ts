@@ -1,26 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@sinclair/typebox";
 import { EnumUserRole } from "../../../db/schema/user/index.ts";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { createUserService } from "../../../modules/user/index.ts";
-import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
-
-const CreateBody = Type.Object({
-  name: Type.String({ description: "The full name of the user" }),
-  email: Type.String({ format: "email", description: "Unique email address" }),
-  role: Type.Optional(
-    Type.Enum(EnumUserRole, { default: EnumUserRole.USER, description: "Role of the user" }),
-  ),
-  password: Type.String({ minLength: 6, description: "Initial password for the user" }),
-});
-
-const CreateResponse = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({
-    data: Type.Optional(Type.Any()),
-  }),
-]);
+import { createUserService, CreateUserBodySchema, UserResponseSchema } from "../../../modules/user/index.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const createUser: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -29,16 +12,16 @@ const createUser: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Users Management"],
       summary: "Create a new user (Admin only)",
-      body: CreateBody,
+      body: CreateUserBodySchema,
       response: {
-        201: CreateResponse,
+        201: UserResponseSchema,
         "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Body: typeof CreateBody.static }>,
+      req: FastifyRequest<{ Body: typeof CreateUserBodySchema.static }>,
       reply: FastifyReply,
-    ): Promise<typeof CreateResponse.static> {
+    ): Promise<typeof UserResponseSchema.static> {
       const auth = getAuthInstance(app);
 
       // Explicit destructuring for Mass Assignment Protection

@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { BanUserParams, GenericResponse } from "../types";
+import { BanUserParams, BaseResponse } from "../types";
 
 export const useBanUser = () => {
   return useMutation({
@@ -12,7 +12,7 @@ export const useBanUser = () => {
         body: data,
         withCredentials: true,
       });
-      return response as GenericResponse;
+      return response as BaseResponse;
     },
   });
 };

@@ -13,17 +13,7 @@ export interface ListUsersParams {
   sortOrder?: string;
 }
 
-export interface UserResponseItem {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  image: string | null;
-  banned: boolean | null;
-  banReason: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
+import type { UserResponseItem } from "../user.schema.ts";
 
 export interface ListUsersResponseData {
   items: UserResponseItem[];
@@ -106,6 +96,7 @@ export async function listUsersService(params: ListUsersParams): Promise<ListUse
   return {
     items: items.map((item) => ({
       ...item,
+      role: item.role as any,
       image: getUserAvatarUrl(item.id, item.image),
       createdAt: item.createdAt ? item.createdAt.toISOString() : new Date().toISOString(),
       updatedAt: item.updatedAt ? item.updatedAt.toISOString() : new Date().toISOString(),

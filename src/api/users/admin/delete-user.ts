@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { GenericResponse } from "../types";
+import { BaseResponse } from "../types";
 
 export const useDeleteUser = () => {
   return useMutation({
@@ -11,7 +11,7 @@ export const useDeleteUser = () => {
         url: AppApi.users.admin.delete.replace(":id", id),
         withCredentials: true,
       });
-      return response as GenericResponse;
+      return response as BaseResponse;
     },
   });
 };

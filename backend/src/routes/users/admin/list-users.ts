@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { EnumUserRole } from "../../../db/schema/user/index.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { listUsersService } from "../../../modules/user/index.ts";
+import { listUsersService, UserResponseItemSchema } from "../../../modules/user/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema, PaginationMetaSchema } from "../../../types/response.ts";
 
 const ListBody = Type.Object({
@@ -23,22 +23,11 @@ const ListBody = Type.Object({
   ),
 });
 
-const UserResponseItem = Type.Object({
-  id: Type.String(),
-  email: Type.String(),
-  name: Type.String(),
-  role: Type.String(),
-  image: Type.Union([Type.String(), Type.Null()]),
-  banned: Type.Union([Type.Boolean(), Type.Null()]),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
 const ListResponse = Type.Intersect([
   BaseResponseSchema,
   Type.Object({
     data: Type.Object({
-      items: Type.Array(UserResponseItem),
+      items: Type.Array(UserResponseItemSchema),
       meta: PaginationMetaSchema,
     }),
   }),

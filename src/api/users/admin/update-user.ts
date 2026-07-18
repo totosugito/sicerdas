@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { UpdateUserParams, GenericResponse } from "../types";
+import { UpdateUserParams, UserResponse } from "../types";
 
 export const useUpdateUser = () => {
   return useMutation({
@@ -12,7 +12,7 @@ export const useUpdateUser = () => {
         body: data,
         withCredentials: true,
       });
-      return response as GenericResponse;
+      return response as UserResponse;
     },
   });
 };

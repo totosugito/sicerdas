@@ -1,31 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@fastify/type-provider-typebox";
-import { getUserDetailsService } from "../../../modules/user/index.ts";
-import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
-
-const DetailsResponse = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({
-    data: Type.Object({
-      id: Type.String({ format: "uuid" }),
-      email: Type.String({ format: "email" }),
-      name: Type.Union([Type.String(), Type.Null()]),
-      image: Type.Union([Type.String({ format: "uri" }), Type.Null()]),
-      emailVerified: Type.Boolean(),
-      school: Type.Union([Type.String(), Type.Null()]),
-      educationLevel: Type.Union([Type.String(), Type.Null()]),
-      grade: Type.Union([Type.String(), Type.Null()]),
-      phone: Type.Union([Type.String(), Type.Null()]),
-      address: Type.Union([Type.String(), Type.Null()]),
-      bio: Type.Union([Type.String(), Type.Null()]),
-      dateOfBirth: Type.Union([Type.String(), Type.Null()]),
-      createdAt: Type.String({ format: "date-time" }),
-      updatedAt: Type.String({ format: "date-time" }),
-      providerId: Type.String(),
-      extra: Type.Object({}, { additionalProperties: true }),
-    }),
-  }),
-]);
+import { getUserDetailsService, UserDetailsResponseSchema } from "../../../modules/user/index.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -36,7 +11,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: "Get current user details",
       description: "Get the authenticated user's profile information",
       response: {
-        200: DetailsResponse,
+        200: UserDetailsResponseSchema,
         "4xx": ErrorResponseSchema,
       },
     },

@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
-import { UpdateUserAvatarResponse } from "../types";
+import { UserResponse } from "../types";
 
 export const useUpdateUserAvatarMutation = () => {
   return useMutation({
@@ -15,7 +15,7 @@ export const useUpdateUserAvatarMutation = () => {
         params: params,
         headers: { "Content-Type": "multipart/form-data" },
       });
-      return response as UpdateUserAvatarResponse;
+      return response as UserResponse<{ image: string | null }>;
     },
   });
 };

@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
-import { UpdateProfileResponse } from "../types";
+import { UserResponse, UserProfileData } from "../types";
 
 export interface UpdateProfileData {
   name?: string;
@@ -40,7 +40,7 @@ export const useUpdateProfileMutation = () => {
         body: formData,
         headers: { "Content-Type": "multipart/form-data" },
       });
-      return response as UpdateProfileResponse;
+      return response as UserResponse<UserProfileData>;
     },
   });
 };

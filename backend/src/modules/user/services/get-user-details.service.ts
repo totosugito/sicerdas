@@ -3,29 +3,7 @@ import { users, usersProfile, accounts } from "../../../db/schema/user/index.ts"
 import { eq } from "drizzle-orm";
 import type { ServiceResponse } from "../../../types/response.ts";
 import { getUserAvatarUrl } from "../../../utils/user/user-utils.ts";
-
-export interface UserDetailsData {
-  id: string;
-  email: string;
-  name: string | null;
-  role: string;
-  image: string | null;
-  emailVerified: boolean;
-  banned: boolean;
-  banReason: string | null;
-  banExpires: string | null;
-  createdAt: string;
-  updatedAt: string;
-  phone: string | null;
-  address: string | null;
-  bio: string | null;
-  dateOfBirth: string | null;
-  school: string | null;
-  educationLevel: string | null;
-  grade: string | null;
-  providerId: string | null;
-  extra: Record<string, any> | null;
-}
+import type { UserDetailsData } from "../user.schema.ts";
 
 export interface GetUserDetailsResponse extends ServiceResponse {
   data?: UserDetailsData;
@@ -75,6 +53,7 @@ export async function getUserDetailsService(id: string): Promise<GetUserDetailsR
     success: true,
     data: {
       ...user,
+      role: user.role as any,
       image: getUserAvatarUrl(user.id, user.image),
       emailVerified: Boolean(user.emailVerified),
       banned: Boolean(user.banned),

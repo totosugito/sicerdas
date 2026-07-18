@@ -26,7 +26,8 @@ import {
   useChangeUserPasswordMutation,
   useUserSessionsQuery,
   useRevokeUserSessionMutation,
-  type UpdateProfileResponse,
+  type UserResponse,
+  type UserProfileData,
   type SessionData,
 } from "@/api/users";
 import type { BaseResponse } from "backend/src/types/index.ts";
@@ -172,7 +173,7 @@ function RouteComponent() {
     updateUserProfileMutation.mutate(
       { body: submissionData },
       {
-        onSuccess: (success: UpdateProfileResponse) => {
+        onSuccess: (success: UserResponse<UserProfileData>) => {
           // Reset image state when submission is successful
           if (profileInfoFormRef.current) {
             profileInfoFormRef.current.resetImageState();
@@ -213,7 +214,7 @@ function RouteComponent() {
     updateUserProfileMutation.mutate(
       { body: values },
       {
-        onSuccess: (success: UpdateProfileResponse) => {
+        onSuccess: (success: UserResponse<UserProfileData>) => {
           const successMessage =
             success?.message || t(($) => $.user.profile.personalInfo.updateSuccess);
           showNotifSuccess({ message: successMessage });
@@ -270,7 +271,7 @@ function RouteComponent() {
     updateUserProfileMutation.mutate(
       { body: extra },
       {
-        onSuccess: (success: UpdateProfileResponse) => {
+        onSuccess: (success: UserResponse<UserProfileData>) => {
           const successMessage = success?.message || t(($) => $.user.profile.privacy.updateSuccess);
           showNotifSuccess({ message: successMessage });
 

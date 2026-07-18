@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { GenericResponse } from "../types";
+import { BaseResponse } from "../types";
 
 export interface BulkDeleteUsersRequest {
   ids: string[];
@@ -16,7 +16,7 @@ export const useBulkDeleteUsers = () => {
         body: data,
         withCredentials: true,
       });
-      return response as GenericResponse;
+      return response as BaseResponse;
     },
   });
 };

@@ -1,4 +1,14 @@
-import type * as Backend from "backend/src/modules/user/index.ts";
+import type {
+  UserResponseItem,
+  CreateUserParams,
+  UpdateUserParams,
+  UserDetailsData,
+  ListUsersParams,
+  BanUserParams,
+  SessionData,
+  ChangePasswordParams,
+  UserProfileData,
+} from "backend/src/modules/user/index.ts";
 import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
 
 export type {
@@ -10,33 +20,26 @@ export type {
   BanUserParams,
   SessionData,
   ChangePasswordParams,
-} from "backend/src/modules/user/index.ts";
+  UserProfileData,
+  BaseResponse,
+  PaginationMeta,
+};
 
+export interface UserResponse<T = UserResponseItem> extends BaseResponse {
+  data: T;
+}
 
+export type UserDetailResponse = UserResponse<UserDetailsData>;
 
 export interface ListUsersResponse extends BaseResponse {
   data: {
-    items: Backend.UserResponseItem[];
+    items: UserResponseItem[];
     meta: PaginationMeta;
   };
 }
 
-export interface UserDetailResponse extends BaseResponse {
-  data: Backend.UserDetailsData;
-}
-
-export interface GenericResponse extends BaseResponse {
-  data?: any;
-}
-
 export interface UserSessionsResponse extends BaseResponse {
-  data: Backend.SessionData[];
+  data: SessionData[];
 }
 
-export interface UpdateProfileResponse extends BaseResponse {
-  data: Required<Backend.UpdateProfileResponse>["data"];
-}
 
-export interface UpdateUserAvatarResponse extends BaseResponse {
-  data: Required<Backend.AvatarUpdateResponse>["data"];
-}

@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { GenericResponse } from "../types";
+import { UserResponse } from "../types";
 
 export interface UpdateUserAvatarRequest {
   id: string;
@@ -30,7 +30,7 @@ export const useUpdateUserAvatar = () => {
         withCredentials: true,
         // FormData is automatically handled by fetchApi or underlying fetch
       });
-      return response as GenericResponse;
+      return response as UserResponse<{ image: string | null }>;
     },
   });
 };
