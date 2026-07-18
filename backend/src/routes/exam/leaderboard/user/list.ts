@@ -1,24 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examUserStatsGlobal } from "../../../../db/schema/exam/user-stats-global.ts";
-import { users } from "../../../../db/schema/user/users.ts";
-import { eq, desc } from "drizzle-orm";
-
-const LeaderboardResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Array(
-    Type.Object({
-      rank: Type.Number(),
-      userId: Type.String({ format: "uuid" }),
-      name: Type.Union([Type.String(), Type.Null()]),
-      averageScore: Type.String(),
-      totalExamsTaken: Type.Number(),
-    }),
-  ),
-});
+import { listLeaderboardService } from "../../../../modules/exam/leaderboard/services/list-leaderboard.service.ts";
+import { LeaderboardBody, LeaderboardResponse } from "../../../../modules/exam/leaderboard/leaderboard.schema.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 
 const leaderboardRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -26,33 +10,29 @@ const leaderboardRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "GET",
     schema: {
       tags: ["Client Exam Leaderboard"],
+      querystring: LeaderboardBody,
       response: {
         200: LeaderboardResponse,
-        "4xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-        "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+        "4xx": ErrorResponseSchema,
       },
     },
-    handler: async function handler(request: FastifyRequest, reply: FastifyReply) {
-            // Get top 50 users by average score
-      const ranking = await db
-        .select({
-          userId: examUserStatsGlobal.userId,
-          name: users.name,
-          averageScore: examUserStatsGlobal.averageScore,
-          totalExamsTaken: examUserStatsGlobal.totalExamsTaken,
-        })
-        .from(examUserStatsGlobal)
-        .innerJoin(users, eq(examUserStatsGlobal.userId, users.id))
-        .orderBy(desc(examUserStatsGlobal.averageScore))
-        .limit(50);
+    handler: async function handler(
+      request: FastifyRequest<{ Querystring: typeof LeaderboardBody.static }>,
+      reply: FastifyReply,
+    ): Promise<typeof LeaderboardResponse.static> {
+      const result = await listLeaderboardService(request.query);
+
+      if (!result.success) {
+        return reply.status(result.statusCode || 500).send({
+          success: false,
+          message: result.errorKey ? request.t(result.errorKey) : request.t(($) => $.exam.leaderboard.list.error),
+        });
+      }
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.exam.leaderboard.list.success),
-        data: ranking.map((r, index) => ({
-          ...r,
-          rank: index + 1,
-        })),
+        data: result.data || [],
       });
     },
   });

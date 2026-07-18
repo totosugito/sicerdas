@@ -232,7 +232,8 @@
     },
     "leaderboard": {
       "list": {
-        "success": "Berhasil mengambil daftar peringkat"
+        "success": "Berhasil mengambil daftar peringkat",
+        "error": "Gagal mengambil daftar peringkat"
       }
     },
     "maintenance": {
