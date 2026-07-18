@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { FilterParamCategory } from "@/api/book";
+import type { FilterParamsData } from "@/api/book";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ interface BookFilterProps {
   };
   onFilterChange: (filters: { categories: number[]; groups: number[]; grades?: number[] }) => void;
   filterData?: {
-    data: FilterParamCategory[];
+    data: FilterParamsData[];
   };
   autoSubmit?: boolean;
   idPrefix?: string;

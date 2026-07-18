@@ -2,7 +2,7 @@ import { getGrade, getGradeColor } from "@/components/pages/book/types/books";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { BookListItem } from "@/api/book";
+import type { BookListItemData } from "@/api/book";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { Card } from "@/components/ui/card";
 
@@ -11,7 +11,7 @@ import { AppRoute } from "@/constants/app-route";
 import { getBookDetailId } from "@/lib/book-utils";
 
 interface BookCardProps {
-  books: BookListItem[];
+  books: BookListItemData[];
   viewMode: "grid" | "list";
 }
 
@@ -40,7 +40,7 @@ export const BookCard = ({ books, viewMode }: BookCardProps) => {
 };
 
 interface BookCardViewProps {
-  book: BookListItem;
+  book: BookListItemData;
   viewMode: "grid" | "list";
 }
 

@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { BookDetil } from "@/api/book/book-detail";
+import type { BookDetailData } from "@/api/book";
 import { Image, ImageOff, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useMemo } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { APP_CONFIG } from "@/constants/config";
 
-export const SamplePages = ({ book }: { book: BookDetil }) => {
+export const SamplePages = ({ book }: { book: BookDetailData }) => {
   const { t } = useAppTranslation();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [invalidIndices, setInvalidIndices] = useState<Set<number>>(new Set());

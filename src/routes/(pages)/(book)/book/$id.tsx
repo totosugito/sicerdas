@@ -13,7 +13,8 @@ import { CreateContentReport } from "@/components/pages/layout/CreateContentRepo
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
 
-import { useUpdateDownload, UpdateDownloadResponse } from "@/api/book/update-download";
+import { useUpdateDownload } from "@/api/book/update-download";
+import type { DownloadResponse } from "@/api/book";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
 import { DialogModal } from "@/components/custom/components";
 
@@ -117,7 +118,7 @@ function RouteComponent() {
     updateDownload(
       { bookId: book.bookId },
       {
-        onSuccess: (response: UpdateDownloadResponse) => {
+        onSuccess: (response: DownloadResponse) => {
           if (response.success && response.data) {
             book.downloadCount = response.data!.downloadCount;
           }

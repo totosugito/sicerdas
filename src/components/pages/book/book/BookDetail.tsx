@@ -10,11 +10,11 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { SamplePages } from "./SamplePages";
 import { BookDetailInfoCard } from "./BookDetailInfoCard";
 import { cn } from "@/lib/utils";
-import { BookDetil } from "@/api/book/book-detail";
+import type { BookDetailData } from "@/api/book";
 import { BookRatingDialog } from "./BookRatingDialog";
 
 interface BookDetailProps {
-  book: BookDetil;
+  book: BookDetailData;
   isFavorite: boolean;
   onRead: () => void;
   onDownload: () => void;

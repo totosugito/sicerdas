@@ -1,59 +1,25 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
+import type { FavoritesResponse } from "../types";
 
-export interface FavoriteBook {
-  id: string;
-  bookId: number;
-  title: string;
-  author?: string;
-  cover: {
-    xs: string;
-    lg: string;
-  };
-  category: {
-    name: string;
-  };
-  grade: {
-    id: number;
-    name: string;
-  };
-  stats: {
-    rating: number;
-    bookmarkCount: number;
-    viewCount: number;
-    downloadCount: number;
-    isDownloaded: boolean;
-  };
-  bookmarkedAt: string;
-}
+export type { FavoriteBookData as FavoriteBook } from "../types";
 
-export interface FavoriteBooksResponse {
-  success: boolean;
-  message: string;
-  data: FavoriteBook[];
-  pagination: {
-    total: number;
-    page: number;
-    pageSize: number;
-    totalPages: number;
-  };
-}
-
-export const useFavoriteBooks = (params?: { page?: number; pageSize?: number }, options: Partial<UseQueryOptions<FavoriteBooksResponse, Error>> = {}) => {
-  return useQuery<FavoriteBooksResponse>({
+export const useFavoriteBooks = (
+  params?: { page?: number; pageSize?: number },
+  options: Partial<UseQueryOptions<FavoritesResponse, Error>> = {},
+) => {
+  return useQuery({
     queryKey: ["book-favorites", params],
     queryFn: async () => {
-      const url = AppApi.book.user.favorites;
       const response = await fetchApi({
         method: "GET",
-        url,
+        url: AppApi.book.user.favorites,
         params,
-        withCredentials: true,
       });
-      return response as FavoriteBooksResponse;
+      return response as FavoritesResponse;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
     ...options,
   });
 };
