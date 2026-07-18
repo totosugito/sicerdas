@@ -1,162 +1,43 @@
-import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import type { FastifyReply, FastifyRequest } from 'fastify';
-import { Type } from '@sinclair/typebox';
-import { db } from '../../../db/db-pool.ts';
-import { educationCategories } from '../../../db/schema/education/categories.ts';
-import { desc, ilike, or, and, sql, eq, asc } from 'drizzle-orm';
-import { fromNodeHeaders } from 'better-auth/node';
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
-import { EnumUserRole } from '../../../db/schema/index.ts';
-
-const CategoryListQuery = Type.Object({
-    search: Type.Optional(Type.String({ description: 'Search term for category name or description' })),
-    isActive: Type.Optional(Type.Boolean()),
-    sortBy: Type.Optional(Type.String({ description: 'Sort field: createdAt, updatedAt, name, isActive', default: 'updatedAt' })),
-    sortOrder: Type.Optional(Type.String({ description: 'Sort order: asc or desc', default: 'desc' })),
-    page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
-    limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 1000 })),
-});
-
-const CategoryResponseItem = Type.Object({
-    id: Type.String({ format: 'uuid' }),
-    name: Type.String(),
-    description: Type.Union([Type.String(), Type.Null()]),
-    isActive: Type.Boolean(),
-    createdAt: Type.String({ format: 'date-time' }),
-    updatedAt: Type.String({ format: 'date-time' }),
-});
-
-const ListCategoriesResponse = Type.Object({
-    success: Type.Boolean(),
-    message: Type.String(),
-    data: Type.Object({
-        items: Type.Array(CategoryResponseItem),
-        meta: Type.Object({
-            total: Type.Number(),
-            page: Type.Number(),
-            limit: Type.Number(),
-            totalPages: Type.Number(),
-        })
-    }),
-});
+import { EnumUserRole } from "../../../db/schema/index.ts";
+import { listCategoryService } from "../../../modules/education/services/list-category.service.ts";
+import { CategoryListBody, CategoryResponse } from "../../../modules/education/education.schema.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
-    app.route({
-        url: '/list',
-        method: 'POST', // Changed to POST to conventionally accept complex query body like in `list-book.ts`
-        schema: {
-            tags: ['Exam Categories'],
-            body: CategoryListQuery,
-            response: {
-                200: ListCategoriesResponse,
-                '4xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                }),
-                '5xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                })
-            }
-        },
-        handler: async function handler(
-            request: FastifyRequest<{ Body: typeof CategoryListQuery.static }>,
-            reply: FastifyReply
-        ) {
-                        // Determine user role from session
-            const session = await getAuthInstance(app).api.getSession({
-                headers: fromNodeHeaders(request.headers),
-            });
-            const user = session?.user;
-            const isAdmin = user?.role === EnumUserRole.ADMIN;
+  app.route({
+    url: "/list",
+    method: "POST",
+    schema: {
+      tags: ["Exam Categories"],
+      body: CategoryListBody,
+      response: { 200: CategoryResponse, "4xx": ErrorResponseSchema },
+    },
+    handler: async function handler(
+      request: FastifyRequest<{ Body: typeof CategoryListBody.static }>,
+      reply: FastifyReply,
+    ): Promise<typeof CategoryResponse.static> {
+      const session = await getAuthInstance(app).api.getSession({
+        headers: fromNodeHeaders(request.headers),
+      });
+      const isAdmin = session?.user?.role === EnumUserRole.ADMIN;
 
-            const { search, isActive, sortOrder = 'desc', page = 1, limit = 10 } = request.body;
-            let { sortBy = 'updatedAt' } = request.body;
-            const offset = (page - 1) * limit;
+      const result = await listCategoryService(request.body, isAdmin);
 
-            const conditions = [];
+      if (!result.success || !result.data) {
+        return reply.internalServerError(request.t(($) => $.education.categories.list.success));
+      }
 
-            if (!isAdmin) {
-                // Client must only see active categories
-                conditions.push(eq(educationCategories.isActive, true));
-                // Force sorting ignoring isActive for clients
-                if (sortBy === 'isActive') sortBy = 'name';
-            } else {
-                // Admin can filter by active status
-                if (isActive !== undefined) conditions.push(eq(educationCategories.isActive, isActive));
-            }
-
-            // Add search condition
-            if (search && search.trim() !== '') {
-                const searchTerm = `%${search.trim().toLowerCase()}%`;
-                conditions.push(
-                    or(
-                        ilike(educationCategories.name, searchTerm),
-                        ilike(educationCategories.description, searchTerm)
-                    )
-                );
-            }
-
-            // Build Query
-            let baseQuery = db.select().from(educationCategories);
-            if (conditions.length > 0) {
-                baseQuery = baseQuery.where(and(...conditions)) as any;
-            }
-
-            // Add Sorting
-            const orderDir = sortOrder === 'asc' ? 'asc' : 'desc';
-            let queryWithSort;
-
-            switch (sortBy) {
-                case 'name':
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationCategories.name)) : baseQuery.orderBy(desc(educationCategories.name));
-                    break;
-                case 'isActive':
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationCategories.isActive)) : baseQuery.orderBy(desc(educationCategories.isActive));
-                    break;
-                case 'updatedAt':
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationCategories.updatedAt)) : baseQuery.orderBy(desc(educationCategories.updatedAt));
-                    break;
-                case 'createdAt':
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationCategories.createdAt)) : baseQuery.orderBy(desc(educationCategories.createdAt));
-                    break;
-                default:
-                    queryWithSort = orderDir === 'asc' ? baseQuery.orderBy(asc(educationCategories.name)) : baseQuery.orderBy(desc(educationCategories.name));
-                    break;
-            }
-
-            // Meta calculations
-            const countResult = await db
-                .select({ count: sql<number>`count(*)` })
-                .from(queryWithSort.as('subquery'));
-
-            const total = Number(countResult[0]?.count || 0);
-            const totalPages = Math.ceil(total / limit);
-
-            // Execute Paginated Fetch
-            const items = await queryWithSort
-                .limit(limit)
-                .offset(offset);
-
-            return reply.status(200).send({
-                success: true,
-                message: request.t($ => $.education.categories.list.success),
-                data: {
-                    items: items.map(cat => ({
-                        ...cat,
-                        createdAt: cat.createdAt.toISOString(),
-                        updatedAt: cat.updatedAt.toISOString(),
-                    })),
-                    meta: {
-                        total,
-                        page,
-                        limit,
-                        totalPages,
-                    }
-                }
-            });
-        },
-    });
+      return reply.status(200).send({
+        success: true,
+        message: request.t(($) => $.education.categories.list.success),
+        data: result.data,
+      });
+    },
+  });
 };
 
 export default listCategoryRoute;

@@ -1,36 +1,9 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { educationCategories } from "../../../../db/schema/education/categories.ts";
-import { eq, and, ne } from "drizzle-orm";
-import { stringToKey } from "../../../../utils/my-utils.ts";
-
-const UpdateCategoryParams = Type.Object({
-  id: Type.String({ format: "uuid" }),
-});
-
-const UpdateCategoryBody = Type.Object({
-  name: Type.String({ minLength: 1 }),
-  key: Type.Optional(Type.String({ minLength: 1 })),
-  description: Type.Optional(Type.String()),
-  isActive: Type.Optional(Type.Boolean()),
-});
-
-const CategoryResponseItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  name: Type.String(),
-  description: Type.Union([Type.String(), Type.Null()]),
-  isActive: Type.Boolean(),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
-const UpdateCategoryResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: CategoryResponseItem,
-});
+import { updateCategoryService } from "../../../../modules/education/services/update-category.service.ts";
+import { UpdateCategoryBody, UpdateCategoryResponse } from "../../../../modules/education/education.schema.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 
 const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -38,81 +11,28 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "PUT",
     schema: {
       tags: ["Admin Exam Categories"],
-      params: UpdateCategoryParams,
+      params: Type.Object({ id: Type.String({ format: "uuid" }) }),
       body: UpdateCategoryBody,
-      response: {
-        200: UpdateCategoryResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-      },
+      response: { 200: UpdateCategoryResponse, "4xx": ErrorResponseSchema },
     },
     handler: async function handler(
-      request: FastifyRequest<{
-        Params: typeof UpdateCategoryParams.static;
-        Body: typeof UpdateCategoryBody.static;
-      }>,
+      request: FastifyRequest<{ Params: { id: string }; Body: typeof UpdateCategoryBody.static }>,
       reply: FastifyReply,
-    ) {
-            const { id } = request.params;
-      const { name, key, description, isActive } = request.body;
+    ): Promise<typeof UpdateCategoryResponse.static> {
+      const { id } = request.params;
+      const result = await updateCategoryService(id, request.body);
 
-      // Ensure category exists
-      const existingCategory = await db.query.educationCategories.findFirst({
-        where: eq(educationCategories.id, id),
-      });
-
-      if (!existingCategory) {
-        return reply.notFound(request.t(($) => $.education.categories.update.notFound));
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) return reply.notFound(message);
+        if (result.statusCode === 409) return reply.badRequest(message);
+        return reply.internalServerError(message);
       }
-
-      // Determine the key to use
-      const categoryKey =
-        key || (name !== existingCategory.name ? stringToKey(name) : existingCategory.key);
-
-      // Check if new name conflicts with another existing category
-      const nameConflict = await db.query.educationCategories.findFirst({
-        where: and(eq(educationCategories.name, name), ne(educationCategories.id, id)),
-      });
-
-      if (nameConflict) {
-        return reply.badRequest(request.t(($) => $.education.categories.update.exists));
-      }
-
-      // Check if new key conflicts
-      const keyConflict = await db.query.educationCategories.findFirst({
-        where: and(eq(educationCategories.key, categoryKey), ne(educationCategories.id, id)),
-      });
-
-      if (keyConflict) {
-        return reply.badRequest(request.t(($) => $.education.categories.update.exists));
-      }
-
-      const [updatedCategory] = await db
-        .update(educationCategories)
-        .set({
-          name,
-          key: categoryKey,
-          description,
-          isActive,
-          updatedAt: new Date(),
-        })
-        .where(eq(educationCategories.id, id))
-        .returning();
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.education.categories.update.success),
-        data: {
-          ...updatedCategory,
-          createdAt: updatedCategory.createdAt.toISOString(),
-          updatedAt: updatedCategory.updatedAt.toISOString(),
-        },
+        data: result.data,
       });
     },
   });

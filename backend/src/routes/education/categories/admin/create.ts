@@ -1,32 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { educationCategories } from "../../../../db/schema/education/categories.ts";
-import { eq } from "drizzle-orm";
-import { stringToKey } from "../../../../utils/my-utils.ts";
-
-const CreateCategoryBody = Type.Object({
-  name: Type.String({ minLength: 1 }),
-  key: Type.Optional(Type.String({ minLength: 1 })),
-  description: Type.Optional(Type.String()),
-  isActive: Type.Optional(Type.Boolean({ default: true })),
-});
-
-const CategoryResponseItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  name: Type.String(),
-  description: Type.Union([Type.String(), Type.Null()]),
-  isActive: Type.Boolean(),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
-const CreateCategoryResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: CategoryResponseItem,
-});
+import { createCategoryService } from "../../../../modules/education/services/create-category.service.ts";
+import { CreateCategoryBody, CreateCategoryResponse } from "../../../../modules/education/education.schema.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 
 const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -35,64 +11,25 @@ const createCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Admin Exam Categories"],
       body: CreateCategoryBody,
-      response: {
-        201: CreateCategoryResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-      },
+      response: { 201: CreateCategoryResponse, "4xx": ErrorResponseSchema },
     },
     handler: async function handler(
       request: FastifyRequest<{ Body: typeof CreateCategoryBody.static }>,
       reply: FastifyReply,
-    ) {
-            const { name, key, description, isActive } = request.body;
-
+    ): Promise<typeof CreateCategoryResponse.static> {
       const userId = request.session.user.id;
-      const categoryKey = key || stringToKey(name);
+      const result = await createCategoryService(request.body, userId);
 
-      // Check if name already exists
-      const existingByName = await db.query.educationCategories.findFirst({
-        where: eq(educationCategories.name, name),
-      });
-
-      if (existingByName) {
-        return reply.badRequest(request.t(($) => $.education.categories.create.exists));
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 409) return reply.badRequest(message);
+        return reply.internalServerError(message);
       }
-
-      // Check if key already exists
-      const existingByKey = await db.query.educationCategories.findFirst({
-        where: eq(educationCategories.key, categoryKey),
-      });
-
-      if (existingByKey) {
-        return reply.badRequest(request.t(($) => $.education.categories.create.exists)); // Re-use generic exists message or add new one
-      }
-
-      const [newCategory] = await db
-        .insert(educationCategories)
-        .values({
-          name,
-          key: categoryKey,
-          description,
-          isActive: isActive ?? true,
-          createdByUserId: userId,
-        })
-        .returning();
 
       return reply.status(201).send({
         success: true,
         message: request.t(($) => $.education.categories.create.success),
-        data: {
-          ...newCategory,
-          createdAt: newCategory.createdAt.toISOString(),
-          updatedAt: newCategory.updatedAt.toISOString(),
-        },
+        data: result.data,
       });
     },
   });

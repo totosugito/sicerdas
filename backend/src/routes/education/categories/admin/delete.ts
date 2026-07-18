@@ -1,72 +1,39 @@
-import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import type { FastifyReply, FastifyRequest } from 'fastify';
-import { Type } from '@sinclair/typebox';
-import { db } from '../../../../db/db-pool.ts';
-import { educationCategories } from '../../../../db/schema/education/categories.ts';
-import { examPackages } from '../../../../db/schema/exam/packages.ts';
-import { eq } from 'drizzle-orm';
-
-const DeleteCategoryParams = Type.Object({
-    id: Type.String({ format: 'uuid' })
-});
-
-const DeleteCategoryResponse = Type.Object({
-    success: Type.Boolean(),
-    message: Type.String(),
-});
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { Type } from "@sinclair/typebox";
+import { deleteCategoryService } from "../../../../modules/education/services/delete-category.service.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
+import { BaseResponseSchema } from "../../../../types/response.ts";
 
 const deleteCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
-    app.route({
-        url: '/delete/:id',
-        method: 'DELETE',
-        schema: {
-            tags: ['Admin Exam Categories'],
-            params: DeleteCategoryParams,
-            response: {
-                200: DeleteCategoryResponse,
-                '4xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                }),
-                '5xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                })
-            }
-        },
-        handler: async function handler(
-            request: FastifyRequest<{ Params: typeof DeleteCategoryParams.static }>,
-            reply: FastifyReply
-        ) {
-                        const { id } = request.params;
+  app.route({
+    url: "/delete/:id",
+    method: "DELETE",
+    schema: {
+      tags: ["Admin Exam Categories"],
+      params: Type.Object({ id: Type.String({ format: "uuid" }) }),
+      response: { 200: BaseResponseSchema, "4xx": ErrorResponseSchema },
+    },
+    handler: async function handler(
+      request: FastifyRequest<{ Params: { id: string } }>,
+      reply: FastifyReply,
+    ): Promise<typeof BaseResponseSchema.static> {
+      const { id } = request.params;
+      const result = await deleteCategoryService(id);
 
-            // Ensure category exists
-            const existingCategory = await db.query.educationCategories.findFirst({
-                where: eq(educationCategories.id, id)
-            });
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) return reply.notFound(message);
+        if (result.statusCode === 409) return reply.badRequest(message);
+        return reply.internalServerError(message);
+      }
 
-            if (!existingCategory) {
-                return reply.notFound(request.t($ => $.education.categories.delete.notFound));
-            }
-
-            // Ensure category is not in use by any exam packages
-            const inUseCheck = await db.query.examPackages.findFirst({
-                where: eq(examPackages.categoryId, id)
-            });
-
-            if (inUseCheck) {
-                return reply.badRequest(request.t($ => $.education.categories.delete.inUse));
-            }
-
-            // Perform Hard Delete
-            await db.delete(educationCategories).where(eq(educationCategories.id, id));
-
-            return reply.status(200).send({
-                success: true,
-                message: request.t($ => $.education.categories.delete.success),
-            });
-        },
-    });
+      return reply.status(200).send({
+        success: true,
+        message: request.t(($) => $.education.categories.delete.success),
+      });
+    },
+  });
 };
 
 export default deleteCategoryRoute;
