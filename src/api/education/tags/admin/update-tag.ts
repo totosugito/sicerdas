@@ -1,26 +1,20 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { ExamTagDetailResponse } from "../types";
+import type { UpdateTagParams, TagResponse } from "../types";
 
-export interface UpdateTagRequest {
-    id: string;
-    name: string;
-    description?: string;
-    isActive?: boolean;
-}
+export type UpdateTagRequest = UpdateTagParams & { id: string };
 
 export const useUpdateTag = () => {
-    return useMutation({
-        mutationKey: ["admin-education-tags-update"],
-        mutationFn: async ({ id, ...body }: UpdateTagRequest) => {
-            const response = await fetchApi({
-                method: "PUT",
-                url: AppApi.education.tags.admin.update.replace(":id", id),
-                body,
-                withCredentials: true,
-            });
-            return response as ExamTagDetailResponse;
-        },
-    });
+  return useMutation({
+    mutationKey: ["admin-education-tags-update"],
+    mutationFn: async ({ id, ...body }: UpdateTagRequest) => {
+      const response = await fetchApi({
+        method: "PUT",
+        url: AppApi.education.tags.admin.update.replace(":id", id),
+        body,
+      });
+      return response as TagResponse;
+    },
+  });
 };

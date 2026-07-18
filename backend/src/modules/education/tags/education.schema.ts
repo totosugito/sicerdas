@@ -16,6 +16,12 @@ const TagSimpleFields = {
   label: Type.String(),
 };
 
+const TagBodyFields = {
+  name: Type.String({ minLength: 1 }),
+  description: Type.Optional(Type.String()),
+  isActive: Type.Optional(Type.Boolean({ default: true })),
+};
+
 const TagSchema = Type.Object(TagBaseFields);
 const TagSimpleSchema = Type.Object(TagSimpleFields);
 
@@ -44,17 +50,8 @@ export const TagSimpleBody = Type.Object({
   limit: Type.Optional(Type.Number({ default: 1000, minimum: 1, maximum: 2000 })),
 });
 
-export const CreateTagBody = Type.Object({
-  name: Type.String({ minLength: 1 }),
-  description: Type.Optional(Type.String()),
-  isActive: Type.Optional(Type.Boolean({ default: true })),
-});
-
-export const UpdateTagBody = Type.Object({
-  name: Type.String({ minLength: 1 }),
-  description: Type.Optional(Type.String()),
-  isActive: Type.Optional(Type.Boolean()),
-});
+export const CreateTagBody = Type.Object(TagBodyFields);
+export const UpdateTagBody = Type.Partial(Type.Object(TagBodyFields));
 
 export const TagListResponse = PaginatedResponse(TagSchema);
 export const TagSimpleResponse = PaginatedResponse(TagSimpleSchema);

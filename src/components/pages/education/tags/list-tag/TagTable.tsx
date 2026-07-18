@@ -1,4 +1,4 @@
-import { ExamTag, ListTagResponse } from "@/api/education/tags";
+import { TagData, TagListResponse } from "@/api/education/tags";
 import {
   DataTable,
   useDataTable,
@@ -25,7 +25,7 @@ import { string_to_locale_date } from "@/lib/my-utils";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 interface TagTableProps {
-  data: ListTagResponse;
+  data: TagListResponse;
   isLoading: boolean;
   paginationData: PaginationData;
   onPaginationChange?: (pagination: { page: number; limit: number }) => void;
@@ -33,8 +33,8 @@ interface TagTableProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
-  onEdit: (tag: ExamTag) => void;
-  onDelete: (tag: ExamTag) => void;
+  onEdit: (tag: TagData) => void;
+  onDelete: (tag: TagData) => void;
 }
 
 export function TagTable({
@@ -51,8 +51,8 @@ export function TagTable({
 }: TagTableProps) {
   const { t } = useAppTranslation();
 
-  const columns: ColumnDef<ExamTag>[] = [
-    createRowNumberColumn<ExamTag>({
+  const columns: ColumnDef<TagData>[] = [
+    createRowNumberColumn<TagData>({
       id: "no",
       size: 50,
       paginationData: paginationData,

@@ -1,38 +1,18 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ExamTag } from "./types";
-import { PaginationData } from "@/components/custom/table";
+import type { TagListParams, TagListResponse } from "./types";
 
-export interface ListTagRequest {
-    search?: string;
-    isActive?: boolean;
-    sortBy?: string;
-    sortOrder?: 'asc' | 'desc';
-    page?: number;
-    limit?: number;
-}
-
-export interface ListTagResponse {
-    success: boolean;
-    message: string;
-    data: {
-        items: ExamTag[];
-        meta: PaginationData;
-    };
-}
-
-export const useListTag = (params: ListTagRequest) => {
-    return useQuery({
-        queryKey: ["education-tags-list", params],
-        queryFn: async () => {
-            const response = await fetchApi({
-                method: "POST",
-                url: AppApi.education.tags.list,
-                body: params,
-                withCredentials: true,
-            });
-            return response as ListTagResponse;
-        },
-    });
+export const useListTag = (params: TagListParams) => {
+  return useQuery({
+    queryKey: ["education-tags-list", params],
+    queryFn: async () => {
+      const response = await fetchApi({
+        method: "POST",
+        url: AppApi.education.tags.list,
+        body: params,
+      });
+      return response as TagListResponse;
+    },
+  });
 };

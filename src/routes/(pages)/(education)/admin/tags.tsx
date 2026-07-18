@@ -2,8 +2,8 @@ import { createFileRoute } from '@tanstack/react-router';
 import {
   useListTag,
   useDeleteTag,
-  ExamTag,
-  ListTagResponse
+  TagData,
+  TagListResponse
 } from '@/api/education/tags';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
@@ -55,7 +55,7 @@ function AdminExamTagsPage() {
   // Dialog & Modal States
   const [showDialog, setShowDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [selectedTag, setSelectedTag] = useState<ExamTag | null>(null);
+  const [selectedTag, setSelectedTag] = useState<TagData | null>(null);
 
   // Handlers
   const handleAdd = () => {
@@ -63,12 +63,12 @@ function AdminExamTagsPage() {
     setShowDialog(true);
   };
 
-  const handleEdit = (tag: ExamTag) => {
+  const handleEdit = (tag: TagData) => {
     setSelectedTag(tag);
     setShowDialog(true);
   };
 
-  const handleDelete = (tag: ExamTag) => {
+  const handleDelete = (tag: TagData) => {
     setSelectedTag(tag);
     setShowDeleteDialog(true);
   };
@@ -101,7 +101,7 @@ function AdminExamTagsPage() {
       </div>
 
       <TagTable
-        data={data as ListTagResponse}
+        data={data as TagListResponse}
         isLoading={isLoading}
         paginationData={data?.data.meta as PaginationData}
         onPaginationChange={(pagination: { page: number; limit: number }) => {

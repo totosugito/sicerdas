@@ -20,17 +20,19 @@ export async function updateTagService(
     return { success: false, statusCode: 404, errorKey: ($) => $.education.tags.update.notFound };
   }
 
-  const nameConflict = await db.query.educationTags.findFirst({
-    where: and(eq(educationTags.name, params.name), ne(educationTags.id, id)),
-  });
+  if (params.name) {
+    const nameConflict = await db.query.educationTags.findFirst({
+      where: and(eq(educationTags.name, params.name), ne(educationTags.id, id)),
+    });
 
-  if (nameConflict) {
-    return { success: false, statusCode: 409, errorKey: ($) => $.education.tags.update.exists };
+    if (nameConflict) {
+      return { success: false, statusCode: 409, errorKey: ($) => $.education.tags.update.exists };
+    }
   }
 
   const [updatedTag] = await db
     .update(educationTags)
-    .set({ name: params.name, description: params.description, isActive: params.isActive, updatedAt: new Date() })
+    .set({ name: params.name ?? existingTag.name, description: params.description, isActive: params.isActive, updatedAt: new Date() })
     .where(eq(educationTags.id, id))
     .returning();
 

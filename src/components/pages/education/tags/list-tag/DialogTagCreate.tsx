@@ -3,10 +3,10 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import { ControlForm } from "@/components/custom/forms";
 import {
-    ExamTag,
+    TagData,
     useCreateTag,
     useUpdateTag,
-    CreateTagRequest,
+    CreateTagParams,
     UpdateTagRequest
 } from "@/api/education/tags";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 export type DialogTagCreateProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    tag?: ExamTag | null;
+    tag?: TagData | null;
 };
 
 const FormTag = ({ values, form }: any) => {
@@ -90,7 +90,7 @@ export const DialogTagCreate = ({ open, onOpenChange, tag }: DialogTagCreateProp
                     }
                 });
             } else {
-                await createMutation.mutateAsync(values as CreateTagRequest, {
+                await createMutation.mutateAsync(values as CreateTagParams, {
                     onSuccess: (res) => {
                         showNotifSuccess({ message: res.message || t($ => $.education.tags.notifications.createSuccess) });
                         queryClient.invalidateQueries({ queryKey: ["education-tags-list"] });
