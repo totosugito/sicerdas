@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { APP_CONFIG } from "@/constants/config";
 import { persist } from "zustand/middleware";
 import { EnumPeriodicViewMode, EnumViewMode } from "@/constants/app-enum";
-import { JsonQuestionImport } from "@/api/exam-questions/types";
+import { JsonQuestionImport } from "@/api/exam/questions/types";
 
 type ViewMode = (typeof EnumViewMode)[keyof typeof EnumViewMode]["value"];
 type PeriodicViewMode = (typeof EnumPeriodicViewMode)[keyof typeof EnumPeriodicViewMode]["value"];

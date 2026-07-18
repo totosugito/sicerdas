@@ -1,5 +1,5 @@
 import { ReactECharts } from "@/components/custom/charts/ReactECharts";
-import { useActivityStats } from "@/api/exam-user-stats";
+import { useActivityStats } from "@/api/exam/user-stats";
 import { useTheme } from "@/lib/theme-provider";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useMemo } from "react";

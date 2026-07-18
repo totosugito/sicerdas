@@ -6,8 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
 import { FormWithDetector } from "@/components/custom/components";
-import { useListSubjectSimple } from "@/api/exam-subjects";
-import { PassageFormValues } from "@/api/exam-passages/types";
+import { useListSubjectSimple } from "@/api/exam/subjects";
+import { PassageFormValues } from "@/api/exam/passages/types";
 import { Button } from "@/components/ui/button";
 import { prepare_blocknote_submission } from "@/lib/blocknote-utils";
 

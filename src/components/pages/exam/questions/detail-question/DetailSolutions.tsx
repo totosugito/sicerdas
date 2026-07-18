@@ -3,7 +3,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Lightbulb } from "lucide-react";
-import { ExamQuestion } from "@/api/exam-questions";
+import { ExamQuestion } from "@/api/exam/questions";
 import { BlockNoteStatic } from "@/components/custom/components";
 
 interface DetailSolutionsProps {

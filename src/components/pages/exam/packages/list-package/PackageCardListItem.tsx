@@ -1,5 +1,5 @@
 import React from "react";
-import { ExamPackage } from "@/api/exam-packages";
+import { ExamPackage } from "@/api/exam/packages";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

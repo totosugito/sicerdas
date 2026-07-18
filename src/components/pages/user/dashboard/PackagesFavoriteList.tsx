@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useFavoritePackages, useBookmarkPackage } from "@/api/exam-packages";
+import { useFavoritePackages, useBookmarkPackage } from "@/api/exam/packages";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Badge } from "@/components/ui/badge";
 import { Star, Bookmark, BookOpen, X, ChevronRight } from "lucide-react";

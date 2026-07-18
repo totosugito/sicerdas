@@ -1,5 +1,5 @@
-import { AllSessionHistoryResponse } from "@/api/exam-sessions/all";
-import { EnumExamSessionStatus, EnumExamSessionMode } from "@/api/exam-sessions/types";
+import { AllSessionHistoryResponse } from "@/api/exam/sessions/all";
+import { EnumExamSessionStatus, EnumExamSessionMode } from "@/api/exam/sessions/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AppRoute } from "@/constants/app-route";

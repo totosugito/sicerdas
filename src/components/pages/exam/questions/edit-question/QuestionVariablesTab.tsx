@@ -4,7 +4,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { JsonEditor, githubDarkTheme } from "json-edit-react";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
-import { VariableFormulas } from "@/api/exam-questions/types";
+import { VariableFormulas } from "@/api/exam/questions/types";
 
 interface QuestionVariablesTabProps {
   variableFormulas: VariableFormulas | null | undefined;

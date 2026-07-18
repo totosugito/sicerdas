@@ -15,8 +15,8 @@ import {
   useDeletePackageSection,
   useUpdatePackageSection,
   ExamPackageSection,
-} from "@/api/exam-package-sections";
-import { useDetailPackage } from "@/api/exam-packages";
+} from "@/api/exam/package-sections";
+import { useDetailPackage } from "@/api/exam/packages";
 import { PackageStatsHeader } from "@/components/pages/exam/packages/detail-package/PackageStatsHeader";
 import {
   SectionList,

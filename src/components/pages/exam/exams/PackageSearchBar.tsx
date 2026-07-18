@@ -6,7 +6,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { useState, useEffect } from "react";
 import { PackageFilter } from "./PackageFilter";
 
-import { ExamFilterParamsResponse } from "@/api/exam-packages";
+import { ExamFilterParamsResponse } from "@/api/exam/packages";
 
 interface PackageSearchBarProps {
   searchTerm?: string;

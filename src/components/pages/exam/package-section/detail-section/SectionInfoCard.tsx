@@ -1,4 +1,4 @@
-import { SectionDetailItem } from "@/api/exam-package-sections/types";
+import { SectionDetailItem } from "@/api/exam/package-sections/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Layers, Calendar, ArrowRight } from "lucide-react";

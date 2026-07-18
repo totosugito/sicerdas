@@ -1,4 +1,4 @@
-import { ExamSubject, ListSubjectResponse } from "@/api/exam-subjects";
+import { ExamSubject, ListSubjectResponse } from "@/api/exam/subjects";
 import {
   DataTable,
   useDataTable,

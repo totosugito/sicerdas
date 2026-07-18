@@ -1,4 +1,4 @@
-import { ExamPackageSection } from "@/api/exam-package-sections";
+import { ExamPackageSection } from "@/api/exam/package-sections";
 import {
   Accordion,
   AccordionContent,
@@ -10,7 +10,7 @@ import { Clock, LayoutGrid, PlayCircle, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMemo } from "react";
 import { EnumExamSessionStatus } from "@/constants/app-enum";
-import { EnumExamSessionMode } from "@/api/exam-sessions/types";
+import { EnumExamSessionMode } from "@/api/exam/sessions/types";
 
 interface PackageSectionAccordionProps {
   sections: ExamPackageSection[];

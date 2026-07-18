@@ -1,4 +1,4 @@
-import { SectionQuestionItem } from "@/api/exam-package-sections/types";
+import { SectionQuestionItem } from "@/api/exam/package-sections/types";
 import { DataTableColumnHeader, DataTablePagination } from "@/components/custom/table";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import {

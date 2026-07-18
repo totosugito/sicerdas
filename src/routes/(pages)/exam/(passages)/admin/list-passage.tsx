@@ -4,7 +4,7 @@ import {
   useDeletePassage,
   ExamPassage,
   ListPassagesResponse,
-} from "@/api/exam-passages";
+} from "@/api/exam/passages";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useEffect, useState } from "react";
@@ -271,9 +271,9 @@ function AdminExamPassagesPage() {
             <DataTablePagination
               paginationData={data.data.meta as PaginationData}
               pageIndex={((data.data.meta as PaginationData).page || 1) - 1}
-              setPageIndex={() => {}}
+              setPageIndex={() => { }}
               pageSize={(data.data.meta as PaginationData).limit || 10}
-              setPageSize={() => {}}
+              setPageSize={() => { }}
               rowsCount={(data.data.meta as PaginationData).total || 0}
               onPaginationChange={(pagination: { page: number; limit: number }) => {
                 navigate({

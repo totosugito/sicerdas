@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { z } from "zod";
 import { Trans } from "react-i18next";
-import { useListPackageClient, useExamFilterParams } from "@/api/exam-packages";
+import { useListPackageClient, useExamFilterParams } from "@/api/exam/packages";
 import { LayoutGrid, ListIcon } from "lucide-react";
 import { showNotifError } from "@/lib/show-notif";
 import {

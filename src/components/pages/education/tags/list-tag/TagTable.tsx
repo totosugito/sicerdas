@@ -1,4 +1,4 @@
-import { ExamTag, ListTagResponse } from "@/api/education-tags";
+import { ExamTag, ListTagResponse } from "@/api/education/tags";
 import {
   DataTable,
   useDataTable,

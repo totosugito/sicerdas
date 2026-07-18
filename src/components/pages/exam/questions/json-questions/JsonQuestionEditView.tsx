@@ -6,7 +6,7 @@ import { JsonTagsContentTab } from "./JsonTagsContentTab";
 import { JsonQuestionVariablesTab } from "./JsonQuestionVariablesTab";
 import { JsonQuestionReasonTab } from "./JsonQuestionReasonTab";
 import { JsonQuestionPreviewTab } from "./JsonQuestionPreviewTab";
-import { JsonQuestionImport, VariableFormulas, EnumQuestionType } from "@/api/exam-questions/types";
+import { JsonQuestionImport, VariableFormulas, EnumQuestionType } from "@/api/exam/questions/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, PencilLine, Settings2 } from "lucide-react";
 

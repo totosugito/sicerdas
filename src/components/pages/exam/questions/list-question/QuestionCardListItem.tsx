@@ -1,5 +1,5 @@
 import React from "react";
-import { ExamQuestion } from "@/api/exam-questions";
+import { ExamQuestion } from "@/api/exam/questions";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { MoreHorizontal, Pencil, Trash2, HelpCircle, Clock, BookOpen, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -86,7 +86,7 @@ export function QuestionCardListItem({ question, onDelete }: QuestionCardListIte
             {t(
               ($) =>
                 $.exam.questions.form.difficulty.options[
-                  question.difficulty as "easy" | "medium" | "hard"
+                question.difficulty as "easy" | "medium" | "hard"
                 ],
             )}
           </Badge>

@@ -1,6 +1,6 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useDetailPackageClient, useRatePackage, useBookmarkPackage } from "@/api/exam-packages";
-import { useListPackageSectionsClient } from "@/api/exam-package-sections";
+import { useDetailPackageClient, useRatePackage, useBookmarkPackage } from "@/api/exam/packages";
+import { useListPackageSectionsClient } from "@/api/exam/package-sections";
 import {
   PackageDetailHero,
   PackageDetailInfo,
@@ -10,7 +10,7 @@ import {
   SectionModeDialog,
   PackageDetailSkeleton,
 } from "@/components/pages/exam/packages/detail-package";
-import { useStartSession, ExamSessionMode } from "@/api/exam-sessions";
+import { useStartSession, ExamSessionMode } from "@/api/exam/sessions";
 import { AppRoute } from "@/constants/app-route";
 import { ErrorPageDetails, PageTitle } from "@/components/app";
 import { useAppTranslation } from "@/lib/i18n-typed";

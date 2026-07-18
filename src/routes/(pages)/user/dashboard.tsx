@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useGlobalStats, useSubjectStats } from "@/api/exam-user-stats";
-import { useAllSessionHistory } from "@/api/exam-sessions/all";
+import { useGlobalStats, useSubjectStats } from "@/api/exam/user-stats";
+import { useAllSessionHistory } from "@/api/exam/sessions/all";
 import { useBookHistory, useBookStats } from "@/api/book";
 import { useUserProfileQuery } from "@/api/users";
 import { useAuth } from "@/hooks/use-auth";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { EnumExamSessionStatus } from "@/api/exam-sessions/types";
+import { EnumExamSessionStatus } from "@/api/exam/sessions/types";
 import {
   Trophy,
   Book,

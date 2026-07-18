@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { ExamQuestionSolution } from "@/api/exam-question-solutions";
+import { ExamQuestionSolution } from "@/api/exam/question-solutions";
 import { BlockNoteStatic } from "@/components/custom/components";
 import React from "react";
 
@@ -31,11 +31,10 @@ export const SolutionRow = ({ solution, index, onDelete, onEdit }: SolutionRowPr
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative border rounded-xl overflow-hidden shadow-sm transition-all ${
-        isDragging
-          ? "shadow-lg opacity-90 z-50 border-primary bg-card"
-          : "border-border bg-card hover:shadow-md dark:hover:bg-accent/5"
-      }`}
+      className={`group relative border rounded-xl overflow-hidden shadow-sm transition-all ${isDragging
+        ? "shadow-lg opacity-90 z-50 border-primary bg-card"
+        : "border-border bg-card hover:shadow-md dark:hover:bg-accent/5"
+        }`}
     >
       <div className="bg-primary/5 px-5 py-3 border-b border-border flex justify-between items-center group-hover:bg-primary/10 transition-colors">
         <div className="flex items-center gap-3">

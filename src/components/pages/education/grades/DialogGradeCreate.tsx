@@ -8,7 +8,7 @@ import {
   useUpdateEducationGrade,
   CreateEducationGradeRequest,
   UpdateEducationGradeRequest,
-} from "@/api/education-grade";
+} from "@/api/education/grades";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 

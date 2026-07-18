@@ -1,5 +1,5 @@
 import React from "react";
-import { ExamPassage } from "@/api/exam-passages";
+import { ExamPassage } from "@/api/exam/passages";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { MoreHorizontal, Pencil, Trash2, BookOpen, Clock, HelpCircle, Hash } from "lucide-react";
 import { Button } from "@/components/ui/button";

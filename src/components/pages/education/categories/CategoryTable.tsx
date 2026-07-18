@@ -1,4 +1,4 @@
-import { ExamCategory, ListCategoryResponse } from "@/api/education-categories";
+import { ExamCategory, ListCategoryResponse } from "@/api/education/categories";
 import {
   DataTable,
   useDataTable,

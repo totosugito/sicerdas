@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
-import { OptionData, EvaluationData } from "@/api/exam-sessions";
+import { OptionData, EvaluationData } from "@/api/exam/sessions";
 import { useCbtStore } from "@/stores/useCbtStore";
 import { cn } from "@/lib/utils";
 import { useAppTranslation } from "@/lib/i18n-typed";

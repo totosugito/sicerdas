@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ExamPackageSection } from "@/api/exam-package-sections";
+import { ExamPackageSection } from "@/api/exam/package-sections";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
@@ -31,11 +31,10 @@ export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative rounded-xl border bg-card p-4 transition-all ${
-        isDragging
-          ? "shadow-lg opacity-90 z-10 border-primary"
-          : "hover:border-primary/30 hover:shadow-sm"
-      } ${section.groupName ? "ml-8" : ""}`}
+      className={`group relative rounded-xl border bg-card p-4 transition-all ${isDragging
+        ? "shadow-lg opacity-90 z-10 border-primary"
+        : "hover:border-primary/30 hover:shadow-sm"
+        } ${section.groupName ? "ml-8" : ""}`}
     >
       <div className="flex items-start gap-4">
         {/* Left Column: Sequence Controls */}

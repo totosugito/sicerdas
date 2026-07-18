@@ -3,7 +3,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageTitle, ErrorContainer } from "@/components/app";
-import { useUpdatePackage, useDetailPackage, useUploadPackageThumbnail } from "@/api/exam-packages";
+import { useUpdatePackage, useDetailPackage, useUploadPackageThumbnail } from "@/api/exam/packages";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { AppRoute } from "@/constants/app-route";
 import {

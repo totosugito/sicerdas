@@ -1,5 +1,5 @@
 import React from "react";
-import { ListPassagesResponse, ExamPassage } from "@/api/exam-passages";
+import { ListPassagesResponse, ExamPassage } from "@/api/exam/passages";
 import { PassageCardListItem } from "./PassageCardListItem";
 import { PaginationData } from "@/components/custom/table";
 import { Skeleton } from "@/components/ui/skeleton";

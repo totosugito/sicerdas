@@ -10,7 +10,7 @@ import {
     verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { SolutionRow } from "./SolutionRow";
-import { ExamQuestionSolution } from "@/api/exam-question-solutions";
+import { ExamQuestionSolution } from "@/api/exam/question-solutions";
 
 interface SolutionListProps {
     items: ExamQuestionSolution[];

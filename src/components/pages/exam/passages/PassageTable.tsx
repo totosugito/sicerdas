@@ -1,4 +1,4 @@
-import { ExamPassage, ListPassagesResponse } from "@/api/exam-passages";
+import { ExamPassage, ListPassagesResponse } from "@/api/exam/passages";
 import {
   DataTable,
   useDataTable,

@@ -1,4 +1,4 @@
-import { ExamQuestion } from "@/api/exam-questions";
+import { ExamQuestion } from "@/api/exam/questions";
 import {
   DndContext,
   closestCenter,

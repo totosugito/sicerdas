@@ -6,8 +6,8 @@ import {
   useCreatePackageSection,
   useUpdatePackageSection,
   ExamPackageSection,
-} from "@/api/exam-package-sections";
-import { useListPackageSimple } from "@/api/exam-packages";
+} from "@/api/exam/package-sections";
+import { useListPackageSimple } from "@/api/exam/packages";
 import { useListVersionSimple } from "@/api/version";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";

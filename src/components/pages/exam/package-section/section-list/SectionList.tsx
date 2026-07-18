@@ -1,4 +1,4 @@
-import { ExamPackageSection } from "@/api/exam-package-sections";
+import { ExamPackageSection } from "@/api/exam/package-sections";
 import {
   DndContext,
   closestCenter,

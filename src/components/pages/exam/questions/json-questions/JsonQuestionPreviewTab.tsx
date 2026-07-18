@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronDown, Info } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { JsonQuestionImport } from "@/api/exam-questions/types";
+import { JsonQuestionImport } from "@/api/exam/questions/types";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

@@ -10,8 +10,8 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { SolutionList } from "@/components/pages/exam/question-solutions/list-solution";
 import { DialogModal } from "@/components/custom/components";
 import { DialogLocalSolutionForm } from "./DialogLocalSolutionForm";
-import { ExamQuestionSolution } from "@/api/exam-question-solutions";
-import { ExamQuestion } from "@/api/exam-questions";
+import { ExamQuestionSolution } from "@/api/exam/question-solutions";
+import { ExamQuestion } from "@/api/exam/questions";
 
 interface JsonQuestionSolutionsTabProps {
   solutions?: ExamQuestion["solutions"];

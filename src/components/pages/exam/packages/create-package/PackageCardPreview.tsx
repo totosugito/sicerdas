@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Clock, BookOpen, Layers, Zap, ImageIcon } from "lucide-react";
 import { PackageFormValues } from "./types";

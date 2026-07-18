@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { ExamQuestion } from "@/api/exam-questions";
+import { ExamQuestion } from "@/api/exam/questions";
 import { DetailContent } from "../detail-question/DetailContent";
 import { DetailSolutions } from "../detail-question/DetailSolutions";
 import { injectVariablesIntoBlocks, evaluateFormulas } from "@/lib/exam-utils";
@@ -49,9 +49,9 @@ export function QuestionPreviewTab({ question }: QuestionPreviewTabProps) {
       })),
       passage: question.passage
         ? {
-            ...question.passage,
-            content: injectVariablesIntoBlocks(question.passage.content, fullScope),
-          }
+          ...question.passage,
+          content: injectVariablesIntoBlocks(question.passage.content, fullScope),
+        }
         : null,
     };
   }, [question, selectedIndex, variations]);

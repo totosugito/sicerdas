@@ -1,4 +1,4 @@
-import { ExamPackage } from "@/api/exam-packages";
+import { ExamPackage } from "@/api/exam/packages";
 import { EnumExamPackageUserStatus } from "backend/src/db/schema/exam/enums";
 import { Progress } from "@/components/ui/progress";
 import { useAppTranslation } from "@/lib/i18n-typed";

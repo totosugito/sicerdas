@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect, useMemo } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { CategoryOption, FilterCheckbox } from "../../book/list/FilterOptions";
-import { ExamFilterParamsResponse } from "@/api/exam-packages";
+import { ExamFilterParamsResponse } from "@/api/exam/packages";
 import { Button } from "@/components/ui/button";
 
 interface PackageFilterProps {

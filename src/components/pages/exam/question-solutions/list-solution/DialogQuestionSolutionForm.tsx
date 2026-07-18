@@ -7,8 +7,8 @@ import {
   useCreateQuestionSolution,
   useUpdateQuestionSolution,
   ExamQuestionSolution,
-} from "@/api/exam-question-solutions";
-import { EnumSolutionType } from "@/api/exam-questions/types";
+} from "@/api/exam/question-solutions";
+import { EnumSolutionType } from "@/api/exam/questions/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { useListTier } from "@/api/tier";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";

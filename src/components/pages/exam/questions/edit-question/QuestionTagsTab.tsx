@@ -3,10 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Tag as TagIcon, Search, X, Loader2, Plus } from "lucide-react";
-import { ExamQuestion } from "@/api/exam-questions";
+import { ExamQuestion } from "@/api/exam/questions";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { useListTagSimple, useCreateTag } from "@/api/education-tags";
-import { useAssignQuestionTag, useUnassignQuestionTag } from "@/api/exam-question-tags";
+import { useListTagSimple, useCreateTag } from "@/api/education/tags";
+import { useAssignQuestionTag, useUnassignQuestionTag } from "@/api/exam/question-tags";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";

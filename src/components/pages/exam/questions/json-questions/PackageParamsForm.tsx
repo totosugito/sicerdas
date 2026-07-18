@@ -6,8 +6,8 @@ import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { UseFormReturn } from "react-hook-form";
-import { useListPackageSimple } from "@/api/exam-packages";
-import { useListPackageSectionSimple } from "@/api/exam-package-sections";
+import { useListPackageSimple } from "@/api/exam/packages";
+import { useListPackageSectionSimple } from "@/api/exam/package-sections";
 
 interface PackageParamsFormProps {
   form: UseFormReturn<any>;

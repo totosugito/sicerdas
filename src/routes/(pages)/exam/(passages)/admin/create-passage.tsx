@@ -2,12 +2,12 @@ import React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { PageTitle } from "@/components/app";
-import { useCreatePassage } from "@/api/exam-passages";
+import { useCreatePassage } from "@/api/exam/passages";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppRoute } from "@/constants/app-route";
 import { PassageForm } from "@/components/pages/exam/passages/create-passage/PassageForm";
-import { PassageFormValues } from "@/api/exam-passages/types";
+import { PassageFormValues } from "@/api/exam/passages/types";
 
 export const Route = createFileRoute("/(pages)/exam/(passages)/admin/create-passage")({
   component: AdminExamPassagesCreatePage,

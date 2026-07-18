@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useDetailPackageSection } from "@/api/exam-package-sections";
+import { useDetailPackageSection } from "@/api/exam/package-sections";
 import {
   useListPackageQuestions,
   useAssignPackageQuestions,
   useUnassignPackageQuestions,
   useSyncPackageQuestionsOrder,
-} from "@/api/exam-package-questions";
+} from "@/api/exam/package-questions";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { PageTitle, LoadingView, ErrorContainer } from "@/components/app";
 import { AppRoute } from "@/constants/app-route";

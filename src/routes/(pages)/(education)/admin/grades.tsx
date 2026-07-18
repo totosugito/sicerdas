@@ -4,7 +4,7 @@ import {
   useDeleteEducationGrade,
   EducationGrade,
   ListEducationGradeResponse
-} from '@/api/education-grade';
+} from '@/api/education/grades';
 import { useQueryClient } from '@tanstack/react-query';
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from 'react';

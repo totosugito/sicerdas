@@ -6,7 +6,7 @@ import {
   useSessionQuestion,
   useSaveAnswer,
   useSubmitSession,
-} from "@/api/exam-sessions";
+} from "@/api/exam/sessions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { CreateContentReport } from "@/components/pages/layout/CreateContentReport";
 import { EnumContentType } from "backend/src/db/schema/enum/enum-app";

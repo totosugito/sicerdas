@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { ExamQuestion } from "@/api/exam-questions";
+import { ExamQuestion } from "@/api/exam/questions";
 import { BlockNoteStatic } from "@/components/custom/components";
 import React from "react";
 
@@ -35,21 +35,19 @@ export const OptionRow = ({ option, index, onDelete, onEdit }: OptionRowProps) =
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative border rounded-xl p-5 transition-all ${
-        isDragging
-          ? "shadow-lg opacity-90 z-50 border-primary bg-card"
-          : option.isCorrect
-            ? "border-[#22c55e]/50 bg-card hover:bg-[#22c55e]/[0.02] dark:hover:bg-[#22c55e]/[0.05] shadow-sm shadow-[#22c55e]/5"
-            : "border-border bg-card hover:bg-accent/5 dark:hover:bg-accent/10 shadow-sm"
-      }`}
+      className={`group relative border rounded-xl p-5 transition-all ${isDragging
+        ? "shadow-lg opacity-90 z-50 border-primary bg-card"
+        : option.isCorrect
+          ? "border-[#22c55e]/50 bg-card hover:bg-[#22c55e]/[0.02] dark:hover:bg-[#22c55e]/[0.05] shadow-sm shadow-[#22c55e]/5"
+          : "border-border bg-card hover:bg-accent/5 dark:hover:bg-accent/10 shadow-sm"
+        }`}
     >
       <div className="absolute -left-3 top-2 flex flex-col items-center gap-2 z-10">
         <div
-          className={`w-8 h-8 rounded-full flex items-center justify-center font-bold shadow-lg border-2 border-background transition-colors ${
-            option.isCorrect
-              ? "bg-[#22c55e] text-white dark:bg-[#22c55e]/80 dark:text-white"
-              : "bg-primary text-primary-foreground dark:bg-primary/80 dark:text-white"
-          }`}
+          className={`w-8 h-8 rounded-full flex items-center justify-center font-bold shadow-lg border-2 border-background transition-colors ${option.isCorrect
+            ? "bg-[#22c55e] text-white dark:bg-[#22c55e]/80 dark:text-white"
+            : "bg-primary text-primary-foreground dark:bg-primary/80 dark:text-white"
+            }`}
         >
           {getOptionLabel(index)}
         </div>

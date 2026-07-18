@@ -1,4 +1,4 @@
-import { ExamQuestion, ListQuestionsResponse, EnumScoringStrategy } from "@/api/exam-questions";
+import { ExamQuestion, ListQuestionsResponse, EnumScoringStrategy } from "@/api/exam/questions";
 import {
   DataTable,
   useDataTable,
@@ -201,10 +201,10 @@ export function QuestionTable({
               {t(
                 ($) =>
                   $.exam.questions.form.scoringStrategy.options[
-                    (strategy || "all_or_nothing") as
-                      | "all_or_nothing"
-                      | "partial"
-                      | "partial_with_penalty"
+                  (strategy || "all_or_nothing") as
+                  | "all_or_nothing"
+                  | "partial"
+                  | "partial_with_penalty"
                   ],
               )}
             </Badge>

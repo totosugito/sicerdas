@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSessionQuestion } from "@/api/exam-sessions";
+import { useSessionQuestion } from "@/api/exam/sessions";
 import { LoadingView } from "@/components/app/LoadingView";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
@@ -83,7 +83,7 @@ export const QuestionReviewSection: React.FC<QuestionReviewSectionProps> = ({
         mode={EnumExamSessionMode.STUDY}
         questionOrder={item?.order || 1}
         totalQuestions={grid.length}
-        onOptionSelect={() => {}}
+        onOptionSelect={() => { }}
         onReport={() => setIsReportDialogOpen(true)}
         allowDirectOptionSelect={false}
       />

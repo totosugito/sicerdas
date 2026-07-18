@@ -4,7 +4,7 @@ import { TableRow, TableCell } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { flexRender, Row } from "@tanstack/react-table";
 import { GripVertical } from "lucide-react";
-import { SectionQuestionItem } from "@/api/exam-package-sections/types";
+import { SectionQuestionItem } from "@/api/exam/package-sections/types";
 
 interface SortableRowProps {
   row: Row<SectionQuestionItem>;

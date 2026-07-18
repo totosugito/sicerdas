@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { BookOpen, HelpCircle, Lightbulb } from "lucide-react";
-import { ExamQuestion } from "@/api/exam-questions";
+import { ExamQuestion } from "@/api/exam/questions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DetailContent } from "./DetailContent";
 import { DetailSolutions } from "./DetailSolutions";

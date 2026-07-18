@@ -5,7 +5,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { JsonEditor, githubDarkTheme } from "json-edit-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
-import { VariableFormulas } from "@/api/exam-questions/types";
+import { VariableFormulas } from "@/api/exam/questions/types";
 
 interface JsonQuestionVariablesTabProps {
   variableFormulas: VariableFormulas | null | undefined;

@@ -15,17 +15,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, AlertCircle, Sparkles } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useCreateQuestion } from "@/api/exam-questions";
-import { useCreateQuestionOption } from "@/api/exam-question-options";
-import { useCreateQuestionSolution } from "@/api/exam-question-solutions";
-import { useAssignQuestionTagByName } from "@/api/exam-question-tags";
-import { useListTagSimple } from "@/api/education-tags";
+import { useCreateQuestion } from "@/api/exam/questions";
+import { useCreateQuestionOption } from "@/api/exam/question-options";
+import { useCreateQuestionSolution } from "@/api/exam/question-solutions";
+import { useAssignQuestionTagByName } from "@/api/exam/question-tags";
+import { useListTagSimple } from "@/api/education/tags";
 import { showNotifSuccess } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EnumDifficultyLevel, EnumQuestionType } from "@/api/exam-questions/types";
+import { EnumDifficultyLevel, EnumQuestionType } from "@/api/exam/questions/types";
 import {
   GlobalParamsForm,
   PackageParamsForm,
@@ -33,8 +33,8 @@ import {
   QuestionNumberGrid,
   JsonQuestionEditView,
 } from "@/components/pages/exam/questions/json-questions";
-import { useAssignPackageQuestions } from "@/api/exam-package-questions";
-import { JsonQuestionImport } from "@/api/exam-questions/types";
+import { useAssignPackageQuestions } from "@/api/exam/package-questions";
+import { JsonQuestionImport } from "@/api/exam/questions/types";
 import { VALID_BLOCK_TYPES } from "@/components/custom/components/block-note/lib/blocknote-config";
 
 const jsonQuestionsSearchSchema = z.object({

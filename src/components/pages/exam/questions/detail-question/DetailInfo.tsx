@@ -3,7 +3,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tag, HelpCircle } from "lucide-react";
-import { ExamQuestion } from "@/api/exam-questions";
+import { ExamQuestion } from "@/api/exam/questions";
 import { cn } from "@/lib/utils";
 
 interface DetailInfoProps {
@@ -52,7 +52,7 @@ export function DetailInfo({ question }: DetailInfoProps) {
                 {t(
                   ($) =>
                     $.exam.questions.form.difficulty.options[
-                      question.difficulty as "easy" | "medium" | "hard"
+                    question.difficulty as "easy" | "medium" | "hard"
                     ],
                 )}
               </Badge>
@@ -66,7 +66,7 @@ export function DetailInfo({ question }: DetailInfoProps) {
               {t(
                 ($) =>
                   $.exam.questions.form.type.options[
-                    question.type as "multiple_choice" | "multiple_select" | "essay"
+                  question.type as "multiple_choice" | "multiple_select" | "essay"
                   ],
               )}
             </p>
@@ -85,10 +85,10 @@ export function DetailInfo({ question }: DetailInfoProps) {
               {t(
                 ($) =>
                   $.exam.questions.form.scoringStrategy.options[
-                    (question.scoringStrategy || "all_or_nothing") as
-                      | "all_or_nothing"
-                      | "partial"
-                      | "partial_with_penalty"
+                  (question.scoringStrategy || "all_or_nothing") as
+                  | "all_or_nothing"
+                  | "partial"
+                  | "partial_with_penalty"
                   ],
               )}
             </p>

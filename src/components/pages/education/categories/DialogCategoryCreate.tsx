@@ -8,7 +8,7 @@ import {
     useUpdateCategory,
     CreateCategoryRequest,
     UpdateCategoryRequest
-} from "@/api/education-categories";
+} from "@/api/education/categories";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 

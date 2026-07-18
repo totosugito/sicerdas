@@ -7,16 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
 import { FormWithDetector } from "@/components/custom/components";
-import { useListSubjectSimple } from "@/api/exam-subjects";
-import { useListPassageSimple } from "@/api/exam-passages";
+import { useListSubjectSimple } from "@/api/exam/subjects";
+import { useListPassageSimple } from "@/api/exam/passages";
 import { useListTier } from "@/api/tier";
-import { useListGradeSimple } from "@/api/education-grade";
+import { useListGradeSimple } from "@/api/education/grades";
 import {
   QuestionFormValues,
   EnumDifficultyLevel,
   EnumQuestionType,
   EnumScoringStrategy,
-} from "@/api/exam-questions/types";
+} from "@/api/exam/questions/types";
 import { prepare_blocknote_submission } from "@/lib/blocknote-utils";
 
 type InternalQuestionFormValues = Omit<QuestionFormValues, "educationGradeId"> & {

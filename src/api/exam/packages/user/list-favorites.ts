@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { EnumExamPackageUserStatus } from "@/api/exam-packages/types";
+import { EnumExamPackageUserStatus } from "@/api/exam/packages/types";
 
 export interface FavoritePackage {
   id: string;

@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { ExamPackage } from "@/api/exam-packages/types";
+import { ExamPackage } from "@/api/exam/packages/types";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate, Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
@@ -183,7 +183,7 @@ const PackageCardView = ({ exam, viewMode }: PackageCardViewProps) => {
                 )}
               >
                 {exam.userInteraction?.status === EnumExamPackageUserStatus.IN_PROGRESS ||
-                exam.userInteraction?.status === EnumExamPackageUserStatus.COMPLETED
+                  exam.userInteraction?.status === EnumExamPackageUserStatus.COMPLETED
                   ? `${exam.userInteraction.completedSectionsCount}/${exam.stats.activeSections}`
                   : exam.stats.activeSections}
               </span>

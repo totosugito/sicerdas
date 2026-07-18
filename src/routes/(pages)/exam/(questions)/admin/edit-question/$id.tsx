@@ -15,7 +15,7 @@ import {
   Database,
   Eye,
 } from "lucide-react";
-import { useDetailQuestion, useUpdateQuestion } from "@/api/exam-questions";
+import { useDetailQuestion, useUpdateQuestion } from "@/api/exam/questions";
 import {
   QuestionSettingsTab,
   QuestionContentTab,
@@ -25,7 +25,7 @@ import {
   QuestionVariablesTab,
   QuestionPreviewTab,
 } from "@/components/pages/exam/questions/edit-question";
-import { type UpdateQuestionRequest } from "@/api/exam-questions/admin/update-question";
+import { type UpdateQuestionRequest } from "@/api/exam/questions/admin/update-question";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
 
 export const Route = createFileRoute("/(pages)/exam/(questions)/admin/edit-question/$id")({

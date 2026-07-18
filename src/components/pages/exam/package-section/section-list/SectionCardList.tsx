@@ -1,5 +1,5 @@
 import React from "react";
-import { ExamPackageSection, ListSectionsResponse } from "@/api/exam-package-sections";
+import { ExamPackageSection, ListSectionsResponse } from "@/api/exam/package-sections";
 import { PaginationData } from "@/components/custom/table";
 import { SectionCardListItem } from "./SectionCardListItem";
 import { useAppTranslation } from "@/lib/i18n-typed";
@@ -52,20 +52,20 @@ export function SectionCardList({
       <div className={cn(gridClass)}>
         {isLoading
           ? // Simple Skeleton
-            Array.from({ length: paginationData?.limit || 8 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-[280px] rounded-2xl bg-muted/40 animate-pulse border border-border/20"
-              />
-            ))
+          Array.from({ length: paginationData?.limit || 8 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-[280px] rounded-2xl bg-muted/40 animate-pulse border border-border/20"
+            />
+          ))
           : items.map((section) => (
-              <SectionCardListItem
-                key={section.id}
-                section={section}
-                onEdit={onEdit}
-                onDelete={onDelete}
-              />
-            ))}
+            <SectionCardListItem
+              key={section.id}
+              section={section}
+              onEdit={onEdit}
+              onDelete={onDelete}
+            />
+          ))}
       </div>
     </div>
   );

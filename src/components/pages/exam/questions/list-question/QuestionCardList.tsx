@@ -1,5 +1,5 @@
 import React from "react";
-import { ListQuestionsResponse, ExamQuestion } from "@/api/exam-questions";
+import { ListQuestionsResponse, ExamQuestion } from "@/api/exam/questions";
 import { PaginationData } from "@/components/custom/table";
 import { QuestionCardListItem } from "./QuestionCardListItem";
 import { Skeleton } from "@/components/ui/skeleton";

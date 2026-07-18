@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { ExamQuestion } from "@/api/exam-questions";
+import { ExamQuestion } from "@/api/exam/questions";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
@@ -15,7 +15,7 @@ import {
   useDeleteQuestionSolution,
   useUpdateQuestionSolution,
   ExamQuestionSolution,
-} from "@/api/exam-question-solutions";
+} from "@/api/exam/question-solutions";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";
 

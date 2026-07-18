@@ -1,4 +1,4 @@
-import { EducationGrade, ListEducationGradeResponse } from "@/api/education-grade";
+import { EducationGrade, ListEducationGradeResponse } from "@/api/education/grades";
 import {
   DataTable,
   useDataTable,

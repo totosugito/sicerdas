@@ -3,11 +3,11 @@ import { DialogModalForm, ModalFormProps } from "@/components/custom/components"
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import { ControlForm } from "@/components/custom/forms";
-import { useCreateQuestionOption, useUpdateQuestionOption } from "@/api/exam-question-options";
+import { useCreateQuestionOption, useUpdateQuestionOption } from "@/api/exam/question-options";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 
-import { ExamQuestion } from "@/api/exam-questions";
+import { ExamQuestion } from "@/api/exam/questions";
 
 import { blocknote_to_text, prepare_blocknote_submission } from "@/lib/blocknote-utils";
 

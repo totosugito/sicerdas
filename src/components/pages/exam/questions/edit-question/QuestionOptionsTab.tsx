@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { ExamQuestion } from '@/api/exam-questions';
+import { ExamQuestion } from '@/api/exam/questions';
 import { useAppTranslation } from '@/lib/i18n-typed';
 import {
     KeyboardSensor,
@@ -17,7 +17,7 @@ import {
 } from '@dnd-kit/sortable';
 import { DialogQuestionOptionForm, OptionList } from '@/components/pages/exam/question-options/list-option';
 import { DialogModal } from '@/components/custom/components';
-import { useDeleteQuestionOption, useUpdateQuestionOption } from '@/api/exam-question-options';
+import { useDeleteQuestionOption, useUpdateQuestionOption } from '@/api/exam/question-options';
 import { showNotifSuccess, showNotifError } from '@/lib/show-notif';
 import { useQueryClient } from '@tanstack/react-query';
 

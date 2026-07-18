@@ -20,7 +20,7 @@ import {
   ExamQuestion,
   EnumDifficultyLevel,
   EnumQuestionType,
-} from "@/api/exam-questions";
+} from "@/api/exam/questions";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
@@ -28,8 +28,8 @@ import { LongText } from "@/components/custom/components";
 import { PaginationData } from "@/components/custom/table";
 import { Loader2, X } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { useListSubjectSimple } from "@/api/exam-subjects";
-import { useListGradeSimple } from "@/api/education-grade";
+import { useListSubjectSimple } from "@/api/exam/subjects";
+import { useListGradeSimple } from "@/api/education/grades";
 import { useListTier } from "@/api/tier";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";

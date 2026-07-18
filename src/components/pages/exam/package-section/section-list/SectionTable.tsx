@@ -1,4 +1,4 @@
-import { ExamPackageSection, ListSectionsResponse } from "@/api/exam-package-sections";
+import { ExamPackageSection, ListSectionsResponse } from "@/api/exam/package-sections";
 import {
   DataTable,
   useDataTable,

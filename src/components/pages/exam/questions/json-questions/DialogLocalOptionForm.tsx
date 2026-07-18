@@ -3,7 +3,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import React from "react";
 import { ControlForm } from "@/components/custom/forms";
-import { ExamQuestion } from "@/api/exam-questions";
+import { ExamQuestion } from "@/api/exam/questions";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
 
 export type DialogLocalOptionFormProps = {

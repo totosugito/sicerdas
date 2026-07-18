@@ -6,11 +6,11 @@ import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { UseFormReturn } from "react-hook-form";
-import { useListSubjectSimple } from "@/api/exam-subjects";
-import { useListPassageSimple } from "@/api/exam-passages";
+import { useListSubjectSimple } from "@/api/exam/subjects";
+import { useListPassageSimple } from "@/api/exam/passages";
 import { useListTier } from "@/api/tier";
-import { useListGradeSimple } from "@/api/education-grade";
-import { EnumDifficultyLevel, EnumQuestionType } from "@/api/exam-questions/types";
+import { useListGradeSimple } from "@/api/education/grades";
+import { EnumDifficultyLevel, EnumQuestionType } from "@/api/exam/questions/types";
 
 interface GlobalParamsFormProps {
   form: UseFormReturn<any>;

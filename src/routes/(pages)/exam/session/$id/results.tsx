@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useSessionDetails } from "@/api/exam-sessions";
+import { useSessionDetails } from "@/api/exam/sessions";
 import { AppRoute } from "@/constants/app-route";
 import { useState, useMemo } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";

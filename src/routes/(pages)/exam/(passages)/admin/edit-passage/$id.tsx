@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { PageTitle, ErrorContainer } from "@/components/app";
 import { AppRoute } from "@/constants/app-route";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
-import { useGetPassage, useUpdatePassage, PassageFormValues } from "@/api/exam-passages";
+import { useGetPassage, useUpdatePassage, PassageFormValues } from "@/api/exam/passages";
 import { PassageForm } from "@/components/pages/exam/passages/create-passage/PassageForm";
 import { Skeleton } from "@/components/ui/skeleton";
 
