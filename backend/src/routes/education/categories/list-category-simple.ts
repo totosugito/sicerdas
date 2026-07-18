@@ -22,7 +22,7 @@ const listCategoriesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
       const result = await listCategorySimpleService(page, limit);
 
       if (!result.success || !result.data) {
-        return reply.internalServerError(request.t(($) => $.education.categories.list.success));
+        return reply.internalServerError(request.t(($) => $.education.categories.list.error));
       }
 
       return reply.status(200).send({

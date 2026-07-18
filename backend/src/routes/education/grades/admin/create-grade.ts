@@ -1,93 +1,38 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { educationGrades } from "../../../../db/schema/education/grades.ts";
-import { eq, or } from "drizzle-orm";
+import { createGradeService } from "../../../../modules/education/grades/services/create-grade.service.ts";
+import { CreateGradeBody, GradeDetailResponse } from "../../../../modules/education/grades/education.schema.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 
-const CreateEducationGradeBody = Type.Object({
-  grade: Type.String({ minLength: 1, maxLength: 32 }),
-  name: Type.String({ minLength: 1, maxLength: 128 }),
-  desc: Type.Optional(Type.String()),
-  extra: Type.Optional(Type.Any()),
-  isDefault: Type.Optional(Type.Boolean({ default: true })),
-});
-
-const EducationGradeResponseItem = Type.Object({
-  id: Type.Number(),
-  grade: Type.String(),
-  name: Type.String(),
-  desc: Type.Union([Type.String(), Type.Null()]),
-  isDefault: Type.Boolean(),
-  createdAt: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
-  updatedAt: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
-});
-
-const CreateEducationGradeResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: EducationGradeResponseItem,
-});
-
-const createEducationGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
+const createGradeRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
     url: "/create",
     method: "POST",
     schema: {
       tags: ["Admin Education Grades"],
-      body: CreateEducationGradeBody,
-      response: {
-        201: CreateEducationGradeResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-      },
+      body: CreateGradeBody,
+      response: { 201: GradeDetailResponse, "4xx": ErrorResponseSchema },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Body: typeof CreateEducationGradeBody.static }>,
+      request: FastifyRequest<{ Body: typeof CreateGradeBody.static }>,
       reply: FastifyReply,
-    ) {
-            const { grade, name, desc, extra, isDefault } = request.body;
-
-      // Check if grade or name already exists
-      const existingGrade = await db.query.educationGrades.findFirst({
-        where: or(eq(educationGrades.grade, grade), eq(educationGrades.name, name)),
-      });
-
-      if (existingGrade) {
-        return reply.badRequest(request.t(($) => $.education.grades.create.exists));
-      }
-
+    ): Promise<typeof GradeDetailResponse.static> {
       const userId = request.session.user.id;
+      const result = await createGradeService(request.body, userId);
 
-      const [newGrade] = await db
-        .insert(educationGrades)
-        .values({
-          grade,
-          name,
-          desc: desc ?? "",
-          extra: extra ?? {},
-          createdByUserId: userId,
-          isDefault: isDefault ?? true,
-        })
-        .returning();
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 409) return reply.badRequest(message);
+        return reply.internalServerError(message);
+      }
 
       return reply.status(201).send({
         success: true,
         message: request.t(($) => $.education.grades.create.success),
-        data: {
-          ...newGrade,
-          createdAt: newGrade.createdAt ? newGrade.createdAt.toISOString() : null,
-          updatedAt: newGrade.updatedAt ? newGrade.updatedAt.toISOString() : null,
-        },
+        data: result.data,
       });
     },
   });
 };
 
-export default createEducationGradeRoute;
+export default createGradeRoute;

@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { updateCategoryService } from "../../../../modules/education/categories/services/update-category.service.ts";
-import { UpdateCategoryBody, UpdateCategoryResponse } from "../../../../modules/education/categories/education.schema.ts";
+import { UpdateCategoryBody, CategoryResponse } from "../../../../modules/education/categories/education.schema.ts";
 import { ErrorResponseSchema } from "../../../../types/response.ts";
 
 const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -13,12 +13,12 @@ const updateCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
       tags: ["Admin Exam Categories"],
       params: Type.Object({ id: Type.String({ format: "uuid" }) }),
       body: UpdateCategoryBody,
-      response: { 200: UpdateCategoryResponse, "4xx": ErrorResponseSchema },
+      response: { 200: CategoryResponse, "4xx": ErrorResponseSchema },
     },
     handler: async function handler(
       request: FastifyRequest<{ Params: { id: string }; Body: typeof UpdateCategoryBody.static }>,
       reply: FastifyReply,
-    ): Promise<typeof UpdateCategoryResponse.static> {
+    ): Promise<typeof CategoryResponse.static> {
       const { id } = request.params;
       const result = await updateCategoryService(id, request.body);
 

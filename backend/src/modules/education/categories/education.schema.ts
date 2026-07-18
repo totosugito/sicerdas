@@ -19,6 +19,17 @@ const CategorySimpleFields = {
 const CategorySchema = Type.Object(CategoryBaseFields);
 const CategorySimpleSchema = Type.Object(CategorySimpleFields);
 
+const PaginatedResponse = (itemSchema: Parameters<typeof Type.Array>[0]) =>
+  Type.Intersect([
+    BaseResponseSchema,
+    Type.Object({
+      data: Type.Object({
+        items: Type.Array(itemSchema),
+        meta: PaginationMetaSchema,
+      }),
+    }),
+  ]);
+
 export const CategoryListBody = Type.Object({
   search: Type.Optional(Type.String()),
   isActive: Type.Optional(Type.Boolean()),
@@ -47,32 +58,9 @@ export const UpdateCategoryBody = Type.Object({
   isActive: Type.Optional(Type.Boolean()),
 });
 
+export const CategoryListResponse = PaginatedResponse(CategorySchema);
+export const CategorySimpleResponse = PaginatedResponse(CategorySimpleSchema);
 export const CategoryResponse = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({
-    data: Type.Object({
-      items: Type.Array(CategorySchema),
-      meta: PaginationMetaSchema,
-    }),
-  }),
-]);
-
-export const CategorySimpleResponse = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({
-    data: Type.Object({
-      items: Type.Array(CategorySimpleSchema),
-      meta: PaginationMetaSchema,
-    }),
-  }),
-]);
-
-export const CreateCategoryResponse = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({ data: CategorySchema }),
-]);
-
-export const UpdateCategoryResponse = Type.Intersect([
   BaseResponseSchema,
   Type.Object({ data: CategorySchema }),
 ]);

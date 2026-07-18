@@ -4,7 +4,7 @@ import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from "../../../db/schema/index.ts";
 import { listCategoryService } from "../../../modules/education/categories/services/list-category.service.ts";
-import { CategoryListBody, CategoryResponse } from "../../../modules/education/categories/education.schema.ts";
+import { CategoryListBody, CategoryListResponse } from "../../../modules/education/categories/education.schema.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -14,12 +14,12 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Exam Categories"],
       body: CategoryListBody,
-      response: { 200: CategoryResponse, "4xx": ErrorResponseSchema },
+      response: { 200: CategoryListResponse, "4xx": ErrorResponseSchema },
     },
     handler: async function handler(
       request: FastifyRequest<{ Body: typeof CategoryListBody.static }>,
       reply: FastifyReply,
-    ): Promise<typeof CategoryResponse.static> {
+    ): Promise<typeof CategoryListResponse.static> {
       const session = await getAuthInstance(app).api.getSession({
         headers: fromNodeHeaders(request.headers),
       });
@@ -28,7 +28,7 @@ const listCategoryRoute: FastifyPluginAsyncTypebox = async (app) => {
       const result = await listCategoryService(request.body, isAdmin);
 
       if (!result.success || !result.data) {
-        return reply.internalServerError(request.t(($) => $.education.categories.list.success));
+        return reply.internalServerError(request.t(($) => $.education.categories.list.error));
       }
 
       return reply.status(200).send({

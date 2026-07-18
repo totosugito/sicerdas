@@ -6,7 +6,8 @@
                 "exists": "Kategori dengan nama tersebut sudah ada"
             },
             "list": {
-                "success": "Berhasil mengambil daftar kategori ujian"
+                "success": "Berhasil mengambil daftar kategori ujian",
+                "error": "Gagal mengambil daftar kategori ujian"
             },
             "update": {
                 "success": "Kategori ujian berhasil diperbarui",
@@ -37,7 +38,8 @@
                 "inUseQuestion": "Tidak dapat menghapus tingkat pendidikan ini karena sedang digunakan oleh Modul Bank Soal."
             },
             "list": {
-                "success": "Grades berhasil diambil"
+                "success": "Grades berhasil diambil",
+                "error": "Gagal mengambil daftar grade"
             }
         },
         "tags": {

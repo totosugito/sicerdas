@@ -1,34 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import { educationGrades } from "../../../db/schema/education/grades.ts";
-import { asc, sql, eq } from "drizzle-orm";
-
-const GradeSimpleQuery = Type.Object({
-  page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
-  limit: Type.Optional(Type.Number({ default: 1000, minimum: 1, maximum: 2000 })),
-  isDefault: Type.Optional(Type.Boolean({ default: true })),
-});
-
-const GradeSimpleResponseItem = Type.Object({
-  value: Type.String(),
-  label: Type.String(),
-});
-
-const ListGradesSimpleResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Object({
-    items: Type.Array(GradeSimpleResponseItem),
-    meta: Type.Object({
-      total: Type.Number(),
-      page: Type.Number(),
-      limit: Type.Number(),
-      totalPages: Type.Number(),
-    }),
-  }),
-});
+import { listGradeSimpleService } from "../../../modules/education/grades/services/list-grade-simple.service.ts";
+import { GradeSimpleBody, GradeSimpleResponse } from "../../../modules/education/grades/education.schema.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const listGradesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -36,57 +10,24 @@ const listGradesSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "POST",
     schema: {
       tags: ["Education Grades"],
-      body: GradeSimpleQuery,
-      response: {
-        200: ListGradesSimpleResponse,
-        "4xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-        "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-      },
+      body: GradeSimpleBody,
+      response: { 200: GradeSimpleResponse, "4xx": ErrorResponseSchema },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Body: typeof GradeSimpleQuery.static }>,
+      request: FastifyRequest<{ Body: typeof GradeSimpleBody.static }>,
       reply: FastifyReply,
-    ) {
-            const { page = 1, limit = 1000, isDefault = true } = request.body;
-      const offset = (page - 1) * limit;
+    ): Promise<typeof GradeSimpleResponse.static> {
+      const { page = 1, limit = 1000, isDefault = true } = request.body;
+      const result = await listGradeSimpleService(page, limit, isDefault);
 
-      // Filter
-      const whereClause =
-        isDefault !== undefined ? eq(educationGrades.isDefault, isDefault) : undefined;
-
-      // Count
-      const countResult = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(educationGrades)
-        .where(whereClause as any);
-
-      const total = Number(countResult[0]?.count || 0);
-      const totalPages = Math.ceil(total / limit);
-
-      // Fetch
-      const items = await db
-        .select({
-          value: sql<string>`${educationGrades.id}::text`,
-          label: educationGrades.name,
-        })
-        .from(educationGrades)
-        .where(whereClause as any)
-        .orderBy(asc(educationGrades.name))
-        .limit(limit)
-        .offset(offset);
+      if (!result.success || !result.data) {
+        return reply.internalServerError(request.t(($) => $.education.grades.list.error));
+      }
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.education.grades.list.success),
-        data: {
-          items,
-          meta: {
-            total,
-            page,
-            limit,
-            totalPages,
-          },
-        },
+        data: result.data,
       });
     },
   });
