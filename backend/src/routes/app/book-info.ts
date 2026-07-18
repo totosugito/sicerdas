@@ -1,32 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../db/db-pool.ts";
-import { books } from "../../db/schema/book/index.ts";
-import { and, eq } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getBookPdfUrl } from "../../utils/book/book-utils.ts";
-
-const BookInfoQuery = Type.Object({
-  bookId: Type.Number(),
-  page: Type.Number(),
-});
-
-const BookInfoResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Object({
-    id: Type.String({ format: "uuid" }),
-    bookId: Type.Number(),
-    title: Type.String(),
-    description: Type.Optional(Type.String()),
-    author: Type.Optional(Type.String()),
-    publishedYear: Type.String(),
-    totalPages: Type.Number(),
-    size: Type.Number(),
-    status: Type.String(),
-    pdf: Type.String(),
-  }),
-});
+import { bookInfoService } from "../../modules/book/services/book-info.service.ts";
+import { BookInfoQuery, BookInfoResponse } from "../../modules/book/book.schema.ts";
+import { ErrorResponseSchema } from "../../types/response.ts";
 
 const bookInfoRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -39,67 +15,29 @@ const bookInfoRoute: FastifyPluginAsyncTypebox = async (app) => {
       querystring: BookInfoQuery,
       response: {
         200: BookInfoResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Querystring: { bookId: number; page: number } }>,
+      req: FastifyRequest<{ Querystring: typeof BookInfoQuery.static }>,
       reply: FastifyReply,
     ): Promise<typeof BookInfoResponse.static> {
-            const { bookId, page } = req.query;
+      const { bookId, page } = req.query;
 
-      // Select book from database matching bookId and totalPages = page
-      const result = await db
-        .select({
-          id: books.id,
-          bookId: books.bookId,
-          title: books.title,
-          description: books.description,
-          author: books.author,
-          publishedYear: books.publishedYear,
-          totalPages: books.totalPages,
-          size: books.size,
-          status: books.status,
-        })
-        .from(books)
-        .where(
-          and(
-            eq(books.bookId, bookId),
-            eq(books.totalPages, page),
-          ),
-        )
-        .limit(1);
+      const result = await bookInfoService(bookId, page);
 
-      if (!result || result.length === 0) {
-        return reply.notFound(req.t(($) => $.book.detail.notFound));
+      if (!result.success || !result.data) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
-
-      const book = result[0];
-
-      const processedBook = {
-        id: book.id,
-        bookId: book.bookId,
-        title: book.title,
-        description: book.description || undefined,
-        author: book.author || undefined,
-        publishedYear: book.publishedYear,
-        totalPages: book.totalPages,
-        size: book.size,
-        status: book.status,
-        pdf: getBookPdfUrl({ bookId: book.bookId }),
-      };
 
       return reply.status(200).send({
         success: true,
         message: req.t(($) => $.book.detail.success),
-        data: processedBook,
+        data: result.data,
       });
     },
   });

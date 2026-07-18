@@ -1,40 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../db/db-pool.ts";
-import { periodicElements, periodicElementNotes } from "../../db/schema/periodic-table/index.ts";
-
-const ElementItem = Type.Object({
-  id: Type.Integer(),
-  idx: Type.Integer(),
-  idy: Type.Integer(),
-  atomicNumber: Type.Integer(),
-  atomicGroup: Type.String(),
-  atomicName: Type.String(),
-  atomicSymbol: Type.String(),
-  atomicImages: Type.Record(Type.String(), Type.Unknown()),
-  atomicProperties: Type.Record(Type.String(), Type.Unknown()),
-  atomicIsotope: Type.Record(Type.String(), Type.Unknown()),
-  atomicExtra: Type.Record(Type.String(), Type.Unknown()),
-});
-
-const NoteItem = Type.Object({
-  id: Type.Integer(),
-  atomicNumber: Type.Integer(),
-  localeCode: Type.String(),
-  atomicOverview: Type.String(),
-  atomicHistory: Type.String(),
-  atomicApps: Type.String(),
-  atomicFacts: Type.String(),
-});
-
-const PeriodicTableResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Object({
-    elements: Type.Array(ElementItem),
-    notes: Type.Array(NoteItem),
-  }),
-});
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { listSyncPeriodicService } from "../../modules/periodic-table/services/list-sync-periodic.service.ts";
+import { PeriodicSyncResponse } from "../../modules/periodic-table/periodic-table-sync.schema.ts";
+import { ErrorResponseSchema } from "../../types/response.ts";
 
 const periodicTableRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -45,63 +13,24 @@ const periodicTableRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: "Get all periodic table data",
       description: "Returns all periodic table elements and notes for offline client sync",
       response: {
-        200: PeriodicTableResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        200: PeriodicSyncResponse,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      req,
-      reply,
-    ): Promise<typeof PeriodicTableResponse.static> {
-      
-      const elements = await db
-        .select({
-          id: periodicElements.id,
-          idx: periodicElements.idx,
-          idy: periodicElements.idy,
-          atomicNumber: periodicElements.atomicNumber,
-          atomicGroup: periodicElements.atomicGroup,
-          atomicName: periodicElements.atomicName,
-          atomicSymbol: periodicElements.atomicSymbol,
-          atomicImages: periodicElements.atomicImages,
-          atomicProperties: periodicElements.atomicProperties,
-          atomicIsotope: periodicElements.atomicIsotope,
-          atomicExtra: periodicElements.atomicExtra,
-        })
-        .from(periodicElements);
+      req: FastifyRequest,
+      reply: FastifyReply,
+    ): Promise<typeof PeriodicSyncResponse.static> {
+      const result = await listSyncPeriodicService();
 
-      const notes = await db
-        .select({
-          id: periodicElementNotes.id,
-          atomicNumber: periodicElementNotes.atomicNumber,
-          localeCode: periodicElementNotes.localeCode,
-          atomicOverview: periodicElementNotes.atomicOverview,
-          atomicHistory: periodicElementNotes.atomicHistory,
-          atomicApps: periodicElementNotes.atomicApps,
-          atomicFacts: periodicElementNotes.atomicFacts,
-        })
-        .from(periodicElementNotes);
+      if (!result.success || !result.data) {
+        return reply.internalServerError(req.t(($) => $.periodic.downloadFailed));
+      }
 
       return reply.status(200).send({
         success: true,
         message: req.t(($) => $.periodic.success),
-        data: {
-          elements: elements.map((el) => ({
-            ...el,
-            atomicImages: el.atomicImages || {},
-            atomicProperties: el.atomicProperties || {},
-            atomicIsotope: el.atomicIsotope || {},
-            atomicExtra: el.atomicExtra || {},
-          })),
-          notes,
-        },
+        data: result.data,
       });
     },
   });
