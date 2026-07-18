@@ -1,94 +1,36 @@
-import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import type { FastifyReply, FastifyRequest } from 'fastify';
-import { Type } from '@sinclair/typebox';
-import { db } from '../../../db/db-pool.ts';
-import { educationTags } from '../../../db/schema/education/tags.ts';
-import { asc, sql, eq } from 'drizzle-orm';
-
-const TagSimpleQuery = Type.Object({
-    page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
-    limit: Type.Optional(Type.Number({ default: 1000, minimum: 1, maximum: 2000 })),
-});
-
-const TagSimpleResponseItem = Type.Object({
-    value: Type.String(),
-    label: Type.String(),
-});
-
-const ListTagsSimpleResponse = Type.Object({
-    success: Type.Boolean(),
-    message: Type.String(),
-    data: Type.Object({
-        items: Type.Array(TagSimpleResponseItem),
-        meta: Type.Object({
-            total: Type.Number(),
-            page: Type.Number(),
-            limit: Type.Number(),
-            totalPages: Type.Number(),
-        })
-    }),
-});
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { listTagSimpleService } from "../../../modules/education/tags/services/list-tag-simple.service.ts";
+import { TagSimpleBody, TagSimpleResponse } from "../../../modules/education/tags/education.schema.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const listTagsSimpleRoute: FastifyPluginAsyncTypebox = async (app) => {
-    app.route({
-        url: '/list-simple',
-        method: 'POST',
-        schema: {
-            tags: ['Education Tags'],
-            body: TagSimpleQuery,
-            response: {
-                200: ListTagsSimpleResponse,
-                '4xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-                '5xx': Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-            }
-        },
-        handler: async function handler(
-            request: FastifyRequest<{ Body: typeof TagSimpleQuery.static }>,
-            reply: FastifyReply
-        ) {
-                        const { page = 1, limit = 1000 } = request.body;
-            const offset = (page - 1) * limit;
+  app.route({
+    url: "/list-simple",
+    method: "POST",
+    schema: {
+      tags: ["Education Tags"],
+      body: TagSimpleBody,
+      response: { 200: TagSimpleResponse, "4xx": ErrorResponseSchema },
+    },
+    handler: async function handler(
+      request: FastifyRequest<{ Body: typeof TagSimpleBody.static }>,
+      reply: FastifyReply,
+    ): Promise<typeof TagSimpleResponse.static> {
+      const { page = 1, limit = 1000 } = request.body;
+      const result = await listTagSimpleService(page, limit);
 
-            // Only list active tags for simple selection
-            const baseQuery = db
-                .select()
-                .from(educationTags)
-                .where(eq(educationTags.isActive, true));
+      if (!result.success || !result.data) {
+        return reply.internalServerError(request.t(($) => $.education.tags.list.error));
+      }
 
-            // Count
-            const countResult = await db
-                .select({ count: sql<number>`count(*)` })
-                .from(baseQuery.as('subquery'));
-
-            const total = Number(countResult[0]?.count || 0);
-            const totalPages = Math.ceil(total / limit);
-
-            // Fetch
-            const items = await db.select({
-                value: sql<string>`${educationTags.id}::text`,
-                label: educationTags.name,
-            })
-                .from(educationTags)
-                .where(eq(educationTags.isActive, true))
-                .orderBy(asc(educationTags.name))
-                .limit(limit)
-                .offset(offset);
-
-            return reply.status(200).send({
-                success: true,
-                message: request.t($ => $.education.tags.list.success),
-                data: {
-                    items,
-                    meta: {
-                        total,
-                        page,
-                        limit,
-                        totalPages,
-                    }
-                }
-            });
-        },
-    });
+      return reply.status(200).send({
+        success: true,
+        message: request.t(($) => $.education.tags.list.success),
+        data: result.data,
+      });
+    },
+  });
 };
 
 export default listTagsSimpleRoute;

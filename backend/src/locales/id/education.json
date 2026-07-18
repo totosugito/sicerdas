@@ -48,7 +48,8 @@
                 "exists": "Tag/Topik dengan nama tersebut sudah ada"
             },
             "list": {
-                "success": "Berhasil mengambil daftar tag/topik ujian"
+                "success": "Berhasil mengambil daftar tag/topik ujian",
+                "error": "Gagal mengambil daftar tag/topik ujian"
             },
             "update": {
                 "success": "Tag/Topik ujian berhasil diperbarui",

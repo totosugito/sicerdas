@@ -1,30 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { educationTags } from "../../../../db/schema/education/tags.ts";
-import { eq } from "drizzle-orm";
-
-const CreateTagBody = Type.Object({
-  name: Type.String({ minLength: 1 }),
-  description: Type.Optional(Type.String()),
-  isActive: Type.Optional(Type.Boolean({ default: true })),
-});
-
-const TagResponseItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  name: Type.String(),
-  description: Type.Union([Type.String(), Type.Null()]),
-  isActive: Type.Boolean(),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
-const CreateTagResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: TagResponseItem,
-});
+import { createTagService } from "../../../../modules/education/tags/services/create-tag.service.ts";
+import { CreateTagBody, TagDetailResponse } from "../../../../modules/education/tags/education.schema.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 
 const createTagRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -33,53 +11,25 @@ const createTagRoute: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Admin Exam Tags"],
       body: CreateTagBody,
-      response: {
-        201: CreateTagResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-      },
+      response: { 201: TagDetailResponse, "4xx": ErrorResponseSchema },
     },
     handler: async function handler(
       request: FastifyRequest<{ Body: typeof CreateTagBody.static }>,
       reply: FastifyReply,
-    ) {
-            const { name, description, isActive } = request.body;
-
-      // Check if name already exists
-      const existingTag = await db.query.educationTags.findFirst({
-        where: eq(educationTags.name, name),
-      });
-
-      if (existingTag) {
-        return reply.badRequest(request.t(($) => $.education.tags.create.exists));
-      }
-
+    ): Promise<typeof TagDetailResponse.static> {
       const userId = request.session.user.id;
+      const result = await createTagService(request.body, userId);
 
-      const [newTag] = await db
-        .insert(educationTags)
-        .values({
-          name,
-          description,
-          isActive: isActive ?? true,
-          createdByUserId: userId,
-        })
-        .returning();
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 409) return reply.badRequest(message);
+        return reply.internalServerError(message);
+      }
 
       return reply.status(201).send({
         success: true,
         message: request.t(($) => $.education.tags.create.success),
-        data: {
-          ...newTag,
-          createdAt: newTag.createdAt.toISOString(),
-          updatedAt: newTag.updatedAt.toISOString(),
-        },
+        data: result.data,
       });
     },
   });
