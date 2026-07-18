@@ -1,23 +1,14 @@
 import { db } from "../../../db/db-pool.ts";
 import { appVersion as tableAppVersion } from "../../../db/schema/app/app-version.ts";
 import { eq } from "drizzle-orm";
-import type { AppVersion } from "./list-version.service.ts";
 import type { ServiceResponse } from "../../../types/index.ts";
-
-export interface UpdateVersionRequest {
-  appVersion?: number;
-  dbVersion?: number;
-  status?: string;
-  name?: string;
-  note?: Record<string, unknown>[];
-  extra?: Record<string, unknown>;
-}
+import type { AppVersion, UpdateVersionBodyType } from "../version.schema.ts";
 
 export interface UpdateVersionResponse extends ServiceResponse {
   data?: AppVersion;
 }
 
-export async function updateVersionService(id: number, params: UpdateVersionRequest): Promise<UpdateVersionResponse> {
+export async function updateVersionService(id: number, params: UpdateVersionBodyType): Promise<UpdateVersionResponse> {
   const { appVersion: appVer, dbVersion: dbVer, status, name, note, extra } = params;
 
   const existingVersion = await db.query.appVersion.findFirst({
@@ -46,6 +37,8 @@ export async function updateVersionService(id: number, params: UpdateVersionRequ
     success: true,
     data: {
       ...updatedVersion,
+      dataType: updatedVersion.dataType as any,
+      status: updatedVersion.status as any,
       name: updatedVersion.name || "",
       note: (updatedVersion.note as Record<string, unknown>[]) || [],
       extra: (updatedVersion.extra as Record<string, unknown>) || {},

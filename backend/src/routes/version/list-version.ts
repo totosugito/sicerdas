@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { EnumContentType, EnumContentStatus } from "../../db/schema/enum/enum-app.ts";
 import { listVersionService } from "../../modules/version/services/list-version.service.ts";
+import { VersionResponseItem } from "../../modules/version/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema, PaginationMetaSchema } from "../../types/response.ts";
 
 const ListVersionBody = Type.Object({
@@ -13,19 +14,6 @@ const ListVersionBody = Type.Object({
   status: Type.Optional(Type.Enum(EnumContentStatus)),
   sortBy: Type.Optional(Type.String({ default: "createdAt" })),
   sortOrder: Type.Optional(Type.String({ default: "desc" })),
-});
-
-const VersionResponseItem = Type.Object({
-  id: Type.Number(),
-  appVersion: Type.Number(),
-  dbVersion: Type.Number(),
-  dataType: Type.String(),
-  status: Type.String(),
-  name: Type.String(),
-  note: Type.Array(Type.Record(Type.String(), Type.Unknown())),
-  extra: Type.Record(Type.String(), Type.Unknown()),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
 });
 
 const ListVersionResponse = Type.Intersect([

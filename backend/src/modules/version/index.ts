@@ -4,3 +4,4 @@ export * from "./services/create-version.service.ts";
 export * from "./services/detail-version.service.ts";
 export * from "./services/update-version.service.ts";
 export * from "./services/delete-version.service.ts";
+export * from "./version.schema.ts";

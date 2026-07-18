@@ -2,6 +2,7 @@ import { db } from "../../../db/db-pool.ts";
 import { appVersion } from "../../../db/schema/app/app-version.ts";
 import { and, desc, asc, sql, ilike, eq } from "drizzle-orm";
 import type { PaginationMeta } from "../../../types/response.ts";
+import type { AppVersion } from "../version.schema.ts";
 
 export interface ListVersionParams {
   page?: number;
@@ -11,19 +12,6 @@ export interface ListVersionParams {
   status?: string;
   sortBy?: string;
   sortOrder?: string;
-}
-
-export interface AppVersion {
-  id: number;
-  appVersion: number;
-  dbVersion: number;
-  dataType: string;
-  status: string;
-  name: string;
-  note: Record<string, unknown>[];
-  extra: Record<string, unknown>;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface ListVersionResponseData {
@@ -100,6 +88,8 @@ export async function listVersionService(params: ListVersionParams): Promise<Lis
   return {
     items: items.map((item) => ({
       ...item,
+      dataType: item.dataType as any,
+      status: item.status as any,
       name: item.name || "",
       note: (item.note as Record<string, unknown>[]) || [],
       extra: (item.extra as Record<string, unknown>) || {},

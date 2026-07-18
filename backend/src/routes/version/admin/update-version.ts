@@ -3,40 +3,12 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 import { updateVersionService } from "../../../modules/version/services/update-version.service.ts";
-import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
+import { UpdateVersionBody, VersionResponse } from "../../../modules/version/index.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const UpdateVersionParams = Type.Object({
   id: Type.Number(),
 });
-
-const UpdateVersionBody = Type.Object({
-  appVersion: Type.Optional(Type.Number()),
-  dbVersion: Type.Optional(Type.Number()),
-  status: Type.Optional(Type.Enum(EnumContentStatus)),
-  name: Type.Optional(Type.String()),
-  note: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))),
-  extra: Type.Optional(Type.Record(Type.String(), Type.Unknown())),
-});
-
-const VersionResponseItem = Type.Object({
-  id: Type.Number(),
-  appVersion: Type.Number(),
-  dbVersion: Type.Number(),
-  dataType: Type.String(),
-  status: Type.String(),
-  name: Type.String(),
-  note: Type.Array(Type.Record(Type.String(), Type.Unknown())),
-  extra: Type.Record(Type.String(), Type.Unknown()),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
-const UpdateVersionResponse = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({
-    data: VersionResponseItem,
-  }),
-]);
 
 const updateVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -47,7 +19,7 @@ const updateVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       params: UpdateVersionParams,
       body: UpdateVersionBody,
       response: {
-        200: UpdateVersionResponse,
+        200: VersionResponse,
         "4xx": ErrorResponseSchema,
       },
     },
@@ -57,7 +29,7 @@ const updateVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
         Body: typeof UpdateVersionBody.static;
       }>,
       reply: FastifyReply,
-    ): Promise<typeof UpdateVersionResponse.static> {
+    ): Promise<typeof VersionResponse.static> {
       const { id } = request.params;
       const { appVersion: appVer, dbVersion: dbVer, status, name, note, extra } = request.body;
 

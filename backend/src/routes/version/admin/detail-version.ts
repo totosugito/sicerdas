@@ -2,31 +2,12 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { detailVersionService } from "../../../modules/version/services/detail-version.service.ts";
-import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
+import { VersionResponse } from "../../../modules/version/index.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const DetailVersionParams = Type.Object({
   id: Type.Number(),
 });
-
-const VersionResponseItem = Type.Object({
-  id: Type.Number(),
-  appVersion: Type.Number(),
-  dbVersion: Type.Number(),
-  dataType: Type.String(),
-  status: Type.String(),
-  name: Type.String(),
-  note: Type.Array(Type.Record(Type.String(), Type.Unknown())),
-  extra: Type.Record(Type.String(), Type.Unknown()),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
-const DetailVersionResponse = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({
-    data: VersionResponseItem,
-  }),
-]);
 
 const detailVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -36,14 +17,14 @@ const detailVersionRoute: FastifyPluginAsyncTypebox = async (app) => {
       tags: ["Version"],
       params: DetailVersionParams,
       response: {
-        200: DetailVersionResponse,
+        200: VersionResponse,
         "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Params: typeof DetailVersionParams.static }>,
       reply: FastifyReply,
-    ): Promise<typeof DetailVersionResponse.static> {
+    ): Promise<typeof VersionResponse.static> {
       const { id } = request.params;
 
       const result = await detailVersionService(id);

@@ -2,24 +2,14 @@ import { db } from "../../../db/db-pool.ts";
 import { appVersion as tableAppVersion } from "../../../db/schema/app/app-version.ts";
 import { and, eq } from "drizzle-orm";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
-import type { AppVersion } from "./list-version.service.ts";
 import type { ServiceResponse } from "../../../types/index.ts";
-
-export interface CreateVersionRequest {
-  appVersion: number;
-  dbVersion: number;
-  dataType: string;
-  status?: string;
-  name: string;
-  note?: Record<string, unknown>[];
-  extra?: Record<string, unknown>;
-}
+import type { AppVersion, CreateVersionBodyType } from "../version.schema.ts";
 
 export interface CreateVersionResponse extends ServiceResponse {
   data?: AppVersion;
 }
 
-export async function createVersionService(params: CreateVersionRequest): Promise<CreateVersionResponse> {
+export async function createVersionService(params: CreateVersionBodyType): Promise<CreateVersionResponse> {
   const {
     appVersion: appVer,
     dbVersion: dbVer,
@@ -59,6 +49,8 @@ export async function createVersionService(params: CreateVersionRequest): Promis
     success: true,
     data: {
       ...newVersion,
+      dataType: newVersion.dataType as any,
+      status: newVersion.status as any,
       name: newVersion.name || "",
       note: (newVersion.note as Record<string, unknown>[]) || [],
       extra: (newVersion.extra as Record<string, unknown>) || {},

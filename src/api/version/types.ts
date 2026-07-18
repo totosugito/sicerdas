@@ -15,9 +15,11 @@ export type {
 
 
 
-export interface AppVersionDetailResponse extends BaseResponse {
-  data: AppVersion;
+export interface VersionResponse<T = AppVersion> extends BaseResponse {
+  data: T;
 }
+
+
 
 export interface ListVersionResponse extends BaseResponse {
   data: {

@@ -2,7 +2,7 @@ import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
 
-import { AppVersionDetailResponse } from "../types";
+import { VersionResponse } from "../types";
 
 export const useGetVersion = (id: string | number) => {
   return useQuery({
@@ -13,7 +13,7 @@ export const useGetVersion = (id: string | number) => {
         url: AppApi.version.admin.detail.replace(":id", id.toString()),
         withCredentials: true,
       });
-      return response as AppVersionDetailResponse;
+      return response as VersionResponse;
     },
     enabled: !!id,
   });
