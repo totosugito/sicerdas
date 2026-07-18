@@ -1,13 +1,13 @@
 import { getPeriodictUnits } from '@/components/pages/periodic-table/utils/element-units';
 import { useAppTranslation } from '@/lib/i18n-typed';
-import { ElementDetail } from '@/api/periodic-table/periodic-table';
+import { ElementData } from '@/api/periodic-table/periodic-table';
 import { cn } from '@/lib/utils';
 import { getElementStyle } from '../utils/element-styles';
 import { ElementSearchCombobox } from '../element-details/ElementSearchCombobox';
 import { AppRoute } from '@/constants/app-route';
 
 interface ElementHeroIsotopeProps {
-  element: ElementDetail;
+  element: ElementData;
   theme: string;
 }
 

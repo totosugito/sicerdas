@@ -2,12 +2,12 @@ import { useAppTranslation } from '@/lib/i18n-typed'
 import { Thermometer } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
-import { ElementDetail } from '@/api/periodic-table/periodic-table'
+import { ElementData } from '@/api/periodic-table/periodic-table'
 import { toPhysics } from '@/lib/my-utils'
 import { celsiusToOther, kelvinToOther } from '../utils/element'
 
 interface ElementThermalProps {
-  element: ElementDetail
+  element: ElementData
   expandedSections: Record<string, boolean>
   toggleSection: (section: string) => void
 }

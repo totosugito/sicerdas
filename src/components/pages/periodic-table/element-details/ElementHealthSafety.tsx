@@ -1,7 +1,7 @@
 import { useAppTranslation } from '@/lib/i18n-typed'
 import { ShieldAlert } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
-import { ElementDetail } from '@/api/periodic-table/periodic-table'
+import { ElementData } from '@/api/periodic-table/periodic-table'
 import { cn } from '@/lib/utils';
 
 interface ViewNfpaProps {
@@ -75,7 +75,7 @@ const ViewNfpa = ({ label = ["1", "2", "3", "_OW"] }: ViewNfpaProps) => {
 };
 
 interface ElementHealthSafetyProps {
-  element: ElementDetail
+  element: ElementData
   expandedSections: Record<string, boolean>
   toggleSection: (section: string) => void
 }

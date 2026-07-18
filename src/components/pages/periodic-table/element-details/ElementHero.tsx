@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { getPeriodictUnits } from '@/components/pages/periodic-table/utils/element-units'
 import { useAppTranslation } from '@/lib/i18n-typed';
-import { ElementDetail } from '@/api/periodic-table/periodic-table';
+import { ElementData } from '@/api/periodic-table/periodic-table';
 import { cn } from '@/lib/utils';
 import { getElementStyle } from '../utils/element-styles';
 import { ElementSearchCombobox } from './ElementSearchCombobox';
@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader } from 
 import { AppRoute } from '@/constants/app-route';
 
 interface ElementHeroProps {
-  element: ElementDetail; // You might want to define a proper type for element
+  element: ElementData; // You might want to define a proper type for element
   theme: string;
 }
 

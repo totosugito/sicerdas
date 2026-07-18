@@ -1,11 +1,11 @@
 import { useAppTranslation } from '@/lib/i18n-typed'
 import { Mountain } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
-import { ElementDetail } from '@/api/periodic-table/periodic-table'
+import { ElementData } from '@/api/periodic-table/periodic-table'
 import { toPhysics } from '@/lib/my-utils'
 
 interface ElementAbundancesProps {
-  element: ElementDetail
+  element: ElementData
   expandedSections: Record<string, boolean>
   toggleSection: (section: string) => void
 }

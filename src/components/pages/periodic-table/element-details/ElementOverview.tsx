@@ -4,11 +4,11 @@ import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
 import { getDiscoveryYear, getElectronShell, getElectronShellValue } from '../utils/element'
 import { toPhysics } from '@/lib/my-utils'
-import { ElementDetail } from '@/api/periodic-table/periodic-table'
+import { ElementData } from '@/api/periodic-table/periodic-table'
 import { ElectronShell } from './ElectronShell'
 
 interface ViewElementOverviewProps {
-  element: ElementDetail
+  element: ElementData
   atomColor: string
   expandedSections: Record<string, boolean>
   toggleSection: (section: string) => void

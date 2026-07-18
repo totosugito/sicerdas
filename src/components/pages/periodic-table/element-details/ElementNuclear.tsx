@@ -2,7 +2,7 @@ import { useAppTranslation } from '@/lib/i18n-typed'
 import { Atom, ChevronRight } from 'lucide-react'
 import { CardSection, PropertyItem } from './index'
 import { getPeriodictUnits } from '../utils/element-units'
-import { ElementDetail } from '@/api/periodic-table/periodic-table'
+import { ElementData } from '@/api/periodic-table/periodic-table'
 import { toPhysics } from '@/lib/my-utils'
 import { getIsotopeAbundance, createAtomIsotopeTag } from '../utils/element'
 import { useNavigate } from '@tanstack/react-router'
@@ -10,7 +10,7 @@ import { AppRoute } from '@/constants/app-route'
 import { Button } from '@/components/ui/button'
 
 interface ElementNuclearProps {
-  element: ElementDetail
+  element: ElementData
   expandedSections: Record<string, boolean>
   toggleSection: (section: string) => void
 }

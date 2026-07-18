@@ -1,11 +1,11 @@
 import { useAppTranslation } from '@/lib/i18n-typed';
 import { FileText } from 'lucide-react';
-import { ElementDetail } from '@/api/periodic-table/periodic-table';
+import { ElementData } from '@/api/periodic-table/periodic-table';
 import { CardSection } from './CardSection';
 import { PropertyItemHtml } from './PropertyItemHtml';
 
 interface ElementNotesProps {
-  element: ElementDetail;
+  element: ElementData;
   expandedSections: Record<string, boolean>;
   toggleSection: (section: string) => void;
 }

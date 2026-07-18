@@ -1,8 +1,8 @@
 import { useAppTranslation } from '@/lib/i18n-typed';
-import { ElementDetail } from '@/api/periodic-table/periodic-table';
+import { ElementData } from '@/api/periodic-table/periodic-table';
 
 interface ElectronViewProps {
-  element: ElementDetail;
+  element: ElementData;
 }
 
 export const ElectronView = ({ element }: ElectronViewProps) => {
