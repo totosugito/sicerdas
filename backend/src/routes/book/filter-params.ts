@@ -21,7 +21,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const result = await filterParamsService();
 
       if (!result.success || !result.data) {
-        return reply.internalServerError(req.t(($) => $.book.filterParams.success));
+        return reply.internalServerError(req.t(($) => $.book.filterParams.error));
       }
 
       return reply.status(200).send({

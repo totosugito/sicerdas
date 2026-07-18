@@ -31,7 +31,8 @@
                 "success": "Berhasil mengambil daftar model AI"
             },
             "stats": {
-                "success": "Statistik AI berhasil diambil"
+                "success": "Statistik AI berhasil diambil",
+                "error": "Gagal mengambil statistik AI"
             }
         }
     }

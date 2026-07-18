@@ -22,10 +22,12 @@
       "updated": "Rating berhasil diperbarui"
     },
     "filterParams": {
-      "success": "Berhasil mengambil parameter filter"
+      "success": "Berhasil mengambil parameter filter",
+      "error": "Gagal mengambil parameter filter"
     },
     "list": {
-      "success": "Berhasil mengambil daftar buku"
+      "success": "Berhasil mengambil daftar buku",
+      "error": "Gagal mengambil daftar buku"
     },
     "proxyPdf": {
       "success": "Berhasil memproksi konten PDF",

@@ -220,10 +220,14 @@
         "notFound": "Data statistik tidak ditemukan"
       },
       "subjects": {
-        "success": "Berhasil mengambil statistik per mata pelajaran"
+        "success": "Berhasil mengambil statistik per mata pelajaran",
+        "error": "Gagal mengambil statistik per mata pelajaran"
       },
       "tags": {
         "success": "Berhasil mengambil statistik per topik"
+      },
+      "activity": {
+        "success": "Berhasil mengambil statistik aktivitas"
       }
     },
     "leaderboard": {

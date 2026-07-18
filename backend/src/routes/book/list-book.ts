@@ -29,7 +29,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       const result = await listBookService(req.body, userId, latestVersionId);
 
       if (!result.success || !result.data) {
-        return reply.internalServerError(req.t(($) => $.book.list.success));
+        return reply.internalServerError(req.t(($) => $.book.list.error));
       }
 
       return reply.status(200).send({

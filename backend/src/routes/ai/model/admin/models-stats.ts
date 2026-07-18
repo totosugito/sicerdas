@@ -23,7 +23,7 @@ const modelsAiStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
       const result = await listModelStatsService(req.query);
 
       if (!result.success || !result.data) {
-        return reply.internalServerError(req.t(($) => $.chatAi.model.stats.success));
+        return reply.internalServerError(req.t(($) => $.chatAi.model.stats.error));
       }
 
       return reply.status(200).send({

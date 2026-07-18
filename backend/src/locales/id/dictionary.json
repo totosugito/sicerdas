@@ -1,5 +1,6 @@
 {
   "dictionary": {
-    "success": "Berhasil mengambil data kamus"
+    "success": "Berhasil mengambil data kamus",
+    "error": "Gagal mengambil data kamus"
   }
 }

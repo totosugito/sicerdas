@@ -24,7 +24,7 @@ const dictionaryDataRoute: FastifyPluginAsyncTypebox = async (app) => {
       const result = await listDictionaryService();
 
       if (!result.success || !result.data) {
-        return reply.internalServerError(req.t(($) => $.dictionary.success));
+        return reply.internalServerError(req.t(($) => $.dictionary.error));
       }
 
       return reply.status(200).send({
