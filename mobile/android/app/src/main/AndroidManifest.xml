@@ -12,7 +12,7 @@
     </queries>
 
     <application
-        android:label="sicerdas"
+        android:label="SiCerdas"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

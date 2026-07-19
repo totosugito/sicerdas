@@ -1,6 +1,7 @@
 # build app bundle
 flutter build appbundle -t lib/main.dart
 flutter build appbundle --obfuscate --no-tree-shake-icons --split-debug-info=C:/Temp/ -t lib/main.dart
+flutter build appbundle --release --obfuscate --split-debug-info=build/symbols -t lib/main.dart
 
 # build apk
 flutter build apk --obfuscate --no-tree-shake-icons --split-debug-info=C:/Temp/ -t lib/main.dart

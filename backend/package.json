@@ -24,13 +24,14 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:drop": "drizzle-kit drop",
+    "db:push": "cross-env drizzle-kit push",
     "db:push_dev": "cross-env NODE_ENV=development drizzle-kit push",
     "db:init_all": "cross-env NODE_ENV=development bun src/scripts/init/run-inital-data.ts --trace-warnings",
     "db:schedule": "cross-env NODE_ENV=development bun src/scripts/schedule/daily/daily.ts --trace-warnings",
     "db:init_user": "cross-env NODE_ENV=development bun src/scripts/init/jobs/init-user.ts --trace-warnings"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1089.0",
+    "@aws-sdk/client-s3": "^3.1090.0",
     "@blocknote/core": "^0.51.4",
     "@blocknote/server-util": "^0.51.4",
     "@fastify/autoload": "^6.4.0",

@@ -56,7 +56,10 @@ void main() async {
   runApp(
     slang.TranslationProvider(
       child: ProviderScope(
-        overrides: [sharedPreferencesProvider.overrideWithValue(sharedPrefs), dioProvider.overrideWithValue(dio)],
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+          dioProvider.overrideWithValue(dio),
+        ],
         child: const MyApp(),
       ),
     ),
@@ -75,7 +78,7 @@ class MyApp extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
 
     return ShadApp(
-      title: 'BSE App',
+      title: 'SiCerdas',
       theme: ShadThemeData(
         brightness: Brightness.light,
         colorScheme: const ShadZincColorScheme.light().copyWith(
@@ -99,7 +102,9 @@ class MyApp extends ConsumerWidget {
           input: const Color(0xFFE9ECEF),
           ring: const Color(0xFF1D87E5),
         ),
-        accordionTheme: const ShadAccordionTheme(padding: EdgeInsets.symmetric(vertical: 6.0)),
+        accordionTheme: const ShadAccordionTheme(
+          padding: EdgeInsets.symmetric(vertical: 6.0),
+        ),
       ),
       darkTheme: ShadThemeData(
         brightness: Brightness.dark,
@@ -124,7 +129,9 @@ class MyApp extends ConsumerWidget {
           input: const Color(0xFF2C3136),
           ring: const Color(0xFF1D87E5),
         ),
-        accordionTheme: const ShadAccordionTheme(padding: EdgeInsets.symmetric(vertical: 6.0)),
+        accordionTheme: const ShadAccordionTheme(
+          padding: EdgeInsets.symmetric(vertical: 6.0),
+        ),
       ),
       themeMode: settings.themeMode,
       locale: slang.TranslationProvider.of(context).locale.flutterLocale,
