@@ -1,18 +1,10 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
+import type { UpdatePassageParams, PassageDetailResponse } from "../types";
 
-interface UpdatePassageResponse {
-  success: boolean;
-  message: string;
-  data: { id: string };
-}
-
-export interface UpdatePassageRequest {
-  title?: string | null;
-  content?: Record<string, unknown>[];
-  subjectId?: string;
-  isActive?: boolean;
+export interface UpdatePassageRequest extends Partial<UpdatePassageParams> {
+  id?: string;
 }
 
 export const useUpdatePassage = (id: string) => {
@@ -25,7 +17,7 @@ export const useUpdatePassage = (id: string) => {
         body,
         withCredentials: true,
       });
-      return response as UpdatePassageResponse;
+      return response as PassageDetailResponse;
     },
   });
 };

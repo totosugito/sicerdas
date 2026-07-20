@@ -1,32 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examPassages } from "../../../../db/schema/exam/passages.ts";
-import { eq } from "drizzle-orm";
-import { resolveBlockNoteUrls } from "../../../../utils/blocknote/blocknote-utils.ts";
-
-const DetailPassageParams = Type.Object({
-  id: Type.String({ format: "uuid" }),
-});
-
-const PassageResponseItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  title: Type.Union([Type.String(), Type.Null()]),
-  content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
-  isActive: Type.Boolean(),
-  totalQuestions: Type.Number(),
-  activeQuestions: Type.Number(),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-  subjectId: Type.String({ format: "uuid" }),
-});
-
-const DetailPassageResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: PassageResponseItem,
-});
+import { ErrorResponseSchema } from "../../../../types/response.ts";
+import { detailPassageService } from "../../../../modules/exam/passages/services/detail-passage.service.ts";
+import {
+  PassageParams,
+  PassageDetailResponse,
+} from "../../../../modules/exam/passages/passages.schema.ts";
 
 const detailPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -34,42 +13,32 @@ const detailPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "GET",
     schema: {
       tags: ["Admin Exam Passages"],
-      params: DetailPassageParams,
+      params: PassageParams,
       response: {
-        200: DetailPassageResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        200: PassageDetailResponse,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Params: typeof DetailPassageParams.static }>,
+      request: FastifyRequest<{ Params: typeof PassageParams.static }>,
       reply: FastifyReply,
     ) {
-            const { id } = request.params;
+      const { id } = request.params;
 
-      const passage = await db.query.examPassages.findFirst({
-        where: eq(examPassages.id, id),
-      });
+      const result = await detailPassageService(id);
 
-      if (!passage) {
-        return reply.notFound(request.t(($) => $.exam.passages.update.notFound));
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.exam.passages.list.success),
-        data: {
-          ...passage,
-          content: resolveBlockNoteUrls(passage.content as Record<string, unknown>[]),
-          createdAt: passage.createdAt.toISOString(),
-          updatedAt: passage.updatedAt.toISOString(),
-        },
+        data: result.data,
       });
     },
   });

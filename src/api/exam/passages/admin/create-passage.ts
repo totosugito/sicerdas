@@ -1,31 +1,19 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-
-interface CreatePassageResponse {
-  success: boolean;
-  message: string;
-  data: { id: string };
-}
-
-export interface CreatePassageRequest {
-  title?: string;
-  content: Record<string, unknown>[];
-  subjectId: string;
-  isActive?: boolean;
-}
+import type { CreatePassageParams, PassageDetailResponse } from "../types";
 
 export const useCreatePassage = () => {
   return useMutation({
     mutationKey: ["admin-exam-passages-create"],
-    mutationFn: async (body: CreatePassageRequest | FormData) => {
+    mutationFn: async (body: CreatePassageParams | FormData) => {
       const response = await fetchApi({
         method: "POST",
         url: AppApi.exam.passages.admin.create,
         body,
         withCredentials: true,
       });
-      return response as CreatePassageResponse;
+      return response as PassageDetailResponse;
     },
   });
 };

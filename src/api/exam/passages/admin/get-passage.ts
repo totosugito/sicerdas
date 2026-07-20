@@ -1,22 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-
-interface GetPassageResponse {
-  success: boolean;
-  message: string;
-  data: {
-    id: string;
-    title: string | null;
-    content: Record<string, unknown>[];
-    isActive: boolean;
-    totalQuestions: number;
-    activeQuestions: number;
-    createdAt: string;
-    updatedAt: string;
-    subjectId: string;
-  };
-}
+import type { PassageDetailResponse } from "../types";
 
 export const useGetPassage = (id: string) => {
   return useQuery({
@@ -27,7 +12,7 @@ export const useGetPassage = (id: string) => {
         url: AppApi.exam.passages.admin.detail.replace(":id", id),
         withCredentials: true,
       });
-      return response as GetPassageResponse;
+      return response as PassageDetailResponse;
     },
     enabled: !!id,
   });

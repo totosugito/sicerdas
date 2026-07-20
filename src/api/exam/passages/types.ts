@@ -1,28 +1,41 @@
-export interface ExamPassage {
-  id: string;
-  title: string | null;
-  content: Record<string, unknown>[];
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  subjectId: string;
-  subjectName: string;
-  totalQuestions: number;
-  activeQuestions: number;
-}
+import type {
+  PassageResponseItemT,
+  CreatePassageParams,
+  UpdatePassageParams,
+  PassageListParams,
+  PassageSimpleListParams,
+} from "backend/src/modules/exam/passages/index.ts";
+import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
 
-export interface ExamPassageResponse {
-  success: boolean;
-  message: string;
-}
-
-export interface ExamPassageDetailResponse extends ExamPassageResponse {
-  data: ExamPassage;
-}
-
-export type PassageFormValues = {
-  title: string;
-  subjectId: string;
-  content: any[];
-  isActive: boolean;
+export type {
+  PassageResponseItemT,
+  CreatePassageParams,
+  UpdatePassageParams,
+  PassageListParams,
+  PassageSimpleListParams,
 };
+
+export type ExamPassage = PassageResponseItemT;
+
+export interface PassageFormValues {
+  title?: string;
+  subjectId: string;
+  content: Record<string, unknown>[];
+  isActive?: boolean;
+}
+
+export interface PassageResponse<T> extends BaseResponse {
+  data: T;
+}
+
+export interface ListPassagesResponse extends PassageResponse<{
+  items: PassageResponseItemT[];
+  meta: PaginationMeta;
+}> {}
+
+export interface ListPassagesSimpleResponse extends PassageResponse<{
+  items: { value: string; label: string }[];
+  meta: PaginationMeta;
+}> {}
+
+export interface PassageDetailResponse extends PassageResponse<PassageResponseItemT> {}

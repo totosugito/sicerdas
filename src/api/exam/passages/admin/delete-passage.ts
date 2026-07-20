@@ -1,11 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-
-interface DeletePassageResponse {
-    success: boolean;
-    message: string;
-}
+import type { BaseResponse } from "backend/src/types/index.ts";
 
 export const useDeletePassage = () => {
     return useMutation({
@@ -16,7 +12,7 @@ export const useDeletePassage = () => {
                 url: AppApi.exam.passages.admin.delete.replace(":id", id),
                 withCredentials: true,
             });
-            return response as DeletePassageResponse;
+            return response as BaseResponse;
         },
     });
 };

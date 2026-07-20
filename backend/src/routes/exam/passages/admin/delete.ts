@@ -1,21 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examPassages } from "../../../../db/schema/exam/passages.ts";
-import { examQuestions } from "../../../../db/schema/exam/questions.ts";
-import { eq } from "drizzle-orm";
-import env from "../../../../config/env.config.ts";
-import { deleteStorageDirectory } from "../../../../platform/storage/storage.ts";
-
-const DeletePassageParams = Type.Object({
-  id: Type.String({ format: "uuid" }),
-});
-
-const DeletePassageResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-});
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../../types/response.ts";
+import { deletePassageService } from "../../../../modules/exam/passages/services/delete-passage.service.ts";
+import { PassageParams } from "../../../../modules/exam/passages/passages.schema.ts";
 
 const deletePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -23,53 +10,27 @@ const deletePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "DELETE",
     schema: {
       tags: ["Admin Exam Passages"],
-      params: DeletePassageParams,
+      params: PassageParams,
       response: {
-        200: DeletePassageResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        200: BaseResponseSchema,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Params: typeof DeletePassageParams.static }>,
+      request: FastifyRequest<{ Params: typeof PassageParams.static }>,
       reply: FastifyReply,
     ) {
-            const { id } = request.params;
+      const { id } = request.params;
 
-      // Ensure passage exists
-      const existingPassage = await db.query.examPassages.findFirst({
-        where: eq(examPassages.id, id),
-      });
+      const result = await deletePassageService(id, request.log);
 
-      if (!existingPassage) {
-        return reply.notFound(request.t(($) => $.exam.passages.delete.notFound));
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
-
-      // Prevent deletion if passage is still attached to any questions
-      const attachedQuestions = await db.query.examQuestions.findFirst({
-        where: eq(examQuestions.passageId, id),
-      });
-
-      if (attachedQuestions) {
-        return reply.badRequest(request.t(($) => $.exam.passages.delete.hasChildren));
-      }
-
-      // Perform Hard Delete
-      await db.delete(examPassages).where(eq(examPassages.id, id));
-
-      // Clean up directory from disk
-      await deleteStorageDirectory(
-        env.server.uploadsPassageDir,
-        id,
-        existingPassage.createdAt,
-        request.log,
-      );
 
       return reply.status(200).send({
         success: true,

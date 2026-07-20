@@ -1,29 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ExamPassage } from "../types";
-import { PaginationData } from "@/components/custom/table";
+import type { PassageListParams, ListPassagesResponse } from "../types";
 
-export interface ListPassageRequest {
-    search?: string;
-    subjectId?: string;
-    isActive?: boolean;
-    sortBy?: string;
-    sortOrder?: 'asc' | 'desc';
-    page?: number;
-    limit?: number;
-}
-
-export interface ListPassagesResponse {
-    success: boolean;
-    message: string;
-    data: {
-        items: ExamPassage[];
-        meta: PaginationData;
-    };
-}
-
-export const useListPassage = (params: ListPassageRequest) => {
+export const useListPassage = (params: PassageListParams) => {
     return useQuery({
         queryKey: ["admin-exam-passages-list", params],
         queryFn: async () => {
