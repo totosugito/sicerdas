@@ -1,33 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { educationCategories } from "../../../../db/schema/education/categories.ts";
-import { educationGrades } from "../../../../db/schema/education/grades.ts";
-import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
-import { eq } from "drizzle-orm";
-import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
-import { recalculateEducationStats } from "../../../../utils/education/education-stats-utils.ts";
-
-const CreatePackageBody = Type.Object({
-  categoryId: Type.String({ format: "uuid" }),
-  title: Type.String({ minLength: 1, maxLength: 255 }),
-  examType: Type.Enum(EnumExamType, { default: EnumExamType.OFFICIAL }),
-  description: Type.Optional(Type.String()),
-  requiredTier: Type.Optional(Type.String({ default: "free" })),
-  educationGradeId: Type.Optional(Type.Number()),
-  isActive: Type.Optional(Type.Boolean({ default: true })),
-  versionId: Type.Number(),
-});
-
-const CreatePackageResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Object({
-    id: Type.String({ format: "uuid" }),
-  }),
-});
+import { ErrorResponseSchema } from "../../../../types/response.ts";
+import {
+  CreatePackageBody,
+  CreatePackageResponse,
+} from "../../../../modules/exam/packages/packages.schema.ts";
+import { createPackageService } from "../../../../modules/exam/packages/services/admin/create-package.service.ts";
 
 const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -38,86 +16,29 @@ const createPackageRoute: FastifyPluginAsyncTypebox = async (app) => {
       body: CreatePackageBody,
       response: {
         201: CreatePackageResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Body: typeof CreatePackageBody.static }>,
       reply: FastifyReply,
-    ) {
-            const {
-        categoryId,
-        title,
-        examType,
-        description,
-        requiredTier,
-        educationGradeId,
-        isActive,
-        versionId,
-      } = request.body;
-
-      // 1. Check if category exists
-      const existingCategory = await db.query.educationCategories.findFirst({
-        where: eq(educationCategories.id, categoryId),
-      });
-
-      if (!existingCategory) {
-        return reply.notFound(request.t(($) => $.education.categories.update.notFound));
-      }
-
-      // 2. Check if education grade exists (if provided)
-      if (educationGradeId) {
-        const existingGrade = await db.query.educationGrades.findFirst({
-          where: eq(educationGrades.id, educationGradeId),
-        });
-
-        if (!existingGrade) {
-          return reply.notFound(request.t(($) => $.education.grades.update.notFound));
-        }
-      }
-
+    ): Promise<typeof CreatePackageResponse.static> {
       const userId = request.session.user.id;
 
-      const [newPackage] = await db
-        .insert(examPackages)
-        .values({
-          categoryId,
-          title,
-          examType,
-          description,
-          requiredTier,
-          educationGradeId,
-          isActive: isActive ?? true,
-          versionId,
-          createdByUserId: userId,
-        })
-        .returning({ id: examPackages.id });
+      const result = await createPackageService(request.body, userId);
 
-      // 3. Recalculate statistics if it's an official package
-      if (examType === EnumExamType.OFFICIAL && educationGradeId) {
-        recalculateEducationStats(EnumContentType.EXAM, categoryId, educationGradeId).catch(
-          (err) => {
-            request.log.error(
-              { err, categoryId, educationGradeId },
-              "[Admin/CreatePackage] Failed to recalculate stats",
-            );
-          },
-        );
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
 
       return reply.status(201).send({
         success: true,
         message: request.t(($) => $.exam.packages.create.success),
-        data: {
-          id: newPackage.id,
-        },
+        data: result.data!,
       });
     },
   });

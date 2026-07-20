@@ -1,30 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import {
-  examPackages,
-  examPackageEventStats,
-  examPackageInteractions,
-} from "../../../../db/schema/exam/index.ts";
-import { and, eq, sql } from "drizzle-orm";
 import type { FastifyReply, FastifyRequest } from "fastify";
-
-const UpdateRatingRequest = Type.Object({
-  packageId: Type.String({ format: "uuid" }),
-  rating: Type.Number({ minimum: 1, maximum: 5 }),
-});
-
-const UpdateRatingResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Object({
-    rating: Type.Number(),
-    ratingCount: Type.Number(),
-    userInteraction: Type.Object({
-      rating: Type.Number(),
-    }),
-  }),
-});
+import { ErrorResponseSchema } from "../../../../types/response.ts";
+import {
+  UpdateRatingBody,
+  RatingResponse,
+} from "../../../../modules/exam/packages/packages.schema.ts";
+import { ratingService } from "../../../../modules/exam/packages/services/rating.service.ts";
 
 const ratingRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -34,132 +15,32 @@ const ratingRoute: FastifyPluginAsyncTypebox = async (app) => {
       tags: ["Exam Packages User"],
       summary: "Update exam package rating",
       description: "Set a rating for a specific exam package",
-      body: UpdateRatingRequest,
+      body: UpdateRatingBody,
       response: {
-        200: UpdateRatingResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        200: RatingResponse,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Body: typeof UpdateRatingRequest.static }>,
+      req: FastifyRequest<{ Body: typeof UpdateRatingBody.static }>,
       reply: FastifyReply,
-    ): Promise<typeof UpdateRatingResponse.static> {
-            const userId = (req as any).session.user.id;
-      const { packageId, rating } = req.body;
+    ): Promise<typeof RatingResponse.static> {
+      const userId = (req as any).session.user.id;
 
-      // Verify package existence
-      const pkgList = await db
-        .select({ id: examPackages.id })
-        .from(examPackages)
-        .where(and(eq(examPackages.id, packageId), eq(examPackages.isActive, true)))
-        .limit(1);
+      const result = await ratingService(req.body, userId);
 
-      if (pkgList.length === 0) {
-        return reply.notFound(req.t(($) => $.exam.packages.detail.notFound));
+      if (!result.success) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
-
-      // Check existing interaction
-      const existingInteraction = await db.query.examPackageInteractions.findFirst({
-        where: and(
-          eq(examPackageInteractions.userId, userId),
-          eq(examPackageInteractions.packageId, packageId),
-        ),
-      });
-
-      const oldRating = existingInteraction?.rating
-        ? parseFloat(existingInteraction.rating.toString())
-        : 0;
-
-      // If rating hasn't changed, return current state
-      if (oldRating === rating) {
-        const currentStats = await db.query.examPackageEventStats.findFirst({
-          where: eq(examPackageEventStats.packageId, packageId),
-          columns: { rating: true, ratingCount: true },
-        });
-
-        return reply.status(200).send({
-          success: true,
-          message: req.t(($) => $.exam.packages.detail.success),
-          data: {
-            rating: currentStats?.rating ? parseFloat(currentStats.rating.toString()) : 0,
-            ratingCount: currentStats?.ratingCount ?? 0,
-            userInteraction: {
-              rating: oldRating,
-            },
-          },
-        });
-      }
-
-      // Upsert User Interaction
-      await db
-        .insert(examPackageInteractions)
-        .values({
-          userId,
-          packageId: packageId,
-          rating: rating.toFixed(2),
-        })
-        .onConflictDoUpdate({
-          target: [examPackageInteractions.userId, examPackageInteractions.packageId],
-          set: {
-            rating: rating.toFixed(2),
-            updatedAt: new Date(),
-          },
-        });
-
-      // Update Global Stats
-      const isFirstTime = oldRating === 0;
-      const ratingDiff = rating - oldRating;
-
-      await db
-        .insert(examPackageEventStats)
-        .values({
-          packageId: packageId,
-          ratingSum: rating.toFixed(2),
-          ratingCount: 1,
-          rating: rating.toFixed(2),
-        })
-        .onConflictDoUpdate({
-          target: examPackageEventStats.packageId,
-          set: {
-            ratingSum: sql`${examPackageEventStats.ratingSum} + ${ratingDiff}`,
-            ratingCount: isFirstTime
-              ? sql`${examPackageEventStats.ratingCount} + 1`
-              : sql`${examPackageEventStats.ratingCount}`,
-            updatedAt: new Date(),
-          },
-        });
-
-      // Recalculate average rating
-      await db
-        .update(examPackageEventStats)
-        .set({
-          rating: sql`CASE WHEN ${examPackageEventStats.ratingCount} > 0 THEN ${examPackageEventStats.ratingSum} / ${examPackageEventStats.ratingCount} ELSE 0 END`,
-        })
-        .where(eq(examPackageEventStats.packageId, packageId));
-
-      // Fetch final stats
-      const finalStats = await db.query.examPackageEventStats.findFirst({
-        where: eq(examPackageEventStats.packageId, packageId),
-        columns: { rating: true, ratingCount: true },
-      });
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) => $.exam.packages.detail.success),
-        data: {
-          rating: finalStats?.rating ? parseFloat(finalStats.rating.toString()) : 0,
-          ratingCount: finalStats?.ratingCount ?? 0,
-          userInteraction: {
-            rating,
-          },
-        },
+        message: req.t(($) => $.exam.packages.rating.updated),
+        data: result.data!,
       });
     },
   });

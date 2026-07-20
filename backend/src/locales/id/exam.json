@@ -150,6 +150,18 @@
       "generateCustom": {
         "success": "Latihan kustom berhasil dibuat",
         "noQuestions": "Tidak ada soal yang ditemukan untuk tag dan jenjang yang dipilih."
+      },
+      "filterParams": {
+        "success": "Berhasil mengambil parameter filter"
+      },
+      "listSimple": {
+        "success": "Berhasil mengambil daftar paket ujian sederhana"
+      },
+      "favorites": {
+        "success": "Berhasil mengambil daftar paket favorit"
+      },
+      "rating": {
+        "updated": "Rating berhasil diperbarui"
       }
     },
     "package_sections": {

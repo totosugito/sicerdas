@@ -1,34 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { educationCategories } from "../../../../db/schema/education/categories.ts";
-import { educationGrades } from "../../../../db/schema/education/grades.ts";
-import { eq } from "drizzle-orm";
-import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
-import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
-import { recalculateEducationStats } from "../../../../utils/education/education-stats-utils.ts";
-
-const UpdatePackageParams = Type.Object({
-  id: Type.String({ format: "uuid" }),
-});
-
-const UpdatePackageBody = Type.Object({
-  categoryId: Type.Optional(Type.String({ format: "uuid" })),
-  title: Type.Optional(Type.String({ minLength: 1, maxLength: 255 })),
-  examType: Type.Optional(Type.Enum(EnumExamType)),
-  description: Type.Optional(Type.String()),
-  requiredTier: Type.Optional(Type.String()),
-  educationGradeId: Type.Optional(Type.Number()),
-  isActive: Type.Optional(Type.Boolean()),
-  versionId: Type.Optional(Type.Number()),
-});
-
-const UpdatePackageResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-});
+import { ErrorResponseSchema, BaseResponseSchema } from "../../../../types/response.ts";
+import {
+  PackageIdParams,
+  UpdatePackageBody,
+} from "../../../../modules/exam/packages/packages.schema.ts";
+import { updatePackageService } from "../../../../modules/exam/packages/services/admin/update-package.service.ts";
 
 const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -36,122 +13,30 @@ const updatePackageRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "PUT",
     schema: {
       tags: ["Admin Exam Packages"],
-      params: UpdatePackageParams,
+      params: PackageIdParams,
       body: UpdatePackageBody,
       response: {
-        200: UpdatePackageResponse,
-        "4xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-        "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+        200: BaseResponseSchema,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{
-        Params: typeof UpdatePackageParams.static;
+        Params: typeof PackageIdParams.static;
         Body: typeof UpdatePackageBody.static;
       }>,
       reply: FastifyReply,
-    ) {
-            const { id } = request.params;
-      const {
-        categoryId,
-        title,
-        examType,
-        description,
-        requiredTier,
-        educationGradeId,
-        isActive,
-        versionId,
-      } = request.body;
+    ): Promise<typeof BaseResponseSchema.static> {
+      const { id } = request.params;
 
-      const existing = await db.query.examPackages.findFirst({
-        where: eq(examPackages.id, id),
-      });
+      const result = await updatePackageService(id, request.body);
 
-      if (!existing) {
-        return reply.notFound(request.t(($) => $.exam.packages.update.notFound));
-      }
-
-      // 1. Check if category exists if provided
-      if (categoryId) {
-        const existingCategory = await db.query.educationCategories.findFirst({
-          where: eq(educationCategories.id, categoryId),
-        });
-
-        if (!existingCategory) {
-          return reply.notFound(request.t(($) => $.education.categories.update.notFound));
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
         }
-      }
-
-      // 2. Check if education grade exists if provided
-      if (educationGradeId) {
-        const existingGrade = await db.query.educationGrades.findFirst({
-          where: eq(educationGrades.id, educationGradeId),
-        });
-
-        if (!existingGrade) {
-          return reply.notFound(request.t(($) => $.education.grades.update.notFound));
-        }
-      }
-
-      await db
-        .update(examPackages)
-        .set({
-          categoryId,
-          title,
-          examType,
-          description,
-          requiredTier,
-          educationGradeId,
-          isActive,
-          versionId,
-          updatedAt: new Date(),
-        })
-        .where(eq(examPackages.id, id));
-
-      // 3. Recalculate statistics if relevant fields changed
-      const anyRelevantChange =
-        (categoryId !== undefined && categoryId !== existing.categoryId) ||
-        (educationGradeId !== undefined && educationGradeId !== existing.educationGradeId) ||
-        (examType !== undefined && examType !== existing.examType) ||
-        (isActive !== undefined && isActive !== existing.isActive);
-
-      if (anyRelevantChange) {
-        // Recalculate for OLD combo
-        if (
-          existing.examType === EnumExamType.OFFICIAL &&
-          existing.educationGradeId &&
-          existing.categoryId
-        ) {
-          recalculateEducationStats(
-            EnumContentType.EXAM,
-            existing.categoryId,
-            existing.educationGradeId,
-          ).catch((err) =>
-            request.log.error(
-              { err, categoryId: existing.categoryId, gradeId: existing.educationGradeId },
-              "[Admin/UpdatePackage] Stats sync failed (old)",
-            ),
-          );
-        }
-
-        // Recalculate for NEW combo
-        const newCategory = categoryId ?? existing.categoryId;
-        const newGrade = educationGradeId ?? existing.educationGradeId;
-        const newType = examType ?? existing.examType;
-
-        if (
-          newType === EnumExamType.OFFICIAL &&
-          newGrade &&
-          newCategory &&
-          (newCategory !== existing.categoryId || newGrade !== existing.educationGradeId)
-        ) {
-          recalculateEducationStats(EnumContentType.EXAM, newCategory, newGrade).catch((err) =>
-            request.log.error(
-              { err, categoryId: newCategory, gradeId: newGrade },
-              "[Admin/UpdatePackage] Stats sync failed (new)",
-            ),
-          );
-        }
+        return reply.badRequest(message);
       }
 
       return reply.status(200).send({

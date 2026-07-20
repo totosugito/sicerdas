@@ -1,25 +1,13 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { eq } from "drizzle-orm";
-import sharp from "sharp";
-import { db } from "../../../../db/db-pool.ts";
-import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { createUniqueFileName } from "../../../../utils/my-utils.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 import {
-  getPackageThumbnailUrl,
-  savePackageThumbnail,
-  deletePackageThumbnail,
-} from "../../../../utils/exam/exam-utils.ts";
+  PackageIdParams,
+  ThumbnailQuery,
+  ThumbnailResponse,
+} from "../../../../modules/exam/packages/packages.schema.ts";
+import { thumbnailService } from "../../../../modules/exam/packages/services/admin/thumbnail.service.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
-
-const ThumbnailParams = Type.Object({
-  id: Type.String({ format: "uuid" }),
-});
-
-const ThumbnailQuery = Type.Object({
-  action: Type.Optional(Type.String()),
-});
 
 const thumbnailRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -30,141 +18,60 @@ const thumbnailRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: "Upload or remove package thumbnail",
       description:
         "Uploads a thumbnail for an existing exam package. Supports multipart/form-data. Use ?action=remove to delete.",
-      params: ThumbnailParams,
+      params: PackageIdParams,
       querystring: ThumbnailQuery,
       consumes: ["multipart/form-data"],
       response: {
-        200: Type.Object({
-          success: Type.Boolean(),
-          message: Type.String(),
-          data: Type.Object({
-            id: Type.String(),
-            thumbnail: Type.Union([Type.String(), Type.Null()]),
-          }),
-        }),
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        200: ThumbnailResponse,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{
-        Params: typeof ThumbnailParams.static;
+        Params: typeof PackageIdParams.static;
         Querystring: typeof ThumbnailQuery.static;
       }>,
       reply: FastifyReply,
-    ) {
-            const { id } = request.params;
+    ): Promise<typeof ThumbnailResponse.static> {
+      const { id } = request.params;
       const { action } = request.query;
 
-      // Check if package exists
-      const [existingPackage] = await db
-        .select({
-          id: examPackages.id,
-          thumbnail: examPackages.thumbnail,
-          createdAt: examPackages.createdAt,
-        })
-        .from(examPackages)
-        .where(eq(examPackages.id, id))
-        .limit(1);
+      let file: UploadedFile | null = null;
 
-      if (!existingPackage) {
-        return reply.notFound(request.t(($) => $.exam.packages.delete.notFound));
-      }
-
-      // Handle REMOVE action
-      if (action === "remove") {
-        if (existingPackage.thumbnail) {
-          await deletePackageThumbnail(existingPackage.thumbnail);
+      // Handle UPLOAD action
+      if (action !== "remove") {
+        const data = await request.file();
+        if (!data) {
+          const message = request.t(($) => $.exam.packages.thumbnail.noFileUploaded);
+          return reply.badRequest(message);
         }
 
-        const [updated] = await db
-          .update(examPackages)
-          .set({ thumbnail: null, updatedAt: new Date() })
-          .where(eq(examPackages.id, id))
-          .returning();
-
-        return {
-          success: true,
-          message: request.t(($) => $.exam.packages.thumbnail.removeSuccess),
-          data: {
-            id: updated.id,
-            thumbnail: null,
-          },
+        file = {
+          buffer: await data.toBuffer(),
+          filename: data.filename,
+          mimetype: data.mimetype,
         };
       }
 
-      // Handle UPLOAD action
-      const data = await request.file();
-      if (!data) {
-        return reply.badRequest(request.t(($) => $.exam.packages.thumbnail.noFileUploaded));
-      }
+      const result = await thumbnailService(id, action, file);
 
-      const file: UploadedFile = {
-        buffer: await data.toBuffer(),
-        filename: data.filename,
-        mimetype: data.mimetype,
-      };
-
-      // Validate file type
-      const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
-      if (!allowedMimeTypes.includes(file.mimetype)) {
-        return reply.badRequest(request.t(($) => $.exam.packages.thumbnail.invalidFileType));
-      }
-
-      // Validate file size (5MB max for package thumbnails)
-      const maxSize = 5 * 1024 * 1024;
-      if (file.buffer.length > maxSize) {
-        return reply.badRequest(request.t(($) => $.exam.packages.thumbnail.fileSizeTooLarge));
-      }
-
-      // If existing thumbnail, delete it first
-      if (existingPackage.thumbnail) {
-        try {
-          await deletePackageThumbnail(existingPackage.thumbnail);
-        } catch (err) {
-          // Continue even if delete fails
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
         }
+        return reply.badRequest(message);
       }
 
-      // Process image: Resize to 1200px width for Hero/Card balance
-      const fileName = createUniqueFileName(file.filename, "pkg_thumb", "jpg");
-      const processedBuffer = await sharp(file.buffer)
-        .resize(600)
-        .jpeg({ quality: 85, force: false })
-        .toBuffer();
-
-      const relativePath = await savePackageThumbnail(
-        id,
-        processedBuffer,
-        fileName,
-        "image/jpeg",
-        existingPackage.createdAt,
-      );
-
-      // Update database
-      const [updated] = await db
-        .update(examPackages)
-        .set({
-          thumbnail: relativePath,
-          updatedAt: new Date(),
-        })
-        .where(eq(examPackages.id, id))
-        .returning();
-
-      return {
+      return reply.status(200).send({
         success: true,
-        message: request.t(($) => $.exam.packages.thumbnail.uploadSuccess),
-        data: {
-          id: updated.id,
-          thumbnail: getPackageThumbnailUrl(updated.thumbnail),
-        },
-      };
+        message: request.t(($) =>
+          action === "remove"
+            ? $.exam.packages.thumbnail.removeSuccess
+            : $.exam.packages.thumbnail.uploadSuccess,
+        ),
+        data: result.data!,
+      });
     },
   });
 };

@@ -1,37 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import {
-  educationCategories,
-  educationGrades,
-  educationCategoryGradeStats,
-} from "../../../db/schema/education/index.ts";
-import { eq, and, gt } from "drizzle-orm";
-import { EnumContentType } from "../../../db/schema/enum/enum-app.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
-
-const FilterParamsResponseItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  name: Type.String(),
-  key: Type.String(),
-  description: Type.Union([Type.String(), Type.Null()]),
-  grades: Type.Array(
-    Type.Object({
-      id: Type.Number(),
-      name: Type.String(),
-      stats: Type.Object({
-        activeCount: Type.Number(),
-        totalCount: Type.Number(),
-      }),
-    }),
-  ),
-});
-
-const FilterParamsResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Array(FilterParamsResponseItem),
-});
+import { ErrorResponseSchema } from "../../../types/response.ts";
+import { FilterParamsResponse } from "../../../modules/exam/packages/packages.schema.ts";
+import { filterParamsService } from "../../../modules/exam/packages/services/filter-params.service.ts";
 
 const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -43,78 +14,24 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       description: "Get all education categories and their grades that have active exam packages",
       response: {
         200: FilterParamsResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       req: FastifyRequest,
       reply: FastifyReply,
     ): Promise<typeof FilterParamsResponse.static> {
-      
-      // Query categories and their related grade stats
-      const result = await db
-        .select({
-          categoryId: educationCategories.id,
-          categoryName: educationCategories.name,
-          categoryKey: educationCategories.key,
-          categoryDescription: educationCategories.description,
-          gradeId: educationGrades.id,
-          gradeName: educationGrades.name,
-          activeCount: educationCategoryGradeStats.activeCount,
-          totalCount: educationCategoryGradeStats.totalCount,
-        })
-        .from(educationCategories)
-        .innerJoin(
-          educationCategoryGradeStats,
-          and(
-            eq(educationCategoryGradeStats.categoryId, educationCategories.id),
-            eq(educationCategoryGradeStats.contentType, EnumContentType.EXAM),
-            gt(educationCategoryGradeStats.activeCount, 0),
-          ),
-        )
-        .innerJoin(
-          educationGrades,
-          eq(educationGrades.id, educationCategoryGradeStats.educationGradeId),
-        )
-        .orderBy(educationCategories.name, educationGrades.id);
+      const result = await filterParamsService();
 
-      // Group results by category
-      const categoriesMap = new Map<string, typeof FilterParamsResponseItem.static>();
-      console.log("Category Map:", result);
-
-      for (const row of result) {
-        if (!categoriesMap.has(row.categoryId)) {
-          categoriesMap.set(row.categoryId, {
-            id: row.categoryId,
-            name: row.categoryName,
-            key: row.categoryKey,
-            description: row.categoryDescription,
-            grades: [],
-          });
-        }
-
-        const category = categoriesMap.get(row.categoryId)!;
-        category.grades.push({
-          id: row.gradeId,
-          name: row.gradeName,
-          stats: {
-            activeCount: row.activeCount,
-            totalCount: row.totalCount,
-          },
-        });
+      if (!result.success) {
+        const message = req.t(result.errorKey!);
+        return reply.badRequest(message);
       }
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) => $.exam.packages.list.success),
-        data: Array.from(categoriesMap.values()),
+        message: req.t(($) => $.exam.packages.filterParams.success),
+        data: result.data!,
       });
     },
   });

@@ -1,311 +1,52 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { examPackageEventStats } from "../../../../db/schema/exam/index.ts";
-import { educationCategories } from "../../../../db/schema/education/categories.ts";
-import { educationGrades } from "../../../../db/schema/education/grades.ts";
-import { desc, ilike, and, sql, eq, asc } from "drizzle-orm";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
+import {
+  AdminPackageListBody,
+  AdminPackageListResponse,
+} from "../../../../modules/exam/packages/packages.schema.ts";
+import { adminListPackageService } from "../../../../modules/exam/packages/services/admin/list-package.service.ts";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
 import { EnumUserRole } from "../../../../db/schema/index.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
-import { getPackageThumbnailUrl } from "../../../../utils/exam/exam-utils.ts";
-
-const PackageListQuery = Type.Object({
-  search: Type.Optional(Type.String({ description: "Search term for package title" })),
-  categoryId: Type.Optional(Type.String({ format: "uuid" })),
-  categoryKey: Type.Optional(Type.String({ description: "Search by category human-readable key" })),
-  examType: Type.Optional(Type.String()),
-  isActive: Type.Optional(Type.Boolean()),
-  educationGradeId: Type.Optional(Type.Number()),
-
-  sortBy: Type.Optional(
-    Type.String({
-      description:
-        "Sort field: createdAt, title, isActive, updatedAt, durationMinutes, categoryId, examType, educationGradeId",
-      default: "updatedAt",
-    }),
-  ),
-  sortOrder: Type.Optional(
-    Type.String({ description: "Sort order: asc or desc", default: "desc" }),
-  ),
-  page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
-  limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
-});
-
-const PackageResponseItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  title: Type.String(),
-  examType: Type.String(),
-  durationMinutes: Type.Number(),
-  thumbnail: Type.Union([Type.String(), Type.Null()]),
-  description: Type.Union([Type.String(), Type.Null()]),
-  requiredTier: Type.Union([Type.String(), Type.Null()]),
-  category: Type.Object({
-    id: Type.String({ format: "uuid" }),
-    name: Type.Union([Type.String(), Type.Null()]),
-    key: Type.Union([Type.String(), Type.Null()]),
-  }),
-  grade: Type.Object({
-    id: Type.Union([Type.Number(), Type.Null()]),
-    name: Type.Union([Type.String(), Type.Null()]),
-  }),
-  isActive: Type.Boolean(),
-  isNew: Type.Boolean(),
-  versionId: Type.Union([Type.Number(), Type.Null()]),
-  stats: Type.Object({
-    totalSections: Type.Number(),
-    activeSections: Type.Number(),
-    totalQuestions: Type.Number(),
-    activeQuestions: Type.Number(),
-    viewCount: Type.Number(),
-    likeCount: Type.Number(),
-    bookmarkCount: Type.Number(),
-    rating: Type.Number(),
-  }),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
-const ListPackagesResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Object({
-    items: Type.Array(PackageResponseItem),
-    meta: Type.Object({
-      total: Type.Number(),
-      page: Type.Number(),
-      limit: Type.Number(),
-      totalPages: Type.Number(),
-    }),
-  }),
-});
 
 const listPackagesRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
     url: "/list",
     method: "POST",
     schema: {
-      tags: ["Exam Packages"],
-      body: PackageListQuery,
+      tags: ["Admin Exam Packages"],
+      body: AdminPackageListBody,
       response: {
-        200: ListPackagesResponse,
-        "4xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-        "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+        200: AdminPackageListResponse,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Body: typeof PackageListQuery.static }>,
+      request: FastifyRequest<{ Body: typeof AdminPackageListBody.static }>,
       reply: FastifyReply,
-    ) {
-            // Determine user role from session
+    ): Promise<typeof AdminPackageListResponse.static> {
+      // Determine user role from session
       const session = await getAuthInstance(app).api.getSession({
         headers: fromNodeHeaders(request.headers),
       });
       const user = session?.user;
       const isAdmin = user?.role === EnumUserRole.ADMIN;
 
-      const {
-        search,
-        categoryId,
-        categoryKey,
-        examType,
-        isActive,
-        educationGradeId,
-        sortOrder = "desc",
-        page = 1,
-        limit = 10,
-      } = request.body;
-
-      let { sortBy = "updatedAt" } = request.body;
-
-      const offset = (page - 1) * limit;
-      const conditions = [];
-
       const latestVersionId = (app as any).versionCache.get(EnumContentType.EXAM);
 
-      if (!isAdmin) {
-        // Client must only see active packages
-        conditions.push(eq(examPackages.isActive, true));
-        // Force sorting ignoring isActive for clients
-        if (sortBy === "isActive") sortBy = "title";
-      } else {
-        // Admin can filter by active status
-        if (isActive !== undefined) conditions.push(eq(examPackages.isActive, isActive));
+      const result = await adminListPackageService(request.body, isAdmin, latestVersionId);
+
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        return reply.badRequest(message);
       }
-
-      if (categoryId) conditions.push(eq(examPackages.categoryId, categoryId));
-      if (categoryKey) conditions.push(eq(educationCategories.key, categoryKey));
-      if (examType) conditions.push(eq(examPackages.examType, examType as any));
-      if (educationGradeId) conditions.push(eq(examPackages.educationGradeId, educationGradeId));
-
-      if (search && search.trim() !== "") {
-        const searchTerm = `%${search.trim().toLowerCase()}%`;
-        conditions.push(ilike(examPackages.title, searchTerm));
-      }
-
-      // Build Query
-      let baseQuery = db
-        .select({
-          package: examPackages,
-          category: {
-            id: educationCategories.id,
-            name: educationCategories.name,
-            key: educationCategories.key,
-          },
-          grade: {
-            id: educationGrades.id,
-            name: educationGrades.name,
-          },
-          viewCount: examPackageEventStats.viewCount,
-          likeCount: examPackageEventStats.likeCount,
-          bookmarkCount: examPackageEventStats.bookmarkCount,
-          rating: examPackageEventStats.rating,
-          isNew: latestVersionId
-            ? sql<boolean>`${examPackages.versionId} = ${latestVersionId}`.as("isNew")
-            : sql<boolean>`false`.as("isNew"),
-        })
-        .from(examPackages)
-        .leftJoin(educationCategories, eq(examPackages.categoryId, educationCategories.id))
-        .leftJoin(educationGrades, eq(examPackages.educationGradeId, educationGrades.id))
-        .leftJoin(examPackageEventStats, eq(examPackages.id, examPackageEventStats.packageId));
-
-      if (conditions.length > 0) {
-        baseQuery = baseQuery.where(and(...conditions)) as any;
-      }
-
-      // Sorting
-      const orderDir = sortOrder === "asc" ? "asc" : "desc";
-      let queryWithSort;
-
-      switch (sortBy) {
-        case "totalSections":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(asc(examPackages.totalSections))
-              : baseQuery.orderBy(desc(examPackages.totalSections));
-          break;
-        case "activeSections":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(asc(examPackages.activeSections))
-              : baseQuery.orderBy(desc(examPackages.activeSections));
-          break;
-        case "totalQuestions":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(asc(examPackages.totalQuestions))
-              : baseQuery.orderBy(desc(examPackages.totalQuestions));
-          break;
-        case "activeQuestions":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(asc(examPackages.activeQuestions))
-              : baseQuery.orderBy(desc(examPackages.activeQuestions));
-          break;
-        case "isActive":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(asc(examPackages.isActive))
-              : baseQuery.orderBy(desc(examPackages.isActive));
-          break;
-        case "updatedAt":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(asc(examPackages.updatedAt))
-              : baseQuery.orderBy(desc(examPackages.updatedAt));
-          break;
-        case "durationMinutes":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(asc(examPackages.durationMinutes))
-              : baseQuery.orderBy(desc(examPackages.durationMinutes));
-          break;
-        case "categoryId":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(asc(examPackages.categoryId))
-              : baseQuery.orderBy(desc(examPackages.categoryId));
-          break;
-        case "examType":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(asc(examPackages.examType))
-              : baseQuery.orderBy(desc(examPackages.examType));
-          break;
-        case "educationGradeId":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(asc(examPackages.educationGradeId))
-              : baseQuery.orderBy(desc(examPackages.educationGradeId));
-          break;
-        case "createdAt":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(asc(examPackages.createdAt))
-              : baseQuery.orderBy(desc(examPackages.createdAt));
-          break;
-        case "versionId":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(asc(examPackages.versionId))
-              : baseQuery.orderBy(desc(examPackages.versionId));
-          break;
-        case "title":
-        default:
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(asc(examPackages.title))
-              : baseQuery.orderBy(desc(examPackages.title));
-          break;
-      }
-
-      // Count
-      const countResult = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(queryWithSort.as("subquery"));
-
-      const total = Number(countResult[0]?.count || 0);
-      const totalPages = Math.ceil(total / limit);
-
-      // Fetch
-      const items = await queryWithSort.limit(limit).offset(offset);
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.exam.packages.list.success),
-        data: {
-          items: items.map((r) => {
-            const p = r.package;
-            return {
-              ...p,
-              thumbnail: getPackageThumbnailUrl(p.thumbnail),
-              category: r.category,
-              grade: r.grade,
-              stats: {
-                totalSections: p.totalSections,
-                activeSections: p.activeSections,
-                totalQuestions: p.totalQuestions,
-                activeQuestions: p.activeQuestions,
-                viewCount: r.viewCount ?? 0,
-                likeCount: r.likeCount ?? 0,
-                bookmarkCount: r.bookmarkCount ?? 0,
-                rating: r.rating ? parseFloat(r.rating) : 0,
-              },
-              isNew: !!r.isNew,
-              createdAt: p.createdAt.toISOString(),
-              updatedAt: p.updatedAt.toISOString(),
-            };
-          }),
-          meta: {
-            total,
-            page,
-            limit,
-            totalPages,
-          },
-        },
+        data: result.data!,
       });
     },
   });
