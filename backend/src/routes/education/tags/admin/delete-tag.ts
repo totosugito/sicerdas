@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { deleteTagService } from "../../../../modules/education/tags/services/delete-tag.service.ts";
+import { deleteTagService } from "../../../../modules/education/tags/services/admin/delete-tag.service.ts";
 import { ErrorResponseSchema, BaseResponseSchema } from "../../../../types/response.ts";
 
 const deleteTagRoute: FastifyPluginAsyncTypebox = async (app) => {

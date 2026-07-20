@@ -1,8 +1,8 @@
-import { db } from "../../../../db/db-pool.ts";
-import { educationTags } from "../../../../db/schema/education/tags.ts";
+import { db } from "../../../../../db/db-pool.ts";
+import { educationTags } from "../../../../../db/schema/education/tags.ts";
 import { eq, and, ne } from "drizzle-orm";
-import type { ServiceResponse } from "../../../../types/index.ts";
-import type { UpdateTagParams, TagData } from "../education.schema.ts";
+import type { ServiceResponse } from "../../../../../types/index.ts";
+import type { UpdateTagParams, TagData } from "../../education.schema.ts";
 
 export interface UpdateTagResult extends ServiceResponse {
   data?: TagData;

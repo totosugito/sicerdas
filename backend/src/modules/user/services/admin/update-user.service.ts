@@ -1,75 +1,41 @@
-import { db } from "../../../db/db-pool.ts";
-import { users, usersProfile, accounts } from "../../../db/schema/user/index.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { users, usersProfile, accounts, EnumUserRole } from "../../../../db/schema/user/index.ts";
 import { eq, sql } from "drizzle-orm";
-import type { ServiceResponse } from "../../../types/response.ts";
-import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../utils/user/user-utils.ts";
+import type { ServiceResponse } from "../../../../types/response.ts";
+import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../../utils/user/user-utils.ts";
 import sharp from "sharp";
-import { createUniqueFileName } from "../../../utils/my-utils.ts";
-import type { UserProfileData } from "../user.schema.ts";
+import { createUniqueFileName } from "../../../../utils/my-utils.ts";
+import type { UserProfileData } from "../../user.schema.ts";
 
-export interface UpdateProfileParams {
+export interface UpdateUserParams {
   id: string;
   name?: string;
-  file?: {
+  email?: string;
+  role?: typeof EnumUserRole[keyof typeof EnumUserRole];
+  image?: string | null; // For removing/resetting avatar
+  file?: {               // For uploading new avatar
     buffer: Buffer;
     filename: string;
     mimetype: string;
   };
-  school?: string | null;
-  grade?: string | null;
-  phone?: string | null;
-  address?: string | null;
-  bio?: string | null;
-  educationLevel?: string | null;
-  dateOfBirth?: string | Date | null;
-  extra?: Record<string, any> | string | null;
+  profile?: {
+    school?: string | null;
+    grade?: string | null;
+    phone?: string | null;
+    address?: string | null;
+    bio?: string | null;
+    educationLevel?: string | null;
+    dateOfBirth?: Date | null;
+    extra?: Record<string, any> | null;
+  };
 }
 
-export interface UpdateProfileResponse extends ServiceResponse {
+export interface UpdateUserResponse extends ServiceResponse {
   data?: UserProfileData;
 }
 
-export async function updateProfileService(params: UpdateProfileParams): Promise<UpdateProfileResponse> {
-  const { id, name, file } = params;
-
-  // Extract profile fields
-  const { school, grade, phone, address, bio, educationLevel } = params;
-
-  // Parse dateOfBirth
-  let dateOfBirth: Date | null | undefined = undefined;
-  if (params.dateOfBirth instanceof Date || params.dateOfBirth === null) {
-    dateOfBirth = params.dateOfBirth;
-  } else if (typeof params.dateOfBirth === "string") {
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (dateRegex.test(params.dateOfBirth)) {
-      dateOfBirth = new Date(params.dateOfBirth);
-    } else {
-      dateOfBirth = null;
-    }
-  }
-
-  // Parse extra
-  let extra: Record<string, any> | null | undefined = undefined;
-  if (typeof params.extra === "object" || params.extra === null) {
-    extra = params.extra;
-  } else if (typeof params.extra === "string") {
-    try {
-      extra = JSON.parse(params.extra);
-    } catch (e) {
-      console.warn("Failed to parse extra field:", e);
-    }
-  }
-
-  const hasUserUpdates = name !== undefined || file !== undefined;
-  const hasProfileUpdates = school !== undefined || grade !== undefined || phone !== undefined || address !== undefined || bio !== undefined || educationLevel !== undefined || dateOfBirth !== undefined || extra !== undefined;
-
-  if (!hasUserUpdates && !hasProfileUpdates) {
-    return {
-      success: false,
-      statusCode: 400,
-      errorKey: ($) => $.user.noValidUpdateData,
-    };
-  }
+export async function updateUserService(params: UpdateUserParams): Promise<UpdateUserResponse> {
+  const { id, name, email, role, image, file, profile } = params;
 
   // Check if user exists
   const user = await db.query.users.findFirst({
@@ -84,8 +50,23 @@ export async function updateProfileService(params: UpdateProfileParams): Promise
     };
   }
 
+  // If email is being changed, check if new email is already taken
+  if (email && email !== user.email) {
+    const existingUser = await db.query.users.findFirst({
+      where: (fields) => eq(fields.email, email),
+    });
+
+    if (existingUser) {
+      return {
+        success: false,
+        statusCode: 409,
+        errorKey: ($) => $.user.management.update.emailExists,
+      };
+    }
+  }
+
   // Handle avatar upload if provided
-  let newImagePath: string | null | undefined = undefined;
+  let newImagePath: string | null | undefined = image;
   if (file) {
     const { buffer, filename: originalName, mimetype } = file;
 
@@ -132,12 +113,21 @@ export async function updateProfileService(params: UpdateProfileParams): Promise
       "image/jpeg",
       user.createdAt,
     );
+  } else if (image === null && user.image) {
+    // Handle explicit remove avatar request
+    try {
+      await deleteUserAvatar(user.image);
+    } catch (_error) {
+      // Continue even if deletion fails
+    }
   }
 
   await db.transaction(async (tx) => {
     // 1. Update users table if needed
     const userUpdates: Record<string, any> = {};
     if (name !== undefined) userUpdates.name = name;
+    if (email !== undefined) userUpdates.email = email;
+    if (role !== undefined) userUpdates.role = role;
     if (newImagePath !== undefined) userUpdates.image = newImagePath;
 
     if (Object.keys(userUpdates).length > 0) {
@@ -146,17 +136,8 @@ export async function updateProfileService(params: UpdateProfileParams): Promise
     }
 
     // 2. Update user profile table if needed
-    if (hasProfileUpdates) {
-      const profileUpdates: Record<string, any> = {};
-      if (school !== undefined) profileUpdates.school = school;
-      if (grade !== undefined) profileUpdates.grade = grade;
-      if (phone !== undefined) profileUpdates.phone = phone;
-      if (address !== undefined) profileUpdates.address = address;
-      if (bio !== undefined) profileUpdates.bio = bio;
-      if (educationLevel !== undefined) profileUpdates.educationLevel = educationLevel;
-      if (dateOfBirth !== undefined) profileUpdates.dateOfBirth = dateOfBirth;
-      if (extra !== undefined) profileUpdates.extra = extra;
-
+    if (profile && Object.keys(profile).length > 0) {
+      const profileUpdates: Record<string, any> = { ...profile };
       profileUpdates.updatedAt = new Date();
 
       await tx
@@ -166,9 +147,9 @@ export async function updateProfileService(params: UpdateProfileParams): Promise
           target: usersProfile.id,
           set: profileUpdates.extra
             ? {
-                ...profileUpdates,
-                extra: sql`${usersProfile.extra} || ${JSON.stringify(profileUpdates.extra)}::jsonb`,
-              }
+              ...profileUpdates,
+              extra: sql`${usersProfile.extra} || ${JSON.stringify(profileUpdates.extra)}::jsonb`,
+            }
             : profileUpdates,
         });
     }

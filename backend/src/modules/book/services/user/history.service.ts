@@ -1,16 +1,16 @@
-import { db } from "../../../db/db-pool.ts";
+import { db } from "../../../../db/db-pool.ts";
 import {
   books,
   bookCategory,
   bookGroup,
   bookEventStats,
   bookInteractions,
-} from "../../../db/schema/book/index.ts";
-import { educationGrades } from "../../../db/schema/education/grades.ts";
+} from "../../../../db/schema/book/index.ts";
+import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { and, eq, sql, desc, gt } from "drizzle-orm";
-import { getBookCoverUrl } from "../../../utils/book/book-utils.ts";
-import type { ServiceResponse } from "../../../types/index.ts";
-import type { HistoryBookData } from "../book.schema.ts";
+import { getBookCoverUrl } from "../../../../utils/book/book-utils.ts";
+import type { ServiceResponse } from "../../../../types/index.ts";
+import type { HistoryBookData } from "../../book.schema.ts";
 
 export interface HistoryResult extends ServiceResponse {
   data?: HistoryBookData[];
@@ -42,6 +42,7 @@ export async function historyService(
       categoryName: bookCategory.name,
       grade: { id: educationGrades.id, name: educationGrades.name, grade: educationGrades.grade },
       rating: bookEventStats.rating,
+      bookmarkCount: bookEventStats.bookmarkCount,
       viewCount: bookEventStats.viewCount,
       downloadCount: bookEventStats.downloadCount,
       isDownloaded: sql<boolean>`${bookInteractions.downloadCount} > 0`,
@@ -70,6 +71,7 @@ export async function historyService(
       grade: item.grade,
       stats: {
         rating: item.rating != null ? parseFloat(item.rating.toString()) : 0,
+        bookmarkCount: item.bookmarkCount ?? 0,
         viewCount: item.viewCount ?? 0,
         downloadCount: item.downloadCount ?? 0,
         isDownloaded: !!item.isDownloaded,

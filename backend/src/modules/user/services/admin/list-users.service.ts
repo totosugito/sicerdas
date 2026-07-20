@@ -1,8 +1,8 @@
-import { db } from "../../../db/db-pool.ts";
-import { users, usersProfile } from "../../../db/schema/user/index.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { users, usersProfile } from "../../../../db/schema/user/index.ts";
 import { and, asc, desc, eq, ilike, or, sql, inArray } from "drizzle-orm";
-import type { PaginationMeta } from "../../../types/response.ts";
-import { getUserAvatarUrl } from "../../../utils/user/user-utils.ts";
+import type { PaginationMeta } from "../../../../types/response.ts";
+import { getUserAvatarUrl } from "../../../../utils/user/user-utils.ts";
 
 export interface ListUsersParams {
   page?: number;
@@ -13,7 +13,7 @@ export interface ListUsersParams {
   sortOrder?: string;
 }
 
-import type { UserResponseItem } from "../user.schema.ts";
+import type { UserResponseItem } from "../../user.schema.ts";
 
 export interface ListUsersResponseData {
   items: UserResponseItem[];

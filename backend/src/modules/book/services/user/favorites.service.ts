@@ -1,16 +1,16 @@
-import { db } from "../../../db/db-pool.ts";
+import { db } from "../../../../db/db-pool.ts";
 import {
   books,
   bookCategory,
   bookGroup,
   bookEventStats,
   bookInteractions,
-} from "../../../db/schema/book/index.ts";
-import { educationGrades } from "../../../db/schema/education/grades.ts";
+} from "../../../../db/schema/book/index.ts";
+import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { and, eq, sql, desc } from "drizzle-orm";
-import { getBookCoverUrl } from "../../../utils/book/book-utils.ts";
-import type { ServiceResponse } from "../../../types/index.ts";
-import type { FavoriteBookData } from "../book.schema.ts";
+import { getBookCoverUrl } from "../../../../utils/book/book-utils.ts";
+import type { ServiceResponse } from "../../../../types/index.ts";
+import type { FavoriteBookData } from "../../book.schema.ts";
 
 export interface FavoritesResult extends ServiceResponse {
   data?: FavoriteBookData[];

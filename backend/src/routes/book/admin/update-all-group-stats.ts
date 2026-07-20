@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { updateAllGroupStatsService } from "../../../modules/book/services/update-all-group-stats.service.ts";
+import { updateAllGroupStatsService } from "../../../modules/book/services/admin/update-all-group-stats.service.ts";
 import { AllGroupStatsResponse } from "../../../modules/book/book.schema.ts";
 
 const adminRoute: FastifyPluginAsyncTypebox = async (app) => {

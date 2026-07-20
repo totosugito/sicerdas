@@ -1,7 +1,7 @@
-import { db } from "../../../db/db-pool.ts";
-import { books, bookEventStats, bookInteractions } from "../../../db/schema/book/index.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { books, bookEventStats, bookInteractions } from "../../../../db/schema/book/index.ts";
 import { and, eq, sql } from "drizzle-orm";
-import type { ServiceResponse } from "../../../types/index.ts";
+import type { ServiceResponse } from "../../../../types/index.ts";
 
 export interface BookmarkResult extends ServiceResponse {
   data?: { bookmarked: boolean; bookmarkCount: number };

@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { userStatsService } from "../../../modules/book/services/user-stats.service.ts";
+import { userStatsService } from "../../../modules/book/services/user/user-stats.service.ts";
 import { UserStatsResponse } from "../../../modules/book/book.schema.ts";
 
 const getBookStatsRoute: FastifyPluginAsyncTypebox = async (app) => {

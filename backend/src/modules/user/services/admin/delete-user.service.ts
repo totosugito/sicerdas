@@ -1,9 +1,9 @@
-import { db } from "../../../db/db-pool.ts";
-import { users } from "../../../db/schema/user/index.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { users } from "../../../../db/schema/user/index.ts";
 import { eq, inArray } from "drizzle-orm";
-import env from "../../../config/env.config.ts";
-import { deleteStorageDirectory } from "../../../platform/storage/storage.ts";
-import type { ServiceResponse } from "../../../types/response.ts";
+import env from "../../../../config/env.config.ts";
+import { deleteStorageDirectory } from "../../../../platform/storage/storage.ts";
+import type { ServiceResponse } from "../../../../types/response.ts";
 
 export interface DeleteUserParams {
   id?: string;

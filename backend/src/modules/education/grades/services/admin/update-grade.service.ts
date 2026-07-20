@@ -1,8 +1,8 @@
-import { db } from "../../../../db/db-pool.ts";
-import { educationGrades } from "../../../../db/schema/education/grades.ts";
+import { db } from "../../../../../db/db-pool.ts";
+import { educationGrades } from "../../../../../db/schema/education/grades.ts";
 import { eq, and, ne } from "drizzle-orm";
-import type { ServiceResponse } from "../../../../types/index.ts";
-import type { UpdateGradeParams, GradeData } from "../education.schema.ts";
+import type { ServiceResponse } from "../../../../../types/index.ts";
+import type { UpdateGradeParams, GradeData } from "../../education.schema.ts";
 
 export interface UpdateGradeResult extends ServiceResponse {
   data?: GradeData;

@@ -1,7 +1,7 @@
-import { db } from "../../../db/db-pool.ts";
-import { sessions } from "../../../db/schema/user/index.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { sessions } from "../../../../db/schema/user/index.ts";
 import { eq, and, ne } from "drizzle-orm";
-import type { ServiceResponse } from "../../../types/response.ts";
+import type { ServiceResponse } from "../../../../types/response.ts";
 
 export interface SessionData {
   id: string;

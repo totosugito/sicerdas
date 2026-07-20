@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { ratingService } from "../../../modules/book/services/rating.service.ts";
+import { ratingService } from "../../../modules/book/services/user/rating.service.ts";
 import { RatingBody, RatingResponse } from "../../../modules/book/book.schema.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
 

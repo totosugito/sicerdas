@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { favoritesService } from "../../../modules/book/services/favorites.service.ts";
+import { favoritesService } from "../../../modules/book/services/user/favorites.service.ts";
 import { FavoritesResponse } from "../../../modules/book/book.schema.ts";
 
 const listFavoritesRoute: FastifyPluginAsyncTypebox = async (app) => {

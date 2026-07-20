@@ -1,8 +1,8 @@
-import { db } from "../../../../db/db-pool.ts";
-import { educationTags } from "../../../../db/schema/education/tags.ts";
-import { examQuestionTags } from "../../../../db/schema/exam/question-tags.ts";
+import { db } from "../../../../../db/db-pool.ts";
+import { educationTags } from "../../../../../db/schema/education/tags.ts";
+import { examQuestionTags } from "../../../../../db/schema/exam/question-tags.ts";
 import { eq } from "drizzle-orm";
-import type { ServiceResponse } from "../../../../types/index.ts";
+import type { ServiceResponse } from "../../../../../types/index.ts";
 
 export async function deleteTagService(id: string): Promise<ServiceResponse> {
   const existingTag = await db.query.educationTags.findFirst({

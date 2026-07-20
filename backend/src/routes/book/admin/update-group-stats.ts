@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { updateGroupStatsService } from "../../../modules/book/services/update-group-stats.service.ts";
+import { updateGroupStatsService } from "../../../modules/book/services/admin/update-group-stats.service.ts";
 import { GroupStatsResponse } from "../../../modules/book/book.schema.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
 

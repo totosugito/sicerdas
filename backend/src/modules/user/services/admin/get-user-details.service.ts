@@ -1,9 +1,9 @@
-import { db } from "../../../db/db-pool.ts";
-import { users, usersProfile, accounts } from "../../../db/schema/user/index.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { users, usersProfile, accounts } from "../../../../db/schema/user/index.ts";
 import { eq } from "drizzle-orm";
-import type { ServiceResponse } from "../../../types/response.ts";
-import { getUserAvatarUrl } from "../../../utils/user/user-utils.ts";
-import type { UserDetailsData } from "../user.schema.ts";
+import type { ServiceResponse } from "../../../../types/response.ts";
+import { getUserAvatarUrl } from "../../../../utils/user/user-utils.ts";
+import type { UserDetailsData } from "../../user.schema.ts";
 
 export interface GetUserDetailsResponse extends ServiceResponse {
   data?: UserDetailsData;

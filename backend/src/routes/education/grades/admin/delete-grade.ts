@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { deleteGradeService } from "../../../../modules/education/grades/services/delete-grade.service.ts";
+import { deleteGradeService } from "../../../../modules/education/grades/services/admin/delete-grade.service.ts";
 import { ErrorResponseSchema, BaseResponseSchema } from "../../../../types/response.ts";
 
 const deleteGradeRoute: FastifyPluginAsyncTypebox = async (app) => {

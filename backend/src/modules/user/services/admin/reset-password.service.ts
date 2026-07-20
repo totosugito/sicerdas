@@ -1,7 +1,7 @@
-import { db } from "../../../db/db-pool.ts";
-import { accounts } from "../../../db/schema/user/index.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { accounts } from "../../../../db/schema/user/index.ts";
 import { eq } from "drizzle-orm";
-import type { ServiceResponse } from "../../../types/response.ts";
+import type { ServiceResponse } from "../../../../types/response.ts";
 
 export interface ResetPasswordParams {
   id: string;

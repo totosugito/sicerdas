@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { historyService } from "../../../modules/book/services/history.service.ts";
+import { historyService } from "../../../modules/book/services/user/history.service.ts";
 import { HistoryResponse } from "../../../modules/book/book.schema.ts";
 
 const listHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {

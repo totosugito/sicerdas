@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { createTagService } from "../../../../modules/education/tags/services/create-tag.service.ts";
+import { createTagService } from "../../../../modules/education/tags/services/admin/create-tag.service.ts";
 import { CreateTagBody, TagDetailResponse } from "../../../../modules/education/tags/education.schema.ts";
 import { ErrorResponseSchema } from "../../../../types/response.ts";
 

@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { bookmarkService } from "../../../modules/book/services/bookmark.service.ts";
+import { bookmarkService } from "../../../modules/book/services/user/bookmark.service.ts";
 import { BookmarkBody, BookmarkResponse } from "../../../modules/book/book.schema.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
 

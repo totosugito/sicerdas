@@ -1,8 +1,8 @@
-import { db } from "../../../../db/db-pool.ts";
-import { educationGrades } from "../../../../db/schema/education/grades.ts";
+import { db } from "../../../../../db/db-pool.ts";
+import { educationGrades } from "../../../../../db/schema/education/grades.ts";
 import { eq, or } from "drizzle-orm";
-import type { ServiceResponse } from "../../../../types/index.ts";
-import type { CreateGradeParams, GradeData } from "../education.schema.ts";
+import type { ServiceResponse } from "../../../../../types/index.ts";
+import type { CreateGradeParams, GradeData } from "../../education.schema.ts";
 
 export interface CreateGradeResult extends ServiceResponse {
   data?: GradeData;

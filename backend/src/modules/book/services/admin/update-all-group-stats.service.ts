@@ -1,9 +1,9 @@
-import { db } from "../../../db/db-pool.ts";
-import { bookGroup, bookGroupStats, books } from "../../../db/schema/book/index.ts";
-import { eq, count, and } from "drizzle-orm";
-import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
-import type { ServiceResponse } from "../../../types/index.ts";
-import type { GroupStatsData } from "../book.schema.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { bookGroup, bookGroupStats, books } from "../../../../db/schema/book/index.ts";
+import { eq, and, count } from "drizzle-orm";
+import { EnumContentStatus } from "../../../../db/schema/enum/enum-app.ts";
+import type { ServiceResponse } from "../../../../types/index.ts";
+import type { GroupStatsData } from "../../book.schema.ts";
 
 export interface UpdateAllGroupStatsResult extends ServiceResponse {
   data?: GroupStatsData[];

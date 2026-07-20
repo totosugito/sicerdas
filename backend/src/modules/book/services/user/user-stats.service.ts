@@ -1,7 +1,7 @@
-import { db } from "../../../db/db-pool.ts";
-import { bookInteractions } from "../../../db/schema/book/index.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { bookInteractions } from "../../../../db/schema/book/index.ts";
 import { eq, sql } from "drizzle-orm";
-import type { ServiceResponse } from "../../../types/index.ts";
+import type { ServiceResponse } from "../../../../types/index.ts";
 
 export interface UserStatsResult extends ServiceResponse {
   data?: { totalFavorites: number; totalMaterialsRead: number; totalDownloads: number };

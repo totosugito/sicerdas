@@ -1,10 +1,10 @@
-import { db } from "../../../db/db-pool.ts";
-import { users } from "../../../db/schema/user/index.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { users } from "../../../../db/schema/user/index.ts";
 import { eq } from "drizzle-orm";
 import sharp from "sharp";
-import { createUniqueFileName } from "../../../utils/my-utils.ts";
-import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../utils/user/user-utils.ts";
-import type { ServiceResponse } from "../../../types/response.ts";
+import { createUniqueFileName } from "../../../../utils/my-utils.ts";
+import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../../utils/user/user-utils.ts";
+import type { ServiceResponse } from "../../../../types/response.ts";
 
 export interface AvatarUpdateParams {
   userId: string;

@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { updateGradeService } from "../../../../modules/education/grades/services/update-grade.service.ts";
+import { updateGradeService } from "../../../../modules/education/grades/services/admin/update-grade.service.ts";
 import { UpdateGradeBody, GradeDetailResponse } from "../../../../modules/education/grades/education.schema.ts";
 import { ErrorResponseSchema } from "../../../../types/response.ts";
 
