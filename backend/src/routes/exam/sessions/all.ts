@@ -1,49 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import { examSessions } from "../../../db/schema/exam/sessions.ts";
-import { examPackages } from "../../../db/schema/exam/packages.ts";
-import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
-import { EnumExamSessionStatus } from "../../../db/schema/exam/enums.ts";
-import { eq, desc, sql, and } from "drizzle-orm";
-
-const AllHistoryBody = Type.Object({
-  page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
-  limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
-  status: Type.Optional(Type.Enum(EnumExamSessionStatus)),
-});
-
-const AllHistoryResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Object({
-    items: Type.Array(
-      Type.Object({
-        id: Type.String({ format: "uuid" }),
-        startTime: Type.String({ format: "date-time" }),
-        endTime: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
-        status: Type.String(),
-        mode: Type.String(),
-        score: Type.Union([Type.Number(), Type.Null()]),
-        totalCorrect: Type.Number(),
-        totalWrong: Type.Number(),
-        totalSkipped: Type.Number(),
-        packageTitle: Type.String(),
-        sectionTitle: Type.String(),
-        packageId: Type.String({ format: "uuid" }),
-        earnedPoints: Type.Union([Type.Number(), Type.Null()]),
-        maxPoints: Type.Union([Type.Number(), Type.Null()]),
-      }),
-    ),
-    meta: Type.Object({
-      total: Type.Number(),
-      page: Type.Number(),
-      limit: Type.Number(),
-      totalPages: Type.Number(),
-    }),
-  }),
-});
+import { ErrorResponseSchema } from "../../../types/response.ts";
+import { AllHistoryBody, AllSessionHistoryResponse } from "../../../modules/exam/sessions/sessions.schema.ts";
+import { allSessionsService } from "../../../modules/exam/sessions/services/all-sessions.service.ts";
 
 const allSessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -53,79 +12,26 @@ const allSessionHistoryRoute: FastifyPluginAsyncTypebox = async (app) => {
       tags: ["Client Exam Sessions"],
       body: AllHistoryBody,
       response: {
-        200: AllHistoryResponse,
+        200: AllSessionHistoryResponse,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{
-        Body: typeof AllHistoryBody.static;
-      }>,
+      request: FastifyRequest<{ Body: typeof AllHistoryBody.static }>,
       reply: FastifyReply,
-    ) {
-            const userId = (request as any).session.user.id;
-      const { page = 1, limit = 10, status } = request.body;
+    ): Promise<typeof AllSessionHistoryResponse.static> {
+      const userId = (request as any).session.user.id;
+      const result = await allSessionsService(userId, request.body);
 
-      const offset = (page - 1) * limit;
-
-      const baseConditions = and(
-        eq(examSessions.userId, userId),
-        status ? eq(examSessions.status, status) : undefined,
-      );
-
-      // 1. Get Total Count
-      const [countResult] = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(examSessions)
-        .where(baseConditions);
-
-      const total = Number(countResult?.count || 0);
-      const totalPages = Math.ceil(total / limit);
-
-      // 2. Get Paginated Items with Package and Section titles
-      const history = await db
-        .select({
-          id: examSessions.id,
-          startTime: examSessions.startTime,
-          endTime: examSessions.endTime,
-          status: examSessions.status,
-          mode: examSessions.mode,
-          score: examSessions.score,
-          totalCorrect: examSessions.totalCorrect,
-          totalWrong: examSessions.totalWrong,
-          totalSkipped: examSessions.totalSkipped,
-          packageTitle: examPackages.title,
-          sectionTitle: examPackageSections.title,
-          packageId: examSessions.packageId,
-          earnedPoints: examSessions.earnedPoints,
-          maxPoints: examSessions.maxPoints,
-        })
-        .from(examSessions)
-        .innerJoin(examPackages, eq(examSessions.packageId, examPackages.id))
-        .innerJoin(examPackageSections, eq(examSessions.sectionId, examPackageSections.id))
-        .where(baseConditions)
-        .orderBy(desc(examSessions.startTime))
-        .limit(limit)
-        .offset(offset);
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        return reply.badRequest(message);
+      }
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.exam.sessions.history.success),
-        data: {
-          items: history.map((h) => ({
-            ...h,
-            startTime: h.startTime.toISOString(),
-            endTime: h.endTime?.toISOString() ?? null,
-            score: h.score !== null ? Number(h.score) : null,
-            earnedPoints: h.earnedPoints !== null ? Number(h.earnedPoints) : null,
-            maxPoints: h.maxPoints !== null ? Number(h.maxPoints) : null,
-          })) as any,
-          meta: {
-            total,
-            page,
-            limit,
-            totalPages,
-          },
-        },
+        data: result.data,
       });
     },
   });

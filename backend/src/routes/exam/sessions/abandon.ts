@@ -1,19 +1,12 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import { examSessions } from "../../../db/schema/exam/sessions.ts";
-import { EnumExamSessionStatus } from "../../../db/schema/exam/enums.ts";
-import { eq, and } from "drizzle-orm";
+import { ErrorResponseSchema } from "../../../types/response.ts";
+import { AbandonSessionResponse } from "../../../modules/exam/sessions/sessions.schema.ts";
+import { abandonSessionService } from "../../../modules/exam/sessions/services/abandon-session.service.ts";
 
 const AbandonParams = Type.Object({
   id: Type.String({ format: "uuid" }),
-});
-
-const AbandonResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Optional(Type.Any()),
 });
 
 const abandonSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -24,44 +17,29 @@ const abandonSessionRoute: FastifyPluginAsyncTypebox = async (app) => {
       tags: ["Client Exam Sessions"],
       params: AbandonParams,
       response: {
-        200: AbandonResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        200: AbandonSessionResponse,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Params: typeof AbandonParams.static }>,
       reply: FastifyReply,
-    ) {
-            const userId = (request as any).session.user.id;
-      const { id } = request.params;
+    ): Promise<typeof AbandonSessionResponse.static> {
+      const userId = (request as any).session.user.id;
+      const result = await abandonSessionService(userId, request.params.id);
 
-      const [session] = await db
-        .update(examSessions)
-        .set({ status: EnumExamSessionStatus.ABANDONED, updatedAt: new Date() })
-        .where(
-          and(
-            eq(examSessions.id, id),
-            eq(examSessions.userId, userId),
-            eq(examSessions.status, EnumExamSessionStatus.IN_PROGRESS),
-          ),
-        )
-        .returning({ id: examSessions.id });
-
-      if (!session) {
-        return reply.notFound(request.t(($) => $.exam.sessions.abandon.notFound));
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.exam.sessions.abandon.success),
-        data: { id: session.id },
+        data: result.data,
       });
     },
   });

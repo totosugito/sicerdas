@@ -1,28 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../db/db-pool.ts";
-import { examSessions } from "../../../db/schema/exam/sessions.ts";
-import { examSessionAnswers } from "../../../db/schema/exam/session-answers.ts";
-import { examQuestionOptions } from "../../../db/schema/exam/question-options.ts";
-import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../db/schema/exam/enums.ts";
-import { eq, and } from "drizzle-orm";
-
-const SaveAnswerBody = Type.Object({
-  sessionId: Type.String({ format: "uuid" }),
-  questionId: Type.String({ format: "uuid" }),
-  selectedOptionId: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])),
-  textAnswer: Type.Optional(
-    Type.Union([Type.Array(Type.Record(Type.String(), Type.Unknown())), Type.Null()]),
-  ),
-  isDoubtful: Type.Optional(Type.Boolean()),
-  elapsedSeconds: Type.Number({ minimum: 0 }), // Sync from frontend
-});
-
-const SaveAnswerResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-});
+import { ErrorResponseSchema } from "../../../types/response.ts";
+import { SaveAnswerBody, SaveAnswerResponse } from "../../../modules/exam/sessions/sessions.schema.ts";
+import { saveAnswerService } from "../../../modules/exam/sessions/services/save-answer.service.ts";
 
 const saveAnswerRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -33,101 +13,31 @@ const saveAnswerRoute: FastifyPluginAsyncTypebox = async (app) => {
       body: SaveAnswerBody,
       response: {
         200: SaveAnswerResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Body: typeof SaveAnswerBody.static }>,
       reply: FastifyReply,
-    ) {
-            const userId = (request as any).session.user.id;
-      const { sessionId, questionId, selectedOptionId, textAnswer, isDoubtful, elapsedSeconds } =
-        request.body;
+    ): Promise<typeof SaveAnswerResponse.static> {
+      const userId = (request as any).session.user.id;
+      const result = await saveAnswerService(userId, request.body);
 
-      // 1. Verify session ownership, status, and mode
-      const [session] = await db
-        .select({
-          id: examSessions.id,
-          status: examSessions.status,
-          mode: examSessions.mode,
-        })
-        .from(examSessions)
-        .where(and(eq(examSessions.id, sessionId), eq(examSessions.userId, userId)))
-        .limit(1);
-
-      if (!session) {
-        return reply.notFound(request.t(($) => $.exam.sessions.saveAnswer.notFound));
-      }
-
-      if (session.status !== EnumExamSessionStatus.IN_PROGRESS) {
-        return reply.forbidden(request.t(($) => $.exam.sessions.saveAnswer.finished));
-      }
-
-      // 2. Sync elapsedSeconds to session
-      await db
-        .update(examSessions)
-        .set({ elapsedSeconds, updatedAt: new Date() })
-        .where(eq(examSessions.id, sessionId));
-
-      // 3. Mode-specific restrictions
-      if (session.mode === EnumExamSessionMode.STUDY) {
-        // In Study mode, if an answer is already selected, it's locked (One-shot)
-        const [existingAnswer] = await db
-          .select({ selectedOptionId: examSessionAnswers.selectedOptionId })
-          .from(examSessionAnswers)
-          .where(
-            and(
-              eq(examSessionAnswers.sessionId, sessionId),
-              eq(examSessionAnswers.questionId, questionId),
-            ),
-          )
-          .limit(1);
-
-        if (existingAnswer?.selectedOptionId) {
-          return reply.forbidden(request.t(($) => $.exam.sessions.saveAnswer.studyLocked));
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
         }
-      }
-
-      // 4. Update the answer
-      const updateData: any = { updatedAt: new Date() };
-      if (selectedOptionId !== undefined) updateData.selectedOptionId = selectedOptionId;
-      if (textAnswer !== undefined) updateData.textAnswer = textAnswer;
-      if (isDoubtful !== undefined) updateData.isDoubtful = isDoubtful;
-
-      // 5. Automatic evaluation for Study Mode (One-shot)
-      if (session.mode === EnumExamSessionMode.STUDY && selectedOptionId) {
-        const [option] = await db
-          .select({ isCorrect: examQuestionOptions.isCorrect })
-          .from(examQuestionOptions)
-          .where(eq(examQuestionOptions.id, selectedOptionId))
-          .limit(1);
-
-        if (option) {
-          updateData.isCorrect = option.isCorrect;
+        if (result.statusCode === 403) {
+          return reply.forbidden(message);
         }
+        return reply.badRequest(message);
       }
-
-      await db
-        .update(examSessionAnswers)
-        .set(updateData)
-        .where(
-          and(
-            eq(examSessionAnswers.sessionId, sessionId),
-            eq(examSessionAnswers.questionId, questionId),
-          ),
-        );
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.exam.sessions.saveAnswer.success),
-        data: { sessionId, questionId },
+        data: result.data,
       });
     },
   });

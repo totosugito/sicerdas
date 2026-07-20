@@ -189,7 +189,11 @@
         "success": "Sesi ujian berhasil dimulai, selamat mengerjakan!"
       },
       "details": {
+        "success": "Detail sesi ujian berhasil diambil",
         "notFound": "Sesi tidak ditemukan"
+      },
+      "question": {
+        "success": "Detail soal berhasil diambil"
       },
       "errors": {
         "notFound": "Sesi atau soal ujian tidak ditemukan"
