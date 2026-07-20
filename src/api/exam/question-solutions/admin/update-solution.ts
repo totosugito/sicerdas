@@ -1,9 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { ExamQuestionSolutionDetailResponse, QuestionSolutionFormValues } from "../types";
+import type { UpdateQuestionSolutionParams, QuestionSolutionDetailResponse } from "../types";
 
-export interface UpdateQuestionSolutionRequest extends Partial<QuestionSolutionFormValues> {
+export interface UpdateQuestionSolutionRequest extends Partial<UpdateQuestionSolutionParams> {
   id?: string;
 }
 
@@ -23,7 +23,7 @@ export const useUpdateQuestionSolution = (id?: string) => {
         body: payload,
         withCredentials: true,
       });
-      return response as ExamQuestionSolutionDetailResponse;
+      return response as QuestionSolutionDetailResponse;
     },
   });
 };

@@ -14,7 +14,7 @@ import { DialogModal } from "@/components/custom/components";
 import {
   useDeleteQuestionSolution,
   useUpdateQuestionSolution,
-  ExamQuestionSolution,
+  QuestionSolutionResponseItemT,
 } from "@/api/exam/question-solutions";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";
@@ -31,20 +31,20 @@ export function QuestionSolutionsTab({
   const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const updateMutation = useUpdateQuestionSolution();
-  const [items, setItems] = useState<ExamQuestionSolution[]>([]);
+  const [items, setItems] = useState<QuestionSolutionResponseItemT[]>([]);
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [solutionToDelete, setSolutionToDelete] = useState<string | null>(null);
 
   const [showFormModal, setShowFormModal] = useState(false);
-  const [selectedSolution, setSelectedSolution] = useState<ExamQuestionSolution | null>(null);
+  const [selectedSolution, setSelectedSolution] = useState<QuestionSolutionResponseItemT | null>(null);
 
   const deleteMutation = useDeleteQuestionSolution();
 
   useEffect(() => {
     if (initialSolutions) {
       const sorted = [...initialSolutions].sort((a, b) => (a.order || 0) - (b.order || 0));
-      setItems(sorted as ExamQuestionSolution[]);
+      setItems(sorted as QuestionSolutionResponseItemT[]);
     }
   }, [initialSolutions]);
 

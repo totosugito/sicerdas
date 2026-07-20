@@ -1,41 +1,12 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examQuestionSolutions } from "../../../../db/schema/exam/question-solutions.ts";
-import { examQuestions } from "../../../../db/schema/exam/questions.ts";
-import { eq } from "drizzle-orm";
-import env from "../../../../config/env.config.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
+import { updateQuestionSolutionService } from "../../../../modules/exam/question-solutions/services/update-question-solution.service.ts";
 import {
-  processBlockNoteFiles,
-  replaceBlockNoteUrls,
-  cleanupBlockNoteFiles,
-  resolveBlockNoteUrls,
-  stripBlockNoteUrls,
-} from "../../../../utils/blocknote/blocknote-utils.ts";
-
-const UpdateQuestionSolutionParams = Type.Object({
-  id: Type.String({ format: "uuid" }),
-});
-
-const QuestionSolutionResponseItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  questionId: Type.String({ format: "uuid" }),
-  title: Type.String(),
-  content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
-  solutionType: Type.String(),
-  order: Type.Number(),
-  requiredTier: Type.Union([Type.String(), Type.Null()]),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
-const UpdateQuestionSolutionResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: QuestionSolutionResponseItem,
-});
+  QuestionSolutionParams,
+  UpdateQuestionSolutionResponse,
+} from "../../../../modules/exam/question-solutions/question-solutions.schema.ts";
 
 const updateQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -44,33 +15,17 @@ const updateQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Admin Exam Question Solutions"],
       consumes: ["multipart/form-data"],
-      params: UpdateQuestionSolutionParams,
+      params: QuestionSolutionParams,
       response: {
         200: UpdateQuestionSolutionResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Params: typeof UpdateQuestionSolutionParams.static }>,
+      request: FastifyRequest<{ Params: typeof QuestionSolutionParams.static }>,
       reply: FastifyReply,
     ) {
-            const { id } = request.params;
-
-      // Ensure solution exists
-      const existingSolution = await db.query.examQuestionSolutions.findFirst({
-        where: eq(examQuestionSolutions.id, id),
-      });
-
-      if (!existingSolution) {
-        return reply.notFound(request.t(($) => $.exam.question_solutions.update.notFound));
-      }
+      const { id } = request.params;
 
       // Parse multipart data
       const parts = request.parts();
@@ -95,79 +50,20 @@ const updateQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }
       }
 
-      const { questionId, title, content, solutionType, order, requiredTier } = body;
+      const result = await updateQuestionSolutionService(id, body, files, request.log);
 
-      // Verify new question exists if provided
-      if (questionId !== undefined) {
-        const existingQuestion = await db.query.examQuestions.findFirst({
-          where: eq(examQuestions.id, questionId),
-        });
-        if (!existingQuestion) {
-          return reply.badRequest(request.t(($) => $.exam.question_solutions.update.invalidQuestion));
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
         }
-      }
-
-      // Process uploaded files if any
-      let finalContent = content ? stripBlockNoteUrls(content) : (existingSolution.content as any[]);
-      const targetQuestionId = questionId || existingSolution.questionId;
-
-      if (files.length > 0) {
-        // Fetch the parent question to get createdAt for path consistency
-        const parentQuestion = await db.query.examQuestions.findFirst({
-          where: eq(examQuestions.id, targetQuestionId),
-        });
-
-        const urlMap = await processBlockNoteFiles(
-          env.server.uploadsQuestionDir,
-          targetQuestionId,
-          files,
-          parentQuestion?.createdAt,
-        );
-
-        // Replace blob URLs with final URLs
-        if (content !== undefined) {
-          finalContent = replaceBlockNoteUrls(content, urlMap);
-        }
-      }
-
-      // Build dynamic update payload
-      const updatePayload: any = {
-        updatedAt: new Date(),
-      };
-
-      if (questionId !== undefined) updatePayload.questionId = questionId;
-      if (title !== undefined) updatePayload.title = title;
-      if (content !== undefined) updatePayload.content = finalContent;
-      if (solutionType !== undefined) updatePayload.solutionType = solutionType;
-      if (order !== undefined) updatePayload.order = order;
-      if (requiredTier !== undefined) updatePayload.requiredTier = requiredTier;
-
-      const [updatedSolution] = await db
-        .update(examQuestionSolutions)
-        .set(updatePayload)
-        .where(eq(examQuestionSolutions.id, id))
-        .returning();
-
-      // Clean up orphaned files
-      if (content !== undefined) {
-        await cleanupBlockNoteFiles(
-          existingSolution.content as any[],
-          finalContent,
-          env.server.uploadsQuestionDir,
-          ["image"],
-          request.log,
-        );
+        return reply.badRequest(message);
       }
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.exam.question_solutions.update.success),
-        data: {
-          ...updatedSolution,
-          content: resolveBlockNoteUrls(updatedSolution.content as any[]),
-          createdAt: updatedSolution.createdAt.toISOString(),
-          updatedAt: updatedSolution.updatedAt.toISOString(),
-        },
+        data: result.data,
       });
     },
   });

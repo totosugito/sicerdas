@@ -1,53 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examQuestionSolutions } from "../../../../db/schema/exam/question-solutions.ts";
-import { desc, and, sql, eq } from "drizzle-orm";
-import { resolveBlockNoteUrls } from "../../../../utils/blocknote/blocknote-utils.ts";
-
-const QuestionSolutionListQuery = Type.Object({
-  questionId: Type.Optional(
-    Type.String({ format: "uuid", description: "Filter by parent Question ID" }),
-  ),
-  solutionType: Type.Optional(
-    Type.String({ description: "Filter by solution type (e.g. general, fast_method)" }),
-  ),
-  requiredTier: Type.Optional(Type.String({ description: "Filter by subscription tier required" })),
-
-  sortBy: Type.Optional(
-    Type.String({ description: "Sort field: order, createdAt", default: "order" }),
-  ),
-  sortOrder: Type.Optional(Type.String({ description: "Sort order: asc or desc", default: "asc" })),
-  page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
-  limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
-});
-
-const QuestionSolutionResponseItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  questionId: Type.String({ format: "uuid" }),
-  title: Type.String(),
-  content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
-  solutionType: Type.String(),
-  order: Type.Number(),
-  requiredTier: Type.Union([Type.String(), Type.Null()]),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
-const ListQuestionSolutionsResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Object({
-    items: Type.Array(QuestionSolutionResponseItem),
-    meta: Type.Object({
-      total: Type.Number(),
-      page: Type.Number(),
-      limit: Type.Number(),
-      totalPages: Type.Number(),
-    }),
-  }),
-});
+import { ErrorResponseSchema } from "../../../../types/response.ts";
+import { listQuestionSolutionsService } from "../../../../modules/exam/question-solutions/services/list-question-solutions.service.ts";
+import {
+  QuestionSolutionListBody,
+  ListQuestionSolutionsResponse,
+} from "../../../../modules/exam/question-solutions/question-solutions.schema.ts";
 
 const listQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -55,96 +13,30 @@ const listQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "POST",
     schema: {
       tags: ["Admin Exam Question Solutions"],
-      body: QuestionSolutionListQuery,
+      body: QuestionSolutionListBody,
       response: {
         200: ListQuestionSolutionsResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Body: typeof QuestionSolutionListQuery.static }>,
+      request: FastifyRequest<{ Body: typeof QuestionSolutionListBody.static }>,
       reply: FastifyReply,
     ) {
-            const {
-        questionId,
-        solutionType,
-        requiredTier,
-        sortBy = "order",
-        sortOrder = "asc",
-        page = 1,
-        limit = 10,
-      } = request.body;
+      const result = await listQuestionSolutionsService(request.body);
 
-      const offset = (page - 1) * limit;
-
-      const conditions = [];
-
-      if (questionId) conditions.push(eq(examQuestionSolutions.questionId, questionId));
-      if (solutionType)
-        conditions.push(eq(examQuestionSolutions.solutionType, solutionType as any));
-      if (requiredTier) conditions.push(eq(examQuestionSolutions.requiredTier, requiredTier));
-
-      // Build Query
-      let baseQuery = db.select().from(examQuestionSolutions);
-      if (conditions.length > 0) {
-        baseQuery = baseQuery.where(and(...conditions)) as any;
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
-
-      // Add Sorting
-      const orderDir = sortOrder === "asc" ? "asc" : "desc";
-      let queryWithSort;
-
-      switch (sortBy) {
-        case "createdAt":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(examQuestionSolutions.createdAt)
-              : baseQuery.orderBy(desc(examQuestionSolutions.createdAt));
-          break;
-        case "order":
-        default:
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(examQuestionSolutions.order)
-              : baseQuery.orderBy(desc(examQuestionSolutions.order));
-          break;
-      }
-
-      // Meta calculations
-      const countResult = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(queryWithSort.as("subquery"));
-
-      const total = Number(countResult[0]?.count || 0);
-      const totalPages = Math.ceil(total / limit);
-
-      // Execute Paginated Fetch
-      const items = await queryWithSort.limit(limit).offset(offset);
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.exam.question_solutions.list.success),
-        data: {
-          items: items.map((sol) => ({
-            ...sol,
-            content: resolveBlockNoteUrls(sol.content as Record<string, unknown>[]),
-            createdAt: sol.createdAt.toISOString(),
-            updatedAt: sol.updatedAt.toISOString(),
-          })),
-          meta: {
-            total,
-            page,
-            limit,
-            totalPages,
-          },
-        },
+        data: result.data,
       });
     },
   });

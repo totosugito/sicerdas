@@ -10,10 +10,10 @@ import {
     verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { SolutionRow } from "./SolutionRow";
-import { ExamQuestionSolution } from "@/api/exam/question-solutions";
+import { QuestionSolutionResponseItemT } from "@/api/exam/question-solutions";
 
 interface SolutionListProps {
-    items: ExamQuestionSolution[];
+    items: QuestionSolutionResponseItemT[];
     sensors: SensorDescriptor<SensorOptions>[];
     onDragEnd: (event: DragEndEvent) => void;
     onDelete: (id: string) => void;

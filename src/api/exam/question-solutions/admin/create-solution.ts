@@ -1,9 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { ExamQuestionSolutionDetailResponse, QuestionSolutionFormValues } from "../types";
+import type { CreateQuestionSolutionParams, QuestionSolutionDetailResponse } from "../types";
 
-export type CreateQuestionSolutionRequest = QuestionSolutionFormValues;
+export type CreateQuestionSolutionRequest = CreateQuestionSolutionParams;
 
 export const useCreateQuestionSolution = () => {
   return useMutation({
@@ -14,7 +14,7 @@ export const useCreateQuestionSolution = () => {
         body: payload,
         withCredentials: true,
       });
-      return response as ExamQuestionSolutionDetailResponse;
+      return response as QuestionSolutionDetailResponse;
     },
   });
 };

@@ -1,41 +1,25 @@
-export interface ExamQuestionSolution {
-    id: string;
-    questionId: string;
-    title: string;
-    content: Record<string, unknown>[];
-    solutionType: string;
-    order: number;
-    requiredTier: string | null;
-    createdAt: string;
-    updatedAt: string;
+import type {
+  QuestionSolutionResponseItemT,
+  CreateQuestionSolutionParams,
+  UpdateQuestionSolutionParams,
+  QuestionSolutionListParams,
+} from "backend/src/modules/exam/question-solutions/index.ts";
+import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+
+export type {
+  QuestionSolutionResponseItemT,
+  CreateQuestionSolutionParams,
+  UpdateQuestionSolutionParams,
+  QuestionSolutionListParams,
+};
+
+export interface QuestionSolutionResponse<T> extends BaseResponse {
+  data: T;
 }
 
-export interface ExamQuestionSolutionResponse {
-    success: boolean;
-    message: string;
-}
+export interface ListQuestionSolutionsResponse extends QuestionSolutionResponse<{
+  items: QuestionSolutionResponseItemT[];
+  meta: PaginationMeta;
+}> {}
 
-export interface ExamQuestionSolutionDetailResponse extends ExamQuestionSolutionResponse {
-    data: ExamQuestionSolution;
-}
-
-export interface ListQuestionSolutionsResponse extends ExamQuestionSolutionResponse {
-    data: {
-        items: ExamQuestionSolution[];
-        meta: {
-            total: number;
-            page: number;
-            limit: number;
-            totalPages: number;
-        };
-    };
-}
-
-export interface QuestionSolutionFormValues {
-    questionId: string;
-    title: string;
-    content: Record<string, unknown>[];
-    solutionType?: string;
-    order?: number;
-    requiredTier?: string | null;
-}
+export interface QuestionSolutionDetailResponse extends QuestionSolutionResponse<QuestionSolutionResponseItemT> {}

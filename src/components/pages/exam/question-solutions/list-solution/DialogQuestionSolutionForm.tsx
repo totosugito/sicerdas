@@ -6,7 +6,7 @@ import { ControlForm } from "@/components/custom/forms";
 import {
   useCreateQuestionSolution,
   useUpdateQuestionSolution,
-  ExamQuestionSolution,
+  QuestionSolutionResponseItemT,
 } from "@/api/exam/question-solutions";
 import { EnumSolutionType } from "@/api/exam/questions/types";
 import { useQueryClient } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ export type DialogQuestionSolutionFormProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   questionId: string;
-  solution?: ExamQuestionSolution | null;
+  solution?: QuestionSolutionResponseItemT | null;
   nextOrder?: number;
 };
 

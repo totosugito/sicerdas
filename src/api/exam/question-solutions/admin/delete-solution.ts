@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { ExamQuestionSolutionResponse } from "../types";
+import type { BaseResponse } from "backend/src/types/index.ts";
 
 export const useDeleteQuestionSolution = () => {
     return useMutation({
@@ -11,7 +11,7 @@ export const useDeleteQuestionSolution = () => {
                 url: AppApi.exam.questionSolutions.admin.delete.replace(":id", id),
                 withCredentials: true,
             });
-            return response as ExamQuestionSolutionResponse;
+            return response as BaseResponse;
         },
     });
 };
@@ -25,7 +25,7 @@ export const useDeleteMultipleQuestionSolutions = () => {
                 body: { ids },
                 withCredentials: true,
             });
-            return response as ExamQuestionSolutionResponse;
+            return response as BaseResponse;
         },
     });
 };

@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { ExamQuestionSolution } from "@/api/exam/question-solutions";
+import { QuestionSolutionResponseItemT } from "@/api/exam/question-solutions";
 import { BlockNoteStatic } from "@/components/custom/components";
 import React from "react";
 
 interface SolutionRowProps {
-  solution: ExamQuestionSolution;
+  solution: QuestionSolutionResponseItemT;
   index: number;
   onDelete: (id: string) => void;
   onEdit: (id: string) => void;

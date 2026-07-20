@@ -6,12 +6,12 @@ import { ControlForm } from "@/components/custom/forms";
 import { EnumSolutionType } from "@/api/exam/questions/types";
 import { useListTier } from "@/api/tier";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
-import { ExamQuestionSolution } from "@/api/exam/question-solutions";
+import { QuestionSolutionResponseItemT } from "@/api/exam/question-solutions";
 
 export type DialogLocalSolutionFormProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  solution?: ExamQuestionSolution | null;
+  solution?: QuestionSolutionResponseItemT | null;
   onConfirm: (values: any) => void;
 };
 

@@ -10,7 +10,7 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { SolutionList } from "@/components/pages/exam/question-solutions/list-solution";
 import { DialogModal } from "@/components/custom/components";
 import { DialogLocalSolutionForm } from "./DialogLocalSolutionForm";
-import { ExamQuestionSolution } from "@/api/exam/question-solutions";
+import { QuestionSolutionResponseItemT } from "@/api/exam/question-solutions";
 import { ExamQuestion } from "@/api/exam/questions";
 
 interface JsonQuestionSolutionsTabProps {
@@ -27,18 +27,18 @@ export function JsonQuestionSolutionsTab({
   onOpenChange,
 }: JsonQuestionSolutionsTabProps) {
   const { t } = useAppTranslation();
-  const [items, setItems] = useState<ExamQuestionSolution[]>([]);
+  const [items, setItems] = useState<QuestionSolutionResponseItemT[]>([]);
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [solutionToDelete, setSolutionToDelete] = useState<string | null>(null);
 
   const [showFormModal, setShowFormModal] = useState(false);
-  const [selectedSolution, setSelectedSolution] = useState<ExamQuestionSolution | null>(null);
+  const [selectedSolution, setSelectedSolution] = useState<QuestionSolutionResponseItemT | null>(null);
 
   useEffect(() => {
     if (initialSolutions) {
       const sorted = [...initialSolutions].sort((a, b) => (a.order || 0) - (b.order || 0));
-      setItems(sorted as ExamQuestionSolution[]);
+      setItems(sorted as QuestionSolutionResponseItemT[]);
     }
   }, [initialSolutions]);
 
