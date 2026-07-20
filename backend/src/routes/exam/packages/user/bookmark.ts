@@ -5,7 +5,7 @@ import {
   UpdateBookmarkBody,
   BookmarkResponse,
 } from "../../../../modules/exam/packages/packages.schema.ts";
-import { bookmarkService } from "../../../../modules/exam/packages/services/bookmark.service.ts";
+import { bookmarkService } from "../../../../modules/exam/packages/services/user/bookmark.service.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({

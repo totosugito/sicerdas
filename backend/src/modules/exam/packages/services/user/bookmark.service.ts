@@ -1,12 +1,12 @@
-import { db } from "../../../../db/db-pool.ts";
+import { db } from "../../../../../db/db-pool.ts";
 import {
   examPackages,
   examPackageInteractions,
   examPackageEventStats,
-} from "../../../../db/schema/exam/index.ts";
+} from "../../../../../db/schema/exam/index.ts";
 import { and, eq, sql } from "drizzle-orm";
-import type { ServiceResponse } from "../../../../types/index.ts";
-import type { UpdateBookmarkParams, BookmarkResponseDataT } from "../packages.schema.ts";
+import type { ServiceResponse } from "../../../../../types/index.ts";
+import type { UpdateBookmarkParams, BookmarkResponseDataT } from "../../packages.schema.ts";
 
 export interface BookmarkResult extends ServiceResponse {
   data?: BookmarkResponseDataT;

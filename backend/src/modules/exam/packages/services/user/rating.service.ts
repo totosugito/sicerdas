@@ -1,12 +1,12 @@
-import { db } from "../../../../db/db-pool.ts";
+import { db } from "../../../../../db/db-pool.ts";
 import {
   examPackages,
   examPackageInteractions,
   examPackageEventStats,
-} from "../../../../db/schema/exam/index.ts";
+} from "../../../../../db/schema/exam/index.ts";
 import { and, eq, sql } from "drizzle-orm";
-import type { ServiceResponse } from "../../../../types/index.ts";
-import type { UpdateRatingParams, RatingResponseDataT } from "../packages.schema.ts";
+import type { ServiceResponse } from "../../../../../types/index.ts";
+import type { UpdateRatingParams, RatingResponseDataT } from "../../packages.schema.ts";
 
 export interface RatingResult extends ServiceResponse {
   data?: RatingResponseDataT;
@@ -18,7 +18,6 @@ export async function ratingService(
 ): Promise<RatingResult> {
   const { packageId, rating } = params;
 
-  // Verify package existence
   const pkgList = await db
     .select({ id: examPackages.id })
     .from(examPackages)
@@ -33,7 +32,6 @@ export async function ratingService(
     };
   }
 
-  // Check existing interaction
   const existingInteraction = await db.query.examPackageInteractions.findFirst({
     where: and(
       eq(examPackageInteractions.userId, userId),
@@ -45,7 +43,6 @@ export async function ratingService(
     ? parseFloat(existingInteraction.rating.toString())
     : 0;
 
-  // If rating hasn't changed, return current state
   if (oldRating === rating) {
     const currentStats = await db.query.examPackageEventStats.findFirst({
       where: eq(examPackageEventStats.packageId, packageId),
@@ -64,7 +61,6 @@ export async function ratingService(
     };
   }
 
-  // Upsert User Interaction
   await db
     .insert(examPackageInteractions)
     .values({
@@ -83,7 +79,6 @@ export async function ratingService(
   const isFirstTime = oldRating === 0;
   const ratingDiff = rating - oldRating;
 
-  // Update Global Stats
   await db
     .insert(examPackageEventStats)
     .values({
@@ -103,7 +98,6 @@ export async function ratingService(
       },
     });
 
-  // Recalculate average rating
   await db
     .update(examPackageEventStats)
     .set({
@@ -111,7 +105,6 @@ export async function ratingService(
     })
     .where(eq(examPackageEventStats.packageId, packageId));
 
-  // Fetch final stats
   const finalStats = await db.query.examPackageEventStats.findFirst({
     where: eq(examPackageEventStats.packageId, packageId),
     columns: { rating: true, ratingCount: true },

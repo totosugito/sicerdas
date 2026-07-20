@@ -1,79 +1,123 @@
-import { EnumExamPackageUserStatus as UserStatusValues } from "backend/src/db/schema/exam/enums";
+import type {
+  UpdateBookmarkParams,
+  BookmarkResponseDataT,
+  UpdateRatingParams,
+  RatingResponseDataT,
+  FavoritesQueryParams,
+  FavoritePackageItem,
+  ListCustomQueryParams,
+  CustomPackageItem,
+  GenerateCustomParams,
+  FilterParamsCategoryData,
+  PublicPackageDetailData,
+  PublicPackageItem,
+  AdminPackageListParams,
+  AdminPackageItem,
+  AdminPackageDetailData,
+  AdminSimplePackageItemT,
+  AdminPackageSimpleParams,
+  CreatePackageParams,
+  UpdatePackageParams,
+  ThumbnailResponseDataT,
+} from "backend/src/modules/exam/packages/index.ts";
+import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+import { EnumExamPackageUserStatus as UserStatusValues } from "backend/src/db/schema/exam/enums.ts";
+import { EnumExamType as ExamTypeValues } from "backend/src/db/schema/exam/enums.ts";
 
 export type EnumExamPackageUserStatus = (typeof UserStatusValues)[keyof typeof UserStatusValues];
+export type EnumExamType = (typeof ExamTypeValues)[keyof typeof ExamTypeValues];
 
-export interface ExamPackage {
-  id: string;
-  title: string;
-  examType: string;
-  durationMinutes: number;
-  thumbnail: string | null;
-  description: string | null;
-  requiredTier: string | null;
-  isActive: boolean;
-  isNew: boolean;
-  versionId: number | null;
-  category: {
-    id: string;
-    name: string | null;
-    key: string | null;
+export type {
+  UpdateBookmarkParams,
+  BookmarkResponseDataT,
+  UpdateRatingParams,
+  RatingResponseDataT,
+  FavoritesQueryParams,
+  FavoritePackageItem,
+  ListCustomQueryParams,
+  CustomPackageItem,
+  GenerateCustomParams,
+  FilterParamsCategoryData,
+  PublicPackageDetailData,
+  PublicPackageItem,
+  AdminPackageListParams,
+  AdminPackageItem,
+  AdminPackageDetailData,
+  AdminSimplePackageItemT,
+  AdminPackageSimpleParams,
+  CreatePackageParams,
+  UpdatePackageParams,
+  ThumbnailResponseDataT,
+  BaseResponse,
+  PaginationMeta,
+};
+
+export interface ExamPackageResponse<T = unknown> extends BaseResponse {
+  data: T;
+}
+
+export type ExamPackage = AdminPackageItem;
+export type PublicExamPackage = PublicPackageItem;
+
+export type ExamPackageDetailResponse = ExamPackageResponse<AdminPackageDetailData>;
+export type PublicDetailPackageResponse = ExamPackageResponse<PublicPackageDetailData>;
+export type ExamFilterParamsResponse = ExamPackageResponse<FilterParamsCategoryData[]>;
+export type BookmarkPackageResponse = ExamPackageResponse<BookmarkResponseDataT>;
+export type RatePackageResponse = ExamPackageResponse<RatingResponseDataT>;
+export type DetailPackageResponse = ExamPackageResponse<AdminPackageDetailData>;
+export type CreatePackageResponse = ExamPackageResponse<{ id: string }>;
+export type ThumbnailResponse = ExamPackageResponse<ThumbnailResponseDataT>;
+export type GenerateCustomResponse = ExamPackageResponse<{ packageId: string; sectionId: string }>;
+
+export interface PaginatedListResponse<T> extends BaseResponse {
+  data: {
+    items: T[];
+    meta: PaginationMeta;
   };
-  grade: {
-    id: number | null;
-    name: string | null;
-  };
-  stats: {
-    totalSections?: number;
-    activeSections: number;
-    totalQuestions?: number;
-    activeQuestions: number;
-    viewCount: number;
-    likeCount: number;
-    bookmarkCount: number;
-    rating: number;
-    ratingCount: number;
-  };
-  userInteraction?: {
-    liked: boolean;
-    disliked: boolean;
-    rating: number;
-    bookmarked: boolean;
+}
+
+export type ListPackagesResponse = PaginatedListResponse<AdminPackageItem>;
+export type ListPackagesSimpleResponse = PaginatedListResponse<AdminSimplePackageItemT>;
+
+export type UpdatePackageRequest = UpdatePackageParams & { id: string };
+
+export interface FavoritePackage extends Omit<FavoritePackageItem, "userInteraction"> {
+  userInteraction: {
     status: EnumExamPackageUserStatus;
     completedSectionsCount: number;
-    viewCount?: number;
-  };
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface ExamPackageResponse {
-  success: boolean;
-  message: string;
-}
-
-export interface ExamPackageDetailResponse extends ExamPackageResponse {
-  data: ExamPackage;
-}
-
-export interface GradeStats {
-  id: number;
-  name: string;
-  stats: {
-    activeCount: number;
-    totalCount: number;
   };
 }
 
-export interface FilterParamsItem {
-  id: string;
-  name: string;
-  key: string;
-  description: string | null;
-  grades: GradeStats[];
+export interface FavoritePackagesResponse extends BaseResponse {
+  data: FavoritePackage[];
+  pagination: PaginationMeta;
 }
 
-export interface ExamFilterParamsResponse extends ExamPackageResponse {
-  data: FilterParamsItem[];
+export interface CustomPracticeItem extends Omit<CustomPackageItem, "userInteraction"> {
+  userInteraction: {
+    status: EnumExamPackageUserStatus;
+    completedSectionsCount: number;
+  };
+}
+
+export interface ListCustomPackagesResponse extends BaseResponse {
+  data: CustomPracticeItem[];
+  pagination: PaginationMeta;
+}
+
+export interface BookmarkPackageRequest {
+  packageId: string;
+  bookmarked: boolean;
+}
+
+export interface RatePackageRequest {
+  packageId: string;
+  rating: number;
+}
+
+export interface ListCustomRequest {
+  page?: number;
+  pageSize?: number;
 }
 
 export interface GenerateCustomRequest {
@@ -83,43 +127,4 @@ export interface GenerateCustomRequest {
   limit?: number;
   packageTitle?: string;
   sectionTitle?: string;
-}
-
-export interface GenerateCustomResponse extends ExamPackageResponse {
-  data: {
-    packageId: string;
-    sectionId: string;
-  };
-}
-
-export interface CustomPracticeItem {
-  id: string;
-  title: string;
-  thumbnail: string | null;
-  durationMinutes: number;
-  stats: {
-    activeQuestions: number;
-    activeSections: number;
-  };
-  category: {
-    name: string;
-  };
-  grade: {
-    name: string;
-  };
-  userInteraction: {
-    status: EnumExamPackageUserStatus;
-    completedSectionsCount: number;
-  };
-  createdAt: string;
-}
-
-export interface ListCustomPackagesResponse extends ExamPackageResponse {
-  data: CustomPracticeItem[];
-  pagination: {
-    total: number;
-    page: number;
-    pageSize: number;
-    totalPages: number;
-  };
 }

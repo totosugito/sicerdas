@@ -5,7 +5,7 @@ import {
   FavoritesQuery,
   FavoritePackagesResponse,
 } from "../../../../modules/exam/packages/packages.schema.ts";
-import { favoritesService } from "../../../../modules/exam/packages/services/favorites.service.ts";
+import { favoritesService } from "../../../../modules/exam/packages/services/user/favorites.service.ts";
 
 const listFavoritesRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({

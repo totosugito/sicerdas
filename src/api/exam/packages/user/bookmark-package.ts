@@ -1,20 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-
-export interface BookmarkPackageRequest {
-  packageId: string;
-  bookmarked: boolean;
-}
-
-export interface BookmarkPackageResponse {
-  success: boolean;
-  message: string;
-  data: {
-    bookmarked: boolean;
-    bookmarkCount: number;
-  };
-}
+import type { BookmarkPackageRequest, BookmarkPackageResponse } from "../types";
 
 export const useBookmarkPackage = () => {
   return useMutation({

@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ExamPackageDetailResponse } from "../types";
+import type { DetailPackageResponse } from "../types";
 
 export interface DetailPackageRequest {
   id: string;
@@ -16,7 +16,7 @@ export const useDetailPackage = ({ id }: DetailPackageRequest) => {
         url: AppApi.exam.packages.admin.detail.replace(":id", id),
         withCredentials: true,
       });
-      return response as ExamPackageDetailResponse;
+      return response as DetailPackageResponse;
     },
     enabled: !!id,
   });

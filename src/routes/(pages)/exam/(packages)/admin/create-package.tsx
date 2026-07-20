@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { PageTitle } from "@/components/app";
 import { useCreatePackage, useUploadPackageThumbnail } from "@/api/exam/packages";
+import type { CreatePackageParams } from "@/api/exam/packages";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppRoute } from "@/constants/app-route";
@@ -20,13 +21,15 @@ function AdminExamPackagesCreatePage() {
   const uploadThumbnailMutation = useUploadPackageThumbnail();
 
   const onSubmit = async (values: PackageFormValues) => {
+    const { examType, ...rest } = values;
     const payload = {
-      ...values,
+      ...rest,
+      examType: examType as CreatePackageParams["examType"],
       durationMinutes: Number(values.durationMinutes) || 0,
       educationGradeId: values.educationGradeId ? Number(values.educationGradeId) : undefined,
       requiredTier: values.requiredTier || undefined,
       description: values.description || undefined,
-      versionId: values.versionId ? Number(values.versionId) : undefined,
+      versionId: Number(values.versionId) || 1,
     };
 
     createMutation.mutate(payload, {

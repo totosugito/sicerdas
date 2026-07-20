@@ -1,23 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-export interface RatePackageRequest {
-  packageId: string;
-  rating: number;
-}
-
-export interface RatePackageResponse {
-  success: boolean;
-  message: string;
-  data: {
-    rating: number;
-    ratingCount: number;
-    userInteraction: {
-      rating: number;
-    };
-  };
-}
+import type { RatePackageRequest, RatePackageResponse } from "../types";
 
 export const useRatePackage = () => {
   const queryClient = useQueryClient();

@@ -1,7 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
-import { ExamPackageResponse } from "../types";
+import { useMutation } from "@tanstack/react-query";
+import type { ThumbnailResponse } from "../types";
 
 export interface UploadThumbnailRequest {
   id: string;
@@ -35,7 +35,7 @@ export const useUploadPackageThumbnail = () => {
         withCredentials: true,
       });
 
-      return response as ExamPackageResponse;
+      return response as ThumbnailResponse;
     },
   });
 };

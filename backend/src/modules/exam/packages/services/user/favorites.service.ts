@@ -1,15 +1,15 @@
-import { db } from "../../../../db/db-pool.ts";
+import { db } from "../../../../../db/db-pool.ts";
 import {
   examPackages,
   examPackageInteractions,
   examPackageEventStats,
-} from "../../../../db/schema/exam/index.ts";
-import { educationCategories } from "../../../../db/schema/education/index.ts";
+} from "../../../../../db/schema/exam/index.ts";
+import { educationCategories } from "../../../../../db/schema/education/index.ts";
 import { and, eq, desc, sql } from "drizzle-orm";
-import { getPackageThumbnailUrl } from "../../../../utils/exam/exam-utils.ts";
-import type { ServiceResponse } from "../../../../types/index.ts";
-import type { PaginationMeta } from "../../../../types/response.ts";
-import type { FavoritesQueryParams } from "../packages.schema.ts";
+import { getPackageThumbnailUrl } from "../../../../../utils/exam/exam-utils.ts";
+import type { ServiceResponse } from "../../../../../types/index.ts";
+import type { PaginationMeta } from "../../../../../types/response.ts";
+import type { FavoritesQueryParams } from "../../packages.schema.ts";
 
 export interface FavoritePackageItem {
   id: string;

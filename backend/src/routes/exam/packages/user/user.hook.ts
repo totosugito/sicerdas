@@ -1,27 +1,10 @@
-import { fromNodeHeaders } from "better-auth/node";
 import type { FastifyInstance } from "fastify";
-import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
+import { requireRoles } from "../../../../hooks/auth.hook.ts";
 
-/**
- * User Hook for Client Package Routes
- *
- * This hook ensures that the user is authenticated before accessing
- * protected client package routes.
- */
 async function userHook(fastify: FastifyInstance) {
   fastify.decorateRequest("session");
 
-  fastify.addHook("preHandler", async (req, res) => {
-    const session = await getAuthInstance(fastify).api.getSession({
-      headers: fromNodeHeaders(req.headers),
-    });
-
-    if (!session?.user) {
-            return res.unauthorized(req.t(($) => $.user.errors.loginRequired));
-    }
-
-    req.setDecorator("session", session);
-  });
+  fastify.addHook("preHandler", requireRoles(fastify));
 }
 
 export default userHook;

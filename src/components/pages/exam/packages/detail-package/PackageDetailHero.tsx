@@ -1,4 +1,4 @@
-import { ExamPackage } from "@/api/exam/packages";
+import type { PublicPackageDetailData } from "@/api/exam/packages";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAppTranslation } from "@/lib/i18n-typed";
@@ -9,7 +9,7 @@ import { useState } from "react";
 import { getGradeColor } from "@/lib/exam-utils";
 
 interface PackageDetailHeroProps {
-  pkg: ExamPackage;
+  pkg: PublicPackageDetailData;
   isFavorite: boolean;
   onToggleFavorite: () => void;
   onRatingClick: () => void;

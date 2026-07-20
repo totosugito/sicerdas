@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageTitle, ErrorContainer } from "@/components/app";
 import { useUpdatePackage, useDetailPackage, useUploadPackageThumbnail } from "@/api/exam/packages";
+import type { UpdatePackageRequest } from "@/api/exam/packages";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { AppRoute } from "@/constants/app-route";
 import {
@@ -30,7 +31,7 @@ function AdminExamPackagesEditPage() {
   const initialData: Partial<PackageFormValues> = useMemo(() => {
     return {
       title: packageData?.title,
-      categoryId: packageData?.category?.id,
+      categoryId: packageData?.category?.id ?? undefined,
       examType: packageData?.examType as any,
       educationGradeId: packageData?.grade?.id ? String(packageData.grade.id) : "",
       requiredTier: packageData?.requiredTier || "free",
@@ -52,9 +53,11 @@ function AdminExamPackagesEditPage() {
     }
 
     // 2. Update metadata
+    const { examType, ...rest } = values;
     const payload = {
       id,
-      ...values,
+      ...rest,
+      examType: examType as UpdatePackageRequest["examType"],
       educationGradeId: values.educationGradeId ? Number(values.educationGradeId) : undefined,
       requiredTier: values.requiredTier || undefined,
       description: values.description || undefined,

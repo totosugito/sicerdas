@@ -1,7 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ExamPackageDetailResponse } from "./types";
+import type { ExamPackageResponse, PublicPackageDetailData } from "./types";
+
+export type PublicDetailPackageResponse = ExamPackageResponse<PublicPackageDetailData>;
 
 export interface DetailPackageClientRequest {
   id: string;
@@ -16,7 +18,7 @@ export const useDetailPackageClient = ({ id }: DetailPackageClientRequest) => {
         url: AppApi.exam.packages.detail.replace(":id", id),
         withCredentials: true,
       });
-      return response as ExamPackageDetailResponse;
+      return response as PublicDetailPackageResponse;
     },
     enabled: !!id,
   });

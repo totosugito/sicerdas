@@ -1,12 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import type { ListCustomPackagesResponse } from "../types";
-
-export interface ListCustomRequest {
-  page?: number;
-  pageSize?: number;
-}
+import type { ListCustomRequest, ListCustomPackagesResponse } from "../types";
 
 export const useListCustomPackages = (params: ListCustomRequest = {}) => {
   return useQuery({

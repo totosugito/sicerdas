@@ -1,32 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
+import type { AdminPackageSimpleParams, ListPackagesSimpleResponse } from "../types";
 
-export interface PackageSimpleItem {
-  value: string;
-  label: string;
-}
-
-export interface ListPackagesSimpleResponse {
-  success: boolean;
-  message: string;
-  data: {
-    items: PackageSimpleItem[];
-    meta: {
-      total: number;
-      page: number;
-      limit: number;
-      totalPages: number;
-    };
-  };
-}
-
-export interface ListPackageSimpleRequest {
-  page?: number;
-  limit?: number;
-}
-
-export const useListPackageSimple = (params: ListPackageSimpleRequest = {}) => {
+export const useListPackageSimple = (params: AdminPackageSimpleParams = {}) => {
   return useQuery({
     queryKey: ["admin-exam-packages-list-simple", params],
     queryFn: async () => {

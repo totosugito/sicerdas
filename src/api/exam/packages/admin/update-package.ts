@@ -1,19 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { ExamPackageResponse } from "../types";
-
-export interface UpdatePackageRequest {
-  id: string;
-  categoryId?: string;
-  title?: string;
-  examType?: string;
-  description?: string;
-  requiredTier?: string;
-  educationGradeId?: number;
-  isActive?: boolean;
-  versionId?: number;
-}
+import type { UpdatePackageRequest, ExamPackageResponse } from "../types";
 
 export const useUpdatePackage = () => {
   return useMutation({

@@ -5,7 +5,7 @@ import {
   UpdateRatingBody,
   RatingResponse,
 } from "../../../../modules/exam/packages/packages.schema.ts";
-import { ratingService } from "../../../../modules/exam/packages/services/rating.service.ts";
+import { ratingService } from "../../../../modules/exam/packages/services/user/rating.service.ts";
 
 const ratingRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({

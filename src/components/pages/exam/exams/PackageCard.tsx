@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { ExamPackage } from "@/api/exam/packages/types";
+import type { PublicExamPackage } from "@/api/exam/packages/types";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate, Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
@@ -11,7 +11,7 @@ import { getGradeColor } from "@/lib/exam-utils";
 import { Card } from "@/components/ui/card";
 
 interface PackageCardProps {
-  exams: ExamPackage[];
+  exams: PublicExamPackage[];
   viewMode: "grid" | "list";
 }
 
@@ -35,7 +35,7 @@ export const PackageCard = ({ exams, viewMode }: PackageCardProps) => {
 };
 
 interface PackageCardViewProps {
-  exam: ExamPackage;
+  exam: PublicExamPackage;
   viewMode: "grid" | "list";
 }
 

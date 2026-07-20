@@ -290,6 +290,20 @@ export const ThumbnailQuery = Type.Object({
   action: Type.Optional(Type.String()),
 });
 
+export const ListCustomQuery = Type.Object({
+  page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
+  pageSize: Type.Optional(Type.Number({ minimum: 1, maximum: 50, default: 10 })),
+});
+
+export const GenerateCustomBody = Type.Object({
+  categoryId: Type.String({ format: "uuid" }),
+  educationGradeId: Type.Number(),
+  tagIds: Type.Array(Type.String({ format: "uuid" })),
+  limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
+  packageTitle: Type.Optional(Type.String({ minLength: 1, maxLength: 255 })),
+  sectionTitle: Type.Optional(Type.String({ minLength: 1, maxLength: 255 })),
+});
+
 // --- Response Schemas ---
 
 export const PublicPackageListResponse = Type.Intersect([
@@ -365,6 +379,42 @@ export const ThumbnailResponse = Type.Intersect([
   Type.Object({ data: ThumbnailResponseData }),
 ]);
 
+const CustomPackageResponseItem = Type.Object({
+  id: Type.String({ format: "uuid" }),
+  title: Type.String(),
+  thumbnail: Type.Union([Type.String(), Type.Null()]),
+  durationMinutes: Type.Number(),
+  stats: Type.Object({
+    activeQuestions: Type.Number(),
+    activeSections: Type.Number(),
+  }),
+  category: Type.Object({ name: Type.String() }),
+  grade: Type.Object({ name: Type.String() }),
+  userInteraction: Type.Object({
+    status: Type.Enum(EnumExamPackageUserStatus),
+    completedSectionsCount: Type.Number(),
+  }),
+  createdAt: Type.String({ format: "date-time" }),
+});
+
+export const ListCustomResponse = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: Type.Array(CustomPackageResponseItem),
+    pagination: PaginationMetaSchema,
+  }),
+]);
+
+export const GenerateCustomResponse = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: Type.Object({
+      packageId: Type.String({ format: "uuid" }),
+      sectionId: Type.String({ format: "uuid" }),
+    }),
+  }),
+]);
+
 // --- Static Types ---
 
 export type PublicPackageItem = Static<typeof PublicPackageResponseItem>;
@@ -386,3 +436,7 @@ export type FavoritesQueryParams = Static<typeof FavoritesQuery>;
 export type BookmarkResponseDataT = Static<typeof BookmarkResponseData>;
 export type RatingResponseDataT = Static<typeof RatingResponseData>;
 export type ThumbnailResponseDataT = Static<typeof ThumbnailResponseData>;
+
+export type ListCustomQueryParams = Static<typeof ListCustomQuery>;
+export type GenerateCustomParams = Static<typeof GenerateCustomBody>;
+export type CustomPackageItem = Static<typeof CustomPackageResponseItem>;

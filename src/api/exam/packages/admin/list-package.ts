@@ -1,32 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ExamPackage } from "../types";
-import { PaginationData } from "@/components/custom/table";
+import type { AdminPackageListParams, ListPackagesResponse } from "../types";
 
-export interface ListPackageRequest {
-  search?: string;
-  categoryId?: string;
-  categoryKey?: string;
-  examType?: string;
-  isActive?: boolean;
-  educationGradeId?: number;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
-  page?: number;
-  limit?: number;
-}
-
-export interface ListPackagesResponse {
-  success: boolean;
-  message: string;
-  data: {
-    items: ExamPackage[];
-    meta: PaginationData;
-  };
-}
-
-export const useListPackage = (params: ListPackageRequest) => {
+export const useListPackage = (params: AdminPackageListParams) => {
   return useQuery({
     queryKey: ["admin-exam-packages-list", params],
     queryFn: async () => {
