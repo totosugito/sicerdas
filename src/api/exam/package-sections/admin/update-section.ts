@@ -1,19 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { ExamPackageSectionResponse } from "../types";
-
-export interface UpdateSectionRequest {
-  id: string;
-  packageId?: string;
-  title?: string;
-  groupName?: string;
-  description?: string;
-  durationMinutes?: number;
-  order?: number;
-  isActive?: boolean;
-  versionId?: number;
-}
+import type { UpdateSectionRequest, SectionResponse } from "../types";
 
 export const useUpdatePackageSection = () => {
   return useMutation({
@@ -25,7 +13,7 @@ export const useUpdatePackageSection = () => {
         body,
         withCredentials: true,
       });
-      return response as ExamPackageSectionResponse;
+      return response as SectionResponse;
     },
   });
 };

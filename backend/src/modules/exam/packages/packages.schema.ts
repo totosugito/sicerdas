@@ -185,11 +185,7 @@ const FavoritePackageItem = Type.Object({
     activeSections: Type.Number(),
   }),
   userInteraction: Type.Object({
-    status: Type.Union([
-      Type.Literal("not_started"),
-      Type.Literal("in_progress"),
-      Type.Literal("completed"),
-    ]),
+    status: Type.Enum(EnumExamPackageUserStatus),
     completedSectionsCount: Type.Number(),
   }),
   bookmarkedAt: Type.String({ format: "date-time" }),

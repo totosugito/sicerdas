@@ -1,33 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
+import type { AdminSectionSimpleParams, PaginatedSectionSimpleListResponse } from "../types";
 
-export interface SectionSimpleItem {
-  value: string;
-  label: string;
-}
-
-export interface ListSectionsSimpleResponse {
-  success: boolean;
-  message: string;
-  data: {
-    items: SectionSimpleItem[];
-    meta: {
-      total: number;
-      page: number;
-      limit: number;
-      totalPages: number;
-    };
-  };
-}
-
-export interface ListSectionSimpleRequest {
-  packageId?: string;
-  page?: number;
-  limit?: number;
-}
-
-export const useListPackageSectionSimple = (params: ListSectionSimpleRequest = {}) => {
+export const useListPackageSectionSimple = (params: AdminSectionSimpleParams = {}) => {
   return useQuery({
     queryKey: ["admin-exam-package-sections-list-simple", params],
     queryFn: async () => {
@@ -37,7 +13,7 @@ export const useListPackageSectionSimple = (params: ListSectionSimpleRequest = {
         body: params,
         withCredentials: true,
       });
-      return response as ListSectionsSimpleResponse;
+      return response as PaginatedSectionSimpleListResponse;
     },
   });
 };

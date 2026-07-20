@@ -1,4 +1,4 @@
-import { ExamPackageSection } from "@/api/exam/package-sections";
+import type { PublicSectionItemT } from "@/api/exam/package-sections";
 import {
   Accordion,
   AccordionContent,
@@ -13,7 +13,7 @@ import { EnumExamSessionStatus } from "@/constants/app-enum";
 import { EnumExamSessionMode } from "@/api/exam/sessions/types";
 
 interface PackageSectionAccordionProps {
-  sections: ExamPackageSection[];
+  sections: PublicSectionItemT[];
   onTakeExam?: (sectionId: string, sectionTitle: string) => void;
 }
 
@@ -21,7 +21,7 @@ export const PackageSectionAccordion = ({ sections, onTakeExam }: PackageSection
   const { t } = useAppTranslation();
 
   const chapters = useMemo(() => {
-    const chapterMap: Record<string, ExamPackageSection[]> = {};
+    const chapterMap: Record<string, PublicSectionItemT[]> = {};
     const chapterOrder: string[] = [];
 
     sections.forEach((section) => {

@@ -1,19 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ExamPackageSection } from "./types";
+import type { ListSectionParams, PublicListSectionsResponse } from "./types";
 
-export interface ListSectionsClientRequest {
-  packageId: string;
-}
-
-export interface ListSectionsClientResponse {
-  success: boolean;
-  message: string;
-  data: ExamPackageSection[];
-}
-
-export const useListPackageSectionsClient = (req: ListSectionsClientRequest) => {
+export const useListPackageSectionsClient = (req: ListSectionParams) => {
   return useQuery({
     queryKey: ["exam-package-sections-list-client", req.packageId],
     queryFn: async () => {
@@ -22,7 +12,7 @@ export const useListPackageSectionsClient = (req: ListSectionsClientRequest) => 
         url: AppApi.exam.packageSections.list,
         body: req,
       });
-      return response as ListSectionsClientResponse;
+      return response as PublicListSectionsResponse;
     },
     enabled: !!req.packageId,
   });
