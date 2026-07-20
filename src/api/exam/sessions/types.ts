@@ -1,121 +1,71 @@
-import { EnumExamSessionStatus, EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
+import type {
+  StartSessionData,
+  SessionDetailsDataT,
+  QuestionSessionData,
+  SaveAnswerData,
+  SubmitResultDataT,
+  AbandonSessionData,
+  SessionHistoryItemT,
+  AllSessionHistoryItemT,
+  StartSessionBodyType,
+  SaveAnswerBodyType,
+  QuestionDataT,
+  PassageDataT,
+  OptionDataT,
+  EvaluationDataT,
+} from "backend/src/modules/exam/sessions/index.ts";
+import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+import { EnumExamSessionStatus, EnumExamSessionMode } from "backend/src/db/schema/exam/enums.ts";
+
 export { EnumExamSessionStatus, EnumExamSessionMode };
+
+export type {
+  StartSessionData,
+  SessionDetailsDataT,
+  QuestionSessionData,
+  SaveAnswerData,
+  SubmitResultDataT,
+  AbandonSessionData,
+  SessionHistoryItemT,
+  AllSessionHistoryItemT,
+  StartSessionBodyType,
+  SaveAnswerBodyType,
+  QuestionDataT,
+  PassageDataT,
+  OptionDataT,
+  EvaluationDataT,
+};
+
+export type QuestionData = QuestionDataT;
+export type PassageData = PassageDataT;
+export type OptionData = OptionDataT;
+export type EvaluationData = EvaluationDataT;
 
 export type ExamSessionStatus = (typeof EnumExamSessionStatus)[keyof typeof EnumExamSessionStatus];
 export type ExamSessionMode = (typeof EnumExamSessionMode)[keyof typeof EnumExamSessionMode];
 
-
-export interface ExamSession {
-  id: string;
-  userId: string;
-  packageId: string;
-  sectionId: string;
-  mode: ExamSessionMode;
-  status: ExamSessionStatus;
-  startTime: string;
-  endTime: string | null;
-  score: number | null;
-  totalCorrect: number;
-  totalWrong: number;
-  totalSkipped: number;
-  earnedPoints: number | null;
-  maxPoints: number | null;
-  currentQuestionId: string | null;
-  questionOrder: string[]; // Array of question IDs
+export interface SessionResponse<T> extends BaseResponse {
+  data: T;
 }
 
-export interface QuestionData {
-  id: string;
-  type: string;
-  htmlContent: string;
-}
+export interface StartSessionResponse extends SessionResponse<StartSessionData> {}
 
-export interface PassageData {
-  id: string;
-  title: string | null;
-  htmlContent: string;
-}
+export interface DetailsSessionResponse extends SessionResponse<SessionDetailsDataT> {}
 
-export interface OptionData {
-  id: string;
-  htmlContent: string;
-}
+export interface QuestionSessionResponse extends SessionResponse<QuestionSessionData> {}
 
-export interface EvaluationData {
-  isCorrect: boolean | null;
-  correctOptionId: string | null;
-  solutions: {
-    id: string;
-    title: string;
-    solutionType: string;
-    htmlContent: string;
-  }[];
-}
+export interface SaveAnswerResponse extends SessionResponse<SaveAnswerData> {}
 
-export interface ExamSessionQuestion {
-  id: string;
-  passageId: string | null;
-  content: string;
-  questionType: string;
-  options: ExamSessionOption[];
-  userAnswer?: {
-    selectedOptionId?: string;
-    textAnswer?: string;
-    isDoubtful: boolean;
-  };
-}
+export interface SubmitSessionResponse extends SessionResponse<SubmitResultDataT> {}
 
-export interface ExamSessionOption {
-  id: string;
-  content: string;
-  order: number;
-}
+export interface AbandonSessionResponse extends SessionResponse<AbandonSessionData> {}
 
-export interface ExamSessionGridItem {
-  questionId: string;
-  order: number;
-  isAnswered: boolean;
-  isDoubtful: boolean;
-  isCorrect: boolean | null;
-  questionContent: Record<string, any>[] | null;
-}
+export interface SessionHistoryResponse extends SessionResponse<{
+  items: SessionHistoryItemT[];
+  meta: PaginationMeta;
+}> {}
 
-export interface ExamSessionDetails {
-  session: ExamSession & { elapsedSeconds: number; isTimerActive: boolean };
-  grid: ExamSessionGridItem[];
-  package?: { 
-    id: string;
-    title: string;
-    grade?: { name: string | null };
-  };
-  section?: { title: string; durationMinutes: number | null };
-}
-
-export interface StartSessionRequest {
-  packageId: string;
-  sectionId: string;
-  mode: ExamSessionMode;
-}
-
-export interface SaveAnswerRequest {
-  sessionId: string;
-  questionId: string;
-  selectedOptionId?: string;
-  textAnswer?: string;
-  isDoubtful?: boolean;
-  elapsedSeconds?: number;
-}
-
-export interface ExamHistoryItem {
-  id: string;
-  startTime: string;
-  endTime: string | null;
-  status: ExamSessionStatus;
-  mode: ExamSessionMode;
-  score: number | null;
-  totalCorrect: number;
-  totalWrong: number;
-  totalSkipped: number;
-  earnedPoints: number | null;
-  maxPoints: number | null;
-}
+export interface AllSessionHistoryResponse extends SessionResponse<{
+  items: AllSessionHistoryItemT[];
+  meta: PaginationMeta;
+}> {}

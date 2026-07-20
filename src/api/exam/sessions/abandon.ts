@@ -1,12 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-
-export interface AbandonSessionResponse {
-  success: boolean;
-  message: string;
-  data: { id: string };
-}
+import type { AbandonSessionResponse } from "./types";
 
 export const useAbandonSession = () => {
   return useMutation({

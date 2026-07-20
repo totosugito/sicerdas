@@ -79,8 +79,8 @@ export async function detailsSessionService(
       session: {
         id: session.id,
         packageId: session.packageId,
-        status: session.status,
-        mode: session.mode,
+        status: session.status as (typeof EnumExamSessionStatus)[keyof typeof EnumExamSessionStatus],
+        mode: session.mode as (typeof EnumExamSessionMode)[keyof typeof EnumExamSessionMode],
         elapsedSeconds: session.elapsedSeconds,
         isTimerActive: session.isTimerActive,
         score: session.score !== null ? Number(session.score) : null,

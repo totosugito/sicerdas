@@ -1,5 +1,6 @@
 import { db } from "../../../../db/db-pool.ts";
 import { examSessions } from "../../../../db/schema/exam/sessions.ts";
+import { EnumExamSessionStatus, EnumExamSessionMode } from "../../../../db/schema/exam/enums.ts";
 import { eq, and, desc, sql } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/index.ts";
 import type { HistoryBodyType, SessionHistoryItemT } from "../sessions.schema.ts";
@@ -60,6 +61,8 @@ export async function historySessionService(
     data: {
       items: history.map((h) => ({
         ...h,
+        status: h.status as (typeof EnumExamSessionStatus)[keyof typeof EnumExamSessionStatus],
+        mode: h.mode as (typeof EnumExamSessionMode)[keyof typeof EnumExamSessionMode],
         startTime: h.startTime.toISOString(),
         endTime: h.endTime?.toISOString() ?? null,
         score: h.score !== null ? Number(h.score) : null,

@@ -1,20 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-
-export interface SubmitSessionResponse {
-  success: boolean;
-  message: string;
-  data: {
-    score: number;
-    earnedPoints: number;
-    maxPoints: number;
-    totalCorrect: number;
-    totalWrong: number;
-    totalSkipped: number;
-    totalQuestions: number;
-  };
-}
+import type { SubmitSessionResponse } from "./types";
 
 export const useSubmitSession = () => {
   return useMutation({

@@ -1,21 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
-import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
-import type { ExamHistoryItem } from "./types";
-
-export interface SessionHistoryResponse {
-  success: boolean;
-  message: string;
-  data: {
-    items: ExamHistoryItem[];
-    meta: {
-      total: number;
-      page: number;
-      limit: number;
-      totalPages: number;
-    };
-  };
-}
+import { useQuery } from "@tanstack/react-query";
+import type { SessionHistoryResponse } from "./types";
 
 export const useSessionHistory = (
   packageId: string | undefined,
@@ -45,5 +31,3 @@ export const useSessionHistory = (
     staleTime: 1 * 60 * 1000, // 1 minute
   });
 };
-
-

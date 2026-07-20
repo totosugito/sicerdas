@@ -1,13 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import type { ExamSessionDetails } from "./types";
-
-export interface SessionDetailsResponse {
-  success: boolean;
-  message: string;
-  data: ExamSessionDetails;
-}
+import type { DetailsSessionResponse } from "./types";
 
 export const useSessionDetails = (sessionId: string | undefined) => {
   return useQuery({
@@ -19,7 +13,7 @@ export const useSessionDetails = (sessionId: string | undefined) => {
         url: AppApi.exam.sessions.details.replace(":id", sessionId),
         withCredentials: true,
       });
-      return response as SessionDetailsResponse;
+      return response as DetailsSessionResponse;
     },
     enabled: !!sessionId,
   });

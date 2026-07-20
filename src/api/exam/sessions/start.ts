@@ -1,20 +1,11 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import type { StartSessionRequest } from "./types";
-
-export interface StartSessionResponse {
-  success: boolean;
-  message: string;
-  data: {
-    sessionId: string;
-    isResumed: boolean;
-  };
-}
+import type { StartSessionBodyType, StartSessionResponse } from "./types";
 
 export const useStartSession = () => {
   return useMutation({
-    mutationFn: async (body: StartSessionRequest) => {
+    mutationFn: async (body: StartSessionBodyType) => {
       const response = await fetchApi({
         method: "POST",
         url: AppApi.exam.sessions.start,

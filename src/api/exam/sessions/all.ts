@@ -1,21 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
-import type { ExamHistoryItem, ExamSessionStatus } from "./types";
-
-export interface AllSessionHistoryResponse {
-  success: boolean;
-  message: string;
-  data: {
-    items: (ExamHistoryItem & { packageTitle: string; sectionTitle: string; packageId: string })[];
-    meta: {
-      total: number;
-      page: number;
-      limit: number;
-      totalPages: number;
-    };
-  };
-}
+import type { ExamSessionStatus, AllSessionHistoryResponse } from "./types";
 
 export const useAllSessionHistory = (
   params: { page?: number; limit?: number; status?: ExamSessionStatus } = { page: 1, limit: 10 },

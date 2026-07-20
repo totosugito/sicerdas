@@ -104,8 +104,8 @@ export const SessionHistoryItem = Type.Object({
   id: Type.String({ format: "uuid" }),
   startTime: Type.String({ format: "date-time" }),
   endTime: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
-  status: Type.String(),
-  mode: Type.String(),
+  status: Type.Enum(EnumExamSessionStatus),
+  mode: Type.Enum(EnumExamSessionMode),
   score: Type.Union([Type.Number(), Type.Null()]),
   totalCorrect: Type.Number(),
   totalWrong: Type.Number(),
@@ -118,8 +118,8 @@ export const AllSessionHistoryItem = Type.Object({
   id: Type.String({ format: "uuid" }),
   startTime: Type.String({ format: "date-time" }),
   endTime: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
-  status: Type.String(),
-  mode: Type.String(),
+  status: Type.Enum(EnumExamSessionStatus),
+  mode: Type.Enum(EnumExamSessionMode),
   score: Type.Union([Type.Number(), Type.Null()]),
   totalCorrect: Type.Number(),
   totalWrong: Type.Number(),
@@ -167,7 +167,10 @@ export const QuestionSessionResponse = Type.Intersect([
       options: Type.Array(OptionData),
       evaluation: Type.Union([EvaluationData, Type.Null()]),
       selectedOptionId: Type.Union([Type.String(), Type.Null()]),
-      textAnswer: Type.Union([Type.String(), Type.Null()]),
+      textAnswer: Type.Union([
+        Type.Array(Type.Record(Type.String(), Type.Unknown())),
+        Type.Null(),
+      ]),
     }),
   }),
 ]);
@@ -238,3 +241,8 @@ export type SubmitResultDataT = Static<typeof SubmitResultData>;
 export type AbandonSessionData = Static<typeof AbandonSessionResponse>["data"];
 export type SessionHistoryItemT = Static<typeof SessionHistoryItem>;
 export type AllSessionHistoryItemT = Static<typeof AllSessionHistoryItem>;
+
+export type QuestionDataT = Static<typeof QuestionData>;
+export type PassageDataT = Static<typeof PassageData>;
+export type OptionDataT = Static<typeof OptionData>;
+export type EvaluationDataT = Static<typeof EvaluationData>;

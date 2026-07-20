@@ -1,20 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { QuestionData, OptionData, PassageData, EvaluationData } from "./types";
-
-export interface SessionQuestionResponse {
-  success: boolean;
-  message: string;
-  data: {
-    question: QuestionData;
-    passage: PassageData | null;
-    options: OptionData[];
-    evaluation: EvaluationData | null;
-    selectedOptionId: string | null;
-    textAnswer: string | null;
-  };
-}
+import type { QuestionSessionResponse } from "./types";
 
 export const useSessionQuestion = (sessionId: string | undefined, questionId: string | null) => {
   return useQuery({
@@ -30,7 +17,7 @@ export const useSessionQuestion = (sessionId: string | undefined, questionId: st
         url,
         withCredentials: true,
       });
-      return response as SessionQuestionResponse;
+      return response as QuestionSessionResponse;
     },
     enabled: !!sessionId && !!questionId,
   });
