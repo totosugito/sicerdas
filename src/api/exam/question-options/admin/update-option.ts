@@ -1,15 +1,10 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { ExamQuestionOptionDetailResponse } from "../types";
+import type { UpdateQuestionOptionParams, QuestionOptionDetailResponse } from "../types";
 
-export interface UpdateQuestionOptionRequest {
+export interface UpdateQuestionOptionRequest extends Partial<UpdateQuestionOptionParams> {
   id?: string;
-  questionId?: string;
-  content?: Record<string, unknown>[];
-  isCorrect?: boolean;
-  score?: number;
-  order?: number;
 }
 
 export const useUpdateQuestionOption = (id?: string) => {
@@ -28,7 +23,7 @@ export const useUpdateQuestionOption = (id?: string) => {
         body: payload,
         withCredentials: true,
       });
-      return response as ExamQuestionOptionDetailResponse;
+      return response as QuestionOptionDetailResponse;
     },
   });
 };

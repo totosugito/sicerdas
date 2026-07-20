@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { ExamQuestionOptionResponse } from "../types";
+import type { BaseResponse } from "backend/src/types/index.ts";
 
 export const useDeleteQuestionOption = () => {
     return useMutation({
@@ -11,7 +11,7 @@ export const useDeleteQuestionOption = () => {
                 url: AppApi.exam.questionOptions.admin.delete.replace(":id", id),
                 withCredentials: true,
             });
-            return response as ExamQuestionOptionResponse;
+            return response as BaseResponse;
         },
     });
 };
@@ -25,7 +25,7 @@ export const useDeleteMultipleQuestionOptions = () => {
                 body: { ids },
                 withCredentials: true,
             });
-            return response as ExamQuestionOptionResponse;
+            return response as BaseResponse;
         },
     });
 };

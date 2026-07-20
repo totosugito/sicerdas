@@ -1,21 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examQuestionOptions } from "../../../../db/schema/exam/question-options.ts";
-import { eq } from "drizzle-orm";
-import env from "../../../../config/env.config.ts";
-import { cleanupBlockNoteFiles } from "../../../../utils/blocknote/blocknote-utils.ts";
-import { syncQuestionMaxScore } from "../../../../services/exam/index.ts";
-
-const DeleteQuestionOptionParams = Type.Object({
-  id: Type.String({ format: "uuid" }),
-});
-
-const DeleteQuestionOptionResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-});
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../../types/response.ts";
+import { deleteQuestionOptionService } from "../../../../modules/exam/question-options/services/delete-question-option.service.ts";
+import { QuestionOptionParams } from "../../../../modules/exam/question-options/question-options.schema.ts";
 
 const deleteQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -23,48 +10,27 @@ const deleteQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "DELETE",
     schema: {
       tags: ["Admin Exam Question Options"],
-      params: DeleteQuestionOptionParams,
+      params: QuestionOptionParams,
       response: {
-        200: DeleteQuestionOptionResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        200: BaseResponseSchema,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Params: typeof DeleteQuestionOptionParams.static }>,
+      request: FastifyRequest<{ Params: typeof QuestionOptionParams.static }>,
       reply: FastifyReply,
     ) {
-            const { id } = request.params;
+      const { id } = request.params;
 
-      // Ensure option exists
-      const existingOption = await db.query.examQuestionOptions.findFirst({
-        where: eq(examQuestionOptions.id, id),
-      });
+      const result = await deleteQuestionOptionService(id, request.log);
 
-      if (!existingOption) {
-        return reply.notFound(request.t(($) => $.exam.question_options.delete.notFound));
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
-
-      // Perform Hard Delete
-      await db.delete(examQuestionOptions).where(eq(examQuestionOptions.id, id));
-
-      // Clean up files from disk
-      await cleanupBlockNoteFiles(
-        existingOption.content as any[],
-        [],
-        env.server.uploadsQuestionDir,
-        ["image"],
-        request.log,
-      );
-
-      // Sync Question Max Score
-      await syncQuestionMaxScore(existingOption.questionId);
 
       return reply.status(200).send({
         success: true,

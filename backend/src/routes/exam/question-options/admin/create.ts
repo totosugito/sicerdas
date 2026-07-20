@@ -1,34 +1,12 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examQuestionOptions } from "../../../../db/schema/exam/question-options.ts";
-import { examQuestions } from "../../../../db/schema/exam/questions.ts";
-import { eq } from "drizzle-orm";
-import env from "../../../../config/env.config.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
+import { createQuestionOptionService } from "../../../../modules/exam/question-options/services/create-question-option.service.ts";
 import {
-  processBlockNoteFiles,
-  replaceBlockNoteUrls,
-  resolveBlockNoteUrls,
-  stripBlockNoteUrls,
-} from "../../../../utils/blocknote/blocknote-utils.ts";
-import { syncQuestionMaxScore } from "../../../../services/exam/index.ts";
-
-const QuestionOptionResponseItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  questionId: Type.String({ format: "uuid" }),
-  content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
-  isCorrect: Type.Boolean(),
-  score: Type.Integer(),
-  order: Type.Number(),
-});
-
-const CreateQuestionOptionResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: QuestionOptionResponseItem,
-});
+  CreateQuestionOptionBody,
+  CreateQuestionOptionResponse,
+} from "../../../../modules/exam/question-options/question-options.schema.ts";
 
 const createQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -37,20 +15,13 @@ const createQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Admin Exam Question Options"],
       consumes: ["multipart/form-data"],
+      body: CreateQuestionOptionBody,
       response: {
         201: CreateQuestionOptionResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(request: FastifyRequest, reply: FastifyReply) {
-      
       // Parse multipart data
       const parts = request.parts();
       let body: any = {};
@@ -74,66 +45,20 @@ const createQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }
       }
 
-      const { questionId, content, isCorrect, score, order } = body;
+      const result = await createQuestionOptionService(body, files);
 
-      if (!questionId) {
-        return reply.badRequest(request.t(($) => $.exam.question_options.create.invalidQuestion));
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
-
-      // Verify that the parent question exists
-      const existingQuestion = await db.query.examQuestions.findFirst({
-        where: eq(examQuestions.id, questionId),
-      });
-
-      if (!existingQuestion) {
-        return reply.badRequest(request.t(($) => $.exam.question_options.create.invalidQuestion));
-      }
-
-      // Create the option first to get the ID
-      const [newOption] = await db
-        .insert(examQuestionOptions)
-        .values({
-          questionId,
-          content: content || [],
-          isCorrect: isCorrect !== undefined ? isCorrect : false,
-          score: score !== undefined ? score : 0,
-          order: order !== undefined ? order : 0,
-        })
-        .returning();
-
-      // Process uploaded files if any
-      let finalContent = content ? stripBlockNoteUrls(content) : [];
-
-      if (files.length > 0) {
-        const urlMap = await processBlockNoteFiles(
-          env.server.uploadsQuestionDir,
-          questionId,
-          files,
-          existingQuestion.createdAt, // Use parent question's createdAt for path consistency
-        );
-
-        // Replace blob URLs with final URLs in content
-        finalContent = replaceBlockNoteUrls(finalContent, urlMap);
-
-        // Update the option with final content
-        await db
-          .update(examQuestionOptions)
-          .set({
-            content: finalContent,
-          })
-          .where(eq(examQuestionOptions.id, newOption.id));
-      }
-
-      // Sync Question Max Score
-      await syncQuestionMaxScore(questionId);
 
       return reply.status(201).send({
         success: true,
         message: request.t(($) => $.exam.question_options.create.success),
-        data: {
-          ...newOption,
-          content: resolveBlockNoteUrls(finalContent),
-        },
+        data: result.data,
       });
     },
   });

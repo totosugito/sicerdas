@@ -1,18 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ListQuestionOptionsResponse } from "../types";
+import type { QuestionOptionListParams, ListQuestionOptionsResponse } from "../types";
 
-export interface ListQuestionOptionRequest {
-    questionId?: string;
-    isCorrect?: boolean;
-    sortBy?: string;
-    sortOrder?: 'asc' | 'desc';
-    page?: number;
-    limit?: number;
-}
-
-export const useListQuestionOption = (params: ListQuestionOptionRequest) => {
+export const useListQuestionOption = (params: QuestionOptionListParams) => {
     return useQuery({
         queryKey: ["admin-exam-question-options-list", params],
         queryFn: async () => {
