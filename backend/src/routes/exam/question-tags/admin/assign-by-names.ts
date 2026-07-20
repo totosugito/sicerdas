@@ -1,20 +1,10 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { educationTags } from "../../../../db/schema/education/tags.ts";
-import { examQuestionTags } from "../../../../db/schema/exam/question-tags.ts";
-import { eq, sql } from "drizzle-orm";
-
-const AssignQuestionTagsByNameBody = Type.Object({
-  questionId: Type.String({ format: "uuid" }),
-  tags: Type.Array(Type.String(), { minItems: 1 }),
-});
-
-const AssignQuestionTagsByNameResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-});
+import { ErrorResponseSchema } from "../../../../types/response.ts";
+import {
+  AssignQuestionTagsByNameBody,
+} from "../../../../modules/exam/question-tags/question-tags.schema.ts";
+import { assignQuestionTagsByNameService } from "../../../../modules/exam/question-tags/services/assign-by-names.service.ts";
 
 const assignQuestionTagsByNameRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -24,58 +14,19 @@ const assignQuestionTagsByNameRoute: FastifyPluginAsyncTypebox = async (app) => 
       tags: ["Admin Exam Question Tags"],
       body: AssignQuestionTagsByNameBody,
       response: {
-        200: AssignQuestionTagsByNameResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        200: ErrorResponseSchema,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Body: typeof AssignQuestionTagsByNameBody.static }>,
       reply: FastifyReply,
     ) {
-            const { questionId, tags } = request.body;
+      const result = await assignQuestionTagsByNameService(request.body);
 
-      const tagIds: string[] = [];
-
-      for (const tagName of tags) {
-        const trimmedName = tagName.trim();
-        if (!trimmedName) continue;
-
-        // Try to find existing tag
-        const existingTag = await db.query.educationTags.findFirst({
-          where: eq(sql`lower(${educationTags.name})`, trimmedName.toLowerCase()),
-        });
-
-        let tagId: string;
-        if (existingTag) {
-          tagId = existingTag.id;
-        } else {
-          // Create new tag
-          const [newTag] = await db
-            .insert(educationTags)
-            .values({
-              name: trimmedName,
-            })
-            .returning({ id: educationTags.id });
-          tagId = newTag.id;
-        }
-        tagIds.push(tagId);
-      }
-
-      if (tagIds.length > 0) {
-        // Use ON CONFLICT DO NOTHING to avoid duplicate key errors in assignments
-        const values = tagIds.map((tagId) => ({
-          questionId,
-          tagId,
-        }));
-
-        await db.insert(examQuestionTags).values(values).onConflictDoNothing();
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        return reply.badRequest(message);
       }
 
       return reply.status(200).send({

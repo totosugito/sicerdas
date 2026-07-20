@@ -1,7 +1,8 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { AssignQuestionTagsByNameRequest, CommonResponse } from "../types";
+import type { AssignQuestionTagsByNameRequest } from "../types";
+import type { BaseResponse } from "backend/src/types/index.ts";
 
 export const useAssignQuestionTagByName = () => {
   return useMutation({
@@ -12,7 +13,7 @@ export const useAssignQuestionTagByName = () => {
         body,
         withCredentials: true,
       });
-      return response as CommonResponse;
+      return response as BaseResponse;
     },
   });
 };

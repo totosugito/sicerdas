@@ -1,39 +1,20 @@
-export interface QuestionTag {
-  questionId: string;
-  tagId: string;
-  tag?: {
-    id: string;
-    name: string;
-  };
-}
+import type {
+  QuestionTagItemT,
+  AssignQuestionTagsParams,
+  AssignQuestionTagsByNameParams,
+  UnassignQuestionTagsParams,
+  QuestionTagListParams,
+} from "backend/src/modules/exam/question-tags/index.ts";
+import type { BaseResponse } from "backend/src/types/index.ts";
 
-export interface AssignQuestionTagsRequest {
-  questionId: string;
-  tagIds: string[];
-}
+export type {
+  QuestionTagItemT as QuestionTag,
+  AssignQuestionTagsParams as AssignQuestionTagsRequest,
+  AssignQuestionTagsByNameParams as AssignQuestionTagsByNameRequest,
+  UnassignQuestionTagsParams as UnassignQuestionTagsRequest,
+  QuestionTagListParams as QuestionTagListRequest,
+};
 
-export interface AssignQuestionTagsByNameRequest {
-  questionId: string;
-  tags: string[];
-}
-
-export interface UnassignQuestionTagsRequest {
-  questionId: string;
-  tagIds: string[];
-}
-
-export interface QuestionTagListRequest {
-  questionId?: string;
-  tagId?: string;
-}
-
-export interface QuestionTagListResponse {
-  success: boolean;
-  message: string;
-  data: QuestionTag[];
-}
-
-export interface CommonResponse {
-  success: boolean;
-  message: string;
+export interface QuestionTagListResponse extends BaseResponse {
+  data: QuestionTagItemT[];
 }

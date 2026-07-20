@@ -1,59 +1,40 @@
-import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import type { FastifyReply, FastifyRequest } from 'fastify';
-import { Type } from '@sinclair/typebox';
-import { db } from '../../../../db/db-pool.ts';
-import { examQuestionTags } from '../../../../db/schema/exam/question-tags.ts';
-import { and, inArray, eq } from 'drizzle-orm';
-
-const UnassignQuestionTagsBody = Type.Object({
-    questionId: Type.String({ format: 'uuid' }),
-    tagIds: Type.Array(Type.String({ format: 'uuid' }), { minItems: 1 })
-});
-
-const UnassignQuestionTagsResponse = Type.Object({
-    success: Type.Boolean(),
-    message: Type.String(),
-});
+import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
+import {
+  UnassignQuestionTagsBody,
+} from "../../../../modules/exam/question-tags/question-tags.schema.ts";
+import { unassignQuestionTagsService } from "../../../../modules/exam/question-tags/services/unassign.service.ts";
 
 const unassignQuestionTagsRoute: FastifyPluginAsyncTypebox = async (app) => {
-    app.route({
-        url: '/unassign',
-        method: 'POST',
-        schema: {
-            tags: ['Admin Exam Question Tags'],
-            body: UnassignQuestionTagsBody,
-            response: {
-                200: UnassignQuestionTagsResponse,
-                '4xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                }),
-                '5xx': Type.Object({
-                    success: Type.Boolean({ default: false }),
-                    message: Type.String()
-                })
-            }
-        },
-        handler: async function handler(
-            request: FastifyRequest<{ Body: typeof UnassignQuestionTagsBody.static }>,
-            reply: FastifyReply
-        ) {
-                        const { questionId, tagIds } = request.body;
+  app.route({
+    url: "/unassign",
+    method: "POST",
+    schema: {
+      tags: ["Admin Exam Question Tags"],
+      body: UnassignQuestionTagsBody,
+      response: {
+        200: ErrorResponseSchema,
+        "4xx": ErrorResponseSchema,
+      },
+    },
+    handler: async function handler(
+      request: FastifyRequest<{ Body: typeof UnassignQuestionTagsBody.static }>,
+      reply: FastifyReply,
+    ) {
+      const result = await unassignQuestionTagsService(request.body);
 
-            await db.delete(examQuestionTags)
-                .where(
-                    and(
-                        eq(examQuestionTags.questionId, questionId),
-                        inArray(examQuestionTags.tagId, tagIds)
-                    )
-                );
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        return reply.badRequest(message);
+      }
 
-            return reply.status(200).send({
-                success: true,
-                message: request.t($ => $.exam.question_tags.unassign.success),
-            });
-        },
-    });
+      return reply.status(200).send({
+        success: true,
+        message: request.t(($) => $.exam.question_tags.unassign.success),
+      });
+    },
+  });
 };
 
 export default unassignQuestionTagsRoute;
