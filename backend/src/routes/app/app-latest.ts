@@ -2,8 +2,8 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { fromNodeHeaders } from "better-auth/node";
 import { getAuthInstance } from "../../decorators/auth.decorator.ts";
-import { appLatestService } from "../../modules/app-latest/services/app-latest.service.ts";
-import { AppLatestBody, AppLatestResponse } from "../../modules/app-latest/app-latest.schema.ts";
+import { appLatestService } from "../../modules/app/services/app-latest.service.ts";
+import { AppLatestBody, AppLatestResponse } from "../../modules/app/app-latest.schema.ts";
 import { ErrorResponseSchema } from "../../types/response.ts";
 
 const appLatestRoute: FastifyPluginAsyncTypebox = async (app) => {

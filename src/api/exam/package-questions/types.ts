@@ -1,62 +1,38 @@
-export interface AssignPackageQuestionsRequest {
-  packageId: string;
-  sectionId: string;
-  questionIds: string[];
+import type {
+  PackageQuestionItemT,
+  PackageQuestionListParams,
+  AssignPackageQuestionsParams,
+  UnassignPackageQuestionsParams,
+  SyncPackageQuestionsOrderParams,
+  AssignResult,
+} from "backend/src/modules/exam/package-questions/index.ts";
+import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+
+export type {
+  PackageQuestionItemT,
+  PackageQuestionListParams,
+  AssignPackageQuestionsParams,
+  UnassignPackageQuestionsParams,
+  SyncPackageQuestionsOrderParams,
+  AssignResult,
+  BaseResponse,
+  PaginationMeta,
+};
+
+export interface QuestionResponse<T = unknown> extends BaseResponse {
+  data: T;
 }
 
-export interface AssignPackageQuestionsResponse extends CommonResponse {
-  data?: {
-    totalAssigned: number;
-    totalSkipped: number;
-  };
-}
+export type CommonResponse = BaseResponse;
 
-export interface UnassignPackageQuestionsRequest {
-  packageId: string;
-  questionIds: string[];
-}
+export type ListPackageQuestionsResponse = QuestionResponse<{
+  items: PackageQuestionItemT[];
+  meta: PaginationMeta;
+}>;
 
-export interface SyncPackageQuestionsOrderRequest {
-  packageId: string;
-  sectionId: string;
-  updates: { questionId: string; order: number }[];
-}
+export type AssignPackageQuestionsResponse = QuestionResponse<AssignResult | undefined>;
 
-export interface CommonResponse {
-  success: boolean;
-  message: string;
-}
-
-import { PaginationData } from "@/components/custom/table";
-
-export interface ListPackageQuestionsRequest {
-  packageId: string;
-  sectionId?: string;
-  page?: number;
-  limit?: number;
-}
-
-export interface PackageQuestionItem {
-  packageId: string;
-  sectionId: string | null;
-  questionId: string;
-  order: number;
-  question: {
-    id: string;
-    content: any[];
-    type: string;
-    difficulty: string;
-    subjectName: string | null;
-  };
-  section?: {
-    id: string;
-    title: string;
-  };
-}
-
-export interface ListPackageQuestionsResponse extends CommonResponse {
-  data: {
-    items: PackageQuestionItem[];
-    meta: PaginationData;
-  };
-}
+export type ListPackageQuestionsRequest = PackageQuestionListParams;
+export type AssignPackageQuestionsRequest = AssignPackageQuestionsParams;
+export type UnassignPackageQuestionsRequest = UnassignPackageQuestionsParams;
+export type SyncPackageQuestionsOrderRequest = SyncPackageQuestionsOrderParams;

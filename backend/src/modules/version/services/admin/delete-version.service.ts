@@ -1,10 +1,10 @@
-import { db } from "../../../db/db-pool.ts";
-import { appVersion } from "../../../db/schema/app/app-version.ts";
-import { books } from "../../../db/schema/book/books.ts";
-import { examPackages } from "../../../db/schema/exam/packages.ts";
-import { examPackageSections } from "../../../db/schema/exam/package-sections.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { appVersion } from "../../../../db/schema/app/app-version.ts";
+import { books } from "../../../../db/schema/book/books.ts";
+import { examPackages } from "../../../../db/schema/exam/packages.ts";
+import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
 import { eq, sql } from "drizzle-orm";
-import type { ServiceResponse } from "../../../types/index.ts";
+import type { ServiceResponse } from "../../../../types/index.ts";
 
 export interface DeleteVersionResponse extends ServiceResponse {
   dataType?: string;

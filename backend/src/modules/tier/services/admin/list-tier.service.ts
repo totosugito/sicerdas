@@ -1,8 +1,8 @@
-import { db } from "../../../db/db-pool.ts";
-import { appTier } from "../../../db/schema/app/app-tier.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { appTier } from "../../../../db/schema/app/app-tier.ts";
 import { asc } from "drizzle-orm";
-import type { ServiceResponse } from "../../../types/response.ts";
-import type { TierItem } from "../tier.schema.ts";
+import type { ServiceResponse } from "../../../../types/response.ts";
+import type { TierItem } from "../../tier.schema.ts";
 
 export type { TierItem };
 

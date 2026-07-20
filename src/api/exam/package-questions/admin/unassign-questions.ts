@@ -1,16 +1,12 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { UnassignPackageQuestionsRequest, CommonResponse } from "../types";
+import type { UnassignPackageQuestionsParams, CommonResponse } from "../types";
 
-/**
- * Hook to unassign questions from a package.
- * POST /api/exam/package-questions/admin/unassign
- */
 export const useUnassignPackageQuestions = () => {
   return useMutation({
     mutationKey: ["admin-exam-package-questions-unassign"],
-    mutationFn: async (body: UnassignPackageQuestionsRequest) => {
+    mutationFn: async (body: UnassignPackageQuestionsParams) => {
       const response = await fetchApi({
         method: "POST",
         url: AppApi.exam.packageQuestions.admin.unassign,

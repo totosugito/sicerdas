@@ -1,9 +1,9 @@
-import { db } from "../../../db/db-pool.ts";
-import { appTier } from "../../../db/schema/app/app-tier.ts";
-import { usersProfile } from "../../../db/schema/user/index.ts";
-import { aiModels } from "../../../db/schema/ai/index.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { appTier } from "../../../../db/schema/app/app-tier.ts";
+import { usersProfile } from "../../../../db/schema/user/index.ts";
+import { aiModels } from "../../../../db/schema/ai/index.ts";
 import { eq, count } from "drizzle-orm";
-import type { ServiceResponse } from "../../../types/response.ts";
+import type { ServiceResponse } from "../../../../types/response.ts";
 
 export interface DeleteTierResponse extends ServiceResponse {
   extraData?: {

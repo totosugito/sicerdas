@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
-import { updateVersionService } from "../../../modules/version/services/update-version.service.ts";
+import { updateVersionService } from "../../../modules/version/services/admin/update-version.service.ts";
 import { UpdateVersionBody, VersionResponse } from "../../../modules/version/index.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
 

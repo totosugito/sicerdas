@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
-import { deleteVersionService } from "../../../modules/version/services/delete-version.service.ts";
+import { deleteVersionService } from "../../../modules/version/services/admin/delete-version.service.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const DeleteVersionParams = Type.Object({

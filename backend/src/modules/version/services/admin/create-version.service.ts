@@ -1,9 +1,9 @@
-import { db } from "../../../db/db-pool.ts";
-import { appVersion as tableAppVersion } from "../../../db/schema/app/app-version.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { appVersion as tableAppVersion } from "../../../../db/schema/app/app-version.ts";
 import { and, eq } from "drizzle-orm";
-import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
-import type { ServiceResponse } from "../../../types/index.ts";
-import type { AppVersion, CreateVersionRequest } from "../version.schema.ts";
+import { EnumContentStatus } from "../../../../db/schema/enum/enum-app.ts";
+import type { ServiceResponse } from "../../../../types/index.ts";
+import type { AppVersion, CreateVersionRequest } from "../../version.schema.ts";
 
 export interface CreateVersionResponse extends ServiceResponse {
   data?: AppVersion;

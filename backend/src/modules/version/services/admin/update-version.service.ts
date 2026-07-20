@@ -1,8 +1,8 @@
-import { db } from "../../../db/db-pool.ts";
-import { appVersion as tableAppVersion } from "../../../db/schema/app/app-version.ts";
+import { db } from "../../../../db/db-pool.ts";
+import { appVersion as tableAppVersion } from "../../../../db/schema/app/app-version.ts";
 import { eq } from "drizzle-orm";
-import type { ServiceResponse } from "../../../types/index.ts";
-import type { AppVersion, UpdateVersionRequest } from "../version.schema.ts";
+import type { ServiceResponse } from "../../../../types/index.ts";
+import type { AppVersion, UpdateVersionRequest } from "../../version.schema.ts";
 
 export interface UpdateVersionResponse extends ServiceResponse {
   data?: AppVersion;

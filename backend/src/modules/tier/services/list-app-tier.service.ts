@@ -1,7 +1,7 @@
 import { db } from "../../../db/db-pool.ts";
 import { appTier } from "../../../db/schema/app/app-tier.ts";
 import { asc, eq } from "drizzle-orm";
-import type { TierItem } from "./list-tier.service.ts";
+import type { TierItem } from "./admin/list-tier.service.ts";
 
 export async function listAppTierService(): Promise<TierItem[]> {
   const tiers = await db.query.appTier.findMany({
