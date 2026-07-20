@@ -1,8 +1,8 @@
-import { db } from "../../../../db/db-pool.ts";
-import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
+import { db } from "../../../../../db/db-pool.ts";
+import { examSubjects } from "../../../../../db/schema/exam/subjects.ts";
 import { eq, and, ne } from "drizzle-orm";
-import type { ServiceResponse } from "../../../../types/index.ts";
-import type { UpdateSubjectParams, SubjectData } from "../education.schema.ts";
+import type { ServiceResponse } from "../../../../../types/index.ts";
+import type { UpdateSubjectParams, SubjectData } from "../../education.schema.ts";
 
 export interface UpdateSubjectResult extends ServiceResponse {
   data?: SubjectData;

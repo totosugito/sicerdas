@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { deleteSubjectService } from "../../../../modules/exam/subjects/services/delete-subject.service.ts";
+import { deleteSubjectService } from "../../../../modules/exam/subjects/services/admin/delete-subject.service.ts";
 import { ErrorResponseSchema, BaseResponseSchema } from "../../../../types/response.ts";
 
 const deleteSubjectRoute: FastifyPluginAsyncTypebox = async (app) => {

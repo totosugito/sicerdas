@@ -1,8 +1,8 @@
-import { db } from "../../../../db/db-pool.ts";
-import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
-import { examQuestions } from "../../../../db/schema/exam/questions.ts";
+import { db } from "../../../../../db/db-pool.ts";
+import { examSubjects } from "../../../../../db/schema/exam/subjects.ts";
+import { examQuestions } from "../../../../../db/schema/exam/questions.ts";
 import { eq } from "drizzle-orm";
-import type { ServiceResponse } from "../../../../types/index.ts";
+import type { ServiceResponse } from "../../../../../types/index.ts";
 
 export async function deleteSubjectService(id: string): Promise<ServiceResponse> {
   const existingSubject = await db.query.examSubjects.findFirst({

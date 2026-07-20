@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { createSubjectService } from "../../../../modules/exam/subjects/services/create-subject.service.ts";
+import { createSubjectService } from "../../../../modules/exam/subjects/services/admin/create-subject.service.ts";
 import { CreateSubjectBody, SubjectDetailResponse } from "../../../../modules/exam/subjects/education.schema.ts";
 import { ErrorResponseSchema } from "../../../../types/response.ts";
 
