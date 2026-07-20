@@ -4,9 +4,7 @@ import { examQuestionTags } from "../../../../db/schema/exam/question-tags.ts";
 import { eq } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/index.ts";
 
-export interface DeleteTagResult extends ServiceResponse {}
-
-export async function deleteTagService(id: string): Promise<DeleteTagResult> {
+export async function deleteTagService(id: string): Promise<ServiceResponse> {
   const existingTag = await db.query.educationTags.findFirst({
     where: eq(educationTags.id, id),
   });

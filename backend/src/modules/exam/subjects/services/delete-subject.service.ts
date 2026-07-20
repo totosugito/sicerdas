@@ -4,9 +4,7 @@ import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { eq } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/index.ts";
 
-export interface DeleteSubjectResult extends ServiceResponse {}
-
-export async function deleteSubjectService(id: string): Promise<DeleteSubjectResult> {
+export async function deleteSubjectService(id: string): Promise<ServiceResponse> {
   const existingSubject = await db.query.examSubjects.findFirst({
     where: eq(examSubjects.id, id),
   });

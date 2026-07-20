@@ -7,13 +7,11 @@ import { deleteStorageDirectory } from "../../../../platform/storage/storage.ts"
 import { syncSection, syncPassage, syncPackage } from "../../../../services/exam/index.ts";
 import type { ServiceResponse } from "../../../../types/index.ts";
 
-export interface DeleteQuestionResult extends ServiceResponse {}
-
 export async function deleteQuestionService(
   id: string,
   existingQuestion: { id: string; passageId: string | null; createdAt: Date },
   logger?: any,
-): Promise<DeleteQuestionResult> {
+): Promise<ServiceResponse> {
   await db.transaction(async (tx) => {
     // Identify related sections before deleting
     const relatedSections = await tx

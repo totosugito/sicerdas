@@ -156,8 +156,8 @@ Do not define redundant response wrappers like `CreateTierResponse` or `UpdateTi
 import type {
   AppVersion,
   VersionSimpleItem,
-  CreateVersionParams,
-  UpdateVersionParams,
+  CreateVersionRequest,
+  UpdateVersionRequest,
 } from "backend/src/modules/version/index.ts";
 import type { BaseResponse } from "backend/src/types/index.ts";
 
@@ -165,8 +165,8 @@ import type { BaseResponse } from "backend/src/types/index.ts";
 export type {
   AppVersion,
   VersionSimpleItem,
-  CreateVersionParams,
-  UpdateVersionParams,
+  CreateVersionRequest,
+  UpdateVersionRequest,
   BaseResponse,
 };
 
@@ -277,16 +277,103 @@ Compose the final validation schemas using Typebox utilities (`Type.Object`, `Ty
   export const UpdateTierBody = Type.Partial(Type.Object(TierBaseFields));
   ```
 
-### 3. Generate and Alias Static Types
-Derive static TypeScript types from the composed schemas and export clean type aliases that match frontend expectations (such as `CreateTierParams` and `UpdateTierParams`):
-```typescript
-export type CreateTierBodyType = Static<typeof CreateTierBody>;
-export type UpdateTierBodyType = Static<typeof UpdateTierBody>;
+### 3. Generate and Export Static Types
+Derive static TypeScript types from the composed schemas. Use **a single canonical name** that matches what the frontend expects — do **not** create chain aliases (e.g. `BodyType` → `Params` → `Request`). If the frontend uses `CreateTierParams`, export that name directly from the schema:
 
-export type CreateTierParams = CreateTierBodyType;
-export type UpdateTierParams = UpdateTierBodyType;
+```typescript
+export type CreateTierParams = Static<typeof CreateTierBody>;
+export type UpdateTierParams = Static<typeof UpdateTierBody>;
 ```
+
 This ensures type safety on both sides while eliminating definition redundancies.
+
+---
+
+## 9. No Duplicate Code
+
+Avoid redundant type aliases, empty wrapper interfaces, and inline type definitions that duplicate existing shared types.
+
+### 9.1 No Chain Type Aliases
+Do **not** create chains of type aliases where one type simply points to another. Export a single canonical name from the schema file and use it everywhere (backend services and frontend imports).
+
+**Bad:**
+```typescript
+export type CreateVersionBodyType = Static<typeof CreateVersionBody>;
+export type CreateVersionParams = CreateVersionBodyType;     // redundant
+export type CreateVersionRequest = CreateVersionParams;      // redundant
+```
+
+**Good:**
+```typescript
+// Schema file — single canonical name
+export type CreateVersionRequest = Static<typeof CreateVersionBody>;
+
+// Service file — import and use directly
+import type { CreateVersionRequest } from "../version.schema.ts";
+```
+
+### 9.2 No Empty Result Interfaces
+Do **not** declare result interfaces that add no fields beyond `ServiceResponse`. Return `ServiceResponse` directly from the service function.
+
+**Bad:**
+```typescript
+export interface DeleteSubjectResult extends ServiceResponse {}  // adds nothing
+
+export async function deleteSubjectService(id: string): Promise<DeleteSubjectResult> {
+```
+
+**Good:**
+```typescript
+export async function deleteSubjectService(id: string): Promise<ServiceResponse> {
+```
+
+Only extend `ServiceResponse` when the result carries additional data:
+```typescript
+export interface CreateSubjectResult extends ServiceResponse {
+  data?: SubjectData;  // adds a data field
+}
+```
+
+### 9.3 No Inline Pagination Types
+Do **not** redeclare the pagination meta shape inline. Import `PaginationMeta` from `backend/src/types/response.ts`.
+
+**Bad:**
+```typescript
+export interface ListResult extends ServiceResponse {
+  data?: { items: Item[]; meta: { total: number; page: number; limit: number; totalPages: number } };
+}
+```
+
+**Good:**
+```typescript
+import type { PaginationMeta } from "../../../types/response.ts";
+
+export interface ListResult extends ServiceResponse {
+  data?: { items: Item[]; meta: PaginationMeta };
+}
+```
+
+### 9.4 Single Source of Truth for Data Types
+If a data item shape is defined as a TypeBox schema in the schema file, derive its static type there and import it in the service file. Do **not** redefine the same shape as a separate `interface` in the service file.
+
+**Bad (service file):**
+```typescript
+export interface TierItem {
+  slug: string;
+  name: string;
+  // ...same fields as TierResponseItem in schema
+}
+```
+
+**Good (schema file):**
+```typescript
+export type TierItem = Static<typeof TierResponseItem>;
+```
+
+**Good (service file):**
+```typescript
+import type { TierItem } from "../tier.schema.ts";
+```
 
 
 

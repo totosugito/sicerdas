@@ -2,9 +2,9 @@ import { db } from "../../../db/db-pool.ts";
 import { appTier } from "../../../db/schema/app/app-tier.ts";
 import { eq, ne, and, or } from "drizzle-orm";
 import type { TierServiceResponse } from "./list-tier.service.ts";
-import type { UpdateTierBodyType } from "../tier.schema.ts";
+import type { UpdateTierParams } from "../tier.schema.ts";
 
-export async function updateTierService(slug: string, params: UpdateTierBodyType): Promise<TierServiceResponse> {
+export async function updateTierService(slug: string, params: UpdateTierParams): Promise<TierServiceResponse> {
   const existingTier = await db.query.appTier.findFirst({
     where: eq(appTier.slug, slug),
   });

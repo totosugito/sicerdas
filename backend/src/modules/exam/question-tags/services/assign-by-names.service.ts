@@ -5,11 +5,9 @@ import { eq, sql } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/index.ts";
 import type { AssignQuestionTagsByNameParams } from "../question-tags.schema.ts";
 
-export interface AssignByNamesResult extends ServiceResponse {}
-
 export async function assignQuestionTagsByNameService(
   params: AssignQuestionTagsByNameParams,
-): Promise<AssignByNamesResult> {
+): Promise<ServiceResponse> {
   const { questionId, tags } = params;
 
   const tagIds: string[] = [];

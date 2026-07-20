@@ -2,10 +2,11 @@ import { db } from "../../../../db/db-pool.ts";
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { and, eq, asc, sql, ilike } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/index.ts";
+import type { PaginationMeta } from "../../../../types/response.ts";
 import type { SubjectSimpleData } from "../education.schema.ts";
 
 export interface ListSubjectSimpleResult extends ServiceResponse {
-  data?: { items: SubjectSimpleData[]; meta: { total: number; page: number; limit: number; totalPages: number } };
+  data?: { items: SubjectSimpleData[]; meta: PaginationMeta };
 }
 
 export async function listSubjectSimpleService(

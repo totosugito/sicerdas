@@ -2,10 +2,11 @@ import { db } from "../../../../db/db-pool.ts";
 import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { and, eq, asc, sql } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/index.ts";
+import type { PaginationMeta } from "../../../../types/response.ts";
 import type { CategorySimpleData } from "../education.schema.ts";
 
 export interface ListCategorySimpleResult extends ServiceResponse {
-  data?: { items: CategorySimpleData[]; meta: { total: number; page: number; limit: number; totalPages: number } };
+  data?: { items: CategorySimpleData[]; meta: PaginationMeta };
 }
 
 export async function listCategorySimpleService(

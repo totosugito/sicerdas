@@ -52,11 +52,5 @@ export const UpdateVersionBody = Type.Partial(Type.Object({
 
 export type AppVersion = Static<typeof VersionResponseItem>;
 
-export type CreateVersionBodyType = Static<typeof CreateVersionBody>;
-export type UpdateVersionBodyType = Static<typeof UpdateVersionBody>;
-
-export type CreateVersionParams = CreateVersionBodyType;
-export type UpdateVersionParams = UpdateVersionBodyType;
-
-export type CreateVersionRequest = CreateVersionParams;
-export type UpdateVersionRequest = UpdateVersionParams;
+export type CreateVersionRequest = Static<typeof CreateVersionBody>;
+export type UpdateVersionRequest = Static<typeof UpdateVersionBody>;

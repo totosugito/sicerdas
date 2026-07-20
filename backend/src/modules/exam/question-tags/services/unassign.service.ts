@@ -4,11 +4,9 @@ import { and, inArray, eq } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/index.ts";
 import type { UnassignQuestionTagsParams } from "../question-tags.schema.ts";
 
-export interface UnassignResult extends ServiceResponse {}
-
 export async function unassignQuestionTagsService(
   params: UnassignQuestionTagsParams,
-): Promise<UnassignResult> {
+): Promise<ServiceResponse> {
   const { questionId, tagIds } = params;
 
   await db

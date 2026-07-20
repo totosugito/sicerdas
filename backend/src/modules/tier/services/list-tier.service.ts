@@ -2,24 +2,12 @@ import { db } from "../../../db/db-pool.ts";
 import { appTier } from "../../../db/schema/app/app-tier.ts";
 import { asc } from "drizzle-orm";
 import type { ServiceResponse } from "../../../types/response.ts";
+import type { TierItem } from "../tier.schema.ts";
+
+export type { TierItem };
 
 export interface TierServiceResponse<T = TierItem> extends ServiceResponse {
   data?: T;
-}
-
-export interface TierItem {
-  slug: string;
-  name: string;
-  price: string;
-  currency: string;
-  billingCycle: string;
-  features: string[];
-  limits: Record<string, unknown>;
-  isActive: boolean;
-  sortOrder: number;
-  isPopular: boolean;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export async function listTierService(): Promise<TierItem[]> {

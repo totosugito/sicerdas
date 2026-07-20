@@ -98,7 +98,6 @@ export const AppLatestResponse = Type.Intersect([
   }),
 ]);
 
-export type AppLatestParams = Static<typeof AppLatestBody>;
 export type AppLatestVersion = Static<typeof VersionItem>;
 export type AppLatestBook = Static<typeof BookItem>;
 export type AppLatestGrade = Static<typeof GradeItem>;

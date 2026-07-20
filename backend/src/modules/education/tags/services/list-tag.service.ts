@@ -3,10 +3,11 @@ import { educationTags } from "../../../../db/schema/education/tags.ts";
 import { examQuestionTags } from "../../../../db/schema/exam/question-tags.ts";
 import { desc, ilike, or, and, sql, eq, count, getTableColumns, asc } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/index.ts";
+import type { PaginationMeta } from "../../../../types/response.ts";
 import type { TagListParams, TagData } from "../education.schema.ts";
 
 export interface ListTagResult extends ServiceResponse {
-  data?: { items: TagData[]; meta: { total: number; page: number; limit: number; totalPages: number } };
+  data?: { items: TagData[]; meta: PaginationMeta };
 }
 
 export async function listTagService(

@@ -2,13 +2,13 @@ import { db } from "../../../db/db-pool.ts";
 import { appVersion as tableAppVersion } from "../../../db/schema/app/app-version.ts";
 import { eq } from "drizzle-orm";
 import type { ServiceResponse } from "../../../types/index.ts";
-import type { AppVersion, UpdateVersionBodyType } from "../version.schema.ts";
+import type { AppVersion, UpdateVersionRequest } from "../version.schema.ts";
 
 export interface UpdateVersionResponse extends ServiceResponse {
   data?: AppVersion;
 }
 
-export async function updateVersionService(id: number, params: UpdateVersionBodyType): Promise<UpdateVersionResponse> {
+export async function updateVersionService(id: number, params: UpdateVersionRequest): Promise<UpdateVersionResponse> {
   const { appVersion: appVer, dbVersion: dbVer, status, name, note, extra } = params;
 
   const existingVersion = await db.query.appVersion.findFirst({

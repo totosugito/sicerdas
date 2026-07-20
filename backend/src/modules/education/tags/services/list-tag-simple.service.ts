@@ -2,10 +2,11 @@ import { db } from "../../../../db/db-pool.ts";
 import { educationTags } from "../../../../db/schema/education/tags.ts";
 import { asc, sql, eq } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/index.ts";
+import type { PaginationMeta } from "../../../../types/response.ts";
 import type { TagSimpleData } from "../education.schema.ts";
 
 export interface ListTagSimpleResult extends ServiceResponse {
-  data?: { items: TagSimpleData[]; meta: { total: number; page: number; limit: number; totalPages: number } };
+  data?: { items: TagSimpleData[]; meta: PaginationMeta };
 }
 
 export async function listTagSimpleService(

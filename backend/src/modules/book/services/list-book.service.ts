@@ -11,10 +11,11 @@ import { and, eq, inArray, sql, or, ilike, desc } from "drizzle-orm";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 import { getBookCoverUrl } from "../../../utils/book/book-utils.ts";
 import type { ServiceResponse } from "../../../types/index.ts";
+import type { PaginationMeta } from "../../../types/response.ts";
 import type { BookListParams, BookListItemData } from "../book.schema.ts";
 
 export interface ListBookResult extends ServiceResponse {
-  data?: { items: BookListItemData[]; meta: { total: number; page: number; limit: number; totalPages: number } };
+  data?: { items: BookListItemData[]; meta: PaginationMeta };
 }
 
 export async function listBookService(

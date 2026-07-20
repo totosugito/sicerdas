@@ -3,10 +3,11 @@ import { examUserStatsSubject } from "../../../../db/schema/exam/user-stats-subj
 import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
 import { eq, desc, asc, sql } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/index.ts";
+import type { PaginationMeta } from "../../../../types/response.ts";
 import type { SubjectStatsParams, SubjectStatsData } from "../user-stats.schema.ts";
 
 export interface SubjectStatsResult extends ServiceResponse {
-  data?: { items: SubjectStatsData[]; meta: { total: number; page: number; limit: number; totalPages: number } };
+  data?: { items: SubjectStatsData[]; meta: PaginationMeta };
 }
 
 export async function subjectStatsService(

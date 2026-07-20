@@ -93,5 +93,3 @@ export const UpdateUserBodySchema = Type.Object({
 export type UserResponseItem = Static<typeof UserResponseItemSchema>;
 export type UserDetailsData = Static<typeof UserDetailsResponseItemSchema>;
 export type UserProfileData = Static<typeof UserProfileDataSchema>;
-export type CreateUserBodyType = Static<typeof CreateUserBodySchema>;
-export type UpdateUserBodyType = Static<typeof UpdateUserBodySchema>;

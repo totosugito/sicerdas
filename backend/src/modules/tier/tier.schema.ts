@@ -59,8 +59,6 @@ export const CreateTierBody = Type.Object({
 
 export const UpdateTierBody = Type.Partial(Type.Object(TierBaseFields));
 
-export type CreateTierBodyType = Static<typeof CreateTierBody>;
-export type UpdateTierBodyType = Static<typeof UpdateTierBody>;
-
-export type CreateTierParams = CreateTierBodyType;
-export type UpdateTierParams = UpdateTierBodyType;
+export type CreateTierParams = Static<typeof CreateTierBody>;
+export type UpdateTierParams = Static<typeof UpdateTierBody>;
+export type TierItem = Static<typeof TierResponseItem>;

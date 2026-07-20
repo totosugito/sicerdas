@@ -2,10 +2,11 @@ import { db } from "../../../../db/db-pool.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { desc, ilike, or, and, sql, asc } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/index.ts";
+import type { PaginationMeta } from "../../../../types/response.ts";
 import type { GradeListParams, GradeData } from "../education.schema.ts";
 
 export interface ListGradeResult extends ServiceResponse {
-  data?: { items: GradeData[]; meta: { total: number; page: number; limit: number; totalPages: number } };
+  data?: { items: GradeData[]; meta: PaginationMeta };
 }
 
 export async function listGradeService(params: GradeListParams): Promise<ListGradeResult> {

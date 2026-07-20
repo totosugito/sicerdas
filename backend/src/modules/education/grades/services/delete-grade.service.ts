@@ -6,9 +6,7 @@ import { examQuestions } from "../../../../db/schema/exam/questions.ts";
 import { eq } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/index.ts";
 
-export interface DeleteGradeResult extends ServiceResponse {}
-
-export async function deleteGradeService(id: number): Promise<DeleteGradeResult> {
+export async function deleteGradeService(id: number): Promise<ServiceResponse> {
   const existingGrade = await db.query.educationGrades.findFirst({ where: eq(educationGrades.id, id) });
 
   if (!existingGrade) {
