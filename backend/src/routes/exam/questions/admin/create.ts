@@ -1,55 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examQuestions } from "../../../../db/schema/exam/questions.ts";
-import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
-import { examPassages } from "../../../../db/schema/exam/passages.ts";
-import { eq } from "drizzle-orm";
-import env from "../../../../config/env.config.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 import {
-  EnumDifficultyLevel,
-  EnumQuestionType,
-  EnumScoringStrategy,
-} from "../../../../db/schema/exam/enums.ts";
+  CreateQuestionResponse,
+} from "../../../../modules/exam/questions/questions.schema.ts";
+import { createQuestionService } from "../../../../modules/exam/questions/services/create-question.service.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
-import {
-  processBlockNoteFiles,
-  replaceBlockNoteUrls,
-  stripBlockNoteUrls,
-} from "../../../../utils/blocknote/blocknote-utils.ts";
-import { syncPassage } from "../../../../services/exam/index.ts";
-
-const VariableFormulasType = Type.Optional(
-  Type.Object({
-    variables: Type.Array(Type.Record(Type.String(), Type.Union([Type.String(), Type.Number()]))),
-    solutions: Type.Optional(Type.Record(Type.String(), Type.String())),
-  }),
-);
-
-const QuestionResponseItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  subjectId: Type.String({ format: "uuid" }),
-  passageId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
-  content: Type.Array(Type.Record(Type.String(), Type.Unknown())),
-  reasonContent: Type.Optional(Type.Array(Type.Record(Type.String(), Type.Unknown()))),
-  difficulty: Type.String(),
-  type: Type.String(),
-  maxScore: Type.Integer(),
-  scoringStrategy: Type.String(),
-  requiredTier: Type.Union([Type.String(), Type.Null()]),
-  educationGradeId: Type.Union([Type.Number(), Type.Null()]),
-  isActive: Type.Boolean(),
-  variableFormulas: VariableFormulasType,
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
-const CreateQuestionResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: QuestionResponseItem,
-});
 
 const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -60,18 +16,11 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
       consumes: ["multipart/form-data"],
       response: {
         201: CreateQuestionResponse,
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(request: FastifyRequest, reply: FastifyReply) {
-            const userId = request.session.user.id;
+      const userId = request.session.user.id;
 
       // Parse multipart data
       const parts = request.parts();
@@ -96,119 +45,17 @@ const createQuestionRoute: FastifyPluginAsyncTypebox = async (app) => {
         }
       }
 
-      const {
-        subjectId,
-        passageId,
-        content,
-        difficulty,
-        type,
-        scoringStrategy,
-        requiredTier,
-        educationGradeId,
-        isActive,
-        variableFormulas,
-        reasonContent,
-      } = body;
+      const result = await createQuestionService(userId, body, files);
 
-      if (!subjectId) {
-        return reply.badRequest(request.t(($) => $.exam.questions.create.invalidSubject));
-      }
-
-      // 1. Verify that the subject exists
-      const existingSubject = await db.query.examSubjects.findFirst({
-        where: eq(examSubjects.id, subjectId),
-      });
-
-      if (!existingSubject) {
-        return reply.badRequest(request.t(($) => $.exam.questions.create.invalidSubject));
-      }
-
-      // 2. Verify passage exists (if provided)
-      if (passageId) {
-        const existingPassage = await db.query.examPassages.findFirst({
-          where: eq(examPassages.id, passageId),
-        });
-        if (!existingPassage) {
-          return reply.badRequest(request.t(($) => $.exam.questions.create.invalidPassage));
-        }
-      }
-
-      const [newQuestion] = await db.transaction(async (tx) => {
-        const [question] = await tx
-          .insert(examQuestions)
-          .values({
-            subjectId,
-            passageId,
-            content: content || [],
-            reasonContent: reasonContent || [],
-            difficulty: difficulty || EnumDifficultyLevel.MEDIUM,
-            type: type || EnumQuestionType.MULTIPLE_CHOICE,
-            scoringStrategy: scoringStrategy ?? EnumScoringStrategy.ALL_OR_NOTHING,
-            requiredTier: requiredTier !== undefined ? requiredTier : "free",
-            educationGradeId:
-              educationGradeId === null ||
-                educationGradeId === 0 ||
-                (educationGradeId as any) === ""
-                ? null
-                : Number(educationGradeId),
-            isActive: isActive !== undefined ? isActive : true,
-            variableFormulas:
-              variableFormulas &&
-              typeof variableFormulas === "object" &&
-              Object.keys(variableFormulas).length > 0
-                ? {
-                    variables: variableFormulas.variables || [],
-                    solutions: variableFormulas.solutions || {},
-                  }
-                : null,
-            createdByUserId: userId,
-          })
-          .returning();
-
-        // If associated with a passage, sync its counters
-        if (passageId) {
-          await syncPassage(passageId, tx);
-        }
-
-        return [question];
-      });
-
-      // Process uploaded files if any
-      let finalContent = content ? stripBlockNoteUrls(content) : [];
-      let finalReasonContent = reasonContent ? stripBlockNoteUrls(reasonContent) : [];
-
-      if (files.length > 0) {
-        const urlMap = await processBlockNoteFiles(
-          env.server.uploadsQuestionDir,
-          newQuestion.id,
-          files,
-          newQuestion.createdAt,
-        );
-
-        // Replace blob URLs with final URLs in content
-        finalContent = replaceBlockNoteUrls(finalContent, urlMap);
-        finalReasonContent = replaceBlockNoteUrls(finalReasonContent, urlMap);
-
-        // Update the question with final content
-        await db
-          .update(examQuestions)
-          .set({
-            content: finalContent,
-            reasonContent: finalReasonContent,
-          })
-          .where(eq(examQuestions.id, newQuestion.id));
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        return reply.badRequest(message);
       }
 
       return reply.status(201).send({
         success: true,
         message: request.t(($) => $.exam.questions.create.success),
-        data: {
-          ...newQuestion,
-          content: finalContent,
-          reasonContent: finalReasonContent,
-          createdAt: newQuestion.createdAt.toISOString(),
-          updatedAt: newQuestion.updatedAt.toISOString(),
-        },
+        data: result.data,
       });
     },
   });

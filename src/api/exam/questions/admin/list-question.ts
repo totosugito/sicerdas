@@ -1,35 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ExamQuestion, DifficultyLevel, QuestionType, ScoringStrategy } from "../types";
-import { PaginationData } from "@/components/custom/table";
+import type { QuestionListParams, ListQuestionsResponse } from "../types";
 
-export interface ListQuestionRequest {
-  search?: string;
-  subjectId?: string;
-  difficulty?: DifficultyLevel;
-  type?: QuestionType;
-  scoringStrategy?: ScoringStrategy;
-  requiredTier?: string;
-  educationGradeId?: number;
-  excludePackageId?: string;
-  isActive?: boolean;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
-  page?: number;
-  limit?: number;
-}
-
-export interface ListQuestionsResponse {
-  success: boolean;
-  message: string;
-  data: {
-    items: ExamQuestion[];
-    meta: PaginationData;
-  };
-}
-
-export const useListQuestion = (params: ListQuestionRequest) => {
+export const useListQuestion = (params: QuestionListParams) => {
   return useQuery({
     queryKey: ["admin-exam-questions-list", params],
     queryFn: async () => {

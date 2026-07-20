@@ -298,7 +298,7 @@ export function QuestionTable({
   ];
 
   const { table } = useDataTable({
-    data: data?.data.items || [],
+    data: (data?.data.items || []) as ExamQuestion[],
     columns,
     pageCount: paginationData?.totalPages || -1,
     initialState: {

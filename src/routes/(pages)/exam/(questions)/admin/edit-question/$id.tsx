@@ -25,7 +25,7 @@ import {
   QuestionVariablesTab,
   QuestionPreviewTab,
 } from "@/components/pages/exam/questions/edit-question";
-import { type UpdateQuestionRequest } from "@/api/exam/questions/admin/update-question";
+import type { UpdateQuestionParams } from "@/api/exam/questions";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
 
 export const Route = createFileRoute("/(pages)/exam/(questions)/admin/edit-question/$id")({
@@ -71,7 +71,7 @@ function AdminExamQuestionsEditPage() {
     };
   }, [question]);
 
-  const handleUpdate = async (values: UpdateQuestionRequest | FormData) => {
+  const handleUpdate = async (values: UpdateQuestionParams | FormData) => {
     try {
       // Always use FormData for this endpoint because backend requires multipart
       let finalSubmission: FormData;

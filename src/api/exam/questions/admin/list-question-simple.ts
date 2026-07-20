@@ -1,9 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import { ListQuestionRequest, ListQuestionsResponse } from "./list-question";
+import type { QuestionListSimpleParams, ListSimpleQuestionsResponse } from "../types";
 
-export const useListQuestionSimple = (params: ListQuestionRequest, enabled: boolean = true) => {
+export const useListQuestionSimple = (params: QuestionListSimpleParams, enabled: boolean = true) => {
   return useQuery({
     queryKey: ["admin-exam-questions-list-simple", params],
     enabled,
@@ -14,7 +14,7 @@ export const useListQuestionSimple = (params: ListQuestionRequest, enabled: bool
         body: params,
         withCredentials: true,
       });
-      return response as ListQuestionsResponse;
+      return response as ListSimpleQuestionsResponse;
     },
   });
 };
