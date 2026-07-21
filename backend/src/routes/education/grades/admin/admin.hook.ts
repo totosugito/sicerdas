@@ -1,26 +1,11 @@
-import { fromNodeHeaders } from 'better-auth/node';
 import type { FastifyInstance } from 'fastify';
-import { getAuthInstance } from '../../../../decorators/auth.decorator.ts';
 import { EnumUserRole } from '../../../../db/schema/user/types.ts';
+import { requireRoles } from '../../../../hooks/auth.hook.ts';
 
 async function adminHook(fastify: FastifyInstance) {
   fastify.decorateRequest('session');
 
-  fastify.addHook('preHandler', async (req, res) => {
-    const session = await getAuthInstance(fastify).api.getSession({
-      headers: fromNodeHeaders(req.headers),
-    });
-
-    if (!session?.user) {
-            return res.unauthorized(req.t($ => $.user.hook.unauthorized));
-    }
-
-    if (session?.user?.role !== EnumUserRole.ADMIN) {
-      return res.forbidden(req.t($ => $.user.hook.forbidden));
-    }
-
-    req.setDecorator('session', session);
-  });
+  fastify.addHook('preHandler', requireRoles(fastify, [EnumUserRole.ADMIN]));
 }
 
 export default adminHook;
