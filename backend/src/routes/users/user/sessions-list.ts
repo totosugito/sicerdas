@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@fastify/type-provider-typebox";
-import { listSessionsService } from "../../../modules/user/index.ts";
+import { listSessionsService } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const SessionListResponse = Type.Intersect([

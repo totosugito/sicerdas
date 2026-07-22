@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { updateUserService, UpdateUserBodySchema, UserResponseSchema } from "../../../modules/user/index.ts";
+import { updateUserService, UpdateUserBodySchema, UserResponseSchema } from "../../../modules/users/index.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const updateUser: FastifyPluginAsyncTypebox = async (app) => {

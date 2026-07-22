@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { EnumUserRole } from "../../../db/schema/user/index.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { listUsersService, UserResponseItemSchema } from "../../../modules/user/index.ts";
+import { listUsersService, UserResponseItemSchema } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema, PaginationMetaSchema } from "../../../types/response.ts";
 
 const ListBody = Type.Object({

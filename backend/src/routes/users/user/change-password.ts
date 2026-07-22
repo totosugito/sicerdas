@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { Type } from "@fastify/type-provider-typebox";
-import { changePasswordService } from "../../../modules/user/index.ts";
+import { changePasswordService } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {

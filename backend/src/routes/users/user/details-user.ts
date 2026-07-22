@@ -1,5 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { getUserDetailsService, UserDetailsResponseSchema } from "../../../modules/user/index.ts";
+import { getUserDetailsService, UserDetailsResponseSchema } from "../../../modules/users/index.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {

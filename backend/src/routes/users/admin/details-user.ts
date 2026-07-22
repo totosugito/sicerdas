@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getUserDetailsService, UserDetailsResponseSchema } from "../../../modules/user/index.ts";
+import { getUserDetailsService, UserDetailsResponseSchema } from "../../../modules/users/index.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const Params = Type.Object({

@@ -3,7 +3,7 @@ import { Type } from "@sinclair/typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { fromNodeHeaders } from "better-auth/node";
-import { banUserService } from "../../../modules/user/index.ts";
+import { banUserService } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const BanBody = Type.Object({

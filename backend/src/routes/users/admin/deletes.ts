@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { deleteUserService } from "../../../modules/user/index.ts";
+import { deleteUserService } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const DeletesBody = Type.Object({

@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@fastify/type-provider-typebox";
 import type { UploadedFile } from "../../../types/file.ts";
-import { updateProfileService } from "../../../modules/user/index.ts";
+import { updateProfileService } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const UpdateProfileResponseSchema = Type.Intersect([

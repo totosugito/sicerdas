@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { resetPasswordService } from "../../../modules/user/index.ts";
+import { resetPasswordService } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const ResetPasswordBody = Type.Object({

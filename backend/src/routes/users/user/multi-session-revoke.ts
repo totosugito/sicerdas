@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@fastify/type-provider-typebox";
-import { revokeSessionService } from "../../../modules/user/index.ts";
+import { revokeSessionService } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
 
 const RevokeSessionRequest = Type.Object({

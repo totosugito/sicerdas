@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { EnumUserRole } from "../../../db/schema/user/index.ts";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { createUserService, CreateUserBodySchema, UserResponseSchema } from "../../../modules/user/index.ts";
+import { createUserService, CreateUserBodySchema, UserResponseSchema } from "../../../modules/users/index.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const createUser: FastifyPluginAsyncTypebox = async (app) => {
