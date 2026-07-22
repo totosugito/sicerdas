@@ -5,6 +5,7 @@ import sharp from "sharp";
 import { createUniqueFileName } from "../../../../utils/my-utils.ts";
 import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../../utils/user/user-utils.ts";
 import type { ServiceResponse } from "../../../../types/response.ts";
+import type { AvatarResponseData } from "../../user.schema.ts";
 
 export interface AvatarUpdateParams {
   userId: string;
@@ -17,11 +18,7 @@ export interface AvatarUpdateParams {
 }
 
 export interface AvatarUpdateResponse extends ServiceResponse {
-  data?: {
-    id: string;
-    name: string;
-    image: string | null;
-  };
+  data?: AvatarResponseData;
 }
 
 export async function avatarUpdateService(params: AvatarUpdateParams): Promise<AvatarUpdateResponse> {

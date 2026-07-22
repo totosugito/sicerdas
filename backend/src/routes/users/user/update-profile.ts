@@ -1,32 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@fastify/type-provider-typebox";
 import type { UploadedFile } from "../../../types/file.ts";
-import { updateProfileService } from "../../../modules/users/index.ts";
-import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
-
-const UpdateProfileResponseSchema = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({
-    data: Type.Object({
-      id: Type.String({ format: "uuid" }),
-      email: Type.String({ format: "email" }),
-      name: Type.Union([Type.String(), Type.Null()]),
-      image: Type.Union([Type.String({ format: "uri" }), Type.Null()]),
-      emailVerified: Type.Boolean(),
-      school: Type.Union([Type.String(), Type.Null()]),
-      grade: Type.Union([Type.String(), Type.Null()]),
-      phone: Type.Union([Type.String(), Type.Null()]),
-      address: Type.Union([Type.String(), Type.Null()]),
-      bio: Type.Union([Type.String(), Type.Null()]),
-      educationLevel: Type.Union([Type.String(), Type.Null()]),
-      dateOfBirth: Type.Union([Type.String(), Type.Null()]),
-      providerId: Type.String(),
-      extra: Type.Object({}, { additionalProperties: true }),
-      createdAt: Type.String({ format: "date-time" }),
-      updatedAt: Type.String({ format: "date-time" }),
-    }),
-  }),
-]);
+import { updateProfileService, UpdateProfileResponseSchema, type BaseUpdateProfileData } from "../../../modules/users/index.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -48,17 +23,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       const userId = req.session.user.id;
 
       // Initialize variables for form data
-      const updateData: {
-        name?: string;
-        school?: string;
-        grade?: string;
-        phone?: string;
-        address?: string;
-        bio?: string;
-        dateOfBirth?: string;
-        extra?: string;
-        educationLevel?: string;
-      } = {};
+      const updateData: BaseUpdateProfileData = {};
 
       let imageFile: UploadedFile | null = null;
 

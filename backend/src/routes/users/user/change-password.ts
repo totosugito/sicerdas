@@ -1,8 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
-import { Type } from "@fastify/type-provider-typebox";
-import { changePasswordService } from "../../../modules/users/index.ts";
-import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
+import { changePasswordService, ChangePasswordBodySchema, type ChangePasswordBody } from "../../../modules/users/index.ts";
+import { BaseResponseSchema, ErrorResponseSchema, type ServiceResponse } from "../../../types/response.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -13,16 +12,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: "Change user password",
       description: "Change the current user password. Expected JSON body fields: currentPassword, newPassword",
       consumes: ["application/json"],
-      body: Type.Object({
-        currentPassword: Type.String({
-          description: "Current password",
-          minLength: 1,
-        }),
-        newPassword: Type.String({
-          description: "New password",
-          minLength: 6,
-        }),
-      }),
+      body: ChangePasswordBodySchema,
       response: {
         200: BaseResponseSchema,
         "4xx": ErrorResponseSchema,
@@ -30,10 +20,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
     },
     handler: async (req, reply) => {
       const auth = getAuthInstance(app);
-      const { currentPassword, newPassword } = req.body as {
-        currentPassword: string;
-        newPassword: string;
-      };
+      const { currentPassword, newPassword } = req.body as ChangePasswordBody;
 
       if (!currentPassword) {
         return reply.badRequest(req.t(($) => $.user.currentPasswordRequired));
@@ -46,7 +33,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       const userId = req.session.user.id;
       const context = await auth.$context;
 
-      const result = await changePasswordService({
+      const result: ServiceResponse = await changePasswordService({
         userId,
         currentPassword,
         newPassword,

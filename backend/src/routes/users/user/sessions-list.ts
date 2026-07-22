@@ -1,24 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@fastify/type-provider-typebox";
-import { listSessionsService } from "../../../modules/users/index.ts";
-import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
-
-const SessionListResponse = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({
-    data: Type.Array(
-      Type.Object({
-        id: Type.String({ format: "uuid" }),
-        expiresAt: Type.String({ format: "date-time" }),
-        createdAt: Type.String({ format: "date-time" }),
-        updatedAt: Type.String({ format: "date-time" }),
-        ipAddress: Type.Union([Type.String(), Type.Null()]),
-        userAgent: Type.Union([Type.String(), Type.Null()]),
-        token: Type.String(),
-      }),
-    ),
-  }),
-]);
+import { listSessionsService, SessionListResponseSchema } from "../../../modules/users/index.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -29,7 +11,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: "List user sessions",
       description: "Get a list of all active sessions for the authenticated user",
       response: {
-        200: SessionListResponse,
+        200: SessionListResponseSchema,
         "4xx": ErrorResponseSchema,
       },
     },

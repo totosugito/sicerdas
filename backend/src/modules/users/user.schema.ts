@@ -2,17 +2,25 @@ import { Type, type Static } from "@sinclair/typebox";
 import { BaseResponseSchema } from "../../types/response.ts";
 import { EnumUserRole } from "../../db/schema/user/index.ts";
 
-export const UserResponseItemSchema = Type.Object({
+export const UserCoreSchema = Type.Object({
   id: Type.String({ format: "uuid" }),
   email: Type.String({ format: "email" }),
   name: Type.String(),
-  role: Type.Enum(EnumUserRole),
   image: Type.Union([Type.String(), Type.Null()]),
-  banned: Type.Union([Type.Boolean(), Type.Null()]),
-  banReason: Type.Union([Type.String(), Type.Null()]),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
 });
+
+export const UserAdminFieldsSchema = Type.Object({
+  role: Type.Enum(EnumUserRole),
+  banned: Type.Boolean(),
+  banReason: Type.Union([Type.String(), Type.Null()]),
+});
+
+export const UserResponseItemSchema = Type.Composite([
+  UserCoreSchema,
+  UserAdminFieldsSchema,
+]);
 
 export const UserResponseSchema = Type.Intersect([
   BaseResponseSchema,
@@ -21,41 +29,7 @@ export const UserResponseSchema = Type.Intersect([
   }),
 ]);
 
-export const UserDetailsResponseItemSchema = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  email: Type.String({ format: "email" }),
-  name: Type.Union([Type.String(), Type.Null()]),
-  role: Type.Enum(EnumUserRole),
-  image: Type.Union([Type.String(), Type.Null()]),
-  emailVerified: Type.Boolean(),
-  banned: Type.Boolean(),
-  banReason: Type.Union([Type.String(), Type.Null()]),
-  banExpires: Type.Union([Type.String(), Type.Null()]),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-  phone: Type.Union([Type.String(), Type.Null()]),
-  address: Type.Union([Type.String(), Type.Null()]),
-  bio: Type.Union([Type.String(), Type.Null()]),
-  dateOfBirth: Type.Union([Type.String(), Type.Null()]),
-  school: Type.Union([Type.String(), Type.Null()]),
-  educationLevel: Type.Union([Type.String(), Type.Null()]),
-  grade: Type.Union([Type.String(), Type.Null()]),
-  providerId: Type.Union([Type.String(), Type.Null()]),
-  extra: Type.Object({}, { additionalProperties: true }),
-});
-
-export const UserDetailsResponseSchema = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({
-    data: UserDetailsResponseItemSchema,
-  }),
-]);
-
-export const UserProfileDataSchema = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  email: Type.String({ format: "email" }),
-  name: Type.Union([Type.String(), Type.Null()]),
-  image: Type.Union([Type.String(), Type.Null()]),
+export const UserProfileExtraFieldsSchema = Type.Object({
   emailVerified: Type.Boolean(),
   school: Type.Union([Type.String(), Type.Null()]),
   educationLevel: Type.Union([Type.String(), Type.Null()]),
@@ -66,9 +40,47 @@ export const UserProfileDataSchema = Type.Object({
   dateOfBirth: Type.Union([Type.String(), Type.Null()]),
   providerId: Type.String(),
   extra: Type.Object({}, { additionalProperties: true }),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
 });
+
+export const UserProfileDataSchema = Type.Composite([
+  UserCoreSchema,
+  UserProfileExtraFieldsSchema,
+]);
+
+export const UserDetailsResponseItemSchema = Type.Composite([
+  UserCoreSchema,
+  UserProfileExtraFieldsSchema,
+  UserAdminFieldsSchema,
+  Type.Object({
+    banExpires: Type.Union([Type.String(), Type.Null()]),
+  }),
+]);
+
+export const UserDetailsResponseSchema = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: UserDetailsResponseItemSchema,
+  }),
+]);
+
+export const UpdateProfileResponseSchema = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: UserProfileDataSchema,
+  }),
+]);
+
+export interface BaseUpdateProfileData {
+  name?: string;
+  school?: string;
+  educationLevel?: string;
+  grade?: string;
+  phone?: string;
+  address?: string;
+  bio?: string;
+  dateOfBirth?: string;
+  extra?: any;
+}
 
 const UserBaseFields = {
   name: Type.String({ description: "The full name of the user" }),
@@ -93,3 +105,57 @@ export const UpdateUserBodySchema = Type.Object({
 export type UserResponseItem = Static<typeof UserResponseItemSchema>;
 export type UserDetailsData = Static<typeof UserDetailsResponseItemSchema>;
 export type UserProfileData = Static<typeof UserProfileDataSchema>;
+
+export const AvatarResponseItemSchema = Type.Object({
+  id: Type.String({ format: "uuid" }),
+  name: Type.String(),
+  image: Type.Union([Type.String(), Type.Null()]),
+});
+
+export const AvatarResponseSchema = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: AvatarResponseItemSchema,
+  }),
+]);
+
+export type AvatarResponseData = Static<typeof AvatarResponseItemSchema>;
+
+export const SessionItemSchema = Type.Object({
+  id: Type.String({ format: "uuid" }),
+  expiresAt: Type.String({ format: "date-time" }),
+  createdAt: Type.String({ format: "date-time" }),
+  updatedAt: Type.String({ format: "date-time" }),
+  ipAddress: Type.Union([Type.String(), Type.Null()]),
+  userAgent: Type.Union([Type.String(), Type.Null()]),
+  token: Type.String(),
+});
+
+export const SessionListResponseSchema = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: Type.Array(SessionItemSchema),
+  }),
+]);
+
+export type SessionData = Static<typeof SessionItemSchema>;
+
+export const ChangePasswordBodySchema = Type.Object({
+  currentPassword: Type.String({
+    description: "Current password",
+    minLength: 1,
+  }),
+  newPassword: Type.String({
+    description: "New password",
+    minLength: 6,
+  }),
+});
+
+export type ChangePasswordBody = Static<typeof ChangePasswordBodySchema>;
+
+export const RevokeSessionBodySchema = Type.Object({
+  sessionToken: Type.String({ description: "The token of the session to revoke" }),
+});
+
+export type RevokeSessionBody = Static<typeof RevokeSessionBodySchema>;
+

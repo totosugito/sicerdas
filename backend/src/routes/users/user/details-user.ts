@@ -1,5 +1,5 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { getUserDetailsService, UserDetailsResponseSchema } from "../../../modules/users/index.ts";
+import { getUserDetailsService, UserDetailsResponseSchema, type GetUserDetailsResponse } from "../../../modules/users/index.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -19,7 +19,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       // Get user ID from session (already verified by user.hook.ts)
       const userId = req.session.user.id;
 
-      const result = await getUserDetailsService(userId);
+      const result: GetUserDetailsResponse = await getUserDetailsService(userId);
 
       if (!result.success || !result.data) {
         return reply.notFound(req.t(result.errorKey!));

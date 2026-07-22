@@ -1,19 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
-import { UserResponse, UserProfileData } from "../types";
+import { UserResponse, UserProfileData, BaseUpdateProfileData } from "../types";
 
-export interface UpdateProfileData {
-  name?: string;
-  school?: string;
-  educationLevel?: string;
-  grade?: string;
-  phone?: string;
-  address?: string;
-  bio?: string;
-  dateOfBirth?: string;
+export interface UpdateProfileData extends BaseUpdateProfileData {
   image?: File;
-  extra?: any;
 }
 
 export const useUpdateProfileMutation = () => {

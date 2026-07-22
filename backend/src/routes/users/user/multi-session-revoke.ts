@@ -1,11 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@fastify/type-provider-typebox";
-import { revokeSessionService } from "../../../modules/users/index.ts";
+import { revokeSessionService, RevokeSessionBodySchema, type RevokeSessionBody } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
-
-const RevokeSessionRequest = Type.Object({
-  sessionToken: Type.String({ description: "The token of the session to revoke" }),
-});
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -15,7 +10,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       tags: ["User"],
       summary: "Revoke a user session",
       description: "Revokes a specific session by its token for the authenticated user",
-      body: RevokeSessionRequest,
+      body: RevokeSessionBodySchema,
       response: {
         200: BaseResponseSchema,
         "4xx": ErrorResponseSchema,
@@ -23,7 +18,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
     },
     handler: async (req, reply) => {
       const userId = req.session.user.id;
-      const { sessionToken } = req.body as { sessionToken: string };
+      const { sessionToken } = req.body as RevokeSessionBody;
 
       const result = await revokeSessionService({
         userId,

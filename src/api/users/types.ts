@@ -6,9 +6,11 @@ import type {
   ListUsersParams,
   BanUserParams,
   SessionData,
-  ChangePasswordParams,
+  ChangePasswordBody,
+  RevokeSessionBody,
   UserProfileData,
-} from "backend/src/modules/user/index.ts";
+  BaseUpdateProfileData,
+} from "backend/src/modules/users/index.ts";
 import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
 
 export type {
@@ -19,8 +21,10 @@ export type {
   ListUsersParams,
   BanUserParams,
   SessionData,
-  ChangePasswordParams,
+  ChangePasswordBody,
+  RevokeSessionBody,
   UserProfileData,
+  BaseUpdateProfileData,
   BaseResponse,
   PaginationMeta,
 };

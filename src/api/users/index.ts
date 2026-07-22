@@ -10,12 +10,10 @@ export {
 } from "./user/update-profile";
 export {
   useChangeUserPasswordMutation,
-  type ChangePasswordData,
 } from "./user/change-password";
 export { useUpdateUserAvatarMutation } from "./user/update-avatar";
 export {
   useRevokeUserSessionMutation,
-  type RevokeSessionData,
 } from "./user/revoke-session";
 
 // Admin APIs

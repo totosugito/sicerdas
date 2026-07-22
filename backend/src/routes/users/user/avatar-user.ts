@@ -1,19 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@sinclair/typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { avatarUpdateService } from "../../../modules/users/index.ts";
-import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
-
-const AvatarResponse = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({
-    data: Type.Object({
-      id: Type.String(),
-      name: Type.String(),
-      image: Type.Union([Type.String(), Type.Null()]),
-    }),
-  }),
-]);
+import { Type } from "@sinclair/typebox";
+import { avatarUpdateService, AvatarResponseSchema, type AvatarUpdateResponse } from "../../../modules/users/index.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -27,7 +16,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         action: Type.Optional(Type.String()),
       }),
       response: {
-        200: AvatarResponse,
+        200: AvatarResponseSchema,
         "4xx": ErrorResponseSchema,
       },
     },
@@ -53,7 +42,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         };
       }
 
-      const result = await avatarUpdateService({
+      const result: AvatarUpdateResponse = await avatarUpdateService({
         userId,
         action,
         file: fileParam,
