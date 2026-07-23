@@ -2,7 +2,7 @@
 export * from './enum/index.ts';
 
 // User Module
-export * from './user/index.ts';
+export * from './users/index.ts';
 
 // Job Module
 export * from './jobs/index.ts';

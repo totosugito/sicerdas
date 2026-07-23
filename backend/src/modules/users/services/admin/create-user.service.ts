@@ -1,5 +1,5 @@
 import { db } from "../../../../db/db-pool.ts";
-import { users, usersProfile, accounts, EnumUserRole } from "../../../../db/schema/user/index.ts";
+import { users, profiles, accounts, EnumUserRole } from "../../../../db/schema/users/index.ts";
 import { eq } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/response.ts";
 
@@ -52,7 +52,7 @@ export async function createUserService(params: CreateUserParams): Promise<Creat
       .returning();
 
     // 2. Create Profile
-    await tx.insert(usersProfile).values({
+    await tx.insert(profiles).values({
       id: insertedUser.id,
       updatedAt: new Date(),
     });

@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { EnumUserRole } from "../../../db/schema/user/types.ts";
+import { EnumUserRole } from "../../../db/schema/users/types.ts";
 import { requireRoles } from "../../../hooks/auth.hook.ts";
 
 async function adminHook(fastify: FastifyInstance) {

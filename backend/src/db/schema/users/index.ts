@@ -3,5 +3,5 @@ export { users, type User, type SchemaUserSelect, type SchemaUserInsert } from "
 export { sessions, type SchemaSessionSelect, type SchemaSessionInsert } from "./sessions.ts";
 export { accounts, type SchemaAccountSelect, type SchemaAccountInsert } from "./accounts.ts";
 export { verifications, type SchemaVerificationSelect, type SchemaVerificationInsert } from "./verifications.ts";
-export { usersProfile, type SchemaUsersProfileSelect, type SchemaUsersProfileInsert } from "./profiles.ts";
+export { profiles, type SchemaUsersProfileSelect, type SchemaUsersProfileInsert } from "./profiles.ts";
 export { usersStats, type UsersStats, type SchemaUsersStatsSelect, type SchemaUsersStatsInsert } from "./stats.ts";

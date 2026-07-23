@@ -1,5 +1,5 @@
 import { db } from "../../../../db/db-pool.ts";
-import { users, usersProfile, accounts } from "../../../../db/schema/user/index.ts";
+import { users, profiles, accounts } from "../../../../db/schema/users/index.ts";
 import { eq, sql } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/response.ts";
 import { getUserAvatarUrl, saveUserAvatar, deleteUserAvatar } from "../../../../utils/user/user-utils.ts";
@@ -160,14 +160,14 @@ export async function updateProfileService(params: UpdateProfileParams): Promise
       profileUpdates.updatedAt = new Date();
 
       await tx
-        .insert(usersProfile)
+        .insert(profiles)
         .values({ id, ...profileUpdates })
         .onConflictDoUpdate({
-          target: usersProfile.id,
+          target: profiles.id,
           set: profileUpdates.extra
             ? {
               ...profileUpdates,
-              extra: sql`${usersProfile.extra} || ${JSON.stringify(profileUpdates.extra)}::jsonb`,
+              extra: sql`${profiles.extra} || ${JSON.stringify(profileUpdates.extra)}::jsonb`,
             }
             : profileUpdates,
         });
@@ -182,20 +182,20 @@ export async function updateProfileService(params: UpdateProfileParams): Promise
       name: users.name,
       image: users.image,
       emailVerified: users.emailVerified,
-      school: usersProfile.school,
-      educationLevel: usersProfile.educationLevel,
-      grade: usersProfile.grade,
-      phone: usersProfile.phone,
-      address: usersProfile.address,
-      bio: usersProfile.bio,
-      dateOfBirth: usersProfile.dateOfBirth,
+      school: profiles.school,
+      educationLevel: profiles.educationLevel,
+      grade: profiles.grade,
+      phone: profiles.phone,
+      address: profiles.address,
+      bio: profiles.bio,
+      dateOfBirth: profiles.dateOfBirth,
       providerId: accounts.providerId,
-      extra: usersProfile.extra,
+      extra: profiles.extra,
       createdAt: users.createdAt,
       updatedAt: users.updatedAt,
     })
     .from(users)
-    .leftJoin(usersProfile, eq(users.id, usersProfile.id))
+    .leftJoin(profiles, eq(users.id, profiles.id))
     .leftJoin(accounts, eq(users.id, accounts.userId))
     .where(eq(users.id, id))
     .limit(1);

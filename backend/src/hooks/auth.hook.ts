@@ -1,7 +1,7 @@
 import { fromNodeHeaders } from "better-auth/node";
 import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { getAuthInstance } from "../decorators/auth.decorator.ts";
-import { EnumUserRole } from "../db/schema/user/types.ts";
+import { EnumUserRole } from "../db/schema/users/types.ts";
 
 export type UserRole = typeof EnumUserRole[keyof typeof EnumUserRole];
 

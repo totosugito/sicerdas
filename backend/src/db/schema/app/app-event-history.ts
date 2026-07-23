@@ -1,6 +1,6 @@
 import { pgTable, uuid, text, timestamp, index } from 'drizzle-orm/pg-core';
 import { PgEnumContentType, EnumContentType, PgEnumEventStatus, EnumEventStatus } from '../enum/enum-app.ts';
-import { users } from '../user/users.ts';
+import { users } from '../users/users.ts';
 
 
 

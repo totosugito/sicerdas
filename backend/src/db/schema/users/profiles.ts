@@ -30,7 +30,7 @@ import { users } from "./users.ts";
  *   without requiring database migrations
  * - The id field references the user's ID directly, ensuring data consistency
  */
-export const usersProfile = pgTable('users_profiles', {
+export const profiles = pgTable('users_profiles', {
     // Primary key that matches the user ID for one-to-one relationship
     id: uuid('id').primaryKey().notNull()
         .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
@@ -67,5 +67,5 @@ export const usersProfile = pgTable('users_profiles', {
 ]);
 
 
-export type SchemaUsersProfileSelect = InferSelectModel<typeof usersProfile>;
-export type SchemaUsersProfileInsert = InferInsertModel<typeof usersProfile>;
+export type SchemaUsersProfileSelect = InferSelectModel<typeof profiles>;
+export type SchemaUsersProfileInsert = InferInsertModel<typeof profiles>;

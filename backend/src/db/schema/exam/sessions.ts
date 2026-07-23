@@ -6,7 +6,7 @@ import {
   EnumExamSessionMode,
   PgEnumExamSessionMode,
 } from "./enums.ts";
-import { users } from "../user/users.ts";
+import { users } from "../users/users.ts";
 import { examPackages } from "./packages.ts";
 import { examPackageSections } from "./package-sections.ts";
 

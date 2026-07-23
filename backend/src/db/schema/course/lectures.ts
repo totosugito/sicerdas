@@ -12,7 +12,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { courseChapters } from "./chapters.ts";
 import { EnumLectureType, PgEnumLectureType } from "./enums.ts";
-import { users } from "../user/users.ts";
+import { users } from "../users/users.ts";
 
 /**
  * Table: lectures

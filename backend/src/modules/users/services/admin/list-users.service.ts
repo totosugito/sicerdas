@@ -1,5 +1,5 @@
 import { db } from "../../../../db/db-pool.ts";
-import { users, usersProfile } from "../../../../db/schema/user/index.ts";
+import { users, profiles } from "../../../../db/schema/users/index.ts";
 import { and, asc, desc, eq, ilike, or, sql, inArray } from "drizzle-orm";
 import type { PaginationMeta } from "../../../../types/response.ts";
 import { getUserAvatarUrl } from "../../../../utils/user/user-utils.ts";
@@ -56,7 +56,7 @@ export async function listUsersService(params: ListUsersParams): Promise<ListUse
       updatedAt: users.updatedAt,
     })
     .from(users)
-    .leftJoin(usersProfile, eq(users.id, usersProfile.id));
+    .leftJoin(profiles, eq(users.id, profiles.id));
 
   const queryWithWhere = baseQuery.where(
     conditions.length > 0 ? and(...conditions) : undefined,

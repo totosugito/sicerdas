@@ -1,7 +1,7 @@
 import { pgTable, uuid, text, timestamp, index, jsonb } from 'drizzle-orm/pg-core';
 import { PgEnumContentType, EnumContentType } from '../enum/enum-app.ts';
 import { PgEnumReportStatus, PgEnumReportReason, EnumReportReason, EnumReportStatus } from '../enum/enum-general.ts';
-import { users } from '../user/users.ts';
+import { users } from '../users/users.ts';
 
 /**
  * Table: content_report

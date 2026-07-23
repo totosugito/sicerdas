@@ -1,6 +1,6 @@
 import { db } from "../../../../db/db-pool.ts";
 import { examUserStatsGlobal } from "../../../../db/schema/exam/user-stats-global.ts";
-import { users } from "../../../../db/schema/user/users.ts";
+import { users } from "../../../../db/schema/users/users.ts";
 import { eq, desc } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/index.ts";
 import type { LeaderboardData, LeaderboardParams } from "../leaderboard.schema.ts";

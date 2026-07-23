@@ -1,5 +1,5 @@
 import { db } from "../../../../db/db-pool.ts";
-import { users, usersProfile, accounts } from "../../../../db/schema/user/index.ts";
+import { users, profiles, accounts } from "../../../../db/schema/users/index.ts";
 import { eq } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/response.ts";
 import { getUserAvatarUrl } from "../../../../utils/user/user-utils.ts";
@@ -24,18 +24,18 @@ export async function getUserDetailsService(id: string): Promise<GetUserDetailsR
       createdAt: users.createdAt,
       updatedAt: users.updatedAt,
       providerId: accounts.providerId,
-      school: usersProfile.school,
-      educationLevel: usersProfile.educationLevel,
-      grade: usersProfile.grade,
-      phone: usersProfile.phone,
-      address: usersProfile.address,
-      bio: usersProfile.bio,
-      dateOfBirth: usersProfile.dateOfBirth,
-      extra: usersProfile.extra,
+      school: profiles.school,
+      educationLevel: profiles.educationLevel,
+      grade: profiles.grade,
+      phone: profiles.phone,
+      address: profiles.address,
+      bio: profiles.bio,
+      dateOfBirth: profiles.dateOfBirth,
+      extra: profiles.extra,
     })
     .from(users)
     .leftJoin(accounts, eq(users.id, accounts.userId))
-    .leftJoin(usersProfile, eq(users.id, usersProfile.id))
+    .leftJoin(profiles, eq(users.id, profiles.id))
     .where(eq(users.id, id))
     .limit(1);
 

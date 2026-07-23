@@ -1,6 +1,6 @@
 import { pgTable, uuid, varchar, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
-import { users } from "../user/users.ts";
+import { users } from "../users/users.ts";
 
 /**
  * Table: content_categories

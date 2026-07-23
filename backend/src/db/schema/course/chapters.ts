@@ -10,7 +10,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { courses } from "./courses.ts";
-import { users } from "../user/users.ts";
+import { users } from "../users/users.ts";
 
 /**
  * Table: chapters

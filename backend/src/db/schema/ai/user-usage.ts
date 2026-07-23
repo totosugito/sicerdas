@@ -1,6 +1,6 @@
 import { pgTable, varchar, timestamp, uuid, integer, jsonb, index } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { users } from '../user/users.ts';
+import { users } from '../users/users.ts';
 import { appTier } from '../app/app-tier.ts';
 import { EnumUsageType, PgEnumUsageType } from '../enum/enum-app.ts';
 

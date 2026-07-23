@@ -1,4 +1,4 @@
-import { EnumUserRole } from "backend/src/db/schema/user/types";
+import { EnumUserRole } from "backend/src/db/schema/users/types";
 import { SubmitHandler } from "react-hook-form";
 
 export type LoginFormValues = {

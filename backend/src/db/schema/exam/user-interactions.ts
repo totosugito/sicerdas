@@ -10,7 +10,7 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 import { type InferInsertModel, type InferSelectModel } from "drizzle-orm";
-import { users } from "../user/users.ts";
+import { users } from "../users/users.ts";
 import { examPackages } from "./packages.ts";
 import { PgEnumExamPackageUserStatus, EnumExamPackageUserStatus } from "./enums.ts";
 

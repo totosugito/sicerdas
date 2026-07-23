@@ -9,7 +9,7 @@ import {
   CreateUserRequest,
   UpdateUserParams,
 } from "@/api/users";
-import { EnumUserRole } from "backend/src/db/schema/user/types";
+import { EnumUserRole } from "backend/src/db/schema/users/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 
@@ -57,9 +57,9 @@ export const DialogUserCreate = ({ open, onOpenChange, user }: DialogUserCreateP
     password: user
       ? z.string().optional()
       : z.string().min(
-          6,
-          t(($) => $.user.profile.security.passwordMinLengthError),
-        ),
+        6,
+        t(($) => $.user.profile.security.passwordMinLengthError),
+      ),
   };
 
   const formConfig = {

@@ -6,7 +6,7 @@ import * as schema from "../../../db/schema/index.ts";
 import dotenv from "dotenv";
 import { bookCategory, bookGroup } from "../../../db/schema/book/index.ts";
 import { educationGrades } from "../../../db/schema/education/index.ts";
-import { users } from "../../../db/schema/user/index.ts";
+import { users } from "../../../db/schema/users/index.ts";
 import { EnumContentType, EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
 dotenv.config({ path: process.env.NODE_ENV === "development" ? ".env.devel" : ".env" });

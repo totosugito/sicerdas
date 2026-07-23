@@ -1,5 +1,5 @@
 import { db } from "../../../../db/db-pool.ts";
-import { sessions } from "../../../../db/schema/user/index.ts";
+import { sessions } from "../../../../db/schema/users/index.ts";
 import { eq } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/response.ts";
 

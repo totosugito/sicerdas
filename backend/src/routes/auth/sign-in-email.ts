@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@fastify/type-provider-typebox";
 import { db } from "../../db/db-pool.ts";
-import { users, usersProfile } from "../../db/schema/user/index.ts";
+import { users, profiles } from "../../db/schema/users/index.ts";
 import { eq } from "drizzle-orm";
 import { getUserAvatarUrl } from "../../utils/user/user-utils.ts";
 
@@ -59,7 +59,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async (req, reply) => {
-            // Parse form data into a key-value object
+      // Parse form data into a key-value object
       const formData = new Map<string, string>();
       if (typeof req.parts === "function") {
         for await (const part of req.parts()) {
@@ -107,10 +107,10 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           role: users.role,
           createdAt: users.createdAt,
           updatedAt: users.updatedAt,
-          tierId: usersProfile.tierId,
+          tierId: profiles.tierId,
         })
         .from(users)
-        .leftJoin(usersProfile, eq(users.id, usersProfile.id))
+        .leftJoin(profiles, eq(users.id, profiles.id))
         .where(eq(users.id, authData.user.id))
         .limit(1);
 

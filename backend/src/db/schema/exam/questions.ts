@@ -19,7 +19,7 @@ import {
 } from "./enums.ts";
 import { examPassages } from "./passages.ts";
 import { examSubjects } from "./subjects.ts";
-import { users } from "../user/users.ts";
+import { users } from "../users/users.ts";
 import { educationGrades } from "../education/grades.ts";
 import { appTier } from "../app/app-tier.ts";
 

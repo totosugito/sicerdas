@@ -1,7 +1,7 @@
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { index, jsonb, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { courses } from './courses.ts';
-import { users } from '../user/users.ts';
+import { users } from '../users/users.ts';
 import { EnumEnrollmentStatus, PgEnumEnrollmentStatus } from './enums.ts';
 
 /**

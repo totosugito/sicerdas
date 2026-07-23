@@ -1,6 +1,6 @@
 import { pgTable, timestamp, jsonb, uuid, numeric, integer, boolean, uniqueIndex, index } from 'drizzle-orm/pg-core';
 import { type InferInsertModel, type InferSelectModel } from 'drizzle-orm';
-import { users } from '../user/users.ts';
+import { users } from '../users/users.ts';
 import { books } from "./books.ts";
 
 /**

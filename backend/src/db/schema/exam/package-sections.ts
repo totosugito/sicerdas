@@ -10,7 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import { examPackages } from "./packages.ts";
-import { users } from "../user/users.ts";
+import { users } from "../users/users.ts";
 import { appVersion } from "../app/app-version.ts";
 
 /**

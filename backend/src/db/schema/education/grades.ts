@@ -9,7 +9,7 @@ import {
   index,
   boolean,
 } from "drizzle-orm/pg-core";
-import { users } from "../user/index.ts";
+import { users } from "../users/index.ts";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 
 /**

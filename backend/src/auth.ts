@@ -11,7 +11,7 @@ import { fileURLToPath } from "url";
 import { BrevoClient } from "@getbrevo/brevo";
 import { getUserAvatarUrl } from "./utils/user/user-utils.ts";
 import { eq } from "drizzle-orm";
-import { users, usersProfile } from "./db/schema/user/index.ts";
+import { users, profiles } from "./db/schema/users/index.ts";
 
 // Initialize Brevo API client if API key is provided
 let brevo: BrevoClient | null = null;
@@ -53,10 +53,10 @@ const auth = betterAuth({
       const userRecord = await db
         .select({
           role: users.role,
-          tierId: usersProfile.tierId,
+          tierId: profiles.tierId,
         })
         .from(users)
-        .leftJoin(usersProfile, eq(users.id, usersProfile.id))
+        .leftJoin(profiles, eq(users.id, profiles.id))
         .where(eq(users.id, user.id))
         .limit(1);
 

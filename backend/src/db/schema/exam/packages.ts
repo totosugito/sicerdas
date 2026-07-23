@@ -11,7 +11,7 @@ import {
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import { EnumExamType, PgEnumExamType } from "./enums.ts";
 import { educationCategories, educationGrades } from "../education/index.ts";
-import { users } from "../user/users.ts";
+import { users } from "../users/users.ts";
 import { appTier } from "../app/app-tier.ts";
 import { appVersion } from "../app/app-version.ts";
 

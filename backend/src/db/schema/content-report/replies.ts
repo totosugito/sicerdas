@@ -1,5 +1,5 @@
 import { pgTable, uuid, text, timestamp, index, jsonb } from 'drizzle-orm/pg-core';
-import { users } from '../user/users.ts';
+import { users } from '../users/users.ts';
 import { contentReport } from './reports.ts';
 
 /**

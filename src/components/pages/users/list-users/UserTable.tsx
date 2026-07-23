@@ -45,7 +45,7 @@ import {
   FacetedList,
   FacetedTrigger,
 } from "@/components/ui/faceted";
-import { EnumUserRole } from "backend/src/db/schema/user/types";
+import { EnumUserRole } from "backend/src/db/schema/users/types";
 import { cn } from "@/lib/utils";
 
 import { Card, CardHeader, CardContent } from "@/components/ui/card";

@@ -1,5 +1,5 @@
 import { db } from "../../../../db/db-pool.ts";
-import { users, usersProfile, sessions, usersStats } from "../../../../db/schema/user/index.ts";
+import { users, profiles, sessions, usersStats } from "../../../../db/schema/users/index.ts";
 import { EnumStatsPeriodType } from "../../../../db/schema/enum/enum-general.ts";
 import { and, count, eq, gte, lt, sql, sum } from "drizzle-orm";
 import { fileURLToPath } from "url";
@@ -97,9 +97,9 @@ export const updateUserStats = async (refDate: Date = new Date()) => {
 
     // Tier Breakdown
     const tierRows = await db
-      .select({ tierId: usersProfile.tierId, total: count(usersProfile.id) })
-      .from(usersProfile)
-      .groupBy(usersProfile.tierId);
+      .select({ tierId: profiles.tierId, total: count(profiles.id) })
+      .from(profiles)
+      .groupBy(profiles.tierId);
 
     const tierBreakdown: Record<string, number> = {};
     for (const t of tierRows) {
@@ -110,9 +110,9 @@ export const updateUserStats = async (refDate: Date = new Date()) => {
 
     // Education Level Breakdown
     const eduRows = await db
-      .select({ educationLevel: usersProfile.educationLevel, total: count(usersProfile.id) })
-      .from(usersProfile)
-      .groupBy(usersProfile.educationLevel);
+      .select({ educationLevel: profiles.educationLevel, total: count(profiles.id) })
+      .from(profiles)
+      .groupBy(profiles.educationLevel);
 
     const educationBreakdown: Record<string, number> = {};
     for (const e of eduRows) {

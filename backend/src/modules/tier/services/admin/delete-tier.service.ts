@@ -1,6 +1,6 @@
 import { db } from "../../../../db/db-pool.ts";
 import { appTier } from "../../../../db/schema/app/app-tier.ts";
-import { usersProfile } from "../../../../db/schema/user/index.ts";
+import { profiles } from "../../../../db/schema/users/index.ts";
 import { aiModels } from "../../../../db/schema/ai/index.ts";
 import { eq, count } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../types/response.ts";
@@ -35,8 +35,8 @@ export async function deleteTierService(slug: string): Promise<DeleteTierRespons
   // Check if tier is being used by any user profiles
   const [userProfileCount] = await db
     .select({ count: count() })
-    .from(usersProfile)
-    .where(eq(usersProfile.tierId, slug));
+    .from(profiles)
+    .where(eq(profiles.tierId, slug));
 
   if (userProfileCount.count > 0) {
     return {

@@ -5,7 +5,7 @@ import { bookGroup } from "../../../db/schema/book/group.ts";
 import { educationGrades } from "../../../db/schema/education/index.ts";
 import { bookCategory } from "../../../db/schema/book/category.ts";
 import { bookGroupStats } from "../../../db/schema/book/group-stats.ts";
-import { usersProfile } from "../../../db/schema/user/profiles.ts";
+import { profiles } from "../../../db/schema/users/profiles.ts";
 import { and, gt, eq, asc, sql } from "drizzle-orm";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 import { blocknoteToHtml, resolveBlockNoteUrls } from "../../../utils/blocknote/blocknote-utils.ts";
@@ -38,9 +38,9 @@ export async function appLatestService(
   let userTier = "free";
   if (userId) {
     const p = await db
-      .select({ tierId: usersProfile.tierId })
-      .from(usersProfile)
-      .where(eq(usersProfile.id, userId))
+      .select({ tierId: profiles.tierId })
+      .from(profiles)
+      .where(eq(profiles.id, userId))
       .limit(1);
 
     if (p.length > 0 && p[0].tierId) {

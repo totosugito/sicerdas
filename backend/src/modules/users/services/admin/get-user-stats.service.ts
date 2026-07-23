@@ -1,5 +1,5 @@
 import { db } from "../../../../db/db-pool.ts";
-import { usersStats } from "../../../../db/schema/user/index.ts";
+import { usersStats } from "../../../../db/schema/users/index.ts";
 import { EnumStatsPeriodType } from "../../../../db/schema/enum/enum-general.ts";
 import { desc, eq } from "drizzle-orm";
 import type { GetUserStatsQuery, UserStatsData, UserStatsItem } from "../../user.schema.ts";

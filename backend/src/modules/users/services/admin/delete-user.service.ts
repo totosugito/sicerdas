@@ -1,5 +1,5 @@
 import { db } from "../../../../db/db-pool.ts";
-import { users } from "../../../../db/schema/user/index.ts";
+import { users } from "../../../../db/schema/users/index.ts";
 import { eq, inArray } from "drizzle-orm";
 import env from "../../../../config/env.config.ts";
 import { deleteStorageDirectory } from "../../../../platform/storage/storage.ts";

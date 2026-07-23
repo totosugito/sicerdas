@@ -6,7 +6,7 @@ import * as schema from "../../../db/schema/index.ts";
 import dotenv from "dotenv";
 import { educationCategories, educationTags } from "../../../db/schema/education/index.ts";
 import { examSubjects } from "../../../db/schema/exam/index.ts";
-import { users } from "../../../db/schema/user/index.ts";
+import { users } from "../../../db/schema/users/index.ts";
 
 dotenv.config({ path: process.env.NODE_ENV === "development" ? ".env.devel" : ".env" });
 

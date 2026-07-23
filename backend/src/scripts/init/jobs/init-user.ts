@@ -1,7 +1,7 @@
 import { pathToFileURL } from 'url';
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { users, accounts, usersProfile } from '../../../db/schema/user/index.ts';
+import { users, accounts, profiles } from '../../../db/schema/users/index.ts';
 import { eq } from "drizzle-orm";
 import pg from "pg";
 import envConfig from "../../../config/env.config.ts";
@@ -78,7 +78,7 @@ export default async function seed() {
     const [enterpriseTier] = await db.select().from(schema.appTier).where(eq(schema.appTier.slug, 'enterprise')).limit(1);
 
     // Insert user profile
-    await db.insert(usersProfile).values({
+    await db.insert(profiles).values({
       id: user_.id,
       school: "",
       grade: "",

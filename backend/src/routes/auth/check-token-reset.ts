@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from '@fastify/type-provider-typebox';
 import { db } from "../../db/db-pool.ts";
-import { verifications } from "../../db/schema/user/index.ts";
+import { verifications } from "../../db/schema/users/index.ts";
 import { eq } from "drizzle-orm";
 
 /**
@@ -44,7 +44,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
             }
         },
         handler: async (req, reply) => {
-                        const { token } = req.body as { token: string };
+            const { token } = req.body as { token: string };
 
             // Validate required fields using Fastify Sensible badRequest
             if (!token) {

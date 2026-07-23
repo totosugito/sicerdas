@@ -4,7 +4,7 @@ import fp from "fastify-plugin";
 import auth from "../../auth.ts";
 import { getUserAvatarUrl } from "../../utils/user/user-utils.ts";
 import { db } from "../../db/db-pool.ts";
-import { users, usersProfile } from "../../db/schema/user/index.ts";
+import { users, profiles } from "../../db/schema/users/index.ts";
 import { eq } from "drizzle-orm";
 
 const authentication: FastifyPluginAsync = async (fastify) => {
@@ -58,10 +58,10 @@ const authentication: FastifyPluginAsync = async (fastify) => {
                 const userRecord = await db
                   .select({
                     role: users.role,
-                    tierId: usersProfile.tierId,
+                    tierId: profiles.tierId,
                   })
                   .from(users)
-                  .leftJoin(usersProfile, eq(users.id, usersProfile.id))
+                  .leftJoin(profiles, eq(users.id, profiles.id))
                   .where(eq(users.id, userId))
                   .limit(1);
 
