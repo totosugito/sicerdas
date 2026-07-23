@@ -13,18 +13,18 @@ const listFavoritesRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: "List user's bookmarked books",
       querystring: Type.Object({
         page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
-        pageSize: Type.Optional(Type.Number({ minimum: 1, maximum: 20, default: 10 })),
+        limit: Type.Optional(Type.Number({ minimum: 1, maximum: 20, default: 10 })),
       }),
       response: { 200: FavoritesResponse },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Querystring: { page: number; pageSize: number } }>,
+      req: FastifyRequest<{ Querystring: { page: number; limit: number } }>,
       reply: FastifyReply,
     ): Promise<typeof FavoritesResponse.static> {
       const userId = (req as any).session.user.id;
-      const { page = 1, pageSize = 10 } = req.query;
+      const { page = 1, limit = 10 } = req.query;
 
-      const result = await favoritesService(userId, page, pageSize);
+      const result = await favoritesService(userId, page, limit);
 
       return reply.status(200).send({
         success: true,

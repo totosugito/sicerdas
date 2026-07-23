@@ -6,7 +6,7 @@ import type { FavoritesResponse } from "../types";
 export type { FavoriteBookData as FavoriteBook } from "../types";
 
 export const useFavoriteBooks = (
-  params?: { page?: number; pageSize?: number },
+  params?: { page?: number; limit?: number },
   options: Partial<UseQueryOptions<FavoritesResponse, Error>> = {},
 ) => {
   return useQuery({

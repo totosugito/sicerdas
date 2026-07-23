@@ -27,7 +27,7 @@ export const BooksFavoriteList = ({ page, onPageChange, limit }: BooksFavoriteLi
   const queryClient = useQueryClient();
 
   const { data: res, isLoading } = useFavoriteBooks({
-    pageSize: 5,
+    limit: limit || 5,
     page: page
   });
 

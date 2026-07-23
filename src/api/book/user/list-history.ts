@@ -6,7 +6,7 @@ import type { HistoryResponse } from "../types";
 export type { HistoryBookData as HistoryBook } from "../types";
 
 export const useBookHistory = (
-  params?: { page?: number; pageSize?: number },
+  params?: { page?: number; limit?: number },
   options: Partial<UseQueryOptions<HistoryResponse, Error>> = {},
 ) => {
   return useQuery({

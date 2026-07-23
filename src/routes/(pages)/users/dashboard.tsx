@@ -95,7 +95,7 @@ function ExamDashboardComponent() {
   const history = historyRes?.data;
 
   const { data: bookHistoryRes } = useBookHistory({
-    pageSize: 5,
+    limit: 5,
     page: bookRecentPage
   }, {
     enabled: activeTab === "overview" || activeTab === "library"

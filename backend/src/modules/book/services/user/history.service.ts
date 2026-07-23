@@ -10,19 +10,20 @@ import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { and, eq, sql, desc, gt } from "drizzle-orm";
 import { getBookCoverUrl } from "../../../../utils/book/book-utils.ts";
 import type { ServiceResponse } from "../../../../types/index.ts";
+import type { PaginationMeta } from "../../../../types/response.ts";
 import type { HistoryBookData } from "../../book.schema.ts";
 
 export interface HistoryResult extends ServiceResponse {
   data?: HistoryBookData[];
-  pagination?: { total: number; page: number; pageSize: number; totalPages: number };
+  pagination?: PaginationMeta;
 }
 
 export async function historyService(
   userId: string,
   page: number,
-  pageSize: number,
+  limit: number,
 ): Promise<HistoryResult> {
-  const offset = (page - 1) * pageSize;
+  const offset = (page - 1) * limit;
   const whereClause = and(eq(bookInteractions.userId, userId), gt(bookInteractions.viewCount, 0));
 
   const [countResult] = await db
@@ -56,7 +57,7 @@ export async function historyService(
     .leftJoin(bookEventStats, eq(books.id, bookEventStats.bookId))
     .where(whereClause)
     .orderBy(desc(bookInteractions.updatedAt))
-    .limit(pageSize)
+    .limit(limit)
     .offset(offset);
 
   return {
@@ -78,6 +79,6 @@ export async function historyService(
       },
       viewedAt: item.viewedAt.toISOString(),
     })),
-    pagination: { total, page, pageSize, totalPages: Math.ceil(total / pageSize) },
+    pagination: { total, page, limit, totalPages: Math.ceil(total / limit) },
   };
 }

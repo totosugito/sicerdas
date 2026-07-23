@@ -24,7 +24,7 @@ export const BooksRecentList = ({ page = 1, onPageChange, limit = 5 }: BooksRece
   const { t } = useAppTranslation();
 
   const { data: res, isLoading } = useBookHistory({
-    pageSize: limit,
+    limit: limit,
     page: page
   });
 

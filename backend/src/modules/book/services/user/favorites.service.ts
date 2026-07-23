@@ -10,19 +10,20 @@ import { educationGrades } from "../../../../db/schema/education/grades.ts";
 import { and, eq, sql, desc } from "drizzle-orm";
 import { getBookCoverUrl } from "../../../../utils/book/book-utils.ts";
 import type { ServiceResponse } from "../../../../types/index.ts";
+import type { PaginationMeta } from "../../../../types/response.ts";
 import type { FavoriteBookData } from "../../book.schema.ts";
 
 export interface FavoritesResult extends ServiceResponse {
   data?: FavoriteBookData[];
-  pagination?: { total: number; page: number; pageSize: number; totalPages: number };
+  pagination?: PaginationMeta;
 }
 
 export async function favoritesService(
   userId: string,
   page: number,
-  pageSize: number,
+  limit: number,
 ): Promise<FavoritesResult> {
-  const offset = (page - 1) * pageSize;
+  const offset = (page - 1) * limit;
   const whereClause = and(eq(bookInteractions.userId, userId), eq(bookInteractions.bookmarked, true));
 
   const [countResult] = await db
@@ -56,7 +57,7 @@ export async function favoritesService(
     .leftJoin(bookEventStats, eq(books.id, bookEventStats.bookId))
     .where(whereClause)
     .orderBy(desc(bookInteractions.updatedAt))
-    .limit(pageSize)
+    .limit(limit)
     .offset(offset);
 
   return {
@@ -78,6 +79,6 @@ export async function favoritesService(
       },
       bookmarkedAt: item.bookmarkedAt.toISOString(),
     })),
-    pagination: { total, page, pageSize, totalPages: Math.ceil(total / pageSize) },
+    pagination: { total, page, limit, totalPages: Math.ceil(total / limit) },
   };
 }
