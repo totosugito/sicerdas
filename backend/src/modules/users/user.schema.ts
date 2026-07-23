@@ -159,3 +159,11 @@ export const RevokeSessionBodySchema = Type.Object({
 
 export type RevokeSessionBody = Static<typeof RevokeSessionBodySchema>;
 
+export const BanUserBodySchema = Type.Object({
+  id: Type.String({ format: "uuid", description: "User ID to ban/unban" }),
+  banned: Type.Boolean({ description: "True to ban, false to unban" }),
+  banReason: Type.Optional(Type.String({ description: "Reason for the ban" })),
+});
+
+export type BanUserBody = Static<typeof BanUserBodySchema>;
+

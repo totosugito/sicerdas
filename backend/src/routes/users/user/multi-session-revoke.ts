@@ -1,6 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { revokeSessionService, RevokeSessionBodySchema, type RevokeSessionBody } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -16,9 +17,9 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         "4xx": ErrorResponseSchema,
       },
     },
-    handler: async (req, reply) => {
-      const userId = req.session.user.id;
-      const { sessionToken } = req.body as RevokeSessionBody;
+    handler: async (request: FastifyRequest, reply: FastifyReply) => {
+      const userId = request.session.user.id;
+      const { sessionToken } = request.body as RevokeSessionBody;
 
       const result = await revokeSessionService({
         userId,
@@ -26,7 +27,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!result.success) {
-        const message = req.t(result.errorKey!);
+        const message = request.t(result.errorKey!);
         if (result.statusCode === 404) {
           return reply.notFound(message);
         }
@@ -38,7 +39,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) => $.user.sessions.sessionRevoked),
+        message: request.t(($) => $.user.sessions.sessionRevoked),
       });
     },
   });

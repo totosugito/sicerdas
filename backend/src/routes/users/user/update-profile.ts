@@ -2,6 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { UploadedFile } from "../../../types/file.ts";
 import { updateProfileService, UpdateProfileResponseSchema, type BaseUpdateProfileData } from "../../../modules/users/index.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -18,9 +19,9 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         "4xx": ErrorResponseSchema,
       },
     },
-    handler: async (req, reply) => {
+    handler: async (request: FastifyRequest, reply: FastifyReply) => {
       // Get user ID from session (verified by user.hook.ts)
-      const userId = req.session.user.id;
+      const userId = request.session.user.id;
 
       // Initialize variables for form data
       const updateData: BaseUpdateProfileData = {};
@@ -28,7 +29,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       let imageFile: UploadedFile | null = null;
 
       // Parse multipart form data
-      const parts = req.parts();
+      const parts = request.parts();
       for await (const part of parts) {
         if (part.type === "field") {
           updateData[part.fieldname as keyof typeof updateData] = part.value as string;
@@ -69,13 +70,13 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!result.success || !result.data) {
-        const message = req.t(result.errorKey!);
+        const message = request.t(result.errorKey!);
         return reply.badRequest(message);
       }
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) => $.user.userUpdatedSuccessfully),
+        message: request.t(($) => $.user.userUpdatedSuccessfully),
         data: result.data,
       });
     },

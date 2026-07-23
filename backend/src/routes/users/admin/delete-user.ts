@@ -22,20 +22,20 @@ const deleteUser: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Params: typeof Params.static }>,
+      request: FastifyRequest<{ Params: typeof Params.static }>,
       reply: FastifyReply,
     ): Promise<typeof BaseResponseSchema.static> {
-      const { id } = req.params;
+      const { id } = request.params;
 
       // Prevent self-deletion
-      if (id === req.session.user.id) {
-        return reply.badRequest(req.t(($) => $.user.errors.accessDenied));
+      if (id === request.session.user.id) {
+        return reply.badRequest(request.t(($) => $.user.errors.accessDenied));
       }
 
-      const result = await deleteUserService({ id, logger: req.log });
+      const result = await deleteUserService({ id, logger: request.log });
 
       if (!result.success) {
-        const message = req.t(result.errorKey!);
+        const message = request.t(result.errorKey!);
         if (result.statusCode === 404) {
           return reply.notFound(message);
         }
@@ -44,7 +44,7 @@ const deleteUser: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) => $.user.management.delete.success),
+        message: request.t(($) => $.user.management.delete.success),
       });
     },
   });

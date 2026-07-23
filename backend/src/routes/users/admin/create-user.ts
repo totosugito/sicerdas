@@ -19,13 +19,13 @@ const createUser: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Body: typeof CreateUserBodySchema.static }>,
+      request: FastifyRequest<{ Body: typeof CreateUserBodySchema.static }>,
       reply: FastifyReply,
     ): Promise<typeof UserResponseSchema.static> {
       const auth = getAuthInstance(app);
 
       // Explicit destructuring for Mass Assignment Protection
-      const { name, email, role = EnumUserRole.USER, password } = req.body;
+      const { name, email, role = EnumUserRole.USER, password } = request.body;
 
       // Get auth context for password hashing
       const context = await auth.$context;
@@ -39,7 +39,7 @@ const createUser: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!result.success || !result.data) {
-        const message = req.t(result.errorKey!);
+        const message = request.t(result.errorKey!);
         if (result.statusCode === 404) {
           return reply.notFound(message);
         }
@@ -48,7 +48,7 @@ const createUser: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: req.t(($) => $.user.management.create.success),
+        message: request.t(($) => $.user.management.create.success),
         data: result.data,
       });
     },

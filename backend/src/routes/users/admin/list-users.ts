@@ -47,7 +47,7 @@ const listUsers: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Body: typeof ListBody.static }>,
+      request: FastifyRequest<{ Body: typeof ListBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof ListResponse.static> {
       const {
@@ -57,7 +57,7 @@ const listUsers: FastifyPluginAsyncTypebox = async (app) => {
         roles,
         sortBy = "createdAt",
         sortOrder = "desc",
-      } = req.body;
+      } = request.body;
 
       const result = await listUsersService({
         page,
@@ -70,7 +70,7 @@ const listUsers: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) => $.user.management.list.success),
+        message: request.t(($) => $.user.management.list.success),
         data: result,
       });
     },

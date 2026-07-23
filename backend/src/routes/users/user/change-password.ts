@@ -2,6 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 import { changePasswordService, ChangePasswordBodySchema, type ChangePasswordBody } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema, type ServiceResponse } from "../../../types/response.ts";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -18,19 +19,19 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         "4xx": ErrorResponseSchema,
       },
     },
-    handler: async (req, reply) => {
+    handler: async (request: FastifyRequest, reply: FastifyReply) => {
       const auth = getAuthInstance(app);
-      const { currentPassword, newPassword } = req.body as ChangePasswordBody;
+      const { currentPassword, newPassword } = request.body as ChangePasswordBody;
 
       if (!currentPassword) {
-        return reply.badRequest(req.t(($) => $.user.currentPasswordRequired));
+        return reply.badRequest(request.t(($) => $.user.currentPasswordRequired));
       }
 
       if (!newPassword) {
-        return reply.badRequest(req.t(($) => $.user.newPasswordRequired));
+        return reply.badRequest(request.t(($) => $.user.newPasswordRequired));
       }
 
-      const userId = req.session.user.id;
+      const userId = request.session.user.id;
       const context = await auth.$context;
 
       const result: ServiceResponse = await changePasswordService({
@@ -46,7 +47,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!result.success) {
-        const message = req.t(result.errorKey!);
+        const message = request.t(result.errorKey!);
         if (result.statusCode === 404) {
           return reply.notFound(message);
         }
@@ -58,7 +59,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) => $.user.passwordUpdatedSuccessfully),
+        message: request.t(($) => $.user.passwordUpdatedSuccessfully),
       });
     },
   });

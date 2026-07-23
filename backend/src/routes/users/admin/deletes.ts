@@ -25,15 +25,15 @@ const bulkDeleteUsers: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Body: typeof DeletesBody.static }>,
+      request: FastifyRequest<{ Body: typeof DeletesBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof BaseResponseSchema.static> {
-      const { ids } = req.body;
+      const { ids } = request.body;
 
-      const result = await deleteUserService({ ids, logger: req.log });
+      const result = await deleteUserService({ ids, logger: request.log });
 
       if (!result.success) {
-        const message = req.t(result.errorKey!);
+        const message = request.t(result.errorKey!);
         if (result.statusCode === 404) {
           return reply.notFound(message);
         }
@@ -42,7 +42,7 @@ const bulkDeleteUsers: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) => $.user.management.delete.success),
+        message: request.t(($) => $.user.management.delete.success),
       });
     },
   });

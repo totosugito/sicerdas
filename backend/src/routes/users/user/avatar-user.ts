@@ -20,19 +20,19 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         "4xx": ErrorResponseSchema,
       },
     },
-    handler: async (req: FastifyRequest, reply: FastifyReply) => {
+    handler: async (request: FastifyRequest, reply: FastifyReply) => {
       // User ID is available from the session (handled by user.hook.ts)
-      const userId = req.session.user.id;
+      const userId = request.session.user.id;
 
       // Type the query parameters
-      const query = req.query as { action?: string };
+      const query = request.query as { action?: string };
       const action = query.action;
 
       let fileParam = undefined;
       if (action !== "remove") {
-        const data = await req.file();
+        const data = await request.file();
         if (!data) {
-          return reply.badRequest(req.t(($) => $.user.noFileUploaded));
+          return reply.badRequest(request.t(($) => $.user.noFileUploaded));
         }
 
         fileParam = {
@@ -49,7 +49,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!result.success || !result.data) {
-        const message = req.t(result.errorKey!);
+        const message = request.t(result.errorKey!);
         if (result.statusCode === 404) {
           return reply.notFound(message);
         }
@@ -58,7 +58,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) =>
+        message: request.t(($) =>
           action === "remove" ? $.user.avatarRemovedSuccessfully : $.user.avatarUpdatedSuccessfully,
         ),
         data: result.data,

@@ -105,6 +105,7 @@
     "avatarRemovedSuccessfully": "Avatar berhasil dihapus",
     "avatarUpdatedSuccessfully": "Avatar berhasil diperbarui",
     "management": {
+      "missingUserId": "ID pengguna (id) wajib disertakan dalam permintaan",
       "list": {
         "success": "Daftar pengguna berhasil diambil"
       },

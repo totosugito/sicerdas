@@ -1,21 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { avatarUpdateService } from "../../../modules/users/index.ts";
-import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
-
-const AvatarResponse = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({
-    data: Type.Optional(
-      Type.Object({
-        id: Type.String(),
-        name: Type.String(),
-        image: Type.Union([Type.String(), Type.Null()]),
-      }),
-    ),
-  }),
-]);
+import { avatarUpdateService, AvatarResponseSchema, type AvatarUpdateResponse } from "../../../modules/users/index.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -30,17 +17,17 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
         action: Type.Optional(Type.String()),
       }),
       response: {
-        200: AvatarResponse,
+        200: AvatarResponseSchema,
         "4xx": ErrorResponseSchema,
       },
     },
-    handler: async (req: FastifyRequest, reply: FastifyReply) => {
-      let targetUserId = (req.query as any).id as string | undefined;
-      let action = (req.query as any).action as string | undefined;
+    handler: async (request: FastifyRequest, reply: FastifyReply) => {
+      let targetUserId = (request.query as any).id as string | undefined;
+      let action = (request.query as any).action as string | undefined;
       let uploadedFile: any = null;
 
       // Iterate through multipart parts to collect fields and optional file
-      const parts = req.parts();
+      const parts = request.parts();
       for await (const part of parts) {
         if (part.type === "file") {
           uploadedFile = part;
@@ -52,7 +39,7 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       if (!targetUserId) {
-        return reply.badRequest("Missing user ID (id) in request");
+        return reply.badRequest(request.t(($) => $.user.management.missingUserId));
       }
 
       let fileParam = undefined;
@@ -64,14 +51,14 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
         };
       }
 
-      const result = await avatarUpdateService({
+      const result: AvatarUpdateResponse = await avatarUpdateService({
         userId: targetUserId,
         action,
         file: fileParam,
       });
 
       if (!result.success || !result.data) {
-        const message = req.t(result.errorKey!);
+        const message = request.t(result.errorKey!);
         if (result.statusCode === 404) {
           return reply.notFound(message);
         }
@@ -80,7 +67,7 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) =>
+        message: request.t(($) =>
           action === "remove" ? $.user.avatarRemovedSuccessfully : $.user.avatarUpdatedSuccessfully,
         ),
         data: result.data,

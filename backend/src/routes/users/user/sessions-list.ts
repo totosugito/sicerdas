@@ -1,6 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { listSessionsService, SessionListResponseSchema } from "../../../modules/users/index.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -15,18 +16,18 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         "4xx": ErrorResponseSchema,
       },
     },
-    handler: async (req, reply) => {
-      const userId = req.session.user.id;
+    handler: async (request: FastifyRequest, reply: FastifyReply) => {
+      const userId = request.session.user.id;
 
       const result = await listSessionsService(userId);
 
       if (!result.success || !result.data) {
-        return reply.badRequest(req.t(result.errorKey!));
+        return reply.badRequest(request.t(result.errorKey!));
       }
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) => $.user.sessionsList.success),
+        message: request.t(($) => $.user.sessionsList.success),
         data: result.data,
       });
     },

@@ -1,11 +1,11 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import { BanUserParams, BaseResponse } from "../types";
+import { BanUserBody, BaseResponse } from "../types";
 
 export const useBanUser = () => {
   return useMutation({
-    mutationFn: async (data: BanUserParams) => {
+    mutationFn: async (data: BanUserBody) => {
       const response = await fetchApi({
         method: "POST",
         url: AppApi.users.admin.ban,

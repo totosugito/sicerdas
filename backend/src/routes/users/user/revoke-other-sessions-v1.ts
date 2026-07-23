@@ -2,6 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@fastify/type-provider-typebox";
 import { revokeOtherSessionsService } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 const RevokeOtherSessionsRequest = Type.Object({
   token: Type.String(),
@@ -21,9 +22,9 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
         "4xx": ErrorResponseSchema,
       },
     },
-    handler: async (req, reply) => {
-      const { token } = req.body as { token: string };
-      const userId = req.session.user.id;
+    handler: async (request: FastifyRequest, reply: FastifyReply) => {
+      const { token } = request.body as { token: string };
+      const userId = request.session.user.id;
 
       const result = await revokeOtherSessionsService({
         userId,
@@ -31,7 +32,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!result.success) {
-        const message = req.t(result.errorKey!);
+        const message = request.t(result.errorKey!);
         if (result.statusCode === 403) {
           return reply.status(403).send({
             success: false,
@@ -43,7 +44,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) => $.auth.sessions_revoked, { count: result.deletedCount }),
+        message: request.t(($) => $.auth.sessions_revoked, { count: result.deletedCount }),
       });
     },
   });

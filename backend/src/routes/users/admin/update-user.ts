@@ -17,11 +17,11 @@ const updateUser: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Body: typeof UpdateUserBodySchema.static }>,
+      request: FastifyRequest<{ Body: typeof UpdateUserBodySchema.static }>,
       reply: FastifyReply,
     ): Promise<typeof UserResponseSchema.static> {
       // Explicitly destructure for Mass Assignment Protection
-      const { id, name, email, role } = req.body;
+      const { id, name, email, role } = request.body;
 
       const result = await updateUserService({
         id,
@@ -31,7 +31,7 @@ const updateUser: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!result.success) {
-        const message = req.t(result.errorKey!);
+        const message = request.t(result.errorKey!);
         if (result.statusCode === 409) {
           return reply.conflict(message);
         }
@@ -43,7 +43,7 @@ const updateUser: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) => $.user.management.update.success),
+        message: request.t(($) => $.user.management.update.success),
         data: result.data,
       });
     },

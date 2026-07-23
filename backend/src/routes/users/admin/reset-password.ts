@@ -25,10 +25,10 @@ const resetPassword: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Body: typeof ResetPasswordBody.static }>,
+      request: FastifyRequest<{ Body: typeof ResetPasswordBody.static }>,
       reply: FastifyReply,
     ): Promise<typeof BaseResponseSchema.static> {
-      const { id, newPassword } = req.body;
+      const { id, newPassword } = request.body;
       const auth = getAuthInstance(app);
 
       // Get auth context for password hashing
@@ -41,7 +41,7 @@ const resetPassword: FastifyPluginAsyncTypebox = async (app) => {
       });
 
       if (!result.success) {
-        const message = req.t(result.errorKey!);
+        const message = request.t(result.errorKey!);
         if (result.statusCode === 404) {
           return reply.notFound(message);
         }
@@ -50,7 +50,7 @@ const resetPassword: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) => $.user.passwordUpdatedSuccessfully),
+        message: request.t(($) => $.user.passwordUpdatedSuccessfully),
       });
     },
   });

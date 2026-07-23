@@ -22,21 +22,21 @@ const detailsUser: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Params: typeof Params.static }>,
+      request: FastifyRequest<{ Params: typeof Params.static }>,
       reply: FastifyReply,
     ): Promise<typeof UserDetailsResponseSchema.static> {
-      const { id } = req.params;
+      const { id } = request.params;
 
       const result = await getUserDetailsService(id);
 
       if (!result.success || !result.data) {
-        const message = req.t(result.errorKey!);
+        const message = request.t(result.errorKey!);
         return reply.notFound(message);
       }
 
       return reply.status(200).send({
         success: true,
-        message: req.t(($) => $.user.management.details.success),
+        message: request.t(($) => $.user.management.details.success),
         data: result.data as any,
       });
     },
