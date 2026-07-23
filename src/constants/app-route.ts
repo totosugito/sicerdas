@@ -112,8 +112,8 @@ export const AppRoute = {
     admin: {
       list: { url: "/users/admin/list-users" },
     },
-    profile: { url: "/user/profile" },
-    dashboard: { url: "/user/dashboard" },
+    profile: { url: "/users/profile" },
+    dashboard: { url: "/users/dashboard" },
     chatAi: {
       models: { url: "/admin/chat-ai/models" },
     },

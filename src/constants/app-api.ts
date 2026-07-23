@@ -33,7 +33,9 @@ export const AppApi = {
       avatar: APP_URL_API + "/users/admin/avatar",
       deletes: APP_URL_API + "/users/admin/deletes",
       ban: APP_URL_API + "/users/admin/ban",
+      stats: APP_URL_API + "/users/admin/stats",
     },
+
     user: {
       details: APP_URL_API + "/users/user/details",
       updateProfile: APP_URL_API + "/users/user/update-profile",

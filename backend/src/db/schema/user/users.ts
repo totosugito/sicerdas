@@ -1,5 +1,5 @@
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { boolean, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { boolean, index, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { EnumUserRole, PgEnumUserRole } from "./types.ts";
 
 /**
@@ -40,7 +40,12 @@ export const users = pgTable('users', {
     banned: boolean().notNull().default(false),
     banReason: text('ban_reason'),
     banExpires: timestamp('ban_expires', { withTimezone: true }),
-});
+}, (table) => [
+    index('users_created_at_idx').on(table.createdAt),
+    index('users_role_idx').on(table.role),
+    index('users_banned_idx').on(table.banned),
+]);
+
 
 export type User = InferSelectModel<typeof users>;
 export type SchemaUserSelect = InferSelectModel<typeof users>;

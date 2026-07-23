@@ -10,5 +10,7 @@ export * from "./services/user/list-sessions.service.ts";
 export * from "./services/user/revoke-session.service.ts";
 export * from "./services/user/revoke-other-sessions.service.ts";
 export * from "./services/admin/avatar.service.ts";
+export * from "./services/admin/get-user-stats.service.ts";
 export * from "./services/user/update-profile.service.ts";
 export * from "./user.schema.ts";
+

@@ -28,3 +28,5 @@ export { useBanUser } from "./admin/ban-user";
 export { useBulkDeleteUsers } from "./admin/bulk-delete-users";
 export { useUpdateUserAvatar } from "./admin/update-avatar-user";
 export type { UpdateUserAvatarRequest } from "./admin/update-avatar-user";
+export { useGetUserStats } from "./admin/get-user-stats";
+

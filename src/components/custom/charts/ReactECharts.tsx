@@ -204,9 +204,10 @@ const ReactECharts = forwardRef(({
             // graphic: UpdateChartWatermark(watermark, colorForeground),
           }),
 
-          series: series,
+          series: series && series.length > 0 ? series : (options?.series || []),
           // backgroundColor: colorCard,
         }, optionSettings);
+
       }
 
       // --------------------------------------------------------------------------------

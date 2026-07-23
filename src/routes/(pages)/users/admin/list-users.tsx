@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useListUsers, useDeleteUser, useUpdateUser, UserResponseItem } from "@/api/users";
+import { useListUsers, useDeleteUser, useUpdateUser, useGetUserStats, UserResponseItem } from "@/api/users";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from "react";
@@ -14,11 +14,14 @@ import {
   DialogUserResetPassword,
   DialogUserBan,
   DialogUserAvatar,
-} from "@/components/pages/user/list-users";
+  UserKpiCards,
+  UserAnalyticsChart,
+} from "@/components/pages/users/list-users";
+
 import { PaginationData } from "@/components/custom/table";
 import { z } from "zod";
 
-export const Route = createFileRoute("/(pages)/user/admin/list-users")({
+export const Route = createFileRoute("/(pages)/users/admin/list-users")({
   validateSearch: z.object({
     page: z.number().min(1).optional().catch(undefined),
     limit: z.number().min(5).optional().catch(undefined),
@@ -55,6 +58,15 @@ function AdminUsersPage() {
   });
 
   const deleteMutation = useDeleteUser();
+
+  // Stats State & API Hook
+  const [periodType, setPeriodType] = useState<"daily" | "weekly" | "monthly">("daily");
+  const { data: statsResponse, isLoading: isStatsLoading } = useGetUserStats({
+    periodType,
+    limit: 12,
+  });
+
+  const statsData = statsResponse?.data;
 
   // Dialog & Modal States
   const [showDialog, setShowDialog] = useState(false);
@@ -122,6 +134,17 @@ function AdminUsersPage() {
         </Button>
       </div>
 
+      {/* Admin Dashboard KPI Metric Cards */}
+      <UserKpiCards kpi={statsData?.kpi} isLoading={isStatsLoading} />
+
+      {/* Admin Dashboard Growth Analytics Chart */}
+      <UserAnalyticsChart
+        periodType={periodType}
+        onPeriodChange={setPeriodType}
+        history={statsData?.history}
+        isLoading={isStatsLoading}
+      />
+
       <UserTable
         data={data as any}
         isLoading={isLoading}
@@ -134,6 +157,7 @@ function AdminUsersPage() {
               limit: pagination.limit,
             },
             replace: true,
+            resetScroll: false,
           });
         }}
         setSearch={(newSearch) => {
@@ -144,6 +168,7 @@ function AdminUsersPage() {
               page: 1,
             },
             replace: true,
+            resetScroll: false,
           });
         }}
         sortBy={sortBy}
@@ -157,6 +182,7 @@ function AdminUsersPage() {
               page: 1,
             },
             replace: true,
+            resetScroll: false,
           });
         }}
         roles={roles}
@@ -168,8 +194,10 @@ function AdminUsersPage() {
               page: 1,
             },
             replace: true,
+            resetScroll: false,
           });
         }}
+
         onEdit={handleEdit}
         onDelete={handleDelete}
         onResetPassword={handleResetPassword}

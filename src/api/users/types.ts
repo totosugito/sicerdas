@@ -13,6 +13,10 @@ import type {
   BaseUpdateProfileData,
   BulkDeleteUsersBody,
   ResetPasswordBody,
+  GetUserStatsQuery,
+  GetUserStatsResponse,
+  UserStatsData,
+  UserStatsItem,
 } from "backend/src/modules/users/index.ts";
 import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
 
@@ -31,9 +35,14 @@ export type {
   BaseUpdateProfileData,
   BulkDeleteUsersBody,
   ResetPasswordBody,
+  GetUserStatsQuery,
+  GetUserStatsResponse,
+  UserStatsData,
+  UserStatsItem,
   BaseResponse,
   PaginationMeta,
 };
+
 
 export interface UserResponse<T = UserResponseItem> extends BaseResponse {
   data: T;

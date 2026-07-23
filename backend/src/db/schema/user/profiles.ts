@@ -1,5 +1,5 @@
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { pgTable, text, timestamp, uuid, varchar, jsonb } from 'drizzle-orm/pg-core';
+import { index, pgTable, text, timestamp, uuid, varchar, jsonb } from 'drizzle-orm/pg-core';
 import { EnumEducationLevel, PgEnumEducationLevel } from '../enum/enum-app.ts';
 import { appTier } from '../app/app-tier.ts';
 import { users } from "./users.ts";
@@ -61,7 +61,11 @@ export const usersProfile = pgTable('users_profiles', {
     // Timestamps
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-});
+}, (table) => [
+    index('users_profiles_tier_id_idx').on(table.tierId),
+    index('users_profiles_education_level_idx').on(table.educationLevel),
+]);
+
 
 export type SchemaUsersProfileSelect = InferSelectModel<typeof usersProfile>;
 export type SchemaUsersProfileInsert = InferInsertModel<typeof usersProfile>;

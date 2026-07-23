@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { getUserStore } from "@/types/auth";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/(pages)/user")({
+export const Route = createFileRoute("/(pages)/users")({
   component: RouteComponent,
 });
 

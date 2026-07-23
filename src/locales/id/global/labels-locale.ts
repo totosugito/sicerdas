@@ -38,6 +38,7 @@ export default {
   light: "Terang",
   dark: "Gelap",
   system: "Sistem",
+  dashboard: "Dashboard",
   login: "Masuk",
   error: "Terjadi Kesalahan",
   management: "Manajemen",

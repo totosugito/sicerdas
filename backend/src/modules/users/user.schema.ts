@@ -1,8 +1,9 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { BaseResponseSchema, PaginationMetaSchema } from "../../types/response.ts";
-import { EnumUserRole } from "../../db/schema/user/index.ts";
+import { EnumUserRole, EnumStatsPeriodType } from "../../db/schema/index.ts";
 
 export const UserCoreSchema = Type.Object({
+
   id: Type.String({ format: "uuid" }),
   email: Type.String({ format: "email" }),
   name: Type.String(),
@@ -220,4 +221,48 @@ export const ListUsersResponseSchema = Type.Intersect([
 ]);
 
 export type ListUsersResponse = Static<typeof ListUsersResponseSchema>;
+
+export const GetUserStatsQuerySchema = Type.Object({
+  periodType: Type.Optional(Type.Enum(EnumStatsPeriodType, { default: EnumStatsPeriodType.DAILY, description: "Granularity: daily, weekly, monthly" })),
+  limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100, default: 12, description: "Number of historical snapshot records" })),
+});
+
+export type GetUserStatsQuery = Static<typeof GetUserStatsQuerySchema>;
+
+export const UserStatsItemSchema = Type.Object({
+  id: Type.String({ format: "uuid" }),
+  periodType: Type.String(),
+  periodKey: Type.String(),
+  date: Type.String(),
+  newUsersCount: Type.Number(),
+  totalUsersCount: Type.Number(),
+  activeUsersCount: Type.Number(),
+  bannedUsersCount: Type.Number(),
+  roleBreakdown: Type.Any(),
+  tierBreakdown: Type.Any(),
+  educationBreakdown: Type.Any(),
+  createdAt: Type.String({ format: "date-time" }),
+});
+
+export const GetUserStatsResponseSchema = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: Type.Object({
+      kpi: Type.Object({
+        totalUsers: Type.Number(),
+        activeUsers: Type.Number(),
+        bannedUsers: Type.Number(),
+        roleBreakdown: Type.Any(),
+        tierBreakdown: Type.Any(),
+      }),
+      history: Type.Array(UserStatsItemSchema),
+    }),
+  }),
+]);
+
+export type GetUserStatsResponse = Static<typeof GetUserStatsResponseSchema>;
+export type UserStatsItem = Static<typeof UserStatsItemSchema>;
+export type UserStatsData = Static<typeof GetUserStatsResponseSchema>["data"];
+
+
 

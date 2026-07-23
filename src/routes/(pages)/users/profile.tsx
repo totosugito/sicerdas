@@ -19,7 +19,7 @@ import {
   ProfileInfoFormRef,
   ProfileLoadingView,
   ProfileErrorView,
-} from "@/components/pages/user/profile";
+} from "@/components/pages/users/profile";
 import {
   useUserProfileQuery,
   useUpdateProfileMutation,
@@ -43,7 +43,7 @@ const profileSearchSchema = z.object({
   page: z.string().optional().catch("profile"),
 });
 
-export const Route = createFileRoute("/(pages)/user/profile")({
+export const Route = createFileRoute("/(pages)/users/profile")({
   component: RouteComponent,
   validateSearch: profileSearchSchema,
 });

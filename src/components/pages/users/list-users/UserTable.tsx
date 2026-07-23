@@ -118,8 +118,8 @@ export function UserTable({
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col min-w-0">
-              <span className="font-semibold text-foreground truncate max-w-[180px]">{name}</span>
-              <span className="text-xs text-muted-foreground truncate max-w-[180px]">{email}</span>
+              <span className="font-semibold text-foreground truncate max-w-[280px]">{name}</span>
+              <span className="text-xs text-muted-foreground truncate max-w-[280px]">{email}</span>
             </div>
           </div>
         );

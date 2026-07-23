@@ -11,7 +11,9 @@ import {
   DollarSign,
   GraduationCap,
   History,
+  LayoutDashboard,
   School,
+  Settings,
   TagsIcon,
 } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
@@ -86,30 +88,41 @@ export const useAdminNav = () => {
                 },
               ],
             },
+            {
+              title: t(($) => $.labels.system),
+              url: "/base",
+              icon: Settings,
+              items: [
+                {
+                  title: t(($) => $.tier.title),
+                  url: AppRoute.app.tier.admin.list.url,
+                  icon: DollarSign,
+                },
+                {
+                  title: t(($) => $.version.menu),
+                  url: AppRoute.app.version.admin.list.url,
+                  icon: History,
+                },
+              ],
+            },
           ],
           permitUser: false,
         },
         {
-          title: "ADMIN",
+          title: t(($) => $.user.title).toUpperCase(),
           items: [
             {
-              title: t(($) => $.tier.title),
-              url: AppRoute.app.tier.admin.list.url,
-              icon: DollarSign,
+              title: t(($) => $.labels.dashboard),
+              url: AppRoute.user.dashboard.url,
+              icon: LayoutDashboard,
             },
             {
               title: t(($) => $.user.title),
               url: AppRoute.user.admin.list.url,
               icon: HiOutlineUsers,
             },
-            {
-              title: t(($) => $.version.menu),
-              url: AppRoute.app.version.admin.list.url,
-              icon: History,
-            },
-          ],
-          permitUser: false,
-        },
+          ]
+        }
       ],
     }),
     [t],

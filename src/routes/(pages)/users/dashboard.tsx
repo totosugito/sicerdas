@@ -28,7 +28,7 @@ import {
   ActivityBarChart,
   OverviewStats,
   StatsBook
-} from "@/components/pages/user/dashboard";
+} from "@/components/pages/users/dashboard";
 import {
   Tabs,
   TabsContent,
@@ -48,7 +48,7 @@ export const dashboardSearchSchema = z.object({
 
 export type DashboardSearch = z.infer<typeof dashboardSearchSchema>;
 
-export const Route = createFileRoute("/(pages)/user/dashboard")({
+export const Route = createFileRoute("/(pages)/users/dashboard")({
   validateSearch: (search) => dashboardSearchSchema.parse(search),
   component: ExamDashboardComponent,
 });
