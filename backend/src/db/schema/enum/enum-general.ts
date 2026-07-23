@@ -80,3 +80,12 @@ export const EnumJobGroup = {
 } as const;
 
 export const PgEnumJobGroup = pgEnum('job_group', Object.values(EnumJobGroup) as [string, ...string[]]);
+
+export const EnumStatsPeriodType = {
+    DAILY: 'daily',
+    WEEKLY: 'weekly',
+    MONTHLY: 'monthly',
+} as const;
+
+export const PgEnumStatsPeriodType = pgEnum('stats_period_type', Object.values(EnumStatsPeriodType) as [string, ...string[]]);
+

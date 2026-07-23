@@ -36,9 +36,10 @@ async function reconcileExamStats() {
                         totalQuestionsAnswered: Number(d.totalQuestionsAnswered),
                         totalCorrectAnswers: Number(d.totalCorrectAnswers),
                         totalWrongAnswers: Number(d.totalWrongAnswers),
-                        lastActiveAt: d.lastActiveAt,
+                        lastActiveAt: d.lastActiveAt ? new Date(d.lastActiveAt) : null,
                         updatedAt: new Date(),
                     })))
+
                     .onConflictDoUpdate({
                         target: examUserStatsGlobal.userId,
                         set: {

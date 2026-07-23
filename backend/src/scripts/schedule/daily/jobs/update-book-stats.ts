@@ -34,7 +34,7 @@ async function updateBookStats() {
 
             if (batchBooks.length === 0) break;
 
-            console.log(`Processing batch of ${batchBooks.length} books...`);
+            console.log(`Processing batch of ${offset} books...`);
 
             for (const book of batchBooks) {
                 // 0. Get Legacy Stats (Archived)

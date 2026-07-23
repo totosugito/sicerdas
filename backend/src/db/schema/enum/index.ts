@@ -17,5 +17,7 @@ export {
     EnumNotificationPriority, PgEnumNotificationPriority,
     EnumJobStatus, PgEnumJobStatus,
     EnumJobTrigger, PgEnumJobTrigger,
-    EnumJobGroup, PgEnumJobGroup
+    EnumJobGroup, PgEnumJobGroup,
+    EnumStatsPeriodType, PgEnumStatsPeriodType
 } from './enum-general.ts';
+
