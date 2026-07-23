@@ -1,5 +1,5 @@
 import { Type, type Static } from "@sinclair/typebox";
-import { BaseResponseSchema } from "../../types/response.ts";
+import { BaseResponseSchema, PaginationMetaSchema } from "../../types/response.ts";
 import { EnumUserRole } from "../../db/schema/user/index.ts";
 
 export const UserCoreSchema = Type.Object({
@@ -166,4 +166,58 @@ export const BanUserBodySchema = Type.Object({
 });
 
 export type BanUserBody = Static<typeof BanUserBodySchema>;
+
+export const UserIdParamSchema = Type.Object({
+  id: Type.String({ format: "uuid", description: "User ID" }),
+});
+
+export type UserIdParam = Static<typeof UserIdParamSchema>;
+
+export const BulkDeleteUsersBodySchema = Type.Object({
+  ids: Type.Array(Type.String({ format: "uuid" }), {
+    minItems: 1,
+    description: "List of User IDs to delete",
+  }),
+});
+
+export type BulkDeleteUsersBody = Static<typeof BulkDeleteUsersBodySchema>;
+
+export const ResetPasswordBodySchema = Type.Object({
+  id: Type.String({ format: "uuid", description: "User ID to reset password" }),
+  newPassword: Type.String({ minLength: 6, description: "New password" }),
+});
+
+export type ResetPasswordBody = Static<typeof ResetPasswordBodySchema>;
+
+export const ListUsersBodySchema = Type.Object({
+  page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
+  limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100, default: 10 })),
+  search: Type.Optional(Type.String({ description: "Search term for name or email" })),
+  roles: Type.Optional(
+    Type.Array(Type.Enum(EnumUserRole), { description: "Filter by multiple user roles" }),
+  ),
+  sortBy: Type.Optional(
+    Type.String({
+      default: "createdAt",
+      description: "Sort field: createdAt, name, email, role, updatedAt",
+    }),
+  ),
+  sortOrder: Type.Optional(
+    Type.String({ description: "Sort order: asc or desc", default: "desc" }),
+  ),
+});
+
+export type ListUsersBody = Static<typeof ListUsersBodySchema>;
+
+export const ListUsersResponseSchema = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: Type.Object({
+      items: Type.Array(UserResponseItemSchema),
+      meta: PaginationMetaSchema,
+    }),
+  }),
+]);
+
+export type ListUsersResponse = Static<typeof ListUsersResponseSchema>;
 

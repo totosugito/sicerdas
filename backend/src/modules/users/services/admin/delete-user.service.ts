@@ -72,6 +72,6 @@ export async function deleteUserService(params: DeleteUserParams): Promise<Servi
   return {
     success: false,
     statusCode: 400,
-    errorKey: ($) => $.user.management.delete.success, // Fallback
+    errorKey: ($) => $.user.management.missingUserId,
   };
 }

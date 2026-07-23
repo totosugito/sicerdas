@@ -1,12 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@sinclair/typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { deleteUserService } from "../../../modules/users/index.ts";
+import { deleteUserService, UserIdParamSchema, type UserIdParam } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
-
-const Params = Type.Object({
-  id: Type.String({ format: "uuid", description: "User ID to delete" }),
-});
 
 const deleteUser: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -15,14 +10,14 @@ const deleteUser: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Users Management"],
       summary: "Delete a user (Admin only)",
-      params: Params,
+      params: UserIdParamSchema,
       response: {
         200: BaseResponseSchema,
         "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Params: typeof Params.static }>,
+      request: FastifyRequest<{ Params: UserIdParam }>,
       reply: FastifyReply,
     ): Promise<typeof BaseResponseSchema.static> {
       const { id } = request.params;

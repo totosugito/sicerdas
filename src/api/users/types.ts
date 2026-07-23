@@ -3,13 +3,16 @@ import type {
   CreateUserParams,
   UpdateUserParams,
   UserDetailsData,
-  ListUsersParams,
+  ListUsersBody,
+  ListUsersResponse,
   BanUserBody,
   SessionData,
   ChangePasswordBody,
   RevokeSessionBody,
   UserProfileData,
   BaseUpdateProfileData,
+  BulkDeleteUsersBody,
+  ResetPasswordBody,
 } from "backend/src/modules/users/index.ts";
 import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
 
@@ -18,13 +21,16 @@ export type {
   CreateUserParams,
   UpdateUserParams,
   UserDetailsData,
-  ListUsersParams,
+  ListUsersBody,
+  ListUsersResponse,
   BanUserBody,
   SessionData,
   ChangePasswordBody,
   RevokeSessionBody,
   UserProfileData,
   BaseUpdateProfileData,
+  BulkDeleteUsersBody,
+  ResetPasswordBody,
   BaseResponse,
   PaginationMeta,
 };
@@ -34,13 +40,6 @@ export interface UserResponse<T = UserResponseItem> extends BaseResponse {
 }
 
 export type UserDetailResponse = UserResponse<UserDetailsData>;
-
-export interface ListUsersResponse extends BaseResponse {
-  data: {
-    items: UserResponseItem[];
-    meta: PaginationMeta;
-  };
-}
 
 export interface UserSessionsResponse extends BaseResponse {
   data: SessionData[];

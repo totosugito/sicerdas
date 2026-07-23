@@ -1,37 +1,13 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@sinclair/typebox";
-import { EnumUserRole } from "../../../db/schema/user/index.ts";
+
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { listUsersService, UserResponseItemSchema } from "../../../modules/users/index.ts";
-import { BaseResponseSchema, ErrorResponseSchema, PaginationMetaSchema } from "../../../types/response.ts";
-
-const ListBody = Type.Object({
-  page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
-  limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100, default: 10 })),
-  search: Type.Optional(Type.String({ description: "Search term for name or email" })),
-  roles: Type.Optional(
-    Type.Array(Type.Enum(EnumUserRole), { description: "Filter by multiple user roles" }),
-  ),
-  sortBy: Type.Optional(
-    Type.String({
-      default: "createdAt",
-      description: "Sort field: createdAt, name, email, role, updatedAt",
-    }),
-  ),
-  sortOrder: Type.Optional(
-    Type.String({ description: "Sort order: asc or desc", default: "desc" }),
-  ),
-});
-
-const ListResponse = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({
-    data: Type.Object({
-      items: Type.Array(UserResponseItemSchema),
-      meta: PaginationMetaSchema,
-    }),
-  }),
-]);
+import {
+  listUsersService,
+  ListUsersBodySchema,
+  type ListUsersBody,
+  ListUsersResponseSchema,
+} from "../../../modules/users/index.ts";
+import { ErrorResponseSchema } from "../../../types/response.ts";
 
 const listUsers: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -40,16 +16,16 @@ const listUsers: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Users Management"],
       summary: "List users with pagination, search, and filtering",
-      body: ListBody,
+      body: ListUsersBodySchema,
       response: {
-        200: ListResponse,
+        200: ListUsersResponseSchema,
         "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Body: typeof ListBody.static }>,
+      request: FastifyRequest<{ Body: ListUsersBody }>,
       reply: FastifyReply,
-    ): Promise<typeof ListResponse.static> {
+    ): Promise<typeof ListUsersResponseSchema.static> {
       const {
         page = 1,
         limit = 10,

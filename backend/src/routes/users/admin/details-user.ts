@@ -1,12 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@sinclair/typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { getUserDetailsService, UserDetailsResponseSchema } from "../../../modules/users/index.ts";
+import { getUserDetailsService, UserDetailsResponseSchema, UserIdParamSchema, type UserIdParam } from "../../../modules/users/index.ts";
 import { ErrorResponseSchema } from "../../../types/response.ts";
-
-const Params = Type.Object({
-  id: Type.String({ format: "uuid", description: "User ID to retrieve" }),
-});
 
 const detailsUser: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -15,14 +10,14 @@ const detailsUser: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Users Management"],
       summary: "Get user details by ID",
-      params: Params,
+      params: UserIdParamSchema,
       response: {
         200: UserDetailsResponseSchema,
         "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Params: typeof Params.static }>,
+      request: FastifyRequest<{ Params: UserIdParam }>,
       reply: FastifyReply,
     ): Promise<typeof UserDetailsResponseSchema.static> {
       const { id } = request.params;

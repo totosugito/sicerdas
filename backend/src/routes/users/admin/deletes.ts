@@ -1,15 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@sinclair/typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { deleteUserService } from "../../../modules/users/index.ts";
+import { deleteUserService, BulkDeleteUsersBodySchema, type BulkDeleteUsersBody } from "../../../modules/users/index.ts";
 import { BaseResponseSchema, ErrorResponseSchema } from "../../../types/response.ts";
-
-const DeletesBody = Type.Object({
-  ids: Type.Array(Type.String({ format: "uuid" }), {
-    minItems: 1,
-    description: "List of User IDs to delete",
-  }),
-});
 
 const bulkDeleteUsers: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -18,14 +10,14 @@ const bulkDeleteUsers: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Users Management"],
       summary: "Bulk delete users (Admin only)",
-      body: DeletesBody,
+      body: BulkDeleteUsersBodySchema,
       response: {
         200: BaseResponseSchema,
         "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Body: typeof DeletesBody.static }>,
+      request: FastifyRequest<{ Body: BulkDeleteUsersBody }>,
       reply: FastifyReply,
     ): Promise<typeof BaseResponseSchema.static> {
       const { ids } = request.body;
