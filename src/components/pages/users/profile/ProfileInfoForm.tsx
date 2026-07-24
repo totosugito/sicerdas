@@ -5,11 +5,9 @@ import { useAppTranslation, AppTranslation } from "@/lib/i18n-typed";
 import { ControlForm } from "@/components/custom/forms";
 import { FormWithDetector } from "@/components/custom/forms";
 import { z } from "zod";
-import { AlertCircle } from "lucide-react";
-import { ImageCropper } from "@/components/ui/image-cropper";
+import { ImageCropper, FileWithPreview } from "@/components/ui/image-cropper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useDropzone } from "react-dropzone";
-import { FileWithPreview } from "@/components/ui/image-cropper";
 import { useCallback, useState, useEffect, useImperativeHandle, forwardRef, Ref } from "react";
 
 // Define the form values type

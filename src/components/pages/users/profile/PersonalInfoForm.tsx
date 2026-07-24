@@ -5,7 +5,6 @@ import { useAppTranslation, AppTranslation } from "@/lib/i18n-typed";
 import { ControlForm } from "@/components/custom/forms";
 import { FormWithDetector } from "@/components/custom/forms";
 import { z } from "zod";
-import { AlertCircle } from "lucide-react";
 import { date_to_string } from "@/lib/my-utils";
 import { EnumEducationLevel } from "backend/src/db/schema/enum/enum-app";
 
