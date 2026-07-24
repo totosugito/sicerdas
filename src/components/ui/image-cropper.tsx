@@ -24,9 +24,8 @@ import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import "@/assets/ReactCrop.css";
 import { CropIcon, Trash2Icon } from "lucide-react";
 import { showNotifError } from "@/lib/show-notif";
-import { FileWithPath } from "react-dropzone";
 
-export type FileWithPreview = FileWithPath & {
+export type FileWithPreview = File & {
   preview: string;
 };
 

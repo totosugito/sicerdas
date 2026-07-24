@@ -8,7 +8,7 @@ import { z } from "zod";
 import { AlertCircle } from "lucide-react";
 import { ImageCropper } from "@/components/ui/image-cropper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FileWithPath, useDropzone } from "react-dropzone";
+import { useDropzone } from "react-dropzone";
 import { FileWithPreview } from "@/components/ui/image-cropper";
 import { useCallback, useState, useEffect, useImperativeHandle, forwardRef, Ref } from "react";
 
@@ -117,7 +117,7 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
     const [croppedImageFile, setCroppedImageFile] = useState<File | null>(null);
 
     const onDrop = useCallback(
-      (acceptedFiles: FileWithPath[]) => {
+      (acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
         if (!file) {
           alert("Selected image is too large!");
