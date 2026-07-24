@@ -49,3 +49,8 @@ export const isAdminString = (role: string) => {
   const roles: string[] = [EnumUserRole.ADMIN];
   return roles.includes(role);
 };
+
+export const isUser = (user: AuthProps | null) => {
+  const roles: string[] = [EnumUserRole.USER];
+  return roles.includes(user?.user?.role as string);
+};
