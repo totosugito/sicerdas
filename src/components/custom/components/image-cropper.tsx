@@ -121,12 +121,14 @@ export function ImageCropper({
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       {showTrigger && (
-        <DialogTrigger asChild>
-          <Avatar className="size-36 cursor-pointer ring-offset-2 ring-2 ring-slate-200">
-            <AvatarImage src={croppedImage ? croppedImage : selectedFile?.preview} alt="" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-        </DialogTrigger>
+        <DialogTrigger
+          render={
+            <Avatar className="size-36 cursor-pointer ring-offset-2 ring-2 ring-slate-200">
+              <AvatarImage src={croppedImage ? croppedImage : selectedFile?.preview} alt="" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          }
+        />
       )}
       <DialogContent className="p-0 gap-0" aria-describedby={undefined} showCloseButton={false}>
         <VisuallyHidden>
@@ -155,19 +157,21 @@ export function ImageCropper({
           </ReactCrop>
         </div>
         <DialogFooter className="p-6 pt-0 justify-center ">
-          <DialogClose asChild>
-            <Button
-              size={"sm"}
-              type="reset"
-              className="w-fit"
-              variant={"outline"}
-              onClick={() => {
-                setSelectedFile(null);
-              }}
-            >
-              <Trash2Icon className="mr-1.5 size-4" />
-              Cancel
-            </Button>
+          <DialogClose
+            render={
+              <Button
+                size={"sm"}
+                type="reset"
+                className="w-fit"
+                variant={"outline"}
+                onClick={() => {
+                  setSelectedFile(null);
+                }}
+              />
+            }
+          >
+            <Trash2Icon className="mr-1.5 size-4" />
+            Cancel
           </DialogClose>
           <Button type="submit" size={"sm"} className="w-fit" onClick={onCrop}>
             <CropIcon className="mr-1.5 size-4" />

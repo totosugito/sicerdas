@@ -27,13 +27,15 @@ export function ElementHero({ element, theme }: ElementHeroProps) {
       {/* Element visualization */}
       <div className="relative flex flex-col items-end justify-center p-8 md:p-12 pt-24 md:pt-24">
         <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
-          <DialogTrigger asChild>
-            <img
-              src={element?.atomicImages?.atomic}
-              alt={`${element.atomicName} visualization`}
-              className="object-cover h-64 w-64 md:h-72 md:w-72 cursor-pointer"
-            />
-          </DialogTrigger>
+          <DialogTrigger
+            render={
+              <img
+                src={element?.atomicImages?.atomic}
+                alt={`${element.atomicName} visualization`}
+                className="object-cover h-64 w-64 md:h-72 md:w-72 cursor-pointer"
+              />
+            }
+          />
           <DialogContent className="max-w-5xl w-full max-h-[90vh] flex flex-col items-center justify-center p-6 border-0" aria-describedby={undefined}>
             <DialogHeader>
               <DialogTitle className="">

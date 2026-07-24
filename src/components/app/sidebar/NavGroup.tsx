@@ -92,19 +92,17 @@ const SidebarMenuCollapsible = ({
   const { setOpenMobile } = useSidebar()
   return (
     <Collapsible
-      asChild
       defaultOpen={true}
       // defaultOpen={checkIsActive(href, item, true)}
       className='group/collapsible'
     >
       <SidebarMenuItem>
-        <CollapsibleTrigger asChild>
+        <CollapsibleTrigger className="w-full [&[data-panel-open]_svg]:rotate-90">
           <SidebarMenuButton tooltip={item.title}>
             {item.icon && <item.icon />}
             <span>{item.title}</span>
             {item.badge && <NavBadge>{item.badge}</NavBadge>}
-            <ChevronRight
-              className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
+            <ChevronRight className="ml-auto transition-transform duration-200" />
           </SidebarMenuButton>
         </CollapsibleTrigger>
         <CollapsibleContent className='CollapsibleContent'>

@@ -102,9 +102,6 @@ export const DialogModalForm = ({
     >
       <DialogContent
         className={cn("flex flex-col max-h-[80vh] sm:max-w-[80vw] lg:max-w-xl", props.className)}
-        onInteractOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
-        onOpenAutoFocus={(e) => e.preventDefault()}
         aria-describedby=""
       >
         <DialogHeader className={"flex flex-col"}>

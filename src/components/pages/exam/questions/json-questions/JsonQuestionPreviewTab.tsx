@@ -61,24 +61,26 @@ export function JsonQuestionPreviewTab({
     <Card className="shadow-sm overflow-hidden border-border/50 p-6">
       <Collapsible open={isOpen} onOpenChange={onOpenChange}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 px-0 pt-0 pb-4 bg-muted/5">
-          <CollapsibleTrigger asChild>
-            <div className="flex flex-col gap-1 cursor-pointer group flex-1">
-              <div className="flex items-center gap-2">
-                <CardTitle className="text-xl">
-                  {t(($) => $.exam.questions.edit.preview.title)}
-                </CardTitle>
-                <ChevronDown
-                  className={cn(
-                    "h-5 w-5 transition-transform text-muted-foreground group-hover:text-primary",
-                    isOpen && "rotate-180",
-                  )}
-                />
+          <CollapsibleTrigger
+            render={
+              <div className="flex flex-col gap-1 cursor-pointer group flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl">
+                    {t(($) => $.exam.questions.edit.preview.title)}
+                  </CardTitle>
+                  <ChevronDown
+                    className={cn(
+                      "h-5 w-5 transition-transform text-muted-foreground group-hover:text-primary",
+                      isOpen && "rotate-180",
+                    )}
+                  />
+                </div>
+                <CardDescription>
+                  {t(($) => $.exam.questions.edit.preview.description)}
+                </CardDescription>
               </div>
-              <CardDescription>
-                {t(($) => $.exam.questions.edit.preview.description)}
-              </CardDescription>
-            </div>
-          </CollapsibleTrigger>
+            }
+          />
 
           {variations.length > 0 && isOpen && (
             <div className="flex gap-1 overflow-x-auto max-w-[200px] sm:max-w-none ml-4">

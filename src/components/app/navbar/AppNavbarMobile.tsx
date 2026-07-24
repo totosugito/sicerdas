@@ -160,38 +160,36 @@ function MobileNavGroup({
             onOpenChange={handleOpenChange}
             className="w-full"
         >
-            <CollapsibleTrigger asChild>
+            <CollapsibleTrigger
+                className={cn(
+                    "flex items-center gap-3 px-3 py-2.5 rounded-xl w-full cursor-pointer transition-all duration-200",
+                    isOpen
+                        ? "bg-slate-100/80 dark:bg-slate-800/80"
+                        : "bg-transparent hover:bg-slate-50 dark:hover:bg-slate-900"
+                )}
+            >
                 <div
                     className={cn(
-                        "flex items-center gap-3 px-3 py-2.5 rounded-xl w-full cursor-pointer transition-all duration-200",
+                        "w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
                         isOpen
-                            ? "bg-slate-100/80 dark:bg-slate-800/80"
-                            : "bg-transparent hover:bg-slate-50 dark:hover:bg-slate-900"
+                            ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-500"
                     )}
                 >
-                    <div
-                        className={cn(
-                            "w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
-                            isOpen
-                                ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
-                                : "bg-slate-100 dark:bg-slate-800 text-slate-500"
-                        )}
-                    >
-                        <Icon className="w-4 h-4" />
-                    </div>
-                    <h3 className={cn(
-                        "font-bold text-[13px] tracking-wide flex-1 text-left transition-colors",
-                        isOpen ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-400"
-                    )}>
-                        {title}
-                    </h3>
-                    <ChevronRight
-                        className={cn(
-                            'h-4 w-4 transition-transform duration-300 text-slate-400',
-                            isOpen && 'rotate-90 text-primary',
-                        )}
-                    />
+                    <Icon className="w-4 h-4" />
                 </div>
+                <h3 className={cn(
+                    "font-bold text-[13px] tracking-wide flex-1 text-left transition-colors",
+                    isOpen ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-400"
+                )}>
+                    {title}
+                </h3>
+                <ChevronRight
+                    className={cn(
+                        'h-4 w-4 transition-transform duration-300 text-slate-400',
+                        isOpen && 'rotate-90 text-primary',
+                    )}
+                />
             </CollapsibleTrigger>
             <CollapsibleContent className="space-y-0.5 mt-1 data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden px-1">
                 {items.map((item: MenuItem) => {
