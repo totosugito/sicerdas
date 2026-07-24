@@ -10,6 +10,7 @@ export { type FormNumberProps, FormNumber } from "./FormNumber";
 export { type FormUploadProps, FormUpload } from "./FormUpload";
 export { type FormCheckboxProps, FormCheckbox } from "./FormCheckbox";
 export { ControlForm } from "./ControlForm";
+export { FormWithDetector } from "./FormWithDetector";
 export { type FormInputFileProps, FormInputFile } from "./FormInputFile";
 export { type FormSwitchProps, FormSwitch } from "./FormSwitch";
 export { type FormBlockNoteProps, FormBlockNote } from "../components/block-note/FormBlockNote";

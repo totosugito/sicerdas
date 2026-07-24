@@ -1,5 +1,3 @@
-"use client";
-
 import { Calendar } from "@/components/ui/calendar";
 import * as React from "react";
 import "@daypicker/react/style.css";

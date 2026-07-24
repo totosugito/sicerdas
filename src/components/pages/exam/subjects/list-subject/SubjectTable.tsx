@@ -7,7 +7,7 @@ import {
   DataTableColumnHeader,
   PaginationData,
 } from "@/components/custom/table";
-import { LongText } from "@/components/custom/components";
+import { LongText } from "@/components/ui/long-text";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";

@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/components";
+import { FormWithDetector } from "@/components/custom/forms";
 import { useListSubjectSimple } from "@/api/exam/subjects";
 import { useListPassageSimple } from "@/api/exam/passages";
 import { useListTier } from "@/api/tier";

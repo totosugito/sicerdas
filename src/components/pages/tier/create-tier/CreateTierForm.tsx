@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { FormWithDetector } from "@/components/custom/components";
+import { FormWithDetector } from "@/components/custom/forms";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";

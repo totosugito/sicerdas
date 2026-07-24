@@ -1,6 +1,6 @@
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import React from "react";
-import { DatePickerWithRange } from "@/components/custom/components";
+import { DatePickerWithRange } from "@/components/ui/date-picker-with-range";
 import { UseFormReturn } from "react-hook-form";
 import { cn } from "@/lib/utils";
 

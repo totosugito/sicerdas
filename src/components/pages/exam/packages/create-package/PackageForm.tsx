@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormLabel } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
 import { EnumExamType } from "backend/src/db/schema/exam/enums";
-import { FormWithDetector } from "@/components/custom/components";
+import { FormWithDetector } from "@/components/custom/forms";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";

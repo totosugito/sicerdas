@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/components";
+import { FormWithDetector } from "@/components/custom/forms";
 import { prepare_blocknote_submission } from "@/lib/blocknote-utils";
 
 type QuestionContentFormProps = {

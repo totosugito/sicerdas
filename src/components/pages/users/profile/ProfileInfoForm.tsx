@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useAppTranslation, AppTranslation } from "@/lib/i18n-typed";
 import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/components";
+import { FormWithDetector } from "@/components/custom/forms";
 import { z } from "zod";
 import { AlertCircle } from "lucide-react";
-import { ImageCropper } from "@/components/custom/components";
+import { ImageCropper } from "@/components/ui/image-cropper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FileWithPath, useDropzone } from "react-dropzone";
-import { FileWithPreview } from "@/components/custom/components/image-cropper";
+import { FileWithPreview } from "@/components/ui/image-cropper";
 import { useCallback, useState, useEffect, useImperativeHandle, forwardRef, Ref } from "react";
 
 // Define the form values type

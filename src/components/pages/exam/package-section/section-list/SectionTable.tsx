@@ -23,7 +23,7 @@ import {
 import { string_to_locale_date } from "@/lib/my-utils";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { LongText } from "@/components/custom/components";
+import { LongText } from "@/components/ui/long-text";
 
 interface SectionTableProps {
   data: ListSectionsResponse;

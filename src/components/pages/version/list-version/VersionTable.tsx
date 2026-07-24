@@ -24,7 +24,7 @@ import { string_to_locale_date } from "@/lib/my-utils";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { LongText } from "@/components/custom/components";
+import { LongText } from "@/components/ui/long-text";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 interface VersionTableProps {

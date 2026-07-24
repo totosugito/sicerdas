@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { LongText } from "@/components/custom/components";
+import { LongText } from "@/components/ui/long-text";
 import { DialogModal } from "@/components/custom/components";
 import {
   Table,

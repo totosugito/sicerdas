@@ -10,7 +10,7 @@ import { AppRoute } from "@/constants/app-route";
 import { toast } from "sonner";
 import { DialogModal } from "@/components/custom/components/DialogModal";
 import { useQueryClient } from "@tanstack/react-query";
-import { LocalePagination } from "@/components/custom/components/LocalePagination";
+import { LocalePagination } from "@/components/ui/locale-pagination";
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 

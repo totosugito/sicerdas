@@ -7,7 +7,7 @@ import { ExamPackageSection } from "@/api/exam/package-sections";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { LongText } from "@/components/custom/components";
+import { LongText } from "@/components/ui/long-text";
 
 interface SectionRowProps {
   section: ExamPackageSection;

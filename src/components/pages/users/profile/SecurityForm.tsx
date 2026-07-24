@@ -2,7 +2,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/components";
+import { FormWithDetector } from "@/components/custom/forms";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import { AlertCircle } from "lucide-react";

@@ -11,7 +11,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms/ControlForm";
-import { FormWithDetector } from "@/components/custom/components";
+import { FormWithDetector } from "@/components/custom/forms";
 
 export type PromptGeneratorParams = {
   curriculum: string;

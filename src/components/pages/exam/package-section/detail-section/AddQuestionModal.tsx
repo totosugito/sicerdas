@@ -24,7 +24,7 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
-import { LongText } from "@/components/custom/components";
+import { LongText } from "@/components/ui/long-text";
 import { PaginationData } from "@/components/custom/table";
 import { Loader2, X } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";

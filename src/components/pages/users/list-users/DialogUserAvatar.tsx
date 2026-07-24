@@ -11,7 +11,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ImageCropper, FileWithPreview } from "@/components/custom/components";
+import { ImageCropper, FileWithPreview } from "@/components/ui/image-cropper";
 import { useDropzone, FileWithPath } from "react-dropzone";
 import { useCallback, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

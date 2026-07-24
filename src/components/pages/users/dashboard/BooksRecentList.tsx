@@ -12,7 +12,7 @@ import { getGradeColor } from "@/lib/exam-utils";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { History } from "lucide-react";
 
-import { LocalePagination } from "@/components/custom/components/LocalePagination";
+import { LocalePagination } from "@/components/ui/locale-pagination";
 
 interface BooksRecentListProps {
   page?: number;

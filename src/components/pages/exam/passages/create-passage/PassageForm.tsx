@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/components";
+import { FormWithDetector } from "@/components/custom/forms";
 import { useListSubjectSimple } from "@/api/exam/subjects";
 import { PassageFormValues } from "@/api/exam/passages/types";
 import { Button } from "@/components/ui/button";

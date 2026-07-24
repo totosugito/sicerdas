@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import {addDays, format} from "date-fns";
 import {CalendarIcon} from "lucide-react";
 import {DateRange} from "@daypicker/react";
@@ -39,13 +39,6 @@ export function DatePickerWithRange({
     );
 
     const handleSelect = (nextRange?: DateRange, selectedDay?: Date) => {
-        // setDate((range) => {
-        //     if (range.from && range.to) return { from: selectedDay };
-        //     if (range.from && !range.to) return { from: range.from, to: selectedDay };
-        //     if (!range.from && !range.to) return { from: selectedDay };
-        //     return nextRange as DateRange;
-        // });
-
         setDate((range ) => {
             let newRange: DateRange;
 

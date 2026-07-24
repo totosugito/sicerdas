@@ -14,7 +14,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { Form } from "@/components/ui/form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormWithDetector } from "./FormWithDetector";
+import { FormWithDetector } from "../forms/FormWithDetector";
 import { cn } from "@/lib/utils";
 
 export type ModalFormProps = {

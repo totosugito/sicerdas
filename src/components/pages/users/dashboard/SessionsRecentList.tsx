@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { string_to_locale_date } from "@/lib/my-utils";
 import { EXAM_MODE_STYLES } from "@/constants/exam-var";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { LocalePagination } from "@/components/custom/components/LocalePagination";
+import { LocalePagination } from "@/components/ui/locale-pagination";
 
 interface SessionsRecentListProps {
   history?: AllSessionHistoryResponse["data"];

@@ -1,5 +1,5 @@
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { MultiSelect } from "@/components/custom/components";
+import { MultiSelect } from "@/components/ui/multi-select";
 import { UseFormReturn } from "react-hook-form";
 import { cn } from "@/lib/utils";
 

@@ -11,7 +11,7 @@ import { showNotifSuccess } from "@/lib/show-notif";
 import { getBookDetailId } from "@/lib/book-utils";
 import { DialogModal } from "@/components/custom/components/DialogModal";
 import { useQueryClient } from "@tanstack/react-query";
-import { LocalePagination } from "@/components/custom/components/LocalePagination";
+import { LocalePagination } from "@/components/ui/locale-pagination";
 import { getGradeColor } from "@/lib/exam-utils";
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";

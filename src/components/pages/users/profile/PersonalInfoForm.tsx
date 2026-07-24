@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useAppTranslation, AppTranslation } from "@/lib/i18n-typed";
 import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/components";
+import { FormWithDetector } from "@/components/custom/forms";
 import { z } from "zod";
 import { AlertCircle } from "lucide-react";
 import { date_to_string } from "@/lib/my-utils";
