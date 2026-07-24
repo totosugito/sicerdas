@@ -1,7 +1,7 @@
 import React from "react";
 import { defaultProps } from "@blocknote/core";
 import { createReactBlockSpec } from "@blocknote/react";
-import * as Popover from "@radix-ui/react-popover";
+import { Popover, PopoverTrigger, PopoverContent, PopoverPositioner } from "@/components/ui/popover";
 import { alertTypes, getAlertStyles, AlertType } from "../lib/alert-utils";
 
 export const AlertBlock = createReactBlockSpec(
@@ -28,19 +28,21 @@ export const AlertBlock = createReactBlockSpec(
       return (
         <div className={`alert-wrapper shadow-sm ${styles.wrapper}`} data-type={type}>
           {/* Interactive Icon with Popover for type switching */}
-          <Popover.Root>
-            <Popover.Trigger asChild>
-              <div
-                className="alert-icon-container"
-                title="Change alert type"
-                contentEditable={false}
-              >
-                <Icon size={styles.iconSize} className={`alert-icon ${styles.icon}`} />
-              </div>
-            </Popover.Trigger>
+          <Popover>
+            <PopoverTrigger
+              render={
+                <div
+                  className="alert-icon-container"
+                  title="Change alert type"
+                  contentEditable={false}
+                >
+                  <Icon size={styles.iconSize} className={`alert-icon ${styles.icon}`} />
+                </div>
+              }
+            />
 
-            <Popover.Portal>
-              <Popover.Content className="alert-type-popover" sideOffset={5} align="start">
+            <PopoverPositioner sideOffset={5} align="start">
+              <PopoverContent className="alert-type-popover">
                 <div className="px-3 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-b mb-1">
                   Alert Type
                 </div>
@@ -66,9 +68,9 @@ export const AlertBlock = createReactBlockSpec(
                     </div>
                   );
                 })}
-              </Popover.Content>
-            </Popover.Portal>
-          </Popover.Root>
+              </PopoverContent>
+            </PopoverPositioner>
+          </Popover>
 
           {/* Editable Content Area - Using ref as shown in official example */}
           <div className="alert-content inline-content" ref={contentRef} />

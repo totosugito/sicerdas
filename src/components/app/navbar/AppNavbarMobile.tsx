@@ -1,6 +1,6 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { useAppTranslation } from '@/lib/i18n-typed'
-import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
+import { VisuallyHidden } from '@/components/ui/visually-hidden'
 import {
     BookOpen,
     Menu,
@@ -84,9 +84,9 @@ export function AppNavbarMobile({ isOpen, setIsOpen }: AppNavbarMobileProps) {
                 className="gap-0 w-[300px] sm:w-[350px] p-0 flex flex-col bg-white dark:bg-slate-950 border-l border-slate-200 dark:border-white/10"
                 aria-describedby={undefined}
             >
-                <VisuallyHidden.Root>
+                <VisuallyHidden>
                     <SheetTitle>{t($ => $.app.appName)}</SheetTitle>
-                </VisuallyHidden.Root>
+                </VisuallyHidden>
 
                 {/* Header */}
                 <SheetHeader className="px-6 py-8 bg-gradient-to-br from-primary/5 via-transparent to-transparent">
