@@ -9,7 +9,7 @@ import { useListTagSimple, useCreateTag } from "@/api/education/tags";
 import { useAssignQuestionTag, useUnassignQuestionTag } from "@/api/exam/question-tags";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverPositioner, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -106,36 +106,35 @@ export function QuestionTagsTab({ questionId, tags = [] }: QuestionTagsTabProps)
             </Label>
 
             <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <button className="w-full text-left outline-none">
-                  <div
-                    className={cn(
-                      "h-10 w-full bg-background rounded-md border transition-all flex items-center px-3 gap-2 text-sm",
-                      open
-                        ? "border-primary ring-2 ring-primary/20"
-                        : "border-input hover:border-primary/50",
-                    )}
-                  >
-                    <Search
-                      className={cn(
-                        "h-4 w-4 shrink-0 transition-colors",
-                        open ? "text-primary" : "text-muted-foreground",
-                      )}
-                    />
-                    <span className="text-muted-foreground flex-1 truncate">
-                      {t(($) => $.exam.tags.placeholder)}
-                    </span>
-                    {(assignMutation.isPending || unassignMutation.isPending) && (
-                      <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary" />
-                    )}
-                  </div>
-                </button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="w-[var(--radix-popover-trigger-width)] p-0 rounded-2xl overflow-hidden border-2 shadow-2xl"
-                align="start"
-                sideOffset={8}
+              <PopoverTrigger
+                render={<button className="w-full text-left outline-none" />}
               >
+                <div
+                  className={cn(
+                    "h-10 w-full bg-background rounded-md border transition-all flex items-center px-3 gap-2 text-sm",
+                    open
+                      ? "border-primary ring-2 ring-primary/20"
+                      : "border-input hover:border-primary/50",
+                  )}
+                >
+                  <Search
+                    className={cn(
+                      "h-4 w-4 shrink-0 transition-colors",
+                      open ? "text-primary" : "text-muted-foreground",
+                    )}
+                  />
+                  <span className="text-muted-foreground flex-1 truncate">
+                    {t(($) => $.exam.tags.placeholder)}
+                  </span>
+                  {(assignMutation.isPending || unassignMutation.isPending) && (
+                    <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary" />
+                  )}
+                </div>
+              </PopoverTrigger>
+              <PopoverPositioner align="start" sideOffset={8}>
+                <PopoverContent
+                  className="w-[var(--radix-popover-trigger-width)] p-0 rounded-2xl overflow-hidden border-2 shadow-2xl"
+                >
                 <Command className="rounded-none">
                   <CommandInput
                     placeholder={t(($) => $.labels.search) + "..."}
@@ -185,7 +184,8 @@ export function QuestionTagsTab({ questionId, tags = [] }: QuestionTagsTabProps)
                   </CommandList>
                 </Command>
               </PopoverContent>
-            </Popover>
+            </PopoverPositioner>
+          </Popover>
           </div>
 
           <div className="space-y-4">

@@ -42,13 +42,15 @@ export const LongText: React.FC<LongTextProps> = ({
                         displayText
                     )}
                     <Popover>
-                        <PopoverTrigger asChild>
-                            <span
-                                className="text-blue-500 hover:underline cursor-pointer ml-1"
-                            >
-                                More
-                            </span>
-                        </PopoverTrigger>
+                        <PopoverTrigger
+                            render={
+                                <span
+                                    className="text-blue-500 hover:underline cursor-pointer ml-1"
+                                >
+                                    More
+                                </span>
+                            }
+                        />
                         <PopoverContent
                             className={cn("w-80 p-0 flex flex-col", contentClassName)}
                             style={{ maxHeight: typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight }}

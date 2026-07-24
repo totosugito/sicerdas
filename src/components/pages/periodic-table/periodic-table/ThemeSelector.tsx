@@ -2,7 +2,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { PeriodicCell } from "./PeriodicCell";
 import { EnumPeriodicViewMode } from "@/constants/app-enum";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverPositioner, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ChevronDown } from "lucide-react";
@@ -35,16 +35,17 @@ export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProp
   return (
     <div className="flex items-center gap-2">
       <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-        <PopoverTrigger asChild>
-          <Button variant="outline" className="w-[180px] justify-between">
-            <span>
-              {Object.values(EnumPeriodicViewMode).find(t => t.value === currentTheme)?.label ||
-                t($ => $.periodicTable.periodicTable.searchBar.placeholder)}
-            </span>
-            <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
-          </Button>
+        <PopoverTrigger
+          render={<Button variant="outline" className="w-[180px] justify-between" />}
+        >
+          <span>
+            {Object.values(EnumPeriodicViewMode).find(t => t.value === currentTheme)?.label ||
+              t($ => $.periodicTable.periodicTable.searchBar.placeholder)}
+          </span>
+          <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
         </PopoverTrigger>
-        <PopoverContent className="w-[300px] p-4" align="end">
+        <PopoverPositioner align="end">
+          <PopoverContent className="w-[300px] p-4">
           <div className="space-y-4">
             <div className="text-center">
               <h4 className="font-medium">{t($ => $.periodicTable.periodicTable.themeSelector.previewTitle)}</h4>
@@ -99,7 +100,8 @@ export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProp
             </div>
           </div>
         </PopoverContent>
-      </Popover>
+      </PopoverPositioner>
+    </Popover>
     </div>
   );
 }

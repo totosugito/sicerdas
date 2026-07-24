@@ -312,7 +312,7 @@ export function UserTable({
       <CardHeader className="flex flex-col sm:flex-row justify-between bg-muted/30 border-b border-border space-y-0">
         <div className="flex items-center gap-2">
           <Faceted value={roles} onValueChange={(val) => setRoles(val || [])} multiple={true}>
-            <FacetedTrigger asChild>
+            <FacetedTrigger>
               <Button variant="outline" size="sm" className="h-9 gap-2">
                 <Filter className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium">{t(($) => $.labels.role)}</span>

@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverPositioner, PopoverTrigger } from "@/components/ui/popover";
 
 interface DataTableColumnHeaderProps<TData, TValue> {
   column: Column<TData, TValue>;
@@ -57,53 +57,57 @@ export function DataTableColumnHeader<TData, TValue>({
     >
       <span className="group-hover:text-foreground break-words leading-tight flex-1">{title}</span>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 w-6 p-0 group-hover:text-foreground data-[state=open]:text-foreground"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsOpen(!isOpen);
-            }}
-          >
-            {isSorted === 'desc' ? (
-              <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-            ) : isSorted === 'asc' ? (
-              <ChevronUp className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-            ) : (
-              <ChevronsUpDown className="h-4 w-4 text-muted-foreground/70 group-hover:text-foreground transition-colors" />
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-36 p-1" align="start" onClick={(e) => e.stopPropagation()}>
-          <div className="flex flex-col gap-y-1">
+        <PopoverTrigger
+          render={
             <Button
               variant="ghost"
               size="sm"
-              className={`justify-start ${isSorted === 'asc' ? 'bg-accent' : ''}`}
+              className="h-6 w-6 p-0 group-hover:text-foreground data-[state=open]:text-foreground"
               onClick={(e) => {
                 e.stopPropagation();
-                handleSort('asc');
+                setIsOpen(!isOpen);
               }}
             >
-              <ChevronUp className="mr-2 h-4 w-4" />
-              Sort A → Z
+              {isSorted === 'desc' ? (
+                <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+              ) : isSorted === 'asc' ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+              ) : (
+                <ChevronsUpDown className="h-4 w-4 text-muted-foreground/70 group-hover:text-foreground transition-colors" />
+              )}
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`justify-start ${isSorted === 'desc' ? 'bg-accent' : ''}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleSort('desc');
-              }}
-            >
-              <ChevronDown className="mr-2 h-4 w-4" />
-              Sort Z → A
-            </Button>
-          </div>
-        </PopoverContent>
+          }
+        />
+        <PopoverPositioner align="start">
+          <PopoverContent className="w-36 p-1" onClick={(e) => e.stopPropagation()}>
+            <div className="flex flex-col gap-y-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`justify-start ${isSorted === 'asc' ? 'bg-accent' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSort('asc');
+                }}
+              >
+                <ChevronUp className="mr-2 h-4 w-4" />
+                Sort A → Z
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`justify-start ${isSorted === 'desc' ? 'bg-accent' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSort('desc');
+                }}
+              >
+                <ChevronDown className="mr-2 h-4 w-4" />
+                Sort Z → A
+              </Button>
+            </div>
+          </PopoverContent>
+        </PopoverPositioner>
       </Popover>
     </div>
   );

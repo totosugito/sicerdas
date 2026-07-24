@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverPositioner, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { PeriodicCell } from "./PeriodicCell";
 import { PeriodicElement as PeriodicElementType } from "../types/types";
@@ -43,16 +43,13 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <div className="cursor-pointer">
-          {children}
-        </div>
+      <PopoverTrigger render={<div className="cursor-pointer" />}>
+        {children}
       </PopoverTrigger>
-      <PopoverContent
-        className="w-[400px] max-h-[80vh] overflow-y-auto p-0"
-        align="center"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
+      <PopoverPositioner align="center">
+        <PopoverContent
+          className="w-[400px] max-h-[80vh] overflow-y-auto p-0"
+        >
         {data ? (
           <div className="p-4">
             <div className="flex items-start justify-between mb-4">
@@ -113,6 +110,7 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
           </div>
         ) : null}
       </PopoverContent>
-    </Popover>
+    </PopoverPositioner>
+  </Popover>
   );
 }

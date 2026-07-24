@@ -7,7 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import React from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverPositioner, PopoverTrigger } from "@/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import {
   Command,
@@ -108,33 +108,36 @@ export const FormCombobox = ({
             {...props}
             modal={true}
           >
-            <PopoverTrigger asChild>
-              <FormControl>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className={cn(
-                    "w-full justify-between font-normal min-w-0",
-                    field.value ? "" : "text-muted-foreground",
-                  )}
-                  disabled={props?.disabled}
-                >
-                  <span className="truncate overflow-hidden text-left flex-1 mr-2">
-                    {field.value
-                      ? item?.options.find((it: any) => it.value === field.value)?.label
-                      : (item?.placeholder ?? "Search...")}
-                  </span>
-                  <ChevronsUpDown className="opacity-50 flex-shrink-0" />
-                </Button>
-              </FormControl>
-            </PopoverTrigger>
-            <PopoverContent
-              className={cn(
-                "w-[var(--radix-popover-trigger-width)] p-0 overflow-y-auto z-50",
-                popoverClassName,
-              )}
-            >
+            <PopoverTrigger
+              render={
+                <FormControl>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className={cn(
+                      "w-full justify-between font-normal min-w-0",
+                      field.value ? "" : "text-muted-foreground",
+                    )}
+                    disabled={props?.disabled}
+                  >
+                    <span className="truncate overflow-hidden text-left flex-1 mr-2">
+                      {field.value
+                        ? item?.options.find((it: any) => it.value === field.value)?.label
+                        : item?.placeholder ?? "Select option"}
+                    </span>
+                    <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 ml-auto" />
+                  </Button>
+                </FormControl>
+              }
+            />
+            <PopoverPositioner>
+              <PopoverContent
+                className={cn(
+                  "w-[var(--radix-popover-trigger-width)] p-0 overflow-y-auto z-50",
+                  popoverClassName,
+                )}
+              >
               <Command
                 shouldFilter={!item?.serverSideSearch}
                 filter={(value, search) => {
@@ -186,7 +189,8 @@ export const FormCombobox = ({
                 </CommandList>
               </Command>
             </PopoverContent>
-          </Popover>
+          </PopoverPositioner>
+        </Popover>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
           {showMessage && <FormMessage />}
         </FormItem>

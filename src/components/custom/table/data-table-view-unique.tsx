@@ -13,6 +13,7 @@ import {
 import {
   Popover,
   PopoverContent,
+  PopoverPositioner,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -100,24 +101,27 @@ export function DataTableViewUnique<TData>({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="justify-between"
-        >
-          <Filter className="mr-2 h-4 w-4" />
-          {displayTitle}
-          {selectedValues.length > 0 && (
-            <Badge variant="secondary" className="ml-2">
-              {selectedValues.length}
-            </Badge>
-          )}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
+      <PopoverTrigger
+        render={
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="justify-between"
+          />
+        }
+      >
+        <Filter className="mr-2 h-4 w-4" />
+        {displayTitle}
+        {selectedValues.length > 0 && (
+          <Badge variant="secondary" className="ml-2">
+            {selectedValues.length}
+          </Badge>
+        )}
+        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </PopoverTrigger>
-      <PopoverContent className="w-auto min-w-36 max-w-56 p-2" align="start">
+      <PopoverPositioner align="start">
+        <PopoverContent className="w-auto min-w-36 max-w-56 p-2">
         <Command>
           <CommandList>
             <CommandGroup>
@@ -171,6 +175,7 @@ export function DataTableViewUnique<TData>({
           )}
         </Command>
       </PopoverContent>
-    </Popover>
+    </PopoverPositioner>
+  </Popover>
   );
 }

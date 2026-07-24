@@ -25,11 +25,9 @@ import { AppRoute } from "@/constants/app-route";
 import { showNotifError } from "@/lib/show-notif";
 import {
   Drawer,
-  DrawerContent,
-  DrawerHeader,
+  DrawerPopup,
   DrawerTitle,
   DrawerDescription,
-  DrawerFooter,
   DrawerClose,
 } from "@/components/ui/drawer";
 import { ErrorPageDetails } from "@/components/app/ErrorPageDetails";
@@ -411,11 +409,11 @@ function RouteComponent() {
 
         {/* Mobile Navigation Drawer */}
         <Drawer open={isMobileGridOpen} onOpenChange={setIsMobileGridOpen}>
-          <DrawerContent className="max-h-[85vh]" overlayClassName="bg-black/10">
-            <DrawerHeader className="sr-only">
+          <DrawerPopup>
+            <div className="sr-only">
               <DrawerTitle>{t(($) => $.exam.sessions.cbt.navigation.title)}</DrawerTitle>
               <DrawerDescription>{t(($) => $.exam.sessions.cbt.session.mobileNavDesc)}</DrawerDescription>
-            </DrawerHeader>
+            </div>
             <div className="overflow-y-auto">
               <CbtNavigationGrid
                 items={gridItems}
@@ -429,7 +427,7 @@ function RouteComponent() {
                 onClose={() => setIsMobileGridOpen(false)}
               />
             </div>
-          </DrawerContent>
+          </DrawerPopup>
         </Drawer>
       </div>
 

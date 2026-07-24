@@ -12,6 +12,7 @@ import {
 import {
   Popover,
   PopoverContent,
+  PopoverPositioner,
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { ChevronsUpDown, Check } from 'lucide-react';
@@ -71,30 +72,33 @@ export function ElementSearchCombobox({ theme = 'theme1', elementPathSegment, na
   return (
     <div className="w-full max-w-sm">
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between font-normal"
-          >
-            {selectedElement ? (
-              <div className="flex items-center">
-                <span
-                  className="mr-2 font-bold"
-                  style={{ color: getElementStyle(selectedElement.atomicGroup, theme).atomColor }}
-                >
-                  {selectedElement.atomicSymbol}
-                </span>
-                <span>{selectedElement.atomicName} (#{selectedElement.atomicNumber})</span>
-              </div>
-            ) : (
-              t($ => $.periodicTable.elementDetail.selectElement)
-            )}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
+        <PopoverTrigger
+          render={
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-full justify-between font-normal"
+            />
+          }
+        >
+          {selectedElement ? (
+            <div className="flex items-center">
+              <span
+                className="mr-2 font-bold"
+                style={{ color: getElementStyle(selectedElement.atomicGroup, theme).atomColor }}
+              >
+                {selectedElement.atomicSymbol}
+              </span>
+              <span>{selectedElement.atomicName} (#{selectedElement.atomicNumber})</span>
+            </div>
+          ) : (
+            t($ => $.periodicTable.elementDetail.selectElement)
+          )}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0">
+        <PopoverPositioner>
+          <PopoverContent className="w-full p-0">
           <Command>
             <CommandInput placeholder={t($ => $.periodicTable.elementDetail.searchElements)} />
             <CommandList>
@@ -132,7 +136,8 @@ export function ElementSearchCombobox({ theme = 'theme1', elementPathSegment, na
             </CommandList>
           </Command>
         </PopoverContent>
-      </Popover>
+      </PopoverPositioner>
+    </Popover>
     </div>
   );
 }

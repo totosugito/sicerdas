@@ -1,7 +1,7 @@
 import { GripVertical, Edit2, Trash2, Zap, MessageSquare, Check, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverPositioner, PopoverTrigger } from "@/components/ui/popover";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { TierItem } from "@/api/tier";
@@ -119,12 +119,15 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
               ))}
               {hasMoreFeatures && (
                 <Popover>
-                  <PopoverTrigger asChild>
-                    <button className="inline-flex items-center gap-1 text-xs bg-muted text-muted-foreground hover:bg-muted/80 rounded-full px-2.5 py-0.5 transition-colors">
-                      +{remainingFeatures.length} {t(($) => $.tier.list.moreFeatures)}
-                    </button>
+                  <PopoverTrigger
+                    render={
+                      <button className="inline-flex items-center gap-1 text-xs bg-muted text-muted-foreground hover:bg-muted/80 rounded-full px-2.5 py-0.5 transition-colors" />
+                    }
+                  >
+                    +{remainingFeatures.length} {t(($) => $.tier.list.moreFeatures)}
                   </PopoverTrigger>
-                  <PopoverContent className="w-80" align="start">
+                  <PopoverPositioner align="start">
+                    <PopoverContent className="w-80">
                     <div className="space-y-2">
                       <h4 className="font-semibold text-sm">
                         {t(($) => $.tier.list.allFeatures)}
@@ -142,7 +145,8 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
                       </div>
                     </div>
                   </PopoverContent>
-                </Popover>
+                </PopoverPositioner>
+              </Popover>
               )}
             </div>
           )}

@@ -12,6 +12,8 @@ import {
     NavigationMenuItem,
     NavigationMenuLink,
     NavigationMenuList,
+    NavigationMenuPositioner,
+    NavigationMenuPopup,
     NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu'
 import { cn } from '@/lib/utils'
@@ -31,20 +33,24 @@ export function AppNavbarDesktop() {
                             <BookOpen className="w-4 h-4 mr-2 text-slate-500" />
                             {t($ => $.landing.navbar.books.title)}
                         </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                            <ul className="grid w-[500px] gap-1 p-3 md:grid-cols-2">
-                                {booksMenu.map((item: MenuItem) => (
-                                    <ListItem
-                                        key={item.title}
-                                        title={item.title}
-                                        to={item.to}
-                                        search={item.search}
-                                    >
-                                        {item.description}
-                                    </ListItem>
-                                ))}
-                            </ul>
-                        </NavigationMenuContent>
+                        <NavigationMenuPositioner>
+                            <NavigationMenuPopup>
+                                <NavigationMenuContent>
+                                    <ul className="grid w-[500px] gap-1 p-3 md:grid-cols-2">
+                                        {booksMenu.map((item: MenuItem) => (
+                                            <ListItem
+                                                key={item.title}
+                                                title={item.title}
+                                                to={item.to}
+                                                search={item.search}
+                                            >
+                                                {item.description}
+                                            </ListItem>
+                                        ))}
+                                    </ul>
+                                </NavigationMenuContent>
+                            </NavigationMenuPopup>
+                        </NavigationMenuPositioner>
                     </NavigationMenuItem>
 
                     {/* Constitution Menu */}
@@ -53,19 +59,23 @@ export function AppNavbarDesktop() {
                             <Shield className="w-4 h-4 mr-2 text-slate-500" />
                             {t($ => $.landing.navbar.constitution.title)}
                         </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                            <ul className="grid w-[500px] gap-1 p-3 md:grid-cols-2">
-                                {constitutionMenu.map((item: MenuItem) => (
-                                    <ListItem
-                                        key={item.title}
-                                        title={item.title}
-                                        to={item.to}
-                                    >
-                                        {item.description}
-                                    </ListItem>
-                                ))}
-                            </ul>
-                        </NavigationMenuContent>
+                        <NavigationMenuPositioner>
+                            <NavigationMenuPopup>
+                                <NavigationMenuContent>
+                                    <ul className="grid w-[500px] gap-1 p-3 md:grid-cols-2">
+                                        {constitutionMenu.map((item: MenuItem) => (
+                                            <ListItem
+                                                key={item.title}
+                                                title={item.title}
+                                                to={item.to}
+                                            >
+                                                {item.description}
+                                            </ListItem>
+                                        ))}
+                                    </ul>
+                                </NavigationMenuContent>
+                            </NavigationMenuPopup>
+                        </NavigationMenuPositioner>
                     </NavigationMenuItem>
 
                     {/* Periodic Table */}
@@ -74,20 +84,24 @@ export function AppNavbarDesktop() {
                             <FlaskConical className="w-4 h-4 mr-2 text-slate-500" />
                             {t($ => $.landing.navbar.periodicTable.title)}
                         </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                            <ul className="grid w-[500px] gap-1 p-3 md:grid-cols-2">
-                                {tablePeriodicMenu.map((item: MenuItem) => (
-                                    <ListItem
-                                        key={item.title}
-                                        title={item.title}
-                                        to={item.to}
-                                        params={item.params}
-                                    >
-                                        {item.description}
-                                    </ListItem>
-                                ))}
-                            </ul>
-                        </NavigationMenuContent>
+                        <NavigationMenuPositioner>
+                            <NavigationMenuPopup>
+                                <NavigationMenuContent>
+                                    <ul className="grid w-[500px] gap-1 p-3 md:grid-cols-2">
+                                        {tablePeriodicMenu.map((item: MenuItem) => (
+                                            <ListItem
+                                                key={item.title}
+                                                title={item.title}
+                                                to={item.to}
+                                                params={item.params}
+                                            >
+                                                {item.description}
+                                            </ListItem>
+                                        ))}
+                                    </ul>
+                                </NavigationMenuContent>
+                            </NavigationMenuPopup>
+                        </NavigationMenuPositioner>
                     </NavigationMenuItem>
 
                     {/* Quiz Menu */}
@@ -96,20 +110,24 @@ export function AppNavbarDesktop() {
                             <Trophy className="h-4 w-4 mr-2 text-slate-500" />
                             {t($ => $.landing.navbar.quiz.title)}
                         </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                            <ul className="grid w-[500px] gap-1 p-3 md:grid-cols-2">
-                                {quizMenu.map((item: MenuItem) => (
-                                    <ListItem
-                                        key={item.title}
-                                        title={item.title}
-                                        to={item.to}
-                                        search={item.search}
-                                    >
-                                        {item.description}
-                                    </ListItem>
-                                ))}
-                            </ul>
-                        </NavigationMenuContent>
+                        <NavigationMenuPositioner>
+                            <NavigationMenuPopup>
+                                <NavigationMenuContent>
+                                    <ul className="grid w-[500px] gap-1 p-3 md:grid-cols-2">
+                                        {quizMenu.map((item: MenuItem) => (
+                                            <ListItem
+                                                key={item.title}
+                                                title={item.title}
+                                                to={item.to}
+                                                search={item.search}
+                                            >
+                                                {item.description}
+                                            </ListItem>
+                                        ))}
+                                    </ul>
+                                </NavigationMenuContent>
+                            </NavigationMenuPopup>
+                        </NavigationMenuPositioner>
                     </NavigationMenuItem> */}
                 </NavigationMenuList>
             </NavigationMenu>
@@ -125,24 +143,26 @@ interface ListItemProps extends Omit<MenuItem, 'description'> {
 const ListItem = ({ className, title, children, to, params, search, ...props }: ListItemProps) => {
     return (
         <li>
-            <NavigationMenuLink asChild>
-                <Link
-                    to={to}
-                    params={params}
-                    search={search}
-                    className={cn(
-                        "group block select-none space-y-1 rounded-lg p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800/40 focus:bg-slate-50 dark:focus:bg-slate-800/40",
-                        className
-                    )}
-                    {...props}
-                >
-                    <div className="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors leading-none">
-                        {title}
-                    </div>
-                    <p className="line-clamp-2 text-[12px] leading-snug text-slate-500 dark:text-slate-400 font-medium mt-1">
-                        {children}
-                    </p>
-                </Link>
+            <NavigationMenuLink
+                render={
+                    <Link
+                        to={to}
+                        params={params}
+                        search={search}
+                        className={cn(
+                            "group block select-none space-y-1 rounded-lg p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800/40 focus:bg-slate-50 dark:focus:bg-slate-800/40",
+                            className
+                        )}
+                        {...props}
+                    />
+                }
+            >
+                <div className="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors leading-none">
+                    {title}
+                </div>
+                <p className="line-clamp-2 text-[12px] leading-snug text-slate-500 dark:text-slate-400 font-medium mt-1">
+                    {children}
+                </p>
             </NavigationMenuLink>
         </li>
     )

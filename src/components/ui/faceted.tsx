@@ -16,6 +16,7 @@ import {
 import {
   Popover,
   PopoverContent,
+  PopoverPositioner,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -72,7 +73,7 @@ function Faceted<Multiple extends boolean = false>(
       if (!isControlled) {
         setUncontrolledOpen(newOpen);
       }
-      onOpenChangeProp?.(newOpen);
+      onOpenChangeProp?.(newOpen, {} as any);
     },
     [isControlled, onOpenChangeProp],
   );
@@ -200,16 +201,17 @@ function FacetedContent(props: React.ComponentProps<typeof PopoverContent>) {
   const { className, children, ...contentProps } = props;
 
   return (
-    <PopoverContent
-      {...contentProps}
-      align="start"
-      className={cn(
-        "w-[200px] origin-(--radix-popover-content-transform-origin) p-0",
-        className,
-      )}
-    >
-      <Command>{children}</Command>
-    </PopoverContent>
+    <PopoverPositioner align="start">
+      <PopoverContent
+        {...contentProps}
+        className={cn(
+          "w-[200px] origin-(--radix-popover-content-transform-origin) p-0",
+          className,
+        )}
+      >
+        <Command>{children}</Command>
+      </PopoverContent>
+    </PopoverPositioner>
   );
 }
 

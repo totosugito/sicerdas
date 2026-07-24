@@ -3,7 +3,7 @@
 import { Calendar } from "@/components/ui/calendar";
 import * as React from "react";
 import "@daypicker/react/style.css";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverPositioner, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { addYears } from "date-fns";
@@ -54,14 +54,16 @@ export default function DatePicker({ value, ...props }: DatePickerProps) {
     <div className={"relative"}>
       <Input {...inputProps} className={cn("w-full", props?.className)} disabled={props?.disabled} />
       <Popover>
-        <PopoverTrigger asChild>
-          <Button type={"button"} variant={"link"} disabled={props?.disabled}
-            className="absolute inset-y-0 right-0 flex items-center text-muted-foreground">
-            <CalendarIcon className="h-4 w-4" />
-          </Button>
-
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-2" align="start">
+        <PopoverTrigger
+          render={
+            <Button type={"button"} variant={"link"} disabled={props?.disabled}
+              className="absolute inset-y-0 right-0 flex items-center text-muted-foreground">
+              <CalendarIcon className="h-4 w-4" />
+            </Button>
+          }
+        />
+        <PopoverPositioner align="start">
+          <PopoverContent className="w-auto p-2">
           {/*<Calendar mode="single" selected={date} onSelect={setDate} autoFocus />*/}
           <Calendar
             mode="single"
@@ -113,6 +115,7 @@ export default function DatePicker({ value, ...props }: DatePickerProps) {
             }}
           />
         </PopoverContent>
+        </PopoverPositioner>
       </Popover>
     </div>
   );

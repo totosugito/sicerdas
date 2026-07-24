@@ -101,11 +101,9 @@ export const PackageSearchBar = ({
       <div className="flex items-center gap-2 border-t sm:border-t-0 sm:border-l border-slate-100 dark:border-slate-800 pt-2 sm:pt-0 pl-2">
         {onFilterChange && (
           <Popover open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="flex-1 visible lg:hidden ">
-                <Filter className="w-4 h-4 mr-2" />
-                {t(($) => $.labels.filter)}
-              </Button>
+            <PopoverTrigger render={<Button variant="outline" size="sm" className="flex-1 visible lg:hidden " />}>
+              <Filter className="w-4 h-4 mr-2" />
+              {t(($) => $.labels.filter)}
             </PopoverTrigger>
             <PopoverContent className="w-[300px] px-5">
               <PackageFilter

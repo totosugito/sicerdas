@@ -15,6 +15,7 @@ import {
 import {
   Popover,
   PopoverContent,
+  PopoverPositioner,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -125,19 +126,22 @@ export function DataTableViewOptions<TData>({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          aria-label="Toggle columns"
-          role="combobox"
-          variant="outline"
-          className="ml-auto flex"
-        >
-          <Columns3 className="mr-1 h-4 w-4"/>
-          View
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto min-w-36 max-w-56 p-2" align="start">
+      <PopoverTrigger
+        render={
+          <Button
+            aria-label="Toggle columns"
+            role="combobox"
+            variant="outline"
+            className="ml-auto flex"
+          >
+            <Columns3 className="mr-1 h-4 w-4"/>
+            View
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        }
+      />
+      <PopoverPositioner align="start">
+        <PopoverContent className="w-auto min-w-36 max-w-56 p-2">
         <Command>
           <CommandInput placeholder="Search columns..." />
           <CommandList>
@@ -219,6 +223,7 @@ export function DataTableViewOptions<TData>({
           </div>
         </Command>
       </PopoverContent>
-    </Popover>
+    </PopoverPositioner>
+  </Popover>
   );
 }

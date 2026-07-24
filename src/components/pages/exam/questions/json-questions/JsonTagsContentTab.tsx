@@ -6,7 +6,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverPositioner, PopoverTrigger } from "@/components/ui/popover";
 import {
   Command,
   CommandEmpty,
@@ -79,20 +79,23 @@ export function JsonTagsContentTab({
           <CardContent className="bg-card p-0 pt-2 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="w-full max-w-[400px] justify-between font-normal shadow-sm h-10 px-4"
-                  >
-                    <span className="truncate text-muted-foreground">
-                      {t(($) => $.exam.questions.edit.tags.placeholder)}
-                    </span>
-                    <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 ml-2" />
-                  </Button>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={open}
+                      className="w-full max-w-[400px] justify-between font-normal shadow-sm h-10 px-4"
+                    />
+                  }
+                >
+                  <span className="truncate text-muted-foreground">
+                    {t(($) => $.exam.questions.edit.tags.placeholder)}
+                  </span>
+                  <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 ml-2" />
                 </PopoverTrigger>
-                <PopoverContent className="w-[400px] p-0 shadow-lg border-border/50" align="start">
+                <PopoverPositioner align="start">
+                  <PopoverContent className="w-[400px] p-0 shadow-lg border-border/50">
                   <Command shouldFilter={true}>
                     <CommandInput
                       placeholder={t(($) => $.exam.questions.edit.tags.placeholder)}
@@ -145,7 +148,8 @@ export function JsonTagsContentTab({
                     </CommandList>
                   </Command>
                 </PopoverContent>
-              </Popover>
+              </PopoverPositioner>
+            </Popover>
             </div>
 
             <div className="flex flex-wrap gap-2.5">
