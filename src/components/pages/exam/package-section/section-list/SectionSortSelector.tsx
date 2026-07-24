@@ -4,6 +4,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectPositioner,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ArrowUpAZ, ArrowDownAZ } from "lucide-react";
@@ -37,8 +38,10 @@ export const SectionSortSelector = ({
   // Note: I should probably refined labels in locale for better UX, but let's use what's available
   // Actually, I'll check the locale to see if there are better keys.
 
-  const handleSortFieldChange = (value: string) => {
-    onSortChange(value, sortOrder);
+  const handleSortFieldChange = (value: string | null) => {
+    if (value !== null) {
+      onSortChange(value, sortOrder);
+    }
   };
 
   const toggleSortOrder = () => {
@@ -52,13 +55,15 @@ export const SectionSortSelector = ({
         <SelectTrigger className="w-[180px] bg-card shadow-sm border-border/60">
           <SelectValue placeholder={t(($) => $.labels.sortBy)} />
         </SelectTrigger>
-        <SelectContent>
-          {sortOptions.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
+        <SelectPositioner>
+          <SelectContent>
+            {sortOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </SelectPositioner>
       </Select>
       <Button
         variant="outline"

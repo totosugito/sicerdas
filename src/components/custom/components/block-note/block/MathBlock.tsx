@@ -12,6 +12,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectPositioner,
 } from "@/components/ui/select";
 
 export const MathBlock = createReactBlockSpec(
@@ -85,35 +86,39 @@ export const MathBlock = createReactBlockSpec(
                   <Select
                     value={(block.props.fontSize ?? 18).toString()}
                     onValueChange={(val) => {
-                      editor.updateBlock(block, {
-                        type: "math",
-                        props: { ...block.props, fontSize: parseInt(val) },
-                      });
+                      if (val !== null) {
+                        editor.updateBlock(block, {
+                          type: "math",
+                          props: { ...block.props, fontSize: parseInt(val) },
+                        });
+                      }
                     }}
                   >
                     <SelectTrigger className="w-[90px] h-7 text-[10px] bg-card" size="sm">
                       <SelectValue placeholder="Size" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="14" className="text-[10px]">
-                        Small
-                      </SelectItem>
-                      <SelectItem value="18" className="text-[10px]">
-                        Normal
-                      </SelectItem>
-                      <SelectItem value="24" className="text-[10px]">
-                        Medium
-                      </SelectItem>
-                      <SelectItem value="32" className="text-[10px]">
-                        Large
-                      </SelectItem>
-                      <SelectItem value="48" className="text-[10px]">
-                        Extra Large
-                      </SelectItem>
-                      <SelectItem value="64" className="text-[10px]">
-                        Huge
-                      </SelectItem>
-                    </SelectContent>
+                    <SelectPositioner>
+                      <SelectContent>
+                        <SelectItem value="14" className="text-[10px]">
+                          Small
+                        </SelectItem>
+                        <SelectItem value="18" className="text-[10px]">
+                          Normal
+                        </SelectItem>
+                        <SelectItem value="24" className="text-[10px]">
+                          Medium
+                        </SelectItem>
+                        <SelectItem value="32" className="text-[10px]">
+                          Large
+                        </SelectItem>
+                        <SelectItem value="48" className="text-[10px]">
+                          Extra Large
+                        </SelectItem>
+                        <SelectItem value="64" className="text-[10px]">
+                          Huge
+                        </SelectItem>
+                      </SelectContent>
+                    </SelectPositioner>
                   </Select>
                   <Button
                     type="button"

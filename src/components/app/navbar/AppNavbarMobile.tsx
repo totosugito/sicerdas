@@ -71,11 +71,14 @@ export function AppNavbarMobile({ isOpen, setIsOpen }: AppNavbarMobileProps) {
 
     return (
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild className="lg:hidden">
+            <SheetTrigger
+              render={
                 <Button variant="ghost" size="icon" className="hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                    <Menu className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                  <Menu className="h-6 w-6 text-slate-600 dark:text-slate-400" />
                 </Button>
-            </SheetTrigger>
+              }
+              className="lg:hidden"
+            />
             <SheetContent
                 side="right"
                 className="gap-0 w-[300px] sm:w-[350px] p-0 flex flex-col bg-white dark:bg-slate-950 border-l border-slate-200 dark:border-white/10"

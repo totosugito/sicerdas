@@ -4,6 +4,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectPositioner,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ArrowUpAZ, ArrowDownAZ } from "lucide-react";
@@ -29,8 +30,10 @@ export const PackageSortSelector = ({
     // { value: 'totalQuestions', label: t($ => $.exam.packages.table.sort.totalQuestions) },
   ];
 
-  const handleSortFieldChange = (value: string) => {
-    onSortChange(value, sortOrder);
+  const handleSortFieldChange = (value: string | null) => {
+    if (value !== null) {
+      onSortChange(value, sortOrder);
+    }
   };
 
   const toggleSortOrder = () => {
@@ -44,13 +47,15 @@ export const PackageSortSelector = ({
         <SelectTrigger className="w-[160px]">
           <SelectValue placeholder={t(($) => $.exam.packages.table.sort.placeholder)} />
         </SelectTrigger>
-        <SelectContent>
-          {sortOptions.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
+        <SelectPositioner>
+          <SelectContent>
+            {sortOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </SelectPositioner>
       </Select>
       <Button variant="outline" onClick={toggleSortOrder} className="p-0 h-9 w-9">
         {sortOrder === "asc" ? (

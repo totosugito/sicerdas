@@ -14,6 +14,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectPositioner,
 } from "@/components/ui/select";
 import { DropdownNavProps, DropdownProps } from "@daypicker/react";
 import { Input } from "@/components/ui/input";
@@ -89,7 +90,7 @@ export default function DatePicker({ value, ...props }: DatePickerProps) {
                   <Select
                     value={String(props.value)}
                     onValueChange={(value) => {
-                      if (props.onChange) {
+                      if (props.onChange && value !== null) {
                         handleCalendarChange(value, props.onChange);
                       }
                     }}
@@ -97,18 +98,20 @@ export default function DatePicker({ value, ...props }: DatePickerProps) {
                     <SelectTrigger className="h-8 first:grow">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent
-                      className="max-h-[min(26rem,var(--radix-select-content-available-height))]">
-                      {props.options?.map((option) => (
-                        <SelectItem
-                          key={option.value}
-                          value={String(option.value)}
-                          disabled={option.disabled}
-                        >
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
+                    <SelectPositioner>
+                      <SelectContent
+                        className="max-h-[min(26rem,var(--available-height))]">
+                        {props.options?.map((option) => (
+                          <SelectItem
+                            key={option.value}
+                            value={String(option.value)}
+                            disabled={option.disabled}
+                          >
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </SelectPositioner>
                   </Select>
                 );
               },

@@ -66,18 +66,18 @@ const SidebarMenuLink = ({ item, href }: { item: NavLink; href: string }) => {
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
-        asChild
+        render={
+          <Link to={item.url} onClick={() => setOpenMobile(false)} >
+            {item.icon && <item.icon />}
+            <span>{item.title}</span>
+            {item.badge && <NavBadge>{item.badge}</NavBadge>}
+          </Link>
+        }
         isActive={status}
         tooltip={item.title}
         className={cn("data-[active=true]:bg-primary/10 data-[active=true]:text-primary " +
           "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors")}
-      >
-        <Link to={item.url} onClick={() => setOpenMobile(false)} >
-          {item.icon && <item.icon />}
-          <span>{item.title}</span>
-          {item.badge && <NavBadge>{item.badge}</NavBadge>}
-        </Link>
-      </SidebarMenuButton>
+      />
     </SidebarMenuItem>
   )
 }
@@ -110,16 +110,16 @@ const SidebarMenuCollapsible = ({
             {item.items.map((subItem) => (
               <SidebarMenuSubItem key={subItem.title}>
                 <SidebarMenuSubButton
-                  asChild
+                  render={
+                    <Link to={subItem.url} onClick={() => setOpenMobile(false)}>
+                      {subItem.icon && <subItem.icon />}
+                      <span>{subItem.title}</span>
+                      {subItem.badge && <NavBadge>{subItem.badge}</NavBadge>}
+                    </Link>
+                  }
                   isActive={checkIsActive(href, subItem)}
                   className="data-[active=true]:bg-primary/10 data-[active=true]:text-primary hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
-                >
-                  <Link to={subItem.url} onClick={() => setOpenMobile(false)}>
-                    {subItem.icon && <subItem.icon />}
-                    <span>{subItem.title}</span>
-                    {subItem.badge && <NavBadge>{subItem.badge}</NavBadge>}
-                  </Link>
-                </SidebarMenuSubButton>
+                />
               </SidebarMenuSubItem>
             ))}
           </SidebarMenuSub>

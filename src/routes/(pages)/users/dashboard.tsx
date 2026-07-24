@@ -17,6 +17,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
+  SelectPositioner,
 } from "@/components/ui/select";
 import {
   DashboardHero,
@@ -111,10 +112,12 @@ function ExamDashboardComponent() {
     });
   };
 
-  const handleDaysChange = (value: string) => {
-    navigate({
-      search: (prev: DashboardSearch) => ({ ...prev, days: parseInt(value) }),
-    });
+  const handleDaysChange = (value: string | null) => {
+    if (value !== null) {
+      navigate({
+        search: (prev: DashboardSearch) => ({ ...prev, days: parseInt(value) }),
+      });
+    }
   };
 
   const handleBookFavPageChange = (page: number) => {
@@ -205,11 +208,13 @@ function ExamDashboardComponent() {
                       </span>
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl shadow-2xl border-slate-200 dark:border-slate-800">
-                    <SelectItem value="7" className="font-medium">{t(($) => $.exam.sessions.dashboard.charts.activityRange.last7Days)}</SelectItem>
-                    <SelectItem value="14" className="font-medium">{t(($) => $.exam.sessions.dashboard.charts.activityRange.last14Days)}</SelectItem>
-                    <SelectItem value="30" className="font-medium">{t(($) => $.exam.sessions.dashboard.charts.activityRange.last30Days)}</SelectItem>
-                  </SelectContent>
+                  <SelectPositioner>
+                    <SelectContent className="rounded-xl shadow-2xl border-slate-200 dark:border-slate-800">
+                      <SelectItem value="7" className="font-medium">{t(($) => $.exam.sessions.dashboard.charts.activityRange.last7Days)}</SelectItem>
+                      <SelectItem value="14" className="font-medium">{t(($) => $.exam.sessions.dashboard.charts.activityRange.last14Days)}</SelectItem>
+                      <SelectItem value="30" className="font-medium">{t(($) => $.exam.sessions.dashboard.charts.activityRange.last30Days)}</SelectItem>
+                    </SelectContent>
+                  </SelectPositioner>
                 </Select>
               </div>
             </div>

@@ -5,6 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectPositioner,
 } from "@/components/ui/select";
 import { ArrowUpAZ, ArrowDownAZ } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,17 +32,26 @@ export function QuestionSortSelector({
 
   return (
     <div className="flex items-center gap-2">
-      <Select value={sortBy} onValueChange={(value) => onSortChange(value, sortOrder)}>
+      <Select
+        value={sortBy}
+        onValueChange={(value) => {
+          if (value !== null) {
+            onSortChange(value, sortOrder);
+          }
+        }}
+      >
         <SelectTrigger className="h-10 w-[180px] bg-background/50 border-border/60 rounded-xl">
           <SelectValue placeholder={t(($) => $.labels.sortBy)} />
         </SelectTrigger>
-        <SelectContent>
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
+        <SelectPositioner>
+          <SelectContent>
+            {options.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </SelectPositioner>
       </Select>
 
       <Button

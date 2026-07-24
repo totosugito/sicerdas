@@ -199,7 +199,7 @@ export const MultiSelect = React.forwardRef<
             className={cn("h-9")}
             render={
               <Button
-                ref={ref}
+                ref={ref as React.RefObject<HTMLButtonElement | null>}
                 {...props}
                 onClick={handleTogglePopover}
                 variant={"outline"}

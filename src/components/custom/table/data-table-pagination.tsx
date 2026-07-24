@@ -4,6 +4,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectPositioner,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import React from "react";
@@ -186,15 +187,17 @@ export function DataTablePagination({
                 }}
               >
                 <SelectTrigger className="w-[8.3rem]">
-                  <SelectValue placeholder={currentPageSize} />
+                  <SelectValue placeholder={String(currentPageSize)} />
                 </SelectTrigger>
-                <SelectContent side="top">
-                  {pageSizeOptions.map((pageSize) => (
-                    <SelectItem key={pageSize} value={`${pageSize}`}>
-                      {pageSize} {t(($) => $.labels.pagination.rowsPerPage)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+                <SelectPositioner side="top">
+                  <SelectContent>
+                    {pageSizeOptions.map((pageSize) => (
+                      <SelectItem key={pageSize} value={`${pageSize}`}>
+                        {pageSize} {t(($) => $.labels.pagination.rowsPerPage)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </SelectPositioner>
               </Select>
             </div>
           )}

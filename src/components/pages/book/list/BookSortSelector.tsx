@@ -1,4 +1,4 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectPositioner } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ArrowUpAZ, ArrowDownAZ } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
@@ -24,8 +24,10 @@ export const BookSortSelector = ({
     // { value: 'downloadCount', label: t($ => $.book.info.sort.downloadCount) },
   ];
 
-  const handleSortFieldChange = (value: string) => {
-    onSortChange(value, sortOrder);
+  const handleSortFieldChange = (value: string | null) => {
+    if (value !== null) {
+      onSortChange(value, sortOrder);
+    }
   };
 
   const toggleSortOrder = () => {
@@ -39,13 +41,15 @@ export const BookSortSelector = ({
         <SelectTrigger className="w-[160px]">
           <SelectValue placeholder={t($ => $.book.info.sort.placeholder)} />
         </SelectTrigger>
-        <SelectContent>
-          {sortOptions.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
+        <SelectPositioner>
+          <SelectContent>
+            {sortOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </SelectPositioner>
       </Select>
       <Button
         variant="outline"

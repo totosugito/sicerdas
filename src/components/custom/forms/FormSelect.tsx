@@ -15,6 +15,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
+  SelectPositioner,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
@@ -71,7 +72,7 @@ export const FormSelect = ({
                         <div className="flex items-center overflow-hidden">
                           {selectedOption.color && (
                             <div
-                              className="w-3 h-3 rounded-sm mr-2 flex-shrink-0"
+                               className="w-3 h-3 rounded-sm mr-2 flex-shrink-0"
                               style={{ backgroundColor: selectedOption.color }}
                             />
                           )}
@@ -82,26 +83,28 @@ export const FormSelect = ({
                 </SelectValue>
               </SelectTrigger>
             </FormControl>
-            <SelectContent>
-              <SelectGroup>
-                {item?.selectLabel && (
-                  <SelectLabel>{item?.selectLabel ?? "Choose a filter"}</SelectLabel>
-                )}
-                {item.options?.map((it: any) => (
-                  <SelectItem key={it?.value} value={it?.value}>
-                    <div className="flex items-center overflow-hidden">
-                      {it?.color && (
-                        <div
-                          className="w-3 h-3 rounded-sm mr-2 flex-shrink-0"
-                          style={{ backgroundColor: it?.color }}
-                        />
-                      )}
-                      <span className="truncate">{it?.label}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
+            <SelectPositioner>
+              <SelectContent>
+                <SelectGroup>
+                  {item?.selectLabel && (
+                    <SelectLabel>{item?.selectLabel ?? "Choose a filter"}</SelectLabel>
+                  )}
+                  {item.options?.map((it: any) => (
+                    <SelectItem key={it?.value} value={it?.value}>
+                      <div className="flex items-center overflow-hidden">
+                        {it?.color && (
+                          <div
+                            className="w-3 h-3 rounded-sm mr-2 flex-shrink-0"
+                            style={{ backgroundColor: it?.color }}
+                          />
+                        )}
+                        <span className="truncate">{it?.label}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </SelectPositioner>
           </Select>
           {item?.description && <FormDescription>{item.description}</FormDescription>}
           {showMessage && <FormMessage />}
