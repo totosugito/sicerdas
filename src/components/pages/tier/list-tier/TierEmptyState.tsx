@@ -18,11 +18,9 @@ export const TierEmptyState = () => {
       <p className="text-muted-foreground max-w-sm mx-auto mb-6 text-sm">
         {t(($) => $.tier.list.noDataDescription)}
       </p>
-      <Button asChild>
-        <Link to={AppRoute.app.tier.admin.create.url} className="gap-2">
-          <Plus className="h-4 w-4" />
-          {t(($) => $.tier.list.createButton)}
-        </Link>
+      <Button render={<Link to={AppRoute.app.tier.admin.create.url} className="gap-2" />}>
+        <Plus className="h-4 w-4" />
+        {t(($) => $.tier.list.createButton)}
       </Button>
     </div>
   );

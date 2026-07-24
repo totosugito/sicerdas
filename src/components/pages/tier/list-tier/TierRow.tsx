@@ -183,12 +183,10 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
               variant="ghost"
               size="sm"
               className="h-8 w-8 p-0"
-              asChild
+              render={<Link to={AppRoute.app.tier.admin.edit.url} params={{ slug: tier.slug }} />}
               title={t(($) => $.labels.edit)}
             >
-              <Link to={AppRoute.app.tier.admin.edit.url} params={{ slug: tier.slug }}>
-                <Edit2 className="w-4 h-4" />
-              </Link>
+              <Edit2 className="w-4 h-4" />
             </Button>
             <Button
               variant="ghost"

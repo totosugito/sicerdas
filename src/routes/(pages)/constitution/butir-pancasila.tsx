@@ -94,7 +94,7 @@ const PancasilaCard: React.FC<{
         </div>
       </CardHeader>
       <CardContent className='pt-0 pb-6'>
-        <Accordion type="single" collapsible className="w-full" defaultValue={isExpanded ? `butir-${sila.id}` : undefined}>
+        <Accordion className="w-full" defaultValue={isExpanded ? [`butir-${sila.id}`] : []}>
           <AccordionItem value={`butir-${sila.id}`} className="border-none">
             <AccordionTrigger className="text-red-700 hover:text-red-800 font-semibold hover:no-underline py-0 dark:text-red-400 dark:hover:text-red-300">
               <span className="flex items-center gap-2">

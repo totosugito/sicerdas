@@ -190,11 +190,9 @@ function AdminPackageSectionDetailPage() {
             {/* <Badge variant="outline" className="px-3 py-1 font-bold text-primary border-primary/20 bg-primary/5">
               {t($ => $.exam.packageQuestions.detail.totalCount, { count: questionData?.data.meta.total || 0 })}
             </Badge> */}
-            <Button variant="outline" asChild size="sm" className="gap-2">
-              <Link to={AppRoute.exam.questions.admin.create.url}>
-                <Plus className="h-4 w-4" />
-                {t(($) => $.exam.packageQuestions.detail.createButton)}
-              </Link>
+            <Button variant="outline" render={<Link to={AppRoute.exam.questions.admin.create.url} />} size="sm" className="gap-2">
+              <Plus className="h-4 w-4" />
+              {t(($) => $.exam.packageQuestions.detail.createButton)}
             </Button>
             <Button onClick={() => setIsModalOpen(true)} size="sm" className="gap-2">
               <Plus className="h-4 w-4" />

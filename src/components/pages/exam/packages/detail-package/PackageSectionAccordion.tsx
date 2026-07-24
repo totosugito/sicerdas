@@ -62,7 +62,7 @@ export const PackageSectionAccordion = ({ sections, onTakeExam }: PackageSection
       </div>
 
       <Accordion
-        type="multiple"
+        multiple
         defaultValue={chapters.map((chapter) => chapter.name)}
         className="w-full space-y-3"
       >

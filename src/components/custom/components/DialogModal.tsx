@@ -65,7 +65,7 @@ export type DialogModalProps = {
   | "subtle-destructive";
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  trigger?: React.ReactNode;
+  trigger?: React.ReactElement;
   children?: React.ReactNode;
 };
 
@@ -163,7 +163,7 @@ export function DialogModal({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
-      {trigger && <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>}
+      {trigger && <AlertDialogTrigger render={trigger} />}
 
       <AlertDialogContent
         className={cn(

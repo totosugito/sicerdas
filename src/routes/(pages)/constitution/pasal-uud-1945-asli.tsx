@@ -292,7 +292,7 @@ function RouteComponent() {
                         </div>
                       </CardHeader>
                       <CardContent className='pt-0 pb-6'>
-                        <Accordion key={`${pasal.title}-${expandedAll}`} type="multiple" className="w-full" defaultValue={expandedAll ? [`ayat-${pasal.title}`] : []}>
+                        <Accordion key={`${pasal.title}-${expandedAll}`} multiple className="w-full" defaultValue={expandedAll ? [`ayat-${pasal.title}`] : []}>
                           <AccordionItem value={`ayat-${pasal.title}`} className="border-none">
                             <AccordionTrigger className="text-red-700 hover:text-red-800 font-semibold hover:no-underline py-0 dark:text-red-400 dark:hover:text-red-300">
                               <span className="flex items-center gap-2">

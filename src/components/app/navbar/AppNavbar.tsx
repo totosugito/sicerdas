@@ -274,8 +274,8 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button asChild variant="default" size="sm" className="px-3">
-              <Link to={AppRoute.auth.signIn.url}>{t(($) => $.labels.login)}</Link>
+            <Button render={<Link to={AppRoute.auth.signIn.url} />} variant="default" size="sm" className="px-3">
+              {t(($) => $.labels.login)}
             </Button>
           )}
 

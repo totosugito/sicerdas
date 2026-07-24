@@ -304,7 +304,7 @@ function RouteComponent() {
                       <CardContent className='pt-0 pb-6'>
                         <Accordion
                           key={`${pasal.title}-${expandedAll}`}
-                          type="multiple"
+                          multiple
                           className="w-full"
                           defaultValue={expandedAll ? [`ayat-${pasal.title}`] : []}
                         >

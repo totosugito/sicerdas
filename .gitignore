@@ -23,3 +23,4 @@ logs
 bun.lock
 bugreport*
 *.g.dart
+.migration

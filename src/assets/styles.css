@@ -111,7 +111,6 @@ html {
   --spacing: 0.25rem;
 }
 
-
 .dark {
   /* Dark mode */
   --background: oklch(0.15 0.03 249.2);
@@ -317,8 +316,25 @@ html {
 
   --animate-fade-in: fade-in 0.6s ease-out forwards;
   --animate-scale-in: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-accordion-collapse: accordion-collapse var(--tw-duration, 200ms) ease-out;
+  --animate-accordion-expand: accordion-expand var(--tw-duration, 200ms) ease-out;
+  @keyframes accordion-collapse {
+  from {
+    height: var(--accordion-panel-height, auto);
+    }
+  to {
+    height: 0;
+    }
+  }
+  @keyframes accordion-expand {
+  from {
+    height: 0;
+    }
+  to {
+    height: var(--accordion-panel-height, auto);
+    }
+  }
 }
-
 
 body {
   letter-spacing: var(--tracking-normal);
