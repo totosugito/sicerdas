@@ -188,6 +188,7 @@ export const TierRow = ({ tier, onDelete }: TierRowProps) => {
               size="sm"
               className="h-8 w-8 p-0"
               render={<Link to={AppRoute.app.tier.admin.edit.url} params={{ slug: tier.slug }} />}
+              nativeButton={false}
               title={t(($) => $.labels.edit)}
             >
               <Edit2 className="w-4 h-4" />

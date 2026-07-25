@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ControlForm, FormWithDetector } from "@/components/forms";
 import { useAppTranslation, AppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
+import { useRef, useEffect } from "react";
 
 // Define the form values type
 export type PrivacyFormValues = {
@@ -51,10 +52,19 @@ interface PrivacyFormProps {
   form: any;
   onSubmit: (values: any) => void;
   error?: string | null;
+  defaultValues: Record<string, any>;
 }
 
-export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
+export function PrivacyForm({ form, onSubmit, error, defaultValues }: PrivacyFormProps) {
   const { t } = useAppTranslation();
+  const originalValues = useRef<Record<string, any>>({});
+
+  // Sync originalValues ref with defaultValues prop
+  useEffect(() => {
+    if (defaultValues) {
+      originalValues.current = defaultValues;
+    }
+  }, [defaultValues]);
 
   // Create form data with translated labels and placeholders
   const formData = createPrivacyFormData(t);
@@ -62,15 +72,24 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
   // Define form items
   const formItems = formData.form;
 
-  // Handle form submission
+  // Handle form submission - only submit if at least one change exists
   const handleSubmit = (values: Record<string, any>) => {
-    onSubmit({
-      privacy: {
-        profileVisibility: values.profileVisibility,
-        emailNotifications: values.emailNotifications,
-        twoFactorAuth: values.twoFactorAuth,
-      },
+    const orig = originalValues.current;
+    let hasChanged = false;
+
+    Object.keys(formItems).forEach((key) => {
+      const val = !!values[key];
+      const origVal = !!orig[key];
+      if (val !== origVal) {
+        hasChanged = true;
+      }
     });
+
+    if (hasChanged) {
+      onSubmit(values);
+    } else {
+      onSubmit({}); // Send empty object to trigger early success exit in parent
+    }
   };
 
   return (
@@ -88,7 +107,7 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
           errorClassName="mx-6"
           error={error}
         >
-          <CardContent>
+          <CardContent className="flex flex-col gap-6">
             <form.AppField name="emailNotifications">
               {(field: any) => (
                 <ControlForm

@@ -27,6 +27,7 @@ import {
   useRevokeUserSessionMutation,
   type UserResponse,
   type UserProfileData,
+  type UserDetailsData,
   type SessionData,
 } from "@/api/users";
 import type { BaseResponse } from "backend/src/types/index.ts";
@@ -64,7 +65,6 @@ function RouteComponent() {
     });
   };
 
-  // Create ref for ProfileInfoForm
   const profileInfoFormRef = React.useRef<ProfileInfoFormRef>(null);
 
   // Fetch user profile data
@@ -84,16 +84,28 @@ function RouteComponent() {
   const securityFormData = createSecurityFormData(t);
   const privacyFormData = createPrivacyFormData(t);
 
-  // Initialize forms for each tab
+  // Initialize forms for each tab with API data as default values
   const profileForm = useAppForm({
-    defaultValues: profileFormData.defaultValue,
+    defaultValues: {
+      name: userProfile?.data?.name || "",
+      email: userProfile?.data?.email || "",
+      bio: userProfile?.data?.bio || "",
+      image: userProfile?.data?.image || null,
+    },
     validators: {
       onChange: profileFormData.schema as any,
     },
   });
 
   const personalInfoForm = useAppForm({
-    defaultValues: personalInfoFormData.defaultValue,
+    defaultValues: {
+      phone: userProfile?.data?.phone ?? "",
+      address: userProfile?.data?.address ?? "",
+      school: userProfile?.data?.school ?? "",
+      grade: userProfile?.data?.grade ?? "",
+      dateOfBirth: userProfile?.data?.dateOfBirth ? string_to_date(userProfile.data.dateOfBirth) : null,
+      educationLevel: userProfile?.data?.educationLevel ?? "",
+    },
     validators: {
       onChange: personalInfoFormData.schema as any,
     },
@@ -107,51 +119,63 @@ function RouteComponent() {
   });
 
   const privacyForm = useAppForm({
-    defaultValues: privacyFormData.defaultValue,
+    defaultValues: {
+      profileVisibility:
+        (userProfile?.data?.extra as any)?.privacy?.profileVisibility ??
+        privacyFormData.defaultValue.profileVisibility,
+      emailNotifications:
+        (userProfile?.data?.extra as any)?.privacy?.emailNotifications ??
+        privacyFormData.defaultValue.emailNotifications,
+      twoFactorAuth:
+        (userProfile?.data?.extra as any)?.privacy?.twoFactorAuth ?? privacyFormData.defaultValue.twoFactorAuth,
+    },
     validators: {
       onChange: privacyFormData.schema as any,
     },
   });
 
   // Helper function to populate forms with user data
-  const populateForms = (userData: any) => {
+  const populateForms = (userData: UserProfileData | UserDetailsData) => {
     if (userData) {
-      profileForm.reset({
-        name: userData.name || "",
-        email: userData.email || "",
-        bio: userData.bio || "",
-        image: userData.image || null,
-      });
+      profileForm.setFieldValue("name", userData.name || "");
+      profileForm.setFieldValue("email", userData.email || "");
+      profileForm.setFieldValue("bio", userData.bio || "");
+      profileForm.setFieldValue("image", userData.image || null);
 
-      (personalInfoForm as any).reset({
-        phone: userData.phone ?? "",
-        address: userData.address ?? "",
-        school: userData.school ?? "",
-        grade: userData.grade ?? "",
-        dateOfBirth: userData.dateOfBirth ? string_to_date(userData.dateOfBirth) : null,
-        educationLevel: userData.educationLevel ?? "",
-      });
+      personalInfoForm.setFieldValue("phone", userData.phone ?? "");
+      personalInfoForm.setFieldValue("address", userData.address ?? "");
+      personalInfoForm.setFieldValue("school", userData.school ?? "");
+      personalInfoForm.setFieldValue("grade", userData.grade ?? "");
+      personalInfoForm.setFieldValue("dateOfBirth", userData.dateOfBirth ? string_to_date(userData.dateOfBirth) : null);
+      personalInfoForm.setFieldValue("educationLevel", userData.educationLevel ?? "");
 
       // Populate privacy form with data from extra field
-      privacyForm.reset({
-        profileVisibility:
-          userData.extra?.privacy?.profileVisibility ??
-          privacyFormData.defaultValue.profileVisibility,
-        emailNotifications:
-          userData.extra?.privacy?.emailNotifications ??
-          privacyFormData.defaultValue.emailNotifications,
-        twoFactorAuth:
-          userData.extra?.privacy?.twoFactorAuth ?? privacyFormData.defaultValue.twoFactorAuth,
-      });
+      privacyForm.setFieldValue(
+        "profileVisibility",
+        (userData.extra as any)?.privacy?.profileVisibility ??
+        privacyFormData.defaultValue.profileVisibility,
+      );
+      privacyForm.setFieldValue(
+        "emailNotifications",
+        (userData.extra as any)?.privacy?.emailNotifications ??
+        privacyFormData.defaultValue.emailNotifications,
+      );
+      privacyForm.setFieldValue(
+        "twoFactorAuth",
+        (userData.extra as any)?.privacy?.twoFactorAuth ?? privacyFormData.defaultValue.twoFactorAuth,
+      );
     }
   };
 
+  const hasLoadedRef = React.useRef(false);
+
   // Populate forms with user data when it loads
   React.useEffect(() => {
-    if (userProfile?.data) {
+    if (userProfile?.data && !hasLoadedRef.current) {
       populateForms(userProfile.data);
+      hasLoadedRef.current = true;
     }
-  }, [userProfile]);
+  }, [userProfile?.data]);
 
   // Form submission handlers
   const updateUserProfileMutation = useUpdateProfileMutation();
@@ -175,6 +199,12 @@ function RouteComponent() {
     // Add avatar file if provided (only for profile form)
     if (avatarFile) {
       submissionData.image = avatarFile;
+    }
+
+    // If no changes at all, return early showing success immediately
+    if (Object.keys(submissionData).length === 0) {
+      showNotifSuccess({ message: t(($) => $.user.profile.information.updateSuccess) });
+      return;
     }
 
     updateUserProfileMutation.mutate(
@@ -203,6 +233,8 @@ function RouteComponent() {
           // Reset forms with updated data from success response
           populateForms(success.data);
 
+
+
           // Show success message
           const successMessage =
             success?.message || t(($) => $.user.profile.information.updateSuccess);
@@ -218,6 +250,13 @@ function RouteComponent() {
 
   const onPersonalInfoSubmit = (values: Record<string, any>) => {
     setPersonalInfoUpdateError(null);
+
+    // If no changes at all, return early showing success immediately
+    if (Object.keys(values).length === 0) {
+      showNotifSuccess({ message: t(($) => $.user.profile.personalInfo.updateSuccess) });
+      return;
+    }
+
     updateUserProfileMutation.mutate(
       { body: values },
       {
@@ -240,6 +279,8 @@ function RouteComponent() {
           }
 
           populateForms(success?.data);
+
+
         },
         onError: (error: Record<string, any>) => {
           const errorMessage = error?.message || t(($) => $.user.profile.personalInfo.updateError);
@@ -272,6 +313,13 @@ function RouteComponent() {
 
   function onPrivacySubmit(values: z.infer<typeof privacyFormData.schema>) {
     setPrivacyUpdateError(null);
+
+    // If no changes at all, return early showing success immediately
+    if (Object.keys(values).length === 0) {
+      showNotifSuccess({ message: t(($) => $.user.profile.privacy.updateSuccess) });
+      return;
+    }
+
     const extra = {
       extra: JSON.stringify(values),
     };
@@ -365,6 +413,12 @@ function RouteComponent() {
               <TabsContent value="profile" className="mt-0 w-full">
                 <ProfileInfoForm
                   ref={profileInfoFormRef}
+                  defaultValues={{
+                    name: userProfile?.data?.name || "",
+                    email: userProfile?.data?.email || "",
+                    bio: userProfile?.data?.bio || "",
+                    image: userProfile?.data?.image || null,
+                  }}
                   form={profileForm}
                   onSubmit={onProfileFormSubmit}
                   error={profileUpdateError}
@@ -374,6 +428,14 @@ function RouteComponent() {
               {/* Personal Info Tab */}
               <TabsContent value="personal" className="mt-0 w-full">
                 <PersonalInfoForm
+                  defaultValues={{
+                    phone: userProfile?.data?.phone ?? "",
+                    address: userProfile?.data?.address ?? "",
+                    school: userProfile?.data?.school ?? "",
+                    grade: userProfile?.data?.grade ?? "",
+                    dateOfBirth: userProfile?.data?.dateOfBirth ?? null,
+                    educationLevel: userProfile?.data?.educationLevel ?? "",
+                  }}
                   form={personalInfoForm}
                   onSubmit={onPersonalInfoSubmit}
                   error={personalInfoUpdateError}
@@ -415,6 +477,16 @@ function RouteComponent() {
               {/* Privacy Tab */}
               <TabsContent value="privacy" className="mt-0 w-full">
                 <PrivacyForm
+                  defaultValues={{
+                    profileVisibility:
+                      (userProfile?.data?.extra as any)?.privacy?.profileVisibility ??
+                      privacyFormData.defaultValue.profileVisibility,
+                    emailNotifications:
+                      (userProfile?.data?.extra as any)?.privacy?.emailNotifications ??
+                      privacyFormData.defaultValue.emailNotifications,
+                    twoFactorAuth:
+                      (userProfile?.data?.extra as any)?.privacy?.twoFactorAuth ?? privacyFormData.defaultValue.twoFactorAuth,
+                  }}
                   form={privacyForm}
                   onSubmit={onPrivacySubmit}
                   error={privacyUpdateError}

@@ -168,7 +168,7 @@ export function DialogModal({
       <AlertDialogContent
         className={cn(
           MAX_WIDTH_MAP[config.maxWidth],
-          "p-0 overflow-hidden shadow-2xl",
+          "overflow-hidden shadow-2xl",
           classNameContent,
           className,
         )}
@@ -185,7 +185,7 @@ export function DialogModal({
         )}
 
         {/* Header Section */}
-        <div className={cn("px-6 pt-6 pb-2 text-center", classNameHeader)}>
+        <div className={cn("text-center", classNameHeader)}>
           <div
             className={cn(
               "mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl transition-colors",
@@ -205,7 +205,7 @@ export function DialogModal({
         </div>
 
         {/* Body Content */}
-        <div className={cn("px-6 pb-5 space-y-4", classNameBody)}>
+        <div className={cn("space-y-6", classNameBody)}>
           {config.content && <div className="w-full">{config.content}</div>}
 
           {/* Simple Info Banner */}

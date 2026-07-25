@@ -6,6 +6,7 @@ import { FormSelect } from "./FormSelect";
 import { FormTextArea } from "./FormTextArea";
 import { FormCheckbox } from "./FormCheckbox";
 import { FormSwitch } from "./FormSwitch";
+import { FormDatePicker } from "./FormDatePicker";
 import { cn } from "@/lib/utils";
 
 // Lazy load inputs that are not migrated yet or require special handlers
@@ -75,6 +76,18 @@ export const ControlForm = forwardRef(
           className={cn(defaultClassName, className)}
           labelClassName={labelClassName}
           showMessage={showMessage}
+          disabled={isDisabled}
+        />
+      );
+    } else if (itemType === "date") {
+      return (
+        <FormDatePicker
+          field={field}
+          item={item}
+          className={cn(defaultClassName, className)}
+          labelClassName={labelClassName}
+          showMessage={showMessage}
+          {...props}
           disabled={isDisabled}
         />
       );

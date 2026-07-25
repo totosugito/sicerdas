@@ -6,7 +6,7 @@ import { z } from "zod";
 import { ImageCropper, FileWithPreview } from "@/components/ui/image-cropper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useDropzone } from "react-dropzone";
-import { useCallback, useState, useEffect, useImperativeHandle, forwardRef } from "react";
+import { useCallback, useState, useEffect, useImperativeHandle, forwardRef, useRef } from "react";
 
 // Define the form values type
 export type ProfileInfoFormValues = {
@@ -63,6 +63,7 @@ interface ProfileInfoFormProps {
   form: any;
   onSubmit: (values: any, avatarFile: File | null) => void;
   error?: string | null;
+  defaultValues: Record<string, any>;
 }
 
 // Add ref interface
@@ -71,8 +72,15 @@ export interface ProfileInfoFormRef {
 }
 
 export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormProps>(
-  ({ form, onSubmit, error }, ref) => {
+  ({ form, onSubmit, error, defaultValues }, ref) => {
     const { t } = useAppTranslation();
+    const originalValues = useRef<Record<string, any>>({});
+
+    useEffect(() => {
+      if (defaultValues) {
+        originalValues.current = defaultValues;
+      }
+    }, [defaultValues]);
 
     // Create form data with translated labels and placeholders
     const formData = createProfileInfoFormData(t);
@@ -80,10 +88,24 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
     // Define form items
     const formItems = formData.form;
 
-    // Handle form submission
+    // Handle form submission - only send changed fields
     const handleSubmit = (values: Record<string, any>) => {
-      const { image, ...rest } = values;
-      onSubmit(rest, croppedImageFile);
+      const orig = originalValues.current;
+      const changedValues: Record<string, any> = {};
+
+      Object.keys(formItems).forEach((key) => {
+        if (key === "image") return;
+        const val = values[key];
+        const origVal = orig[key];
+
+        const currentStr = val ?? "";
+        const originalStr = origVal ?? "";
+        if (currentStr !== originalStr) {
+          changedValues[key] = currentStr;
+        }
+      });
+
+      onSubmit(changedValues, hasImageChanged ? croppedImageFile : null);
     };
 
     // Expose function to reset image state
@@ -127,7 +149,6 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
         setSelectedFile(fileWithPreview);
         setDialogOpen(true);
       },
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       [],
     );
 
@@ -180,7 +201,9 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
                           src={form.state.values.image || ""}
                           alt={form.state.values.name || ""}
                         />
-                        <AvatarFallback className="text-4xl">CN</AvatarFallback>
+                        <AvatarFallback className="text-4xl">
+                          {(form.state.values.name || "").substring(0, 2).toUpperCase() || "CN"}
+                        </AvatarFallback>
                       </Avatar>
                     )}
                   </div>

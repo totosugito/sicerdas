@@ -1,6 +1,20 @@
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useAppTranslation } from "@/lib/i18n-typed";
+import { cn } from "@/lib/utils";
+import { UserRound, IdCard, ShieldCheck, Lock, type LucideIcon } from "lucide-react";
+
+type TabDef = {
+  value: string;
+  icon: LucideIcon;
+  labelKey: Parameters<ReturnType<typeof useAppTranslation>["t"]>[0];
+};
+
+const tabs: TabDef[] = [
+  { value: "profile", icon: UserRound, labelKey: ($) => $.user.profile.tabs.editProfile },
+  { value: "personal", icon: IdCard, labelKey: ($) => $.user.profile.tabs.personalInfo },
+  { value: "security", icon: ShieldCheck, labelKey: ($) => $.user.profile.tabs.security },
+  { value: "privacy", icon: Lock, labelKey: ($) => $.user.profile.tabs.privacy },
+];
 
 export function TabNavigation() {
   const { t } = useAppTranslation();
@@ -8,75 +22,50 @@ export function TabNavigation() {
   return (
     <>
       <div className="md:hidden">
-        <ScrollArea className="w-full whitespace-nowrap">
-          <div className="flex space-x-2 p-1 w-full max-w-md mb-3">
-            <TabsList className="flex space-x-2 bg-transparent">
+        <TabsList className="flex h-auto w-full gap-1 rounded-2xl border bg-muted/50 p-1 mb-3">
+            {tabs.map(({ value, icon: Icon, labelKey }) => (
               <TabsTrigger
-                value="profile"
-                className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300"
+                key={value}
+                value={value}
+                aria-label={t(labelKey)}
+                className={cn(
+                  "flex-1 justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200 sm:px-4",
+                  "text-muted-foreground hover:text-foreground",
+                  "data-active:bg-background data-active:text-primary data-active:shadow-sm"
+                )}
               >
-                {t(($) => $.user.profile.tabs.editProfile)}
+                <Icon className="size-4" />
+                <span className="hidden sm:inline">{t(labelKey)}</span>
               </TabsTrigger>
-              <TabsTrigger
-                value="personal"
-                className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300"
-              >
-                {t(($) => $.user.profile.tabs.personalInfo)}
-              </TabsTrigger>
-              <TabsTrigger
-                value="security"
-                className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300"
-              >
-                {t(($) => $.user.profile.tabs.security)}
-              </TabsTrigger>
-              <TabsTrigger
-                value="privacy"
-                className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300"
-              >
-                {t(($) => $.user.profile.tabs.privacy)}
-              </TabsTrigger>
-              {/* <TabsTrigger
-                value="billing" 
-                className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300"
-              >
-                {t($ => $.user.profile.tabs.billing)}
-              </TabsTrigger>
-              <TabsTrigger 
-                value="integrations" 
-                className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300"
-              >
-                {t($ => $.user.profile.tabs.integrations)}
-              </TabsTrigger> */}
-            </TabsList>
-          </div>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+            ))}
+        </TabsList>
       </div>
-      <TabsList className="hidden md:flex flex-col gap-1 bg-transparent h-fit w-full">
-        <TabsTrigger
-          value="profile"
-          className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:font-bold data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300 justify-start w-full"
-        >
-          {t(($) => $.user.profile.tabs.editProfile)}
-        </TabsTrigger>
-        <TabsTrigger
-          value="personal"
-          className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:font-bold data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300 justify-start w-full"
-        >
-          {t(($) => $.user.profile.tabs.personalInfo)}
-        </TabsTrigger>
-        <TabsTrigger
-          value="security"
-          className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:font-bold data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300 justify-start w-full"
-        >
-          {t(($) => $.user.profile.tabs.security)}
-        </TabsTrigger>
-        <TabsTrigger
-          value="privacy"
-          className="px-3 py-2 rounded-lg text-sm font-medium data-[state=active]:font-bold data-[state=active]:bg-slate-100 data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=inactive]:text-slate-700 data-[state=inactive]:dark:text-slate-300 justify-start w-full"
-        >
-          {t(($) => $.user.profile.tabs.privacy)}
-        </TabsTrigger>
+
+      <TabsList className="hidden md:flex h-fit w-full flex-col gap-1 rounded-2xl border bg-muted/40 p-2">
+        {tabs.map(({ value, icon: Icon, labelKey }) => (
+          <TabsTrigger
+            key={value}
+            value={value}
+            className={cn(
+              "group relative w-full flex-none justify-start gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
+              "text-muted-foreground hover:bg-background/60 hover:text-foreground",
+              "data-active:bg-background data-active:text-primary data-active:shadow-sm",
+              "before:absolute before:left-0 before:top-1/2 before:h-0 before:w-1 before:-translate-y-1/2 before:rounded-full before:bg-primary before:transition-all before:duration-200",
+              "data-active:before:h-5"
+            )}
+          >
+            <span
+              className={cn(
+                "flex size-8 items-center justify-center rounded-lg transition-colors duration-200",
+                "bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary",
+                "group-data-active:bg-primary/10 group-data-active:text-primary"
+              )}
+            >
+              <Icon className="size-4" />
+            </span>
+            {t(labelKey)}
+          </TabsTrigger>
+        ))}
       </TabsList>
     </>
   );

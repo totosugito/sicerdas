@@ -19,16 +19,6 @@ import { useState } from "react";
 import { ModalProps, DialogModal } from "@/components/custom/components";
 import { RiQuestionLine } from "react-icons/ri";
 
-interface SessionItem {
-  id: string;
-  expiresAt: string;
-  createdAt: string;
-  updatedAt: string;
-  ipAddress: string | null;
-  userAgent: string | null;
-  token: string; // Added token field
-}
-
 const getDeviceIcon = (userAgent: string | null): LucideIcon => {
   if (!userAgent) return Monitor;
 
@@ -225,7 +215,7 @@ export function SessionList({
 
   return (
     <>
-      {confirmationModal && <DialogModal modal={confirmationModal} />}
+      {confirmationModal && <DialogModal modal={confirmationModal} variantSubmit="destructive" />}
 
       <Card className="w-full">
         <CardHeader className="border-b">

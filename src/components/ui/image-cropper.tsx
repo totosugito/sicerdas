@@ -121,6 +121,7 @@ export function ImageCropper({
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       {showTrigger && (
         <DialogTrigger
+          nativeButton={false}
           render={
             <Avatar className="size-36 cursor-pointer ring-offset-2 ring-2 ring-slate-200">
               <AvatarImage src={croppedImage ? croppedImage : selectedFile?.preview} alt="" />
@@ -133,35 +134,30 @@ export function ImageCropper({
         <VisuallyHidden>
           <DialogTitle>{title}</DialogTitle>
         </VisuallyHidden>
-        <div className="p-6 size-full">
+        <div className="p-6 flex items-center justify-center min-h-[350px] w-full">
           <ReactCrop
             crop={crop}
             onChange={(_, percentCrop) => setCrop(percentCrop)}
             onComplete={(c) => onCropCompleteHandler(c)}
             aspect={aspect}
-            className="w-full"
+            className="w-full max-h-[60vh]"
           >
-            <Avatar className="size-full rounded-none">
-              <AvatarImage
-                ref={imgRef}
-                className="size-full rounded-none h-full w-full object-cover aspect-auto"
-                alt="Image Cropper Shell"
-                src={selectedFile?.preview}
-                onLoad={onImageLoad}
-              />
-              <AvatarFallback className="size-full min-h-[460px] rounded-none">
-                Loading...
-              </AvatarFallback>
-            </Avatar>
+            <img
+              ref={imgRef}
+              className="w-full max-h-[60vh] object-contain"
+              alt="Image Cropper Shell"
+              src={selectedFile?.preview}
+              onLoad={onImageLoad}
+            />
           </ReactCrop>
         </div>
-        <DialogFooter className="p-6 pt-0 justify-center ">
+        <DialogFooter className="flex flex-row items-center justify-center gap-3 p-6 pt-0 sm:justify-end">
           <DialogClose
             render={
               <Button
                 size={"sm"}
-                type="reset"
-                className="w-fit"
+                type="button"
+                className="flex-1 sm:flex-none sm:w-24"
                 variant={"outline"}
                 onClick={() => {
                   setSelectedFile(null);
@@ -172,7 +168,7 @@ export function ImageCropper({
             <Trash2Icon className="mr-1.5 size-4" />
             Cancel
           </DialogClose>
-          <Button type="submit" size={"sm"} className="w-fit" onClick={onCrop}>
+          <Button type="submit" size={"sm"} className="flex-1 sm:flex-none sm:w-24" onClick={onCrop}>
             <CropIcon className="mr-1.5 size-4" />
             Crop
           </Button>

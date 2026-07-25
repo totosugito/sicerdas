@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { useAppTranslation, AppTranslation } from "@/lib/i18n-typed";
 import { ControlForm, FormWithDetector } from "@/components/forms";
 import { z } from "zod";
-import { date_to_string } from "@/lib/my-utils";
+import { date_to_string, string_to_date } from "@/lib/my-utils";
 import { EnumEducationLevel } from "backend/src/db/schema/enum/enum-app";
+import { useRef, useEffect } from "react";
 
 // Define the form values type
 export type PersonalInfoFormValues = {
@@ -142,10 +143,26 @@ interface PersonalInfoFormProps {
   form: any;
   onSubmit: (values: any) => void;
   error?: string | null;
+  defaultValues: Record<string, any>;
 }
 
-export function PersonalInfoForm({ form, onSubmit, error }: PersonalInfoFormProps) {
+export function PersonalInfoForm({ form, onSubmit, error, defaultValues }: PersonalInfoFormProps) {
   const { t } = useAppTranslation();
+  const originalValues = useRef<Record<string, any>>({});
+
+  // Update originalValues ref whenever defaultValues changes (e.g., loaded or updated)
+  useEffect(() => {
+    if (defaultValues) {
+      originalValues.current = {
+        ...defaultValues,
+        dateOfBirth: defaultValues.dateOfBirth
+          ? typeof defaultValues.dateOfBirth === "string"
+            ? string_to_date(defaultValues.dateOfBirth)
+            : defaultValues.dateOfBirth
+          : null,
+      };
+    }
+  }, [defaultValues]);
 
   // Create form data with translated labels and placeholders
   const formData = createPersonalInfoFormData(t);
@@ -153,16 +170,35 @@ export function PersonalInfoForm({ form, onSubmit, error }: PersonalInfoFormProp
   // Define form items
   const formItems = formData.form;
 
-  // Handle form submission
+  // Handle form submission - only send changed fields
   const handleSubmit = (values: Record<string, any>) => {
-    onSubmit({
-      phone: values?.phone ?? "",
-      address: values?.address ?? "",
-      school: values?.school ?? "",
-      grade: values?.grade ?? "",
-      dateOfBirth: values?.dateOfBirth ? date_to_string(values?.dateOfBirth) : null,
-      educationLevel: values?.educationLevel ?? EnumEducationLevel.UNKNOWN,
+    const orig = originalValues.current;
+    const changedValues: Record<string, any> = {};
+
+    Object.keys(formItems).forEach((key) => {
+      const val = values[key];
+      const origVal = orig[key];
+
+      if (key === "dateOfBirth") {
+        const currentFormatted = val ? date_to_string(val) : null;
+        const originalFormatted = origVal
+          ? origVal instanceof Date
+            ? date_to_string(origVal)
+            : String(origVal)
+          : null;
+        if (currentFormatted !== originalFormatted) {
+          changedValues[key] = currentFormatted;
+        }
+      } else {
+        const currentStr = val ?? "";
+        const originalStr = origVal ?? "";
+        if (currentStr !== originalStr) {
+          changedValues[key] = currentStr;
+        }
+      }
     });
+
+    onSubmit(changedValues);
   };
 
   return (
@@ -182,17 +218,21 @@ export function PersonalInfoForm({ form, onSubmit, error }: PersonalInfoFormProp
         >
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <form.AppField name="dateOfBirth">
-                {(field: any) => (
-                  <ControlForm field={field} item={formItems.dateOfBirth} showMessage={false} />
-                )}
-              </form.AppField>
+              <div>
+                <form.AppField name="dateOfBirth">
+                  {(field: any) => (
+                    <ControlForm field={field} item={formItems.dateOfBirth} showMessage={false} />
+                  )}
+                </form.AppField>
+              </div>
 
-              <form.AppField name="phone">
-                {(field: any) => (
-                  <ControlForm field={field} item={formItems.phone} showMessage={false} />
-                )}
-              </form.AppField>
+              <div>
+                <form.AppField name="phone">
+                  {(field: any) => (
+                    <ControlForm field={field} item={formItems.phone} showMessage={false} />
+                  )}
+                </form.AppField>
+              </div>
             </div>
 
             <form.AppField name="address">
@@ -208,17 +248,21 @@ export function PersonalInfoForm({ form, onSubmit, error }: PersonalInfoFormProp
             </form.AppField>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <form.AppField name="educationLevel">
-                {(field: any) => (
-                  <ControlForm field={field} item={formItems.educationLevel} showMessage={false} />
-                )}
-              </form.AppField>
+              <div>
+                <form.AppField name="educationLevel">
+                  {(field: any) => (
+                    <ControlForm field={field} item={formItems.educationLevel} showMessage={false} />
+                  )}
+                </form.AppField>
+              </div>
 
-              <form.AppField name="grade">
-                {(field: any) => (
-                  <ControlForm field={field} item={formItems.grade} showMessage={false} />
-                )}
-              </form.AppField>
+              <div>
+                <form.AppField name="grade">
+                  {(field: any) => (
+                    <ControlForm field={field} item={formItems.grade} showMessage={false} />
+                  )}
+                </form.AppField>
+              </div>
             </div>
           </CardContent>
           <CardFooter className="justify-end gap-4 border-t">

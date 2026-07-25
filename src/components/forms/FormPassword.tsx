@@ -1,7 +1,6 @@
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export type FormPasswordProps = {
@@ -48,20 +47,18 @@ export const FormPassword = ({
             value={field.state.value}
             onBlur={field.handleBlur}
             onChange={(e) => field.handleChange(e.target.value)}
-            className={className}
+            className={cn("pr-10", className)}
             {...props}
           />
         </field.Control>
 
-        <Button
+        <button
           type="button"
-          variant="ghost"
-          size="icon"
-          className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground/90 hover:text-foreground/90"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
           onClick={togglePasswordVisibility}
         >
-          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-        </Button>
+          {showPassword ? <EyeOff className="h-4.5 w-4.5" /> : <Eye className="h-4.5 w-4.5" />}
+        </button>
       </div>
       {item?.description && <field.Description>{item.description}</field.Description>}
       {showMessage && <field.Message />}

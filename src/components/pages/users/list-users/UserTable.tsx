@@ -316,7 +316,7 @@ export function UserTable({
         <div className="flex items-center gap-2">
           <Faceted value={roles} onValueChange={(val) => setRoles(val || [])} multiple={true}>
             <FacetedTrigger>
-              <Button variant="outline" size="sm" className="h-9 gap-2">
+              <span className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground h-9 gap-2 px-3 has-[>svg]:px-2.5 cursor-pointer">
                 <Filter className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium">{t(($) => $.labels.role)}</span>
                 {(roles?.length ?? 0) > 0 && (
@@ -331,7 +331,7 @@ export function UserTable({
                     />
                   </>
                 )}
-              </Button>
+              </span>
             </FacetedTrigger>
             <FacetedContent className="w-48">
               <FacetedList>

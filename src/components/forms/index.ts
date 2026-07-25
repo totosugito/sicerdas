@@ -7,3 +7,4 @@ export * from "./FormCheckbox";
 export * from "./FormNumber";
 export * from "./ControlForm";
 export * from "./FormWithDetector";
+export * from "./FormDatePicker";

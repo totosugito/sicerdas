@@ -99,7 +99,7 @@ const SidebarMenuCollapsible = ({
     >
       <SidebarMenuItem>
         <CollapsibleTrigger className="w-full [&[data-panel-open]_svg]:rotate-90">
-          <SidebarMenuButton tooltip={item.title}>
+          <SidebarMenuButton render={<span />}>
             {item.icon && <item.icon />}
             <span>{item.title}</span>
             {item.badge && <NavBadge>{item.badge}</NavBadge>}
@@ -142,7 +142,6 @@ const SidebarMenuCollapsedDropdown = ({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <SidebarMenuButton
-            tooltip={item.title}
             isActive={checkIsActive(href, item)}
           >
             {item.icon && <item.icon />}
