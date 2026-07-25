@@ -81,7 +81,7 @@ function AdminVersionsPage() {
         title={t(($) => $.version.title)}
         description={t(($) => $.version.menu)}
         extra={
-          <Button render={<Link to={AppRoute.app.version.admin.create.url} />} className="flex-shrink-0 gap-1.5 shadow-sm">
+          <Button render={<Link to={AppRoute.app.version.admin.create.url} />} nativeButton={false} className="flex-shrink-0 gap-1.5 shadow-sm">
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">{t(($) => $.labels.add)}</span>
           </Button>

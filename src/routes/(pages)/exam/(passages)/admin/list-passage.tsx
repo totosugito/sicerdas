@@ -120,7 +120,7 @@ function AdminExamPassagesPage() {
           title={t(($) => $.exam.passages.title)}
           description={<span>{t(($) => $.exam.passages.description)}</span>}
         />
-        <Button render={<Link to={AppRoute.exam.passages.admin.create.url} />} className="flex-shrink-0 gap-1.5 shadow-sm">
+        <Button render={<Link to={AppRoute.exam.passages.admin.create.url} />} nativeButton={false} className="flex-shrink-0 gap-1.5 shadow-sm">
           <Plus className="h-4 w-4" />
           <span className="hidden sm:inline">{t(($) => $.labels.add)}</span>
         </Button>

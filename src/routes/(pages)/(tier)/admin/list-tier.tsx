@@ -127,7 +127,7 @@ function AdminTierPricingPage() {
           description={<span>{t(($) => $.tier.list.description)}</span>}
         />
         {items.length > 0 && (
-          <Button render={<Link to={AppRoute.app.tier.admin.create.url} className="gap-2" />} className="flex-shrink-0 gap-1.5 shadow-sm">
+          <Button render={<Link to={AppRoute.app.tier.admin.create.url} className="gap-2" />} nativeButton={false} className="flex-shrink-0 gap-1.5 shadow-sm">
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">{t(($) => $.tier.list.createButton)}</span>
           </Button>
