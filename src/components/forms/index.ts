@@ -8,3 +8,8 @@ export * from "./FormNumber";
 export * from "./ControlForm";
 export * from "./FormWithDetector";
 export * from "./FormDatePicker";
+export * from "./FormCombobox";
+export * from "./FormDateRangePicker";
+export * from "./FormInputFile";
+export * from "./FormMultiSelect";
+export * from "./FormUpload";

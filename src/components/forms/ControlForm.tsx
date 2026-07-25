@@ -7,6 +7,11 @@ import { FormTextArea } from "./FormTextArea";
 import { FormCheckbox } from "./FormCheckbox";
 import { FormSwitch } from "./FormSwitch";
 import { FormDatePicker } from "./FormDatePicker";
+import { FormCombobox } from "./FormCombobox";
+import { FormDateRangePicker } from "./FormDateRangePicker";
+import { FormInputFile } from "./FormInputFile";
+import { FormMultiSelect } from "./FormMultiSelect";
+import { FormUpload } from "./FormUpload";
 import { cn } from "@/lib/utils";
 
 // Lazy load inputs that are not migrated yet or require special handlers
@@ -79,9 +84,69 @@ export const ControlForm = forwardRef(
           disabled={isDisabled}
         />
       );
+    } else if (itemType === "combobox") {
+      return (
+        <FormCombobox
+          field={field}
+          item={item}
+          {...props}
+          className={cn(defaultClassName, className)}
+          labelClassName={labelClassName}
+          showMessage={showMessage}
+          disabled={isDisabled}
+        />
+      );
+    } else if (itemType === "multiselect") {
+      return (
+        <FormMultiSelect
+          field={field}
+          item={item}
+          {...props}
+          className={cn(defaultClassName, className)}
+          labelClassName={labelClassName}
+          showMessage={showMessage}
+          disabled={isDisabled}
+        />
+      );
     } else if (itemType === "date") {
       return (
         <FormDatePicker
+          field={field}
+          item={item}
+          className={cn(defaultClassName, className)}
+          labelClassName={labelClassName}
+          showMessage={showMessage}
+          {...props}
+          disabled={isDisabled}
+        />
+      );
+    } else if (itemType === "daterangepicker") {
+      return (
+        <FormDateRangePicker
+          field={field}
+          item={item}
+          className={cn(defaultClassName, className)}
+          labelClassName={labelClassName}
+          showMessage={showMessage}
+          {...props}
+          disabled={isDisabled}
+        />
+      );
+    } else if (itemType === "inputfile") {
+      return (
+        <FormInputFile
+          field={field}
+          item={item}
+          className={cn(defaultClassName, className)}
+          labelClassName={labelClassName}
+          showMessage={showMessage}
+          {...props}
+          disabled={isDisabled}
+        />
+      );
+    } else if (itemType === "upload") {
+      return (
+        <FormUpload
           field={field}
           item={item}
           className={cn(defaultClassName, className)}
