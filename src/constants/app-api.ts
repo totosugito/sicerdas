@@ -5,14 +5,10 @@ export const AppApi = {
     signIn: APP_URL_API + "/auth/sign-in-email",
     signUp: APP_URL_API + "/auth/sign-up/email",
     logout: APP_URL_API + "/user/logout",
-    forgotPassword: APP_URL_API + "/auth/auth-request-password-reset",
-    resetPassword: APP_URL_API + "/auth/auth-reset-password",
-    checkResetToken: APP_URL_API + "/auth/check-token-reset",
     emailOtpForgetPassword: APP_URL_API + "/auth/email-otp-forget-password",
     emailOtpVerifyForgetPassword: APP_URL_API + "/auth/email-otp-verify-forget-password",
     emailOtpResetPassword: APP_URL_API + "/auth/email-otp-reset-password",
     emailHasOtp: APP_URL_API + "/auth/email-has-otp",
-    getSession: APP_URL_API + "/auth/get-session",
   },
   tier: {
     admin: {

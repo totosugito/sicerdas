@@ -1,8 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from '@fastify/type-provider-typebox';
-import { db } from "../../db/db-pool.ts";
-import { users, verifications } from "../../db/schema/users/index.ts";
-import { eq, and, gte } from "drizzle-orm";
+import { emailHasOtpService } from "../../modules/auth/services/email-has-otp.service.ts";
+import { EmailHasOtpBody, EmailHasOtpResponse } from "../../modules/auth/auth.schema.ts";
+import { ErrorResponseSchema } from "../../types/response.ts";
 
 /**
  * Check if user has pending OTP verification
@@ -16,78 +15,45 @@ import { eq, and, gte } from "drizzle-orm";
  */
 const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
-    url: '/email-has-otp',
-    method: 'POST',
+    url: "/email-has-otp",
+    method: "POST",
     schema: {
-      tags: ['Auth'],
-      summary: 'Check if user has pending OTP verification',
-      description: 'Check if user has pending OTP verification in the system. Expected JSON body fields: email, identifier (optional)',
-      consumes: ['application/json'],
-      body: Type.Object({
-        email: Type.String({ format: 'email' }),
-        identifier: Type.Optional(Type.String())
-      }),
+      tags: ["Auth"],
+      summary: "Check if user has pending OTP verification",
+      description: "Check if user has pending OTP verification in the system. Expected JSON body fields: email, identifier (optional)",
+      consumes: ["application/json"],
+      body: EmailHasOtpBody,
       response: {
-        200: Type.Object({
-          success: Type.Boolean({ default: true }),
-          hasOtp: Type.Boolean(),
-          message: Type.String(),
-        }),
-        // Updated to use proper HTTP status codes with Fastify Sensible
-        '4xx': Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String()
-        }),
-        '5xx': Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String()
-        })
-      }
+        200: EmailHasOtpResponse,
+        "4xx": ErrorResponseSchema,
+      },
     },
     handler: async (req, reply) => {
-      // Extract email and identifier from request body, default identifier to 'forget-password-otp-' if not provided
-      const { email, identifier: identifierPrefix = 'forget-password-otp-' } = req.body as { email: string; identifier?: string; };
+      const { email, identifier } = req.body;
 
-      // Validate required fields using Fastify Sensible badRequest
       if (!email) {
-        return reply.badRequest(req.t($ => $.auth.emailRequired));
+        return reply.badRequest(req.t(($) => $.auth.emailRequired));
       }
 
-      // Check if email exists in users table and get user ID
-      const existingUser = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.email, email));
+      const result = await emailHasOtpService({ email, identifier });
 
-      if (existingUser.length === 0) {
-        return reply.notFound(req.t($ => $.auth.userNotFound));
+      if (!result.success || result.hasOtp === undefined) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
 
-      // Check if user has pending verification in the verifications table
-      // We'll look for verifications with identifier "{identifierPrefix}{email}" that haven't expired yet
-      const identifier = `${identifierPrefix}${email}`;
-
-      const pendingVerifications = await db
-        .select()
-        .from(verifications)
-        .where(
-          and(
-            eq(verifications.identifier, identifier), // Check for the specific identifier format
-            gte(verifications.expiresAt, new Date()) // Check if verification hasn't expired yet
-          )
-        );
-
-      // Check if there are any pending verifications that haven't expired
-      const hasOtp = pendingVerifications.length > 0;
-
-      return reply
-        .status(200)
-        .send({
-          success: true,
-          hasOtp: hasOtp,
-          message: hasOtp
-            ? req.t($ => $.auth.pendingVerificationFound)
-            : req.t($ => $.auth.noPendingVerification)
-        });
+      return reply.status(200).send({
+        success: true,
+        hasOtp: result.hasOtp,
+        message: result.hasOtp
+          ? req.t(($) => $.auth.pendingVerificationFound)
+          : req.t(($) => $.auth.noPendingVerification),
+      });
     },
   });
 };
 
-export default publicRoute;
+export default publicRoute;

@@ -5,6 +5,10 @@ import {
   useEmailOtpForgetPasswordMutation,
   useEmailHasOtpQuery,
 } from "@/api/auth";
+import type { EmailOtpVerifyForgetPasswordResponse, BaseResponse } from "@/api/auth/types";
+
+
+
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ShieldCheck, Timer, Loader2 } from "lucide-react";
 import { OtpVerificationForm } from "@/components/pages/auth/otp-verification";
@@ -14,6 +18,7 @@ import { z } from "zod";
 import { APP_CONFIG } from "@/constants/config";
 import { AuthHeader, AuthLayout } from "@/components/pages/auth";
 import NotFoundError from "@/components/custom/errors/NotFoundError";
+
 
 // Timer duration in seconds (default 120 seconds = 2 minutes)
 const TIMER_DURATION = APP_CONFIG.RESEND_OTP_DELAY || 120;
@@ -74,16 +79,16 @@ function OtpVerificationComponent() {
     };
   }, [showTimer, timer]);
 
-  // Show NotFoundError if the API returns a 404 (user not found) or if the user doesn't have OTP
+  // Show NotFoundError if the API returns an error (e.g., user not found) or if the user doesn't have OTP
   if (
     (emailHasOtpQuery.isSuccess && emailHasOtpQuery.data && !emailHasOtpQuery.data.hasOtp) ||
-    (emailHasOtpQuery.isError &&
-      emailHasOtpQuery.error &&
-      ((emailHasOtpQuery.error as any).status === 404 ||
-        (emailHasOtpQuery.error as any).response?.status === 404))
+    emailHasOtpQuery.isError
   ) {
     return <NotFoundError />;
   }
+
+
+
 
   // Show loading state while the query is in progress
   if (emailHasOtpQuery.isLoading) {
@@ -92,21 +97,21 @@ function OtpVerificationComponent() {
         <div className="h-svh flex items-center justify-center">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto" />
-            <p className="mt-2">Checking for pending verification...</p>
+            <p className="mt-2">{t(($) => $.auth.otpVerification.checkingPending)}</p>
           </div>
         </div>
       </AuthLayout>
     );
   }
 
-  const onFormSubmit: SubmitHandler<Record<string, any>> = (data) => {
+  const onFormSubmit = (data: { otp: string }) => {
     setErrorMessage(undefined);
 
     // First verify the OTP with the correct parameters
     emailOtpVerifyForgetPasswordMutation.mutate(
-      { body: { email: search.email, otp: data.otp } },
+      { body: { email: search.email || "", otp: data.otp } },
       {
-        onSuccess: (response: any) => {
+        onSuccess: (response: EmailOtpVerifyForgetPasswordResponse) => {
           // If OTP is valid, navigate to reset password page with email and otp parameters
           if (response?.data?.valid) {
             navigate({
@@ -117,21 +122,17 @@ function OtpVerificationComponent() {
               },
             });
           } else {
-            setErrorMessage(response?.data?.message || t(($) => $.auth.otpVerification.invalidOtp));
+            setErrorMessage(response?.message || t(($) => $.auth.otpVerification.invalidOtp));
           }
         },
-        onError: (error: Record<string, any>) => {
-          // Handle different types of errors
-          const errorMsg =
-            error?.response?.data?.message ||
-            error?.response?.data?.error ||
-            error?.message ||
-            t(($) => $.auth.otpVerification.verificationError);
+        onError: (error: BaseResponse) => {
+          const errorMsg = error?.message || t(($) => $.auth.otpVerification.verificationError);
           setErrorMessage(errorMsg);
         },
       },
     );
   };
+
 
   // Function to resend OTP
   const handleResendOtp = () => {
@@ -153,12 +154,8 @@ function OtpVerificationComponent() {
             setResendSuccess(false);
           }, 3000);
         },
-        onError: (error: Record<string, any>) => {
-          const errorMsg =
-            error?.response?.data?.message ||
-            error?.response?.data?.error ||
-            error?.message ||
-            t(($) => $.auth.otpVerification.resendOtpError);
+        onError: (error: BaseResponse) => {
+          const errorMsg = error?.message || t(($) => $.auth.otpVerification.resendOtpError);
           setErrorMessage(errorMsg);
         },
         onSettled: () => {
@@ -167,6 +164,10 @@ function OtpVerificationComponent() {
       },
     );
   };
+
+
+
+
 
   // Format time for display (MM:SS)
   const formatTime = (seconds: number) => {
@@ -209,12 +210,12 @@ function OtpVerificationComponent() {
             // Show resend text with click event when timer is done
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
               <span className="text-sm text-muted-foreground">
-                Tidak mendapatkan code.{" "}
+                {t(($) => $.auth.otpVerification.didNotGetCode)}{" "}
                 <span
                   onClick={handleResendOtp}
                   className="text-primary hover:text-primary/80 font-medium cursor-pointer transition-colors"
                 >
-                  Kirim Ulang OTP
+                  {t(($) => $.auth.otpVerification.resendOtp)}
                 </span>
               </span>
             </div>

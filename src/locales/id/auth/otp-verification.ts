@@ -19,4 +19,6 @@ export default {
     resendOtpError: "Gagal mengirim ulang kode OTP. Silakan coba lagi.",
     resendOtpSuccess: "Kode OTP berhasil dikirim ulang ke email Anda.",
     sending: "Mengirim...",
-}
+    checkingPending: "Memeriksa verifikasi tertunda...",
+    didNotGetCode: "Tidak mendapatkan kode?",
+}

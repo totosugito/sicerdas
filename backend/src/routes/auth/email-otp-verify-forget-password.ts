@@ -1,8 +1,10 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from '@fastify/type-provider-typebox';
-import { db } from "../../db/db-pool.ts";
-import { verifications } from "../../db/schema/users/index.ts";
-import { eq, desc } from "drizzle-orm";
+import { emailOtpVerifyForgetPasswordService } from "../../modules/auth/services/email-otp-verify-forget-password.service.ts";
+import {
+  EmailOtpVerifyForgetPasswordBody,
+  EmailOtpVerifyForgetPasswordResponse,
+} from "../../modules/auth/auth.schema.ts";
+import { ErrorResponseSchema } from "../../types/response.ts";
 
 /**
  * Verify forget password OTP
@@ -16,89 +18,47 @@ import { eq, desc } from "drizzle-orm";
  */
 const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
-    url: '/email-otp-verify-forget-password',
-    method: 'POST',
+    url: "/email-otp-verify-forget-password",
+    method: "POST",
     schema: {
-      tags: ['Auth'],
-      summary: 'Verify forget password OTP',
-      description: 'Verify if a forget password OTP token is valid and not expired. Expected JSON body fields: email, otp',
-      consumes: ['application/json'],
-      body: Type.Object({
-        email: Type.String({ format: 'email' }),
-        otp: Type.String()
-      }),
+      tags: ["Auth"],
+      summary: "Verify forget password OTP",
+      description: "Verify if a forget password OTP token is valid and not expired. Expected JSON body fields: email, otp",
+      consumes: ["application/json"],
+      body: EmailOtpVerifyForgetPasswordBody,
       response: {
-        200: Type.Object({
-          success: Type.Boolean({ default: true }),
-          message: Type.String(),
-          data: Type.Object({
-            valid: Type.Boolean()
-          })
-        }),
-        // Updated to use proper HTTP status codes with Fastify Sensible
-        '4xx': Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String()
-        }),
-        '5xx': Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String()
-        })
-      }
+        200: EmailOtpVerifyForgetPasswordResponse,
+        "4xx": ErrorResponseSchema,
+      },
     },
     handler: async (req, reply) => {
-      const { email, otp } = req.body as { email: string; otp: string };
+      const { email, otp } = req.body;
 
-      // Validate required fields using Fastify Sensible badRequest
       if (!email) {
-        return reply.badRequest(req.t($ => $.auth.emailRequired));
+        return reply.badRequest(req.t(($) => $.auth.emailRequired));
       }
 
       if (!otp) {
-        return reply.badRequest(req.t($ => $.auth.otpRequired));
+        return reply.badRequest(req.t(($) => $.auth.otpRequired));
       }
 
-      // Check if token exists in verifications table and is not expired
-      // Based on the example data, the identifier format is "forget-password-otp-{email}"
-      // and the value contains the OTP token
-      const verificationResult = await db
-        .select()
-        .from(verifications)
-        .where(
-          eq(verifications.identifier, `forget-password-otp-${email}`)
-        )
-        .orderBy(desc(verifications.updatedAt));
+      const result = await emailOtpVerifyForgetPasswordService({ email, otp });
 
-      if (verificationResult.length === 0) {
-        return reply.notFound(req.t($ => $.auth.invalidOTP));
-      }
-
-      const verification = verificationResult[0];
-
-      // Check if token matches
-      // The database stores the token in format "token:something" (e.g., "591255:0"), but the user sends just "591255"
-      // So we need to check if the stored value starts with the provided otp followed by ":"
-      if (!verification.value.startsWith(`${otp}:`)) {
-        return reply.notFound(req.t($ => $.auth.invalidOTP));
-      }
-
-      // Check if token is expired
-      const now = new Date();
-      const isExpired = verification.expiresAt < now;
-
-      if (isExpired) {
-        return reply.notFound(req.t($ => $.auth.expiredOTP));
+      if (!result.success || !result.data) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
 
       return reply.status(200).send({
         success: true,
-        message: req.t($ => $.auth.validOTP),
-        data: {
-          valid: true
-        }
+        message: req.t(($) => $.auth.validOTP),
+        data: result.data,
       });
     },
   });
 };
 
-export default publicRoute;
+export default publicRoute;

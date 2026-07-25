@@ -1,9 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from "@fastify/type-provider-typebox";
-import { db } from "../../db/db-pool.ts";
-import { users, verifications, accounts } from "../../db/schema/users/index.ts";
-import { eq, and, gte, count } from "drizzle-orm";
-import config from "../../config/env.config.ts";
+import { emailOtpForgetPasswordService } from "../../modules/auth/services/email-otp-forget-password.service.ts";
+import { EmailOtpForgetPasswordBody } from "../../modules/auth/auth.schema.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../types/response.ts";
 
 /**
  * Request forget password OTP via email
@@ -22,78 +20,32 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: "Request forget password OTP",
       description: "Send forget password OTP email to user. Expected JSON body field: email",
       consumes: ["application/json"],
-      body: Type.Object({
-        email: Type.String({ format: "email" }),
-      }),
+      body: EmailOtpForgetPasswordBody,
       response: {
-        200: Type.Object({
-          success: Type.Boolean({ default: true }),
-          message: Type.String(),
-        }),
-        // Updated to use proper HTTP status codes with Fastify Sensible
-        "4xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
-        "5xx": Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String(),
-        }),
+        200: BaseResponseSchema,
+        "4xx": ErrorResponseSchema,
       },
     },
-    handler: async (req, reply) => {
-      // Extract data directly from request body for JSON input
-      const { email } = req.body as { email: string };
 
-      // Validate required fields using Fastify Sensible badRequest
+    handler: async (req, reply) => {
+      const { email } = req.body;
+
       if (!email) {
         return reply.badRequest(req.t(($) => $.auth.emailRequired));
       }
 
-      // Check if email exists in users table and get user ID
-      const existingUser = await db
-        .select({ id: users.id, email: users.email })
-        .from(users)
-        .where(eq(users.email, email));
+      // 1. Call the service for validation checks (user exist, provider checks, rate limit)
+      const result = await emailOtpForgetPasswordService({ email });
 
-      if (existingUser.length === 0) {
-        return reply.notFound(req.t(($) => $.auth.userNotFound));
+      if (!result.success) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
 
-      const userId = existingUser[0].id;
-
-      // Check if the user's account has providerId "credential" or "email"
-      const userAccounts = await db
-        .select({ providerId: accounts.providerId })
-        .from(accounts)
-        .where(eq(accounts.userId, userId));
-
-      // If no accounts found or if any account has providerId "credential" or "email", return 404
-      const hasCredentialOrEmailProvider = userAccounts.some(
-        (account) => account.providerId !== "credential" && account.providerId !== "email",
-      );
-
-      if (userAccounts.length === 0 || hasCredentialOrEmailProvider) {
-        return reply.notFound(req.t(($) => $.auth.userNotFound));
-      }
-
-      // Rate limiting: Check if user has made more than N requests in the last hour
-      const ONE_HOUR_AGO = new Date(Date.now() - config.limits.passwordResetRateLimitWindowMs);
-
-      // Count password reset requests for this user ID in the last hour
-      // We'll look for verifications with value = userId and createdAt within last hour
-      const requestCountResult = await db
-        .select({ count: count() })
-        .from(verifications)
-        .where(and(eq(verifications.value, userId), gte(verifications.createdAt, ONE_HOUR_AGO)));
-
-      const requestCount = requestCountResult[0]?.count || 0;
-
-      if (requestCount >= config.limits.passwordResetRateLimit) {
-        return reply.tooManyRequests(req.t(($) => $.auth.passwordResetRateLimitExceeded));
-      }
-
-      // Use Fastify's built-in inject method to call the better-auth API
+      // 2. Call the better-auth internal API via app.inject
       const response = await app.inject({
         method: "POST",
         url: "/api/auth/email-otp/request-password-reset",
@@ -106,19 +58,17 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         },
       });
 
-      // Forward the response
-      return reply
-        .status(response.statusCode)
-        .headers(response.headers)
-        .send({
-          success: response.statusCode >= 200 && response.statusCode < 300,
-          message:
-            response.statusCode >= 200 && response.statusCode < 300
-              ? req.t(($) => $.auth.passwordResetOTPSent)
-              : req.t(($) => $.auth.passwordResetOTPFailed),
-        });
+      const success = response.statusCode >= 200 && response.statusCode < 300;
+
+      return reply.status(response.statusCode).send({
+        success,
+        message: success
+          ? req.t(($) => $.auth.passwordResetOTPSent)
+          : req.t(($) => $.auth.passwordResetOTPFailed),
+      });
     },
   });
 };
 
 export default publicRoute;
+

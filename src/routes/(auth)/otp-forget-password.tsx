@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SubmitHandler } from "react-hook-form";
 import { useEmailOtpForgetPasswordMutation } from "@/api/auth/email-otp-forget-password";
+import type { EmailOtpForgetPasswordRequest, EmailOtpForgetPasswordResponse, BaseResponse } from "@/api/auth/types";
+
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { AlertCircle, CheckCircle, Mail } from "lucide-react";
 import { ForgetPasswordForm } from "@/components/pages/auth/otp-forget-password";
@@ -22,7 +24,7 @@ function ForgetPasswordComponent() {
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const onFormSubmit: SubmitHandler<Record<string, any>> = (data) => {
+  const onFormSubmit: SubmitHandler<EmailOtpForgetPasswordRequest> = (data) => {
     setErrorMessage(undefined);
     setSuccessMessage(undefined);
     setIsSuccess(false);
@@ -31,7 +33,7 @@ function ForgetPasswordComponent() {
         body: data,
       },
       {
-        onSuccess: (responseData: any) => {
+        onSuccess: (responseData: EmailOtpForgetPasswordResponse) => {
           // Store the success message from API response
           const message = responseData?.message || t(($) => $.auth.forgetPassword.successMessage);
           setSuccessMessage(message);
@@ -39,18 +41,16 @@ function ForgetPasswordComponent() {
           // Redirect to OTP verification page with email parameter from form data
           navigate({ to: AppRoute.auth.otpVerification.url, search: { email: data.email } });
         },
-        onError: (error: Record<string, any>) => {
-          // Handle different types of errors
-          const errorMsg =
-            error?.response?.data?.message ||
-            error?.response?.data?.error ||
-            error?.message ||
-            t(($) => $.auth.forgetPassword.errorMessage);
+
+        onError: (error: BaseResponse) => {
+          const errorMsg = error?.message || t(($) => $.auth.forgetPassword.errorMessage);
           setErrorMessage(errorMsg);
         },
       },
     );
   };
+
+
 
   const handleBackToLogin = () => {
     navigate({ to: AppRoute.auth.signIn.url });

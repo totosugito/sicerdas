@@ -28,11 +28,12 @@ const otpVerificationFormData = {
 }
 
 type Props = {
-  onFormSubmit: SubmitHandler<Record<string, any>>
-  loading?: boolean,
-  errorMessage?: string,
-  email?: string,
-}
+  onFormSubmit: (values: { otp: string }) => void;
+  loading?: boolean;
+  errorMessage?: string;
+  email?: string;
+};
+
 
 export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email }: Props) => {
   const { t } = useAppTranslation();
