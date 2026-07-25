@@ -41,4 +41,39 @@ export const EmailHasOtpResponse = Type.Intersect([
 
 export type EmailHasOtpResponseData = Static<typeof EmailHasOtpResponse>;
 
+export const EmailOtpResetPasswordBody = Type.Object({
+  email: Type.String({ format: "email" }),
+  otp: Type.String(),
+  password: Type.String(),
+});
+
+export type EmailOtpResetPasswordRequest = Static<typeof EmailOtpResetPasswordBody>;
+
+export const UserResponse = Type.Object({
+  id: Type.String({ format: "uuid" }),
+  email: Type.String({ format: "email" }),
+  name: Type.Union([Type.String(), Type.Null()]),
+  image: Type.Union([Type.String(), Type.Null()]),
+  emailVerified: Type.Boolean(),
+  role: Type.Union([Type.String(), Type.Null()]),
+  showAds: Type.Boolean(),
+  tierId: Type.String(),
+  createdAt: Type.String({ format: "date-time" }),
+  updatedAt: Type.String({ format: "date-time" }),
+});
+
+export type SignInUserResult = Static<typeof UserResponse>;
+
+
+export const AuthResponse = Type.Object({
+  success: Type.Boolean({ default: true }),
+  message: Type.Optional(Type.String()),
+  user: UserResponse,
+  token: Type.String(),
+});
+
+export type AuthResponseData = Static<typeof AuthResponse>;
+
+
+
 

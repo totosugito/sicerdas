@@ -1,8 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { Type } from '@fastify/type-provider-typebox';
-import { db } from "../../db/db-pool.ts";
-import { users, verifications } from "../../db/schema/users/index.ts";
-import { eq } from "drizzle-orm";
+import { emailOtpResetPasswordService, deleteOtpVerificationService } from "../../modules/auth/services/email-otp-reset-password.service.ts";
+import { EmailOtpResetPasswordBody } from "../../modules/auth/auth.schema.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../types/response.ts";
 
 /**
  * Reset password using email OTP
@@ -25,32 +24,15 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: 'Reset password with email OTP',
       description: 'Reset user password using email, OTP and new password. Expected JSON body fields: email, otp, password',
       consumes: ['application/json'],
-      body: Type.Object({
-        email: Type.String({ format: 'email' }),
-        otp: Type.String(),
-        password: Type.String()
-      }),
+      body: EmailOtpResetPasswordBody,
       response: {
-        200: Type.Object({
-          success: Type.Boolean({ default: true }),
-          message: Type.String(),
-        }),
-        // Updated to use proper HTTP status codes with Fastify Sensible
-        '4xx': Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String()
-        }),
-        '5xx': Type.Object({
-          success: Type.Boolean({ default: false }),
-          message: Type.String()
-        })
+        200: BaseResponseSchema,
+        '4xx': ErrorResponseSchema,
       }
     },
     handler: async (req, reply) => {
-      // Extract data directly from request body for JSON input
-      const { email, otp, password } = req.body as { email: string; otp: string; password: string };
+      const { email, otp, password } = req.body;
 
-      // Validate required fields using Fastify Sensible badRequest
       if (!email) {
         return reply.badRequest(req.t($ => $.auth.emailRequired));
       }
@@ -63,21 +45,25 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         return reply.badRequest(req.t($ => $.auth.passwordRequired));
       }
 
-      // Check if email exists in users table and get user ID
-      const existingUser = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.email, email));
+      // 1. Call the service for validation checks (user existence)
+      const result = await emailOtpResetPasswordService({ email, otp, password });
 
-      if (existingUser.length === 0) {
-        return reply.notFound(req.t($ => $.auth.userNotFound));
+      if (!result.success) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
 
-      // Use Fastify's built-in inject method to call the better-auth API
+      // 2. Use Fastify's built-in inject method to call the better-auth API
       const response = await app.inject({
         method: 'POST',
         url: '/api/auth/email-otp/reset-password',
         payload: JSON.stringify({
-          email: email,
-          otp: otp,
-          password: password
+          email,
+          otp,
+          password
         }),
         headers: {
           'content-type': 'application/json',
@@ -90,8 +76,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       // If successful, delete the verification records for this email
       if (isSuccessful) {
-        const identifier = `forget-password-otp-${email}`;
-        await db.delete(verifications).where(eq(verifications.identifier, identifier));
+        await deleteOtpVerificationService(email);
       }
 
       // Forward the response

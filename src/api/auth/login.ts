@@ -4,28 +4,15 @@ import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
 import { AuthProps, LoginFormValues } from "@/types/auth";
 import { useAppTranslation } from "@/lib/i18n-typed";
+import type { LoginResponse, BaseResponse } from "./types";
 
-export interface LoginResponse {
-  success: boolean;
-  message?: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    image: string | null;
-    emailVerified: boolean;
-    role: string;
-    createdAt: string;
-    updatedAt: string;
-  };
-  token: string;
-}
+export type { LoginResponse };
 
 export const useLoginMutation = () => {
   const auth = useAuth();
 
   const { t } = useAppTranslation();
-  return useMutation({
+  return useMutation<LoginResponse, BaseResponse, { body: LoginFormValues | FormData }>({
     mutationKey: ["login"],
     mutationFn: async ({ body }: { body: LoginFormValues | FormData }) => {
       const response: LoginResponse = await fetchApi({
@@ -41,6 +28,8 @@ export const useLoginMutation = () => {
           token: response.token,
           user: {
             ...response.user,
+            name: response.user.name ?? "",
+            role: response.user.role ?? undefined,
             createdAt: new Date(response.user.createdAt),
             updatedAt: new Date(response.user.updatedAt),
           },

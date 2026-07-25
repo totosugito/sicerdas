@@ -1,29 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@fastify/type-provider-typebox";
-import { db } from "../../db/db-pool.ts";
-import { users, profiles } from "../../db/schema/users/index.ts";
-import { eq } from "drizzle-orm";
-import { getUserAvatarUrl } from "../../utils/user/user-utils.ts";
-
-// Response schemas
-const UserResponse = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  email: Type.String({ format: "email" }),
-  name: Type.Union([Type.String(), Type.Null()]),
-  image: Type.Union([Type.String(), Type.Null()]),
-  emailVerified: Type.Boolean(),
-  role: Type.Union([Type.String(), Type.Null()]),
-  showAds: Type.Boolean(),
-  tierId: Type.String(),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
-const AuthResponse = Type.Object({
-  success: Type.Boolean({ default: true }),
-  user: Type.Omit(UserResponse, ["password"]),
-  token: Type.String(),
-});
+import { signInEmailService } from "../../modules/auth/services/sign-in-email.service.ts";
+import { AuthResponse } from "../../modules/auth/auth.schema.ts";
 
 /**
  * Sign in with email and password
@@ -96,32 +74,16 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
         return reply.badRequest(req.t(($) => $.auth.invalidCredentials));
       }
 
-      // Fetch the user with role and tier from the database
-      const userRecord = await db
-        .select({
-          id: users.id,
-          email: users.email,
-          name: users.name,
-          image: users.image,
-          emailVerified: users.emailVerified,
-          role: users.role,
-          createdAt: users.createdAt,
-          updatedAt: users.updatedAt,
-          tierId: profiles.tierId,
-        })
-        .from(users)
-        .leftJoin(profiles, eq(users.id, profiles.id))
-        .where(eq(users.id, authData.user.id))
-        .limit(1);
+      // Fetch user with role and tier from the database using service
+      const result = await signInEmailService(authData.user.id);
 
-      const userWithRole = userRecord.length > 0 ? userRecord[0] : null;
-
-      if (!userWithRole) {
-        return reply.notFound(req.t(($) => $.auth.userNotFound));
+      if (!result.success || !result.data) {
+        const message = req.t(result.errorKey!);
+        if (result.statusCode === 404) {
+          return reply.notFound(message);
+        }
+        return reply.badRequest(message);
       }
-
-      const tierId = userWithRole.tierId || "free";
-      const showAds = tierId === "free";
 
       // Forward the response
       return reply
@@ -131,10 +93,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
           ...authData,
           user: {
             ...authData.user,
-            ...userWithRole,
-            image: getUserAvatarUrl(userWithRole.id, userWithRole.image),
-            showAds,
-            tierId,
+            ...result.data,
           },
         });
     },

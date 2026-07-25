@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 
 import { SubmitHandler } from "react-hook-form";
-import { useLoginMutation, LoginResponse } from "@/api/auth/login";
+import { useLoginMutation, type LoginResponse } from "@/api/auth/login";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { SignInForm } from "@/components/pages/auth/sign-in";
 import { useState } from "react";
@@ -46,8 +46,8 @@ function LoginComponent() {
             setErrorMessage(response.message || t(($) => $.labels.error));
           }
         },
-        onError: (error: { message?: string; error?: string }) => {
-          setErrorMessage(error?.message || error?.error || t(($) => $.labels.error));
+        onError: (error) => {
+          setErrorMessage(error?.message || t(($) => $.labels.error));
         },
       },
     );

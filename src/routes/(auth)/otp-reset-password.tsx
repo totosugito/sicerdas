@@ -41,6 +41,7 @@ function ResetPasswordComponent() {
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isOtpInvalid, setIsOtpInvalid] = useState(false);
 
   // Add effect to verify OTP when component mounts
   useEffect(() => {
@@ -50,11 +51,9 @@ function ResetPasswordComponent() {
         { body: { email: search.email, otp: search.otp.toString() } },
         {
           onError: (error: Record<string, any>) => {
-            // Navigate to OTP verification page if verification fails
-            navigate({
-              to: AppRoute.auth.otpVerification.url,
-              search: { email: search.email },
-            });
+            const errorMsg = error?.message || t(($) => $.auth.resetPassword.errorMessage);
+            setErrorMessage(errorMsg);
+            setIsOtpInvalid(true);
           },
         },
       );
@@ -65,30 +64,27 @@ function ResetPasswordComponent() {
     setErrorMessage(undefined);
     setSuccessMessage(undefined);
     setIsSuccess(false);
+    setIsOtpInvalid(false);
 
     // Prepare the data with email, otp, and password
     const resetData = {
-      email: search.email,
-      otp: search.otp.toString(),
+      email: search.email || "",
+      otp: search.otp?.toString() || "",
       password: data.password,
     };
 
     emailOtpResetPasswordMutation.mutate(
       { body: resetData },
       {
-        onSuccess: (data: any) => {
+        onSuccess: (res) => {
           // Store the success message from API response
-          const message = data?.message || t(($) => $.auth.resetPassword.successMessage);
+          const message = res?.message || t(($) => $.auth.resetPassword.successMessage);
           setSuccessMessage(message);
           setIsSuccess(true);
         },
-        onError: (error: Record<string, any>) => {
+        onError: (error) => {
           // Handle different types of errors
-          const errorMsg =
-            error?.response?.data?.message ||
-            error?.response?.data?.error ||
-            error?.message ||
-            t(($) => $.auth.resetPassword.errorMessage);
+          const errorMsg = error?.message || t(($) => $.auth.resetPassword.errorMessage);
           setErrorMessage(errorMsg);
         },
       },
@@ -150,9 +146,23 @@ function ResetPasswordComponent() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <Button onClick={() => setErrorMessage(undefined)} className="w-full">
-              {t(($) => $.auth.resetPassword.tryAgain)}
-            </Button>
+            {isOtpInvalid ? (
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: AppRoute.auth.otpVerification.url,
+                    search: { email: search.email },
+                  })
+                }
+                className="w-full"
+              >
+                {t(($) => $.auth.otpVerification.title)}
+              </Button>
+            ) : (
+              <Button onClick={() => setErrorMessage(undefined)} className="w-full">
+                {t(($) => $.auth.resetPassword.tryAgain)}
+              </Button>
+            )}
             <Button variant="outline" onClick={handleBackToLogin} className="w-full">
               {t(($) => $.auth.resetPassword.backToSignIn)}
             </Button>
