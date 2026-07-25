@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -272,29 +273,31 @@ export function SectionTable({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>
-                  {t(($) => $.exam.sections.table.columns.actions)}
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link
-                    to={AppRoute.exam.packageSections.admin.detail.url.replace("$id", section.id)}
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>
+                    {t(($) => $.exam.sections.table.columns.actions)}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to={AppRoute.exam.packageSections.admin.detail.url.replace("$id", section.id)}
+                    >
+                      <Eye className="mr-2 h-4 w-4" />
+                      {t(($) => $.exam.sections.table.actions.detail)}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onEdit(section)}>
+                    <Pencil className="mr-2 h-4 w-4" />
+                    {t(($) => $.exam.sections.table.actions.edit)}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => onDelete(section)}
                   >
-                    <Eye className="mr-2 h-4 w-4" />
-                    {t(($) => $.exam.sections.table.actions.detail)}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onEdit(section)}>
-                  <Pencil className="mr-2 h-4 w-4" />
-                  {t(($) => $.exam.sections.table.actions.edit)}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => onDelete(section)}
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  {t(($) => $.exam.sections.table.actions.delete)}
-                </DropdownMenuItem>
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {t(($) => $.exam.sections.table.actions.delete)}
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

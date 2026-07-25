@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -274,21 +275,23 @@ export function QuestionTable({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>{t(($) => $.labels.actions)}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to={AppRoute.exam.questions.admin.edit.url.replace("$id", question.id)}>
-                    <Pencil className="mr-2 h-4 w-4" />
-                    {t(($) => $.labels.edit)}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => onDelete(question)}
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  {t(($) => $.labels.delete)}
-                </DropdownMenuItem>
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>{t(($) => $.labels.actions)}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to={AppRoute.exam.questions.admin.edit.url.replace("$id", question.id)}>
+                      <Pencil className="mr-2 h-4 w-4" />
+                      {t(($) => $.labels.edit)}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => onDelete(question)}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {t(($) => $.labels.delete)}
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

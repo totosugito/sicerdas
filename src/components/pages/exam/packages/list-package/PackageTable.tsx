@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -389,29 +390,31 @@ export function PackageTable({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>
-                  {t(($) => $.exam.packages.table.columns.actions)}
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to={AppRoute.exam.packages.admin.detail.url.replace("$id", pkg.id)}>
-                    <Eye className="mr-2 h-4 w-4" />
-                    {t(($) => $.exam.packages.table.actions.detail)}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to={AppRoute.exam.packages.admin.edit.url.replace("$id", pkg.id)}>
-                    <Pencil className="mr-2 h-4 w-4" />
-                    {t(($) => $.exam.packages.table.actions.edit)}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => onDelete(pkg)}
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  {t(($) => $.exam.packages.table.actions.delete)}
-                </DropdownMenuItem>
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>
+                    {t(($) => $.exam.packages.table.columns.actions)}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to={AppRoute.exam.packages.admin.detail.url.replace("$id", pkg.id)}>
+                      <Eye className="mr-2 h-4 w-4" />
+                      {t(($) => $.exam.packages.table.actions.detail)}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to={AppRoute.exam.packages.admin.edit.url.replace("$id", pkg.id)}>
+                      <Pencil className="mr-2 h-4 w-4" />
+                      {t(($) => $.exam.packages.table.actions.edit)}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => onDelete(pkg)}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {t(($) => $.exam.packages.table.actions.delete)}
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

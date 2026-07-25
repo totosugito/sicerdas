@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -152,21 +153,23 @@ export function CategoryTable({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>
-                  {t(($) => $.education.categories.table.columns.actions)}
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => onEdit(category)}>
-                  <Pencil className="mr-2 h-4 w-4" />
-                  {t(($) => $.education.categories.table.actions.edit)}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => onDelete(category)}
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  {t(($) => $.education.categories.table.actions.delete)}
-                </DropdownMenuItem>
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>
+                    {t(($) => $.education.categories.table.columns.actions)}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => onEdit(category)}>
+                    <Pencil className="mr-2 h-4 w-4" />
+                    {t(($) => $.education.categories.table.actions.edit)}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => onDelete(category)}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {t(($) => $.education.categories.table.actions.delete)}
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

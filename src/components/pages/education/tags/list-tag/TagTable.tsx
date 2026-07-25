@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -171,21 +172,23 @@ export function TagTable({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>
-                  {t(($) => $.education.tags.table.columns.actions)}
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => onEdit(tag)}>
-                  <Pencil className="mr-2 h-4 w-4" />
-                  {t(($) => $.education.tags.table.actions.edit)}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => onDelete(tag)}
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  {t(($) => $.education.tags.table.actions.delete)}
-                </DropdownMenuItem>
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>
+                    {t(($) => $.education.tags.table.columns.actions)}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => onEdit(tag)}>
+                    <Pencil className="mr-2 h-4 w-4" />
+                    {t(($) => $.education.tags.table.actions.edit)}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => onDelete(tag)}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {t(($) => $.education.tags.table.actions.delete)}
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

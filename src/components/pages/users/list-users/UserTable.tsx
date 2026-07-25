@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -221,41 +222,43 @@ export function UserTable({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>{t(($) => $.labels.actions)}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => onEdit(user)}>
-                  <Pencil className="mr-2 h-4 w-4" />
-                  {t(($) => $.labels.edit)}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onResetPassword(user)}>
-                  <KeyRound className="mr-2 h-4 w-4" />
-                  {t(($) => $.labels.resetPassword)}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onUpdateAvatar(user)}>
-                  <Camera className="mr-2 h-4 w-4" />
-                  {t(($) => $.user.management.dialog.changeAvatarTitle)}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onToggleBan(user)}>
-                  {user.banned ? (
-                    <>
-                      <UserCheck className="mr-2 h-4 w-4 text-emerald-600" />
-                      <span>{t(($) => $.user.management.dialog.unbanTitle)}</span>
-                    </>
-                  ) : (
-                    <>
-                      <UserX className="mr-2 h-4 w-4 text-red-600" />
-                      <span>{t(($) => $.user.management.dialog.banTitle)}</span>
-                    </>
-                  )}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => onDelete(user)}
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  {t(($) => $.labels.delete)}
-                </DropdownMenuItem>
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>{t(($) => $.labels.actions)}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => onEdit(user)}>
+                    <Pencil className="mr-2 h-4 w-4" />
+                    {t(($) => $.labels.edit)}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onResetPassword(user)}>
+                    <KeyRound className="mr-2 h-4 w-4" />
+                    {t(($) => $.labels.resetPassword)}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onUpdateAvatar(user)}>
+                    <Camera className="mr-2 h-4 w-4" />
+                    {t(($) => $.user.management.dialog.changeAvatarTitle)}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onToggleBan(user)}>
+                    {user.banned ? (
+                      <>
+                        <UserCheck className="mr-2 h-4 w-4 text-emerald-600" />
+                        <span>{t(($) => $.user.management.dialog.unbanTitle)}</span>
+                      </>
+                    ) : (
+                      <>
+                        <UserX className="mr-2 h-4 w-4 text-red-600" />
+                        <span>{t(($) => $.user.management.dialog.banTitle)}</span>
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => onDelete(user)}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {t(($) => $.labels.delete)}
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
