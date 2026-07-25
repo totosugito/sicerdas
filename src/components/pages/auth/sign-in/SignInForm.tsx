@@ -1,9 +1,7 @@
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Form } from "@/components/ui/form";
+import { useAppForm } from "@/components/ui/form-tanstack";
 import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod"
 import { LoginFormValues } from "@/types/auth";
-import { FormInput, FormPassword } from "@/components/custom/forms";
+import { FormInput, FormPassword } from "@/components/forms";
 import { Loader2, Mail, Lock, LogIn, AlertCircle } from "lucide-react";
 import { useAppTranslation } from '@/lib/i18n-typed';
 import { AppRoute } from "@/constants/app-route";
@@ -11,7 +9,7 @@ import { z } from "zod";
 import { APP_CONFIG } from "@/constants/config";
 
 type Props = {
-  onFormSubmit: SubmitHandler<FormData>
+  onFormSubmit: (values: FormData) => void;
   loading?: boolean,
   errorMessage?: string,
   onGoogleSignIn?: () => void; // Add Google sign in handler
@@ -48,21 +46,29 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
     password: z.string().min(1, { message: t($ => $.auth.signIn.passwordRequired) }),
   });
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(schema),
+  const form = useAppForm({
     defaultValues: signInFormData.defaultValue,
+    validators: {
+      onChange: schema,
+    },
+    onSubmit({ value }) {
+      const values = new FormData();
+      values.append('email', value.email ?? "");
+      values.append('password', value.password ?? "");
+      onFormSubmit(values);
+    },
   });
 
-  const onFormSubmit_ = (data: LoginFormValues) => {
-    const values = new FormData();
-    values.append('email', data?.email ?? "");
-    values.append('password', data?.password ?? "");
-    onFormSubmit(values);
-  };
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onFormSubmit_)} className="space-y-5">
+    <form.AppForm>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="space-y-5"
+      >
         {errorMessage && (
           <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 flex items-start space-x-2">
             <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
@@ -72,20 +78,28 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
         <div className="space-y-4">
           <div className="relative">
             <Mail className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
-            <FormInput
-              form={form}
-              item={signInFormData.form.email}
-              className="pl-10"
-              showMessage={false}
-            />
+            <form.AppField name="email">
+              {(field) => (
+                <FormInput
+                  field={field}
+                  item={signInFormData.form.email}
+                  className="pl-10"
+                  showMessage={false}
+                />
+              )}
+            </form.AppField>
           </div>
           <div className="relative">
-            <FormPassword
-              form={form}
-              item={signInFormData.form.password}
-              className="pl-10"
-              showMessage={false}
-            />
+            <form.AppField name="password">
+              {(field) => (
+                <FormPassword
+                  field={field}
+                  item={signInFormData.form.password}
+                  className="pl-10"
+                  showMessage={false}
+                />
+              )}
+            </form.AppField>
             <Lock className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
           </div>
         </div>
@@ -170,6 +184,6 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
           </p>
         </div>
       </form>
-    </Form>
+    </form.AppForm>
   )
 }

@@ -1,7 +1,5 @@
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Form } from "@/components/ui/form";
+import { useAppForm } from "@/components/ui/form-tanstack";
 import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2, ShieldCheck } from "lucide-react";
 import { useAppTranslation } from '@/lib/i18n-typed';
 import { AlertCircle } from "lucide-react";
@@ -11,9 +9,6 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-
-// Removed createOtpVerificationSchema as it's now inside the component
 
 export type OtpVerificationFormValues = {
   email: string;
@@ -34,7 +29,6 @@ type Props = {
   email?: string;
 };
 
-
 export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email }: Props) => {
   const { t } = useAppTranslation();
 
@@ -44,23 +38,31 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
     otp: z.string().min(6, { message: t($ => $.message.otpRequired) }),
   });
 
-  const form = useForm<OtpVerificationFormValues>({
-    resolver: zodResolver(schema),
+  const form = useAppForm({
     defaultValues: {
       ...otpVerificationFormData.defaultValue,
       email: email || ""
     },
+    validators: {
+      onChange: schema,
+    },
+    onSubmit({ value }) {
+      onFormSubmit({
+        otp: value.otp,
+      });
+    },
   });
 
-  const onFormSubmit_ = (data: OtpVerificationFormValues) => {
-    onFormSubmit({
-      otp: data.otp,
-    });
-  };
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onFormSubmit_)} className="space-y-5">
+    <form.AppForm>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="space-y-5"
+      >
         {errorMessage && (
           <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 flex items-start space-x-2">
             <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
@@ -69,18 +71,18 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
         )}
         <div className="space-y-4">
           {/* Email is now handled via props, no need to display input */}
-          <input type="hidden" {...form.register("email")} value={email || ""} />
-          <FormField
-            control={form.control}
-            name="otp"
-            render={({ field }) => (
-              <FormItem className="flex flex-col items-center">
-                <FormControl>
+          <input type="hidden" name="email" value={email || ""} />
+          
+          <form.AppField name="otp">
+            {(field) => (
+              <form.Item className="flex flex-col items-center">
+                <field.Control>
                   <InputOTP
                     maxLength={6}
-                    {...field}
-                    onChange={(value) => field.onChange(value)}
+                    name={field.name}
+                    value={field.state.value}
                     disabled={loading}
+                    onChange={(value) => field.handleChange(value)}
                   >
                     <InputOTPGroup className="flex flex-row gap-2">
                       <InputOTPSlot
@@ -109,11 +111,11 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
                       />
                     </InputOTPGroup>
                   </InputOTP>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+                </field.Control>
+                <field.Message />
+              </form.Item>
             )}
-          />
+          </form.AppField>
         </div>
 
         <Button
@@ -134,6 +136,6 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
           )}
         </Button>
       </form>
-    </Form>
+    </form.AppForm>
   )
 }
