@@ -2,9 +2,8 @@ import React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { useForm } from "react-hook-form";
+import { useAppForm } from "@/components/ui/form-tanstack";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   TabNavigation,
   ProfileInfoForm,
@@ -86,24 +85,32 @@ function RouteComponent() {
   const privacyFormData = createPrivacyFormData(t);
 
   // Initialize forms for each tab
-  const profileForm = useForm<z.infer<typeof profileFormData.schema>>({
-    resolver: zodResolver(profileFormData.schema),
+  const profileForm = useAppForm({
     defaultValues: profileFormData.defaultValue,
+    validators: {
+      onChange: profileFormData.schema as any,
+    },
   });
 
-  const personalInfoForm = useForm<z.infer<typeof personalInfoFormData.schema>>({
-    resolver: zodResolver(personalInfoFormData.schema),
+  const personalInfoForm = useAppForm({
     defaultValues: personalInfoFormData.defaultValue,
+    validators: {
+      onChange: personalInfoFormData.schema as any,
+    },
   });
 
-  const securityForm = useForm<z.infer<typeof securityFormData.schema>>({
-    resolver: zodResolver(securityFormData.schema),
+  const securityForm = useAppForm({
     defaultValues: securityFormData.defaultValue,
+    validators: {
+      onChange: securityFormData.schema as any,
+    },
   });
 
-  const privacyForm = useForm<z.infer<typeof privacyFormData.schema>>({
-    resolver: zodResolver(privacyFormData.schema),
+  const privacyForm = useAppForm({
     defaultValues: privacyFormData.defaultValue,
+    validators: {
+      onChange: privacyFormData.schema as any,
+    },
   });
 
   // Helper function to populate forms with user data
@@ -116,12 +123,12 @@ function RouteComponent() {
         image: userData.image || null,
       });
 
-      personalInfoForm.reset({
+      (personalInfoForm as any).reset({
         phone: userData.phone ?? "",
         address: userData.address ?? "",
         school: userData.school ?? "",
         grade: userData.grade ?? "",
-        dateOfBirth: userData.dateOfBirth ? string_to_date(userData.dateOfBirth) : undefined,
+        dateOfBirth: userData.dateOfBirth ? string_to_date(userData.dateOfBirth) : null,
         educationLevel: userData.educationLevel ?? "",
       });
 
@@ -253,7 +260,7 @@ function RouteComponent() {
             success?.message || t(($) => $.user.profile.security.updateSuccess);
           showNotifSuccess({ message: successMessage });
           // Reset the form after successful submission
-          securityForm.reset(securityFormData.defaultValue);
+          securityForm.reset();
         },
         onError: (error: Record<string, any>) => {
           const errorMessage = error?.message || t(($) => $.user.profile.security.updateError);

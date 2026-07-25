@@ -1,11 +1,8 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/forms";
+import { ControlForm, FormWithDetector } from "@/components/forms";
 import { useAppTranslation, AppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { AlertCircle } from "lucide-react";
 
 // Define the form values type
 export type PrivacyFormValues = {
@@ -83,22 +80,25 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
           {t(($) => $.user.profile.privacy.title)}
         </CardTitle>
       </CardHeader>
-      <Form {...form}>
+      <form.AppForm>
         <FormWithDetector
           form={form}
           onSubmit={handleSubmit}
-          schema={formData.schema}
           className="w-full"
           errorClassName="mx-6"
           error={error}
         >
           <CardContent>
-            <ControlForm
-              form={form}
-              item={formItems.emailNotifications}
-              showMessage={false}
-              wrapperClassName="rounded-lg border p-4"
-            />
+            <form.AppField name="emailNotifications">
+              {(field: any) => (
+                <ControlForm
+                  field={field}
+                  item={formItems.emailNotifications}
+                  showMessage={false}
+                  wrapperClassName="rounded-lg border p-4"
+                />
+              )}
+            </form.AppField>
           </CardContent>
           <CardFooter className="justify-end gap-4 border-t">
             <Button type="button" variant="outline" onClick={() => form.reset()}>
@@ -109,7 +109,7 @@ export function PrivacyForm({ form, onSubmit, error }: PrivacyFormProps) {
             </Button>
           </CardFooter>
         </FormWithDetector>
-      </Form>
+      </form.AppForm>
     </Card>
   );
 }

@@ -1,14 +1,12 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
 import { useAppTranslation, AppTranslation } from "@/lib/i18n-typed";
-import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/forms";
+import { ControlForm, FormWithDetector } from "@/components/forms";
 import { z } from "zod";
 import { ImageCropper, FileWithPreview } from "@/components/ui/image-cropper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useDropzone } from "react-dropzone";
-import { useCallback, useState, useEffect, useImperativeHandle, forwardRef, Ref } from "react";
+import { useCallback, useState, useEffect, useImperativeHandle, forwardRef } from "react";
 
 // Define the form values type
 export type ProfileInfoFormValues = {
@@ -98,11 +96,11 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
 
     // Reset image changed flag when form is reset
     useEffect(() => {
-      if (!form.formState.isDirty) {
+      if (!form.state.isDirty) {
         setHasImageChanged(false);
         setCroppedImageFile(null);
       }
-    }, [form.formState.isDirty]);
+    }, [form.state.isDirty]);
 
     // Expose reset function through ref
     useImperativeHandle(ref, () => ({
@@ -138,9 +136,6 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
       accept,
     });
 
-    // Determine if form has changes (either form fields are dirty or an image has been changed)
-    const hasChanges = form.formState.isDirty || hasImageChanged;
-
     return (
       <Card className="w-full">
         <CardHeader className="border-b">
@@ -148,11 +143,10 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
             {t(($) => $.user.profile.information.title)}
           </CardTitle>
         </CardHeader>
-        <Form {...form}>
+        <form.AppForm>
           <FormWithDetector
             form={form}
             onSubmit={handleSubmit}
-            schema={formData.schema}
             className="w-full"
             errorClassName="mx-6"
             error={error}
@@ -183,8 +177,8 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
                       >
                         <input {...getInputProps()} />
                         <AvatarImage
-                          src={form?.getValues?.("image") || ""}
-                          alt={form?.getValues?.("name") || ""}
+                          src={form.state.values.image || ""}
+                          alt={form.state.values.name || ""}
                         />
                         <AvatarFallback className="text-4xl">CN</AvatarFallback>
                       </Avatar>
@@ -193,18 +187,30 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
                 </div>
 
                 <div className="grid w-full gap-4">
-                  <ControlForm form={form} item={formItems.name} showMessage={false} />
+                  <form.AppField name="name">
+                    {(field: any) => (
+                      <ControlForm field={field} item={formItems.name} showMessage={false} />
+                    )}
+                  </form.AppField>
 
-                  <ControlForm
-                    form={form}
-                    item={formItems.email}
-                    disabled={true}
-                    showMessage={false}
-                  />
+                  <form.AppField name="email">
+                    {(field: any) => (
+                      <ControlForm
+                        field={field}
+                        item={formItems.email}
+                        disabled={true}
+                        showMessage={false}
+                      />
+                    )}
+                  </form.AppField>
                 </div>
               </div>
 
-              <ControlForm form={form} item={formItems.bio} showMessage={false} />
+              <form.AppField name="bio">
+                {(field: any) => (
+                  <ControlForm field={field} item={formItems.bio} showMessage={false} />
+                )}
+              </form.AppField>
             </CardContent>
             <CardFooter className="justify-end gap-4 border-t">
               <Button
@@ -224,7 +230,7 @@ export const ProfileInfoForm = forwardRef<ProfileInfoFormRef, ProfileInfoFormPro
               </Button>
             </CardFooter>
           </FormWithDetector>
-        </Form>
+        </form.AppForm>
       </Card>
     );
   },

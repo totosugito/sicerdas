@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -131,32 +132,34 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>{t(($) => $.labels.language)}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => changeLanguage("id")}
-                className={cn(
-                  "my-1",
-                  language === "id"
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90"
-                    : "hover:bg-accent focus:bg-accent",
-                )}
-              >
-                <span className="mr-2">🇮🇩</span>
-                Indonesia
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => changeLanguage("en")}
-                className={cn(
-                  "my-1",
-                  language === "en"
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90"
-                    : "hover:bg-accent focus:bg-accent",
-                )}
-              >
-                <span className="mr-2">🇬🇧</span>
-                English
-              </DropdownMenuItem>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>{t(($) => $.labels.language)}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => changeLanguage("id")}
+                  className={cn(
+                    "my-1",
+                    language === "id"
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90"
+                      : "hover:bg-accent focus:bg-accent",
+                  )}
+                >
+                  <span className="mr-2">🇮🇩</span>
+                  Indonesia
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => changeLanguage("en")}
+                  className={cn(
+                    "my-1",
+                    language === "en"
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90"
+                      : "hover:bg-accent focus:bg-accent",
+                  )}
+                >
+                  <span className="mr-2">🇬🇧</span>
+                  English
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -168,48 +171,50 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>{t(($) => $.labels.theme)}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => changeTheme("light")}
-                className={cn(
-                  "my-1",
-                  theme === "light"
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90"
-                    : "hover:bg-accent focus:bg-accent",
-                )}
-              >
-                <Sun
-                  className={cn("mr-2 h-4 w-4", theme === "light" ? "text-primary-foreground" : "")}
-                />
-                {t(($) => $.labels.light)}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => changeTheme("dark")}
-                className={cn(
-                  "my-1",
-                  theme === "dark"
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90"
-                    : "hover:bg-accent focus:bg-accent",
-                )}
-              >
-                <Moon
-                  className={cn("mr-2 h-4 w-4", theme === "dark" ? "text-primary-foreground" : "")}
-                />
-                {t(($) => $.labels.dark)}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => changeTheme("system")}
-                className={cn(
-                  "my-1",
-                  theme === "system"
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90"
-                    : "hover:bg-accent focus:bg-accent",
-                )}
-              >
-                <Monitor className="mr-2 h-4 w-4 text-foreground" />
-                {t(($) => $.labels.system)}
-              </DropdownMenuItem>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>{t(($) => $.labels.theme)}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => changeTheme("light")}
+                  className={cn(
+                    "my-1",
+                    theme === "light"
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90"
+                      : "hover:bg-accent focus:bg-accent",
+                  )}
+                >
+                  <Sun
+                    className={cn("mr-2 h-4 w-4", theme === "light" ? "text-primary-foreground" : "")}
+                  />
+                  {t(($) => $.labels.light)}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => changeTheme("dark")}
+                  className={cn(
+                    "my-1",
+                    theme === "dark"
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90"
+                      : "hover:bg-accent focus:bg-accent",
+                  )}
+                >
+                  <Moon
+                    className={cn("mr-2 h-4 w-4", theme === "dark" ? "text-primary-foreground" : "")}
+                  />
+                  {t(($) => $.labels.dark)}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => changeTheme("system")}
+                  className={cn(
+                    "my-1",
+                    theme === "system"
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90"
+                      : "hover:bg-accent focus:bg-accent",
+                  )}
+                >
+                  <Monitor className="mr-2 h-4 w-4 text-foreground" />
+                  {t(($) => $.labels.system)}
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -231,46 +236,48 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage
-                        src={user?.user?.image || ""}
-                        alt={user?.user?.name?.substring(0, 2)?.toUpperCase() || "U"}
-                        className="object-cover"
-                      />
-                      <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-sm uppercase">
-                        {user?.user?.name?.substring(0, 2)?.toUpperCase() || "U"}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {user?.user?.name || "User"}
-                      </p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        {user?.user?.email || "user@example.com"}
-                      </p>
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage
+                          src={user?.user?.image || ""}
+                          alt={user?.user?.name?.substring(0, 2)?.toUpperCase() || "U"}
+                          className="object-cover"
+                        />
+                        <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-sm uppercase">
+                          {user?.user?.name?.substring(0, 2)?.toUpperCase() || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {user?.user?.name || "User"}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user?.user?.email || "user@example.com"}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {/* <DropdownMenuItem asChild>
-                  <Link to={AppRoute.user.dashboard.url} className="cursor-pointer">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    <span>{t(($) => $.exam.sessions.dashboard.title)}</span>
-                  </Link>
-                </DropdownMenuItem> */}
-                <DropdownMenuItem asChild>
-                  <Link to={AppRoute.user.profile.url} className="cursor-pointer">
-                    <UserCircle className="mr-2 h-4 w-4" />
-                    <span>{t(($) => $.labels.profile)}</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={onLogoutClick} className="cursor-pointer">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>{t(($) => $.labels.logout)}</span>
-                </DropdownMenuItem>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {/* <DropdownMenuItem asChild>
+                    <Link to={AppRoute.user.dashboard.url} className="cursor-pointer">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <span>{t(($) => $.exam.sessions.dashboard.title)}</span>
+                    </Link>
+                  </DropdownMenuItem> */}
+                  <DropdownMenuItem asChild>
+                    <Link to={AppRoute.user.profile.url} className="cursor-pointer">
+                      <UserCircle className="mr-2 h-4 w-4" />
+                      <span>{t(($) => $.labels.profile)}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={onLogoutClick} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>{t(($) => $.labels.logout)}</span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

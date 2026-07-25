@@ -1,11 +1,8 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/forms";
+import { ControlForm, FormWithDetector } from "@/components/forms";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { AlertCircle } from "lucide-react";
 import { AppTranslation } from "@/lib/i18n-typed";
 
 // Define the form values type
@@ -95,21 +92,32 @@ export function SecurityForm({ form, onSubmit, error }: SecurityFormProps) {
           {t(($) => $.user.profile.security.title)}
         </CardTitle>
       </CardHeader>
-      <Form {...form}>
+      <form.AppForm>
         <FormWithDetector
           form={form}
           onSubmit={handleSubmit}
-          schema={formData.schema}
           className="w-full"
           errorClassName="mx-6"
           error={error}
         >
           <CardContent>
-            <ControlForm form={form} item={formItems.currentPassword} showMessage={false} />
+            <form.AppField name="currentPassword">
+              {(field: any) => (
+                <ControlForm field={field} item={formItems.currentPassword} showMessage={false} />
+              )}
+            </form.AppField>
 
-            <ControlForm form={form} item={formItems.newPassword} showMessage={false} />
+            <form.AppField name="newPassword">
+              {(field: any) => (
+                <ControlForm field={field} item={formItems.newPassword} showMessage={false} />
+              )}
+            </form.AppField>
 
-            <ControlForm form={form} item={formItems.confirmPassword} showMessage={false} />
+            <form.AppField name="confirmPassword">
+              {(field: any) => (
+                <ControlForm field={field} item={formItems.confirmPassword} showMessage={false} />
+              )}
+            </form.AppField>
           </CardContent>
           <CardFooter className="justify-end gap-4 border-t">
             <Button type="button" variant="outline" onClick={() => form.reset()}>
@@ -120,7 +128,7 @@ export function SecurityForm({ form, onSubmit, error }: SecurityFormProps) {
             </Button>
           </CardFooter>
         </FormWithDetector>
-      </Form>
+      </form.AppForm>
     </Card>
   );
 }

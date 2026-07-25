@@ -1,9 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
 import { useAppTranslation, AppTranslation } from "@/lib/i18n-typed";
-import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/forms";
+import { ControlForm, FormWithDetector } from "@/components/forms";
 import { z } from "zod";
 import { date_to_string } from "@/lib/my-utils";
 import { EnumEducationLevel } from "backend/src/db/schema/enum/enum-app";
@@ -174,28 +172,53 @@ export function PersonalInfoForm({ form, onSubmit, error }: PersonalInfoFormProp
           {t(($) => $.user.profile.personalInfo.title)}
         </CardTitle>
       </CardHeader>
-      <Form {...form}>
+      <form.AppForm>
         <FormWithDetector
           form={form}
           onSubmit={handleSubmit}
-          schema={formData.schema}
           className="w-full"
           errorClassName="mx-6"
           error={error}
         >
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <ControlForm form={form} item={formItems.dateOfBirth} showMessage={false} />
+              <form.AppField name="dateOfBirth">
+                {(field: any) => (
+                  <ControlForm field={field} item={formItems.dateOfBirth} showMessage={false} />
+                )}
+              </form.AppField>
 
-              <ControlForm form={form} item={formItems.phone} showMessage={false} />
+              <form.AppField name="phone">
+                {(field: any) => (
+                  <ControlForm field={field} item={formItems.phone} showMessage={false} />
+                )}
+              </form.AppField>
             </div>
 
-            <ControlForm form={form} item={formItems.address} showMessage={false} />
-            <ControlForm form={form} item={formItems.school} showMessage={false} />
+            <form.AppField name="address">
+              {(field: any) => (
+                <ControlForm field={field} item={formItems.address} showMessage={false} />
+              )}
+            </form.AppField>
+
+            <form.AppField name="school">
+              {(field: any) => (
+                <ControlForm field={field} item={formItems.school} showMessage={false} />
+              )}
+            </form.AppField>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <ControlForm form={form} item={formItems.educationLevel} showMessage={false} />
-              <ControlForm form={form} item={formItems.grade} showMessage={false} />
+              <form.AppField name="educationLevel">
+                {(field: any) => (
+                  <ControlForm field={field} item={formItems.educationLevel} showMessage={false} />
+                )}
+              </form.AppField>
+
+              <form.AppField name="grade">
+                {(field: any) => (
+                  <ControlForm field={field} item={formItems.grade} showMessage={false} />
+                )}
+              </form.AppField>
             </div>
           </CardContent>
           <CardFooter className="justify-end gap-4 border-t">
@@ -207,7 +230,7 @@ export function PersonalInfoForm({ form, onSubmit, error }: PersonalInfoFormProp
             </Button>
           </CardFooter>
         </FormWithDetector>
-      </Form>
+      </form.AppForm>
     </Card>
   );
 }
