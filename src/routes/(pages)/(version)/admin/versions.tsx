@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { PageTitle } from "@/components/app";
 import { Plus, Trash2 } from "lucide-react";
 import { DialogModal } from "@/components/dialog";
-import { VersionTable } from "@/components/pages/version/list-version/VersionTable";
+import { VersionTable } from "@/features/version/list-version/VersionTable";
 import { PaginationData } from "@/components/table";
 import { z } from "zod";
 import { AppRoute } from "@/constants/app-route";

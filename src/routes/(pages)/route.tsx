@@ -1,5 +1,5 @@
 import { AppNavbar } from '@/components/app'
-import { Footer } from '@/components/pages/landing'
+import { Footer } from '@/features/landing'
 import { createFileRoute, Outlet, useLocation } from '@tanstack/react-router'
 import { useState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
@@ -20,7 +20,7 @@ function RouteComponent() {
     const { user, openSideMenu, setOpenSideMenu } = useAuthStore()
     const adminNav = useAdminNav()
     const location = useLocation()
-    
+
     const isExamSession = useMemo(() => {
         const path = location.pathname
         return path.includes('/exam/session/') && !path.includes('/results')

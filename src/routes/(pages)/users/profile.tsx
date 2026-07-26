@@ -18,7 +18,7 @@ import {
   ProfileInfoFormRef,
   ProfileLoadingView,
   ProfileErrorView,
-} from "@/components/pages/users/profile";
+} from "@/features/users/profile";
 import {
   useUserProfileQuery,
   useUpdateProfileMutation,

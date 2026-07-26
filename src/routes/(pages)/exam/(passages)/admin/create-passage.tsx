@@ -6,7 +6,7 @@ import { useCreatePassage } from "@/api/exam/passages";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppRoute } from "@/constants/app-route";
-import { PassageForm } from "@/components/pages/exam/passages/create-passage/PassageForm";
+import { PassageForm } from "@/features/exam/passages/create-passage/PassageForm";
 import { PassageFormValues } from "@/api/exam/passages/types";
 
 export const Route = createFileRoute("/(pages)/exam/(passages)/admin/create-passage")({

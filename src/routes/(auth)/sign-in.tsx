@@ -4,7 +4,7 @@ import { z } from "zod";
 import { SubmitHandler } from "react-hook-form";
 import { useLoginMutation, type LoginResponse } from "@/api/auth/login";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { SignInForm } from "@/components/pages/auth/sign-in";
+import { SignInForm } from "@/features/auth/sign-in";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { isAdminString } from "@/types/auth";

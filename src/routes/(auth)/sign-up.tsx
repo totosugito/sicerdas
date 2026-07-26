@@ -3,13 +3,13 @@ import { z } from "zod";
 import { SubmitHandler } from "react-hook-form";
 import { useSignUpMutation } from "@/api/auth/sign-up";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { SignUpForm } from "@/components/pages/auth/sign-up";
+import { SignUpForm } from "@/features/auth/sign-up";
 import { useState } from "react";
 import { AppRoute } from "@/constants/app-route";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, AlertCircle, UserPlus } from "lucide-react";
-import { SignUpFormValues } from "@/components/pages/auth/sign-up/SignUpForm";
-import { AuthHeader, AuthLayout } from "@/components/pages/auth";
+import { SignUpFormValues } from "@/features/auth/sign-up/SignUpForm";
+import { AuthHeader, AuthLayout } from "@/features/auth";
 
 export const Route = createFileRoute("/(auth)/sign-up")({
   validateSearch: z.object({

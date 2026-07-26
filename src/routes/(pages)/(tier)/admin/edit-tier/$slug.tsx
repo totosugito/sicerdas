@@ -8,7 +8,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useDetailsTier } from "@/api/tier/admin/details-tier";
 import { useUpdateTier } from "@/api/tier/admin/update-tier";
 import { CreateTierParams } from "@/api/tier";
-import { CreateTierForm } from "@/components/pages/tier/create-tier";
+import { CreateTierForm } from "@/features/tier/create-tier";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/(pages)/(tier)/admin/edit-tier/$slug")({

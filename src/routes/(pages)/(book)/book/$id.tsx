@@ -1,15 +1,15 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useBookDetail, useRateBook, useBookmarkBook } from "@/api/book";
-import { BookDetail } from "@/components/pages/book/book/BookDetail";
-import { BookDetailSkeleton } from "@/components/pages/book/book/BookDetailSkeleton";
+import { BookDetail } from "@/features/book/book/BookDetail";
+import { BookDetailSkeleton } from "@/features/book/book/BookDetailSkeleton";
 import { ErrorPageDetails, PageTitle } from "@/components/app";
 import { AlertTriangle } from "lucide-react";
 import { AppRoute } from "@/constants/app-route";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useState, useEffect, Suspense, lazy, ComponentType } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { CreateContentReport } from "@/components/pages/layout/CreateContentReport";
+import { CreateContentReport } from "@/features/layout/CreateContentReport";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
 

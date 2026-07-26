@@ -13,7 +13,7 @@ import {
   ResultsScoreCard,
   ResultsQuestionReview,
   QuestionReviewSection,
-} from "@/components/pages/exam/sessions/results";
+} from "@/features/exam/sessions/results";
 import { cn } from "@/lib/utils";
 
 type ResultsSearch = {

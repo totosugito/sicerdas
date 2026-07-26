@@ -13,7 +13,7 @@ import {
   BookSearchBar,
   BookSortSelector,
   BooksEmptyState,
-} from "@/components/pages/book/list";
+} from "@/features/book/list";
 import { Card, CardContent } from "@/components/ui/card";
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from "@/components/table";

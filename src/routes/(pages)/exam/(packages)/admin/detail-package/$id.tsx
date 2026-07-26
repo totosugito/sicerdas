@@ -17,13 +17,13 @@ import {
   ExamPackageSection,
 } from "@/api/exam/package-sections";
 import { useDetailPackage } from "@/api/exam/packages";
-import { PackageStatsHeader } from "@/components/pages/exam/packages/detail-package/PackageStatsHeader";
+import { PackageStatsHeader } from "@/features/exam/packages/detail-package/PackageStatsHeader";
 import {
   SectionList,
   SectionListSkeleton,
   SectionEmptyState,
   DialogSectionForm,
-} from "@/components/pages/exam/package-section/section-list";
+} from "@/features/exam/package-section/section-list";
 
 export const Route = createFileRoute("/(pages)/exam/(packages)/admin/detail-package/$id")({
   component: DetailPackagePage,

@@ -27,7 +27,7 @@ import {
   QuestionTable,
   QuestionCardList,
   QuestionSortSelector,
-} from "@/components/pages/exam/questions/list-question";
+} from "@/features/exam/questions/list-question";
 import { PaginationData, DataTablePagination } from "@/components/table";
 import { useAppStore } from "@/stores/useAppStore";
 import { cn } from "@/lib/utils";

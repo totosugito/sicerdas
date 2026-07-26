@@ -16,7 +16,7 @@ import {
   DialogUserAvatar,
   UserKpiCards,
   UserAnalyticsChart,
-} from "@/components/pages/users/list-users";
+} from "@/features/users/list-users";
 
 import { PaginationData } from "@/components/table";
 import { z } from "zod";

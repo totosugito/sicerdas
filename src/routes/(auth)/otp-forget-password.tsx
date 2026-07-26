@@ -5,11 +5,11 @@ import type { EmailOtpForgetPasswordRequest, EmailOtpForgetPasswordResponse, Bas
 
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { AlertCircle, CheckCircle, Mail } from "lucide-react";
-import { ForgetPasswordForm } from "@/components/pages/auth/otp-forget-password";
+import { ForgetPasswordForm } from "@/features/auth/otp-forget-password";
 import { useState } from "react";
 import { AppRoute } from "@/constants/app-route";
 import { Button } from "@/components/ui/button";
-import { AuthHeader, AuthLayout } from "@/components/pages/auth";
+import { AuthHeader, AuthLayout } from "@/features/auth";
 
 export const Route = createFileRoute("/(auth)/otp-forget-password")({
   component: ForgetPasswordComponent,

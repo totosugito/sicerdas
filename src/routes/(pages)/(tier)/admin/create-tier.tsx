@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageTitle } from "@/components/app";
-import { CreateTierForm } from "@/components/pages/tier/create-tier";
+import { CreateTierForm } from "@/features/tier/create-tier";
 import { useCreateTier, CreateTierParams } from "@/api/tier";
 import { showNotifSuccess } from "@/lib/show-notif";
 import { AppRoute } from "@/constants/app-route";

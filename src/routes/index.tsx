@@ -7,7 +7,7 @@ import {
   FeaturesSection,
   Footer,
   HeroSection,
-} from "@/components/pages/landing";
+} from "@/features/landing";
 import { AppNavbar } from "@/components/app";
 
 export const Route = createFileRoute("/")({

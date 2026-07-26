@@ -9,7 +9,7 @@ import {
   PackageRatingDialog,
   SectionModeDialog,
   PackageDetailSkeleton,
-} from "@/components/pages/exam/packages/detail-package";
+} from "@/features/exam/packages/detail-package";
 import { useStartSession, ExamSessionMode } from "@/api/exam/sessions";
 import { AppRoute } from "@/constants/app-route";
 import { ErrorPageDetails, PageTitle } from "@/components/app";

@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { PeriodicTable } from '@/components/pages/periodic-table/periodic-table'
+import { PeriodicTable } from '@/features/periodic-table/periodic-table'
 import periodicLayouts from '@/data/table-periodic/periodic_layout.json'
 import { useAppStore } from '@/stores/useAppStore'
 export const Route = createFileRoute('/(pages)/(periodic-table)/periodic-table')({

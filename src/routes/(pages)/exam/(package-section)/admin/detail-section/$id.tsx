@@ -14,7 +14,7 @@ import {
   SectionQuestionTable,
   SectionInfoCard,
   AddQuestionModal,
-} from "@/components/pages/exam/package-section/detail-section";
+} from "@/features/exam/package-section/detail-section";
 import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";

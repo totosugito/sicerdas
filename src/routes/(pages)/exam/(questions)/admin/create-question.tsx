@@ -6,7 +6,7 @@ import { useCreateQuestion } from "@/api/exam/questions";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppRoute } from "@/constants/app-route";
-import { QuestionForm } from "@/components/pages/exam/questions/create-question/QuestionForm";
+import { QuestionForm } from "@/features/exam/questions/create-question/QuestionForm";
 import { QuestionFormValues } from "@/api/exam/questions/types";
 
 export const Route = createFileRoute("/(pages)/exam/(questions)/admin/create-question")({

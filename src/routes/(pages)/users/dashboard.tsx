@@ -29,7 +29,7 @@ import {
   ActivityBarChart,
   OverviewStats,
   StatsBook
-} from "@/components/pages/users/dashboard";
+} from "@/features/users/dashboard";
 import {
   Tabs,
   TabsContent,

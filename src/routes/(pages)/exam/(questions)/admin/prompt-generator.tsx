@@ -4,7 +4,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { PageTitle } from "@/components/app";
 import { AppRoute } from "@/constants/app-route";
 import { useAppStore } from "@/stores/useAppStore";
-import { PromptGeneratorForm } from "@/components/pages/exam/questions/prompt-generator";
+import { PromptGeneratorForm } from "@/features/exam/questions/prompt-generator";
 
 export const Route = createFileRoute("/(pages)/exam/(questions)/admin/prompt-generator")({
   component: PromptGeneratorPage,

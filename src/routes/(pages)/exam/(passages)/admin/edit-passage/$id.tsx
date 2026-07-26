@@ -6,7 +6,7 @@ import { PageTitle, ErrorContainer } from "@/components/app";
 import { AppRoute } from "@/constants/app-route";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useGetPassage, useUpdatePassage, PassageFormValues } from "@/api/exam/passages";
-import { PassageForm } from "@/components/pages/exam/passages/create-passage/PassageForm";
+import { PassageForm } from "@/features/exam/passages/create-passage/PassageForm";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/(pages)/exam/(passages)/admin/edit-passage/$id")({

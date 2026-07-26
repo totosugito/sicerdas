@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { PageTitle } from "@/components/app";
 import { Plus, Trash2 } from "lucide-react";
 import { DialogModal } from "@/components/dialog";
-import { SubjectTable, DialogSubjectCreate } from "@/components/pages/exam/subjects";
+import { SubjectTable, DialogSubjectCreate } from "@/features/exam/subjects";
 import { PaginationData } from "@/components/table";
 import { z } from "zod";
 

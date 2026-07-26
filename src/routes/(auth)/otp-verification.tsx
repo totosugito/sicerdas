@@ -11,12 +11,12 @@ import type { EmailOtpVerifyForgetPasswordResponse, BaseResponse } from "@/api/a
 
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ShieldCheck, Timer, Loader2 } from "lucide-react";
-import { OtpVerificationForm } from "@/components/pages/auth/otp-verification";
+import { OtpVerificationForm } from "@/features/auth/otp-verification";
 import { useState, useEffect } from "react";
 import { AppRoute } from "@/constants/app-route";
 import { z } from "zod";
 import { APP_CONFIG } from "@/constants/config";
-import { AuthHeader, AuthLayout } from "@/components/pages/auth";
+import { AuthHeader, AuthLayout } from "@/features/auth";
 import NotFoundError from "@/components/errors/NotFoundError";
 
 

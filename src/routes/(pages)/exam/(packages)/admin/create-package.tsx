@@ -7,7 +7,7 @@ import type { CreatePackageParams } from "@/api/exam/packages";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppRoute } from "@/constants/app-route";
-import { PackageForm, PackageFormValues } from "@/components/pages/exam/packages/create-package";
+import { PackageForm, PackageFormValues } from "@/features/exam/packages/create-package";
 
 export const Route = createFileRoute("/(pages)/exam/(packages)/admin/create-package")({
   component: AdminExamPackagesCreatePage,

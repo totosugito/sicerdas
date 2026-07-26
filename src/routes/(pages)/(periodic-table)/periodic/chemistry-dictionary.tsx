@@ -4,7 +4,7 @@ import { useAppTranslation } from '@/lib/i18n-typed'
 import { useAuthStore } from '@/stores/useAuthStore'
 import dictionaryDataEn from '@/data/table-periodic/periodic_dictionary_en.json'
 import dictionaryDataId from '@/data/table-periodic/periodic_dictionary_id.json'
-import { ChemistryCard, AlphabetFilter, ALPHABET_GROUPS, ChemistryHeader, SearchBar } from '@/components/pages/periodic-table/chemistry-dictionary'
+import { ChemistryCard, AlphabetFilter, ALPHABET_GROUPS, ChemistryHeader, SearchBar } from '@/features/periodic-table/chemistry-dictionary'
 import { LocalePagination } from '@/components/ui/locale-pagination'
 
 // Define the dictionary entry type

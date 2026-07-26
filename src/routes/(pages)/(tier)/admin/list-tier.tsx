@@ -1,4 +1,4 @@
-import { TierList, TierListSkeleton, TierEmptyState } from "@/components/pages/tier/list-tier";
+import { TierList, TierListSkeleton, TierEmptyState } from "@/features/tier/list-tier";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useListTier, useDeleteTier, useUpdateTier, TierItem } from "@/api/tier";
 import { useQueryClient } from "@tanstack/react-query";

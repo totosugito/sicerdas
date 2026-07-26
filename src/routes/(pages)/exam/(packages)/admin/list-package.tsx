@@ -17,7 +17,7 @@ import {
   PackageTable,
   PackageCardList,
   PackageSortSelector,
-} from "@/components/pages/exam/packages/list-package";
+} from "@/features/exam/packages/list-package";
 import { LayoutGrid, ListIcon, Plus, Trash2, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { PaginationData, DataTablePagination } from "@/components/table";

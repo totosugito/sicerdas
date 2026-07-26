@@ -14,7 +14,7 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion';
 import { Search, X, ChevronDown, ChevronUp } from 'lucide-react';
-import { ConstitutionPagination } from '@/components/pages/constitution/ConstitutionPagination';
+import { ConstitutionPagination } from '@/features/constitution/ConstitutionPagination';
 import uud1945Data from '@/data/constitution/pasal_uud_1945_amandemen.json';
 
 // Define TypeScript interfaces for our data

@@ -12,7 +12,7 @@ import {
   PackageCard,
   PackageSearchBar,
   PackageSortSelector,
-} from "@/components/pages/exam/exams";
+} from "@/features/exam/exams";
 import { Card, CardContent } from "@/components/ui/card";
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from "@/components/table";

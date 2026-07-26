@@ -11,7 +11,7 @@ import {
   PackageForm,
   type PackageFormValues,
   PackageEditSkeleton,
-} from "@/components/pages/exam/packages/create-package";
+} from "@/features/exam/packages/create-package";
 
 export const Route = createFileRoute("/(pages)/exam/(packages)/admin/edit-package/$id")({
   component: AdminExamPackagesEditPage,

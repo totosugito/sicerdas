@@ -8,7 +8,7 @@ import {
   useSubmitSession,
 } from "@/api/exam/sessions";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { CreateContentReport } from "@/components/pages/layout/CreateContentReport";
+import { CreateContentReport } from "@/features/layout/CreateContentReport";
 import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
 import {
   CbtHeader,
@@ -16,7 +16,7 @@ import {
   CbtQuestionView,
   CbtAnswerPad,
   CbtSummary,
-} from "@/components/pages/exam/sessions/cbt";
+} from "@/features/exam/sessions/cbt";
 import { LoadingView } from "@/components/app/LoadingView";
 import { useQueryClient } from "@tanstack/react-query";
 import { Menu, AlertCircle, X } from "lucide-react";

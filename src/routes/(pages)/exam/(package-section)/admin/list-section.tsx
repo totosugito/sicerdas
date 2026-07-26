@@ -19,7 +19,7 @@ import {
   SectionCardList,
   SectionSortSelector,
   DialogSectionForm,
-} from "@/components/pages/exam/package-section/section-list";
+} from "@/features/exam/package-section/section-list";
 import { PaginationData, DataTablePagination } from "@/components/table";
 import { useAppStore } from "@/stores/useAppStore";
 import { cn } from "@/lib/utils";

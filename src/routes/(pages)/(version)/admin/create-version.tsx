@@ -6,7 +6,7 @@ import { useCreateVersion } from "@/api/version";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppRoute } from "@/constants/app-route";
-import { VersionForm } from "@/components/pages/version/create-version/VersionForm";
+import { VersionForm } from "@/features/version/create-version/VersionForm";
 import { CreateVersionRequest } from "@/api/version/types";
 
 export const Route = createFileRoute("/(pages)/(version)/admin/create-version")({

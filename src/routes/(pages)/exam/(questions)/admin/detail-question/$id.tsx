@@ -4,7 +4,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { PageTitle, ErrorContainer, LoadingView } from "@/components/app";
 import { AppRoute } from "@/constants/app-route";
 import { useDetailQuestion } from "@/api/exam/questions";
-import { QuestionDetailView } from "@/components/pages/exam/questions/detail-question";
+import { QuestionDetailView } from "@/features/exam/questions/detail-question";
 import { Button } from "@/components/ui/button";
 import { Edit } from "lucide-react";
 import { z } from "zod";

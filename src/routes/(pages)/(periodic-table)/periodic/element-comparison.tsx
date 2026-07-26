@@ -11,14 +11,14 @@ import {
   SortingControls,
   ElementComparisonItem,
   ElementComparisonHeader
-} from '@/components/pages/periodic-table/element-comparison'
+} from '@/features/periodic-table/element-comparison'
 
 // Import types
-import type { PeriodicElement, PropertyDefinition, SortDirection } from '@/components/pages/periodic-table/types/types'
+import type { PeriodicElement, PropertyDefinition, SortDirection } from '@/features/periodic-table/types/types'
 
 // Import the periodic layout data
 import periodicLayoutData from '@/data/table-periodic/periodic_layout.json'
-import { getPeriodictUnits } from '@/components/pages/periodic-table/utils/element-units'
+import { getPeriodictUnits } from '@/features/periodic-table/utils/element-units'
 
 export const Route = createFileRoute('/(pages)/(periodic-table)/periodic/element-comparison')({
   component: RouteComponent,

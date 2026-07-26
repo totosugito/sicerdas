@@ -24,7 +24,7 @@ import {
   QuestionTagsTab,
   QuestionVariablesTab,
   QuestionPreviewTab,
-} from "@/components/pages/exam/questions/edit-question";
+} from "@/features/exam/questions/edit-question";
 import type { UpdateQuestionParams } from "@/api/exam/questions";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
 

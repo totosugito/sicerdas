@@ -6,7 +6,7 @@ import { PageTitle, ErrorContainer } from "@/components/app";
 import { AppRoute } from "@/constants/app-route";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useGetVersion, useUpdateVersion, CreateVersionRequest } from "@/api/version";
-import { VersionForm } from "@/components/pages/version/create-version/VersionForm";
+import { VersionForm } from "@/features/version/create-version/VersionForm";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/(pages)/(version)/admin/edit-version/$id")({

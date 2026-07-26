@@ -3,11 +3,11 @@ import { usePeriodicElementQuery } from '@/api/periodic-table/periodic-table'
 import {
   ElementErrorDisplay, ElementSkeleton, ElementHero, ElementNavigation,
   ElectronView, ElementOverview, ElementClassification, ElementDimension, ElementNotes, ElementThermal, ElementBulkPhysical, ElementElectrical, ElementMagnetic, ElementAbundances, ElementReactivity, ElementHealthSafety, ElementNuclear
-} from '@/components/pages/periodic-table/element-details'
+} from '@/features/periodic-table/element-details'
 import { useAppTranslation } from '@/lib/i18n-typed'
 import { useAppStore } from '@/stores/useAppStore'
 import { useAuthStore } from '@/stores/useAuthStore'
-import { getElementStyle } from '@/components/pages/periodic-table/utils/element-styles'
+import { getElementStyle } from '@/features/periodic-table/utils/element-styles'
 
 export const Route = createFileRoute('/(pages)/(periodic-table)/periodic/element/$id')({
   component: RouteComponent,

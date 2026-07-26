@@ -31,7 +31,7 @@ import {
   PasteJsonDialog,
   QuestionNumberGrid,
   JsonQuestionEditView,
-} from "@/components/pages/exam/questions/json-questions";
+} from "@/features/exam/questions/json-questions";
 import { useAssignPackageQuestions } from "@/api/exam/package-questions";
 import { JsonQuestionImport } from "@/api/exam/questions/types";
 import { VALID_BLOCK_TYPES } from "@/components/custom/blocknote/lib/blocknote-config";

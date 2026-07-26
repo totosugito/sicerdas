@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/app';
 import { Plus, Trash2 } from 'lucide-react';
 import { DialogModal } from '@/components/dialog';
-import { CategoryTable, DialogCategoryCreate } from '@/components/pages/education';
+import { CategoryTable, DialogCategoryCreate } from '@/features/education';
 import { PaginationData } from '@/components/table';
 import { z } from 'zod';
 

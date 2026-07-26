@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { SubmitHandler } from "react-hook-form";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Lock, AlertCircle, CheckCircle } from "lucide-react";
-import { ResetPasswordForm } from "@/components/pages/auth/otp-reset-password";
+import { ResetPasswordForm } from "@/features/auth/otp-reset-password";
 import { useState, useEffect } from "react";
 import { AppRoute } from "@/constants/app-route";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import {
   useEmailOtpVerifyForgetPasswordMutation,
   useEmailOtpResetPasswordMutation,
 } from "@/api/auth";
-import { AuthHeader, AuthLayout } from "@/components/pages/auth";
+import { AuthHeader, AuthLayout } from "@/features/auth";
 
 export const Route = createFileRoute("/(auth)/otp-reset-password")({
   validateSearch: z.object({

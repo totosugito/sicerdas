@@ -2,14 +2,14 @@ import { createFileRoute } from '@tanstack/react-router'
 import { usePeriodicElementQuery } from '@/api/periodic-table/periodic-table'
 import {
   ElementErrorDisplay, ElementSkeleton,
-} from '@/components/pages/periodic-table/element-details'
+} from '@/features/periodic-table/element-details'
 import {
   ElementIsotope, ElementHeroIsotope,
-} from '@/components/pages/periodic-table/element-isotope'
+} from '@/features/periodic-table/element-isotope'
 import { useAppTranslation } from '@/lib/i18n-typed'
 import { useAppStore } from '@/stores/useAppStore'
 import { useAuthStore } from '@/stores/useAuthStore'
-import { getElementStyle } from '@/components/pages/periodic-table/utils/element-styles'
+import { getElementStyle } from '@/features/periodic-table/utils/element-styles'
 
 export const Route = createFileRoute('/(pages)/(periodic-table)/periodic/isotope/$id')({
   component: RouteComponent,

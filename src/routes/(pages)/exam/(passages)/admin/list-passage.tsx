@@ -18,7 +18,7 @@ import {
   PassageTable,
   PassageCardList,
   PassageSortSelector,
-} from "@/components/pages/exam/passages";
+} from "@/features/exam/passages";
 import { PaginationData, DataTablePagination } from "@/components/table";
 import { useAppStore } from "@/stores/useAppStore";
 import { cn } from "@/lib/utils";
