@@ -7,7 +7,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
 import { PageTitle } from "@/components/app";
 import { Plus, Trash2, UserCheck, UserX } from "lucide-react";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModal } from "@/components/dialog";
 import {
   UserTable,
   DialogUserCreate,
@@ -18,7 +18,7 @@ import {
   UserAnalyticsChart,
 } from "@/components/pages/users/list-users";
 
-import { PaginationData } from "@/components/custom/table";
+import { PaginationData } from "@/components/table";
 import { z } from "zod";
 
 export const Route = createFileRoute("/(pages)/users/admin/list-users")({

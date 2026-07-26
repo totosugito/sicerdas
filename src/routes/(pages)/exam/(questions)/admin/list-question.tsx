@@ -22,13 +22,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModal } from "@/components/dialog";
 import {
   QuestionTable,
   QuestionCardList,
   QuestionSortSelector,
 } from "@/components/pages/exam/questions/list-question";
-import { PaginationData, DataTablePagination } from "@/components/custom/table";
+import { PaginationData, DataTablePagination } from "@/components/table";
 import { useAppStore } from "@/stores/useAppStore";
 import { cn } from "@/lib/utils";
 import { z } from "zod";

@@ -5,7 +5,7 @@ import type { UserStatsData } from "@/api/users";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useTheme } from "@/lib/theme-provider";
-import { ReactECharts } from "@/components/custom/charts/ReactECharts";
+import { ReactECharts } from "@/components/charts/ReactECharts";
 
 interface UserAnalyticsChartProps {
   periodType: "daily" | "weekly" | "monthly";
@@ -160,21 +160,19 @@ export function UserAnalyticsChart({
           <div className="inline-flex items-center rounded-lg p-1 bg-muted text-xs">
             <button
               onClick={() => setActiveTab("registrations")}
-              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
-                activeTab === "registrations"
+              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${activeTab === "registrations"
                   ? "bg-background text-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
-              }`}
+                }`}
             >
               {t(($) => $.user.management.dashboard.analytics.newSignups)}
             </button>
             <button
               onClick={() => setActiveTab("active")}
-              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
-                activeTab === "active"
+              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${activeTab === "active"
                   ? "bg-background text-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
-              }`}
+                }`}
             >
               {t(($) => $.user.management.dashboard.analytics.activeUsers)}
             </button>
@@ -186,11 +184,10 @@ export function UserAnalyticsChart({
               <button
                 key={p.id}
                 onClick={() => onPeriodChange(p.id)}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
-                  periodType === p.id
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${periodType === p.id
                     ? "bg-primary text-primary-foreground shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                  }`}
               >
                 {p.label}
               </button>

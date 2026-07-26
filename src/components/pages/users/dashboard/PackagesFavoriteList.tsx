@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { toast } from "sonner";
-import { DialogModal } from "@/components/custom/components/DialogModal";
+import { DialogModal } from "@/components/dialog";
 import { useQueryClient } from "@tanstack/react-query";
 import { LocalePagination } from "@/components/ui/locale-pagination";
 

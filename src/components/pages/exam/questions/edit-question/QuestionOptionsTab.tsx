@@ -16,7 +16,7 @@ import {
     sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
 import { DialogQuestionOptionForm, OptionList } from '@/components/pages/exam/question-options/list-option';
-import { DialogModal } from '@/components/custom/components';
+import { DialogModal } from '@/components/dialog';
 import { useDeleteQuestionOption, useUpdateQuestionOption } from '@/api/exam/question-options';
 import { showNotifSuccess, showNotifError } from '@/lib/show-notif';
 import { useQueryClient } from '@tanstack/react-query';

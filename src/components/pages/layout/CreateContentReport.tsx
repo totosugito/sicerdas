@@ -1,5 +1,4 @@
-import { DialogModalForm, ModalFormProps } from "@/components/dialog";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModalForm, ModalFormProps, DialogModal } from "@/components/dialog";
 import { useState } from "react";
 import { useCreateReportMutation } from "@/api/content-report/create-report";
 import { EnumContentType } from "backend/src/db/schema/enum/enum-app";

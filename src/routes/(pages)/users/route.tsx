@@ -1,4 +1,4 @@
-import { NotFoundError } from "@/components/custom/errors";
+import { NotFoundError } from "@/components/errors";
 import { useAuth } from "@/hooks/use-auth";
 import { getUserStore } from "@/types/auth";
 import { createFileRoute, Outlet } from "@tanstack/react-router";

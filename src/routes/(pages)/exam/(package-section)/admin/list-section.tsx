@@ -13,14 +13,14 @@ import { Button } from "@/components/ui/button";
 import { PageTitle } from "@/components/app";
 import { LayoutGrid, ListIcon, Plus, Trash2, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModal } from "@/components/dialog";
 import {
   SectionTable,
   SectionCardList,
   SectionSortSelector,
   DialogSectionForm,
 } from "@/components/pages/exam/package-section/section-list";
-import { PaginationData, DataTablePagination } from "@/components/custom/table";
+import { PaginationData, DataTablePagination } from "@/components/table";
 import { useAppStore } from "@/stores/useAppStore";
 import { cn } from "@/lib/utils";
 import { z } from "zod";

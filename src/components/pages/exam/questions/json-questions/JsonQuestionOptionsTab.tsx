@@ -9,7 +9,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { OptionList } from "@/components/pages/exam/question-options/list-option";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModal } from "@/components/dialog";
 import { DialogLocalOptionForm } from "./DialogLocalOptionForm";
 
 interface JsonQuestionOptionsTabProps {

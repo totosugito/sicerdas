@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModal } from "@/components/dialog";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useSessionHistory, useStartSession, ExamSessionMode } from "@/api/exam/sessions";
 import { Clock, Play, BookOpen, ChevronRight, Loader2, ChevronLeft, Sparkles } from "lucide-react";

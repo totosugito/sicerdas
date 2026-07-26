@@ -1,6 +1,6 @@
 import React from "react";
 import { ExamPackageSection, ListSectionsResponse } from "@/api/exam/package-sections";
-import { PaginationData } from "@/components/custom/table";
+import { PaginationData } from "@/components/table";
 import { SectionCardListItem } from "./SectionCardListItem";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Layers } from "lucide-react";

@@ -16,7 +16,7 @@ import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
 import { useUpdateDownload } from "@/api/book/update-download";
 import type { DownloadResponse } from "@/api/book";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModal } from "@/components/dialog";
 
 type PDFViewerProps = ComponentType<{
   key?: React.Key;

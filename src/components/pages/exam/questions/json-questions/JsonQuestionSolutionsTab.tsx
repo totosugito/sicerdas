@@ -8,7 +8,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { SolutionList } from "@/components/pages/exam/question-solutions/list-solution";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModal } from "@/components/dialog";
 import { DialogLocalSolutionForm } from "./DialogLocalSolutionForm";
 import { QuestionSolutionResponseItemT } from "@/api/exam/question-solutions";
 import { ExamQuestion } from "@/api/exam/questions";

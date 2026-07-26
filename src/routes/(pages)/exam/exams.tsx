@@ -15,7 +15,7 @@ import {
 } from "@/components/pages/exam/exams";
 import { Card, CardContent } from "@/components/ui/card";
 import { EnumViewMode } from "@/constants/app-enum";
-import { DataTablePagination } from "@/components/custom/table";
+import { DataTablePagination } from "@/components/table";
 import { useAppStore } from "@/stores/useAppStore";
 import { Button } from "@/components/ui/button";
 import { useAppTranslation } from "@/lib/i18n-typed";

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAppTranslation } from "@/lib/i18n-typed";
 
-import { DataTablePagination } from "@/components/custom/table/data-table-pagination";
+import { DataTablePagination } from "@/components/table/data-table-pagination";
 
 interface ResultsQuestionReviewProps {
   totalQuestions: number;
@@ -96,12 +96,12 @@ export const ResultsQuestionReview: React.FC<ResultsQuestionReviewProps> = ({
               key={item.questionId}
               onClick={() => onReview(item.questionId)}
               className={`aspect-square rounded-md flex items-center justify-center text-sm font-bold border-2 transition-all duration-200 ${selectedReviewId === item.questionId
-                  ? "border-primary bg-primary/20 scale-115 z-10 shadow-lg"
-                  : item.isCorrect === true
-                    ? "bg-green-500/10 border-green-500/30 text-green-600 dark:text-green-400"
-                    : item.isCorrect === false
-                      ? "bg-red-500/10 border-red-500/30 text-red-600 dark:text-red-400"
-                      : "bg-muted border-border text-muted-foreground"
+                ? "border-primary bg-primary/20 scale-115 z-10 shadow-lg"
+                : item.isCorrect === true
+                  ? "bg-green-500/10 border-green-500/30 text-green-600 dark:text-green-400"
+                  : item.isCorrect === false
+                    ? "bg-red-500/10 border-red-500/30 text-red-600 dark:text-red-400"
+                    : "bg-muted border-border text-muted-foreground"
                 }`}
             >
               {item.order}
@@ -128,16 +128,16 @@ export const ResultsQuestionReview: React.FC<ResultsQuestionReviewProps> = ({
                     }
                   }}
                   className={`w-full flex items-center gap-4 p-4 rounded-md border-2 text-left transition-all cursor-pointer hover:bg-muted/30 group ${selectedReviewId === item.questionId
-                      ? "border-primary bg-primary/5"
-                      : "border-border/50 hover:border-primary/20"
+                    ? "border-primary bg-primary/5"
+                    : "border-border/50 hover:border-primary/20"
                     }`}
                 >
                   <div
                     className={`w-12 h-12 rounded-md flex items-center justify-center flex-shrink-0 font-black text-lg ${item.isCorrect === true
-                        ? "bg-green-500 text-white"
-                        : item.isCorrect === false
-                          ? "bg-red-500 text-white"
-                          : "bg-muted text-muted-foreground"
+                      ? "bg-green-500 text-white"
+                      : item.isCorrect === false
+                        ? "bg-red-500 text-white"
+                        : "bg-muted text-muted-foreground"
                       }`}
                   >
                     {item.order}

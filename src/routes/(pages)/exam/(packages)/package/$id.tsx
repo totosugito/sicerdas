@@ -18,7 +18,7 @@ import { AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModal } from "@/components/dialog";
 
 export const Route = createFileRoute("/(pages)/exam/(packages)/package/$id")({
   component: RouteComponent,

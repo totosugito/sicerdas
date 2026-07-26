@@ -10,7 +10,7 @@ import {
   SolutionList,
   DialogQuestionSolutionForm,
 } from "@/components/pages/exam/question-solutions/list-solution";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModal } from "@/components/dialog";
 import {
   useDeleteQuestionSolution,
   useUpdateQuestionSolution,

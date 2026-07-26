@@ -1,7 +1,7 @@
 import React from "react";
 import { ListPassagesResponse, ExamPassage } from "@/api/exam/passages";
 import { PassageCardListItem } from "./PassageCardListItem";
-import { PaginationData } from "@/components/custom/table";
+import { PaginationData } from "@/components/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { BookOpen } from "lucide-react";

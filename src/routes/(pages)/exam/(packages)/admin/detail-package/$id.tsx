@@ -6,7 +6,7 @@ import { KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } fr
 import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModal } from "@/components/dialog";
 import { PageTitle, ErrorContainer } from "@/components/app";
 import { AppRoute } from "@/constants/app-route";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";

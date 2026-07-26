@@ -16,7 +16,7 @@ import { formatDistanceToNow, parseISO } from "date-fns";
 import { enUS, id } from "date-fns/locale";
 import type { SessionData } from "@/api/users";
 import { useState } from "react";
-import { ModalProps, DialogModal } from "@/components/custom/components";
+import { ModalProps, DialogModal } from "@/components/dialog";
 import { RiQuestionLine } from "react-icons/ri";
 
 const getDeviceIcon = (userAgent: string | null): LucideIcon => {

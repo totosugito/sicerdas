@@ -1,6 +1,6 @@
 import React from "react";
 import { ListQuestionsResponse, ExamQuestion } from "@/api/exam/questions";
-import { PaginationData } from "@/components/custom/table";
+import { PaginationData } from "@/components/table";
 import { QuestionCardListItem } from "./QuestionCardListItem";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAppTranslation } from "@/lib/i18n-typed";

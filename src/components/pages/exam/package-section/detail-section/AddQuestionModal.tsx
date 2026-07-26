@@ -14,7 +14,7 @@ import {
   DataTableColumnHeader,
   createRowSelectColumn,
   createRowNumberColumn,
-} from "@/components/custom/table";
+} from "@/components/table";
 import {
   useListQuestionSimple,
   ExamQuestion,
@@ -24,7 +24,7 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
 import { LongText } from "@/components/ui/long-text";
-import { PaginationData } from "@/components/custom/table";
+import { PaginationData } from "@/components/table";
 import { Loader2, X } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useListSubjectSimple } from "@/api/exam/subjects";

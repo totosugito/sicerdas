@@ -1,5 +1,5 @@
 import { SectionQuestionItem } from "@/api/exam/package-sections/types";
-import { DataTableColumnHeader, DataTablePagination } from "@/components/custom/table";
+import { DataTableColumnHeader, DataTablePagination } from "@/components/table";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import {
   ColumnDef,
@@ -13,7 +13,7 @@ import { blocknote_to_text } from "@/lib/blocknote-utils";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { LongText } from "@/components/ui/long-text";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModal } from "@/components/dialog";
 import {
   Table,
   TableBody,
@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { PaginationData } from "@/components/custom/table";
+import { PaginationData } from "@/components/table";
 import {
   DndContext,
   closestCenter,

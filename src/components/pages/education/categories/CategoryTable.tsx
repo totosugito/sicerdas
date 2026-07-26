@@ -6,7 +6,7 @@ import {
   createRowNumberColumn,
   DataTableColumnHeader,
   PaginationData,
-} from "@/components/custom/table";
+} from "@/components/table";
 import { LongText } from "@/components/ui/long-text";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";

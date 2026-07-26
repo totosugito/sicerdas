@@ -20,7 +20,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { useAuth } from "@/hooks/use-auth";
 import { AppRoute } from "@/constants/app-route";
 import { useLogoutMutation } from "@/api/auth/logout";
-import { ModalProps, DialogModal } from "@/components/custom/components";
+import { ModalProps, DialogModal } from "@/components/dialog";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { AppNavbarMobile } from "./AppNavbarMobile";

@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
 import { PageTitle } from "@/components/app";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModal } from "@/components/dialog";
 import { useAppStore } from "@/stores/useAppStore";
 import {
   PackageTable,
@@ -20,7 +20,7 @@ import {
 } from "@/components/pages/exam/packages/list-package";
 import { LayoutGrid, ListIcon, Plus, Trash2, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { PaginationData, DataTablePagination } from "@/components/custom/table";
+import { PaginationData, DataTablePagination } from "@/components/table";
 import { z } from "zod";
 import { AppRoute } from "@/constants/app-route";
 import { cn } from "@/lib/utils";

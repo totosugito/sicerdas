@@ -5,7 +5,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { ArrowLeft, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
-import { DialogModal } from "@/components/custom/components/DialogModal";
+import { DialogModal } from "@/components/dialog";
 import { EnumExamStatus, ExamStatus, ExamSessionMode } from "@/constants/exam-var";
 import { HelpCircle, Info } from "lucide-react";
 import { EnumExamSessionMode } from "backend/src/db/schema/exam/enums";

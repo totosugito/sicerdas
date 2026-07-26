@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { PageTitle } from "@/components/app";
 import { AppRoute } from "@/constants/app-route";
 import { Plus, Trash2 } from "lucide-react";
-import { DialogModal } from "@/components/custom/components";
+import { DialogModal } from "@/components/dialog";
 
 export const Route = createFileRoute("/(pages)/(tier)/admin/list-tier")({
   component: AdminTierPricingPage,
