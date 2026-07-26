@@ -43,7 +43,7 @@ export function ElementDetailPopover({ element, children, theme = 'theme1' }: El
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger render={<div className="cursor-pointer" />}>
+      <PopoverTrigger nativeButton={false} render={<div className="cursor-pointer" />}>
         {children}
       </PopoverTrigger>
       <PopoverPositioner align="center">

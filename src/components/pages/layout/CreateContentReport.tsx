@@ -1,11 +1,12 @@
-import { DialogModalForm, ModalFormProps, DialogModal } from "@/components/custom/components";
+import { DialogModalForm, ModalFormProps } from "@/components/dialog";
+import { DialogModal } from "@/components/custom/components";
 import { useState } from "react";
 import { useCreateReportMutation } from "@/api/content-report/create-report";
 import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
 import { EnumReportReason } from "backend/src/db/schema/enum/enum-general";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { ControlForm } from "@/components/custom/forms";
+import { ControlForm } from "@/components/forms";
 
 export type CreateContentReportProps = {
     isOpen: boolean;
@@ -23,16 +24,36 @@ const FormCreateContentReport = ({ values, form, isLoggedIn }: any) => {
     return (
         <div className="flex flex-col gap-4 w-full">
             {/* name */}
-            {!isLoggedIn && <ControlForm form={form} item={values.name} showMessage={false} />}
+            {!isLoggedIn && (
+                <form.AppField name="name">
+                    {(field: any) => (
+                        <ControlForm field={field} item={values.name} showMessage={false} />
+                    )}
+                </form.AppField>
+            )}
 
             {/* email */}
-            {!isLoggedIn && <ControlForm form={form} item={values.email} showMessage={false} />}
+            {!isLoggedIn && (
+                <form.AppField name="email">
+                    {(field: any) => (
+                        <ControlForm field={field} item={values.email} showMessage={false} />
+                    )}
+                </form.AppField>
+            )}
 
             {/* reason */}
-            <ControlForm form={form} item={values.reason} showMessage={false} />
+            <form.AppField name="reason">
+                {(field: any) => (
+                    <ControlForm field={field} item={values.reason} showMessage={false} />
+                )}
+            </form.AppField>
 
             {/* description */}
-            <ControlForm form={form} item={values.description} showMessage={false} />
+            <form.AppField name="description">
+                {(field: any) => (
+                    <ControlForm field={field} item={values.description} showMessage={false} />
+                )}
+            </form.AppField>
         </div>
     );
 };
@@ -43,13 +64,13 @@ export const CreateContentReport = ({ isOpen, onOpenChange, data }: CreateConten
     const [showSuccess, setShowSuccess] = useState(false);
     const isLoggedIn = !!data.name && !!data.email;
 
-    const formSchema = {
+    const formSchema = z.object({
         name: z.string().min(1, t($ => $.contentReport.validation.name_required)),
-        email: z.string().email(t($ => $.contentReport.validation.email_invalid)).min(1, t($ => $.contentReport.validation.email_required)),
+        email: z.email(t($ => $.contentReport.validation.email_invalid)).min(1, t($ => $.contentReport.validation.email_required)),
         reason: z.string().min(1, t($ => $.contentReport.validation.reason_required)),
-        title: z.string(),
+        title: z.string().optional(),
         description: z.string().optional(),
-    };
+    });
 
     const formConfig = {
         name: {

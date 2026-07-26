@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger, PopoverPositioner } from "@/components/ui/popover";
 import { Search, X, Filter } from "lucide-react"; // Added X icon for clear button and Filter icon
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useState, useEffect } from "react";
@@ -103,18 +103,20 @@ export const BookSearchBar = ({
               <Filter className="w-4 h-4 mr-2" />
               {t(($) => $.labels.filter)}
             </PopoverTrigger>
-            <PopoverContent className="w-[300px] p-5">
-              <BookFilter
-                selectedFilters={selectedFilters}
-                onFilterChange={(filters: { categories: number[]; groups: number[] }) => {
-                  onFilterChange?.(filters);
-                  setIsMobileFilterOpen(false);
-                }}
-                filterData={filterData}
-                autoSubmit={false}
-                idPrefix="search-bar"
-              />
-            </PopoverContent>
+            <PopoverPositioner>
+              <PopoverContent className="w-[300px] p-5">
+                <BookFilter
+                  selectedFilters={selectedFilters}
+                  onFilterChange={(filters: { categories: number[]; groups: number[] }) => {
+                    onFilterChange?.(filters);
+                    setIsMobileFilterOpen(false);
+                  }}
+                  filterData={filterData}
+                  autoSubmit={false}
+                  idPrefix="search-bar"
+                />
+              </PopoverContent>
+            </PopoverPositioner>
           </Popover>
         )}
 

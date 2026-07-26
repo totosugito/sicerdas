@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { QuestionData, PassageData, OptionData, EvaluationData } from "@/api/exam/sessions";
-import { HtmlViewer } from "@/components/custom/components/block-note";
+import { HtmlViewer } from "@/components/custom/blocknote";
 
 import { ExamSessionMode, EXAM_STATUS_STYLES, EnumExamStatus } from "@/constants/exam-var";
 import { LayoutGrid } from "lucide-react";

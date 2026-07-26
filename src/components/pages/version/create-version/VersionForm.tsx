@@ -1,11 +1,8 @@
 import React, { useEffect } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/ui/form";
-import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/forms";
+import { useAppForm } from "@/components/ui/form-tanstack";
+import { ControlForm, FormWithDetector } from "@/components/forms";
 import { CreateVersionRequest } from "@/api/version";
 import { EnumContentStatus, EnumContentType } from "backend/src/db/schema/enum/enum-app";
 import { Button } from "@/components/ui/button";
@@ -42,8 +39,7 @@ export function VersionForm({ defaultValues, onSubmit, isPending }: VersionFormP
     extra: z.record(z.string(), z.any()).optional(),
   });
 
-  const form = useForm<CreateVersionRequest>({
-    resolver: zodResolver(formSchema) as any,
+  const form = useAppForm({
     defaultValues: {
       appVersion: 1,
       dbVersion: 1,
@@ -53,6 +49,9 @@ export function VersionForm({ defaultValues, onSubmit, isPending }: VersionFormP
       note: [],
       extra: {},
       ...defaultValues,
+    },
+    validators: {
+      onChange: formSchema as any,
     },
   });
 
@@ -70,10 +69,10 @@ export function VersionForm({ defaultValues, onSubmit, isPending }: VersionFormP
         ...defaultValues,
       });
     }
-  }, [defaultValues, form]);
+  }, [JSON.stringify(defaultValues)]);
 
-  const onFormSubmit = (values: CreateVersionRequest) => {
-    onSubmit(values);
+  const onFormSubmit = (values: any) => {
+    onSubmit(values as CreateVersionRequest);
   };
 
   const dataTypeOptions = [
@@ -144,25 +143,49 @@ export function VersionForm({ defaultValues, onSubmit, isPending }: VersionFormP
   };
 
   return (
-    <Form {...form}>
-      <FormWithDetector form={form} onSubmit={onFormSubmit} schema={formSchema}>
+    <form.AppForm>
+      <FormWithDetector form={form} onSubmit={onFormSubmit}>
         <Card className="pb-0 gap-0">
           <CardContent className="">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ControlForm form={form} item={formConfig.name} showMessage={false} />
-              <ControlForm form={form} item={formConfig.dataType} showMessage={false} />
+              <form.AppField name="name">
+                {(field: any) => (
+                  <ControlForm field={field} item={formConfig.name} showMessage={false} />
+                )}
+              </form.AppField>
+              <form.AppField name="dataType">
+                {(field: any) => (
+                  <ControlForm field={field} item={formConfig.dataType} showMessage={false} />
+                )}
+              </form.AppField>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ControlForm form={form} item={formConfig.appVersion} showMessage={false} />
-              <ControlForm form={form} item={formConfig.dbVersion} showMessage={false} />
+              <form.AppField name="appVersion">
+                {(field: any) => (
+                  <ControlForm field={field} item={formConfig.appVersion} showMessage={false} />
+                )}
+              </form.AppField>
+              <form.AppField name="dbVersion">
+                {(field: any) => (
+                  <ControlForm field={field} item={formConfig.dbVersion} showMessage={false} />
+                )}
+              </form.AppField>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ControlForm form={form} item={formConfig.status} showMessage={false} />
+              <form.AppField name="status">
+                {(field: any) => (
+                  <ControlForm field={field} item={formConfig.status} showMessage={false} />
+                )}
+              </form.AppField>
             </div>
 
-            <ControlForm form={form} item={formConfig.note} />
+            <form.AppField name="note">
+              {(field: any) => (
+                <ControlForm field={field} item={formConfig.note} />
+              )}
+            </form.AppField>
           </CardContent>
 
           <CardFooter className="flex justify-end items-center gap-3 bg-muted/30 border-t [.border-t]:pb-6">
@@ -180,6 +203,6 @@ export function VersionForm({ defaultValues, onSubmit, isPending }: VersionFormP
           </CardFooter>
         </Card>
       </FormWithDetector>
-    </Form>
+    </form.AppForm>
   );
 }

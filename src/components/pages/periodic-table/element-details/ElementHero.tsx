@@ -28,6 +28,7 @@ export function ElementHero({ element, theme }: ElementHeroProps) {
       <div className="relative flex flex-col items-end justify-center p-8 md:p-12 pt-24 md:pt-24">
         <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
           <DialogTrigger
+            nativeButton={false}
             render={
               <img
                 src={element?.atomicImages?.atomic}

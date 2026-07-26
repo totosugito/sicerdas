@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 
 // Lazy load inputs that are not migrated yet or require special handlers
 const FormBlockNote = React.lazy(() =>
-  import("@/components/custom/components/block-note/FormBlockNote").then((m) => ({
+  import("@/components/custom/blocknote/FormBlockNote").then((m) => ({
     default: m.FormBlockNote,
   })),
 );
@@ -191,6 +191,22 @@ export const ControlForm = forwardRef(
           {...props}
           disabled={isDisabled}
         />
+      );
+    } else if (itemType === "blocknote") {
+      return (
+        <React.Suspense
+          fallback={<div className="h-[400px] rounded-md border bg-muted animate-pulse" />}
+        >
+          <FormBlockNote
+            field={field}
+            item={item}
+            className={cn(defaultClassName, className)}
+            labelClassName={labelClassName}
+            showMessage={showMessage}
+            {...props}
+            disabled={isDisabled}
+          />
+        </React.Suspense>
       );
     } else {
       // Default to standard input
