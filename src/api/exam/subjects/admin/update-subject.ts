@@ -9,7 +9,7 @@ export const useUpdateSubject = () => {
   return useMutation({
     mutationFn: async ({ id, ...body }: UpdateSubjectRequest) => {
       const response = await fetchApi({
-        method: "PATCH",
+        method: "PUT",
         url: AppApi.exam.subjects.admin.update.replace(":id", id),
         body,
       });

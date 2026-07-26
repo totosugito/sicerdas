@@ -88,8 +88,9 @@ export function SubjectTable({
     {
       accessorKey: "isActive",
       enableSorting: true,
-      minSize: 70,
-      maxSize: 70,
+      minSize: 90,
+      maxSize: 90,
+      size: 90,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -126,8 +127,6 @@ export function SubjectTable({
     {
       accessorKey: "updatedAt",
       enableSorting: true,
-      minSize: 100,
-      maxSize: 100,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
