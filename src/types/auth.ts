@@ -1,5 +1,4 @@
 import { EnumUserRole } from "backend/src/db/schema/users/types";
-import { SubmitHandler } from "react-hook-form";
 
 export type LoginFormValues = {
   email: string;
@@ -7,7 +6,7 @@ export type LoginFormValues = {
 };
 
 export type LoginProps = {
-  onFormSubmit: SubmitHandler<LoginFormValues>;
+  onFormSubmit: (values: LoginFormValues) => void;
 };
 
 export type AuthProps = {

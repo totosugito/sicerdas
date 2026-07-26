@@ -1,5 +1,4 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { SubmitHandler } from "react-hook-form";
 import {
   useEmailOtpVerifyForgetPasswordMutation,
   useEmailOtpForgetPasswordMutation,

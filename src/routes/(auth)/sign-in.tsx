@@ -1,7 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { SubmitHandler } from "react-hook-form";
 import { useLoginMutation, type LoginResponse } from "@/api/auth/login";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { SignInForm } from "@/features/auth/sign-in";
@@ -31,7 +30,7 @@ function LoginComponent() {
   const loginMutation = useLoginMutation();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
-  const onFormSubmit: SubmitHandler<FormData> = (data) => {
+  const onFormSubmit = (data: FormData) => {
     setErrorMessage(undefined);
     loginMutation.mutate(
       { body: data },

@@ -1,5 +1,4 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { SubmitHandler } from "react-hook-form";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Lock, AlertCircle, CheckCircle } from "lucide-react";
 import { ResetPasswordForm } from "@/features/auth/otp-reset-password";
@@ -60,7 +59,7 @@ function ResetPasswordComponent() {
     }
   }, [search.email, search.otp]);
 
-  const onFormSubmit: SubmitHandler<Record<string, any>> = (data) => {
+  const onFormSubmit = (data: Record<string, any>) => {
     setErrorMessage(undefined);
     setSuccessMessage(undefined);
     setIsSuccess(false);

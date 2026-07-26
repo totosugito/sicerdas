@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SubmitHandler } from "react-hook-form";
 import { useEmailOtpForgetPasswordMutation } from "@/api/auth/email-otp-forget-password";
 import type { EmailOtpForgetPasswordRequest, EmailOtpForgetPasswordResponse, BaseResponse } from "@/api/auth/types";
 
@@ -24,7 +23,7 @@ function ForgetPasswordComponent() {
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const onFormSubmit: SubmitHandler<EmailOtpForgetPasswordRequest> = (data) => {
+  const onFormSubmit = (data: EmailOtpForgetPasswordRequest) => {
     setErrorMessage(undefined);
     setSuccessMessage(undefined);
     setIsSuccess(false);

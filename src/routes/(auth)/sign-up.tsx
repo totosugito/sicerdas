@@ -1,6 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
-import { SubmitHandler } from "react-hook-form";
 import { useSignUpMutation } from "@/api/auth/sign-up";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { SignUpForm } from "@/features/auth/sign-up";
@@ -33,7 +32,7 @@ function SignUpComponent() {
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const onFormSubmit: SubmitHandler<SignUpFormValues> = (data) => {
+  const onFormSubmit = (data: SignUpFormValues) => {
     setErrorMessage(undefined);
     setSuccessMessage(undefined);
     setIsSuccess(false);
