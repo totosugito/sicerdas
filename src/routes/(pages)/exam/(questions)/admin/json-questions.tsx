@@ -23,8 +23,7 @@ import { useListTagSimple } from "@/api/education/tags";
 import { showNotifSuccess } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useAppForm } from "@/components/ui/form-tanstack";
 import { EnumDifficultyLevel, EnumQuestionType } from "@/api/exam/questions/types";
 import {
   GlobalParamsForm,
@@ -35,7 +34,7 @@ import {
 } from "@/components/pages/exam/questions/json-questions";
 import { useAssignPackageQuestions } from "@/api/exam/package-questions";
 import { JsonQuestionImport } from "@/api/exam/questions/types";
-import { VALID_BLOCK_TYPES } from "@/components/custom/components/block-note/lib/blocknote-config";
+import { VALID_BLOCK_TYPES } from "@/components/custom/blocknote/lib/blocknote-config";
 
 const jsonQuestionsSearchSchema = z.object({
   index: z.coerce.number().default(0).catch(0),
@@ -200,29 +199,45 @@ function JsonQuestionsPage() {
   const jsonQuestionsPackageParams = useAppStore((state) => state.jsonQuestionsPackageParams);
   const setJsonQuestionsPackageParams = useAppStore((state) => state.setJsonQuestionsPackageParams);
 
-  const globalForm = useForm<z.infer<typeof globalFormSchema>>({
-    resolver: zodResolver(globalFormSchema),
+  const globalForm = useAppForm({
     defaultValues: useAppStore.getState().jsonQuestionsGlobalParams,
+    validators: {
+      onChange: globalFormSchema as any,
+    },
   });
 
-  const packageForm = useForm<z.infer<typeof packageFormSchema>>({
-    resolver: zodResolver(packageFormSchema),
+  const packageForm = useAppForm({
     defaultValues: jsonQuestionsPackageParams,
+    validators: {
+      onChange: packageFormSchema as any,
+    },
   });
 
   // Watch for changes and sync to store without re-rendering local component reactively
   React.useEffect(() => {
-    const subscription = globalForm.watch((values) => {
-      setJsonQuestionsGlobalParams(values);
+    const sub = globalForm.store.subscribe(() => {
+      setJsonQuestionsGlobalParams(globalForm.state.values);
     });
-    return () => subscription.unsubscribe();
+    return () => {
+      if (typeof sub === "function") {
+        (sub as any)();
+      } else if (sub && typeof (sub as any).unsubscribe === "function") {
+        (sub as any).unsubscribe();
+      }
+    };
   }, [globalForm, setJsonQuestionsGlobalParams]);
 
   React.useEffect(() => {
-    const subscription = packageForm.watch((values) => {
-      setJsonQuestionsPackageParams(values);
+    const sub = packageForm.store.subscribe(() => {
+      setJsonQuestionsPackageParams(packageForm.state.values);
     });
-    return () => subscription.unsubscribe();
+    return () => {
+      if (typeof sub === "function") {
+        (sub as any)();
+      } else if (sub && typeof (sub as any).unsubscribe === "function") {
+        (sub as any).unsubscribe();
+      }
+    };
   }, [packageForm, setJsonQuestionsPackageParams]);
 
   const processJsonContent = (content: string) => {
@@ -382,11 +397,12 @@ function JsonQuestionsPage() {
   };
 
   const handleExportSelected = async () => {
-    const isValid = await globalForm.trigger();
+    await globalForm.validate("submit");
+    const isValid = globalForm.state.isValid;
     if (!isValid || selectedIndices.length === 0) return;
 
-    const globalParams = globalForm.getValues();
-    const packageParams = packageForm.getValues();
+    const globalParams = globalForm.state.values;
+    const packageParams = packageForm.state.values;
 
     if (packageParams.packageId && !packageParams.sectionId) {
       showNotifError({ message: t(($) => $.exam.questions.form.section.required) });
@@ -612,17 +628,21 @@ function JsonQuestionsPage() {
             onOpenChange={setPackageExpanded}
           />
 
-          <QuestionNumberGrid
-            jsonQuestions={jsonQuestions}
-            selectedIndex={selectedIndex}
-            selectedIndices={selectedIndices}
-            onSelect={setSelectedIndex}
-            onToggleSelect={toggleSelect}
-            onToggleSelectAll={toggleSelectAll}
-            onExport={handleExportSelected}
-            isExporting={isExporting}
-            canExport={!!globalForm.watch("subjectId")}
-          />
+          <globalForm.Subscribe selector={(state: any) => state.values.subjectId}>
+            {(subjectId: any) => (
+              <QuestionNumberGrid
+                jsonQuestions={jsonQuestions}
+                selectedIndex={selectedIndex}
+                selectedIndices={selectedIndices}
+                onSelect={setSelectedIndex}
+                onToggleSelect={toggleSelect}
+                onToggleSelectAll={toggleSelectAll}
+                onExport={handleExportSelected}
+                isExporting={isExporting}
+                canExport={!!subjectId}
+              />
+            )}
+          </globalForm.Subscribe>
 
           {/* Main Content Area */}
           {currentQuestion ? (

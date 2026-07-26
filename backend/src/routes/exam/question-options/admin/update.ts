@@ -5,7 +5,6 @@ import { ErrorResponseSchema } from "../../../../types/response.ts";
 import { updateQuestionOptionService } from "../../../../modules/exam/question-options/services/update-question-option.service.ts";
 import {
   QuestionOptionParams,
-  UpdateQuestionOptionBody,
   UpdateQuestionOptionResponse,
 } from "../../../../modules/exam/question-options/question-options.schema.ts";
 
@@ -17,7 +16,6 @@ const updateQuestionOptionRoute: FastifyPluginAsyncTypebox = async (app) => {
       tags: ["Admin Exam Question Options"],
       consumes: ["multipart/form-data"],
       params: QuestionOptionParams,
-      body: UpdateQuestionOptionBody,
       response: {
         200: UpdateQuestionOptionResponse,
         "4xx": ErrorResponseSchema,

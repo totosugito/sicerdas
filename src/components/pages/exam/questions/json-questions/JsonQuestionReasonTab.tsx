@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Pencil, ChevronDown } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { BlockNoteStatic } from "@/components/custom/components/block-note";
+import { BlockNoteStatic } from "@/components/custom/blocknote";
 import { DialogLocalReasonForm } from "./DialogLocalReasonForm";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";

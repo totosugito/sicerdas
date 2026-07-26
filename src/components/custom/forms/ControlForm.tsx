@@ -12,11 +12,11 @@ import { FormUpload } from "./FormUpload";
 import { FormCheckbox } from "./FormCheckbox";
 import { cn } from "@/lib/utils";
 import { FormSwitch } from "./FormSwitch";
-const FormBlockNote = React.lazy(() =>
-  import("@/components/custom/components/block-note/FormBlockNote").then((m) => ({
-    default: m.FormBlockNote,
-  })),
-);
+// const FormBlockNote = React.lazy(() =>
+//   import("@/components/custom/components/block-note/FormBlockNote").then((m) => ({
+//     default: m.FormBlockNote,
+//   })),
+// );
 
 type Props = {
   form: UseFormReturn<any>;
@@ -184,7 +184,7 @@ export const ControlForm = forwardRef(
                 <React.Suspense
                   fallback={<div className="h-[400px] rounded-md border bg-muted animate-pulse" />}
                 >
-                  <FormBlockNote
+                  {/* <FormBlockNote
                     form={form}
                     item={item}
                     className={cn(defaultClassName, className)}
@@ -192,7 +192,7 @@ export const ControlForm = forwardRef(
                     showMessage={showMessage}
                     {...props}
                     disabled={isDisabled}
-                  />
+                  /> */}
                 </React.Suspense>
               );
             } else {

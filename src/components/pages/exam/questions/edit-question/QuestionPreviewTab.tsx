@@ -88,7 +88,7 @@ export function QuestionPreviewTab({ question }: QuestionPreviewTabProps) {
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-8">
+      <CardContent className="space-y-0">
         {variations.length === 0 && (
           <div className="flex items-center gap-3 p-4 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 dark:bg-blue-950/20 dark:text-blue-200 dark:border-blue-800/30">
             <Info className="h-5 w-5 shrink-0" />

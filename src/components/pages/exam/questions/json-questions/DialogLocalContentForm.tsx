@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { DialogModalForm } from "@/components/custom/components/DialogModalForm";
-import { ControlForm } from "@/components/custom/forms";
+import { DialogModalForm } from "@/components/dialog";
+import { ControlForm } from "@/components/forms";
 import { z } from "zod";
 
 interface DialogLocalContentFormProps {
@@ -29,7 +29,11 @@ const ContentInner = ({ form }: { form: any }) => {
     },
   };
 
-  return <ControlForm form={form} item={formConfig.content} />;
+  return (
+    <form.AppField name="content">
+      {(field: any) => <ControlForm field={field} item={formConfig.content} />}
+    </form.AppField>
+  );
 };
 
 export function DialogLocalContentForm({
@@ -51,7 +55,7 @@ export function DialogLocalContentForm({
         content: <ContentInner form={undefined} />, // form is injected by DialogModalForm
         child: true, // trick to trigger cloneElement
         onConfirmClick: (values) => {
-          onConfirm(values.content);
+          onConfirm(values.content as any[]);
           onOpenChange(false);
         },
         onCancelClick: () => onOpenChange(false),

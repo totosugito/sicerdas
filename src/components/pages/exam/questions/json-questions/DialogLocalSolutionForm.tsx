@@ -1,8 +1,8 @@
-import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
+import { DialogModalForm, ModalFormProps } from "@/components/dialog";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import React from "react";
-import { ControlForm } from "@/components/custom/forms";
+import { ControlForm } from "@/components/forms";
 import { EnumSolutionType } from "@/api/exam/questions/types";
 import { useListTier } from "@/api/tier";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
@@ -19,13 +19,21 @@ const FormSolution = ({ values, form }: any) => {
   return (
     <div className="flex flex-col gap-6 w-full">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <ControlForm form={form} item={values.title} showMessage={false} />
-        <ControlForm form={form} item={values.solutionType} showMessage={false} />
+        <form.AppField name="title">
+          {(field: any) => <ControlForm field={field} item={values.title} showMessage={false} />}
+        </form.AppField>
+        <form.AppField name="solutionType">
+          {(field: any) => <ControlForm field={field} item={values.solutionType} showMessage={false} />}
+        </form.AppField>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <ControlForm form={form} item={values.requiredTier} showMessage={false} />
+        <form.AppField name="requiredTier">
+          {(field: any) => <ControlForm field={field} item={values.requiredTier} showMessage={false} />}
+        </form.AppField>
       </div>
-      <ControlForm form={form} item={values.content} showMessage={false} />
+      <form.AppField name="content">
+        {(field: any) => <ControlForm field={field} item={values.content} showMessage={false} />}
+      </form.AppField>
     </div>
   );
 };

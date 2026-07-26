@@ -13,4 +13,4 @@ export { ControlForm } from "./ControlForm";
 export { FormWithDetector } from "./FormWithDetector";
 export { type FormInputFileProps, FormInputFile } from "./FormInputFile";
 export { type FormSwitchProps, FormSwitch } from "./FormSwitch";
-export { type FormBlockNoteProps, FormBlockNote } from "../components/block-note/FormBlockNote";
+// export { type FormBlockNoteProps, FormBlockNote } from "../components/block-note/FormBlockNote";

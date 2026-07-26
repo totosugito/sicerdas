@@ -1,8 +1,8 @@
-import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
+import { DialogModalForm, ModalFormProps } from "@/components/dialog";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
 import React from "react";
-import { ControlForm } from "@/components/custom/forms";
+import { ControlForm } from "@/components/forms";
 import { ExamQuestion } from "@/api/exam/questions";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
 
@@ -16,8 +16,12 @@ export type DialogLocalOptionFormProps = {
 const FormOption = ({ values, form }: any) => {
   return (
     <div className="flex flex-col gap-6 w-full">
-      <ControlForm form={form} item={values.content} showMessage={false} />
-      <ControlForm form={form} item={values.isCorrect} showMessage={false} />
+      <form.AppField name="content">
+        {(field: any) => <ControlForm field={field} item={values.content} showMessage={false} />}
+      </form.AppField>
+      <form.AppField name="isCorrect">
+        {(field: any) => <ControlForm field={field} item={values.isCorrect} showMessage={false} />}
+      </form.AppField>
     </div>
   );
 };

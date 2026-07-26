@@ -15,5 +15,6 @@ declare module 'fastify' {
     tags?: string[];
     summary?: string;
     description?: string;
+    consumes?: string[];
   }
 }

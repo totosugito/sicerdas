@@ -1,11 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/ui/form";
-import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/forms";
+import { useAppForm } from "@/components/ui/form-tanstack";
+import { ControlForm, FormWithDetector } from "@/components/forms";
 import { useListSubjectSimple } from "@/api/exam/subjects";
 import { PassageFormValues } from "@/api/exam/passages/types";
 import { Button } from "@/components/ui/button";
@@ -46,14 +43,16 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
     isActive: z.boolean().default(true),
   });
 
-  const form = useForm<PassageFormValues>({
-    resolver: zodResolver(formSchema) as any,
+  const form = useAppForm({
     defaultValues: {
       title: "",
       subjectId: "",
       content: [],
       isActive: true,
       ...defaultValues,
+    } as PassageFormValues,
+    validators: {
+      onChange: formSchema as any,
     },
   });
 
@@ -68,7 +67,7 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
         ...defaultValues,
       });
     }
-  }, [defaultValues, form]);
+  }, [JSON.stringify(defaultValues), form]);
 
   const onFormSubmit = (values: PassageFormValues) => {
     const formData = new FormData();
@@ -130,16 +129,24 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
   };
 
   return (
-    <Form {...form}>
-      <FormWithDetector form={form} onSubmit={onFormSubmit} schema={formSchema} className="">
+    <form.AppForm>
+      <FormWithDetector form={form} onSubmit={onFormSubmit} className="">
         <div className="border border-border rounded-lg bg-card p-6 space-y-6">
-          <ControlForm form={form} item={formConfig.title} showMessage={false} />
+          <form.AppField name="title">
+            {(field: any) => <ControlForm field={field} item={formConfig.title} showMessage={false} />}
+          </form.AppField>
 
-          <ControlForm form={form} item={formConfig.subjectId} showMessage={false} />
+          <form.AppField name="subjectId">
+            {(field: any) => <ControlForm field={field} item={formConfig.subjectId} showMessage={false} />}
+          </form.AppField>
 
-          <ControlForm form={form} item={formConfig.isActive} showMessage={false} />
+          <form.AppField name="isActive">
+            {(field: any) => <ControlForm field={field} item={formConfig.isActive} showMessage={false} />}
+          </form.AppField>
 
-          <ControlForm form={form} item={formConfig.content} />
+          <form.AppField name="content">
+            {(field: any) => <ControlForm field={field} item={formConfig.content} />}
+          </form.AppField>
 
           <div className="flex justify-end gap-3 pt-6 border-t">
             <Button
@@ -156,6 +163,6 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
           </div>
         </div>
       </FormWithDetector>
-    </Form>
+    </form.AppForm>
   );
 }

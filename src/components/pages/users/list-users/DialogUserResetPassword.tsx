@@ -1,7 +1,8 @@
-import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
+import { DialogModalForm, ModalFormProps } from "@/components/dialog";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { ControlForm } from "@/components/custom/forms";
+import React from "react";
+import { ControlForm } from "@/components/forms";
 import { UserResponseItem, useResetPassword } from "@/api/users";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 
@@ -14,8 +15,12 @@ export type DialogUserResetPasswordProps = {
 const FormPasswordReset = ({ values, form }: any) => {
   return (
     <div className="flex flex-col gap-4 w-full">
-      <ControlForm form={form} item={values.newPassword} showMessage={false} />
-      <ControlForm form={form} item={values.confirmPassword} showMessage={false} />
+      <form.AppField name="newPassword">
+        {(field: any) => <ControlForm field={field} item={values.newPassword} showMessage={false} />}
+      </form.AppField>
+      <form.AppField name="confirmPassword">
+        {(field: any) => <ControlForm field={field} item={values.confirmPassword} showMessage={false} />}
+      </form.AppField>
     </div>
   );
 };

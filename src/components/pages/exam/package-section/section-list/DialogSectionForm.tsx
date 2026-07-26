@@ -1,5 +1,5 @@
-import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
-import { ControlForm } from "@/components/custom/forms";
+import { DialogModalForm, ModalFormProps } from "@/components/dialog";
+import { ControlForm } from "@/components/forms";
 import * as z from "zod";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import {
@@ -7,6 +7,7 @@ import {
   useUpdatePackageSection,
   ExamPackageSection,
 } from "@/api/exam/package-sections";
+import React from "react";
 import { useListPackageSimple } from "@/api/exam/packages";
 import { useListVersionSimple } from "@/api/version";
 import { useQueryClient } from "@tanstack/react-query";
@@ -27,19 +28,35 @@ const FormEntity = ({ values, form, packageIdDisabled }: any) => {
   return (
     <div className="flex flex-col gap-4 w-full">
       {values.packageId && (
-        <ControlForm
-          form={form}
-          item={values.packageId}
-          showMessage={false}
-          disabled={packageIdDisabled}
-        />
+        <form.AppField name="packageId">
+          {(field: any) => (
+            <ControlForm
+              field={field}
+              item={values.packageId}
+              showMessage={false}
+              disabled={packageIdDisabled}
+            />
+          )}
+        </form.AppField>
       )}
-      <ControlForm form={form} item={values.title} showMessage={false} />
-      <ControlForm form={form} item={values.groupName} showMessage={false} />
-      <ControlForm form={form} item={values.description} showMessage={false} />
-      <ControlForm form={form} item={values.durationMinutes} showMessage={false} />
-      <ControlForm form={form} item={values.versionId} showMessage={false} />
-      <ControlForm form={form} item={values.isActive} showMessage={false} />
+      <form.AppField name="title">
+        {(field: any) => <ControlForm field={field} item={values.title} showMessage={false} />}
+      </form.AppField>
+      <form.AppField name="groupName">
+        {(field: any) => <ControlForm field={field} item={values.groupName} showMessage={false} />}
+      </form.AppField>
+      <form.AppField name="description">
+        {(field: any) => <ControlForm field={field} item={values.description} showMessage={false} />}
+      </form.AppField>
+      <form.AppField name="durationMinutes">
+        {(field: any) => <ControlForm field={field} item={values.durationMinutes} showMessage={false} />}
+      </form.AppField>
+      <form.AppField name="versionId">
+        {(field: any) => <ControlForm field={field} item={values.versionId} showMessage={false} />}
+      </form.AppField>
+      <form.AppField name="isActive">
+        {(field: any) => <ControlForm field={field} item={values.isActive} showMessage={false} />}
+      </form.AppField>
     </div>
   );
 };

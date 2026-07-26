@@ -22,7 +22,6 @@ import {
   EnumQuestionType,
 } from "@/api/exam/questions";
 import { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
 import { LongText } from "@/components/ui/long-text";
 import { PaginationData } from "@/components/custom/table";
@@ -31,9 +30,8 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { useListSubjectSimple } from "@/api/exam/subjects";
 import { useListGradeSimple } from "@/api/education/grades";
 import { useListTier } from "@/api/tier";
-import { useForm } from "react-hook-form";
-import { Form } from "@/components/ui/form";
-import { ControlForm } from "@/components/custom/forms";
+import { useAppForm } from "@/components/ui/form-tanstack";
+import { ControlForm } from "@/components/forms";
 import { string_to_locale_date } from "@/lib/my-utils";
 import i18n from "@/i18n";
 
@@ -68,24 +66,24 @@ export function AddQuestionModal({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   // Filter Form
-  const form = useForm<FilterValues>({
+  const form = useAppForm({
     defaultValues: {
       subjectId: "all",
       gradeId: "all",
       tier: "all",
       difficulty: "all",
       type: "all",
-    },
+    } as FilterValues,
   });
 
   // Set initial grade filter if educationGradeId is provided
   useEffect(() => {
     if (open && educationGradeId) {
-      form.setValue("gradeId", educationGradeId.toString());
+      form.setFieldValue("gradeId", educationGradeId.toString());
     }
   }, [open, educationGradeId, form]);
 
-  const filterValues = form.watch();
+  const filterValues = form.state.values;
 
   // Reset pagination when filters change
   useEffect(() => {
@@ -350,43 +348,59 @@ export function AddQuestionModal({
             )}
           </div>
 
-          <Form {...form}>
+          <form.AppForm>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              <ControlForm
-                form={form}
-                item={formConfig.subjectId}
-                labelClassName="text-xs"
-                showMessage={false}
-                className="bg-card"
-                wrapperClassName="min-w-0"
-              />
-              <ControlForm
-                form={form}
-                item={formConfig.gradeId}
-                labelClassName="text-xs"
-                showMessage={false}
-                className="bg-card"
-                wrapperClassName="min-w-0"
-              />
-              <ControlForm
-                form={form}
-                item={formConfig.tier}
-                labelClassName="text-xs"
-                showMessage={false}
-                className="bg-card"
-                wrapperClassName="min-w-0"
-              />
-              {/* <ControlForm form={form} item={formConfig.type} labelClassName="text-xs" showMessage={false} className="bg-card" wrapperClassName="min-w-0" /> */}
-              <ControlForm
-                form={form}
-                item={formConfig.difficulty}
-                labelClassName="text-xs"
-                showMessage={false}
-                className="bg-card"
-                wrapperClassName="min-w-0"
-              />
+              <form.AppField name="subjectId">
+                {(field: any) => (
+                  <ControlForm
+                    field={field}
+                    item={formConfig.subjectId}
+                    labelClassName="text-xs"
+                    showMessage={false}
+                    className="bg-card"
+                    wrapperClassName="min-w-0"
+                  />
+                )}
+              </form.AppField>
+              <form.AppField name="gradeId">
+                {(field: any) => (
+                  <ControlForm
+                    field={field}
+                    item={formConfig.gradeId}
+                    labelClassName="text-xs"
+                    showMessage={false}
+                    className="bg-card"
+                    wrapperClassName="min-w-0"
+                  />
+                )}
+              </form.AppField>
+              <form.AppField name="tier">
+                {(field: any) => (
+                  <ControlForm
+                    field={field}
+                    item={formConfig.tier}
+                    labelClassName="text-xs"
+                    showMessage={false}
+                    className="bg-card"
+                    wrapperClassName="min-w-0"
+                  />
+                )}
+              </form.AppField>
+              {/* <form.AppField name="type">{(field: any) => <ControlForm field={field} item={formConfig.type} labelClassName="text-xs" showMessage={false} className="bg-card" wrapperClassName="min-w-0" />}</form.AppField> */}
+              <form.AppField name="difficulty">
+                {(field: any) => (
+                  <ControlForm
+                    field={field}
+                    item={formConfig.difficulty}
+                    labelClassName="text-xs"
+                    showMessage={false}
+                    className="bg-card"
+                    wrapperClassName="min-w-0"
+                  />
+                )}
+              </form.AppField>
             </div>
-          </Form>
+          </form.AppForm>
         </div>
 
         <div className="flex-1 overflow-auto border-x border-b rounded-lg">

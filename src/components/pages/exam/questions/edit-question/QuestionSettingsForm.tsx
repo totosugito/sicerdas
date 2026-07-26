@@ -1,12 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useAppForm } from "@/components/ui/form-tanstack";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/forms";
+import { ControlForm, FormWithDetector } from "@/components/forms";
 import { useListSubjectSimple } from "@/api/exam/subjects";
 import { useListPassageSimple } from "@/api/exam/passages";
 import { useListTier } from "@/api/tier";
@@ -65,8 +62,7 @@ export function QuestionSettingsForm({
     isActive: z.boolean().default(true),
   });
 
-  const form = useForm({
-    resolver: zodResolver(formSchema),
+  const form = useAppForm({
     defaultValues: {
       subjectId: defaultValues.subjectId || "",
       passageId: defaultValues.passageId || null,
@@ -78,10 +74,24 @@ export function QuestionSettingsForm({
       educationGradeId: defaultValues.educationGradeId ?? "",
       isActive: defaultValues.isActive ?? true,
     },
+    validators: {
+      onChange: formSchema as any,
+    },
   });
 
-  const type = form.watch("type");
-  const isMultipleChoice = type === EnumQuestionType.MULTIPLE_CHOICE;
+  useEffect(() => {
+    form.reset({
+      subjectId: defaultValues.subjectId || "",
+      passageId: defaultValues.passageId || null,
+      difficulty: defaultValues.difficulty || EnumDifficultyLevel.MEDIUM,
+      type: defaultValues.type || EnumQuestionType.MULTIPLE_CHOICE,
+      maxScore: defaultValues.maxScore ?? 1,
+      scoringStrategy: defaultValues.scoringStrategy || EnumScoringStrategy.ALL_OR_NOTHING,
+      requiredTier: defaultValues.requiredTier || "free",
+      educationGradeId: defaultValues.educationGradeId ?? "",
+      isActive: defaultValues.isActive ?? true,
+    });
+  }, [JSON.stringify(defaultValues)]);
 
   const onFormSubmit = (values: any) => {
     // Convert empty string/null for educationGradeId and passageId
@@ -154,119 +164,146 @@ export function QuestionSettingsForm({
     },
   ];
 
-  const formConfig = {
-    subjectId: {
-      type: "combobox",
-      name: "subjectId",
-      label: t(($) => $.exam.questions.form.subject.label),
-      placeholder: t(($) => $.exam.questions.form.subject.placeholder),
-      options: subjectOptions,
-      disabled: isFetchingSubjects,
-      isLoading: isFetchingSubjects,
-    },
-    passageId: {
-      type: "combobox",
-      name: "passageId",
-      label: t(($) => $.exam.questions.form.passage.label),
-      placeholder: t(($) => $.exam.questions.form.passage.placeholder),
-      options: passageOptions,
-      disabled: isFetchingPassages,
-      isLoading: isFetchingPassages,
-    },
-    difficulty: {
-      type: "select",
-      name: "difficulty",
-      label: t(($) => $.exam.questions.form.difficulty.label),
-      placeholder: t(($) => $.exam.questions.form.difficulty.placeholder),
-      options: difficultyOptions,
-    },
-    type: {
-      type: "select",
-      name: "type",
-      label: t(($) => $.exam.questions.form.type.label),
-      placeholder: t(($) => $.exam.questions.form.type.placeholder),
-      options: typeOptions,
-    },
-    maxScore: {
-      type: "number",
-      name: "maxScore",
-      label: t(($) => $.exam.questions.form.maxScore.label),
-      placeholder: t(($) => $.exam.questions.form.maxScore.placeholder),
-      required: false,
-      disabled: true,
-    },
-    scoringStrategy: {
-      type: "select",
-      name: "scoringStrategy",
-      label: t(($) => $.exam.questions.form.scoringStrategy.label),
-      placeholder: t(($) => $.exam.questions.form.scoringStrategy.placeholder),
-      options: scoringStrategyOptions,
-      disabled: isMultipleChoice,
-    },
-    requiredTier: {
-      type: "select",
-      name: "requiredTier",
-      label: t(($) => $.exam.questions.form.requiredTier.label),
-      placeholder: t(($) => $.exam.questions.form.requiredTier.placeholder),
-      options: tierOptions,
-      disabled: isLoadingTier,
-    },
-    educationGradeId: {
-      type: "combobox",
-      name: "educationGradeId",
-      label: t(($) => $.exam.questions.form.educationGrade.label),
-      placeholder: t(($) => $.exam.questions.form.educationGrade.placeholder),
-      options: gradeOptions,
-      disabled: isFetchingGrades,
-      isLoading: isFetchingGrades,
-    },
-    isActive: {
-      type: "switch",
-      name: "isActive",
-      label: t(($) => $.exam.questions.form.isActive.label),
-      description: t(($) => $.exam.questions.form.isActive.description),
-    },
-  };
-
   return (
-    <Form {...form}>
-      <FormWithDetector
-        form={form}
-        onSubmit={onFormSubmit}
-        schema={formSchema}
-        className="space-y-8"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-6">
-            <ControlForm form={form} item={formConfig.subjectId} />
-            <ControlForm form={form} item={formConfig.passageId} />
-            <ControlForm form={form} item={formConfig.isActive} />
-          </div>
-          <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              <ControlForm form={form} item={formConfig.difficulty} showMessage={false} />
-              <ControlForm form={form} item={formConfig.type} showMessage={false} />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <ControlForm form={form} item={formConfig.maxScore} showMessage={false} />
-              <ControlForm form={form} item={formConfig.scoringStrategy} showMessage={false} />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <ControlForm form={form} item={formConfig.requiredTier} />
-              <ControlForm form={form} item={formConfig.educationGradeId} />
-            </div>
-          </div>
-        </div>
+    <form.Subscribe selector={(state: any) => state.values.type}>
+      {(type: any) => {
+        const isMultipleChoice = type === EnumQuestionType.MULTIPLE_CHOICE;
 
-        <div className="flex justify-end gap-3 pt-6 border-t">
-          <Button type="button" variant="outline" onClick={() => form.reset()} disabled={isPending}>
-            {t(($) => $.labels.cancel)}
-          </Button>
-          <Button type="submit" disabled={isPending}>
-            {isPending ? t(($) => $.labels.saving) : t(($) => $.labels.save)}
-          </Button>
-        </div>
-      </FormWithDetector>
-    </Form>
+        const formConfig = {
+          subjectId: {
+            type: "combobox",
+            name: "subjectId",
+            label: t(($) => $.exam.questions.form.subject.label),
+            placeholder: t(($) => $.exam.questions.form.subject.placeholder),
+            options: subjectOptions,
+            disabled: isFetchingSubjects,
+            isLoading: isFetchingSubjects,
+          },
+          passageId: {
+            type: "combobox",
+            name: "passageId",
+            label: t(($) => $.exam.questions.form.passage.label),
+            placeholder: t(($) => $.exam.questions.form.passage.placeholder),
+            options: passageOptions,
+            disabled: isFetchingPassages,
+            isLoading: isFetchingPassages,
+          },
+          difficulty: {
+            type: "select",
+            name: "difficulty",
+            label: t(($) => $.exam.questions.form.difficulty.label),
+            placeholder: t(($) => $.exam.questions.form.difficulty.placeholder),
+            options: difficultyOptions,
+          },
+          type: {
+            type: "select",
+            name: "type",
+            label: t(($) => $.exam.questions.form.type.label),
+            placeholder: t(($) => $.exam.questions.form.type.placeholder),
+            options: typeOptions,
+          },
+          maxScore: {
+            type: "number",
+            name: "maxScore",
+            label: t(($) => $.exam.questions.form.maxScore.label),
+            placeholder: t(($) => $.exam.questions.form.maxScore.placeholder),
+            required: false,
+            disabled: true,
+          },
+          scoringStrategy: {
+            type: "select",
+            name: "scoringStrategy",
+            label: t(($) => $.exam.questions.form.scoringStrategy.label),
+            placeholder: t(($) => $.exam.questions.form.scoringStrategy.placeholder),
+            options: scoringStrategyOptions,
+            disabled: isMultipleChoice,
+          },
+          requiredTier: {
+            type: "select",
+            name: "requiredTier",
+            label: t(($) => $.exam.questions.form.requiredTier.label),
+            placeholder: t(($) => $.exam.questions.form.requiredTier.placeholder),
+            options: tierOptions,
+            disabled: isLoadingTier,
+          },
+          educationGradeId: {
+            type: "combobox",
+            name: "educationGradeId",
+            label: t(($) => $.exam.questions.form.educationGrade.label),
+            placeholder: t(($) => $.exam.questions.form.educationGrade.placeholder),
+            options: gradeOptions,
+            disabled: isFetchingGrades,
+            isLoading: isFetchingGrades,
+          },
+          isActive: {
+            type: "switch",
+            name: "isActive",
+            label: t(($) => $.exam.questions.form.isActive.label),
+            description: t(($) => $.exam.questions.form.isActive.description),
+          },
+        };
+
+        return (
+          <form.AppForm>
+            <FormWithDetector
+              form={form}
+              onSubmit={onFormSubmit}
+              errorClassName="mt-0 mb-6"
+              className="space-y-8"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <form.AppField name="subjectId">
+                    {(field) => <ControlForm field={field} item={formConfig.subjectId} />}
+                  </form.AppField>
+                  <form.AppField name="passageId">
+                    {(field) => <ControlForm field={field} item={formConfig.passageId} />}
+                  </form.AppField>
+                  <form.AppField name="isActive">
+                    {(field) => <ControlForm field={field} item={formConfig.isActive} />}
+                  </form.AppField>
+                </div>
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <form.AppField name="difficulty">
+                      {(field) => <ControlForm field={field} item={formConfig.difficulty} showMessage={false} />}
+                    </form.AppField>
+                    <form.AppField name="type">
+                      {(field) => <ControlForm field={field} item={formConfig.type} showMessage={false} />}
+                    </form.AppField>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <form.AppField name="maxScore">
+                      {(field) => <ControlForm field={field} item={formConfig.maxScore} showMessage={false} />}
+                    </form.AppField>
+                    <form.AppField name="scoringStrategy">
+                      {(field) => <ControlForm field={field} item={formConfig.scoringStrategy} showMessage={false} />}
+                    </form.AppField>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <form.AppField name="requiredTier">
+                      {(field) => <ControlForm field={field} item={formConfig.requiredTier} />}
+                    </form.AppField>
+                    <form.AppField name="educationGradeId">
+                      {(field) => <ControlForm field={field} item={formConfig.educationGradeId} />}
+                    </form.AppField>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-6 border-t">
+                <Button type="button" variant="outline" onClick={() => form.reset()} disabled={isPending}>
+                  {t(($) => $.labels.cancel)}
+                </Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? t(($) => $.labels.saving) : t(($) => $.labels.save)}
+                </Button>
+              </div>
+            </FormWithDetector>
+          </form.AppForm>
+        );
+      }}
+    </form.Subscribe>
   );
 }
+

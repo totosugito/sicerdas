@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
+import { DialogModalForm, ModalFormProps } from "@/components/dialog";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { ControlForm } from "@/components/custom/forms";
+import { ControlForm } from "@/components/forms";
 import { useCreateQuestionOption, useUpdateQuestionOption } from "@/api/exam/question-options";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
@@ -19,31 +19,44 @@ export type DialogQuestionOptionFormProps = {
   nextOrder?: number;
 };
 
-const FormOption = ({ values, form }: any) => {
-  const isCorrect = form.watch("isCorrect");
-  const score = form.watch("score");
-
+const FormOptionInner = ({ values, form, isCorrect, score }: any) => {
   useEffect(() => {
     if (isCorrect && Number(score) === 0) {
-      form.setValue("score", 1);
+      form.setFieldValue("score", 1);
     }
   }, [isCorrect, score, form]);
 
   return (
     <div className="flex flex-col gap-4 w-full py-1">
       <div className="flex-1">
-        <ControlForm
-          form={form}
-          item={values.content}
-          showMessage={false}
-          wrapperClassName="flex-1"
-        />
+        <form.AppField name="content">
+          {(field: any) => (
+            <ControlForm
+              field={field}
+              item={values.content}
+              showMessage={false}
+              wrapperClassName="flex-1"
+            />
+          )}
+        </form.AppField>
       </div>
-      {/* <div className="flex flex-col gap-4 bg-muted/30 p-4 rounded-xl border border-dashed"> */}
-      <ControlForm form={form} item={values.score} showMessage={false} />
-      <ControlForm form={form} item={values.isCorrect} showMessage={false} />
-      {/* </div> */}
+      <form.AppField name="score">
+        {(field: any) => <ControlForm field={field} item={values.score} showMessage={false} />}
+      </form.AppField>
+      <form.AppField name="isCorrect">
+        {(field: any) => <ControlForm field={field} item={values.isCorrect} showMessage={false} />}
+      </form.AppField>
     </div>
+  );
+};
+
+const FormOption = ({ values, form }: any) => {
+  return (
+    <form.Subscribe selector={(state: any) => [state.values.isCorrect, state.values.score]}>
+      {([isCorrect, score]: any) => (
+        <FormOptionInner values={values} form={form} isCorrect={isCorrect} score={score} />
+      )}
+    </form.Subscribe>
   );
 };
 

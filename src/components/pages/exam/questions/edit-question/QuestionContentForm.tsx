@@ -1,12 +1,9 @@
-import React, { useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useRef } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useAppForm } from "@/components/ui/form-tanstack";
 import { z } from "zod";
-import { Form } from "@/components/ui/form";
-import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/forms";
+import { ControlForm, FormWithDetector } from "@/components/forms";
 import { prepare_blocknote_submission } from "@/lib/blocknote-utils";
 
 type QuestionContentFormProps = {
@@ -30,24 +27,24 @@ export function QuestionContentForm({
   const { t } = useAppTranslation();
   const pendingFiles = useRef<Map<string, File>>(new Map());
 
-  const resolvedDefaultValues = useMemo(() => {
-    return {
-      ...defaultValues,
+  const form = useAppForm({
+    defaultValues: {
       content: defaultValues.content || [],
       reasonContent: defaultValues.reasonContent || [],
-    };
-  }, [defaultValues]);
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: resolvedDefaultValues,
+    } as FormValues,
+    validators: {
+      onChange: formSchema as any,
+    },
   });
 
   useEffect(() => {
-    form.reset(resolvedDefaultValues);
+    form.reset({
+      content: defaultValues.content || [],
+      reasonContent: defaultValues.reasonContent || [],
+    });
     // Clear pending files on reset/mount
     pendingFiles.current.clear();
-  }, [resolvedDefaultValues, form]);
+  }, [JSON.stringify(defaultValues)]);
 
   const onFormSubmit = (values: FormValues) => {
     const formData = new FormData();
@@ -113,18 +110,22 @@ export function QuestionContentForm({
   };
 
   return (
-    <Form {...form}>
+    <form.AppForm>
       <FormWithDetector
         form={form}
         onSubmit={onFormSubmit}
-        schema={formSchema}
+        errorClassName="mt-0 mb-6"
         className="space-y-6"
       >
-        <ControlForm form={form} item={formConfig.content} />
+        <form.AppField name="content">
+          {(field) => <ControlForm field={field} item={formConfig.content} />}
+        </form.AppField>
 
         {isReasoning && (
           <div className="pt-6 border-t border-dashed">
-            <ControlForm form={form} item={formConfig.reasonContent} />
+            <form.AppField name="reasonContent">
+              {(field) => <ControlForm field={field} item={formConfig.reasonContent} />}
+            </form.AppField>
           </div>
         )}
 
@@ -137,6 +138,7 @@ export function QuestionContentForm({
           </Button>
         </div>
       </FormWithDetector>
-    </Form>
+    </form.AppForm>
   );
 }
+

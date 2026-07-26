@@ -2,8 +2,9 @@ import { UserResponseItem, useBanUser } from "@/api/users";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
-import { DialogModalForm } from "@/components/custom/components";
-import { ControlForm } from "@/components/custom/forms";
+import { DialogModalForm } from "@/components/dialog";
+import { ControlForm } from "@/components/forms";
+import React from "react";
 import { UserCheck, UserX, Info } from "lucide-react";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
@@ -17,7 +18,11 @@ interface DialogUserBanProps {
 const FormBan = ({ values, form }: any) => {
   return (
     <div className="flex flex-col gap-4 w-full pt-4">
-      {!values.banReason.hidden && <ControlForm form={form} item={values.banReason} />}
+      {!values.banReason.hidden && (
+        <form.AppField name="banReason">
+          {(field: any) => <ControlForm field={field} item={values.banReason} />}
+        </form.AppField>
+      )}
     </div>
   );
 };

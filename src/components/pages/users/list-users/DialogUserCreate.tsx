@@ -1,7 +1,8 @@
-import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
+import { DialogModalForm, ModalFormProps } from "@/components/dialog";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { ControlForm } from "@/components/custom/forms";
+import React from "react";
+import { ControlForm } from "@/components/forms";
 import {
   UserResponseItem,
   useCreateUser,
@@ -22,11 +23,19 @@ export type DialogUserCreateProps = {
 const FormUser = ({ values, form }: any) => {
   return (
     <div className="flex flex-col gap-4 w-full">
-      <ControlForm form={form} item={values.name} showMessage={false} />
-      <ControlForm form={form} item={values.email} showMessage={false} />
-      <ControlForm form={form} item={values.role} showMessage={false} />
-      {!form.getValues("id") && (
-        <ControlForm form={form} item={values.password} showMessage={false} />
+      <form.AppField name="name">
+        {(field: any) => <ControlForm field={field} item={values.name} showMessage={false} />}
+      </form.AppField>
+      <form.AppField name="email">
+        {(field: any) => <ControlForm field={field} item={values.email} showMessage={false} />}
+      </form.AppField>
+      <form.AppField name="role">
+        {(field: any) => <ControlForm field={field} item={values.role} showMessage={false} />}
+      </form.AppField>
+      {!form.state.values.id && (
+        <form.AppField name="password">
+          {(field: any) => <ControlForm field={field} item={values.password} showMessage={false} />}
+        </form.AppField>
       )}
     </div>
   );
@@ -57,9 +66,9 @@ export const DialogUserCreate = ({ open, onOpenChange, user }: DialogUserCreateP
     password: user
       ? z.string().optional()
       : z.string().min(
-        6,
-        t(($) => $.user.profile.security.passwordMinLengthError),
-      ),
+          6,
+          t(($) => $.user.profile.security.passwordMinLengthError),
+        ),
   };
 
   const formConfig = {

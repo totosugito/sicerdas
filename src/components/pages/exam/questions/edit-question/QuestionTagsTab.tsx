@@ -94,12 +94,12 @@ export function QuestionTagsTab({ questionId, tags = [] }: QuestionTagsTabProps)
 
   return (
     <Card className="border-t-0 rounded-t-none">
-      <CardHeader className="pb-0">
+      <CardHeader>
         <CardTitle className="text-xl">{t(($) => $.exam.tags.title)}</CardTitle>
         <CardDescription>{t(($) => $.exam.tags.description)}</CardDescription>
       </CardHeader>
-      <CardContent className="py-0">
-        <div className="mx-auto space-y-8 bg-muted/5 p-5 border border-dashed rounded-3xl group/container transition-colors hover:bg-muted/10">
+      <CardContent>
+        <div className="w-full mx-auto space-y-8 bg-muted/5 p-5 border border-dashed rounded-3xl group/container transition-colors hover:bg-muted/10">
           <div className="space-y-3">
             <Label className="flex items-center gap-2 text-base font-semibold">
               <TagIcon className="h-4 w-4 text-primary" /> {t(($) => $.exam.tags.label)}
@@ -135,57 +135,57 @@ export function QuestionTagsTab({ questionId, tags = [] }: QuestionTagsTabProps)
                 <PopoverContent
                   className="w-[var(--radix-popover-trigger-width)] p-0 rounded-2xl overflow-hidden border-2 shadow-2xl"
                 >
-                <Command className="rounded-none">
-                  <CommandInput
-                    placeholder={t(($) => $.labels.search) + "..."}
-                    className="h-12"
-                    value={searchValue}
-                    onValueChange={setSearchValue}
-                  />
-                  <CommandList className="max-h-[300px]">
-                    <CommandEmpty className="py-6 text-center text-sm text-muted-foreground flex flex-col gap-3 px-4">
-                      {isLoadingTags ? (
-                        <div className="flex items-center justify-center gap-2">
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          {t(($) => $.labels.loading)}
-                        </div>
-                      ) : (
-                        <>
-                          {searchValue.trim() && (
-                            <Button
-                              size="sm"
-                              variant="secondary"
-                              className="w-full justify-start gap-2 hover:bg-primary hover:text-white transition-colors"
-                              onClick={handleCreateAndAssignTag}
-                              disabled={createTagMutation.isPending}
-                            >
-                              <Plus className="h-4 w-4" />
-                              {t(($) => $.exam.questions.edit.tags.addAsNew, { name: searchValue })}
-                            </Button>
-                          )}
-                        </>
-                      )}
-                    </CommandEmpty>
-                    <CommandGroup heading="Rekomendasi Tag Materi" className="p-2">
-                      {availableTags.map((tag) => (
-                        <CommandItem
-                          key={tag.value}
-                          value={tag.label}
-                          onSelect={() => handleAssign(tag.value)}
-                          className="rounded-xl h-11 px-3 cursor-pointer flex items-center gap-3 data-[selected=true]:bg-primary/10 data-[selected=true]:text-primary"
-                        >
-                          <div className="h-8 w-8 rounded-lg bg-primary/5 flex items-center justify-center">
-                            <TagIcon className="h-4 w-4 opacity-70" />
+                  <Command className="rounded-none">
+                    <CommandInput
+                      placeholder={t(($) => $.labels.search) + "..."}
+                      className="h-12"
+                      value={searchValue}
+                      onValueChange={setSearchValue}
+                    />
+                    <CommandList className="max-h-[300px]">
+                      <CommandEmpty className="py-6 text-center text-sm text-muted-foreground flex flex-col gap-3 px-4">
+                        {isLoadingTags ? (
+                          <div className="flex items-center justify-center gap-2">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            {t(($) => $.labels.loading)}
                           </div>
-                          <span className="font-medium">{tag.label}</span>
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </PopoverPositioner>
-          </Popover>
+                        ) : (
+                          <>
+                            {searchValue.trim() && (
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                className="w-full justify-start gap-2 hover:bg-primary hover:text-white transition-colors"
+                                onClick={handleCreateAndAssignTag}
+                                disabled={createTagMutation.isPending}
+                              >
+                                <Plus className="h-4 w-4" />
+                                {t(($) => $.exam.questions.edit.tags.addAsNew, { name: searchValue })}
+                              </Button>
+                            )}
+                          </>
+                        )}
+                      </CommandEmpty>
+                      <CommandGroup heading="Rekomendasi Tag Materi" className="p-2">
+                        {availableTags.map((tag) => (
+                          <CommandItem
+                            key={tag.value}
+                            value={tag.label}
+                            onSelect={() => handleAssign(tag.value)}
+                            className="rounded-xl h-11 px-3 cursor-pointer flex items-center gap-3 data-[selected=true]:bg-primary/10 data-[selected=true]:text-primary"
+                          >
+                            <div className="h-8 w-8 rounded-lg bg-primary/5 flex items-center justify-center">
+                              <TagIcon className="h-4 w-4 opacity-70" />
+                            </div>
+                            <span className="font-medium">{tag.label}</span>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </PopoverPositioner>
+            </Popover>
           </div>
 
           <div className="space-y-4">

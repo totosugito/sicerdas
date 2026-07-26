@@ -4,7 +4,6 @@ import type { UploadedFile } from "../../../../types/file.ts";
 import { ErrorResponseSchema } from "../../../../types/response.ts";
 import { createQuestionSolutionService } from "../../../../modules/exam/question-solutions/services/create-question-solution.service.ts";
 import {
-  CreateQuestionSolutionBody,
   CreateQuestionSolutionResponse,
 } from "../../../../modules/exam/question-solutions/question-solutions.schema.ts";
 
@@ -15,7 +14,6 @@ const createQuestionSolutionRoute: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Admin Exam Question Solutions"],
       consumes: ["multipart/form-data"],
-      body: CreateQuestionSolutionBody,
       response: {
         201: CreateQuestionSolutionResponse,
         "4xx": ErrorResponseSchema,

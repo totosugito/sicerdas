@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ChevronDown, Settings2 } from "lucide-react";
-import { Form } from "@/components/ui/form";
-import { ControlForm } from "@/components/custom/forms";
+import { ControlForm, FormWithDetector } from "@/components/forms";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { UseFormReturn } from "react-hook-form";
 import { useListSubjectSimple } from "@/api/exam/subjects";
 import { useListPassageSimple } from "@/api/exam/passages";
 import { useListTier } from "@/api/tier";
@@ -13,7 +11,7 @@ import { useListGradeSimple } from "@/api/education/grades";
 import { EnumDifficultyLevel, EnumQuestionType } from "@/api/exam/questions/types";
 
 interface GlobalParamsFormProps {
-  form: UseFormReturn<any>;
+  form: any;
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
@@ -59,7 +57,10 @@ export function GlobalParamsForm({ form, isOpen = true, onOpenChange }: GlobalPa
       label: t(($) => $.exam.questions.form.type.options.multiple_choice),
       value: EnumQuestionType.MULTIPLE_CHOICE,
     },
-    { label: t(($) => $.exam.questions.form.type.options.essay), value: EnumQuestionType.ESSAY },
+    {
+      label: t(($) => $.exam.questions.form.type.options.statement_reasoning),
+      value: EnumQuestionType.STATEMENT_REASONING,
+    },
   ];
 
   const config = {
@@ -71,7 +72,6 @@ export function GlobalParamsForm({ form, isOpen = true, onOpenChange }: GlobalPa
       options: subjectOptions,
       disabled: isFetchingSubjects,
       isLoading: isFetchingSubjects,
-      required: true,
     },
     passageId: {
       type: "combobox" as const,
@@ -120,7 +120,10 @@ export function GlobalParamsForm({ form, isOpen = true, onOpenChange }: GlobalPa
       <Collapsible open={isOpen} onOpenChange={onOpenChange}>
         <CollapsibleTrigger
           render={
-            <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted/50 transition-colors border-b">
+            <button
+              type="button"
+              className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted/50 transition-colors border-b w-full text-left outline-none"
+            >
               <div className="flex items-center gap-2">
                 <Settings2 className="h-5 w-5 text-primary" />
                 <h3 className="font-semibold text-lg">
@@ -128,20 +131,37 @@ export function GlobalParamsForm({ form, isOpen = true, onOpenChange }: GlobalPa
                 </h3>
               </div>
               <ChevronDown className={cn("h-5 w-5 transition-transform", isOpen && "rotate-180")} />
-            </div>
+            </button>
           }
         />
         <CollapsibleContent className="p-6">
-          <Form {...form}>
-            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <ControlForm form={form} item={config.subjectId} showMessage={true} />
-              <ControlForm form={form} item={config.passageId} showMessage={true} />
-              <ControlForm form={form} item={config.difficulty} showMessage={true} />
-              <ControlForm form={form} item={config.type} showMessage={true} />
-              <ControlForm form={form} item={config.requiredTier} showMessage={true} />
-              <ControlForm form={form} item={config.educationGradeId} showMessage={true} />
-            </form>
-          </Form>
+          <form.AppForm>
+            <FormWithDetector
+              form={form}
+              onSubmit={(e) => e.preventDefault()}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <form.AppField name="subjectId">
+                  {(field: any) => <ControlForm field={field} item={config.subjectId} showMessage={true} />}
+                </form.AppField>
+                <form.AppField name="passageId">
+                  {(field: any) => <ControlForm field={field} item={config.passageId} showMessage={true} />}
+                </form.AppField>
+                <form.AppField name="difficulty">
+                  {(field: any) => <ControlForm field={field} item={config.difficulty} showMessage={true} />}
+                </form.AppField>
+                <form.AppField name="type">
+                  {(field: any) => <ControlForm field={field} item={config.type} showMessage={true} />}
+                </form.AppField>
+                <form.AppField name="requiredTier">
+                  {(field: any) => <ControlForm field={field} item={config.requiredTier} showMessage={true} />}
+                </form.AppField>
+                <form.AppField name="educationGradeId">
+                  {(field: any) => <ControlForm field={field} item={config.educationGradeId} showMessage={true} />}
+                </form.AppField>
+              </div>
+            </FormWithDetector>
+          </form.AppForm>
           <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md flex items-start gap-2 text-sm text-blue-700 dark:text-blue-300">
             <p>{t(($) => $.exam.questions.jsonQuestions.globalParameters.overrideNote)}</p>
           </div>

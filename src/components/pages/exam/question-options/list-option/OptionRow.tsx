@@ -5,7 +5,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ExamQuestion } from "@/api/exam/questions";
-import { BlockNoteStatic } from "@/components/custom/components";
+import { BlockNoteStatic } from "@/components/custom/blocknote";
 import React from "react";
 
 interface OptionRowProps {
