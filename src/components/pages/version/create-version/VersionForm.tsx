@@ -144,7 +144,7 @@ export function VersionForm({ defaultValues, onSubmit, isPending }: VersionFormP
 
   return (
     <form.AppForm>
-      <FormWithDetector form={form} onSubmit={onFormSubmit}>
+      <FormWithDetector form={form} onSubmit={onFormSubmit} errorClassName="mt-0 mb-6">
         <Card className="pb-0 gap-0">
           <CardContent className="">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

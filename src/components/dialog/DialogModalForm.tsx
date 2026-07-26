@@ -13,6 +13,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { useAppForm } from "@/components/ui/form-tanstack";
 import { FormWithDetector } from "@/components/forms";
 import { cn } from "@/lib/utils";
+import { z } from "zod";
 
 export type ModalFormProps = {
   title: string;
@@ -72,7 +73,11 @@ export const DialogModalForm = ({
   const form = useAppForm({
     defaultValues: modal.defaultValue,
     validators: {
-      onChange: modal.schema,
+      onChange: modal.schema
+        ? (modal.schema instanceof z.ZodType
+          ? modal.schema
+          : z.object(modal.schema)) as any
+        : undefined,
     },
   });
 
@@ -110,6 +115,7 @@ export const DialogModalForm = ({
             form={form}
             onSubmit={(v) => modal?.onConfirmClick(v)}
             className="flex flex-col h-full flex-1 overflow-y-auto"
+            errorClassName="mt-0 mb-6"
           >
             <div className={"flex flex-col flex-1"}>
               {modal?.child &&

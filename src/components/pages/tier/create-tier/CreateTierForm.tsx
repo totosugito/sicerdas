@@ -1,13 +1,10 @@
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { FormWithDetector } from "@/components/custom/forms";
-import { Form } from "@/components/ui/form";
+import { useAppForm } from "@/components/ui/form-tanstack";
+import { ControlForm, FormWithDetector } from "@/components/forms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ControlForm } from "@/components/custom/forms/ControlForm";
 import { CreateTierParams } from "@/api/tier";
 import { Loader2, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -35,14 +32,16 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error, d
         billingCycle: z.string().min(1, { message: t($ => $.tier.create.validation.billingCycleRequired) }),
     });
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema) as any,
+    const form = useAppForm({
         defaultValues: {
             slug: defaultValues?.slug || "",
             name: defaultValues?.name || "",
             price: defaultValues?.price ? Number(defaultValues.price) : 0,
             currency: defaultValues?.currency || "IDR",
             billingCycle: defaultValues?.billingCycle || "monthly",
+        },
+        validators: {
+            onChange: formSchema as any,
         },
     });
 
@@ -57,9 +56,9 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error, d
                 billingCycle: defaultValues.billingCycle || "monthly",
             });
         }
-    }, [defaultValues, form]);
+    }, [JSON.stringify(defaultValues)]);
 
-    const handleSubmit = (values: z.infer<typeof formSchema>) => {
+    const handleSubmit = (values: any) => {
         const data: CreateTierParams = {
             slug: values.slug,
             name: values.name,
@@ -133,8 +132,8 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error, d
     ];
 
     return (
-        <Form {...form}>
-            <FormWithDetector form={form} onSubmit={handleSubmit} schema={formSchema}>
+        <form.AppForm>
+            <FormWithDetector form={form} onSubmit={handleSubmit} errorClassName="mt-0 mb-6">
                 <Card className="pb-0 gap-0">
                     <CardHeader className="border-b border-slate-200 dark:border-slate-800 [.border-b]:pb-4">
                         <CardTitle>{t($ => $.tier.create.form.basicInfo)}</CardTitle>
@@ -151,14 +150,17 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error, d
                             </Alert>
                         )}
 
-                        {basicInfoFields.map((field) => (
-                            <ControlForm
-                                key={field.name}
-                                form={form}
-                                item={field}
-                                disabled={isLoading || field.disabled}
-                                showMessage={false}
-                            />
+                        {basicInfoFields.map((fieldItem) => (
+                            <form.AppField key={fieldItem.name} name={fieldItem.name as any}>
+                                {(field: any) => (
+                                    <ControlForm
+                                        field={field}
+                                        item={fieldItem}
+                                        disabled={isLoading || fieldItem.disabled}
+                                        showMessage={false}
+                                    />
+                                )}
+                            </form.AppField>
                         ))}
 
                         {/* Info Message */}
@@ -193,6 +195,7 @@ export const CreateTierForm = ({ onSubmit, isLoading = false, onCancel, error, d
                     </CardFooter>
                 </Card>
             </FormWithDetector>
-        </Form>
+        </form.AppForm>
     );
 };
+

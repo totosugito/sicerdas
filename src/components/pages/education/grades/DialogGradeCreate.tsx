@@ -1,7 +1,8 @@
-import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
+import { DialogModalForm, ModalFormProps } from "@/components/dialog";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { ControlForm } from "@/components/custom/forms";
+import { ControlForm } from "@/components/forms";
+
 import {
   GradeData,
   useCreateEducationGrade,
@@ -21,15 +22,31 @@ export type DialogGradeCreateProps = {
 const FormGrade = ({ values, form }: any) => {
   return (
     <div className="flex flex-col gap-4 w-full">
-      <ControlForm
-        form={form}
-        item={values.grade}
-        disabled={values.grade.disabled}
-        showMessage={false}
-      />
-      <ControlForm form={form} item={values.name} showMessage={false} />
-      <ControlForm form={form} item={values.desc} showMessage={false} />
-      <ControlForm form={form} item={values.isDefault} showMessage={false} />
+      <form.AppField name="grade">
+        {(field: any) => (
+          <ControlForm
+            field={field}
+            item={values.grade}
+            disabled={values.grade.disabled}
+            showMessage={false}
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="name">
+        {(field: any) => (
+          <ControlForm field={field} item={values.name} showMessage={false} />
+        )}
+      </form.AppField>
+      <form.AppField name="desc">
+        {(field: any) => (
+          <ControlForm field={field} item={values.desc} showMessage={false} />
+        )}
+      </form.AppField>
+      <form.AppField name="isDefault">
+        {(field: any) => (
+          <ControlForm field={field} item={values.isDefault} showMessage={false} />
+        )}
+      </form.AppField>
     </div>
   );
 };

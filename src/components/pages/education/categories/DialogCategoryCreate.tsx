@@ -1,7 +1,7 @@
-import { DialogModalForm, ModalFormProps } from "@/components/custom/components";
+import { DialogModalForm, ModalFormProps } from "@/components/dialog";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { ControlForm } from "@/components/custom/forms";
+import { ControlForm } from "@/components/forms";
 import {
     CategoryData,
     useCreateCategory,
@@ -21,9 +21,21 @@ export type DialogCategoryCreateProps = {
 const FormCategory = ({ values, form }: any) => {
     return (
         <div className="flex flex-col gap-4 w-full">
-            <ControlForm form={form} item={values.name} showMessage={false} />
-            <ControlForm form={form} item={values.description} showMessage={false} />
-            <ControlForm form={form} item={values.isActive} showMessage={false} />
+            <form.AppField name="name">
+                {(field: any) => (
+                    <ControlForm field={field} item={values.name} showMessage={false} />
+                )}
+            </form.AppField>
+            <form.AppField name="description">
+                {(field: any) => (
+                    <ControlForm field={field} item={values.description} showMessage={false} />
+                )}
+            </form.AppField>
+            <form.AppField name="isActive">
+                {(field: any) => (
+                    <ControlForm field={field} item={values.isActive} showMessage={false} />
+                )}
+            </form.AppField>
         </div>
     );
 };
