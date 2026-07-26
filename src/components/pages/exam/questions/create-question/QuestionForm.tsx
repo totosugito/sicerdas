@@ -1,12 +1,9 @@
-import React, { useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useRef } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useAppForm } from "@/components/ui/form-tanstack";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { ControlForm } from "@/components/custom/forms";
-import { FormWithDetector } from "@/components/custom/forms";
+import { ControlForm, FormWithDetector } from "@/components/forms";
 import { useListSubjectSimple } from "@/api/exam/subjects";
 import { useListPassageSimple } from "@/api/exam/passages";
 import { useListTier } from "@/api/tier";
@@ -32,9 +29,6 @@ type QuestionFormProps = {
 export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFormProps) {
   const { t } = useAppTranslation();
   const pendingFiles = useRef<Map<string, File>>(new Map());
-
-  // Data for dropdowns (Fetching all active options at once)
-  // ... (omitting lines for brevity in thought, but I'll provide full replacement)
 
   // Data for dropdowns (Fetching all active options at once)
   const { data: subjectsData, isFetching: isFetchingSubjects } = useListSubjectSimple({
@@ -73,49 +67,42 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
     isActive: z.boolean().default(true),
   });
 
-  const resolvedDefaultValues = useMemo(() => {
-    return {
-      ...defaultValues,
+  const form = useAppForm({
+    defaultValues: {
+      subjectId: defaultValues?.subjectId || "",
+      passageId: defaultValues?.passageId || null,
       content: defaultValues?.content || [],
       reasonContent: defaultValues?.reasonContent || [],
-    };
-  }, [defaultValues]);
-
-  const form = useForm<InternalQuestionFormValues>({
-    resolver: zodResolver(formSchema) as any,
-    defaultValues: {
-      subjectId: "",
-      passageId: null,
-      difficulty: EnumDifficultyLevel.MEDIUM,
-      type: EnumQuestionType.MULTIPLE_CHOICE,
-      maxScore: 1,
-      scoringStrategy: EnumScoringStrategy.ALL_OR_NOTHING,
-      requiredTier: "free",
-      educationGradeId: "",
-      isActive: true,
-      ...resolvedDefaultValues,
+      difficulty: defaultValues?.difficulty || EnumDifficultyLevel.MEDIUM,
+      type: defaultValues?.type || EnumQuestionType.MULTIPLE_CHOICE,
+      maxScore: defaultValues?.maxScore ?? 1,
+      scoringStrategy: defaultValues?.scoringStrategy || EnumScoringStrategy.ALL_OR_NOTHING,
+      requiredTier: defaultValues?.requiredTier || "free",
+      educationGradeId: defaultValues?.educationGradeId || "",
+      isActive: defaultValues?.isActive ?? true,
+    } as InternalQuestionFormValues,
+    validators: {
+      onChange: formSchema as any,
     },
   });
 
   useEffect(() => {
     if (defaultValues) {
       form.reset({
-        subjectId: "",
-        passageId: null,
-        difficulty: EnumDifficultyLevel.MEDIUM,
-        type: EnumQuestionType.MULTIPLE_CHOICE,
-        maxScore: 1,
-        scoringStrategy: EnumScoringStrategy.ALL_OR_NOTHING,
-        requiredTier: "free",
-        educationGradeId: "",
-        isActive: true,
-        ...resolvedDefaultValues,
+        subjectId: defaultValues.subjectId || "",
+        passageId: defaultValues.passageId || null,
+        content: defaultValues.content || [],
+        reasonContent: defaultValues.reasonContent || [],
+        difficulty: defaultValues.difficulty || EnumDifficultyLevel.MEDIUM,
+        type: defaultValues.type || EnumQuestionType.MULTIPLE_CHOICE,
+        maxScore: defaultValues.maxScore ?? 1,
+        scoringStrategy: defaultValues.scoringStrategy || EnumScoringStrategy.ALL_OR_NOTHING,
+        requiredTier: defaultValues.requiredTier || "free",
+        educationGradeId: defaultValues.educationGradeId || "",
+        isActive: defaultValues.isActive ?? true,
       });
     }
-  }, [resolvedDefaultValues, form]);
-
-  const type = form.watch("type");
-  const isMultipleChoice = type === EnumQuestionType.MULTIPLE_CHOICE;
+  }, [JSON.stringify(defaultValues)]);
 
   const onFormSubmit = (values: any) => {
     const formData = new FormData();
@@ -210,155 +197,191 @@ export function QuestionForm({ defaultValues, onSubmit, isPending }: QuestionFor
     },
   ];
 
-  const formConfig = {
-    subjectId: {
-      type: "combobox",
-      name: "subjectId",
-      label: t(($) => $.exam.questions.form.subject.label),
-      placeholder: t(($) => $.exam.questions.form.subject.placeholder),
-      options: subjectOptions,
-      disabled: isFetchingSubjects,
-      isLoading: isFetchingSubjects,
-      required: true,
-    },
-    passageId: {
-      type: "combobox",
-      name: "passageId",
-      label: t(($) => $.exam.questions.form.passage.label),
-      placeholder: t(($) => $.exam.questions.form.passage.placeholder),
-      options: passageOptions,
-      disabled: isFetchingPassages,
-      isLoading: isFetchingPassages,
-    },
-    difficulty: {
-      type: "select",
-      name: "difficulty",
-      label: t(($) => $.exam.questions.form.difficulty.label),
-      placeholder: t(($) => $.exam.questions.form.difficulty.placeholder),
-      options: difficultyOptions,
-    },
-    type: {
-      type: "select",
-      name: "type",
-      label: t(($) => $.exam.questions.form.type.label),
-      placeholder: t(($) => $.exam.questions.form.type.placeholder),
-      options: typeOptions,
-    },
-    maxScore: {
-      type: "number",
-      name: "maxScore",
-      label: t(($) => $.exam.questions.form.maxScore.label),
-      placeholder: t(($) => $.exam.questions.form.maxScore.placeholder),
-      required: true,
-    },
-    scoringStrategy: {
-      type: "select",
-      name: "scoringStrategy",
-      label: t(($) => $.exam.questions.form.scoringStrategy.label),
-      placeholder: t(($) => $.exam.questions.form.scoringStrategy.placeholder),
-      options: scoringStrategyOptions,
-      disabled: isMultipleChoice,
-    },
-    requiredTier: {
-      type: "select",
-      name: "requiredTier",
-      label: t(($) => $.exam.questions.form.requiredTier.label),
-      placeholder: t(($) => $.exam.questions.form.requiredTier.placeholder),
-      options: tierOptions,
-      disabled: isLoadingTier,
-    },
-    educationGradeId: {
-      type: "combobox",
-      name: "educationGradeId",
-      label: t(($) => $.exam.questions.form.educationGrade.label),
-      placeholder: t(($) => $.exam.questions.form.educationGrade.placeholder),
-      options: gradeOptions,
-      disabled: isFetchingGrades,
-      isLoading: isFetchingGrades,
-    },
-    isActive: {
-      type: "switch",
-      name: "isActive",
-      label: t(($) => $.exam.questions.form.isActive.label),
-      description: t(($) => $.exam.questions.form.isActive.description),
-    },
-    content: {
-      type: "blocknote",
-      name: "content",
-      label: t(($) => $.exam.questions.form.content.label),
-      minHeight: type === EnumQuestionType.STATEMENT_REASONING ? "200px" : "350px",
-      uploadFile,
-    },
-    reasonContent: {
-      type: "blocknote",
-      name: "reasonContent",
-      label: t(($) => $.exam.questions.form.reasonContent.label),
-      minHeight: type === EnumQuestionType.STATEMENT_REASONING ? "200px" : "300px",
-      uploadFile,
-    },
-  };
-
   return (
-    <Form {...form}>
-      <FormWithDetector form={form} onSubmit={onFormSubmit} schema={formSchema} className="">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="border border-border rounded-lg bg-card p-6 space-y-6">
-            <ControlForm form={form} item={formConfig.subjectId} showMessage={false} />
-            <ControlForm form={form} item={formConfig.passageId} showMessage={false} />
+    <form.Subscribe selector={(state: any) => state.values.type}>
+      {(type: any) => {
+        const isMultipleChoice = type === EnumQuestionType.MULTIPLE_CHOICE;
 
-            <div className="grid grid-cols-2 gap-4">
-              <ControlForm form={form} item={formConfig.difficulty} showMessage={false} />
-              <ControlForm form={form} item={formConfig.type} showMessage={false} />
-            </div>
+        const formConfig = {
+          subjectId: {
+            type: "combobox",
+            name: "subjectId",
+            label: t(($) => $.exam.questions.form.subject.label),
+            placeholder: t(($) => $.exam.questions.form.subject.placeholder),
+            options: subjectOptions,
+            disabled: isFetchingSubjects,
+            isLoading: isFetchingSubjects,
+            required: true,
+          },
+          passageId: {
+            type: "combobox",
+            name: "passageId",
+            label: t(($) => $.exam.questions.form.passage.label),
+            placeholder: t(($) => $.exam.questions.form.passage.placeholder),
+            options: passageOptions,
+            disabled: isFetchingPassages,
+            isLoading: isFetchingPassages,
+          },
+          difficulty: {
+            type: "select",
+            name: "difficulty",
+            label: t(($) => $.exam.questions.form.difficulty.label),
+            placeholder: t(($) => $.exam.questions.form.difficulty.placeholder),
+            options: difficultyOptions,
+          },
+          type: {
+            type: "select",
+            name: "type",
+            label: t(($) => $.exam.questions.form.type.label),
+            placeholder: t(($) => $.exam.questions.form.type.placeholder),
+            options: typeOptions,
+          },
+          maxScore: {
+            type: "number",
+            name: "maxScore",
+            label: t(($) => $.exam.questions.form.maxScore.label),
+            placeholder: t(($) => $.exam.questions.form.maxScore.placeholder),
+            required: true,
+          },
+          scoringStrategy: {
+            type: "select",
+            name: "scoringStrategy",
+            label: t(($) => $.exam.questions.form.scoringStrategy.label),
+            placeholder: t(($) => $.exam.questions.form.scoringStrategy.placeholder),
+            options: scoringStrategyOptions,
+            disabled: isMultipleChoice,
+          },
+          requiredTier: {
+            type: "select",
+            name: "requiredTier",
+            label: t(($) => $.exam.questions.form.requiredTier.label),
+            placeholder: t(($) => $.exam.questions.form.requiredTier.placeholder),
+            options: tierOptions,
+            disabled: isLoadingTier,
+          },
+          educationGradeId: {
+            type: "combobox",
+            name: "educationGradeId",
+            label: t(($) => $.exam.questions.form.educationGrade.label),
+            placeholder: t(($) => $.exam.questions.form.educationGrade.placeholder),
+            options: gradeOptions,
+            disabled: isFetchingGrades,
+            isLoading: isFetchingGrades,
+          },
+          isActive: {
+            type: "switch",
+            name: "isActive",
+            label: t(($) => $.exam.questions.form.isActive.label),
+            description: t(($) => $.exam.questions.form.isActive.description),
+          },
+          content: {
+            type: "blocknote",
+            name: "content",
+            label: t(($) => $.exam.questions.form.content.label),
+            minHeight: type === EnumQuestionType.STATEMENT_REASONING ? "200px" : "350px",
+            uploadFile,
+          },
+          reasonContent: {
+            type: "blocknote",
+            name: "reasonContent",
+            label: t(($) => $.exam.questions.form.reasonContent.label),
+            minHeight: type === EnumQuestionType.STATEMENT_REASONING ? "200px" : "300px",
+            uploadFile,
+          },
+        };
 
-            <div className="grid grid-cols-2 gap-4">
-              <ControlForm form={form} item={formConfig.maxScore} showMessage={false} />
-              <ControlForm form={form} item={formConfig.scoringStrategy} showMessage={false} />
-            </div>
+        return (
+          <form.AppForm>
+            <FormWithDetector form={form} onSubmit={onFormSubmit} errorClassName="mt-0 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="border border-border rounded-lg bg-card p-6 space-y-6">
+                  <form.AppField name="subjectId">
+                    {(field) => <ControlForm field={field} item={formConfig.subjectId} showMessage={false} />}
+                  </form.AppField>
 
-            <div className="grid grid-cols-2 gap-4">
-              <ControlForm form={form} item={formConfig.requiredTier} showMessage={false} />
-              <ControlForm form={form} item={formConfig.educationGradeId} showMessage={false} />
-            </div>
+                  <form.AppField name="passageId">
+                    {(field) => <ControlForm field={field} item={formConfig.passageId} showMessage={false} />}
+                  </form.AppField>
 
-            <ControlForm form={form} item={formConfig.isActive} showMessage={false} />
-          </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <form.AppField name="difficulty">
+                      {(field) => <ControlForm field={field} item={formConfig.difficulty} showMessage={false} />}
+                    </form.AppField>
+                    <form.AppField name="type">
+                      {(field) => <ControlForm field={field} item={formConfig.type} showMessage={false} />}
+                    </form.AppField>
+                  </div>
 
-          <div className="border border-border rounded-lg bg-card p-6 space-y-6 flex flex-col">
-            <ControlForm
-              form={form}
-              item={formConfig.content}
-              showMessage={false}
-              className="flex-1"
-            />
+                  <div className="grid grid-cols-2 gap-4">
+                    <form.AppField name="maxScore">
+                      {(field) => <ControlForm field={field} item={formConfig.maxScore} showMessage={false} />}
+                    </form.AppField>
+                    <form.AppField name="scoringStrategy">
+                      {(field) => <ControlForm field={field} item={formConfig.scoringStrategy} showMessage={false} />}
+                    </form.AppField>
+                  </div>
 
-            {type === EnumQuestionType.STATEMENT_REASONING && (
-              <ControlForm
-                form={form}
-                item={formConfig.reasonContent}
-                showMessage={false}
-                className="flex-1"
-                wrapperClassName="pt-4 border-t border-dashed"
-              />
-            )}
+                  <div className="grid grid-cols-2 gap-4">
+                    <form.AppField name="requiredTier">
+                      {(field) => <ControlForm field={field} item={formConfig.requiredTier} showMessage={false} />}
+                    </form.AppField>
+                    <form.AppField name="educationGradeId">
+                      {(field) => <ControlForm field={field} item={formConfig.educationGradeId} showMessage={false} />}
+                    </form.AppField>
+                  </div>
 
-            <div className="flex justify-end gap-2 pt-4 border-t">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  form.reset();
-                }}
-              >
-                {t(($) => $.labels.cancel)}
-              </Button>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? t(($) => $.labels.saving) : t(($) => $.labels.save)}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </FormWithDetector>
-    </Form>
+                  <form.AppField name="isActive">
+                    {(field) => <ControlForm field={field} item={formConfig.isActive} showMessage={false} />}
+                  </form.AppField>
+                </div>
+
+                <div className="border border-border rounded-lg bg-card p-6 space-y-6 flex flex-col">
+                  <form.AppField name="content">
+                    {(field) => (
+                      <ControlForm
+                        field={field}
+                        item={formConfig.content}
+                        showMessage={false}
+                        className="flex-1"
+                      />
+                    )}
+                  </form.AppField>
+
+                  {type === EnumQuestionType.STATEMENT_REASONING && (
+                    <form.AppField name="reasonContent">
+                      {(field) => (
+                        <ControlForm
+                          field={field}
+                          item={formConfig.reasonContent}
+                          showMessage={false}
+                          className="flex-1"
+                          wrapperClassName="pt-4 border-t border-dashed"
+                        />
+                      )}
+                    </form.AppField>
+                  )}
+
+                  <div className="flex justify-end gap-2 pt-4 border-t">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        form.reset();
+                      }}
+                    >
+                      {t(($) => $.labels.cancel)}
+                    </Button>
+                    <Button type="submit" disabled={isPending}>
+                      {isPending ? t(($) => $.labels.saving) : t(($) => $.labels.save)}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </FormWithDetector>
+          </form.AppForm>
+        );
+      }}
+    </form.Subscribe>
   );
 }
+

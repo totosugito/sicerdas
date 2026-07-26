@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Lightbulb } from "lucide-react";
 import { ExamQuestion } from "@/api/exam/questions";
-import { BlockNoteStatic } from "@/components/custom/components";
+import { BlockNoteStatic } from "@/components/custom/blocknote";
 
 interface DetailSolutionsProps {
   question: ExamQuestion;

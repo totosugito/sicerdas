@@ -53,7 +53,6 @@ export const FormCombobox = ({
 }: FormComboboxProps) => {
   const popoverClassName = item.popoverClassName ?? "min-w-[250px]";
   const [open, setOpen] = React.useState(false);
-
   const selectedRef = React.useRef<HTMLDivElement>(null);
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
@@ -108,9 +107,9 @@ export const FormCombobox = ({
             {...props}
             modal={true}
           >
-            <PopoverTrigger
-              render={
-                <FormControl>
+            <FormControl>
+              <PopoverTrigger
+                render={
                   <Button
                     variant="outline"
                     role="combobox"
@@ -128,24 +127,19 @@ export const FormCombobox = ({
                     </span>
                     <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 ml-auto" />
                   </Button>
-                </FormControl>
-              }
-            />
+                }
+              />
+            </FormControl>
             <PopoverPositioner>
               <PopoverContent
                 className={cn(
-                  "w-[var(--radix-popover-trigger-width)] p-0 overflow-y-auto z-50",
+                  "w-[var(--radix-popover-trigger-width)] p-0 z-50",
                   popoverClassName,
                 )}
               >
               <Command
+                key={`${item?.options?.length ?? 0}-${item?.isLoading ? "loading" : "ready"}`}
                 shouldFilter={!item?.serverSideSearch}
-                filter={(value, search) => {
-                  if (item?.serverSideSearch) return 1;
-                  const option = item?.options.find((it: any) => it.value === value);
-                  if (!option) return 0;
-                  return option.label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
-                }}
               >
                 <CommandInput
                   placeholder={item?.searchPlaceholder ?? "Search..."}
@@ -164,27 +158,29 @@ export const FormCombobox = ({
                 >
                   <CommandEmpty>{item.isLoading ? "Loading..." : "No item found."}</CommandEmpty>
                   <CommandGroup>
-                    {item?.options.map((it: any) => (
-                      <CommandItem
-                        ref={field.value === it.value ? selectedRef : null}
-                        key={it.value}
-                        value={it.value}
-                        onSelect={(currentValue) => {
-                          const newValue = currentValue === field.value ? "" : currentValue;
-                          form.setValue(field.name, newValue);
-                          setOpen(false);
-                        }}
-                        // className={cn(`${field.value === it.value ? "bg-chart-2 text-background" : ""}`)}
-                      >
-                        {it.label}
-                        <Check
-                          className={cn(
-                            "ml-auto",
-                            field.value === it.value ? "opacity-100" : "opacity-0",
-                          )}
-                        />
-                      </CommandItem>
-                    ))}
+                    {item?.options.map((it: any) => {
+                      return (
+                        <CommandItem
+                          ref={field.value === it.value ? selectedRef : null}
+                          key={it.value}
+                          value={it.label}
+                          onSelect={() => {
+                            const newValue = it.value === field.value ? "" : it.value;
+                            form.setValue(field.name, newValue);
+                            setOpen(false);
+                          }}
+                          // className={cn(`${field.value === it.value ? "bg-chart-2 text-background" : ""}`)}
+                        >
+                          {it.label}
+                          <Check
+                            className={cn(
+                              "ml-auto",
+                              field.value === it.value ? "opacity-100" : "opacity-0",
+                            )}
+                          />
+                        </CommandItem>
+                      );
+                    })}
                   </CommandGroup>
                 </CommandList>
               </Command>

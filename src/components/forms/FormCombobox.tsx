@@ -84,9 +84,9 @@ export const FormCombobox = ({
         {item.required && <span className="text-red-500">*</span>}
       </field.Label>
       <Popover open={open} onOpenChange={setOpen} {...props} modal={true}>
-        <PopoverTrigger
-          render={
-            <field.Control>
+        <field.Control>
+          <PopoverTrigger
+            render={
               <Button
                 variant="outline"
                 role="combobox"
@@ -105,21 +105,24 @@ export const FormCombobox = ({
                 </span>
                 <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 absolute right-3 top-1/2 -translate-y-1/2" />
               </Button>
-            </field.Control>
-          }
-        />
+            }
+          />
+        </field.Control>
         <PopoverPositioner>
           <PopoverContent
             className={cn(
-              "w-[var(--radix-popover-trigger-width)] p-0 overflow-y-auto z-50",
+              "w-[var(--anchor-width)] p-0 z-50",
               popoverClassName,
             )}
           >
             <Command
+              key={`${item?.options?.length ?? 0}-${item?.isLoading ? "loading" : "ready"}`}
               shouldFilter={!item?.serverSideSearch}
               filter={(value, search) => {
                 if (item?.serverSideSearch) return 1;
-                const option = item?.options.find((it: any) => it.value === value);
+                const option = item?.options.find(
+                  (it: any) => String(it.value).toLowerCase() === value.toLowerCase(),
+                );
                 if (!option) return 0;
                 return option.label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
               }}
@@ -146,8 +149,8 @@ export const FormCombobox = ({
                       ref={field.state.value === it.value ? selectedRef : null}
                       key={it.value}
                       value={it.value}
-                      onSelect={(currentValue) => {
-                        const newValue = currentValue === field.state.value ? "" : currentValue;
+                      onSelect={() => {
+                        const newValue = it.value === field.state.value ? "" : it.value;
                         field.handleChange(newValue);
                         setOpen(false);
                       }}

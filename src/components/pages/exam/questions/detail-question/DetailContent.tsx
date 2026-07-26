@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Layers, Target } from "lucide-react";
 import { ExamQuestion } from "@/api/exam/questions";
-import { BlockNoteStatic } from "@/components/custom/components";
+import { BlockNoteStatic } from "@/components/custom/blocknote";
 import { cn } from "@/lib/utils";
 
 interface DetailContentProps {
