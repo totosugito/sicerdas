@@ -10,8 +10,8 @@ export const APP_CONFIG = {
     logo: AppLogo,
     version: __BUILD_VERSION__,
     uploadDirs: "/uploads/", // don't change this
-    mailTo: "support@sicerdas.com",
-    discord: "https://discord.gg/fahimedu",
+    mailTo: "totosugito@gmail.com", // "support@sicerdas.com",
+    discord: "https://discord.gg/p8JZSvzTTB",
     playStore: "https://play.google.com/store/apps/details?id=fahim_edu.bse",
     youtubeChannel: "https://www.youtube.com/@fahim_edu",
     youtubeDemo: "https://youtu.be/N0OoWUIwYZM",

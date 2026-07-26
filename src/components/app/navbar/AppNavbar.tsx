@@ -115,7 +115,7 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
               <Separator orientation={"vertical"} className={"h-6"} style={{ height: "20px" }} />
             </>
           ) : (
-            <AppLogo disableCollapsed={isAdmin(user) && isShowSidebar} />
+            <AppLogo />
           )}
         </div>
 

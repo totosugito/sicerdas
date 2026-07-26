@@ -90,7 +90,7 @@ export function AppNavbarMobile({ isOpen, setIsOpen }: AppNavbarMobileProps) {
 
                 {/* Header */}
                 <SheetHeader className="px-6 py-8 bg-gradient-to-br from-primary/5 via-transparent to-transparent">
-                    <AppLogo disableCollapsed onClick={() => setIsOpen(false)} />
+                    <AppLogo onClick={() => setIsOpen(false)} />
                 </SheetHeader>
 
                 {/* Scrollable Nav Area */}

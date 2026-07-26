@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { ChevronUp } from 'lucide-react'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { useAuthStore } from '@/stores/useAuthStore'
-import { isShowSidebar } from '@/types/auth'
+import { isAdmin } from '@/types/auth'
 import AppSidebar from '@/components/app/sidebar/AppSidebar'
 import { useAdminNav } from '@/constants/admin-nav'
 import { SidebarData } from '@/components/app/sidebar/types'
@@ -26,7 +26,7 @@ function RouteComponent() {
         return path.includes('/exam/session/') && !path.includes('/results')
     }, [location.pathname])
 
-    const showSidebar = useMemo(() => isShowSidebar(user), [user])
+    const showSidebar = useMemo(() => isAdmin(user), [user])
 
     useEffect(() => {
         const handleScroll = () => {

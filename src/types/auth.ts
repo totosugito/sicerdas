@@ -34,11 +34,6 @@ export const getUserStore = (user: AuthProps | null) => {
   return user?.user;
 };
 
-export const isShowSidebar = (user: AuthProps | null) => {
-  const roles: string[] = [EnumUserRole.ADMIN];
-  return roles.includes(user?.user?.role as string);
-};
-
 export const isAdmin = (user: AuthProps | null) => {
   const roles: string[] = [EnumUserRole.ADMIN];
   return roles.includes(user?.user?.role as string);
