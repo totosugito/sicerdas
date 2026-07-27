@@ -34,6 +34,7 @@ export async function generateCustomService(
   const defaultPackageTitle = `Latihan Kustom - ${new Date().toLocaleDateString("id-ID")}`;
   const defaultSectionTitle = "Latihan Utama";
 
+  // 1. Find random questions matching criteria
   const selectedQuestions = await db
     .select({ id: examQuestions.id })
     .from(examQuestions)
@@ -55,6 +56,7 @@ export async function generateCustomService(
     };
   }
 
+  // 2. Create the package
   const [newPackage] = await db
     .insert(examPackages)
     .values({
@@ -65,7 +67,7 @@ export async function generateCustomService(
       educationGradeId,
       isActive: true,
       requiredTier: "free",
-      durationMinutes: selectedQuestions.length * 2,
+      durationMinutes: selectedQuestions.length * 2, // Estimate 2 mins per question
       totalSections: 1,
       activeSections: 1,
       totalQuestions: selectedQuestions.length,
@@ -73,6 +75,7 @@ export async function generateCustomService(
     })
     .returning({ id: examPackages.id });
 
+  // 3. Create a default section
   const [newSection] = await db
     .insert(examPackageSections)
     .values({
@@ -86,6 +89,7 @@ export async function generateCustomService(
     })
     .returning({ id: examPackageSections.id });
 
+  // 4. Link questions
   const packageQuestionsData = selectedQuestions.map((q, index) => ({
     packageId: newPackage.id,
     sectionId: newSection.id,

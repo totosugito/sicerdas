@@ -1,19 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
-import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
-import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { eq, sql } from "drizzle-orm";
+import { deleteSectionService } from "../../../../modules/exam/package-sections/services/admin/delete-section.service.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../../types/response.ts";
 
 const DeleteSectionParams = Type.Object({
   id: Type.String({ format: "uuid" }),
-});
-
-const DeleteSectionResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
 });
 
 const deleteSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -24,53 +16,22 @@ const deleteSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
       tags: ["Admin Exam Package Sections"],
       params: DeleteSectionParams,
       response: {
-        200: DeleteSectionResponse,
-        "4xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-        "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+        200: BaseResponseSchema,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Params: typeof DeleteSectionParams.static }>,
       reply: FastifyReply,
-    ) {
-            const { id } = request.params;
+    ): Promise<typeof BaseResponseSchema.static> {
+      const { id } = request.params;
+      const result = await deleteSectionService(id);
 
-      const existing = await db.query.examPackageSections.findFirst({
-        where: eq(examPackageSections.id, id),
-      });
-
-      if (!existing) {
-        return reply.notFound(request.t(($) => $.exam.package_sections.delete.notFound));
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) return reply.notFound(message);
+        return reply.badRequest(message);
       }
-
-      // Check if section is in use by any questions
-      const inUseCheck = await db.query.examPackageQuestions.findFirst({
-        where: eq(examPackageQuestions.sectionId, id),
-      });
-
-      if (inUseCheck) {
-        return reply.badRequest(request.t(($) => $.exam.package_sections.delete.inUse));
-      }
-
-      await db.transaction(async (tx) => {
-        await tx.delete(examPackageSections).where(eq(examPackageSections.id, id));
-
-        // Update counts and duration in the parent package in a single operation
-        await tx
-          .update(examPackages)
-          .set({
-            totalSections: sql`${examPackages.totalSections} - 1`,
-            activeSections: existing.isActive ? sql`${examPackages.activeSections} - 1` : undefined,
-            durationMinutes: sql`(
-              SELECT COALESCE(SUM(${examPackageSections.durationMinutes}), 0)
-              FROM ${examPackageSections}
-              WHERE ${examPackageSections.packageId} = ${existing.packageId}
-              AND ${examPackageSections.isActive} = true
-            )`,
-            updatedAt: new Date(),
-          })
-          .where(eq(examPackages.id, existing.packageId));
-      });
 
       return reply.status(200).send({
         success: true,

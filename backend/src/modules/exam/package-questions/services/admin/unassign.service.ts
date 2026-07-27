@@ -12,6 +12,7 @@ export async function unassignPackageQuestionsService(
   const { packageId, questionIds } = params;
 
   await db.transaction(async (tx) => {
+    // 1. Get info about questions being unassigned (only those actually in this package)
     const assignments = await tx
       .select({
         id: examQuestions.id,
@@ -29,6 +30,7 @@ export async function unassignPackageQuestionsService(
 
     if (assignments.length === 0) return;
 
+    // 2. Perform deletion
     await tx
       .delete(examPackageQuestions)
       .where(
@@ -38,6 +40,7 @@ export async function unassignPackageQuestionsService(
         ),
       );
 
+    // 3. Fully sync Package and Section counters via SQL Ground Truth
     await syncPackage(packageId, tx);
 
     const uniqueSectionIds = [...new Set(assignments.map((a) => a.sectionId))];

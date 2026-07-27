@@ -1,26 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
-import { and, eq } from "drizzle-orm";
-
-const SyncPackageQuestionsOrderBody = Type.Object({
-  packageId: Type.String({ format: "uuid" }),
-  sectionId: Type.String({ format: "uuid" }),
-  updates: Type.Array(
-    Type.Object({
-      questionId: Type.String({ format: "uuid" }),
-      order: Type.Number(),
-    }),
-    { minItems: 1 },
-  ),
-});
-
-const SyncPackageQuestionsOrderResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-});
+import { syncPackageQuestionsOrderService } from "../../../../modules/exam/package-questions/services/admin/sync-order.service.ts";
+import { SyncPackageQuestionsOrderBody } from "../../../../modules/exam/package-questions/package-questions.schema.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../../types/response.ts";
 
 const syncPackageQuestionsOrderRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -30,31 +12,21 @@ const syncPackageQuestionsOrderRoute: FastifyPluginAsyncTypebox = async (app) =>
       tags: ["Admin Exam Package Questions"],
       body: SyncPackageQuestionsOrderBody,
       response: {
-        200: SyncPackageQuestionsOrderResponse,
-        "4xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-        "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+        200: BaseResponseSchema,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Body: typeof SyncPackageQuestionsOrderBody.static }>,
       reply: FastifyReply,
-    ) {
-            const { packageId, sectionId, updates } = request.body;
+    ): Promise<typeof BaseResponseSchema.static> {
+      const result = await syncPackageQuestionsOrderService(request.body);
 
-      await db.transaction(async (tx) => {
-        for (const update of updates) {
-          await tx
-            .update(examPackageQuestions)
-            .set({ order: update.order })
-            .where(
-              and(
-                eq(examPackageQuestions.packageId, packageId),
-                eq(examPackageQuestions.sectionId, sectionId),
-                eq(examPackageQuestions.questionId, update.questionId),
-              ),
-            );
-        }
-      });
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) return reply.notFound(message);
+        return reply.badRequest(message);
+      }
 
       return reply.status(200).send({
         success: true,

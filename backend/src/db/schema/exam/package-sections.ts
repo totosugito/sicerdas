@@ -61,6 +61,10 @@ export const examPackageSections = pgTable(
     activeQuestions: integer("active_questions").default(0).notNull(),
     maxScore: integer("max_score").default(0).notNull(),
 
+    // Question Pool: When set (> 0), randomly pick this many questions from the section's pool per session.
+    // When 0, all questions in the section are shown (default behavior).
+    questionLimit: integer("question_limit").default(0).notNull(),
+
     // Timestamp when this section was created
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 

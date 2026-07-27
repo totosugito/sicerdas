@@ -1,39 +1,13 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
-import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { eq } from "drizzle-orm";
+import { adminDetailSectionService } from "../../../../modules/exam/package-sections/services/admin/detail-section.service.ts";
+import { AdminSectionDetailResponse } from "../../../../modules/exam/package-sections/package-sections.schema.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
-import { sql } from "drizzle-orm";
 
 const DetailSectionParams = Type.Object({
   id: Type.String({ format: "uuid" }),
-});
-
-const SectionDetailItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  packageId: Type.String({ format: "uuid" }),
-  packageName: Type.String(),
-  title: Type.String(),
-  groupName: Type.Union([Type.String(), Type.Null()]),
-  description: Type.Union([Type.String(), Type.Null()]),
-  durationMinutes: Type.Number(),
-  order: Type.Number(),
-  isActive: Type.Boolean(),
-  versionId: Type.Union([Type.Number(), Type.Null()]),
-  categoryId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
-  educationGradeId: Type.Union([Type.Number(), Type.Null()]),
-  isNew: Type.Boolean(),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-});
-
-const DetailSectionResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: SectionDetailItem,
 });
 
 const detailSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
@@ -44,9 +18,8 @@ const detailSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
       tags: ["Exam Package Sections"],
       params: DetailSectionParams,
       response: {
-        200: DetailSectionResponse,
-        "4xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-        "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+        200: AdminSectionDetailResponse,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
@@ -54,52 +27,22 @@ const detailSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
         Params: typeof DetailSectionParams.static;
       }>,
       reply: FastifyReply,
-    ) {
-            const { id } = request.params;
+    ): Promise<typeof AdminSectionDetailResponse.static> {
+      const { id } = request.params;
       const latestVersionId = (app as any).versionCache?.get(EnumContentType.EXAM);
 
-      // 1. Get Section & Package Information
-      const [sectionResult] = await db
-        .select({
-          section: examPackageSections,
-          packageName: examPackages.title,
-          categoryId: examPackages.categoryId,
-          educationGradeId: examPackages.educationGradeId,
-          isNew: latestVersionId
-            ? sql<boolean>`${examPackageSections.versionId} = ${latestVersionId}`.as("isNew")
-            : sql<boolean>`false`.as("isNew"),
-        })
-        .from(examPackageSections)
-        .innerJoin(examPackages, eq(examPackageSections.packageId, examPackages.id))
-        .where(eq(examPackageSections.id, id))
-        .limit(1);
+      const result = await adminDetailSectionService(id, latestVersionId);
 
-      if (!sectionResult) {
-        return reply.notFound(request.t(($) => $.exam.package_sections.detail.notFound));
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) return reply.notFound(message);
+        return reply.badRequest(message);
       }
-
-      const section = sectionResult.section;
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.exam.package_sections.detail.success),
-        data: {
-          id: section.id,
-          packageId: section.packageId,
-          packageName: sectionResult.packageName,
-          title: section.title,
-          groupName: section.groupName,
-          description: section.description,
-          durationMinutes: section.durationMinutes,
-          order: section.order,
-          isActive: section.isActive,
-          versionId: section.versionId,
-          categoryId: sectionResult.categoryId,
-          educationGradeId: sectionResult.educationGradeId,
-          isNew: !!sectionResult.isNew,
-          createdAt: section.createdAt.toISOString(),
-          updatedAt: section.updatedAt.toISOString(),
-        },
+        data: result.data,
       });
     },
   });

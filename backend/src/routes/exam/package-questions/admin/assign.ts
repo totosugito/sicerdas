@@ -1,27 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
-import { eq, sql, inArray, and } from "drizzle-orm";
-import { syncSection, syncPackage } from "../../../../services/exam/index.ts";
-
-const AssignPackageQuestionsBody = Type.Object({
-  packageId: Type.String({ format: "uuid" }),
-  sectionId: Type.String({ format: "uuid" }),
-  questionIds: Type.Array(Type.String({ format: "uuid" }), { minItems: 1 }),
-});
-
-const AssignPackageQuestionsResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Optional(
-    Type.Object({
-      totalAssigned: Type.Number(),
-      totalSkipped: Type.Number(),
-    }),
-  ),
-});
+import { assignPackageQuestionsService } from "../../../../modules/exam/package-questions/services/admin/assign.service.ts";
+import { AssignPackageQuestionsBody, AssignPackageQuestionsResponse } from "../../../../modules/exam/package-questions/package-questions.schema.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 
 const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -32,76 +13,25 @@ const assignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
       body: AssignPackageQuestionsBody,
       response: {
         200: AssignPackageQuestionsResponse,
-        "4xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-        "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Body: typeof AssignPackageQuestionsBody.static }>,
       reply: FastifyReply,
-    ) {
-            const { packageId, sectionId, questionIds } = request.body;
+    ): Promise<typeof AssignPackageQuestionsResponse.static> {
+      const result = await assignPackageQuestionsService(request.body);
 
-      let totalAssigned = 0;
-      let totalSkipped = 0;
-
-      await db.transaction(async (tx) => {
-        // 1. Check which questions are already assigned to this package
-        const existingAssignments = await tx
-          .select({ questionId: examPackageQuestions.questionId })
-          .from(examPackageQuestions)
-          .where(
-            and(
-              eq(examPackageQuestions.packageId, packageId),
-              inArray(examPackageQuestions.questionId, questionIds),
-            ),
-          );
-
-        const existingIds = new Set(existingAssignments.map((a) => a.questionId));
-        const newQuestionIds = questionIds.filter((id) => !existingIds.has(id));
-
-        totalSkipped = existingIds.size;
-        totalAssigned = newQuestionIds.length;
-
-        if (newQuestionIds.length === 0) {
-          return; // All requested questions are already assigned
-        }
-
-        // 2. Get the current maximum order in this section
-        const currentMax = await tx
-          .select({ maxOrder: sql<number>`MAX(${examPackageQuestions.order})` })
-          .from(examPackageQuestions)
-          .where(
-            and(
-              eq(examPackageQuestions.packageId, packageId),
-              eq(examPackageQuestions.sectionId, sectionId),
-            ),
-          );
-
-        let nextOrder = (currentMax[0]?.maxOrder ?? 0) + 1;
-
-        // 3. Insert only new assignments
-        const values = newQuestionIds.map((questionId) => ({
-          packageId,
-          sectionId,
-          questionId,
-          order: nextOrder++,
-        }));
-
-        await tx.insert(examPackageQuestions).values(values);
-
-        // 4. Fully sync Package and Section counters via SQL Ground Truth
-        await syncPackage(packageId, tx);
-        await syncSection(sectionId, tx);
-      });
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) return reply.notFound(message);
+        return reply.badRequest(message);
+      }
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.exam.package_questions.assign.success),
-        data: {
-          totalAssigned,
-          totalSkipped,
-        },
+        data: result.data,
       });
     },
   });

@@ -1,21 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
-import { examQuestions } from "../../../../db/schema/exam/questions.ts";
-import { and, eq, inArray } from "drizzle-orm";
-import { syncSection, syncPackage } from "../../../../services/exam/index.ts";
-
-const UnassignPackageQuestionsBody = Type.Object({
-  packageId: Type.String({ format: "uuid" }),
-  questionIds: Type.Array(Type.String({ format: "uuid" }), { minItems: 1 }),
-});
-
-const UnassignPackageQuestionsResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-});
+import { unassignPackageQuestionsService } from "../../../../modules/exam/package-questions/services/admin/unassign.service.ts";
+import { UnassignPackageQuestionsBody } from "../../../../modules/exam/package-questions/package-questions.schema.ts";
+import { BaseResponseSchema, ErrorResponseSchema } from "../../../../types/response.ts";
 
 const unassignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -25,54 +12,21 @@ const unassignPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => 
       tags: ["Admin Exam Package Questions"],
       body: UnassignPackageQuestionsBody,
       response: {
-        200: UnassignPackageQuestionsResponse,
-        "4xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-        "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+        200: BaseResponseSchema,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Body: typeof UnassignPackageQuestionsBody.static }>,
       reply: FastifyReply,
-    ) {
-            const { packageId, questionIds } = request.body;
+    ): Promise<typeof BaseResponseSchema.static> {
+      const result = await unassignPackageQuestionsService(request.body);
 
-      await db.transaction(async (tx) => {
-        // 1. Get info about questions being unassigned (only those actually in this package)
-        const assignments = await tx
-          .select({
-            id: examQuestions.id,
-            isActive: examQuestions.isActive,
-            sectionId: examPackageQuestions.sectionId,
-          })
-          .from(examPackageQuestions)
-          .innerJoin(examQuestions, eq(examPackageQuestions.questionId, examQuestions.id))
-          .where(
-            and(
-              eq(examPackageQuestions.packageId, packageId),
-              inArray(examPackageQuestions.questionId, questionIds),
-            ),
-          );
-
-        if (assignments.length === 0) return;
-
-        // 2. Perform deletion
-        await tx
-          .delete(examPackageQuestions)
-          .where(
-            and(
-              eq(examPackageQuestions.packageId, packageId),
-              inArray(examPackageQuestions.questionId, questionIds),
-            ),
-          );
-
-        // 3. Fully sync Package and Section counters via SQL Ground Truth
-        await syncPackage(packageId, tx);
-
-        const uniqueSectionIds = [...new Set(assignments.map((a) => a.sectionId))];
-        for (const sectionId of uniqueSectionIds) {
-          await syncSection(sectionId, tx);
-        }
-      });
+      if (!result.success) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) return reply.notFound(message);
+        return reply.badRequest(message);
+      }
 
       return reply.status(200).send({
         success: true,

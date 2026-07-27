@@ -1,68 +1,12 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
-import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { and, eq, sql, desc, ilike } from "drizzle-orm";
-import { fromNodeHeaders } from "better-auth/node";
+import { adminListSectionService } from "../../../../modules/exam/package-sections/services/admin/list-section.service.ts";
+import { AdminSectionListBody, AdminSectionListResponse } from "../../../../modules/exam/package-sections/package-sections.schema.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 import { getAuthInstance } from "../../../../decorators/auth.decorator.ts";
+import { fromNodeHeaders } from "better-auth/node";
 import { EnumUserRole } from "../../../../db/schema/index.ts";
 import { EnumContentType } from "../../../../db/schema/enum/enum-app.ts";
-
-const SectionListQuery = Type.Object({
-  search: Type.Optional(Type.String({ description: "Search term for section title" })),
-  packageId: Type.Optional(Type.String({ format: "uuid" })),
-  isActive: Type.Optional(Type.Boolean()),
-  sortBy: Type.Optional(
-    Type.String({
-      description:
-        "Sort field: createdAt, title, groupName, isActive, updatedAt, durationMinutes, order, versionId",
-      default: "updatedAt",
-    }),
-  ),
-  sortOrder: Type.Optional(
-    Type.String({ description: "Sort order: asc or desc", default: "desc" }),
-  ),
-  page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
-  limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
-});
-
-const SectionResponseItem = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  packageId: Type.String({ format: "uuid" }),
-  packageName: Type.Union([Type.String(), Type.Null()]),
-  title: Type.String(),
-  groupName: Type.Union([Type.String(), Type.Null()]),
-  description: Type.Union([Type.String(), Type.Null()]),
-  durationMinutes: Type.Union([Type.Number(), Type.Null()]),
-  order: Type.Number(),
-  isActive: Type.Boolean(),
-  versionId: Type.Union([Type.Number(), Type.Null()]),
-  isNew: Type.Boolean(),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-  totalQuestions: Type.Number(),
-  activeQuestions: Type.Number(),
-});
-
-const ListSectionsResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Object({
-    package: Type.Object({
-      packageId: Type.String(),
-      packageName: Type.String(),
-    }),
-    items: Type.Array(SectionResponseItem),
-    meta: Type.Object({
-      total: Type.Number(),
-      page: Type.Number(),
-      limit: Type.Number(),
-      totalPages: Type.Number(),
-    }),
-  }),
-});
 
 const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -70,193 +14,35 @@ const listSectionsRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "POST",
     schema: {
       tags: ["Admin Exam Package Sections"],
-      body: SectionListQuery,
+      body: AdminSectionListBody,
       response: {
-        200: ListSectionsResponse,
-        "4xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-        "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+        200: AdminSectionListResponse,
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Body: typeof SectionListQuery.static }>,
+      request: FastifyRequest<{ Body: typeof AdminSectionListBody.static }>,
       reply: FastifyReply,
-    ) {
-            // Determine user role from session
+    ): Promise<typeof AdminSectionListResponse.static> {
       const session = await getAuthInstance(app).api.getSession({
         headers: fromNodeHeaders(request.headers),
       });
       const user = session?.user;
       const isAdmin = user?.role === EnumUserRole.ADMIN;
-
-      const {
-        search,
-        packageId,
-        isActive,
-        sortOrder = "desc",
-        page = 1,
-        limit = 10,
-      } = request.body;
-
-      let { sortBy = "updatedAt" } = request.body;
       const latestVersionId = (app as any).versionCache?.get(EnumContentType.EXAM);
 
-      const offset = (page - 1) * limit;
+      const result = await adminListSectionService(request.body, isAdmin, latestVersionId);
 
-      let returnPackageId = "";
-      let returnPackageName = "";
-
-      const conditions: any[] = [];
-
-      if (search) {
-        conditions.push(ilike(examPackageSections.title, `%${search}%`));
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) return reply.notFound(message);
+        return reply.badRequest(message);
       }
-
-      if (packageId) {
-        const existingPackage = await db.query.examPackages.findFirst({
-          where: eq(examPackages.id, packageId),
-          columns: { id: true, title: true },
-        });
-
-        if (!existingPackage) {
-          return reply.notFound(request.t(($) => $.exam.packages.detail.notFound));
-        }
-
-        returnPackageId = existingPackage.id;
-        returnPackageName = existingPackage.title;
-
-        conditions.push(eq(examPackageSections.packageId, packageId));
-      }
-
-      if (!isAdmin) {
-        // Client must only see active sections
-        conditions.push(eq(examPackageSections.isActive, true));
-        // Force sorting ignoring isActive for clients
-        if (sortBy === "isActive") sortBy = "order";
-      } else {
-        // Admin can filter by active status
-        if (isActive !== undefined) conditions.push(eq(examPackageSections.isActive, isActive));
-      }
-
-      let baseQuery = db
-        .select({
-          section: examPackageSections,
-          packageName: examPackages.title,
-          isNew: latestVersionId
-            ? sql<boolean>`${examPackageSections.versionId} = ${latestVersionId}`.as("isNew")
-            : sql<boolean>`false`.as("isNew"),
-        })
-        .from(examPackageSections)
-        .leftJoin(examPackages, eq(examPackageSections.packageId, examPackages.id));
-
-      if (conditions.length > 0) {
-        baseQuery = baseQuery.where(and(...conditions)) as any;
-      }
-
-      // Sorting
-      const orderDir = sortOrder === "asc" ? "asc" : "desc";
-      let queryWithSort;
-
-      switch (sortBy) {
-        case "totalQuestions":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(examPackageSections.totalQuestions)
-              : baseQuery.orderBy(desc(examPackageSections.totalQuestions));
-          break;
-        case "activeQuestions":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(examPackageSections.activeQuestions)
-              : baseQuery.orderBy(desc(examPackageSections.activeQuestions));
-          break;
-        case "isActive":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(examPackageSections.isActive)
-              : baseQuery.orderBy(desc(examPackageSections.isActive));
-          break;
-        case "updatedAt":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(examPackageSections.updatedAt)
-              : baseQuery.orderBy(desc(examPackageSections.updatedAt));
-          break;
-        case "durationMinutes":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(examPackageSections.durationMinutes)
-              : baseQuery.orderBy(desc(examPackageSections.durationMinutes));
-          break;
-        case "createdAt":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(examPackageSections.createdAt)
-              : baseQuery.orderBy(desc(examPackageSections.createdAt));
-          break;
-        case "title":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(examPackageSections.title)
-              : baseQuery.orderBy(desc(examPackageSections.title));
-          break;
-        case "groupName":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(examPackageSections.groupName)
-              : baseQuery.orderBy(desc(examPackageSections.groupName));
-          break;
-        case "versionId":
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(examPackageSections.versionId)
-              : baseQuery.orderBy(desc(examPackageSections.versionId));
-          break;
-        case "order":
-        default:
-          queryWithSort =
-            orderDir === "asc"
-              ? baseQuery.orderBy(examPackageSections.order)
-              : baseQuery.orderBy(desc(examPackageSections.order));
-          break;
-      }
-
-      // Count
-      const countResult = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(queryWithSort.as("subquery"));
-
-      const total = Number(countResult[0]?.count || 0);
-      const totalPages = Math.ceil(total / limit);
-
-      // Fetch
-      const items = await queryWithSort.limit(limit).offset(offset);
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.exam.package_sections.list.success),
-        data: {
-          package: {
-            packageId: returnPackageId,
-            packageName: returnPackageName,
-          },
-          items: items.map((r) => {
-            const s = r.section;
-            return {
-              ...s,
-              packageName: r.packageName,
-              versionId: s.versionId,
-              isNew: !!r.isNew,
-              createdAt: s.createdAt.toISOString(),
-              updatedAt: s.updatedAt.toISOString(),
-            };
-          }),
-          meta: {
-            total,
-            page,
-            limit,
-            totalPages,
-          },
-        },
+        data: result.data,
       });
     },
   });

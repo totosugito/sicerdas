@@ -20,8 +20,8 @@ export async function adminDetailSectionService(
       categoryId: examPackages.categoryId,
       educationGradeId: examPackages.educationGradeId,
       isNew: latestVersionId
-        ? sql<boolean>`${examPackageSections.versionId} = ${latestVersionId}`
-        : sql<boolean>`false`,
+        ? sql<boolean>`${examPackageSections.versionId} = ${latestVersionId}`.as("isNew")
+        : sql<boolean>`false`.as("isNew"),
     })
     .from(examPackageSections)
     .innerJoin(examPackages, eq(examPackageSections.packageId, examPackages.id))
@@ -54,6 +54,7 @@ export async function adminDetailSectionService(
       categoryId: sectionResult.categoryId,
       educationGradeId: sectionResult.educationGradeId,
       isNew: !!sectionResult.isNew,
+      questionLimit: section.questionLimit,
       createdAt: section.createdAt.toISOString(),
       updatedAt: section.updatedAt.toISOString(),
     },

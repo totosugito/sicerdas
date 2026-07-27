@@ -24,7 +24,7 @@ export async function startSessionService(
 
   // 1. Check if package and section exist and are active
   const [section] = await db
-    .select({ id: examPackageSections.id })
+    .select({ id: examPackageSections.id, questionLimit: examPackageSections.questionLimit })
     .from(examPackageSections)
     .innerJoin(examPackages, eq(examPackageSections.packageId, examPackages.id))
     .where(
@@ -94,15 +94,22 @@ export async function startSessionService(
     // A. Scramble question order
     const shuffledQuestions = shuffleArray(questionsRaw);
 
+    // A2. Apply question pool limit: if questionLimit is set, pick only that many
+    const questionLimit = section.questionLimit;
+    const selectedQuestions =
+      questionLimit && questionLimit > 0 && questionLimit < shuffledQuestions.length
+        ? shuffledQuestions.slice(0, questionLimit)
+        : shuffledQuestions;
+
     // B. Fetch all options for these questions to scramble them
-    const questionIds = shuffledQuestions.map((q) => q.questionId);
+    const questionIds = selectedQuestions.map((q) => q.questionId);
     const allOptions = await db
       .select({ id: examQuestionOptions.id, questionId: examQuestionOptions.questionId })
       .from(examQuestionOptions)
       .where(inArray(examQuestionOptions.questionId, questionIds));
 
     // C. Prepare answer rows with scrambled data
-    const answerValues = shuffledQuestions.map((q, index) => {
+    const answerValues = selectedQuestions.map((q, index) => {
       // Scramble option IDs for this question
       const questionOptions = allOptions
         .filter((o) => o.questionId === q.questionId)

@@ -54,6 +54,9 @@ const FormEntity = ({ values, form, packageIdDisabled }: any) => {
       <form.AppField name="versionId">
         {(field: any) => <ControlForm field={field} item={values.versionId} showMessage={false} />}
       </form.AppField>
+      <form.AppField name="questionLimit">
+        {(field: any) => <ControlForm field={field} item={values.questionLimit} showMessage={false} />}
+      </form.AppField>
       <form.AppField name="isActive">
         {(field: any) => <ControlForm field={field} item={values.isActive} showMessage={false} />}
       </form.AppField>
@@ -109,6 +112,7 @@ export const DialogSectionForm = ({
       1,
       t(($) => $.exam.sections.formVersionRequired),
     ),
+    questionLimit: z.coerce.number().min(0, "Limit questions must be positive"),
   };
 
   const formConfig: any = {
@@ -147,6 +151,13 @@ export const DialogSectionForm = ({
       description: t(($) => $.exam.sections.formDurationHelp),
       options: durationOnMinutes,
     },
+    questionLimit: {
+      type: "number",
+      name: "questionLimit",
+      label: "Batas Jumlah Soal (Pool)",
+      placeholder: "Contoh: 10 (0 untuk menampilkan semua)",
+      description: "Jika diisi > 0, sistem akan mengacak & membatasi jumlah soal yang dikerjakan user per sesi",
+    },
     isActive: {
       type: "switch",
       name: "isActive",
@@ -180,6 +191,7 @@ export const DialogSectionForm = ({
       durationMinutes: (section?.durationMinutes ?? 0).toString(),
       isActive: section?.isActive ?? true,
       versionId: section?.versionId?.toString() || "",
+      questionLimit: (section?.questionLimit ?? 0).toString(),
     },
     child: formConfig,
     schema: formSchema,
@@ -201,6 +213,10 @@ export const DialogSectionForm = ({
                 : 0,
             isActive: values.isActive,
             versionId: values.versionId ? Number(values.versionId) : undefined,
+            questionLimit:
+              values.questionLimit !== undefined && values.questionLimit !== ""
+                ? Number(values.questionLimit)
+                : 0,
           },
           {
             onSuccess: () => {
@@ -228,6 +244,10 @@ export const DialogSectionForm = ({
                 : 0,
             isActive: values.isActive,
             versionId: values.versionId ? Number(values.versionId) : undefined,
+            questionLimit:
+              values.questionLimit !== undefined && values.questionLimit !== ""
+                ? Number(values.questionLimit)
+                : 0,
           },
           {
             onSuccess: () => {

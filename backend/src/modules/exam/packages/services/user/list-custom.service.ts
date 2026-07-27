@@ -29,6 +29,7 @@ export async function listCustomService(
     eq(examPackages.isActive, true),
   );
 
+  // 1. Get total count
   const [countResult] = await db
     .select({ count: sql<number>`count(*)` })
     .from(examPackages)
@@ -36,6 +37,7 @@ export async function listCustomService(
 
   const total = Number(countResult?.count || 0);
 
+  // 2. Get paginated data
   const items = await db
     .select({
       id: examPackages.id,

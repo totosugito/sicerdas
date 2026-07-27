@@ -1,53 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examPackageQuestions } from "../../../../db/schema/exam/package-questions.ts";
-import { examQuestions } from "../../../../db/schema/exam/questions.ts";
-import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
-import { examSubjects } from "../../../../db/schema/exam/subjects.ts";
-import { eq, and, sql } from "drizzle-orm";
-
-const PackageQuestionListQuery = Type.Object({
-  packageId: Type.String({ format: "uuid" }),
-  sectionId: Type.Optional(Type.String({ format: "uuid" })),
-  page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
-  limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 50 })),
-});
-
-const PackageQuestionListResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Object({
-    items: Type.Array(
-      Type.Object({
-        packageId: Type.String({ format: "uuid" }),
-        sectionId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
-        questionId: Type.String({ format: "uuid" }),
-        order: Type.Number(),
-        question: Type.Object({
-          id: Type.String({ format: "uuid" }),
-          content: Type.Array(Type.Any()),
-          type: Type.String(),
-          difficulty: Type.String(),
-          subjectName: Type.Union([Type.String(), Type.Null()]),
-        }),
-        section: Type.Optional(
-          Type.Object({
-            id: Type.String({ format: "uuid" }),
-            title: Type.String(),
-          }),
-        ),
-      }),
-    ),
-    meta: Type.Object({
-      total: Type.Number(),
-      page: Type.Number(),
-      limit: Type.Number(),
-      totalPages: Type.Number(),
-    }),
-  }),
-});
+import { packageQuestionListService } from "../../../../modules/exam/package-questions/services/admin/list.service.ts";
+import { PackageQuestionListBody, PackageQuestionListResponse } from "../../../../modules/exam/package-questions/package-questions.schema.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 
 const listPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -55,74 +10,28 @@ const listPackageQuestionsRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "POST",
     schema: {
       tags: ["Admin Exam Package Questions"],
-      body: PackageQuestionListQuery,
+      body: PackageQuestionListBody,
       response: {
         200: PackageQuestionListResponse,
-        "4xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-        "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Body: typeof PackageQuestionListQuery.static }>,
+      request: FastifyRequest<{ Body: typeof PackageQuestionListBody.static }>,
       reply: FastifyReply,
-    ) {
-            const { packageId, sectionId, page = 1, limit = 10 } = request.body;
-      const offset = (page - 1) * limit;
+    ): Promise<typeof PackageQuestionListResponse.static> {
+      const result = await packageQuestionListService(request.body);
 
-      const conditions = [eq(examPackageQuestions.packageId, packageId)];
-      if (sectionId) conditions.push(eq(examPackageQuestions.sectionId, sectionId));
-
-      const baseQuery = db
-        .select({
-          packageId: examPackageQuestions.packageId,
-          sectionId: examPackageQuestions.sectionId,
-          questionId: examPackageQuestions.questionId,
-          order: examPackageQuestions.order,
-          question: {
-            id: examQuestions.id,
-            content: examQuestions.content,
-            type: examQuestions.type,
-            difficulty: examQuestions.difficulty,
-            subjectName: examSubjects.name,
-          },
-          section: {
-            id: examPackageSections.id,
-            title: examPackageSections.title,
-          },
-        })
-        .from(examPackageQuestions)
-        .innerJoin(examQuestions, eq(examPackageQuestions.questionId, examQuestions.id))
-        .leftJoin(examSubjects, eq(examQuestions.subjectId, examSubjects.id))
-        .leftJoin(examPackageSections, eq(examPackageQuestions.sectionId, examPackageSections.id))
-        .where(and(...conditions))
-        .orderBy(examPackageQuestions.order);
-
-      // Count
-      const countResult = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(baseQuery.as("subquery"));
-
-      const total = Number(countResult[0]?.count || 0);
-      const totalPages = Math.ceil(total / limit);
-
-      // Execute Paginated Fetch
-      const items = await baseQuery.limit(limit).offset(offset);
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) return reply.notFound(message);
+        return reply.badRequest(message);
+      }
 
       return reply.status(200).send({
         success: true,
         message: request.t(($) => $.exam.package_questions.list.success),
-        data: {
-          items: items.map((item) => ({
-            ...item,
-            section: item.section?.id ? item.section : undefined,
-          })) as any,
-          meta: {
-            total,
-            page,
-            limit,
-            totalPages,
-          },
-        },
+        data: result.data,
       });
     },
   });

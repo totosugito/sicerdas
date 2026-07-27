@@ -1,29 +1,8 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { Type } from "@sinclair/typebox";
-import { db } from "../../../../db/db-pool.ts";
-import { examPackageSections } from "../../../../db/schema/exam/package-sections.ts";
-import { examPackages } from "../../../../db/schema/exam/packages.ts";
-import { eq, sql } from "drizzle-orm";
-
-const CreateSectionBody = Type.Object({
-  packageId: Type.String({ format: "uuid" }),
-  title: Type.String({ minLength: 1, maxLength: 255 }),
-  groupName: Type.Optional(Type.String({ maxLength: 255 })),
-  description: Type.Optional(Type.String()),
-  durationMinutes: Type.Optional(Type.Number({ minimum: 0 })),
-  order: Type.Optional(Type.Number({ default: -1 })),
-  isActive: Type.Optional(Type.Boolean({ default: true })),
-  versionId: Type.Number(),
-});
-
-const CreateSectionResponse = Type.Object({
-  success: Type.Boolean(),
-  message: Type.String(),
-  data: Type.Object({
-    id: Type.String({ format: "uuid" }),
-  }),
-});
+import { createSectionService } from "../../../../modules/exam/package-sections/services/admin/create-section.service.ts";
+import { CreateSectionBody, CreateSectionResponse } from "../../../../modules/exam/package-sections/package-sections.schema.ts";
+import { ErrorResponseSchema } from "../../../../types/response.ts";
 
 const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -34,91 +13,27 @@ const createSectionRoute: FastifyPluginAsyncTypebox = async (app) => {
       body: CreateSectionBody,
       response: {
         201: CreateSectionResponse,
-        "4xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
-        "5xx": Type.Object({ success: Type.Boolean({ default: false }), message: Type.String() }),
+        "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
       request: FastifyRequest<{ Body: typeof CreateSectionBody.static }>,
       reply: FastifyReply,
-    ) {
-            const {
-        packageId,
-        title,
-        groupName,
-        description,
-        durationMinutes,
-        order,
-        isActive,
-        versionId,
-      } = request.body;
-      let orderToUse = order ?? -1;
-
-      // 1. Check if package exists
-      const existingPackage = await db.query.examPackages.findFirst({
-        where: eq(examPackages.id, packageId),
-      });
-
-      if (!existingPackage) {
-        return reply.notFound(request.t(($) => $.exam.packages.update.notFound));
-      }
-
-      // 2. Handle auto-order if order is < 0
-      if (orderToUse < 0) {
-        const [countResult] = await db
-          .select({
-            total: sql<number>`count(*)`,
-          })
-          .from(examPackageSections)
-          .where(eq(examPackageSections.packageId, packageId));
-
-        const currentTotal = Number(countResult?.total || 0);
-        orderToUse = currentTotal + 1;
-      }
-
+    ): Promise<typeof CreateSectionResponse.static> {
       const userId = request.session.user.id;
-      const isSectionActive = isActive ?? true;
+      const result = await createSectionService(request.body, userId);
 
-      const newSectionId = await db.transaction(async (tx) => {
-        const [section] = await tx
-          .insert(examPackageSections)
-          .values({
-            packageId,
-            title,
-            groupName,
-            description,
-            durationMinutes: durationMinutes ?? 0,
-            order: orderToUse,
-            isActive: isSectionActive,
-            versionId,
-            createdByUserId: userId,
-          })
-          .returning({ id: examPackageSections.id });
-
-        // Update counts and duration in the parent package in a single operation
-        await tx
-          .update(examPackages)
-          .set({
-            totalSections: sql`${examPackages.totalSections} + 1`,
-            activeSections: isSectionActive ? sql`${examPackages.activeSections} + 1` : undefined,
-            durationMinutes: sql`(
-              SELECT COALESCE(SUM(${examPackageSections.durationMinutes}), 0)
-              FROM ${examPackageSections}
-              WHERE ${examPackageSections.packageId} = ${packageId}
-              AND ${examPackageSections.isActive} = true
-            )`,
-            updatedAt: new Date(),
-          })
-          .where(eq(examPackages.id, packageId));
-
-        return section.id;
-      });
+      if (!result.success || !result.data) {
+        const message = request.t(result.errorKey!);
+        if (result.statusCode === 404) return reply.notFound(message);
+        return reply.badRequest(message);
+      }
 
       return reply.status(201).send({
         success: true,
         message: request.t(($) => $.exam.package_sections.create.success),
         data: {
-          id: newSectionId,
+          id: result.data.id,
         },
       });
     },

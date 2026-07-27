@@ -18,6 +18,7 @@ export async function deleteSectionService(id: string): Promise<ServiceResponse>
     };
   }
 
+  // Check if section is in use by any questions
   const inUseCheck = await db.query.examPackageQuestions.findFirst({
     where: eq(examPackageQuestions.sectionId, id),
   });
@@ -33,6 +34,7 @@ export async function deleteSectionService(id: string): Promise<ServiceResponse>
   await db.transaction(async (tx) => {
     await tx.delete(examPackageSections).where(eq(examPackageSections.id, id));
 
+    // Update counts and duration in the parent package in a single operation
     await tx
       .update(examPackages)
       .set({

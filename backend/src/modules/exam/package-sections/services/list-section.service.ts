@@ -42,6 +42,7 @@ export async function listSectionService(
   let sections;
 
   if (userId) {
+    // 1. Latest session per section (DISTINCT ON is Postgres best practice)
     const latestSessions = db
       .selectDistinctOn([examSessions.sectionId], {
         sectionId: examSessions.sectionId,
@@ -57,6 +58,7 @@ export async function listSectionService(
       )
       .as("latest");
 
+    // 2. Best tryout score per section
     const bestScores = db
       .select({
         sectionId: examSessions.sectionId,
@@ -69,6 +71,7 @@ export async function listSectionService(
       .groupBy(examSessions.sectionId)
       .as("best");
 
+    // 3. Optimized query for Authenticated User
     sections = await db
       .select({
         ...sectionColumns,
@@ -87,6 +90,7 @@ export async function listSectionService(
       )
       .orderBy(examPackageSections.order);
   } else {
+    // 3. Optimized query for Guest User (No Joins)
     sections = await db
       .select({
         ...sectionColumns,

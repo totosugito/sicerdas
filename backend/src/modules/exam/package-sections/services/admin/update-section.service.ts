@@ -18,6 +18,7 @@ export async function updateSectionService(
     order,
     isActive,
     versionId,
+    questionLimit,
   } = params;
 
   const existing = await db.query.examPackageSections.findFirst({
@@ -58,6 +59,7 @@ export async function updateSectionService(
         order,
         isActive,
         versionId,
+        questionLimit,
         updatedAt: new Date(),
       })
       .where(eq(examPackageSections.id, id));
@@ -66,7 +68,9 @@ export async function updateSectionService(
     const isMovingPackage = packageId !== undefined && packageId !== existing.packageId;
     const isSectionActive = isActive ?? existing.isActive;
 
+    // 1. Handle Target Package Update
     if (isMovingPackage) {
+      // Moved to this package: increment counts and recalculate duration
       await tx
         .update(examPackages)
         .set({
@@ -82,6 +86,7 @@ export async function updateSectionService(
         })
         .where(eq(examPackages.id, targetPackageId));
 
+      // Removed from old package: decrement counts and recalculate duration
       await tx
         .update(examPackages)
         .set({
@@ -99,6 +104,7 @@ export async function updateSectionService(
         })
         .where(eq(examPackages.id, existing.packageId));
     } else {
+      // Same package: handle isActive and durationMinutes changes
       const activeChanged = isActive !== undefined && isActive !== existing.isActive;
       const durationChanged =
         durationMinutes !== undefined && durationMinutes !== existing.durationMinutes;

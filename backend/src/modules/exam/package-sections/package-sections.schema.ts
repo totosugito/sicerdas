@@ -10,6 +10,7 @@ const SectionCoreFields = {
   description: Type.Union([Type.String(), Type.Null()]),
   durationMinutes: Type.Union([Type.Number(), Type.Null()]),
   order: Type.Number(),
+  questionLimit: Type.Number(),
 };
 
 const SectionBaseFields = {
@@ -30,6 +31,7 @@ const SectionCreateFields = {
   order: Type.Optional(Type.Number({ default: -1 })),
   isActive: Type.Optional(Type.Boolean({ default: true })),
   versionId: Type.Optional(Type.Number()),
+  questionLimit: Type.Optional(Type.Number({ minimum: 0 })),
 };
 
 // --- Public Schemas ---
