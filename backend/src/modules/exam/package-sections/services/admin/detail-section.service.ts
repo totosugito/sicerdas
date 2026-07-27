@@ -55,6 +55,8 @@ export async function adminDetailSectionService(
       educationGradeId: sectionResult.educationGradeId,
       isNew: !!sectionResult.isNew,
       questionLimit: section.questionLimit,
+      isRandomItem: section.isRandomItem,
+      isRandomChoice: section.isRandomChoice,
       createdAt: section.createdAt.toISOString(),
       updatedAt: section.updatedAt.toISOString(),
     },

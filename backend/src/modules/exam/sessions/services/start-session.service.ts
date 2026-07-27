@@ -24,7 +24,12 @@ export async function startSessionService(
 
   // 1. Check if package and section exist and are active
   const [section] = await db
-    .select({ id: examPackageSections.id, questionLimit: examPackageSections.questionLimit })
+    .select({
+      id: examPackageSections.id,
+      questionLimit: examPackageSections.questionLimit,
+      isRandomItem: examPackageSections.isRandomItem,
+      isRandomChoice: examPackageSections.isRandomChoice,
+    })
     .from(examPackageSections)
     .innerJoin(examPackages, eq(examPackageSections.packageId, examPackages.id))
     .where(
@@ -91,15 +96,15 @@ export async function startSessionService(
     .where(eq(examPackageQuestions.sectionId, sectionId));
 
   if (questionsRaw.length > 0) {
-    // A. Scramble question order
-    const shuffledQuestions = shuffleArray(questionsRaw);
+    // A. Order questions (scramble if enabled)
+    const orderedQuestions = section.isRandomItem ? shuffleArray(questionsRaw) : questionsRaw;
 
     // A2. Apply question pool limit: if questionLimit is set, pick only that many
     const questionLimit = section.questionLimit;
     const selectedQuestions =
-      questionLimit && questionLimit > 0 && questionLimit < shuffledQuestions.length
-        ? shuffledQuestions.slice(0, questionLimit)
-        : shuffledQuestions;
+      questionLimit && questionLimit > 0 && questionLimit < orderedQuestions.length
+        ? orderedQuestions.slice(0, questionLimit)
+        : orderedQuestions;
 
     // B. Fetch all options for these questions to scramble them
     const questionIds = selectedQuestions.map((q) => q.questionId);
@@ -115,7 +120,9 @@ export async function startSessionService(
         .filter((o) => o.questionId === q.questionId)
         .map((o) => o.id);
 
-      const shuffledOptionsOrder = shuffleArray(questionOptions);
+      const shuffledOptionsOrder = section.isRandomChoice
+        ? shuffleArray(questionOptions)
+        : questionOptions;
 
       // Handle variable variations
       let variationIndex = 0;

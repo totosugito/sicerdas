@@ -1,4 +1,4 @@
-import { boolean, index, integer, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { boolean, index, integer, pgTable, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { users } from '../users/users.ts';
 import { courses } from './courses.ts';
@@ -35,7 +35,7 @@ export const courseUserProgress = pgTable('course_user_progress', {
     // Last time progress was updated
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
-    index('course_user_progress_lookup_idx').on(table.userId, table.courseId, table.lectureId),
+    uniqueIndex('course_user_progress_lookup_idx').on(table.userId, table.courseId, table.lectureId),
     index('course_user_progress_course_lookup_idx').on(table.userId, table.courseId),
 ]);
 

@@ -28,19 +28,16 @@ import { users } from "../users/users.ts";
  * - type: Type of the lecture (video, quiz, text, etc.)
  * - referenceUrl: URL reference to external content (max 255 characters)
  * - content: Text content for the lecture
- * - extra: JSONB field for storing additional structured data without requiring schema changes
+ * - extra: JSONB field for storing type-specific metadata (e.g., successThreshold and maxRetries for exams)
  * - isActive: Whether the lecture is active or not
  * - position: The order in which lectures are displayed within a chapter (fractional indexing)
  * - createdAt: When the lecture was created
  * - updatedAt: When the lecture was last updated
  *
- * ------------ quizzes lecture ------------
- * - isRandomItem: Whether quiz items are randomized
- * - isRandomChoice: Whether quiz choices are randomized
- * - viewPerItem: How items are displayed (one at a time or many at once)
- * - successThreshold: Score needed to pass the quiz
- * - questionsPerQuiz: Number of questions per quiz instance
- * - maxRetryPerQuiz: Maximum number of retries allowed
+ * Notes:
+ * - For QUIZ/EXAM types, the actual questions and randomization are handled by the linked
+ *   exam_packages via the CBT engine. Course-specific progression rules (like passing 
+ *   scores or retry limits) are stored in this table's `extra` JSONB field.
  */
 export const courseLectures = pgTable(
   "course_lectures",
@@ -57,7 +54,10 @@ export const courseLectures = pgTable(
     type: PgEnumLectureType("type").notNull().default(EnumLectureType.TEXT),
     referenceUrl: varchar("reference_url", { length: 255 }),
     content: text("content"),
-    extra: jsonb("extra").$type<Record<string, unknown>>().default({}),
+    extra: jsonb("extra").$type<{
+      successThreshold?: number;
+      maxRetries?: number;
+    } & Record<string, unknown>>().default({}),
     isActive: boolean("is_active").notNull().default(true),
     position: numeric("position", { precision: 10, scale: 10 }).notNull().default("1.0"),
     createdAt: timestamp("created_at").defaultNow().notNull(),

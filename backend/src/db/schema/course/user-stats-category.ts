@@ -1,4 +1,4 @@
-import { index, integer, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { integer, pgTable, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { users } from '../users/users.ts';
 import { educationCategories } from '../education/categories.ts';
@@ -24,7 +24,7 @@ export const courseUserStatsCategory = pgTable('course_user_stats_category', {
     // Timestamp representing the last time this specific aggregate was incremented
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
-    index('course_user_stats_category_lookup_idx').on(table.userId, table.categoryId),
+    uniqueIndex('course_user_stats_category_lookup_idx').on(table.userId, table.categoryId),
 ]);
 
 export type SchemaCourseUserStatCategorySelect = InferSelectModel<typeof courseUserStatsCategory>;

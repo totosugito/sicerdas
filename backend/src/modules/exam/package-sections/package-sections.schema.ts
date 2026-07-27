@@ -11,6 +11,8 @@ const SectionCoreFields = {
   durationMinutes: Type.Union([Type.Number(), Type.Null()]),
   order: Type.Number(),
   questionLimit: Type.Number(),
+  isRandomItem: Type.Boolean(),
+  isRandomChoice: Type.Boolean(),
 };
 
 const SectionBaseFields = {
@@ -32,6 +34,8 @@ const SectionCreateFields = {
   isActive: Type.Optional(Type.Boolean({ default: true })),
   versionId: Type.Optional(Type.Number()),
   questionLimit: Type.Optional(Type.Number({ minimum: 0 })),
+  isRandomItem: Type.Optional(Type.Boolean({ default: true })),
+  isRandomChoice: Type.Optional(Type.Boolean({ default: true })),
 };
 
 // --- Public Schemas ---

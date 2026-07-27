@@ -4,7 +4,7 @@ Untuk use case seperti **Buku dengan Banyak Bab**, berikut adalah cara memetakan
 
 ## 1️⃣ Topik Inti / Kurikulum = TS Category atau TS Subject
 
-- Jika ini adalah area mata pelajaran yang luas, gunakan `examակից_categories`
+- Jika ini adalah area mata pelajaran yang luas, gunakan `education_categories`
   (contoh: **"Kurikulum Matematika SMA"**)
 
 - Atau gunakan `exam_subjects`
@@ -17,8 +17,8 @@ Untuk use case seperti **Buku dengan Banyak Bab**, berikut adalah cara memetakan
 - **title**:
   `"Matematika Kelas 12 - Penerbit X"`
 
--Bustnut- **examType**:
-Sebaiknya set ke `'official'` atau buat enum baru seperti `'course_material'` jika ingin membedakannya dari tryout yang berbatas waktu.
+- **examType**:
+  Sebaiknya set ke `'official'` atau buat enum baru seperti `'course_material'` jika ingin membedakannya dari tryout yang berbatas waktu.
 
 - **durationMinutes**:
   Set ke `0` atau angka yang sangat besar jika ini adalah buku latihan _self-paced_ (belajar bebas) dan bukan ujian dengan batas waktu.
@@ -44,7 +44,7 @@ Sebaiknya set ke `'official'` atau buat enum baru seperti `'course_material'` ji
 - **sectionId**:
   👉 Langkah krusial — hubungkan soal ini ke ID section `"Bab 1: Matriks"` yang sesuai.
 - **questionId**: Hubungkan ke soal spesifik dari bank soal Anda.
-- **order**: Nomor soal di dalam bab tersebut (misalnya Soal নিহs 1, Soal 2).
+- **order**: Nomor soal di dalam bab tersebut (misalnya Soal 1, Soal 2).
 
 ---
 
@@ -60,13 +60,13 @@ Dengan pendekatan ini:
 
 ---
 
-Itu pertanyaan yang sangat bagus! Perbedaan antara `ts packages.ts` dan `ts subjects.ts` berkaitan erat dengan konsep **"Wadahibris" (Container)** vs **"Kategori Ilmu" (Domain of Knowledge)**.
+Itu pertanyaan yang sangat bagus! Perbedaan antara `packages.ts` dan `subjects.ts` berkaitan erat dengan konsep **"Wadah" (Container)** vs **"Kategori Ilmu" (Domain of Knowledge)**.
 
 Mari kita bahas menggunakan contoh buku Matematika Anda yang memiliki banyak bab (Topik A, Topik B, Topik C, dsb).
 
 ---
 
-## 1. The Subject (`exam_subjects` di `ts subjects.ts`)
+## 1. The Subject (`exam_subjects` di `subjects.ts`)
 
 - **Apa ini?**
   Ini adalah bidang studi atau mata pelajaran secara umum.
@@ -78,11 +78,11 @@ Mari kita bahas menggunakan contoh buku Matematika Anda yang memiliki banyak bab
   Sangat _high-level_ (tingkat abstrak yang tinggi). Subject tidak berisi pertanyaan secara langsung, dan tidak memiliki "durasi" atau urutan.
 
 - **Dalam skenario buku Anda:**
-  `ts Subject`-nya adalah **"Matematika"** atau mungkin **"Matematika SMA Kelas 12"**.
+  Subject-nya adalah **"Matematika"** atau mungkin **"Matematika SMA Kelas 12"**.
 
 ---
 
-## 2. The Package (`exam_packages` di `ts packages.ts`)
+## 2. The Package (`exam_packages` di `packages.ts`)
 
 - **Apa ini?**
   Ini adalah produk final (wadah utama) yang bisa dikerjakan/dibaca oleh pengguna. Ini mewakili Buku Fisik atau Sesi Tryout Keseluruhan.
@@ -94,7 +94,7 @@ Mari kita bahas menggunakan contoh buku Matematika Anda yang memiliki banyak bab
   Punya judul spesifik, bisa diatur waktu pengerjaan (durasi), dan biasanya dihubungkan ke tingkatan kelas (_Education Grade_) atau level akses (_Tier_).
 
 - **Dalam skenario buku Anda:**
-  `ts Package`-nya adalah buku spesifik tersebut, misalnya **"Buku Pendalaman Matematika Penerbit X"**.
+  Package-nya adalah buku spesifik tersebut, misalnya **"Buku Pendalaman Matematika Penerbit X"**.
 
 ---
 
@@ -102,9 +102,9 @@ Mari kita bahas menggunakan contoh buku Matematika Anda yang memiliki banyak bab
 
 Ini adalah bagian terpenting.
 
-Bab dari buku tersebut **TIDAK** masuk ke `ts subjects.ts` dan **BUKAN** `ts packages.ts` baru.
+Bab dari buku tersebut **TIDAK** masuk ke `subjects.ts` dan **BUKAN** `packages.ts` baru.
 
-Bab harus masuk ke dalam `exam_package_sections` (`ts package-sections.ts`).
+Bab harus masuk ke dalam `exam_package_sections` (`package-sections.ts`).
 
 ---
 
@@ -112,7 +112,7 @@ Bab harus masuk ke dalam `exam_package_sections` (`ts package-sections.ts`).
 
 Jika Anda ingin membuat pertanyaan untuk setiap Bab, inilah aliran datanya:
 
-### 1️⃣ Subject (`ts subjects.ts`)
+### 1️⃣ Subject (`subjects.ts`)
 
 Buat 1 subject:
 
@@ -120,7 +120,7 @@ Buat 1 subject:
 
 ---
 
-### 2️⃣ Package (`ts packages.ts`)
+### 2️⃣ Package (`packages.ts`)
 
 Buat 1 package untuk mewakili bukunya:
 
@@ -128,7 +128,7 @@ Buat 1 package untuk mewakili bukunya:
 
 ---
 
-### 3️⃣ Sections (`ts package-sections.ts`)
+### 3️⃣ Sections (`package-sections.ts`)
 
 Di sinilah Anda memecah buku menjadi Bab (Chapters).
 Anda membuat banyak sections yang terhubung (_linked_) ke `Package ID` dari buku di atas.
@@ -147,34 +147,34 @@ Sekarang, Anda memasukkan pertanyaan spesifik ke dalam masing-masing Bab (Sectio
 
 Contoh:
 
-- Soal hitung Aljabar → Masukkan ke `Package ID` (Buku Latihan) **DAN** ` করোনা Section ID` (Bab 1)
+- Soal hitung Aljabar → Masukkan ke `Package ID` (Buku Latihan) **DAN** `Section ID` (Bab 1)
 - Soal hitung Matriks → Masukkan ke `Package ID` (Buku Latihan) **DAN** `Section ID` (Bab 2)
 
 ---
 
 ## 🔎 Kesimpulan Ringkas
 
-- `ts Subject` = **"Ilmunya apa?"** (Matematika)
-- `ts Package` = **"Produk/Bukunya yang mana?"** (Buku Latihan Matematika)
-- `Package Section` = **"Bab/Sub-babnya apa?"** (Bab 1 Aljabar)
+- Subject = **"Ilmunya apa?"** (Matematika)
+- Package = **"Produk/Bukunya yang mana?"** (Buku Latihan Matematika)
+- Package Section = **"Bab/Sub-babnya apa?"** (Bab 1 Aljabar)
 
 ---
 
-Dengan cara ini, ketika pengguna atau sistem (Front-End) memuat `ts Package` (Buku), mereka dapat melihat daftar isi yang rapi berdasarkan `Sections` (Bab), dan ketika mengklik sebuah Bab, mereka akan melihat pertanyaan khusus untuk Bab tersebut.
+Dengan cara ini, ketika pengguna atau sistem (Front-End) memuat Package (Buku), mereka dapat melihat daftar isi yang rapi berdasarkan Sections (Bab), dan ketika mengklik sebuah Bab, mereka akan melihat pertanyaan khusus untuk Bab tersebut.
 
 ---
 
 Kalau begitu, Anda mungkin bertanya:
 
-> _Jika buku/produknya ada di `ts packages.ts` dan bab-babnya ada di `ts package-sections.ts`, untuk apa kita repot-repot menghubungkan soal ke `subjects` (Mata Pelajaran)?_
+> _Jika buku/produknya ada di `packages.ts` dan bab-babnya ada di `package-sections.ts`, untuk apa kita repot-repot menghubungkan soal ke `subjects` (Mata Pelajaran)?_
 
 Ini adalah pertanyaan arsitektur database yang sangat tepat!
 
-Keberadaan tabel `ts subjects.ts` (`exam_subjects`) sangat krusial untuk **3 alasan utama**:
+Keberadaan tabel `subjects.ts` (`exam_subjects`) sangat krusial untuk **3 alasan utama**:
 
 ---
 
-# 1️⃣ Analisis Lintas Paket (Cross-Packagelge Analytics)
+# 1️⃣ Analisis Lintas Paket (Cross-Package Analytics)
 
 Bayangkan siswa yang sama (Budi) mengerjakan 3 hal berbeda di platform Anda:
 
@@ -205,7 +205,7 @@ Nantinya, ketika Anda ingin merakit Package baru (misalnya **"Tryout Matematika 
 
 > _"Tarik 50 soal acak yang Subject-nya adalah Matematika."_
 
-`Subjects` mengizinkan soal berdiri sendiri (independent) di dalam Bank Soal sebelum mereka dimasukkan ke dalam keranjang `ts Package` manapun.
+`Subjects` mengizinkan soal berdiri sendiri (independent) di dalam Bank Soal sebelum mereka dimasukkan ke dalam keranjang Package manapun.
 
 ---
 
@@ -221,9 +221,9 @@ Di CPNS, sebuah Package (Tryout CPNS 2026) selalu harus berisi 3 Subjects:
 
 Dalam kasus ini:
 
-- `ts Package` = Tryout CPNS 2026
-- `Package Sections` = Bagian ujian yang dibagi per waktu (misalnya "Sesi 1" atau langsung "Bagian TIU").
-- `ts Subject` yang menempel di setiap soal memastikan bahwa soal-soal tersebut terikat secara legal/struktural sebagai bagian dari "Ilmu TIU" atau "Ilmu TWK".
+- Package = Tryout CPNS 2026
+- Package Sections = Bagian ujian yang dibagi per waktu (misalnya "Sesi 1" atau langsung "Bagian TIU").
+- Subject yang menempel di setiap soal memastikan bahwa soal-soal tersebut terikat secara legal/struktural sebagai bagian dari "Ilmu TIU" atau "Ilmu TWK".
 
 Ini memungkinkan:
 

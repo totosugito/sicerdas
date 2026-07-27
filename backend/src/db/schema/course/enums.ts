@@ -26,6 +26,7 @@ export const PgEnumPublishDateType = pgEnum('publish_date_type', Object.values(E
 export const EnumLectureType = {
     VIDEO: 'video',
     QUIZ: 'quiz',
+    EXAM: 'exam',
     TEXT: 'text',
     PDF: 'pdf',
     DISCUSSION: 'discussion',

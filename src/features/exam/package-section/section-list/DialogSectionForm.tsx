@@ -60,6 +60,12 @@ const FormEntity = ({ values, form, packageIdDisabled }: any) => {
       <form.AppField name="isActive">
         {(field: any) => <ControlForm field={field} item={values.isActive} showMessage={false} />}
       </form.AppField>
+      <form.AppField name="isRandomItem">
+        {(field: any) => <ControlForm field={field} item={values.isRandomItem} showMessage={false} />}
+      </form.AppField>
+      <form.AppField name="isRandomChoice">
+        {(field: any) => <ControlForm field={field} item={values.isRandomChoice} showMessage={false} />}
+      </form.AppField>
     </div>
   );
 };
@@ -113,6 +119,8 @@ export const DialogSectionForm = ({
       t(($) => $.exam.sections.formVersionRequired),
     ),
     questionLimit: z.coerce.number().min(0, "Limit questions must be positive"),
+    isRandomItem: z.boolean().default(true),
+    isRandomChoice: z.boolean().default(true),
   };
 
   const formConfig: any = {
@@ -164,6 +172,18 @@ export const DialogSectionForm = ({
       label: t(($) => $.exam.sections.formActive),
       description: t(($) => $.exam.sections.formActiveHelp),
     },
+    isRandomItem: {
+      type: "switch",
+      name: "isRandomItem",
+      label: "Acak Urutan Soal",
+      description: "Jika aktif, soal akan ditampilkan secara acak ke pengguna",
+    },
+    isRandomChoice: {
+      type: "switch",
+      name: "isRandomChoice",
+      label: "Acak Opsi Jawaban",
+      description: "Jika aktif, opsi jawaban (A, B, C, D) akan diacak urutannya",
+    },
     versionId: {
       type: "combobox",
       name: "versionId",
@@ -192,6 +212,8 @@ export const DialogSectionForm = ({
       isActive: section?.isActive ?? true,
       versionId: section?.versionId?.toString() || "",
       questionLimit: (section?.questionLimit ?? 0).toString(),
+      isRandomItem: section?.isRandomItem ?? true,
+      isRandomChoice: section?.isRandomChoice ?? true,
     },
     child: formConfig,
     schema: formSchema,
@@ -217,6 +239,8 @@ export const DialogSectionForm = ({
               values.questionLimit !== undefined && values.questionLimit !== ""
                 ? Number(values.questionLimit)
                 : 0,
+            isRandomItem: values.isRandomItem,
+            isRandomChoice: values.isRandomChoice,
           },
           {
             onSuccess: () => {
@@ -248,6 +272,8 @@ export const DialogSectionForm = ({
               values.questionLimit !== undefined && values.questionLimit !== ""
                 ? Number(values.questionLimit)
                 : 0,
+            isRandomItem: values.isRandomItem,
+            isRandomChoice: values.isRandomChoice,
           },
           {
             onSuccess: () => {

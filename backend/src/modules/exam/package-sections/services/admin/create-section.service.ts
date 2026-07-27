@@ -23,6 +23,8 @@ export async function createSectionService(
     isActive,
     versionId,
     questionLimit,
+    isRandomItem,
+    isRandomChoice,
   } = params;
 
   let orderToUse = order ?? -1;
@@ -67,6 +69,8 @@ export async function createSectionService(
         versionId,
         createdByUserId: userId,
         questionLimit: questionLimit ?? 0,
+        isRandomItem: isRandomItem ?? true,
+        isRandomChoice: isRandomChoice ?? true,
       })
       .returning({ id: examPackageSections.id });
 

@@ -65,6 +65,10 @@ export const examPackageSections = pgTable(
     // When 0, all questions in the section are shown (default behavior).
     questionLimit: integer("question_limit").default(0).notNull(),
 
+    // Randomization control
+    isRandomItem: boolean("is_random_item").default(true).notNull(),
+    isRandomChoice: boolean("is_random_choice").default(true).notNull(),
+
     // Timestamp when this section was created
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 

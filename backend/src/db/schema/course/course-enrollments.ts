@@ -1,5 +1,5 @@
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { index, jsonb, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { index, jsonb, pgTable, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 import { courses } from './courses.ts';
 import { users } from '../users/users.ts';
 import { EnumEnrollmentStatus, PgEnumEnrollmentStatus } from './enums.ts';
@@ -43,7 +43,7 @@ export const courseEnrollments = pgTable('course_enrollments', {
     index('course_enrollments_user_id_idx').on(table.userId),
     index('course_enrollments_status_idx').on(table.status),
     index('course_enrollments_enrolled_at_idx').on(table.enrolledAt),
-    index('course_enrollments_course_user_idx').on(table.courseId, table.userId),
+    uniqueIndex('course_enrollments_course_user_idx').on(table.courseId, table.userId),
 ]);
 
 export type SchemaCourseEnrollmentSelect = InferSelectModel<typeof courseEnrollments>;

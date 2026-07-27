@@ -19,6 +19,8 @@ export async function updateSectionService(
     isActive,
     versionId,
     questionLimit,
+    isRandomItem,
+    isRandomChoice,
   } = params;
 
   const existing = await db.query.examPackageSections.findFirst({
@@ -60,6 +62,8 @@ export async function updateSectionService(
         isActive,
         versionId,
         questionLimit,
+        isRandomItem,
+        isRandomChoice,
         updatedAt: new Date(),
       })
       .where(eq(examPackageSections.id, id));

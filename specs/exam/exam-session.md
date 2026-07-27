@@ -54,7 +54,7 @@ export const examSessions = pgTable("exam_sessions", {
 
 ## 3. Backend API Routes (`/api/exam/sessions/user`)
 
-The CBT engine relies on a strict 6-API architecture to ensure zero data leakage and secure evaluation:
+The CBT engine relies on a strict 7-API architecture to ensure zero data leakage and secure evaluation:
 
 ### A. Session Management & Actions
 
