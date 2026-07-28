@@ -63,6 +63,14 @@ type Store = {
     search: string;
   };
   setExamQuestions: (examQuestions: any) => void;
+  courses: {
+    viewMode: "table" | "card";
+    limit: number;
+    sortBy: string;
+    sortOrder: "asc" | "desc";
+    search: string;
+  };
+  setCourses: (courses: any) => void;
 
   periodicTable: {
     viewMode: PeriodicViewMode;
@@ -150,6 +158,13 @@ export const defaultStore = {
     search: "",
   },
   examQuestions: {
+    viewMode: "card" as "card" | "table",
+    limit: 10,
+    sortBy: "updatedAt",
+    sortOrder: "desc" as "asc" | "desc",
+    search: "",
+  },
+  courses: {
     viewMode: "card" as "card" | "table",
     limit: 10,
     sortBy: "updatedAt",
@@ -248,6 +263,11 @@ export const useAppStore = create<Store>()(
       setExamQuestions: (examQuestions: any) =>
         set({
           examQuestions,
+        }),
+      courses: defaultStore.courses,
+      setCourses: (courses: any) =>
+        set({
+          courses,
         }),
 
       mobileMenu: defaultStore.mobileMenu,

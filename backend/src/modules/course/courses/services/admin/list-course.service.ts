@@ -1,7 +1,7 @@
 import { db } from "../../../../../db/db-pool.ts";
 import { courses } from "../../../../../db/schema/course/courses.ts";
 import { educationCategories } from "../../../../../db/schema/education/categories.ts";
-import { and, eq, ilike, sql, desc, asc, inArray } from "drizzle-orm";
+import { and, eq, ilike, sql, desc, asc, inArray, or } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../../types/index.ts";
 import type { PaginationMeta } from "../../../../../types/response.ts";
 import type { CourseItem, CourseListQueryParams } from "../../courses.schema.ts";
@@ -58,7 +58,12 @@ export async function listCourseService(
 
   if (search && search.trim() !== "") {
     const searchTerm = `%${search.trim().toLowerCase()}%`;
-    conditions.push(ilike(courses.courseName, searchTerm));
+    conditions.push(
+      or(
+        ilike(courses.courseName, searchTerm),
+        ilike(courses.courseDescription, searchTerm)
+      )
+    );
   }
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;

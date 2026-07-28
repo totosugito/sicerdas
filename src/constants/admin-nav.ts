@@ -4,6 +4,7 @@ import {
   Badge,
   BookA,
   Bookmark,
+  BookOpen,
   BookPlus,
   BookSearch,
   BookTemplateIcon,
@@ -34,6 +35,18 @@ export const useAdminNav = () => {
         {
           title: t(($) => $.labels.management).toUpperCase(),
           items: [
+            {
+              title: t(($) => $.course.menu),
+              url: "/base",
+              icon: BookOpen,
+              items: [
+                {
+                  title: t(($) => $.course.courses.menu),
+                  url: AppRoute.course.courses.admin.list.url,
+                  icon: BookOpen,
+                },
+              ],
+            },
             {
               title: t(($) => $.exam.menu),
               url: "/base",

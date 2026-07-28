@@ -74,6 +74,20 @@ export const AppApi = {
   contentReport: {
     create: APP_URL_API + "/content-report/create",
   },
+  course: {
+    courses: {
+      admin: {
+        create: APP_URL_API + "/course/courses/admin/create",
+        update: APP_URL_API + "/course/courses/admin/update/:id",
+        delete: APP_URL_API + "/course/courses/admin/delete/:id",
+        list: APP_URL_API + "/course/courses/admin/list",
+        detail: APP_URL_API + "/course/courses/admin/detail/:id",
+        thumbnail: APP_URL_API + "/course/courses/admin/thumbnail/:id",
+      },
+      list: APP_URL_API + "/course/courses/list",
+      detail: APP_URL_API + "/course/courses/detail/:id",
+    },
+  },
   exam: {
     subjects: {
       admin: {

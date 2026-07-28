@@ -5,7 +5,7 @@ import {
   examPackageInteractions,
 } from "../../../../db/schema/exam/index.ts";
 import { educationCategories, educationGrades } from "../../../../db/schema/education/index.ts";
-import { and, eq, sql, ilike, desc, asc, inArray, gt } from "drizzle-orm";
+import { and, eq, sql, ilike, desc, asc, inArray, gt, or } from "drizzle-orm";
 import { EnumExamType } from "../../../../db/schema/exam/enums.ts";
 import { getPackageThumbnailUrl } from "../../../../utils/exam/exam-utils.ts";
 import type { ServiceResponse } from "../../../../types/index.ts";
@@ -46,7 +46,12 @@ export async function publicListPackageService(
 
   if (search && search.trim() !== "") {
     const searchTerm: string = `%${search.trim().toLowerCase()}%`;
-    conditions.push(ilike(examPackages.title, searchTerm));
+    conditions.push(
+      or(
+        ilike(examPackages.title, searchTerm),
+        ilike(examPackages.description, searchTerm)
+      )
+    );
   }
 
   if (categoryId) {

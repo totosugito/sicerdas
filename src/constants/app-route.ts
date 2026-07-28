@@ -43,6 +43,17 @@ export const AppRoute = {
     detail: { url: "/book/$id" },
     books: { url: "/books" },
   },
+  course: {
+    courses: {
+      admin: {
+        list: { url: "/course/admin/list-course" },
+        create: { url: "/course/admin/create-course" },
+        edit: { url: "/course/admin/edit-course/$id" },
+        detail: { url: "/course/admin/detail-course/$id" },
+      },
+      detail: { url: "/course/$id" },
+    },
+  },
   exam: {
     questions: {
       admin: {

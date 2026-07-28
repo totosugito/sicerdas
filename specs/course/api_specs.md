@@ -1,6 +1,6 @@
-# Course Module API Specifications
+# Course Module Specifications
 
-This document outlines the required API endpoints and routers for the Course Module. The architecture is heavily inspired by the existing `exam` module, separating concerns into specific sub-modules (`courses`, `chapters`, `lectures`, `lecture-texts`, `enrollments`, `user-progress`, `interactions`, `user-stats`).
+This document outlines the required API endpoints, routers, and frontend implementation checklists for the Course Module. The architecture is heavily inspired by the existing `exam` module, separating concerns into specific sub-modules (`courses`, `chapters`, `lectures`, `lecture-texts`, `enrollments`, `user-progress`, `interactions`, `user-stats`).
 
 ---
 
@@ -19,6 +19,19 @@ Handles the high-level course metadata, catalog, and admin CRUD.
 - [x] `GET /list`: Public course catalog (filters: categoryId, categoryKey, educationGradeId, educationGradeIds, search)
 - [x] `GET /detail/:id`: Course preview page
 
+### Frontend Implementation Checklist
+#### Admin UI
+- [ ] Course Management Table / List page (with filters: status, category, grade, search)
+- [ ] Create Course Form / Modal (draft course creation)
+- [ ] Edit Course Metadata Form page
+- [ ] Course Detail View & Dashboard
+- [ ] Course Thumbnail Upload / Remove component
+- [ ] Delete Course confirmation modal
+
+#### User / Public UI
+- [ ] Public Course Catalog / Exploration Page (with category, grade, & keyword filters)
+- [ ] Public Course Detail & Preview Page (overview, syllabus summary, pricing, enroll CTA)
+
 ---
 
 ## 2. `chapters` Router (Target: `src/modules/course/chapters` & `src/routes/course/chapters`)
@@ -31,6 +44,14 @@ Handles the structural modules/sections within a course.
 - [x] `PUT /update/:id`: Update chapter title/description
 - [x] `DELETE /delete/:id`: Delete chapter
 - [x] `PUT /reorder/:courseId`: Bulk update chapter positions (fractional indexing)
+
+### Frontend Implementation Checklist
+#### Admin UI
+- [ ] Chapter Management List View within Course Detail page
+- [ ] Create Chapter Form / Modal
+- [ ] Edit Chapter Title & Description Form / Modal
+- [ ] Delete Chapter confirmation dialog
+- [ ] Chapter Drag-and-Drop / Reorder component (fractional indexing)
 
 ---
 
@@ -58,6 +79,16 @@ Add `parent_package_id` column to support package cloning lineage:
   ```
 - **Usage**: Automatically set to source package ID when `/exam/package/clone` duplicates a package. Provides origin tracking, upstream sync checking, and template lineage.
 
+### Frontend Implementation Checklist
+#### Admin UI
+- [ ] Lecture List View within Chapter Detail accordion / nested view
+- [ ] Create Lecture Form / Modal (type selection: TEXT, VIDEO, PDF, EXAM)
+- [ ] Edit Lecture Form / Modal (title, description, referenceUrl, extra JSON settings)
+- [ ] Delete Lecture confirmation dialog
+- [ ] Lecture Drag-and-Drop / Reorder component within Chapter
+- [ ] Exam Package Selection & Cloning Modal (clone public package -> select section -> set `referenceUrl`)
+- [ ] Lecture Text Picker Dropdown (search & link existing `course_lecture_texts` article)
+
 ---
 
 ## 4. `lecture-texts` Router (Target: `src/modules/course/lecture-texts` & `src/routes/course/lecture-texts`)
@@ -69,6 +100,13 @@ Handles standalone, reusable rich text articles (BlockNote JSON format) referenc
 - [x] `POST /create`: Create a new course lecture text article
 - [x] `PUT /update/:id`: Update course lecture text title & BlockNote content
 - [x] `DELETE /delete/:id`: Delete course lecture text article
+
+### Frontend Implementation Checklist
+#### Admin UI
+- [ ] Lecture Text Article Management Table / List (with title search filter)
+- [ ] BlockNote Rich Text Article Editor Page / Modal (Create & Edit)
+- [ ] Article Preview View
+- [ ] Delete Article confirmation dialog
 
 ---
 
@@ -85,6 +123,17 @@ Handles the 1:1 relationship between users and courses.
 - [x] `GET /active`: List user's ACTIVE courses
 - [x] `GET /completed`: List user's COMPLETED courses
 
+### Frontend Implementation Checklist
+#### Admin UI
+- [ ] Enrolled Students Table / List View per course
+- [ ] Manual Student Enrollment Modal (search student & enroll)
+- [ ] Drop Student confirmation dialog
+
+#### User UI
+- [ ] Course Enrollment Action Button & Tier Requirements Check Modal
+- [ ] "My Courses - Active" Tab / Page
+- [ ] "My Courses - Completed" Tab / Page
+
 ---
 
 ## 6. `user-progress` Router (Target: `src/modules/course/user-progress` & `src/routes/course/user-progress`)
@@ -97,6 +146,15 @@ Handles tracking granular lecture completion.
   - For EXAMs: Fetch CBT `exam_sessions` score, compare with `successThreshold`.
 - [x] `PUT /lecture/:lectureId/watch-time`: Incremental updates for video watch time.
 
+### Frontend Implementation Checklist
+#### User UI
+- [ ] Interactive Course Player & Navigation Sidebar (Chapters + Lectures with completion icons & overall progress bar)
+- [ ] Article / Text Lecture Reader View (renders BlockNote content)
+- [ ] Video Lecture Player View (with video controls & auto watch-time heartbeat integration)
+- [ ] PDF Document Viewer Component
+- [ ] Embedded CBT Exam Launcher & Progression Result Evaluation Screen (checks score against `successThreshold`)
+- [ ] "Mark as Complete" Action Button & progression toast notifications
+
 ---
 
 ## 7. `interactions` Router (Target: `src/modules/course/interactions` & `src/routes/course/interactions`)
@@ -108,6 +166,13 @@ Handles user ratings and bookmarks (tied to `course_enrollments`).
 - [x] `POST /like/:courseId`: Toggle like/dislike status
 - [x] `GET /favorites`: List bookmarked/liked courses
 
+### Frontend Implementation Checklist
+#### User UI
+- [ ] Course Rating Star Component & Review Submit Modal
+- [ ] Bookmark Toggle Button Component (with active/inactive states)
+- [ ] Like / Dislike Toggle Buttons Component
+- [ ] "My Favorites & Bookmarks" Page / Grid View
+
 ---
 
 ## 8. `user-stats` Router (Target: `src/modules/course/user-stats` & `src/routes/course/user-stats`)
@@ -116,6 +181,11 @@ Handles user dashboard analytics.
 ### User Services (`/course/user-stats/user`)
 - [x] `GET /global`: Fetch `course_user_stats_global` (total enrolled, total completed, watch time)
 - [x] `GET /categories`: Fetch `course_user_stats_category` (progress segmented by category)
+
+### Frontend Implementation Checklist
+#### User UI
+- [ ] Learning Dashboard Overview Cards (Total Courses Enrolled, Completed, Total Watch Time)
+- [ ] Progress by Category Chart / Visual Breakdown Component
 
 ---
 

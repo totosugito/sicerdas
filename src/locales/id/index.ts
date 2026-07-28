@@ -13,6 +13,7 @@ import user from "./user";
 import education from "./education";
 import version from "./version";
 import tier from "./tier";
+import course from "./course";
 
 const localeId = {
   translation: {
@@ -28,6 +29,7 @@ const localeId = {
     constitution: constitution,
     tier: tier,
     exam: exam,
+    course: course,
     user: user,
     education: education,
     version: version,

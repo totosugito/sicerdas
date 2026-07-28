@@ -3,7 +3,7 @@ import { examPackages } from "../../../../../db/schema/exam/packages.ts";
 import { examPackageEventStats } from "../../../../../db/schema/exam/index.ts";
 import { educationCategories } from "../../../../../db/schema/education/categories.ts";
 import { educationGrades } from "../../../../../db/schema/education/grades.ts";
-import { desc, ilike, and, sql, eq, asc } from "drizzle-orm";
+import { desc, ilike, and, sql, eq, asc, or } from "drizzle-orm";
 import { getPackageThumbnailUrl } from "../../../../../utils/exam/exam-utils.ts";
 import type { ServiceResponse } from "../../../../../types/index.ts";
 import type { PaginationMeta } from "../../../../../types/response.ts";
@@ -55,7 +55,12 @@ export async function adminListPackageService(
 
   if (search && search.trim() !== "") {
     const searchTerm = `%${search.trim().toLowerCase()}%`;
-    conditions.push(ilike(examPackages.title, searchTerm));
+    conditions.push(
+      or(
+        ilike(examPackages.title, searchTerm),
+        ilike(examPackages.description, searchTerm)
+      )
+    );
   }
 
   // Build Query
