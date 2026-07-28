@@ -26,19 +26,14 @@ import { users } from "../users/users.ts";
  * - chapterId: Reference to the chapter this lecture belongs to
  * - createdByUserId: Reference to the user who created the lecture
  * - type: Type of the lecture (video, quiz, text, etc.)
- * - referenceUrl: URL reference to external content (max 255 characters)
- * - content: Text content for the lecture
- * - extra: JSONB field for storing type-specific metadata (e.g., successThreshold and maxRetries for exams)
+ * - referenceUrl: Reference to external content, resource ID, or section ID (max 255 characters):
+ *   - For TEXT types: Stores the `course_lecture_texts.id` UUID of the standalone rich text article.
+ *   - For EXAM types: Stores the `sectionId` of the hidden `course_exam` package section.
+ * - extra: JSONB field for storing type-specific metadata (e.g., successThreshold for exams)
  * - isActive: Whether the lecture is active or not
  * - position: The order in which lectures are displayed within a chapter (fractional indexing)
  * - createdAt: When the lecture was created
  * - updatedAt: When the lecture was last updated
- *
- * - referenceUrl: For EXAM types, stores the `sectionId` of the hidden `course_exam` package section.
- *   The `packageId` can be derived from `exam_package_sections.packageId` when needed.
- * - extra: JSONB field for type-specific metadata:
- *   - For EXAM: `successThreshold` (passing score percentage, 0-100)
- *   - For other types: extensible metadata as needed
  */
 export const courseLectures = pgTable(
   "course_lectures",
@@ -54,7 +49,6 @@ export const courseLectures = pgTable(
     }),
     type: PgEnumLectureType("type").notNull().default(EnumLectureType.TEXT),
     referenceUrl: varchar("reference_url", { length: 255 }),
-    content: text("content"),
     extra: jsonb("extra").$type<{
       successThreshold?: number;
     } & Record<string, unknown>>().default({}),

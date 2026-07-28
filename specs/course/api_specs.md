@@ -1,6 +1,6 @@
 # Course Module API Specifications
 
-This document outlines the required API endpoints and routers for the Course Module. The architecture is heavily inspired by the existing `exam` module, separating concerns into specific sub-modules (`courses`, `chapters`, `lectures`, `enrollments`, `user-progress`, `interactions`, `user-stats`).
+This document outlines the required API endpoints and routers for the Course Module. The architecture is heavily inspired by the existing `exam` module, separating concerns into specific sub-modules (`courses`, `chapters`, `lectures`, `lecture-texts`, `enrollments`, `user-progress`, `interactions`, `user-stats`).
 
 ---
 
@@ -35,15 +35,15 @@ Handles the structural modules/sections within a course.
 ---
 
 ## 3. `lectures` Router (Target: `src/modules/course/lectures` & `src/routes/course/lectures`)
-Handles atomic content items. 
+Handles atomic content items. (`referenceUrl` stores `course_lecture_texts.id` for `TEXT` type lectures, `sectionId` for `EXAM` type lectures, or CDN/file URLs for media).
 
 ### Admin Services (`/course/lectures/admin`)
-- [ ] `GET /list/:chapterId`: List all lectures in a chapter
-- [ ] `GET /detail/:id`: Full lecture detail (including `referenceUrl` and `extra` JSONB)
-- [ ] `POST /create`: Create a new lecture
-- [ ] `PUT /update/:id`: Update lecture (title, content, type, extra)
-- [ ] `DELETE /delete/:id`: Delete lecture
-- [ ] `PUT /reorder/:chapterId`: Bulk update lecture positions
+- [x] `GET /list/:chapterId`: List all lectures in a chapter
+- [x] `GET /detail/:id`: Full lecture detail (including `referenceUrl` and `extra` JSONB)
+- [x] `POST /create`: Create a new lecture
+- [x] `PUT /update/:id`: Update lecture (title, description, type, referenceUrl, extra)
+- [x] `DELETE /delete/:id`: Delete lecture
+- [x] `PUT /reorder/:chapterId`: Bulk update lecture positions
 
 ### Admin Exam Package Generators
 - [ ] `POST /generate-exam/:id`: Generates a hidden `course_exam` package for the lecture and saves the `sectionId` to `referenceUrl`.
@@ -51,7 +51,19 @@ Handles atomic content items.
 
 ---
 
-## 4. `enrollments` Router (Target: `src/modules/course/enrollments` & `src/routes/course/enrollments`)
+## 4. `lecture-texts` Router (Target: `src/modules/course/lecture-texts` & `src/routes/course/lecture-texts`)
+Handles standalone, reusable rich text articles (BlockNote JSON format) referenced by `TEXT` type lectures.
+
+### Admin Services (`/course/lecture-texts/admin`)
+- [x] `GET /list`: List all course lecture text articles (supports search/title filter for dropdown selection)
+- [x] `GET /detail/:id`: Full detail of a course lecture text article
+- [x] `POST /create`: Create a new course lecture text article
+- [x] `PUT /update/:id`: Update course lecture text title & BlockNote content
+- [x] `DELETE /delete/:id`: Delete course lecture text article
+
+---
+
+## 5. `enrollments` Router (Target: `src/modules/course/enrollments` & `src/routes/course/enrollments`)
 Handles the 1:1 relationship between users and courses.
 
 ### Admin Services (`/course/enrollments/admin`)
@@ -66,7 +78,7 @@ Handles the 1:1 relationship between users and courses.
 
 ---
 
-## 5. `user-progress` Router (Target: `src/modules/course/user-progress` & `src/routes/course/user-progress`)
+## 6. `user-progress` Router (Target: `src/modules/course/user-progress` & `src/routes/course/user-progress`)
 Handles tracking granular lecture completion.
 
 ### User Services (`/course/user-progress`)
@@ -78,7 +90,7 @@ Handles tracking granular lecture completion.
 
 ---
 
-## 6. `interactions` Router (Target: `src/modules/course/interactions` & `src/routes/course/interactions`)
+## 7. `interactions` Router (Target: `src/modules/course/interactions` & `src/routes/course/interactions`)
 Handles user ratings and bookmarks (tied to `course_enrollments`).
 
 ### User Services (`/course/interactions`)
@@ -89,7 +101,7 @@ Handles user ratings and bookmarks (tied to `course_enrollments`).
 
 ---
 
-## 7. `user-stats` Router (Target: `src/modules/course/user-stats` & `src/routes/course/user-stats`)
+## 8. `user-stats` Router (Target: `src/modules/course/user-stats` & `src/routes/course/user-stats`)
 Handles user dashboard analytics.
 
 ### User Services (`/course/user-stats`)

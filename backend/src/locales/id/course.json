@@ -39,6 +39,45 @@
       "reorder": {
         "success": "Urutan bab berhasil diperbarui"
       }
+    },
+    "lectures": {
+      "notFound": "Materi tidak ditemukan",
+      "create": {
+        "success": "Materi berhasil dibuat"
+      },
+      "update": {
+        "success": "Materi berhasil diperbarui"
+      },
+      "delete": {
+        "success": "Materi berhasil dihapus"
+      },
+      "list": {
+        "success": "Daftar materi berhasil diambil"
+      },
+      "detail": {
+        "success": "Detail materi berhasil diambil"
+      },
+      "reorder": {
+        "success": "Urutan materi berhasil diperbarui"
+      }
+    },
+    "lectureTexts": {
+      "notFound": "Teks materi tidak ditemukan",
+      "create": {
+        "success": "Teks materi berhasil dibuat"
+      },
+      "update": {
+        "success": "Teks materi berhasil diperbarui"
+      },
+      "delete": {
+        "success": "Teks materi berhasil dihapus"
+      },
+      "list": {
+        "success": "Daftar teks materi berhasil diambil"
+      },
+      "detail": {
+        "success": "Detail teks materi berhasil diambil"
+      }
     }
   }
 }
