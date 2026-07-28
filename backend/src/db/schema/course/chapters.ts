@@ -2,6 +2,7 @@ import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import {
   boolean,
   index,
+  integer,
   jsonb,
   numeric,
   pgTable,
@@ -42,6 +43,8 @@ export const courseChapters = pgTable(
     extra: jsonb("extra").$type<Record<string, unknown>>().default({}),
     isActive: boolean("is_active").notNull().default(true),
     position: numeric("position", { precision: 10, scale: 10 }).notNull().default("1.0"),
+    totalLectures: integer("total_lectures").notNull().default(0),
+    activeLectures: integer("active_lectures").notNull().default(0),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },

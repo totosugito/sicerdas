@@ -8,17 +8,15 @@ This document outlines the required API endpoints and routers for the Course Mod
 Handles the high-level course metadata, catalog, and admin CRUD.
 
 ### Admin Services (`/course/courses/admin`)
-- [x] `POST /create`: Create a new draft course
-- [x] `PUT /update/:id`: Update course metadata (title, description, tags, pricing)
-- [x] `DELETE /delete/:id`: Delete a course
-- [x] `GET /list`: List all courses (with filters: status, category)
-- [x] `GET /detail/:id`: Full course detail
-- [ ] `GET /list-simple`: Lightweight list for dropdowns (returns id, title)
-- [ ] `PUT /update-status/:id`: Change status (DRAFT, PUBLISHED, ARCHIVED)
-- [ ] `POST /thumbnail/:id`: Upload/update course thumbnail
+- [x] `POST /create`: Create a new draft course (required: courseCode, courseName, categoryId, educationGradeId)
+- [x] `PUT /update/:id`: Update course metadata (title, description, tags, pricing, grade, etc.)
+- [x] `DELETE /delete/:id`: Delete a course (cleans up course directory & thumbnail storage)
+- [x] `GET /list`: List all courses (with filters: status, categoryId, categoryKey, educationGradeId, educationGradeIds, search)
+- [x] `GET /detail/:id`: Full course detail (returns resolved thumbnail URL)
+- [x] `PATCH /thumbnail/:id`: Upload or remove course thumbnail (?action=remove to delete)
 
 ### Public/User Services (`/course/courses`)
-- [x] `GET /list`: Public course catalog (only PUBLISHED & public courses)
+- [x] `GET /list`: Public course catalog (filters: categoryId, categoryKey, educationGradeId, educationGradeIds, search)
 - [x] `GET /detail/:id`: Course preview page
 
 ---
@@ -27,12 +25,12 @@ Handles the high-level course metadata, catalog, and admin CRUD.
 Handles the structural modules/sections within a course.
 
 ### Admin Services (`/course/chapters/admin`)
-- [ ] `GET /list/:courseId`: List chapters for a specific course
-- [ ] `GET /detail/:id`: Chapter detail
-- [ ] `POST /create`: Create a new chapter
-- [ ] `PUT /update/:id`: Update chapter title/description
-- [ ] `DELETE /delete/:id`: Delete chapter
-- [ ] `PUT /reorder/:courseId`: Bulk update chapter positions (fractional indexing)
+- [x] `GET /list/:courseId`: List chapters for a specific course
+- [x] `GET /detail/:id`: Chapter detail
+- [x] `POST /create`: Create a new chapter
+- [x] `PUT /update/:id`: Update chapter title/description
+- [x] `DELETE /delete/:id`: Delete chapter
+- [x] `PUT /reorder/:courseId`: Bulk update chapter positions (fractional indexing)
 
 ---
 

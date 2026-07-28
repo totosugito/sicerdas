@@ -18,6 +18,27 @@
       "detail": {
         "success": "Detail kursus berhasil diambil"
       }
+    },
+    "chapters": {
+      "notFound": "Bab tidak ditemukan",
+      "create": {
+        "success": "Bab berhasil dibuat"
+      },
+      "update": {
+        "success": "Bab berhasil diperbarui"
+      },
+      "delete": {
+        "success": "Bab berhasil dihapus"
+      },
+      "list": {
+        "success": "Daftar bab berhasil diambil"
+      },
+      "detail": {
+        "success": "Detail bab berhasil diambil"
+      },
+      "reorder": {
+        "success": "Urutan bab berhasil diperbarui"
+      }
     }
   }
 }
