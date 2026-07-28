@@ -32,6 +32,8 @@ export const courseStats = pgTable('course_stats', {
     totalLectures: integer('total_lectures').notNull().default(0),
     totalStudents: integer('total_students').notNull().default(0),
     totalRatings: integer('total_ratings').notNull().default(0),
+    ratingCount: integer('rating_count').notNull().default(0),
+    ratingSum: numeric('rating_sum', { precision: 10, scale: 2 }).notNull().default('0.00'),
     averageRating: numeric('average_rating', { precision: 3, scale: 2 }).notNull().default('0.00'),
     lastUpdated: timestamp('last_updated').defaultNow().notNull(),
     extra: jsonb('extra')

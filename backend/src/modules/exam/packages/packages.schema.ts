@@ -21,6 +21,7 @@ const PackageStatsFields = {
   activeSections: Type.Number(),
   activeQuestions: Type.Number(),
   rating: Type.Number(),
+  ratingCount: Type.Optional(Type.Number()),
   viewCount: Type.Number(),
   likeCount: Type.Number(),
   bookmarkCount: Type.Number(),
@@ -77,6 +78,7 @@ const AdminPackageStatsFields = {
   viewCount: Type.Number(),
   likeCount: Type.Number(),
   bookmarkCount: Type.Number(),
+  ratingCount: Type.Optional(Type.Number()),
   rating: Type.Number(),
 };
 

@@ -1,6 +1,8 @@
 import { db } from "../../../../../db/db-pool.ts";
 import { courses } from "../../../../../db/schema/course/courses.ts";
 import { educationCategories } from "../../../../../db/schema/education/categories.ts";
+import { educationGrades } from "../../../../../db/schema/education/grades.ts";
+import { courseStats } from "../../../../../db/schema/course/course-stats.ts";
 import { eq } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../../types/index.ts";
 import type { CourseItem } from "../../courses.schema.ts";
@@ -20,9 +22,22 @@ export async function detailCourseService(id: string): Promise<DetailCourseResul
         name: educationCategories.name,
         key: educationCategories.key,
       },
+      grade: {
+        id: educationGrades.id,
+        name: educationGrades.name,
+        grade: educationGrades.grade,
+      },
+      stats: {
+        totalStudents: courseStats.totalStudents,
+        totalRatings: courseStats.totalRatings,
+        ratingCount: courseStats.ratingCount,
+        averageRating: courseStats.averageRating,
+      },
     })
     .from(courses)
     .leftJoin(educationCategories, eq(courses.categoryId, educationCategories.id))
+    .leftJoin(educationGrades, eq(courses.educationGradeId, educationGrades.id))
+    .leftJoin(courseStats, eq(courses.id, courseStats.courseId))
     .where(eq(courses.id, id))
     .limit(1);
 
@@ -34,7 +49,9 @@ export async function detailCourseService(id: string): Promise<DetailCourseResul
     };
   }
 
-  const { course, category } = result;
+  const { course, category, grade, stats } = result;
+  const rCount = stats?.ratingCount ?? stats?.totalRatings ?? 0;
+  const avgRating = rCount === 0 ? 5.0 : Number(stats?.averageRating ?? 5.0);
 
   return {
     success: true,
@@ -50,6 +67,10 @@ export async function detailCourseService(id: string): Promise<DetailCourseResul
       publishDateStart: course.publishDateStart ? course.publishDateStart.toISOString() : null,
       publishDateEnd: course.publishDateEnd ? course.publishDateEnd.toISOString() : null,
       category: category?.id ? category : null,
+      grade: grade?.id ? grade : null,
+      enrolledCount: stats?.totalStudents ?? 0,
+      totalRatings: rCount,
+      averageRating: avgRating,
     },
   };
 }

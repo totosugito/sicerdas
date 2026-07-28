@@ -10,7 +10,7 @@ export const ChapterBaseFields = {
   createdByUserId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
   extra: Type.Any(),
   isActive: Type.Boolean(),
-  position: Type.String(),
+  position: Type.Union([Type.String(), Type.Null()]),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
 };

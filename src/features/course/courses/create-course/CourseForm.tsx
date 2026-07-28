@@ -12,6 +12,7 @@ import { useListCategorySimple } from "@/api/education/categories";
 import { useListGradeSimple } from "@/api/education/grades";
 import { EnumCourseStatus } from "backend/src/db/schema/course/enums.ts";
 import { CourseFormValues } from "@/api/course/courses";
+import { CourseStatusBadge } from "../components/CourseStatusBadge";
 
 type CourseFormProps = {
   defaultValues?: Partial<CourseFormValues>;
@@ -358,9 +359,7 @@ export function CourseForm({ defaultValues, onSubmit, isPending }: CourseFormPro
                             ? t(($) => $.course.courses.form.preview.freeText)
                             : `Rp ${Number(values.price || 0).toLocaleString("id-ID")}`}
                         </span>
-                        <span className="capitalize text-xs bg-primary/10 text-primary px-2.5 py-1 rounded-full">
-                          {values.status || "draft"}
-                        </span>
+                        <CourseStatusBadge status={values.status || EnumCourseStatus.DRAFT} />
                       </div>
                     </div>
                   </div>

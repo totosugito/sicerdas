@@ -257,6 +257,9 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
             <span className="text-sm font-black text-amber-700 dark:text-amber-400">
               {Number(pkg.stats.rating || 0).toFixed(1)}
             </span>
+            <span className="text-xs text-amber-600/80 dark:text-amber-400/80 font-medium">
+              ({pkg.stats.ratingCount ?? 0})
+            </span>
           </div>
         </div>
       </div>

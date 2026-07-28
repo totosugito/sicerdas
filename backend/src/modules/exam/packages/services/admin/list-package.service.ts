@@ -79,6 +79,7 @@ export async function adminListPackageService(
       viewCount: examPackageEventStats.viewCount,
       likeCount: examPackageEventStats.likeCount,
       bookmarkCount: examPackageEventStats.bookmarkCount,
+      ratingCount: examPackageEventStats.ratingCount,
       rating: examPackageEventStats.rating,
       isNew: latestVersionId
         ? sql<boolean>`${examPackages.versionId} = ${latestVersionId}`.as("isNew")
@@ -212,7 +213,8 @@ export async function adminListPackageService(
             viewCount: r.viewCount ?? 0,
             likeCount: r.likeCount ?? 0,
             bookmarkCount: r.bookmarkCount ?? 0,
-            rating: r.rating ? parseFloat(r.rating) : 0,
+            ratingCount: r.ratingCount ?? 0,
+            rating: (r.ratingCount ?? 0) === 0 ? 5.0 : r.rating ? parseFloat(r.rating) : 5.0,
           },
           isNew: !!r.isNew,
           createdAt: p.createdAt.toISOString(),

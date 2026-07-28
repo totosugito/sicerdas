@@ -87,6 +87,16 @@ export const AppApi = {
       list: APP_URL_API + "/course/courses/list",
       detail: APP_URL_API + "/course/courses/detail/:id",
     },
+    chapters: {
+      admin: {
+        list: APP_URL_API + "/course/chapters/admin/list/:courseId",
+        detail: APP_URL_API + "/course/chapters/admin/detail/:id",
+        create: APP_URL_API + "/course/chapters/admin/create",
+        update: APP_URL_API + "/course/chapters/admin/update/:id",
+        delete: APP_URL_API + "/course/chapters/admin/delete/:id",
+        reorder: APP_URL_API + "/course/chapters/admin/reorder/:courseId",
+      },
+    },
   },
   exam: {
     subjects: {

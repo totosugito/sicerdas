@@ -37,8 +37,9 @@ export async function createChapterService(
       .from(courseChapters)
       .where(eq(courseChapters.courseId, input.courseId));
 
-    const nextVal = Number(maxResult?.maxPos ?? 0) + 1;
-    position = String(nextVal);
+    const currentMax = Number(maxResult?.maxPos ?? 0);
+    const nextVal = currentMax > 0 ? currentMax + 0.01 : 0.1;
+    position = nextVal.toFixed(4);
   }
 
   // 3. Insert new chapter

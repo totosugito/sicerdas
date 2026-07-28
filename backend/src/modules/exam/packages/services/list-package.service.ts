@@ -91,6 +91,7 @@ export async function publicListPackageService(
         name: educationGrades.name,
       },
       rating: examPackageEventStats.rating,
+      ratingCount: examPackageEventStats.ratingCount,
       viewCount: examPackageEventStats.viewCount,
       likeCount: examPackageEventStats.likeCount,
       bookmarkCount: examPackageEventStats.bookmarkCount,
@@ -190,7 +191,8 @@ export async function publicListPackageService(
           stats: {
             activeSections: item.activeSections,
             activeQuestions: item.activeQuestions,
-            rating: item.rating !== null ? parseFloat(item.rating.toString()) : 0,
+            rating: (item.ratingCount ?? 0) === 0 ? 5.0 : item.rating !== null ? parseFloat(item.rating.toString()) : 5.0,
+            ratingCount: item.ratingCount ?? 0,
             viewCount: item.viewCount !== null ? item.viewCount : 0,
             likeCount: item.likeCount !== null ? item.likeCount : 0,
             bookmarkCount: item.bookmarkCount !== null ? item.bookmarkCount : 0,

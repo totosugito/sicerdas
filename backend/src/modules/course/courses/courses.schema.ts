@@ -34,12 +34,21 @@ export const CategoryFields = {
   key: Type.String(),
 };
 
+export const GradeFields = {
+  id: Type.Number(),
+  name: Type.String(),
+  grade: Type.String(),
+};
+
 export const CourseItemSchema = Type.Object({
   ...CourseBaseFields,
   category: Type.Union([Type.Object(CategoryFields), Type.Null()]),
+  grade: Type.Union([Type.Object(GradeFields), Type.Null()]),
   totalChapters: Type.Optional(Type.Number()),
   totalLectures: Type.Optional(Type.Number()),
   enrolledCount: Type.Optional(Type.Number()),
+  totalRatings: Type.Optional(Type.Number()),
+  averageRating: Type.Optional(Type.Number()),
 });
 
 export type CourseItem = Static<typeof CourseItemSchema>;

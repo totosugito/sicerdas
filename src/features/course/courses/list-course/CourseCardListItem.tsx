@@ -10,6 +10,9 @@ import {
   Eye,
   ImageIcon,
   BookOpen,
+  Layers,
+  Users,
+  Star,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -22,6 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
+import { CourseStatusBadge } from "../components/CourseStatusBadge";
 import { string_to_locale_date } from "@/lib/my-utils";
 import { cn } from "@/lib/utils";
 
@@ -48,26 +52,27 @@ export function CourseCardListItem({ course, onDelete }: CourseCardListItemProps
         ) : (
           <div className="w-full h-full flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent">
             <ImageIcon className="h-12 w-12 text-primary/20" />
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+              <svg width="100%" height="100%">
+                <pattern
+                  id={`pattern-course-${course.id}`}
+                  x="0"
+                  y="0"
+                  width="20"
+                  height="20"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <circle cx="2" cy="2" r="1" fill="currentColor" />
+                </pattern>
+                <rect width="100%" height="100%" fill={`url(#pattern-course-${course.id})`} />
+              </svg>
+            </div>
           </div>
         )}
 
-        {/* Status & Badge Overlay */}
+        {/* Status Badge Overlay */}
         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-          <Badge
-            className={cn(
-              "shadow-sm border-transparent capitalize",
-              course.status === "published"
-                ? "bg-emerald-600 text-white dark:bg-emerald-600/20 dark:text-emerald-400"
-                : "bg-amber-500 text-white dark:bg-amber-500/20 dark:text-amber-400"
-            )}
-          >
-            {course.status}
-          </Badge>
-          {course.category && (
-            <Badge variant="outline" className="bg-background/80 backdrop-blur-sm shadow-sm">
-              {course.category.name}
-            </Badge>
-          )}
+          <CourseStatusBadge status={course.status} />
         </div>
 
         {/* Action Menu Button */}
@@ -77,69 +82,119 @@ export function CourseCardListItem({ course, onDelete }: CourseCardListItemProps
               <Button
                 variant="secondary"
                 size="icon"
-                className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md shadow-sm border border-border/40 hover:bg-background"
+                className="h-8 w-8 rounded-full bg-white/80 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-800 shadow-sm border border-border/40"
               >
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{t(($) => $.labels.actions)}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
+            <DropdownMenuContent align="end" className="w-48 rounded-xl shadow-lg border-border/60">
               <DropdownMenuGroup>
+                <DropdownMenuLabel>{t(($) => $.labels.actions)}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to={AppRoute.course.courses.admin.detail.url.replace("$id", course.id)}>
-                    <Eye className="mr-2 h-4 w-4" />
+                  <Link
+                    to={AppRoute.course.courses.admin.detail.url.replace("$id", course.id)}
+                    className="cursor-pointer"
+                  >
+                    <Eye className="mr-2 h-4 w-4 text-primary" />
                     {t(($) => $.labels.preview)}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to={AppRoute.course.courses.admin.edit.url.replace("$id", course.id)}>
+                  <Link
+                    to={AppRoute.course.courses.admin.edit.url.replace("$id", course.id)}
+                    className="cursor-pointer"
+                  >
                     <Pencil className="mr-2 h-4 w-4" />
                     {t(($) => $.labels.edit)}
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-destructive focus:text-destructive cursor-pointer"
+                  onClick={() => onDelete(course)}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  {t(($) => $.labels.delete)}
+                </DropdownMenuItem>
               </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive"
-                onClick={() => onDelete(course)}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                {t(($) => $.labels.delete)}
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
 
-      {/* Content Section */}
-      <div className="flex flex-col flex-1 p-5 gap-3">
-        <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
-          <BookOpen className="h-3.5 w-3.5 text-primary" />
-          <span>{course.courseCode}</span>
-        </div>
-
+      {/* Content Area */}
+      <div className="flex flex-col p-5 flex-grow">
         <Link
           to={AppRoute.course.courses.admin.detail.url.replace("$id", course.id)}
-          className="font-bold text-lg text-foreground hover:text-primary transition-colors line-clamp-2"
+          className="group/title block mb-4 flex-grow"
         >
-          {course.courseName}
+          <div className="flex flex-col gap-1.5 mb-2">
+            <span className="text-xs font-bold text-primary uppercase tracking-wider">
+              {course.category?.name || (
+                <span className="italic opacity-60 lowercase">{t(($) => $.labels.noCategory)}</span>
+              )}
+            </span>
+            <h3 className="text-base font-bold text-foreground group-hover/title:text-primary transition-colors line-clamp-1">
+              {course.courseName}
+            </h3>
+          </div>
+          <div className="text-xs text-muted-foreground/80 font-medium flex items-center gap-1">
+            {course.grade?.name ? (
+              `${t(($) => $.labels.level)}: ${course.grade.name}`
+            ) : (
+              <span className="italic opacity-60 lowercase">{t(($) => $.labels.noLevel)}</span>
+            )}
+          </div>
         </Link>
 
         {course.courseDescription && (
-          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed mb-4">
             {course.courseDescription}
           </p>
         )}
 
-        <div className="mt-auto pt-4 border-t border-border/40 flex items-center justify-between">
-          <span className="font-semibold text-sm">
-            {course.price === 0 ? (
-              <span className="text-emerald-600 dark:text-emerald-400">Gratis</span>
-            ) : (
-              `Rp ${course.price.toLocaleString("id-ID")}`
-            )}
-          </span>
+        {/* Info Grid */}
+        <div className="grid grid-cols-3 gap-2 mb-4 pt-3 border-t border-border/40 text-center">
+          <div className="flex flex-col items-center gap-0.5">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              Bab
+            </span>
+            <div className="flex items-center gap-1">
+              <Layers className="h-3.5 w-3.5 text-primary/70 shrink-0" />
+              <span className="text-xs font-semibold">{course.totalChapters ?? 0}</span>
+            </div>
+          </div>
+          <div className="flex flex-col items-center gap-0.5 border-x border-border/40 px-1">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              Materi
+            </span>
+            <div className="flex items-center gap-1">
+              <BookOpen className="h-3.5 w-3.5 text-blue-500/70 shrink-0" />
+              <span className="text-xs font-semibold">{course.totalLectures ?? 0}</span>
+            </div>
+          </div>
+          <div className="flex flex-col items-center gap-0.5">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              Peserta
+            </span>
+            <div className="flex items-center gap-1">
+              <Users className="h-3.5 w-3.5 text-emerald-500/70 shrink-0" />
+              <span className="text-xs font-semibold">{course.enrolledCount ?? 0}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-auto pt-3 border-t border-border/40 flex items-center justify-between">
+          <div className="flex items-center gap-1.5 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+            <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
+            <span className="text-xs font-bold text-amber-700 dark:text-amber-400">
+              {Number(course.averageRating || 0).toFixed(1)}
+            </span>
+            <span className="text-[11px] text-amber-600/80 dark:text-amber-400/80 font-medium">
+              ({course.totalRatings ?? 0})
+            </span>
+          </div>
           <span className="text-xs text-muted-foreground">
             {string_to_locale_date("id-ID", course.createdAt)}
           </span>

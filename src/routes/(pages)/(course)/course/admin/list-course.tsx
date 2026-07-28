@@ -18,7 +18,7 @@ import {
   CourseCardList,
   CourseSortSelector,
 } from "@/features/course/courses/list-course";
-import { LayoutGrid, ListIcon, Plus, Trash2, Search, X } from "lucide-react";
+import { LayoutGrid, ListIcon, Plus, Trash2, Search, X, BookOpen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { PaginationData, DataTablePagination } from "@/components/table";
 import { z } from "zod";
@@ -315,11 +315,20 @@ function AdminCourseListPage() {
 
       {/* Delete Course Confirmation Dialog */}
       <DialogModal
+        variantSubmit="destructive"
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         modal={{
           title: t(($) => $.course.courses.delete.confirmTitle),
-          desc: t(($) => $.course.courses.delete.confirmDesc, { title: selectedCourse?.courseName }),
+          desc: (
+            <span>
+              {t(($) => $.course.courses.delete.confirmDesc)}{" "}
+              <strong className="font-bold text-foreground underline decoration-destructive/40 underline-offset-2">
+                {selectedCourse?.courseName}
+              </strong>
+              ?
+            </span>
+          ),
           infoContainer: t(($) => $.course.courses.delete.deleteInfo),
           infoContainerVariant: "error",
           variant: "destructive",

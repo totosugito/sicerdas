@@ -23,6 +23,7 @@ import {
 import { string_to_locale_date } from "@/lib/my-utils";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
+import { CourseStatusBadge } from "../components/CourseStatusBadge";
 
 interface CourseTableProps {
   data: PaginatedCourseListResponse;
@@ -77,19 +78,7 @@ export function CourseTable({
         );
       },
     },
-    {
-      accessorKey: "courseCode",
-      enableSorting: true,
-      header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title={t(($) => $.course.courses.table.columns.code)}
-        />
-      ),
-      cell: ({ row }) => (
-        <span className="font-mono text-xs font-semibold">{row.getValue("courseCode")}</span>
-      ),
-    },
+
     {
       accessorKey: "courseName",
       enableSorting: true,
@@ -134,22 +123,22 @@ export function CourseTable({
       },
     },
     {
-      accessorKey: "price",
-      enableSorting: true,
+      accessorKey: "grade",
+      enableSorting: false,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={t(($) => $.course.courses.table.columns.price)}
+          title={t(($) => $.education.grade.table.columns.grade)}
         />
       ),
       cell: ({ row }) => {
-        const price = row.original.price;
-        return price === 0 ? (
-          <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">
-            Gratis
+        const grade = row.original.grade;
+        return grade ? (
+          <Badge variant="outline" className="font-normal">
+            {grade.name}
           </Badge>
         ) : (
-          <span className="font-medium">Rp {price.toLocaleString("id-ID")}</span>
+          <span className="text-muted-foreground text-xs">-</span>
         );
       },
     },
@@ -162,17 +151,7 @@ export function CourseTable({
           title={t(($) => $.course.courses.table.columns.status)}
         />
       ),
-      cell: ({ row }) => {
-        const status = row.original.status;
-        return (
-          <Badge
-            variant={status === "published" ? "default" : "secondary"}
-            className="capitalize"
-          >
-            {status}
-          </Badge>
-        );
-      },
+      cell: ({ row }) => <CourseStatusBadge status={row.original.status} />,
     },
     {
       accessorKey: "createdAt",
@@ -207,7 +186,9 @@ export function CourseTable({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{t(($) => $.labels.actions)}</DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>{t(($) => $.labels.actions)}</DropdownMenuLabel>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem asChild>

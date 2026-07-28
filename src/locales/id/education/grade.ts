@@ -9,7 +9,7 @@ export default {
     search: "Cari tingkat pendidikan...",
     noResult: "Tingkat pendidikan tidak ditemukan.",
     columns: {
-      grade: "Kode",
+      grade: "Kelas",
       name: "Nama",
       desc: "Deskripsi",
       isDefault: "Default",
