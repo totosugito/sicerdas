@@ -3,6 +3,7 @@ import { pgEnum } from "drizzle-orm/pg-core";
 export const EnumExamType = {
   OFFICIAL: "official",
   CUSTOM_PRACTICE: "custom_practice",
+  COURSE_EXAM: "course_exam",
 } as const;
 export const PgEnumExamType = pgEnum(
   "exam_type",

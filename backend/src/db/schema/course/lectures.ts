@@ -34,10 +34,11 @@ import { users } from "../users/users.ts";
  * - createdAt: When the lecture was created
  * - updatedAt: When the lecture was last updated
  *
- * Notes:
- * - For QUIZ/EXAM types, the actual questions and randomization are handled by the linked
- *   exam_packages via the CBT engine. Course-specific progression rules (like passing 
- *   scores or retry limits) are stored in this table's `extra` JSONB field.
+ * - referenceUrl: For EXAM types, stores the `sectionId` of the hidden `course_exam` package section.
+ *   The `packageId` can be derived from `exam_package_sections.packageId` when needed.
+ * - extra: JSONB field for type-specific metadata:
+ *   - For EXAM: `successThreshold` (passing score percentage, 0-100)
+ *   - For other types: extensible metadata as needed
  */
 export const courseLectures = pgTable(
   "course_lectures",
@@ -56,7 +57,6 @@ export const courseLectures = pgTable(
     content: text("content"),
     extra: jsonb("extra").$type<{
       successThreshold?: number;
-      maxRetries?: number;
     } & Record<string, unknown>>().default({}),
     isActive: boolean("is_active").notNull().default(true),
     position: numeric("position", { precision: 10, scale: 10 }).notNull().default("1.0"),
