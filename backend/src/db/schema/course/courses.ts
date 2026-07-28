@@ -17,7 +17,8 @@ import {
   EnumPublishDateType,
   PgEnumPublishDateType,
 } from "./enums.ts";
-import { educationCategories } from "../education/categories.ts";
+import { educationCategories, educationGrades } from "../education/index.ts";
+
 
 /**
  * Table: courses
@@ -61,15 +62,23 @@ export const courses = pgTable(
       onUpdate: "cascade",
     }),
     courseCode: varchar("course_code", { length: 255 }).notNull().unique(),
-    courseName: varchar("course_name", { length: 255 }),
+    courseName: varchar("course_name", { length: 255 }).notNull(),
     courseDescription: text("course_description"),
     whatYouWillLearn: text("what_you_will_learn"),
     price: integer("price").default(0),
     thumbnail: text("thumbnail"),
-    categoryId: uuid("category_id").references(() => educationCategories.id, {
-      onDelete: "set null",
-      onUpdate: "cascade",
-    }),
+    categoryId: uuid("category_id")
+      .notNull()
+      .references(() => educationCategories.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    educationGradeId: integer("education_grade_id")
+      .notNull()
+      .references(() => educationGrades.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     tags: text("tags").array(),
     instructions: text("instructions"),
     status: PgEnumCourseStatus("status").default(EnumCourseStatus.DRAFT),
@@ -86,6 +95,7 @@ export const courses = pgTable(
   (table) => [
     index("courses_creator_idx").on(table.createdByUserId),
     index("courses_category_id_idx").on(table.categoryId),
+    index("courses_education_grade_id_idx").on(table.educationGradeId),
     index("courses_status_idx").on(table.status),
     index("courses_is_public_idx").on(table.isPublic),
     index("courses_created_at_idx").on(table.createdAt),

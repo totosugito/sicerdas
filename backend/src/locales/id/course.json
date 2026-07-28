@@ -1,0 +1,23 @@
+{
+  "course": {
+    "courses": {
+      "notFound": "Kursus tidak ditemukan",
+      "create": {
+        "success": "Kursus berhasil dibuat",
+        "duplicateCode": "Kode kursus sudah digunakan"
+      },
+      "update": {
+        "success": "Kursus berhasil diperbarui"
+      },
+      "delete": {
+        "success": "Kursus berhasil dihapus"
+      },
+      "list": {
+        "success": "Daftar kursus berhasil diambil"
+      },
+      "detail": {
+        "success": "Detail kursus berhasil diambil"
+      }
+    }
+  }
+}

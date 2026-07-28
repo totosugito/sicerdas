@@ -10,6 +10,7 @@ import report from "./id/report.json" with { type: "json" };
 import user from "./id/user.json" with { type: "json" };
 import version from "./id/version.json" with { type: "json" };
 import dictionary from "./id/dictionary.json" with { type: "json" };
+import course from "./id/course.json" with { type: "json" };
 
 const idMessages = {
   ...tier,
@@ -24,6 +25,7 @@ const idMessages = {
   ...user,
   ...version,
   ...dictionary,
+  ...course,
 };
 
 export type AppLocale = typeof idMessages;

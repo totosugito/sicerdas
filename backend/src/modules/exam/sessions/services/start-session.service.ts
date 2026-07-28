@@ -40,6 +40,7 @@ export async function startSessionService(
         eq(examPackages.isActive, true),
         or(
           eq(examPackages.examType, EnumExamType.OFFICIAL),
+          eq(examPackages.examType, EnumExamType.COURSE_EXAM),
           eq(examPackages.createdByUserId, userId),
         ),
       ),

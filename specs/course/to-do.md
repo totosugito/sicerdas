@@ -66,15 +66,18 @@ This eliminates the cross-module synchronization problem entirely — since sess
 Currently, there are no API routes or services for the Course module. The following endpoints need to be built:
 
 ### Phase 0: Exam Module Preparation
-- [ ] Add `COURSE_EXAM: 'course_exam'` to `EnumExamType` in `exam/enums.ts`
-- [ ] Update `start-session.service.ts` to allow `course_exam` type in the `or()` access check (line 41-44)
-- [ ] Verify public listing (`POST /exam/packages/list`) already filters by `examType = 'official'` (confirmed — no changes needed)
+- [x] Add `COURSE_EXAM: 'course_exam'` to `EnumExamType` in `exam/enums.ts`
+- [x] Update `start-session.service.ts` to allow `course_exam` type in the `or()` access check (line 41-44)
+- [x] Verify public listing (`POST /exam/packages/list`) already filters by `examType = 'official'` (confirmed — no changes needed)
 
-### Phase 1: Core Course Management (Admin)
-- [ ] `POST /course/admin/create` — Create draft course
-- [ ] `PUT /course/admin/update/:id` — Update course metadata
-- [ ] `GET /course/admin/list` — List all courses (with filters)
-- [ ] `GET /course/admin/detail/:id` — Full course detail including nested chapters and lectures
+### Phase 1: Core Course Management (Admin & Public)
+- [x] `POST /course/courses/admin/create` — Create draft course
+- [x] `PUT /course/courses/admin/update/:id` — Update course metadata
+- [x] `DELETE /course/courses/admin/delete/:id` — Delete course
+- [x] `GET /course/courses/admin/list` — List all courses (with filters)
+- [x] `GET /course/courses/admin/detail/:id` — Full course detail
+- [x] `GET /course/courses/list` — Public course catalog
+- [x] `GET /course/courses/detail/:id` — Public course preview page
 
 ### Phase 2: Content Management (Admin)
 - [ ] Chapter CRUD (`create`, `update`, `delete`, `reorder`)
