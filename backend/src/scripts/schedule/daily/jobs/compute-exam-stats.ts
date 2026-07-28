@@ -26,7 +26,6 @@ export const computeExamStats = async () => {
         LEFT JOIN exam_package_questions epq ON epq.section_id = eps.id
         LEFT JOIN exam_questions eq ON eq.id = epq.question_id
         WHERE eps.updated_at >= NOW() - INTERVAL '24 hours'
-           OR epq.created_at >= NOW() - INTERVAL '24 hours'
            OR eq.updated_at >= NOW() - INTERVAL '24 hours'
         GROUP BY eps.id
       )
@@ -60,7 +59,6 @@ export const computeExamStats = async () => {
         LEFT JOIN exam_questions eq ON eq.id = epq.question_id
         WHERE ep.updated_at >= NOW() - INTERVAL '24 hours'
            OR eps.updated_at >= NOW() - INTERVAL '24 hours'
-           OR epq.created_at >= NOW() - INTERVAL '24 hours'
            OR eq.updated_at >= NOW() - INTERVAL '24 hours'
         GROUP BY ep.id
       )
