@@ -1,7 +1,7 @@
 import { db } from "../../../../db/db-pool.ts";
-import { users, profiles, sessions, usersStats } from "../../../../db/schema/users/index.ts";
+import { usersStats } from "../../../../db/schema/users/index.ts";
 import { EnumStatsPeriodType } from "../../../../db/schema/enum/enum-general.ts";
-import { and, count, eq, gte, lt, sql, sum } from "drizzle-orm";
+import { and, eq, gte, lt, sum, sql } from "drizzle-orm";
 import { fileURLToPath } from "url";
 
 /**
@@ -47,7 +47,8 @@ const getMonthInfo = (d: Date) => {
 const formatDateKey = (d: Date): string => d.toISOString().split('T')[0];
 
 /**
- * Updates daily, weekly, and monthly aggregated user statistics in users_stats table.
+ * Highly optimized daily, weekly, and monthly user statistics aggregation job.
+ * Consolidates snapshot metrics, active users (DAU/WAU/MAU), and upserts using minimum SQL queries.
  */
 export const updateUserStats = async (refDate: Date = new Date()) => {
   console.log("[Job] Starting user statistics aggregation job...");
@@ -55,7 +56,6 @@ export const updateUserStats = async (refDate: Date = new Date()) => {
   const targetDate = new Date(refDate);
   targetDate.setHours(0, 0, 0, 0);
 
-  // Time boundaries
   const startOfDay = new Date(targetDate);
   const endOfDay = new Date(targetDate);
   endOfDay.setDate(endOfDay.getDate() + 1);
@@ -66,70 +66,119 @@ export const updateUserStats = async (refDate: Date = new Date()) => {
 
   try {
     // ----------------------------------------------------
-    // 1. SHARED SNAPSHOT METRICS (Current state at targetDate)
+    // 1. CONSOLIDATED SNAPSHOT & DAILY NEW USERS QUERY (Single pass)
     // ----------------------------------------------------
-    const [totalUsersRes] = await db.select({ value: count(users.id) }).from(users);
-    const totalUsersCount = Number(totalUsersRes?.value ?? 0);
+    const snapshotRes = await db.execute<{
+      total_users: number;
+      banned_users: number;
+      role_admin: number;
+      role_teacher: number;
+      role_user: number;
+      role_guest: number;
+      daily_new_users: number;
+    }>(sql`
+      SELECT 
+        COUNT(id)::int as total_users,
+        COALESCE(SUM(CASE WHEN banned = true THEN 1 ELSE 0 END), 0)::int as banned_users,
+        COALESCE(SUM(CASE WHEN role = 'admin' THEN 1 ELSE 0 END), 0)::int as role_admin,
+        COALESCE(SUM(CASE WHEN role = 'teacher' THEN 1 ELSE 0 END), 0)::int as role_teacher,
+        COALESCE(SUM(CASE WHEN role = 'user' THEN 1 ELSE 0 END), 0)::int as role_user,
+        COALESCE(SUM(CASE WHEN role = 'guest' THEN 1 ELSE 0 END), 0)::int as role_guest,
+        COALESCE(SUM(CASE WHEN created_at >= ${startOfDay} AND created_at < ${endOfDay} THEN 1 ELSE 0 END), 0)::int as daily_new_users
+      FROM users;
+    `);
 
-    const [bannedUsersRes] = await db
-      .select({ value: count(users.id) })
-      .from(users)
-      .where(eq(users.banned, true));
-    const bannedUsersCount = Number(bannedUsersRes?.value ?? 0);
+    const snapshotRow = snapshotRes.rows[0];
 
-    // Role Breakdown
-    const roleRows = await db
-      .select({ role: users.role, total: count(users.id) })
-      .from(users)
-      .groupBy(users.role);
-
-    const roleBreakdown: { admin: number; teacher: number; user: number; guest: number } = {
-      admin: 0,
-      teacher: 0,
-      user: 0,
-      guest: 0,
-    };
-    for (const r of roleRows) {
-      if (r.role in roleBreakdown) {
-        roleBreakdown[r.role as keyof typeof roleBreakdown] = Number(r.total);
-      }
-    }
-
-    // Tier Breakdown
-    const tierRows = await db
-      .select({ tierId: profiles.tierId, total: count(profiles.id) })
-      .from(profiles)
-      .groupBy(profiles.tierId);
-
+    // Tier Breakdown (Consolidated query)
+    const tierRows = await db.execute<{ tier_id: string; total: number }>(sql`
+      SELECT tier_id, COUNT(id)::int as total
+      FROM users_profiles
+      WHERE tier_id IS NOT NULL
+      GROUP BY tier_id;
+    `);
     const tierBreakdown: Record<string, number> = {};
-    for (const t of tierRows) {
-      if (t.tierId) {
-        tierBreakdown[t.tierId] = Number(t.total);
-      }
+    for (const t of tierRows.rows) {
+      if (t.tier_id) tierBreakdown[t.tier_id] = Number(t.total);
     }
 
-    // Education Level Breakdown
-    const eduRows = await db
-      .select({ educationLevel: profiles.educationLevel, total: count(profiles.id) })
-      .from(profiles)
-      .groupBy(profiles.educationLevel);
-
+    // Education Level Breakdown (Consolidated query)
+    const eduRows = await db.execute<{ education_level: string; total: number }>(sql`
+      SELECT education_level, COUNT(id)::int as total
+      FROM users_profiles
+      WHERE education_level IS NOT NULL
+      GROUP BY education_level;
+    `);
     const educationBreakdown: Record<string, number> = {};
-    for (const e of eduRows) {
-      if (e.educationLevel) {
-        educationBreakdown[e.educationLevel] = Number(e.total);
-      }
+    for (const e of eduRows.rows) {
+      if (e.education_level) educationBreakdown[e.education_level] = Number(e.total);
     }
 
     const baseSnapshot = {
-      totalUsersCount,
-      bannedUsersCount,
-      roleBreakdown,
+      totalUsersCount: Number(snapshotRow?.total_users ?? 0),
+      bannedUsersCount: Number(snapshotRow?.banned_users ?? 0),
+      roleBreakdown: {
+        admin: Number(snapshotRow?.role_admin ?? 0),
+        teacher: Number(snapshotRow?.role_teacher ?? 0),
+        user: Number(snapshotRow?.role_user ?? 0),
+        guest: Number(snapshotRow?.role_guest ?? 0),
+      },
       tierBreakdown,
       educationBreakdown,
     };
 
-    // Helper function to upsert a record into users_stats
+    const dailyNewUsers = Number(snapshotRow?.daily_new_users ?? 0);
+
+    // ----------------------------------------------------
+    // 2. CONSOLIDATED ACTIVE USERS QUERY (DAU, WAU, MAU in 1 Query)
+    // ----------------------------------------------------
+    const activeUsersRes = await db.execute<{
+      dau: number;
+      wau: number;
+      mau: number;
+    }>(sql`
+      SELECT 
+        COUNT(DISTINCT CASE WHEN created_at >= ${startOfDay} AND created_at < ${endOfDay} THEN user_id END)::int as dau,
+        COUNT(DISTINCT CASE WHEN created_at >= ${startOfWeek} AND created_at < ${endOfWeek} THEN user_id END)::int as wau,
+        COUNT(DISTINCT CASE WHEN created_at >= ${startOfMonth} AND created_at < ${endOfMonth} THEN user_id END)::int as mau
+      FROM users_sessions
+      WHERE created_at >= ${startOfMonth} AND created_at < ${endOfMonth};
+    `);
+
+    const activeRow = activeUsersRes.rows[0];
+
+    const dailyActiveUsers = Number(activeRow?.dau ?? 0);
+    const weeklyActiveUsers = Number(activeRow?.wau ?? 0);
+    const monthlyActiveUsers = Number(activeRow?.mau ?? 0);
+
+    // ----------------------------------------------------
+    // 3. SUM NEW USERS FOR WEEKLY & MONTHLY
+    // ----------------------------------------------------
+    const getSumDailyNewUsersInRange = async (startStr: string, endStr: string) => {
+      const [res] = await db
+        .select({ totalNew: sum(usersStats.newUsersCount) })
+        .from(usersStats)
+        .where(
+          and(
+            eq(usersStats.periodType, EnumStatsPeriodType.DAILY),
+            gte(usersStats.date, startStr),
+            lt(usersStats.date, endStr)
+          )
+        );
+      return Number(res?.totalNew ?? 0);
+    };
+
+    const startDateStr = formatDateKey(startOfWeek);
+    const endDateStr = formatDateKey(endOfWeek);
+    const weeklySumNewUsers = await getSumDailyNewUsersInRange(startDateStr, endDateStr);
+    const weeklyNewUsers = weeklySumNewUsers > 0 ? weeklySumNewUsers : dailyNewUsers;
+
+    const startMonthStr = formatDateKey(startOfMonth);
+    const endMonthStr = formatDateKey(endOfMonth);
+    const monthlySumNewUsers = await getSumDailyNewUsersInRange(startMonthStr, endMonthStr);
+    const monthlyNewUsers = monthlySumNewUsers > 0 ? monthlySumNewUsers : dailyNewUsers;
+
+    // Helper to upsert with IS DISTINCT FROM guard
     const upsertStatsRecord = async (
       periodType: typeof EnumStatsPeriodType[keyof typeof EnumStatsPeriodType],
       periodKey: string,
@@ -153,74 +202,25 @@ export const updateUserStats = async (refDate: Date = new Date()) => {
         .onConflictDoUpdate({
           target: [usersStats.periodType, usersStats.periodKey],
           set: payload,
+          where: sql`
+            ${usersStats.newUsersCount} IS DISTINCT FROM ${payload.newUsersCount} OR
+            ${usersStats.activeUsersCount} IS DISTINCT FROM ${payload.activeUsersCount} OR
+            ${usersStats.totalUsersCount} IS DISTINCT FROM ${payload.totalUsersCount} OR
+            ${usersStats.bannedUsersCount} IS DISTINCT FROM ${payload.bannedUsersCount}
+          `,
         });
     };
 
-    // Helper function to calculate DISTINCT active users from sessions
-    const getActiveUsersInRange = async (start: Date, end: Date) => {
-      const [res] = await db
-        .select({ value: count(sql`DISTINCT ${sessions.userId}`) })
-        .from(sessions)
-        .where(and(gte(sessions.createdAt, start), lt(sessions.createdAt, end)));
-      return Number(res?.value ?? 0);
-    };
-
-    // Helper function to calculate SUM of daily new users from users_stats
-    const getSumDailyNewUsersInRange = async (startStr: string, endStr: string) => {
-      const [res] = await db
-        .select({ totalNew: sum(usersStats.newUsersCount) })
-        .from(usersStats)
-        .where(
-          and(
-            eq(usersStats.periodType, EnumStatsPeriodType.DAILY),
-            gte(usersStats.date, startStr),
-            lt(usersStats.date, endStr)
-          )
-        );
-      return Number(res?.totalNew ?? 0);
-    };
-
-    // ----------------------------------------------------
-    // 2. DAILY RECORD (Direct Calculation)
-    // ----------------------------------------------------
-    const [dailyNewRes] = await db
-      .select({ value: count(users.id) })
-      .from(users)
-      .where(and(gte(users.createdAt, startOfDay), lt(users.createdAt, endOfDay)));
-    const dailyNewUsers = Number(dailyNewRes?.value ?? 0);
-    const dailyActiveUsers = await getActiveUsersInRange(startOfDay, endOfDay);
-
+    // Upsert DAILY, WEEKLY, MONTHLY
     await upsertStatsRecord(EnumStatsPeriodType.DAILY, dailyKey, dailyNewUsers, dailyActiveUsers);
-
-    // ----------------------------------------------------
-    // 3. WEEKLY RECORD (Hybrid Rollup)
-    // ----------------------------------------------------
-    const startDateStr = formatDateKey(startOfWeek);
-    const endDateStr = formatDateKey(endOfWeek);
-
-    const weeklySumNewUsers = await getSumDailyNewUsersInRange(startDateStr, endDateStr);
-    const weeklyNewUsers = weeklySumNewUsers > 0 ? weeklySumNewUsers : dailyNewUsers;
-    const weeklyActiveUsers = await getActiveUsersInRange(startOfWeek, endOfWeek);
-
     await upsertStatsRecord(EnumStatsPeriodType.WEEKLY, weekKey, weeklyNewUsers, weeklyActiveUsers);
-
-    // ----------------------------------------------------
-    // 4. MONTHLY RECORD (Hybrid Rollup)
-    // ----------------------------------------------------
-    const startMonthStr = formatDateKey(startOfMonth);
-    const endMonthStr = formatDateKey(endOfMonth);
-
-    const monthlySumNewUsers = await getSumDailyNewUsersInRange(startMonthStr, endMonthStr);
-    const monthlyNewUsers = monthlySumNewUsers > 0 ? monthlySumNewUsers : dailyNewUsers;
-    const monthlyActiveUsers = await getActiveUsersInRange(startOfMonth, endOfMonth);
-
     await upsertStatsRecord(EnumStatsPeriodType.MONTHLY, monthKey, monthlyNewUsers, monthlyActiveUsers);
 
     console.log(
       `[Job] Hybrid rollup completed successfully!\n` +
       `  - Daily (${dailyKey}): +${dailyNewUsers} new users, ${dailyActiveUsers} DAU\n` +
-      `  - Weekly (${weekKey}): +${weeklyNewUsers} new users (summed from daily stats), ${weeklyActiveUsers} WAU (distinct sessions)\n` +
-      `  - Monthly (${monthKey}): +${monthlyNewUsers} new users (summed from daily stats), ${monthlyActiveUsers} MAU (distinct sessions)`
+      `  - Weekly (${weekKey}): +${weeklyNewUsers} new users (summed from daily stats), ${weeklyActiveUsers} WAU\n` +
+      `  - Monthly (${monthKey}): +${monthlyNewUsers} new users (summed from daily stats), ${monthlyActiveUsers} MAU`
     );
   } catch (error) {
     console.error("[Job] Error during update-user-stats job:", error);

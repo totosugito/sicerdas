@@ -4,6 +4,8 @@ import reconcileExamStats from "./jobs/reconcile-exam-stats.ts";
 import { purgeOldExamAnswers } from "./jobs/purge-old-exam-answers.ts";
 import { cleanStaleSessions } from "./jobs/clean-stale-sessions.ts";
 import { updateUserStats } from "./jobs/update-user-stats.ts";
+import { computeExamStats } from "./jobs/compute-exam-stats.ts";
+import { computeCourseStats } from "./jobs/compute-course-stats.ts";
 import { db } from "../../../db/db-pool.ts";
 import { jobLogs } from "../../../db/schema/jobs/index.ts";
 import {
@@ -28,6 +30,8 @@ export const DAILY_JOBS: DailyJobDefinition[] = [
   { id: "archive-guest-events", name: "Archiving Guest Events", enabled: true, fn: archiveGuestEvents },
   { id: "update-book-stats", name: "Updating Book Statistics", enabled: true, fn: updateBookStats },
   { id: "reconcile-exam-stats", name: "Reconciling Exam Statistics", enabled: true, fn: reconcileExamStats },
+  { id: "compute-exam-stats", name: "Computing Exam Statistics", enabled: true, fn: computeExamStats },
+  { id: "compute-course-stats", name: "Computing Course Statistics", enabled: true, fn: computeCourseStats },
   { id: "purge-old-exam-answers", name: "Purging Old Exam Answers", enabled: true, fn: purgeOldExamAnswers },
   { id: "clean-stale-sessions", name: "Cleaning Stale Sessions", enabled: true, fn: cleanStaleSessions },
   { id: "update-user-stats", name: "Updating User Statistics", enabled: true, fn: updateUserStats },

@@ -90,32 +90,32 @@ Handles the 1:1 relationship between users and courses.
 ## 6. `user-progress` Router (Target: `src/modules/course/user-progress` & `src/routes/course/user-progress`)
 Handles tracking granular lecture completion.
 
-### User Services (`/course/user-progress`)
-- [ ] `GET /syllabus/:courseId`: Returns the full course syllabus (chapters + lectures) combined with the user's progress (`isCompleted`, `watchTimeSeconds`, etc.)
-- [ ] `POST /lecture/:lectureId/complete`: **The Progression Bridge**.
+### User Services (`/course/user-progress/user`)
+- [x] `GET /syllabus/:courseId`: Returns the full course syllabus (chapters + lectures) combined with the user's progress (`isCompleted`, `watchTimeSeconds`, etc.)
+- [x] `POST /lecture/:lectureId/complete`: **The Progression Bridge**.
   - For Videos/PDFs: Mark as completed.
   - For EXAMs: Fetch CBT `exam_sessions` score, compare with `successThreshold`.
-- [ ] `PUT /lecture/:lectureId/watch-time`: Incremental updates for video watch time.
+- [x] `PUT /lecture/:lectureId/watch-time`: Incremental updates for video watch time.
 
 ---
 
 ## 7. `interactions` Router (Target: `src/modules/course/interactions` & `src/routes/course/interactions`)
 Handles user ratings and bookmarks (tied to `course_enrollments`).
 
-### User Services (`/course/interactions`)
-- [ ] `POST /rating/:courseId`: Add or update a 1-5 star rating
-- [ ] `POST /bookmark/:courseId`: Toggle bookmark status
-- [ ] `POST /like/:courseId`: Toggle like/dislike status
-- [ ] `GET /favorites`: List bookmarked/liked courses
+### User Services (`/course/interactions/user`)
+- [x] `POST /rating/:courseId`: Add or update a 1-5 star rating
+- [x] `POST /bookmark/:courseId`: Toggle bookmark status
+- [x] `POST /like/:courseId`: Toggle like/dislike status
+- [x] `GET /favorites`: List bookmarked/liked courses
 
 ---
 
 ## 8. `user-stats` Router (Target: `src/modules/course/user-stats` & `src/routes/course/user-stats`)
 Handles user dashboard analytics.
 
-### User Services (`/course/user-stats`)
-- [ ] `GET /global`: Fetch `course_user_stats_global` (total enrolled, total completed, watch time)
-- [ ] `GET /categories`: Fetch `course_user_stats_category` (progress segmented by category)
+### User Services (`/course/user-stats/user`)
+- [x] `GET /global`: Fetch `course_user_stats_global` (total enrolled, total completed, watch time)
+- [x] `GET /categories`: Fetch `course_user_stats_category` (progress segmented by category)
 
 ---
 
