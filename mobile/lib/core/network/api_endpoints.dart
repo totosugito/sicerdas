@@ -13,7 +13,7 @@ class ApiEndpoints {
 
   // User Profile
   static const String userDetails = '/api/users/user/details';
-  static const String userUpdate = '/api/users/user/update';
+  static const String userUpdate = '/api/users/user/update-profile';
   static const String userChangePassword = '/api/users/user/change-password';
 
   // Books
