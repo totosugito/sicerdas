@@ -411,6 +411,28 @@ export const GenerateCustomResponse = Type.Intersect([
   }),
 ]);
 
+// --- Clone Package Schemas ---
+
+export const ClonePackageBody = Type.Object({
+  sourcePackageId: Type.String({ format: "uuid" }),
+  title: Type.Optional(Type.String({ minLength: 1, maxLength: 255 })),
+  examType: Type.Optional(Type.Enum(EnumExamType)),
+});
+
+export const ClonePackageResponse = Type.Intersect([
+  BaseResponseSchema,
+  Type.Object({
+    data: Type.Object({
+      id: Type.String({ format: "uuid" }),
+      parentPackageId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
+      title: Type.String(),
+      examType: Type.String(),
+      totalSections: Type.Number(),
+      totalQuestions: Type.Number(),
+    }),
+  }),
+]);
+
 // --- Static Types ---
 
 export type PublicPackageItem = Static<typeof PublicPackageResponseItem>;
@@ -424,6 +446,7 @@ export type PublicPackageListParams = Static<typeof PublicPackageListBody>;
 export type AdminPackageListParams = Static<typeof AdminPackageListBody>;
 export type AdminPackageSimpleParams = Static<typeof AdminPackageSimpleBody>;
 export type CreatePackageParams = Static<typeof CreatePackageBody>;
+export type ClonePackageParams = Static<typeof ClonePackageBody>;
 export type UpdatePackageParams = Static<typeof UpdatePackageBody>;
 export type UpdateBookmarkParams = Static<typeof UpdateBookmarkBody>;
 export type UpdateRatingParams = Static<typeof UpdateRatingBody>;

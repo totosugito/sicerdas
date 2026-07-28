@@ -45,9 +45,18 @@ Handles atomic content items. (`referenceUrl` stores `course_lecture_texts.id` f
 - [x] `DELETE /delete/:id`: Delete lecture
 - [x] `PUT /reorder/:chapterId`: Bulk update lecture positions
 
-### Admin Exam Package Generators
-- [ ] `POST /generate-exam/:id`: Generates a hidden `course_exam` package for the lecture and saves the `sectionId` to `referenceUrl`.
-- [ ] `POST /clone-exam/:id`: Clones an existing public exam package into a hidden `course_exam` and creates corresponding lectures.
+### Admin Exam Package Selection & Linking
+- [x] Utilize existing `/exam/package/clone` to clone public exam packages into `course_exam` package types (preserving lineage via `parentPackageId`).
+- [x] Admin selects target section from `course_exam` package sections list and saves `sectionId` to lecture `referenceUrl`.
+
+#### Database Schema Requirement (`exam_packages` Table)
+Add `parent_package_id` column to support package cloning lineage:
+- **Column**: `parent_package_id` (`uuid`, nullable, FK references `exam_packages.id` ON DELETE SET NULL)
+- **Drizzle Schema** (`backend/src/db/schema/exam/packages.ts`):
+  ```ts
+  parentPackageId: uuid("parent_package_id").references((): AnyPgColumn => examPackages.id, { onDelete: "set null" })
+  ```
+- **Usage**: Automatically set to source package ID when `/exam/package/clone` duplicates a package. Provides origin tracking, upstream sync checking, and template lineage.
 
 ---
 
@@ -67,14 +76,14 @@ Handles standalone, reusable rich text articles (BlockNote JSON format) referenc
 Handles the 1:1 relationship between users and courses.
 
 ### Admin Services (`/course/enrollments/admin`)
-- [ ] `GET /list/:courseId`: List all enrolled students in a course
-- [ ] `POST /add`: Manually enroll a student (e.g., bypassing payment)
-- [ ] `DELETE /remove`: Drop a student from a course
+- [x] `GET /list/:courseId`: List all enrolled students in a course
+- [x] `POST /add`: Manually enroll a student (e.g., bypassing payment)
+- [x] `DELETE /remove`: Drop a student from a course
 
-### User Services (`/course/enrollments`)
-- [ ] `POST /enroll/:courseId`: User enrolls in a course (checks `requiredTier`)
-- [ ] `GET /active`: List user's ACTIVE courses
-- [ ] `GET /completed`: List user's COMPLETED courses
+### User Services (`/course/enrollments/user`)
+- [x] `POST /enroll/:courseId`: User enrolls in a course (checks `requiredTier`)
+- [x] `GET /active`: List user's ACTIVE courses
+- [x] `GET /completed`: List user's COMPLETED courses
 
 ---
 
@@ -96,7 +105,7 @@ Handles user ratings and bookmarks (tied to `course_enrollments`).
 ### User Services (`/course/interactions`)
 - [ ] `POST /rating/:courseId`: Add or update a 1-5 star rating
 - [ ] `POST /bookmark/:courseId`: Toggle bookmark status
-- `POST /like/:courseId`: Toggle like/dislike status
+- [ ] `POST /like/:courseId`: Toggle like/dislike status
 - [ ] `GET /favorites`: List bookmarked/liked courses
 
 ---
@@ -125,5 +134,5 @@ src/modules/course/[domain]/
 # Autoloaded routes:
 src/routes/course/[domain]/
 ├── admin/                  # Admin endpoints (protected by admin.hook.ts)
-└── [user-route].ts         # User/Public endpoints
+└── user/                   # User/Public endpoints
 ```

@@ -7,6 +7,7 @@ import {
   integer,
   index,
   boolean,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import { EnumExamType, PgEnumExamType } from "./enums.ts";
@@ -75,6 +76,11 @@ export const examPackages = pgTable(
     totalQuestions: integer("total_questions").default(0).notNull(),
     activeQuestions: integer("active_questions").default(0).notNull(),
 
+    // If cloned from another package, points to the original source package
+    parentPackageId: uuid("parent_package_id").references((): AnyPgColumn => examPackages.id, {
+      onDelete: "set null",
+    }),
+
     // Timestamp when this package was created
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 
@@ -85,6 +91,7 @@ export const examPackages = pgTable(
     index("exam_packages_version_id_idx").on(table.versionId),
     index("exam_packages_category_id_idx").on(table.categoryId),
     index("exam_packages_creator_idx").on(table.createdByUserId),
+    index("exam_packages_parent_pkg_idx").on(table.parentPackageId),
     index("exam_packages_tier_grade_idx").on(table.requiredTier, table.educationGradeId),
     index("idx_pkg_total_sections").on(table.totalSections),
     index("idx_pkg_active_sections").on(table.activeSections),
