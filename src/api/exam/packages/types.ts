@@ -128,3 +128,11 @@ export interface GenerateCustomRequest {
   packageTitle?: string;
   sectionTitle?: string;
 }
+
+export type PackageFormValues = Omit<CreatePackageParams, "durationMinutes" | "educationGradeId" | "versionId"> & {
+  durationMinutes: string | number;
+  educationGradeId?: string | number | null;
+  versionId?: string | number | null;
+  thumbnail?: string | null;
+  newThumbnailFile?: File | null;
+};

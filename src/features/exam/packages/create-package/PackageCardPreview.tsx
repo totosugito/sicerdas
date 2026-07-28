@@ -3,7 +3,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Clock, BookOpen, Layers, Zap, ImageIcon } from "lucide-react";
-import { PackageFormValues } from "./types";
+import { PackageFormValues } from "@/api/exam/packages";
 import { durationOnMinutes } from "@/constants/app-enum";
 
 type PackageCardPreviewProps = {

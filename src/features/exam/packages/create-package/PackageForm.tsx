@@ -17,7 +17,7 @@ import { useListTier } from "@/api/tier";
 import { useListGradeSimple } from "@/api/education/grades";
 import { useListVersionSimple } from "@/api/version/list-version-simple";
 import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
-import { PackageFormValues } from "./types";
+import { PackageFormValues } from "@/api/exam/packages";
 import { PackageCardPreview } from "./PackageCardPreview";
 import { PackageHeroPreview } from "./PackageHeroPreview";
 

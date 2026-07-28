@@ -36,6 +36,17 @@ export async function createCourseService(
       courseName: input.courseName,
       categoryId: input.categoryId,
       educationGradeId: input.educationGradeId,
+      courseDescription: input.courseDescription,
+      whatYouWillLearn: input.whatYouWillLearn,
+      price: input.price ?? 0,
+      tags: input.tags,
+      instructions: input.instructions,
+      status: input.status,
+      publishDateType: input.publishDateType,
+      publishDateStart: input.publishDateStart ? new Date(input.publishDateStart) : null,
+      publishDateEnd: input.publishDateEnd ? new Date(input.publishDateEnd) : null,
+      isPublic: input.isPublic ?? false,
+      isSequential: input.isSequential ?? true,
     })
     .returning();
 

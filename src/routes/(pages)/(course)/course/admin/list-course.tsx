@@ -53,6 +53,10 @@ function AdminCourseListPage() {
   const { courses, setCourses } = useAppStore();
   const [searchTerm, setSearchTerm] = useState(search);
 
+  // Modal & Dialog States
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<CourseItem | null>(null);
+
   // Sync with store on mount - if view is missing, use store value
   useEffect(() => {
     if (!searchParams.view) {
@@ -83,8 +87,6 @@ function AdminCourseListPage() {
   });
 
   const deleteMutation = useDeleteCourse();
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<CourseItem | null>(null);
 
   const handleDelete = (course: CourseItem) => {
     setSelectedCourse(course);
@@ -311,6 +313,7 @@ function AdminCourseListPage() {
         )}
       </div>
 
+      {/* Delete Course Confirmation Dialog */}
       <DialogModal
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}

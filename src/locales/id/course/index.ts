@@ -39,7 +39,7 @@ export default {
     },
     create: {
       title: "Tambah Kursus",
-      description: "Tambah kursus baru untuk materi pembelajaran.",
+      description: "Tambah kursus draft baru untuk materi pembelajaran.",
     },
     edit: {
       title: "Ubah Kursus",
@@ -48,6 +48,67 @@ export default {
     detail: {
       title: "Detail Kursus",
       description: "Lihat rincian informasi dan struktur materi kursus.",
+    },
+    form: {
+      courseCode: {
+        label: "Kode Kursus",
+        placeholder: "Masukkan kode kursus (cth: MATH101)",
+        required: "Kode kursus wajib diisi",
+      },
+      courseName: {
+        label: "Nama Kursus",
+        placeholder: "Masukkan nama kursus",
+        required: "Nama kursus wajib diisi",
+      },
+      categoryId: {
+        label: "Kategori",
+        placeholder: "Pilih kategori",
+        required: "Kategori wajib dipilih",
+      },
+      educationGradeId: {
+        label: "Tingkat Pendidikan",
+        placeholder: "Pilih tingkat pendidikan",
+        required: "Tingkat pendidikan wajib dipilih",
+      },
+      price: {
+        label: "Harga (Rp)",
+        placeholder: "0",
+      },
+      status: {
+        label: "Status",
+        placeholder: "Pilih status",
+      },
+      courseDescription: {
+        label: "Deskripsi Kursus",
+        placeholder: "Masukkan deskripsi singkat...",
+      },
+      whatYouWillLearn: {
+        label: "Materi Yang Akan Dipelajari",
+        placeholder: "Deskripsi hasil pembelajaran...",
+      },
+      isPublic: {
+        label: "Publik",
+        description: "Dapat diakses secara umum",
+      },
+      isSequential: {
+        label: "Pembelajaran Berurutan",
+        description: "Modul harus diselesaikan secara berurutan",
+      },
+      thumbnail: {
+        label: "Thumbnail Kursus",
+        upload: "Unggah Gambar",
+        change: "Ganti Gambar",
+        remove: "Hapus",
+      },
+      infoTitle: "Informasi Utama",
+      livePreview: "Pratinjau Langsung",
+      preview: {
+        thumbnailPlaceholder: "Pratinjau Thumbnail",
+        defaultCode: "KODE-KURSUS",
+        defaultName: "Nama Kursus",
+        defaultDescription: "Deskripsi kursus akan muncul di sini.",
+        freeText: "Gratis",
+      },
     },
   },
 };

@@ -10,21 +10,21 @@ import { listCourseService } from "../../../modules/course/courses/services/admi
 const publicListRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
     url: "/list",
-    method: "GET",
+    method: "POST",
     schema: {
       tags: ["Public Courses"],
       summary: "List published courses",
-      querystring: CourseListQuery,
+      body: CourseListQuery,
       response: {
         200: CourseListResponse,
         "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      req: FastifyRequest<{ Querystring: typeof CourseListQuery.static }>,
+      req: FastifyRequest<{ Body: typeof CourseListQuery.static }>,
       reply: FastifyReply,
     ) {
-      const result = await listCourseService(req.query, true);
+      const result = await listCourseService(req.body, true);
 
       if (!result.success) {
         const message = req.t(result.errorKey!);

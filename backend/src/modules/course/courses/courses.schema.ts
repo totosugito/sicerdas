@@ -51,6 +51,17 @@ export const AdminCreateCourseBody = Type.Object({
   courseName: Type.String({ minLength: 2, maxLength: 255 }),
   categoryId: Type.String({ format: "uuid" }),
   educationGradeId: Type.Number(),
+  courseDescription: Type.Optional(Type.String()),
+  whatYouWillLearn: Type.Optional(Type.String()),
+  price: Type.Optional(Type.Number({ minimum: 0, default: 0 })),
+  tags: Type.Optional(Type.Array(Type.String())),
+  instructions: Type.Optional(Type.String()),
+  status: Type.Optional(Type.Enum(EnumCourseStatus, { default: EnumCourseStatus.DRAFT })),
+  publishDateType: Type.Optional(Type.Enum(EnumPublishDateType, { default: EnumPublishDateType.NOW })),
+  publishDateStart: Type.Optional(Type.String({ format: "date-time" })),
+  publishDateEnd: Type.Optional(Type.String({ format: "date-time" })),
+  isPublic: Type.Optional(Type.Boolean({ default: false })),
+  isSequential: Type.Optional(Type.Boolean({ default: true })),
 });
 
 export type AdminCreateCourseInput = Static<typeof AdminCreateCourseBody>;

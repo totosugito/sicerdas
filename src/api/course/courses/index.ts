@@ -17,6 +17,7 @@ export type {
   PublicCourseListParams,
   UpdateCourseRequest,
   UploadCourseThumbnailRequest,
+  CourseFormValues,
 } from "./types";
 
 // Admin exports
