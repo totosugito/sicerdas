@@ -7,7 +7,7 @@ import {
   SelectPositioner,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { ArrowUpAZ, ArrowDownAZ } from "lucide-react";
+import { ArrowUpAZ, ArrowDownAZ, ArrowUpDown } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 
 interface CourseSortSelectorProps {
@@ -46,8 +46,16 @@ export const CourseSortSelector = ({
   return (
     <div className="flex items-center gap-2">
       <Select value={sortBy} onValueChange={handleSortFieldChange}>
-        <SelectTrigger className="w-[180px] bg-card shadow-sm border-border/60">
-          <SelectValue placeholder={t(($) => $.course.courses.table.sort.placeholder)} />
+        <SelectTrigger className="w-[180px] bg-card shadow-sm border-border/60 flex items-center gap-2">
+          <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+          <SelectValue
+            placeholder={t(($) => $.course.courses.table.sort.placeholder)}
+            render={(_, { value }) => {
+              const matched = sortOptions.find((opt) => opt.value === value);
+              const label = matched?.label || value;
+              return <span className="text-left truncate block w-full">{label}</span>;
+            }}
+          />
         </SelectTrigger>
         <SelectPositioner>
           <SelectContent>

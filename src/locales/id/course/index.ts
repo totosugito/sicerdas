@@ -18,6 +18,14 @@ export default {
         createdAt: "Dibuat Pada",
         actions: "Aksi",
       },
+      statusFilter: "Semua Status",
+      statusValues: {
+        draft: "Draft",
+        published: "Publikasi",
+        finished: "Selesai",
+        archived: "Arsip",
+        deleted: "Dihapus",
+      },
       sort: {
         placeholder: "Urutkan Berdasarkan",
         courseCode: "Kode Kursus",

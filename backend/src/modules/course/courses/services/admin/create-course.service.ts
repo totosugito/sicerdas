@@ -63,6 +63,7 @@ export async function createCourseService(
       publishDateStart: newCourse.publishDateStart ? newCourse.publishDateStart.toISOString() : null,
       publishDateEnd: newCourse.publishDateEnd ? newCourse.publishDateEnd.toISOString() : null,
       category: null,
+      grade: null,
     },
   };
 }

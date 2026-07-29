@@ -86,6 +86,7 @@ export async function updateCourseService(
       publishDateStart: updatedCourse.publishDateStart ? updatedCourse.publishDateStart.toISOString() : null,
       publishDateEnd: updatedCourse.publishDateEnd ? updatedCourse.publishDateEnd.toISOString() : null,
       category: null,
+      grade: null,
     },
   };
 }

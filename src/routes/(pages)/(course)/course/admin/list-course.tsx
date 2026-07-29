@@ -18,7 +18,16 @@ import {
   CourseCardList,
   CourseSortSelector,
 } from "@/features/course/courses/list-course";
-import { LayoutGrid, ListIcon, Plus, Trash2, Search, X, BookOpen } from "lucide-react";
+import { EnumCourseStatus } from "backend/src/db/schema/course/enums.ts";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectPositioner,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { LayoutGrid, ListIcon, Plus, Trash2, Search, X, BookOpen, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { PaginationData, DataTablePagination } from "@/components/table";
 import { z } from "zod";
@@ -30,6 +39,7 @@ export const Route = createFileRoute("/(pages)/(course)/course/admin/list-course
     page: z.number().min(1).optional().catch(undefined),
     limit: z.number().min(5).optional().catch(undefined),
     search: z.string().optional().catch(undefined),
+    status: z.string().optional().catch(undefined),
     sortBy: z.string().optional().catch(undefined),
     sortOrder: z.enum(["asc", "desc"]).optional().catch(undefined),
     view: z.enum(["table", "card"]).optional().catch(undefined),
@@ -46,6 +56,7 @@ function AdminCourseListPage() {
   const page = searchParams.page ?? 1;
   const limit = searchParams.limit ?? 10;
   const search = searchParams.search ?? "";
+  const status = searchParams.status ?? "";
   const sortBy = searchParams.sortBy ?? "updatedAt";
   const sortOrder = searchParams.sortOrder ?? "desc";
   const viewMode = searchParams.view ?? "card";
@@ -81,7 +92,8 @@ function AdminCourseListPage() {
   const { data, isLoading } = useListCourse({
     page,
     limit,
-    search,
+    search: search || undefined,
+    status: (status as any) || undefined,
     sortBy,
     sortOrder,
   });
@@ -180,6 +192,53 @@ function AdminCourseListPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto lg:ml-auto">
+          {/* Status Filter */}
+          <Select
+            value={status || "all"}
+            onValueChange={(val) => {
+              const newStatus = val === "all" ? undefined : val;
+              navigate({
+                search: {
+                  ...searchParams,
+                  status: newStatus,
+                  page: 1,
+                },
+                replace: true,
+              });
+            }}
+          >
+            <SelectTrigger className="w-[160px] bg-card shadow-sm border-border/60 flex items-center gap-2">
+              <Filter className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              <SelectValue
+                placeholder={t(($) => $.course.courses.table.columns.status)}
+                render={(_, { value }) => {
+                  const label =
+                    !value || value === "all"
+                      ? t(($) => $.course.courses.table.statusFilter)
+                      : t(
+                          ($) =>
+                            $.course.courses.table.statusValues[
+                              value as keyof typeof $.course.courses.table.statusValues
+                            ]
+                        ) || value;
+                  return <span className="text-left truncate block w-full">{label}</span>;
+                }}
+              />
+            </SelectTrigger>
+            <SelectPositioner>
+              <SelectContent>
+                <SelectItem value="all">
+                  {t(($) => $.course.courses.table.statusFilter)}
+                </SelectItem>
+                {Object.values(EnumCourseStatus).map((st) => (
+                  <SelectItem key={st} value={st}>
+                    {t(($) => $.course.courses.table.statusValues[st as keyof typeof $.course.courses.table.statusValues]) || st}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectPositioner>
+          </Select>
+
           <CourseSortSelector
             sortBy={sortBy}
             sortOrder={sortOrder as "asc" | "desc"}

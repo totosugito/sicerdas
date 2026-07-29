@@ -33,7 +33,7 @@ export async function createLectureService(
   let position = input.position;
   if (!position) {
     const [maxResult] = await db
-      .select({ maxPos: sql<string>`COALESCE(MAX(position), 0)` })
+      .select({ maxPos: sql<string>`COALESCE(MAX(position), '0')` })
       .from(courseLectures)
       .where(eq(courseLectures.chapterId, input.chapterId));
 
