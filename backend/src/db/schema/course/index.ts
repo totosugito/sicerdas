@@ -1,5 +1,4 @@
 export {
-    EnumCourseStatus, PgEnumCourseStatus,
     EnumPublishDateType, PgEnumPublishDateType,
     EnumLectureType, PgEnumLectureType,
     EnumEnrollmentStatus, PgEnumEnrollmentStatus

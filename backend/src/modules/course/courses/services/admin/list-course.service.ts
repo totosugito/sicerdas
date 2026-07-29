@@ -1,14 +1,13 @@
 import { db } from "../../../../../db/db-pool.ts";
 import { courses } from "../../../../../db/schema/course/courses.ts";
-import { educationCategories } from "../../../../../db/schema/education/categories.ts";
-import { educationGrades } from "../../../../../db/schema/education/grades.ts";
+import { educationCategories, educationGrades } from "../../../../../db/schema/education/index.ts";
 import { courseStats } from "../../../../../db/schema/course/course-stats.ts";
-import { and, eq, ilike, sql, desc, asc, inArray, or } from "drizzle-orm";
-import type { ServiceResponse } from "../../../../../types/index.ts";
+import { and, eq, ilike, sql, desc, asc, inArray, or, ne } from "drizzle-orm";
+import type { ServiceResponse } from "../../../../../types/response.ts";
 import type { PaginationMeta } from "../../../../../types/response.ts";
 import type { CourseItem, CourseListQueryParams } from "../../courses.schema.ts";
 import { getCourseThumbnailUrl } from "../../../../../utils/course/course-utils.ts";
-import { EnumCourseStatus } from "../../../../../db/schema/course/enums.ts";
+import { EnumContentStatus } from "../../../../../db/schema/enum/enum-app.ts";
 
 export interface ListCourseResult extends ServiceResponse {
   data?: {
@@ -38,18 +37,20 @@ export async function listCourseService(
   const conditions = [];
 
   if (isPublicOnly) {
-    conditions.push(eq(courses.status, EnumCourseStatus.PUBLISHED));
+    conditions.push(eq(courses.status, EnumContentStatus.PUBLISHED));
     conditions.push(eq(courses.isPublic, true));
   } else if (status) {
     conditions.push(eq(courses.status, status));
-  }
-
-  if (categoryId) {
-    conditions.push(eq(courses.categoryId, categoryId));
+  } else {
+    conditions.push(ne(courses.status, EnumContentStatus.DELETED));
   }
 
   if (categoryKey) {
     conditions.push(eq(educationCategories.key, categoryKey));
+  }
+
+  if (categoryId) {
+    conditions.push(eq(courses.categoryId, categoryId));
   }
 
   if (educationGradeIds && educationGradeIds.length > 0) {

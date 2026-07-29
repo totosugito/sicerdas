@@ -3,7 +3,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageTitle, ErrorContainer } from "@/components/app";
-import { EnumCourseStatus } from "backend/src/db/schema/course/enums.ts";
+import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
 import {
   useUpdateCourse,
   useDetailCourse,
@@ -44,7 +44,7 @@ function AdminCourseEditPage() {
       whatYouWillLearn: courseData?.whatYouWillLearn || "",
       price: courseData?.price ?? 0,
       instructions: courseData?.instructions || "",
-      status: (courseData?.status as any) || EnumCourseStatus.DRAFT,
+      status: (courseData?.status as any) || EnumContentStatus.DRAFT,
       isPublic: courseData?.isPublic ?? false,
       isSequential: courseData?.isSequential ?? true,
       thumbnail: courseData?.thumbnail,
@@ -70,7 +70,7 @@ function AdminCourseEditPage() {
       courseDescription: values.courseDescription || undefined,
       whatYouWillLearn: values.whatYouWillLearn || undefined,
       price: values.price ? Number(values.price) : 0,
-      status: (values.status as any) || EnumCourseStatus.DRAFT,
+      status: (values.status as any) || EnumContentStatus.DRAFT,
       isPublic: values.isPublic ?? false,
       isSequential: values.isSequential ?? true,
     };

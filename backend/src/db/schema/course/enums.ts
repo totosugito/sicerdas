@@ -1,17 +1,5 @@
 import { pgEnum } from "drizzle-orm/pg-core";
 
-// Course Status Enum
-export const EnumCourseStatus = {
-    DRAFT: 'draft',  // plan to publish on the future
-    PUBLISHED: 'published', // published
-    FINISHED: 'finished', // finished
-    ARCHIVED: 'archived', // save as archied to as history
-    DELETED: 'deleted' // deleted from db
-} as const;
-export const PgEnumCourseStatus = pgEnum('course_status', Object.values(EnumCourseStatus) as [string, ...string[]]);
-
-
-
 export const EnumPublishDateType = {
     NOW: 'now',
     DATE: 'date',

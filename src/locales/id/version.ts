@@ -66,12 +66,6 @@ const version = {
       label: "Status",
       placeholder: "Pilih status",
       required: "Status wajib diisi",
-      options: {
-        published: "Dipublikasikan",
-        unpublished: "Belum Dipublikasikan",
-        archived: "Diarsipkan",
-        deleted: "Dihapus",
-      },
     },
     name: {
       label: "Nama Versi",

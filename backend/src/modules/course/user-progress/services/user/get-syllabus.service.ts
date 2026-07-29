@@ -3,13 +3,13 @@ import { courses } from "../../../../../db/schema/course/courses.ts";
 import { courseChapters } from "../../../../../db/schema/course/chapters.ts";
 import { courseLectures } from "../../../../../db/schema/course/lectures.ts";
 import { courseUserProgress, type SchemaCourseUserProgressSelect } from "../../../../../db/schema/course/user-progress.ts";
-import { EnumCourseStatus } from "../../../../../db/schema/course/enums.ts";
+import { EnumContentStatus } from "../../../../../db/schema/enum/enum-app.ts";
 import { eq, and, asc } from "drizzle-orm";
 
 export async function getSyllabusService(courseId: string, userId: string) {
   // Check if course exists and is published
   const course = await db.query.courses.findFirst({
-    where: and(eq(courses.id, courseId), eq(courses.status, EnumCourseStatus.PUBLISHED)),
+    where: and(eq(courses.id, courseId), eq(courses.status, EnumContentStatus.PUBLISHED)),
   });
 
   if (!course) {

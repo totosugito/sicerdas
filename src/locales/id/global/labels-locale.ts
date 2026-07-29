@@ -106,4 +106,12 @@ export default {
   retry: "Coba Lagi",
   description: "Deskripsi",
   share: "Bagikan",
+  statusValues: {
+    draft: "Draft",
+    published: "Publikasi",
+    unpublished: "Tidak Dipublikasi",
+    finished: "Selesai",
+    archived: "Arsip",
+    deleted: "Dihapus",
+  },
 };

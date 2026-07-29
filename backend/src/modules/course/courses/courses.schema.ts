@@ -1,6 +1,7 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { BaseResponseSchema, PaginationMetaSchema } from "../../../types/response.ts";
-import { EnumCourseStatus, EnumPublishDateType } from "../../../db/schema/course/enums.ts";
+import { EnumPublishDateType } from "../../../db/schema/course/index.ts";
+import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
 
 // --- Shared Response Field Definitions ---
 
@@ -65,7 +66,7 @@ export const AdminCreateCourseBody = Type.Object({
   price: Type.Optional(Type.Number({ minimum: 0, default: 0 })),
   tags: Type.Optional(Type.Array(Type.String())),
   instructions: Type.Optional(Type.String()),
-  status: Type.Optional(Type.Enum(EnumCourseStatus, { default: EnumCourseStatus.DRAFT })),
+  status: Type.Optional(Type.Enum(EnumContentStatus, { default: EnumContentStatus.DRAFT })),
   publishDateType: Type.Optional(Type.Enum(EnumPublishDateType, { default: EnumPublishDateType.NOW })),
   publishDateStart: Type.Optional(Type.String({ format: "date-time" })),
   publishDateEnd: Type.Optional(Type.String({ format: "date-time" })),
@@ -85,7 +86,7 @@ export const AdminUpdateCourseBody = Type.Composite([
     thumbnail: Type.Optional(Type.String()),
     tags: Type.Optional(Type.Array(Type.String())),
     instructions: Type.Optional(Type.String()),
-    status: Type.Optional(Type.Enum(EnumCourseStatus, { default: EnumCourseStatus.DRAFT })),
+    status: Type.Optional(Type.Enum(EnumContentStatus, { default: EnumContentStatus.DRAFT })),
     publishDateType: Type.Optional(Type.Enum(EnumPublishDateType, { default: EnumPublishDateType.NOW })),
     publishDateStart: Type.Optional(Type.String({ format: "date-time" })),
     publishDateEnd: Type.Optional(Type.String({ format: "date-time" })),
@@ -96,7 +97,7 @@ export const AdminUpdateCourseBody = Type.Composite([
 export type AdminUpdateCourseInput = Static<typeof AdminUpdateCourseBody>;
 
 export const AdminUpdateCourseStatusBody = Type.Object({
-  status: Type.Enum(EnumCourseStatus),
+  status: Type.Enum(EnumContentStatus),
 });
 
 export const CourseIdParams = Type.Object({
@@ -129,7 +130,7 @@ export const CourseListQuery = Type.Object({
   categoryKey: Type.Optional(Type.String()),
   educationGradeId: Type.Optional(Type.Number()),
   educationGradeIds: Type.Optional(Type.Array(Type.Number())),
-  status: Type.Optional(Type.Enum(EnumCourseStatus)),
+  status: Type.Optional(Type.Enum(EnumContentStatus)),
   sortBy: Type.Optional(Type.String({ default: "createdAt" })),
   sortOrder: Type.Optional(Type.String({ default: "desc" })),
 });

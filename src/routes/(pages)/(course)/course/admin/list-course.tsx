@@ -18,7 +18,7 @@ import {
   CourseCardList,
   CourseSortSelector,
 } from "@/features/course/courses/list-course";
-import { EnumCourseStatus } from "backend/src/db/schema/course/enums.ts";
+import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
 import {
   Select,
   SelectContent,
@@ -217,8 +217,8 @@ function AdminCourseListPage() {
                       ? t(($) => $.course.courses.table.statusFilter)
                       : t(
                           ($) =>
-                            $.course.courses.table.statusValues[
-                              value as keyof typeof $.course.courses.table.statusValues
+                            $.labels.statusValues[
+                              value as keyof typeof $.labels.statusValues
                             ]
                         ) || value;
                   return <span className="text-left truncate block w-full">{label}</span>;
@@ -230,9 +230,9 @@ function AdminCourseListPage() {
                 <SelectItem value="all">
                   {t(($) => $.course.courses.table.statusFilter)}
                 </SelectItem>
-                {Object.values(EnumCourseStatus).map((st) => (
+                {Object.values(EnumContentStatus).map((st) => (
                   <SelectItem key={st} value={st}>
-                    {t(($) => $.course.courses.table.statusValues[st as keyof typeof $.course.courses.table.statusValues]) || st}
+                    {t(($) => $.labels.statusValues[st as keyof typeof $.labels.statusValues]) || st}
                   </SelectItem>
                 ))}
               </SelectContent>

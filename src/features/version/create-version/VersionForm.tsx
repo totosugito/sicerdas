@@ -86,14 +86,14 @@ export function VersionForm({ defaultValues, onSubmit, isPending }: VersionFormP
   const statusOptions = [
     {
       value: EnumContentStatus.PUBLISHED,
-      label: t(($) => $.version.form.status.options.published),
+      label: t(($) => $.labels.statusValues.published),
     },
     {
       value: EnumContentStatus.UNPUBLISHED,
-      label: t(($) => $.version.form.status.options.unpublished),
+      label: t(($) => $.labels.statusValues.unpublished),
     },
-    { value: EnumContentStatus.ARCHIVED, label: t(($) => $.version.form.status.options.archived) },
-    { value: EnumContentStatus.DELETED, label: t(($) => $.version.form.status.options.deleted) },
+    { value: EnumContentStatus.ARCHIVED, label: t(($) => $.labels.statusValues.archived) },
+    { value: EnumContentStatus.DELETED, label: t(($) => $.labels.statusValues.deleted) },
   ];
 
   const formConfig = {

@@ -9,7 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AppRoute } from "@/constants/app-route";
 import { CourseForm } from "@/features/course/courses/create-course";
 
-import { EnumCourseStatus } from "backend/src/db/schema/course/enums.ts";
+import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
 
 export const Route = createFileRoute("/(pages)/(course)/course/admin/create-course")({
   component: AdminCourseCreatePage,
@@ -31,7 +31,7 @@ function AdminCourseCreatePage() {
       courseDescription: values.courseDescription || undefined,
       whatYouWillLearn: values.whatYouWillLearn || undefined,
       price: values.price ? Number(values.price) : 0,
-      status: (values.status as any) || EnumCourseStatus.DRAFT,
+      status: values.status || EnumContentStatus.DRAFT,
       isPublic: values.isPublic ?? false,
       isSequential: values.isSequential ?? true,
     };

@@ -13,8 +13,10 @@ export const PgEnumContentType = pgEnum(
 );
 
 export const EnumContentStatus = {
+  DRAFT: "draft",
   PUBLISHED: "published",
   UNPUBLISHED: "unpublished",
+  FINISHED: "finished",
   ARCHIVED: "archived",
   DELETED: "deleted",
 } as const;

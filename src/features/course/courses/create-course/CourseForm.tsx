@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { UploadCloud, Trash2, Info, BookOpen } from "lucide-react";
 import { useListCategorySimple } from "@/api/education/categories";
 import { useListGradeSimple } from "@/api/education/grades";
-import { EnumCourseStatus } from "backend/src/db/schema/course/enums.ts";
+import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
 import { CourseFormValues } from "@/api/course/courses";
 import { CourseStatusBadge } from "../components/CourseStatusBadge";
 
@@ -37,7 +37,7 @@ export function CourseForm({ defaultValues, onSubmit, isPending }: CourseFormPro
     value: grade.value,
   }));
 
-  const statusOptions = Object.entries(EnumCourseStatus).map(([_, val]) => ({
+  const statusOptions = Object.entries(EnumContentStatus).map(([_, val]) => ({
     label: val.charAt(0).toUpperCase() + val.slice(1),
     value: val,
   }));
@@ -359,7 +359,7 @@ export function CourseForm({ defaultValues, onSubmit, isPending }: CourseFormPro
                             ? t(($) => $.course.courses.form.preview.freeText)
                             : `Rp ${Number(values.price || 0).toLocaleString("id-ID")}`}
                         </span>
-                        <CourseStatusBadge status={values.status || EnumCourseStatus.DRAFT} />
+                        <CourseStatusBadge status={values.status ?? EnumContentStatus.DRAFT} />
                       </div>
                     </div>
                   </div>

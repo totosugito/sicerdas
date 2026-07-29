@@ -12,8 +12,10 @@ import {
 } from "drizzle-orm/pg-core";
 import { users } from "../users/users.ts";
 import {
-  EnumCourseStatus,
-  PgEnumCourseStatus,
+  EnumContentStatus,
+  PgEnumContentStatus,
+} from "../enum/enum-app.ts";
+import {
   EnumPublishDateType,
   PgEnumPublishDateType,
 } from "./enums.ts";
@@ -81,7 +83,7 @@ export const courses = pgTable(
       }),
     tags: text("tags").array(),
     instructions: text("instructions"),
-    status: PgEnumCourseStatus("status").default(EnumCourseStatus.DRAFT),
+    status: PgEnumContentStatus("status").default(EnumContentStatus.DRAFT),
     publishDateType: PgEnumPublishDateType("publish_date_type").default(EnumPublishDateType.NOW),
     publishDateStart: timestamp("publish_date_start"),
     publishDateEnd: timestamp("publish_date_end"),
