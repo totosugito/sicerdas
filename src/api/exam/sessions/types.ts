@@ -15,7 +15,9 @@ import type {
   EvaluationDataT,
 } from "backend/src/modules/exam/sessions/index.ts";
 import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
-export { EnumExamSessionStatus, EnumExamSessionMode } from "@/api/exam/types";
+import { EnumExamSessionStatus, EnumExamSessionMode } from "@/api/exam/types";
+
+export { EnumExamSessionStatus, EnumExamSessionMode };
 
 export type {
   StartSessionData,
