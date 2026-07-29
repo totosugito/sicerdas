@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
+import { CourseStatusBadge } from "@/features/course/courses/components/CourseStatusBadge";
 
 interface LectureTextCardProps {
   article: LectureTextItem;
@@ -28,9 +29,14 @@ export function LectureTextCard({ article, onPreview, onDelete }: LectureTextCar
               <FileText className="h-5 w-5" />
             </div>
             <div className="space-y-1 overflow-hidden">
-              <h4 className="font-semibold text-base leading-tight tracking-tight truncate group-hover:text-primary transition-colors">
-                {article.title || t(($) => $.course.lectureTexts.unnamedArticle)}
-              </h4>
+              <div className="flex items-center gap-2">
+                <h4 className="font-semibold text-base leading-tight tracking-tight truncate group-hover:text-primary transition-colors">
+                  {article.title || t(($) => $.course.lectureTexts.unnamedArticle)}
+                </h4>
+                {article.status && (
+                  <CourseStatusBadge status={article.status} />
+                )}
+              </div>
               <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                 <span>{blocksCount} {t(($) => $.course.lectureTexts.blocksCount)}</span>
               </p>

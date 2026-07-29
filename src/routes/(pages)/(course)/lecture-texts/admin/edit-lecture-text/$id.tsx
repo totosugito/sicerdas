@@ -5,6 +5,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { PageTitle, ErrorContainer } from "@/components/app";
 import { LectureTextForm, LectureTextFormValues } from "@/features/course/lecture-texts";
 import { AppRoute } from "@/constants/app-route";
+import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
 
 export const Route = createFileRoute(
   "/(pages)/(course)/lecture-texts/admin/edit-lecture-text/$id",
@@ -29,6 +30,9 @@ function EditLectureTextPage() {
         : {
             title: values.title.trim(),
             content: values.content || [],
+            categoryId: values.categoryId || null,
+            educationGradeId: values.educationGradeId || null,
+            status: values.status || EnumContentStatus.DRAFT,
           };
 
     updateMutation.mutate(
@@ -85,6 +89,9 @@ function EditLectureTextPage() {
           defaultValues={{
             title: article.title || "",
             content: article.content || [],
+            categoryId: article.categoryId ?? null,
+            educationGradeId: article.educationGradeId ?? null,
+            status: article.status || EnumContentStatus.DRAFT,
           }}
           onSubmit={handleSubmit}
           isPending={updateMutation.isPending}

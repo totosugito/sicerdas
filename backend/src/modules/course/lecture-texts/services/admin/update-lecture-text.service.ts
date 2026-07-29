@@ -77,6 +77,9 @@ export async function updateLectureTextService(
     .update(courseLectureTexts)
     .set({
       ...(input.title !== undefined && { title: input.title }),
+      ...(input.categoryId !== undefined && { categoryId: input.categoryId }),
+      ...(input.educationGradeId !== undefined && { educationGradeId: input.educationGradeId }),
+      ...(input.status !== undefined && { status: input.status as any }),
       content: finalContent,
       updatedAt: new Date(),
     })

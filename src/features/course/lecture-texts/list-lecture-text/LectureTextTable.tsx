@@ -22,6 +22,8 @@ import {
 import { string_to_locale_date } from "@/lib/my-utils";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
+import { CourseStatusBadge } from "@/features/course/courses/components/CourseStatusBadge";
+import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
 
 interface LectureTextTableProps {
   data: PaginatedLectureTextListResponse;
@@ -67,6 +69,19 @@ export function LectureTextTable({
             </span>
           </div>
         );
+      },
+    },
+    {
+      accessorKey: "status",
+      enableSorting: true,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.labels.status)}
+        />
+      ),
+      cell: ({ row }) => {
+        return <CourseStatusBadge status={row.original.status || EnumContentStatus.DRAFT} />;
       },
     },
     {

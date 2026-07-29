@@ -7,10 +7,16 @@ import { ControlForm, FormWithDetector } from "@/components/forms";
 import { Card, CardContent } from "@/components/ui/card";
 import { FileText, Save } from "lucide-react";
 import { prepare_blocknote_submission } from "@/lib/blocknote-utils";
+import { useListCategorySimple } from "@/api/education/categories";
+import { useListGradeSimple } from "@/api/education/grades";
+import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
 
 export type LectureTextFormValues = {
   title: string;
   content: Array<Record<string, any>>;
+  categoryId?: string | null;
+  educationGradeId?: number | null;
+  status?: string;
 };
 
 type LectureTextFormProps = {
@@ -29,15 +35,39 @@ export function LectureTextForm({
   const { t } = useAppTranslation();
   const pendingFiles = useRef<Map<string, File>>(new Map());
 
+  const { data: categoriesData, isLoading: isLoadingCategories } = useListCategorySimple({ limit: 1000 });
+  const { data: gradesData, isLoading: isLoadingGrades } = useListGradeSimple({ limit: 1000 });
+
+  const categoryOptions = (categoriesData?.data?.items || []).map((cat) => ({
+    label: cat.label,
+    value: cat.value,
+  }));
+
+  const gradeOptions = (gradesData?.data?.items || []).map((grade) => ({
+    label: grade.label,
+    value: grade.value,
+  }));
+
+  const statusOptions = Object.entries(EnumContentStatus).map(([_, val]) => ({
+    label: val.charAt(0).toUpperCase() + val.slice(1),
+    value: val,
+  }));
+
   const formSchema = z.object({
     title: z.string().min(1, t(($) => $.course.lectureTexts.titleRequired)),
     content: z.array(z.record(z.string(), z.any())),
+    categoryId: z.string().nullable().optional(),
+    educationGradeId: z.number().nullable().optional(),
+    status: z.string().optional(),
   });
 
   const form = useAppForm({
     defaultValues: {
       title: defaultValues?.title || "",
       content: defaultValues?.content || [],
+      categoryId: defaultValues?.categoryId ?? null,
+      educationGradeId: defaultValues?.educationGradeId ?? null,
+      status: defaultValues?.status || EnumContentStatus.DRAFT,
     },
     validators: {
       onChange: formSchema as any,
@@ -101,20 +131,70 @@ export function LectureTextForm({
             errorClassName="mt-0 mb-6"
           >
             <div className="space-y-6">
-              <form.AppField name="title">
-                {(field) => (
-                  <ControlForm
-                    field={field}
-                    item={{
-                      type: "text",
-                      label: t(($) => $.course.lectureTexts.table.title),
-                      placeholder: t(($) => $.course.lectureTexts.titlePlaceholder),
-                      required: true,
-                    }}
-                    showMessage={false}
-                  />
-                )}
-              </form.AppField>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <form.AppField name="title">
+                    {(field) => (
+                      <ControlForm
+                        field={field}
+                        item={{
+                          type: "text",
+                          label: t(($) => $.course.lectureTexts.table.title),
+                          placeholder: t(($) => $.course.lectureTexts.titlePlaceholder),
+                          required: true,
+                        }}
+                        showMessage={false}
+                      />
+                    )}
+                  </form.AppField>
+                </div>
+
+                <form.AppField name="categoryId">
+                  {(field) => (
+                    <ControlForm
+                      field={field}
+                      item={{
+                        type: "combobox",
+                        label: t(($) => $.course.courses.form.categoryId.label),
+                        placeholder: t(($) => $.course.courses.form.categoryId.placeholder),
+                        options: categoryOptions,
+                        isLoading: isLoadingCategories,
+                      }}
+                      showMessage={false}
+                    />
+                  )}
+                </form.AppField>
+
+                <form.AppField name="educationGradeId">
+                  {(field) => (
+                    <ControlForm
+                      field={field}
+                      item={{
+                        type: "combobox",
+                        label: t(($) => $.course.courses.form.educationGradeId.label),
+                        placeholder: t(($) => $.course.courses.form.educationGradeId.placeholder),
+                        options: gradeOptions,
+                        isLoading: isLoadingGrades,
+                      }}
+                      showMessage={false}
+                    />
+                  )}
+                </form.AppField>
+
+                <form.AppField name="status">
+                  {(field) => (
+                    <ControlForm
+                      field={field}
+                      item={{
+                        type: "select",
+                        label: t(($) => $.labels.status),
+                        options: statusOptions,
+                      }}
+                      showMessage={false}
+                    />
+                  )}
+                </form.AppField>
+              </div>
 
               <form.AppField name="content">
                 {(field) => (

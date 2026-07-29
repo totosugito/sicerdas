@@ -5,6 +5,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { PageTitle } from "@/components/app";
 import { LectureTextForm, LectureTextFormValues } from "@/features/course/lecture-texts";
 import { AppRoute } from "@/constants/app-route";
+import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
 
 export const Route = createFileRoute(
   "/(pages)/(course)/lecture-texts/admin/create-lecture-text",
@@ -22,6 +23,9 @@ function CreateLectureTextPage() {
     const payload = values instanceof FormData ? values : {
       title: values.title.trim(),
       content: values.content || [],
+      categoryId: values.categoryId || null,
+      educationGradeId: values.educationGradeId || null,
+      status: values.status || EnumContentStatus.DRAFT,
     };
 
     createMutation.mutate(payload, {

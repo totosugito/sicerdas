@@ -29,6 +29,9 @@ export async function createLectureTextService(
     .values({
       title: input.title,
       content: finalContent,
+      categoryId: input.categoryId ?? null,
+      educationGradeId: input.educationGradeId ?? null,
+      status: (input.status as any) ?? undefined,
       createdByUserId,
     })
     .returning();
