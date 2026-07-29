@@ -27,6 +27,7 @@ export { useDeleteCourse } from "./admin/delete-course";
 export { useListCourse } from "./admin/list-course";
 export { useDetailCourse } from "./admin/detail-course";
 export { useUploadCourseThumbnail } from "./admin/upload-thumbnail";
+export { useAdminCourseStructure } from "./admin/structure-course";
 
 // Public/Client exports
 export { useListCourseClient } from "./list-course";

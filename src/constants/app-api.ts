@@ -83,6 +83,7 @@ export const AppApi = {
         list: APP_URL_API + "/course/courses/admin/list",
         detail: APP_URL_API + "/course/courses/admin/detail/:id",
         thumbnail: APP_URL_API + "/course/courses/admin/thumbnail/:id",
+        structure: APP_URL_API + "/course/courses/admin/structure/:id",
       },
       list: APP_URL_API + "/course/courses/list",
       detail: APP_URL_API + "/course/courses/detail/:id",
@@ -100,10 +101,21 @@ export const AppApi = {
     lectureTexts: {
       admin: {
         list: APP_URL_API + "/course/lecture-texts/admin/list",
+        listSimple: APP_URL_API + "/course/lecture-texts/admin/list-simple",
         detail: APP_URL_API + "/course/lecture-texts/admin/detail/:id",
         create: APP_URL_API + "/course/lecture-texts/admin/create",
         update: APP_URL_API + "/course/lecture-texts/admin/update/:id",
         delete: APP_URL_API + "/course/lecture-texts/admin/delete/:id",
+      },
+    },
+    lectures: {
+      admin: {
+        list: APP_URL_API + "/course/lectures/admin/list/:chapterId",
+        detail: APP_URL_API + "/course/lectures/admin/detail/:id",
+        create: APP_URL_API + "/course/lectures/admin/create",
+        update: APP_URL_API + "/course/lectures/admin/update/:id",
+        delete: APP_URL_API + "/course/lectures/admin/delete/:id",
+        reorder: APP_URL_API + "/course/lectures/admin/reorder/:chapterId",
       },
     },
   },

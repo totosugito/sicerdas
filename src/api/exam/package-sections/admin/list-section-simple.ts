@@ -15,5 +15,6 @@ export const useListPackageSectionSimple = (params: AdminSectionSimpleParams = {
       });
       return response as PaginatedSectionSimpleListResponse;
     },
+    enabled: !!params.packageId,
   });
 };

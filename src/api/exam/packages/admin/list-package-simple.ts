@@ -3,7 +3,10 @@ import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
 import type { AdminPackageSimpleParams, ListPackagesSimpleResponse } from "../types";
 
-export const useListPackageSimple = (params: AdminPackageSimpleParams = {}) => {
+export const useListPackageSimple = (
+  params: AdminPackageSimpleParams = {},
+  options?: { enabled?: boolean },
+) => {
   return useQuery({
     queryKey: ["admin-exam-packages-list-simple", params],
     queryFn: async () => {
@@ -15,5 +18,6 @@ export const useListPackageSimple = (params: AdminPackageSimpleParams = {}) => {
       });
       return response as ListPackagesSimpleResponse;
     },
+    enabled: options?.enabled !== false,
   });
 };

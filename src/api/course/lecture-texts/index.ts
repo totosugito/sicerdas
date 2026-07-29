@@ -1,7 +1,10 @@
 export type {
   LectureTextItem,
   LectureTextListQueryInput,
+  LectureTextSimpleQueryInput,
+  SimpleLectureTextItem,
   PaginatedLectureTextListResponse,
+  PaginatedLectureTextSimpleResponse,
   LectureTextDetailResponse,
   AdminCreateLectureTextInput,
   AdminUpdateLectureTextInput,
@@ -12,6 +15,7 @@ export type {
 
 // Admin exports
 export { useListLectureText } from "./admin/list-lecture-text";
+export { useListLectureTextSimple } from "./admin/list-simple-lecture-text";
 export { useDetailLectureText } from "./admin/detail-lecture-text";
 export { useCreateLectureText } from "./admin/create-lecture-text";
 export { useUpdateLectureText } from "./admin/update-lecture-text";

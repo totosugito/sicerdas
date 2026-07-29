@@ -2,6 +2,7 @@ import type {
   GradeData,
   GradeSimpleData,
   GradeListParams,
+  GradeSimpleParams,
   CreateGradeParams,
   UpdateGradeParams,
 } from "backend/src/modules/education/index.ts";
@@ -11,6 +12,7 @@ export type {
   GradeData,
   GradeSimpleData,
   GradeListParams,
+  GradeSimpleParams,
   CreateGradeParams,
   UpdateGradeParams,
 };

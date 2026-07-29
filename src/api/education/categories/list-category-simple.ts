@@ -1,9 +1,12 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import type { CategorySimpleResponse } from "./types";
+import type { CategorySimpleResponse, CategorySimpleParams } from "./types";
 
-export const useListCategorySimple = (params: { page?: number; limit?: number } = {}) => {
+export const useListCategorySimple = (
+  params: CategorySimpleParams = {},
+  options?: { enabled?: boolean },
+) => {
   return useQuery({
     queryKey: ["education-categories-list-simple", params],
     queryFn: async () => {
@@ -14,5 +17,6 @@ export const useListCategorySimple = (params: { page?: number; limit?: number } 
       });
       return response as CategorySimpleResponse;
     },
+    enabled: options?.enabled !== false,
   });
 };

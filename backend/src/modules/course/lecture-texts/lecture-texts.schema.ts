@@ -91,3 +91,32 @@ export const LectureTextListResponse = Type.Object({
     meta: PaginationMetaSchema,
   }),
 });
+
+// --- Simple List Schemas ---
+
+export const LectureTextSimpleQuery = Type.Object({
+  search: Type.Optional(Type.String()),
+  categoryId: Type.Optional(Type.String({ format: "uuid" })),
+  educationGradeId: Type.Optional(Type.Number()),
+  status: Type.Optional(Type.String()),
+  page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
+  limit: Type.Optional(Type.Number({ minimum: 1, maximum: 2000, default: 1000 })),
+});
+
+export type LectureTextSimpleQueryInput = Static<typeof LectureTextSimpleQuery>;
+
+export const SimpleLectureTextItemSchema = Type.Object({
+  value: Type.String({ format: "uuid" }),
+  label: Type.String(),
+});
+
+export type SimpleLectureTextItem = Static<typeof SimpleLectureTextItemSchema>;
+
+export const LectureTextSimpleListResponse = Type.Object({
+  ...BaseResponseSchema.properties,
+  data: Type.Object({
+    items: Type.Array(SimpleLectureTextItemSchema),
+    meta: PaginationMetaSchema,
+  }),
+});
+

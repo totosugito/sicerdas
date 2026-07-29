@@ -68,5 +68,6 @@ export const CategoryResponse = Type.Intersect([
 export type CategoryData = Static<typeof CategorySchema>;
 export type CategorySimpleData = Static<typeof CategorySimpleSchema>;
 export type CategoryListParams = Static<typeof CategoryListBody>;
+export type CategorySimpleParams = Static<typeof CategorySimpleBody>;
 export type CreateCategoryParams = Static<typeof CreateCategoryBody>;
 export type UpdateCategoryParams = Static<typeof UpdateCategoryBody>;

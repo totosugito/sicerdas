@@ -2,6 +2,8 @@ import { Type, type Static } from "@sinclair/typebox";
 import { BaseResponseSchema, PaginationMetaSchema } from "../../../types/response.ts";
 import { EnumPublishDateType } from "../../../db/schema/course/index.ts";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
+import { ChapterItemSchema } from "../chapters/chapters.schema.ts";
+import { LectureItemSchema } from "../lectures/lectures.schema.ts";
 
 // --- Shared Response Field Definitions ---
 
@@ -148,4 +150,16 @@ export const CourseListResponse = Type.Object({
 export const CourseDetailResponse = Type.Object({
   ...BaseResponseSchema.properties,
   data: CourseItemSchema,
+});
+
+export const CourseStructureChapterSchema = Type.Intersect([
+  ChapterItemSchema,
+  Type.Object({
+    lectures: Type.Array(LectureItemSchema),
+  }),
+]);
+
+export const CourseStructureResponse = Type.Object({
+  ...BaseResponseSchema.properties,
+  data: Type.Array(CourseStructureChapterSchema),
 });

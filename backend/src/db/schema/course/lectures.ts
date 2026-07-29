@@ -53,7 +53,7 @@ export const courseLectures = pgTable(
       successThreshold?: number;
     } & Record<string, unknown>>().default({}),
     isActive: boolean("is_active").notNull().default(true),
-    position: numeric("position", { precision: 10, scale: 10 }).notNull().default("1.0"),
+    position: numeric("position", { precision: 12, scale: 4 }).notNull().default("1.0000"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },

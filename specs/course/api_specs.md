@@ -14,6 +14,7 @@ Handles the high-level course metadata, catalog, and admin CRUD.
 - [x] `GET /list`: List all courses (with filters: status, categoryId, categoryKey, educationGradeId, educationGradeIds, search)
 - [x] `GET /detail/:id`: Full course detail (returns resolved thumbnail URL)
 - [x] `PATCH /thumbnail/:id`: Upload or remove course thumbnail (?action=remove to delete)
+- [x] `GET /structure/:id`: Get nested chapters & lectures hierarchy structure (Admin)
 
 ### Public/User Services (`/course/courses`)
 - [x] `GET /list`: Public course catalog (filters: categoryId, categoryKey, educationGradeId, educationGradeIds, search)
@@ -81,13 +82,13 @@ Add `parent_package_id` column to support package cloning lineage:
 
 ### Frontend Implementation Checklist
 #### Admin UI
-- [ ] Lecture List View within Chapter Detail accordion / nested view
-- [ ] Create Lecture Form / Modal (type selection: TEXT, VIDEO, PDF, EXAM)
-- [ ] Edit Lecture Form / Modal (title, description, referenceUrl, extra JSON settings)
-- [ ] Delete Lecture confirmation dialog
-- [ ] Lecture Drag-and-Drop / Reorder component within Chapter
-- [ ] Exam Package Selection & Cloning Modal (clone public package -> select section -> set `referenceUrl`)
-- [ ] Lecture Text Picker Dropdown (search & link existing `course_lecture_texts` article)
+- [x] Lecture List View within Chapter Detail accordion / nested view
+- [x] Create Lecture Form / Modal (type selection: TEXT, VIDEO, PDF, EXAM)
+- [x] Edit Lecture Form / Modal (title, description, referenceUrl, extra JSON settings)
+- [x] Delete Lecture confirmation dialog
+- [x] Lecture Drag-and-Drop / Reorder component within Chapter
+- [x] Exam Package Selection & Cloning Modal (clone public package -> select section -> set `referenceUrl`)
+- [x] Lecture Text Picker Dropdown (search & link existing `course_lecture_texts` article)
 
 ---
 

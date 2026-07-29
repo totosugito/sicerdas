@@ -2,6 +2,7 @@ import type {
   CategoryData,
   CategorySimpleData,
   CategoryListParams,
+  CategorySimpleParams,
   CreateCategoryParams,
   UpdateCategoryParams,
 } from "backend/src/modules/education/index.ts";
@@ -11,6 +12,7 @@ export type {
   CategoryData,
   CategorySimpleData,
   CategoryListParams,
+  CategorySimpleParams,
   CreateCategoryParams,
   UpdateCategoryParams,
 };

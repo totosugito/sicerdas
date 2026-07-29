@@ -1,9 +1,12 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import type { GradeSimpleResponse } from "./types";
+import type { GradeSimpleResponse, GradeSimpleParams } from "./types";
 
-export const useListGradeSimple = (params: { page?: number; limit?: number; isDefault?: boolean } = {}) => {
+export const useListGradeSimple = (
+  params: GradeSimpleParams = {},
+  options?: { enabled?: boolean },
+) => {
   return useQuery({
     queryKey: ["education-grades-list-simple", params],
     staleTime: 5 * 60 * 1000,
@@ -15,5 +18,6 @@ export const useListGradeSimple = (params: { page?: number; limit?: number; isDe
       });
       return response as GradeSimpleResponse;
     },
+    enabled: options?.enabled !== false,
   });
 };

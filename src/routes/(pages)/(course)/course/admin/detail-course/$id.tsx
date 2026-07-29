@@ -7,9 +7,9 @@ import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
 import { PageTitle, ErrorContainer } from "@/components/app";
 import { DialogModal } from "@/components/dialog";
 import { AppRoute } from "@/constants/app-route";
-import { useDetailCourse } from "@/api/course/courses";
+import { useDetailCourse, useAdminCourseStructure } from "@/api/course/courses";
+import { CourseStructureChapter } from "@/api/course/courses/admin/structure-course";
 import {
-  useListChapter,
   useDeleteChapter,
   useReorderChapter,
   ChapterItem,
@@ -37,20 +37,17 @@ function DetailCoursePage() {
   const { data: detailData, isLoading, isError, error } = useDetailCourse(id);
   const course = detailData?.data;
 
-  const { data: chaptersData, isLoading: isChaptersLoading } = useListChapter(id);
+  const { data: structureData, isLoading: isChaptersLoading } = useAdminCourseStructure(id);
   const deleteChapterMutation = useDeleteChapter();
   const reorderChapterMutation = useReorderChapter();
 
-  const [items, setItems] = useState<ChapterItem[]>([]);
+  const [items, setItems] = useState<CourseStructureChapter[]>([]);
 
   useEffect(() => {
-    if (chaptersData?.data) {
-      const list = Array.isArray(chaptersData.data)
-        ? chaptersData.data
-        : (chaptersData.data as any)?.items || [];
-      setItems(list);
+    if (structureData?.data) {
+      setItems(structureData.data);
     }
-  }, [chaptersData]);
+  }, [structureData]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -60,10 +57,10 @@ function DetailCoursePage() {
   );
 
   const [showChapterModal, setShowChapterModal] = useState(false);
-  const [selectedChapter, setSelectedChapter] = useState<ChapterItem | null>(null);
+  const [selectedChapter, setSelectedChapter] = useState<CourseStructureChapter | null>(null);
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [chapterToDelete, setChapterToDelete] = useState<ChapterItem | null>(null);
+  const [chapterToDelete, setChapterToDelete] = useState<CourseStructureChapter | null>(null);
 
   const handleAddChapter = () => {
     setSelectedChapter(null);
@@ -71,12 +68,12 @@ function DetailCoursePage() {
   };
 
   const handleEditChapter = (chapter: ChapterItem) => {
-    setSelectedChapter(chapter);
+    setSelectedChapter(chapter as CourseStructureChapter);
     setShowChapterModal(true);
   };
 
   const handleDeleteChapter = (chapter: ChapterItem) => {
-    setChapterToDelete(chapter);
+    setChapterToDelete(chapter as CourseStructureChapter);
     setShowDeleteDialog(true);
   };
 
@@ -86,6 +83,7 @@ function DetailCoursePage() {
     deleteChapterMutation.mutate(chapterToDelete.id, {
       onSuccess: (res) => {
         showNotifSuccess({ message: res.message || t(($) => $.course.chapters.deleteSuccess) });
+        queryClient.invalidateQueries({ queryKey: ["admin-course-structure", id] });
         queryClient.invalidateQueries({ queryKey: ["admin-course-chapters-list", id] });
         queryClient.invalidateQueries({ queryKey: ["admin-course-courses-detail", id] });
         setShowDeleteDialog(false);
@@ -122,10 +120,12 @@ function DetailCoursePage() {
           {
             onSuccess: (res) => {
               showNotifSuccess({ message: res.message || "Urutan bab berhasil diperbarui" });
+              queryClient.invalidateQueries({ queryKey: ["admin-course-structure", id] });
               queryClient.invalidateQueries({ queryKey: ["admin-course-chapters-list", id] });
             },
             onError: (err: any) => {
               showNotifError({ message: err.message || t(($) => $.labels.error) });
+              queryClient.invalidateQueries({ queryKey: ["admin-course-structure", id] });
               queryClient.invalidateQueries({ queryKey: ["admin-course-chapters-list", id] });
             },
           },
@@ -238,6 +238,15 @@ function DetailCoursePage() {
           infoTitle: t(($) => $.course.chapters.deleteInfoTitle),
           infoItems: [
             { text: t(($) => $.course.chapters.deleteConsequence1) },
+            ...(chapterToDelete && chapterToDelete.lectures && chapterToDelete.lectures.length > 0
+              ? [
+                  {
+                    text: t(($) => $.course.chapters.deleteConsequenceWithCount, {
+                      count: chapterToDelete.lectures.length,
+                    }),
+                  },
+                ]
+              : []),
             { text: t(($) => $.course.chapters.deleteConsequence2) },
           ],
           textCancel: t(($) => $.labels.cancel),

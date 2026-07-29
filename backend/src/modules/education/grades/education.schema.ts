@@ -70,5 +70,6 @@ export const GradeDetailResponse = Type.Intersect([
 export type GradeData = Static<typeof GradeSchema>;
 export type GradeSimpleData = Static<typeof GradeSimpleSchema>;
 export type GradeListParams = Static<typeof GradeListBody>;
+export type GradeSimpleParams = Static<typeof GradeSimpleBody>;
 export type CreateGradeParams = Static<typeof CreateGradeBody>;
 export type UpdateGradeParams = Static<typeof UpdateGradeBody>;

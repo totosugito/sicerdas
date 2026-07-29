@@ -1,5 +1,6 @@
 import React from "react";
 import { ChapterItem } from "@/api/course/chapters";
+import { CourseStructureChapter } from "@/api/course/courses/admin/structure-course";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
 import { Layers, Plus } from "lucide-react";
@@ -14,7 +15,7 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { ChapterRow } from "./ChapterRow";
 
 interface ChapterListProps {
-  items: ChapterItem[];
+  items: CourseStructureChapter[];
   sensors: SensorDescriptor<SensorOptions>[];
   onDragEnd: (event: DragEndEvent) => void;
   onAdd: () => void;
@@ -63,6 +64,7 @@ export function ChapterList({
             <ChapterRow
               key={item.id}
               chapter={item}
+              lectures={item.lectures}
               index={index}
               onEdit={onEdit}
               onDelete={onDelete}
