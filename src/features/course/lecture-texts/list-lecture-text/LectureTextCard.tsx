@@ -9,6 +9,8 @@ import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { CourseStatusBadge } from "@/features/course/courses/components/CourseStatusBadge";
 
+import { Badge } from "@/components/ui/badge";
+
 interface LectureTextCardProps {
   article: LectureTextItem;
   onPreview: (article: LectureTextItem) => void;
@@ -40,6 +42,20 @@ export function LectureTextCard({ article, onPreview, onDelete }: LectureTextCar
               <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                 <span>{blocksCount} {t(($) => $.course.lectureTexts.blocksCount)}</span>
               </p>
+              {(article.category?.name || article.grade?.name) && (
+                <div className="flex flex-wrap gap-1.5 pt-1.5">
+                  {article.category?.name && (
+                    <Badge variant="secondary" className="text-[10px] font-medium px-2 py-0.5 rounded-md">
+                      {article.category.name}
+                    </Badge>
+                  )}
+                  {article.grade?.name && (
+                    <Badge variant="outline" className="text-[10px] font-medium px-2 py-0.5 rounded-md">
+                      {article.grade.name}
+                    </Badge>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

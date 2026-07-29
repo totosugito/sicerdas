@@ -32,6 +32,11 @@ export const Route = createFileRoute(
     limit: z.number().min(5).optional().catch(undefined),
     search: z.string().optional().catch(undefined),
     view: z.enum(["table", "card"]).optional().catch(undefined),
+    categoryId: z.string().optional().catch(undefined),
+    educationGradeId: z.string().optional().catch(undefined),
+    status: z.string().optional().catch(undefined),
+    sortBy: z.string().optional().catch(undefined),
+    sortOrder: z.enum(["asc", "desc"]).optional().catch(undefined),
   }),
   component: AdminLectureTextListPage,
 });
@@ -46,6 +51,11 @@ function AdminLectureTextListPage() {
   const limit = searchParams.limit ?? 10;
   const search = searchParams.search ?? "";
   const viewMode = searchParams.view ?? "card";
+  const categoryId = searchParams.categoryId;
+  const educationGradeId = searchParams.educationGradeId;
+  const status = searchParams.status;
+  const sortBy = searchParams.sortBy ?? "createdAt";
+  const sortOrder = searchParams.sortOrder ?? "desc";
 
   const [searchTerm, setSearchTerm] = useState(search);
   const [selectedArticle, setSelectedArticle] = useState<LectureTextItem | null>(null);
@@ -57,6 +67,11 @@ function AdminLectureTextListPage() {
     page,
     limit,
     search: search || undefined,
+    categoryId: categoryId || undefined,
+    educationGradeId: educationGradeId ? Number(educationGradeId) : undefined,
+    status: status || undefined,
+    sortBy: sortBy || undefined,
+    sortOrder: sortOrder || undefined,
   });
 
   const deleteMutation = useDeleteLectureText();
@@ -132,10 +147,39 @@ function AdminLectureTextListPage() {
         onSearchTermChange={setSearchTerm}
         onSearchSubmit={handleSearchSubmit}
         onClearSearch={handleClearSearch}
+        status={status}
+        onStatusChange={(newStatus) =>
+          navigate({
+            search: { ...searchParams, status: newStatus, page: 1 },
+            replace: true,
+          })
+        }
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={(newSortBy, newSortOrder) =>
+          navigate({
+            search: { ...searchParams, sortBy: newSortBy, sortOrder: newSortOrder, page: 1 },
+            replace: true,
+          })
+        }
         viewMode={viewMode}
         onViewModeChange={(newView) =>
           navigate({
             search: { ...searchParams, view: newView },
+            replace: true,
+          })
+        }
+        categoryId={categoryId}
+        gradeId={educationGradeId}
+        onCategoryChange={(newCategoryId) =>
+          navigate({
+            search: { ...searchParams, categoryId: newCategoryId, page: 1 },
+            replace: true,
+          })
+        }
+        onGradeChange={(newGradeId) =>
+          navigate({
+            search: { ...searchParams, educationGradeId: newGradeId, page: 1 },
             replace: true,
           })
         }
@@ -164,6 +208,14 @@ function AdminLectureTextListPage() {
               data={data as PaginatedLectureTextListResponse}
               isLoading={isLoading}
               paginationData={meta as PaginationData}
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSortChange={(newSortBy, newSortOrder) =>
+                navigate({
+                  search: { ...searchParams, sortBy: newSortBy, sortOrder: newSortOrder, page: 1 },
+                  replace: true,
+                })
+              }
               onPreview={handlePreview}
               onDelete={handleDelete}
             />

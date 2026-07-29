@@ -29,6 +29,9 @@ interface LectureTextTableProps {
   data: PaginatedLectureTextListResponse;
   isLoading: boolean;
   paginationData: PaginationData;
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+  onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
   onPreview: (article: LectureTextItem) => void;
   onDelete: (article: LectureTextItem) => void;
 }
@@ -37,6 +40,9 @@ export function LectureTextTable({
   data,
   isLoading,
   paginationData,
+  sortBy,
+  sortOrder,
+  onSortChange,
   onPreview,
   onDelete,
 }: LectureTextTableProps) {
@@ -68,6 +74,42 @@ export function LectureTextTable({
               {item.title || t(($) => $.course.lectureTexts.unnamedArticle)}
             </span>
           </div>
+        );
+      },
+    },
+    {
+      accessorKey: "category",
+      enableSorting: true,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.course.courses.table.columns.category)}
+        />
+      ),
+      cell: ({ row }) => {
+        const category = row.original.category;
+        return (
+          <span className="text-xs font-medium">
+            {category?.name || "-"}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "grade",
+      enableSorting: true,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t(($) => $.labels.level ?? "Tingkat")}
+        />
+      ),
+      cell: ({ row }) => {
+        const grade = row.original.grade;
+        return (
+          <span className="text-xs text-muted-foreground">
+            {grade?.name || "-"}
+          </span>
         );
       },
     },
@@ -187,6 +229,22 @@ export function LectureTextTable({
         pageIndex: (paginationData?.page || 1) - 1,
         pageSize: paginationData?.limit || 10,
       },
+      sorting: [
+        {
+          id: sortBy,
+          desc: sortOrder === "desc",
+        },
+      ],
+    },
+    manualSorting: true,
+    onSortingChange: (updater: any) => {
+      const nextSorting =
+        typeof updater === "function" ? updater(table.getState().sorting) : updater;
+      if (nextSorting && nextSorting.length > 0) {
+        onSortChange(nextSorting[0].id, nextSorting[0].desc ? "desc" : "asc");
+      } else {
+        onSortChange("createdAt", "desc");
+      }
     },
     manualPagination: true,
   });

@@ -103,7 +103,7 @@ Handles standalone, reusable rich text articles (BlockNote JSON format) referenc
 
 ### Frontend Implementation Checklist
 #### Admin UI
-- [x] Lecture Text Article Management Table / List (with title search filter)
+- [x] Lecture Text Article Management Table / List (with search, status, category, grade, and sorting filters)
 - [x] BlockNote Rich Text Article Editor Page / Modal (Create & Edit)
 - [x] Article Preview View
 - [x] Delete Article confirmation dialog

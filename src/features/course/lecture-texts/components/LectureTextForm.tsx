@@ -57,7 +57,7 @@ export function LectureTextForm({
     title: z.string().min(1, t(($) => $.course.lectureTexts.titleRequired)),
     content: z.array(z.record(z.string(), z.any())),
     categoryId: z.string().nullable().optional(),
-    educationGradeId: z.number().nullable().optional(),
+    educationGradeId: z.coerce.number().nullable().optional(),
     status: z.string().optional(),
   });
 

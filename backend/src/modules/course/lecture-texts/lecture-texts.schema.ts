@@ -15,7 +15,19 @@ export const LectureTextBaseFields = {
   updatedAt: Type.String({ format: "date-time" }),
 };
 
-export const LectureTextItemSchema = Type.Object(LectureTextBaseFields);
+export const LectureTextItemSchema = Type.Object({
+  ...LectureTextBaseFields,
+  category: Type.Optional(Type.Union([Type.Object({
+    id: Type.String({ format: "uuid" }),
+    name: Type.String(),
+    key: Type.String(),
+  }), Type.Null()])),
+  grade: Type.Optional(Type.Union([Type.Object({
+    id: Type.Number(),
+    name: Type.String(),
+    grade: Type.String(),
+  }), Type.Null()])),
+});
 
 export type LectureTextItem = Static<typeof LectureTextItemSchema>;
 
@@ -49,6 +61,8 @@ export const LectureTextListQuery = Type.Object({
   categoryId: Type.Optional(Type.String({ format: "uuid" })),
   educationGradeId: Type.Optional(Type.Number()),
   status: Type.Optional(Type.String()),
+  sortBy: Type.Optional(Type.String()),
+  sortOrder: Type.Optional(Type.Union([Type.Literal("asc"), Type.Literal("desc")])),
   page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
   limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100, default: 20 })),
 });

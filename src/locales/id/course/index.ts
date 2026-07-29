@@ -19,6 +19,8 @@ export default {
         actions: "Aksi",
       },
       statusFilter: "Semua Status",
+      categoryFilter: "Semua Kategori",
+      gradeFilter: "Semua Tingkat",
       sort: {
         placeholder: "Urutkan Berdasarkan",
         courseCode: "Kode Kursus",
@@ -177,6 +179,14 @@ export default {
       createdAt: "Dibuat Pada",
       updatedAt: "Diperbarui",
       noData: "Tidak ada artikel ditemukan.",
+      statusFilter: "Semua Status",
+      sort: {
+        placeholder: "Urutkan Berdasarkan",
+        title: "Judul Artikel",
+        createdAt: "Terbaru",
+        updatedAt: "Terakhir Diperbarui",
+        status: "Status",
+      },
       viewModes: {
         table: "Tabel",
         card: "Kartu",

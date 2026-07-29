@@ -18,17 +18,17 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { cn } from "@/lib/utils";
+import { EnumContentStatus } from "@/api/types";
 import { useListCategorySimple } from "@/api/education/categories";
 import { useListGradeSimple } from "@/api/education/grades";
-import { EnumContentStatus } from "@/api/types";
-import { LectureTextSortSelector } from "./LectureTextSortSelector";
+import { CourseSortSelector } from "./CourseSortSelector";
 
-interface LectureTextToolbarProps {
+interface CourseToolbarProps {
   searchTerm: string;
   onSearchTermChange: (value: string) => void;
   onSearchSubmit: () => void;
   onClearSearch: () => void;
-  status?: string;
+  status: string;
   onStatusChange: (status: string | undefined) => void;
   sortBy: string;
   sortOrder: "asc" | "desc";
@@ -41,7 +41,7 @@ interface LectureTextToolbarProps {
   onGradeChange?: (gradeId: string | undefined) => void;
 }
 
-export function LectureTextToolbar({
+export function CourseToolbar({
   searchTerm,
   onSearchTermChange,
   onSearchSubmit,
@@ -57,7 +57,7 @@ export function LectureTextToolbar({
   gradeId,
   onCategoryChange,
   onGradeChange,
-}: LectureTextToolbarProps) {
+}: CourseToolbarProps) {
   const { t } = useAppTranslation();
 
   const { data: categoryData } = useListCategorySimple({ limit: 100 });
@@ -69,12 +69,12 @@ export function LectureTextToolbar({
   const activeFilterCount = [categoryId, gradeId].filter(Boolean).length;
 
   return (
-    <div className="flex flex-col gap-3 bg-card/60 backdrop-blur-sm p-4 rounded-2xl border border-border/50 shadow-xs">
+    <div className="flex flex-col gap-3 bg-card/60 backdrop-blur-sm p-4 rounded-2xl border border-border/50 shadow-sm">
       <div className="flex flex-col lg:flex-row items-center gap-4">
         <div className="relative w-full lg:max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder={t(($) => $.course.lectureTexts.table.search)}
+            placeholder={t(($) => $.course.courses.table.search)}
             className="pl-10 h-10 bg-background/50 border-border/60 rounded-xl focus-visible:ring-primary/20"
             value={searchTerm}
             onChange={(e) => onSearchTermChange(e.target.value)}
@@ -110,7 +110,7 @@ export function LectureTextToolbar({
                 render={(_, { value }) => {
                   const label =
                     !value || value === "all"
-                      ? t(($) => $.course.lectureTexts.table.statusFilter)
+                      ? t(($) => $.course.courses.table.statusFilter)
                       : t(
                         ($) =>
                           $.labels.statusValues[
@@ -124,7 +124,7 @@ export function LectureTextToolbar({
             <SelectPositioner>
               <SelectContent>
                 <SelectItem value="all">
-                  {t(($) => $.course.lectureTexts.table.statusFilter)}
+                  {t(($) => $.course.courses.table.statusFilter)}
                 </SelectItem>
                 {Object.values(EnumContentStatus).map((st) => (
                   <SelectItem key={st} value={st}>
@@ -136,7 +136,7 @@ export function LectureTextToolbar({
           </Select>
 
           {/* Sort Selector */}
-          <LectureTextSortSelector
+          <CourseSortSelector
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSortChange={onSortChange}
@@ -144,35 +144,31 @@ export function LectureTextToolbar({
 
           <div className="h-8 w-px bg-border/60 mx-1 hidden sm:block" />
 
-          {/* Card / Table View Toggle */}
-          <div className="flex items-center rounded-xl bg-background border border-border/60 p-1">
+          {/* View Mode Selector (Table / Card) */}
+          <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-xl border border-border/40">
             <Button
-              variant="ghost"
+              variant={viewMode === "table" ? "secondary" : "ghost"}
               size="sm"
               className={cn(
-                "h-8 px-3 rounded-lg text-xs gap-1.5 font-medium transition-all",
-                viewMode === "card"
-                  ? "bg-card shadow-xs text-foreground hover:bg-card"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-              onClick={() => onViewModeChange("card")}
-            >
-              <LayoutGrid className="h-3.5 w-3.5" />
-              <span>{t(($) => $.course.lectureTexts.table.viewModes.card)}</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                "h-8 px-3 rounded-lg text-xs gap-1.5 font-medium transition-all",
-                viewMode === "table"
-                  ? "bg-card shadow-xs text-foreground hover:bg-card"
-                  : "text-muted-foreground hover:text-foreground",
+                "h-8 px-3 rounded-lg font-bold text-xs gap-2 transition-all",
+                viewMode === "table" ? "bg-background shadow-sm" : ""
               )}
               onClick={() => onViewModeChange("table")}
             >
               <ListIcon className="h-3.5 w-3.5" />
-              <span>{t(($) => $.course.lectureTexts.table.viewModes.table)}</span>
+              <span>{t(($) => $.course.courses.table.viewModes.table)}</span>
+            </Button>
+            <Button
+              variant={viewMode === "card" ? "secondary" : "ghost"}
+              size="sm"
+              className={cn(
+                "h-8 px-3 rounded-lg font-bold text-xs gap-2 transition-all",
+                viewMode === "card" ? "bg-background shadow-sm" : ""
+              )}
+              onClick={() => onViewModeChange("card")}
+            >
+              <LayoutGrid className="h-3.5 w-3.5" />
+              <span>{t(($) => $.course.courses.table.viewModes.card)}</span>
             </Button>
           </div>
         </div>

@@ -90,6 +90,8 @@ export default {
   applyFilters: "Terapkan Filter",
   reset: "Atur Ulang",
   clearAllFilters: "Hapus Semua Filter",
+  clearAll: "Hapus Semua",
+  moreFilters: "Lebih Banyak Filter",
   autoApply: "Terapkan Otomatis",
   loginRequired: "Login Diperlukan",
   loginRequiredDesc: "Anda perlu masuk untuk mengakses fitur ini.",
@@ -114,4 +116,6 @@ export default {
     archived: "Arsip",
     deleted: "Dihapus",
   },
+  ascending: "Menaik",
+  descending: "Menurun",
 };
