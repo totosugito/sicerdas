@@ -6,6 +6,7 @@ import {
   stripBlockNoteUrls,
   cleanupBlockNoteFiles,
   processBlockNoteFiles,
+  processExternalImages,
   replaceBlockNoteUrls,
   resolveBlockNoteUrls,
 } from "../../../../../utils/blocknote/blocknote-utils.ts";
@@ -41,6 +42,15 @@ export async function updateLectureTextService(
 
   if (input.content !== undefined) {
     finalContent = stripBlockNoteUrls(input.content);
+
+    finalContent = await processExternalImages(
+      env.server.uploadsLectureDir,
+      id,
+      finalContent,
+      existing.createdAt,
+      ["image"],
+      logger,
+    );
 
     // Clean up unreferenced files from storage
     await cleanupBlockNoteFiles(

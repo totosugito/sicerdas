@@ -5,6 +5,7 @@ import env from "../../../../../config/env.config.ts";
 import {
   stripBlockNoteUrls,
   processBlockNoteFiles,
+  processExternalImages,
   replaceBlockNoteUrls,
   resolveBlockNoteUrls,
 } from "../../../../../utils/blocknote/blocknote-utils.ts";
@@ -32,6 +33,13 @@ export async function createLectureTextService(
     })
     .returning();
 
+  finalContent = await processExternalImages(
+    env.server.uploadsLectureDir,
+    newText.id,
+    finalContent,
+    newText.createdAt,
+  );
+
   if (files.length > 0) {
     const urlMap = await processBlockNoteFiles(
       env.server.uploadsLectureDir,
@@ -41,12 +49,12 @@ export async function createLectureTextService(
     );
 
     finalContent = replaceBlockNoteUrls(finalContent, urlMap);
-
-    await db
-      .update(courseLectureTexts)
-      .set({ content: finalContent })
-      .where(eq(courseLectureTexts.id, newText.id));
   }
+
+  await db
+    .update(courseLectureTexts)
+    .set({ content: finalContent })
+    .where(eq(courseLectureTexts.id, newText.id));
 
   return {
     success: true,

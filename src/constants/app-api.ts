@@ -97,6 +97,15 @@ export const AppApi = {
         reorder: APP_URL_API + "/course/chapters/admin/reorder/:courseId",
       },
     },
+    lectureTexts: {
+      admin: {
+        list: APP_URL_API + "/course/lecture-texts/admin/list",
+        detail: APP_URL_API + "/course/lecture-texts/admin/detail/:id",
+        create: APP_URL_API + "/course/lecture-texts/admin/create",
+        update: APP_URL_API + "/course/lecture-texts/admin/update/:id",
+        delete: APP_URL_API + "/course/lecture-texts/admin/delete/:id",
+      },
+    },
   },
   exam: {
     subjects: {

@@ -13,9 +13,12 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "@/lib/theme-provider";
 
 export type FormBlockNoteProps = {
-  field: any; // The field instance from TanStack form.AppField render prop
-  item: {
-    label: string;
+  field?: any; // The field instance from TanStack form.AppField render prop
+  initialContent?: any[];
+  onChange?: (content: any[]) => void;
+  uploadFile?: (file: File) => Promise<string>;
+  item?: {
+    label?: string;
     placeholder?: string;
     description?: string;
     required?: boolean;
@@ -33,6 +36,9 @@ import "@/assets/custom-blocknote.css";
 
 export const FormBlockNote = ({
   field,
+  initialContent,
+  onChange,
+  uploadFile,
   item,
   labelClassName = "text-foreground font-medium",
   showMessage = true,
@@ -50,8 +56,10 @@ export const FormBlockNote = ({
       : appTheme;
   }, [appTheme]);
 
+  const initialContentData = field ? field.state.value : initialContent;
+
   // Use a ref to store the initial value for the editor to avoid recreations
-  const initialValueRef = useRef(field.state.value);
+  const initialValueRef = useRef(initialContentData);
 
   const styleTag = (
     <style>
@@ -66,28 +74,44 @@ export const FormBlockNote = ({
     </style>
   );
 
+  const defaultUploadFile = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const effectiveUploadFile = item?.uploadFile || uploadFile || defaultUploadFile;
+
   const editor = useCreateBlockNote({
     schema,
     initialContent:
       initialValueRef.current && initialValueRef.current.length > 0
         ? initialValueRef.current
         : undefined,
-    uploadFile: item.uploadFile,
+    uploadFile: effectiveUploadFile,
   });
 
-  // Sync editor content to form state on change
+  // Sync editor content to form state / onChange on change
   useEffect(() => {
     if (!editor) return;
 
     const unbind = editor.onChange(() => {
-      field.handleChange(editor.document);
+      if (field) {
+        field.handleChange(editor.document);
+      }
+      if (onChange) {
+        onChange(editor.document);
+      }
     });
 
     return () => unbind();
-  }, [editor, field]);
+  }, [editor, field, onChange]);
 
   // Handle external reset (when form value changes but editor is different)
-  const fieldValue = field.state.value;
+  const fieldValue = field ? field.state.value : initialContent;
 
   useEffect(() => {
     if (!editor) return;
@@ -146,50 +170,52 @@ export const FormBlockNote = ({
 
   return (
     <div data-slot="form-item" className="flex flex-col flex-1 gap-2">
-      <field.Label className={cn("", labelClassName)}>
-        {item.label}
-        {item.required && <span className="text-red-500">*</span>}
-      </field.Label>
-      <field.Control>
-        <div
-          className={cn(
-            "border rounded-md bg-background flex-1 overflow-y-auto transition-all",
-            disabled && "opacity-60 bg-muted cursor-not-allowed",
-            className,
-          )}
-          style={{ minHeight: item.minHeight || "400px" }}
-          onClick={(e) => {
-            // Prevent any buttons inside BlockNote (like the '+' add item button) from triggering a form submit
-            const target = e.target as HTMLElement;
-            const button = target.closest("button");
-            if (button && button.type === "submit") {
-              e.preventDefault();
-            }
-          }}
+      {item?.label && field?.Label && (
+        <field.Label className={cn("", labelClassName)}>
+          {item.label}
+          {item.required && <span className="text-red-500">*</span>}
+        </field.Label>
+      )}
+      <div
+        className={cn(
+          "border rounded-md bg-background flex-1 overflow-y-auto transition-all",
+          disabled && "opacity-60 bg-muted cursor-not-allowed",
+          className,
+        )}
+        style={{ minHeight: item?.minHeight || "400px" }}
+        onClick={(e) => {
+          // Prevent any buttons inside BlockNote (like the '+' add item button) from triggering a form submit
+          const target = e.target as HTMLElement;
+          const button = target.closest("button");
+          if (button && button.type === "submit") {
+            e.preventDefault();
+          }
+        }}
+      >
+        <BlockNoteView
+          editor={editor}
+          theme={resolvedTheme}
+          editable={!disabled}
+          slashMenu={false}
         >
-          <BlockNoteView
-            editor={editor}
-            theme={resolvedTheme}
-            editable={!disabled}
-            slashMenu={false}
-          >
-            <SuggestionMenuController
-              triggerCharacter={"/"}
-              getItems={async (query) => {
-                const allItems: DefaultReactSuggestionItem[] = [
-                  ...getDefaultReactSlashMenuItems(editor),
-                  getEquationSlashMenuItem(editor),
-                  getAlertSlashMenuItem(editor),
-                ];
-                return filterSuggestionItems(allItems, query);
-              }}
-            />
-            {styleTag}
-          </BlockNoteView>
-        </div>
-      </field.Control>
-      {item.description && <field.Description>{item.description}</field.Description>}
-      {showMessage && <field.Message />}
+          <SuggestionMenuController
+            triggerCharacter={"/"}
+            getItems={async (query) => {
+              const allItems: DefaultReactSuggestionItem[] = [
+                ...getDefaultReactSlashMenuItems(editor),
+                getEquationSlashMenuItem(editor),
+                getAlertSlashMenuItem(editor),
+              ];
+              return filterSuggestionItems(allItems, query);
+            }}
+          />
+          {styleTag}
+        </BlockNoteView>
+      </div>
+      {item?.description && field?.Description && (
+        <field.Description>{item.description}</field.Description>
+      )}
+      {showMessage && field?.Message && <field.Message />}
     </div>
   );
 };

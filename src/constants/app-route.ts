@@ -53,6 +53,13 @@ export const AppRoute = {
       },
       detail: { url: "/course/$id" },
     },
+    lectureTexts: {
+      admin: {
+        list: { url: "/lecture-texts/admin/list-lecture-text" },
+        create: { url: "/lecture-texts/admin/create-lecture-text" },
+        edit: { url: "/lecture-texts/admin/edit-lecture-text/$id" },
+      },
+    },
   },
   exam: {
     questions: {

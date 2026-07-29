@@ -27,7 +27,6 @@ import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { CourseStatusBadge } from "../components/CourseStatusBadge";
 import { string_to_locale_date } from "@/lib/my-utils";
-import { cn } from "@/lib/utils";
 
 interface CourseCardListItemProps {
   course: CourseItem;
@@ -157,7 +156,7 @@ export function CourseCardListItem({ course, onDelete }: CourseCardListItemProps
         <div className="grid grid-cols-3 gap-2 mb-4 pt-3 border-t border-border/40 text-center">
           <div className="flex flex-col items-center gap-0.5">
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-              Bab
+              {t(($) => $.course.courses.table.cardLabels.chapters)}
             </span>
             <div className="flex items-center gap-1">
               <Layers className="h-3.5 w-3.5 text-primary/70 shrink-0" />
@@ -166,7 +165,7 @@ export function CourseCardListItem({ course, onDelete }: CourseCardListItemProps
           </div>
           <div className="flex flex-col items-center gap-0.5 border-x border-border/40 px-1">
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-              Materi
+              {t(($) => $.course.courses.table.cardLabels.lectures)}
             </span>
             <div className="flex items-center gap-1">
               <BookOpen className="h-3.5 w-3.5 text-blue-500/70 shrink-0" />
@@ -175,7 +174,7 @@ export function CourseCardListItem({ course, onDelete }: CourseCardListItemProps
           </div>
           <div className="flex flex-col items-center gap-0.5">
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-              Peserta
+              {t(($) => $.course.courses.table.cardLabels.enrolled)}
             </span>
             <div className="flex items-center gap-1">
               <Users className="h-3.5 w-3.5 text-emerald-500/70 shrink-0" />

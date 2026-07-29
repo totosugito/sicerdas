@@ -21,12 +21,12 @@ Handles the high-level course metadata, catalog, and admin CRUD.
 
 ### Frontend Implementation Checklist
 #### Admin UI
-- [ ] Course Management Table / List page (with filters: status, category, grade, search)
-- [ ] Create Course Form / Modal (draft course creation)
-- [ ] Edit Course Metadata Form page
-- [ ] Course Detail View & Dashboard
-- [ ] Course Thumbnail Upload / Remove component
-- [ ] Delete Course confirmation modal
+- [x] Course Management Table / List page (with filters: status, category, grade, search)
+- [x] Create Course Form / Modal (draft course creation)
+- [x] Edit Course Metadata Form page
+- [x] Course Detail View & Dashboard
+- [x] Course Thumbnail Upload / Remove component
+- [x] Delete Course confirmation modal
 
 #### User / Public UI
 - [ ] Public Course Catalog / Exploration Page (with category, grade, & keyword filters)
@@ -47,11 +47,11 @@ Handles the structural modules/sections within a course.
 
 ### Frontend Implementation Checklist
 #### Admin UI
-- [ ] Chapter Management List View within Course Detail page
-- [ ] Create Chapter Form / Modal
-- [ ] Edit Chapter Title & Description Form / Modal
-- [ ] Delete Chapter confirmation dialog
-- [ ] Chapter Drag-and-Drop / Reorder component (fractional indexing)
+- [x] Chapter Management List View within Course Detail page
+- [x] Create Chapter Form / Modal
+- [x] Edit Chapter Title & Description Form / Modal
+- [x] Delete Chapter confirmation dialog
+- [x] Chapter Drag-and-Drop / Reorder component (fractional indexing)
 
 ---
 
@@ -103,10 +103,10 @@ Handles standalone, reusable rich text articles (BlockNote JSON format) referenc
 
 ### Frontend Implementation Checklist
 #### Admin UI
-- [ ] Lecture Text Article Management Table / List (with title search filter)
-- [ ] BlockNote Rich Text Article Editor Page / Modal (Create & Edit)
-- [ ] Article Preview View
-- [ ] Delete Article confirmation dialog
+- [x] Lecture Text Article Management Table / List (with title search filter)
+- [x] BlockNote Rich Text Article Editor Page / Modal (Create & Edit)
+- [x] Article Preview View
+- [x] Delete Article confirmation dialog
 
 ---
 

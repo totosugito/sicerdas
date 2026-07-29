@@ -313,6 +313,96 @@ export const stripBlockNoteUrls = (
 };
 
 /**
+ * Downloads external images referenced in BlockNote content and saves them locally,
+ * updating the block URL to the relative local storage path.
+ */
+export const processExternalImages = async (
+  subDir: string,
+  entityId: string,
+  content: any[],
+  createdAt?: Date | string,
+  types: string[] = ["image"],
+  logger?: any,
+): Promise<any[]> => {
+  if (!content || !Array.isArray(content) || content.length === 0) return [];
+
+  const date = createdAt ? new Date(createdAt) : new Date();
+  const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+  const baseUrl = env.server.baseUrl;
+
+  const traverse = async (blocks: any[]): Promise<any[]> => {
+    const updatedBlocks = [];
+
+    for (const block of blocks) {
+      let newBlock = { ...block };
+
+      if (
+        types.includes(block.type) &&
+        block.props?.url &&
+        typeof block.props.url === "string"
+      ) {
+        const url = block.props.url;
+
+        // Check if URL is an external HTTP/HTTPS link not hosted on our server
+        const isExternal =
+          (url.startsWith("http://") || url.startsWith("https://")) &&
+          (!baseUrl || !url.startsWith(baseUrl));
+
+        if (isExternal) {
+          try {
+            const response = await fetch(url, {
+              headers: {
+                "User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+              },
+            });
+
+            if (response.ok) {
+              const arrayBuffer = await response.arrayBuffer();
+              const buffer = Buffer.from(arrayBuffer);
+              const contentType = response.headers.get("content-type") || "image/jpeg";
+
+              let ext = "png";
+              if (contentType.includes("jpeg") || contentType.includes("jpg")) ext = "jpg";
+              else if (contentType.includes("webp")) ext = "webp";
+              else if (contentType.includes("gif")) ext = "gif";
+              else if (contentType.includes("png")) ext = "png";
+              else if (contentType.includes("svg")) ext = "svg";
+              else {
+                const urlExt = url.split("?")[0].split(".").pop();
+                if (urlExt && urlExt.length <= 4) ext = urlExt;
+              }
+
+              const fileName = createUniqueFileName(`external_image.${ext}`, "blocknote_file");
+              const relativePath = getBlockNoteFileUrl(subDir, yearMonth, entityId, fileName);
+
+              await saveFile(relativePath, buffer, contentType);
+
+              newBlock.props = {
+                ...newBlock.props,
+                url: relativePath,
+              };
+            }
+          } catch (error) {
+            logger?.warn?.({ err: error, url }, "Failed to download external image for BlockNote block");
+          }
+        }
+      }
+
+      if (block.children && Array.isArray(block.children)) {
+        newBlock.children = await traverse(block.children);
+      }
+
+      updatedBlocks.push(newBlock);
+    }
+
+    return updatedBlocks;
+  };
+
+  return traverse(content);
+};
+
+/**
  * Utility to convert BlockNote JSON structure to HTML string using @blocknote/core.
  */
 export const blocknoteToHtml = async (content: any[] | null | undefined): Promise<string> => {

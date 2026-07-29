@@ -94,7 +94,12 @@ export function prepare_blocknote_submission(
           if (placeholder) {
             newBlock.props = { ...newBlock.props, url: placeholder };
           }
-        } else if (url.includes(APP_CONFIG.app.uploadDirs)) {
+        } else if (
+          url.startsWith(APP_CONFIG.app.uploadDirs) ||
+          url.startsWith(APP_CONFIG.app.uploadDirs.replace(/^\/+/, "")) ||
+          (typeof window !== "undefined" &&
+            url.startsWith(window.location.origin + APP_CONFIG.app.uploadDirs))
+        ) {
           // If it's already a server URL, we should store only the relative part
           const uploadsIndex = url.indexOf(APP_CONFIG.app.uploadDirs);
           if (uploadsIndex !== -1) {
