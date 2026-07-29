@@ -6,9 +6,9 @@ import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { CbtQuestionView } from "@/features/exam/sessions/cbt";
-import { EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
+import { EnumExamSessionMode } from "@/api/exam/types";
 import { CreateContentReport } from "@/features/layout/CreateContentReport";
-import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
+import { EnumContentType } from "@/api/types";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 interface QuestionReviewSectionProps {

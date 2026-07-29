@@ -1,7 +1,7 @@
 import { NotFoundError } from "@/components/errors";
 import { useAuth } from "@/hooks/use-auth";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { EnumUserRole } from "backend/src/db/schema/users/types";
+import { EnumUserRole } from "@/api/users/types";
 
 export const Route = createFileRoute("/(pages)/exam/(package-section)/admin")({
   component: RouteComponent,

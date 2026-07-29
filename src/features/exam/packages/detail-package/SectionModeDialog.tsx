@@ -9,7 +9,7 @@ import { id as localeId } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ExamSessionStatusConfig, EnumExamSessionStatus } from "@/constants/app-enum";
-import { EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
+import { EnumExamSessionMode } from "@/api/exam/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";

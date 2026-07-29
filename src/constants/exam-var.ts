@@ -1,4 +1,4 @@
-import { EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
+import { EnumExamSessionMode } from "@/api/exam/types";
 
 export type ExamSessionMode = (typeof EnumExamSessionMode)[keyof typeof EnumExamSessionMode];
 export const EnumExamStatus = {

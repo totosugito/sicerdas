@@ -1,7 +1,7 @@
-import { EnumExamSessionStatus } from "backend/src/db/schema/exam/enums";
+import { EnumExamSessionStatus } from "@/api/exam/types";
 import { CheckCircle2, PlayCircle, FileText } from "lucide-react";
 
-export { EnumExamSessionStatus } from "backend/src/db/schema/exam/enums";
+export { EnumExamSessionStatus } from "@/api/exam/types";
 
 export const ExamSessionStatusConfig = {
   [EnumExamSessionStatus.COMPLETED]: {

@@ -72,7 +72,6 @@ export function QuestionOptionsTab({ questionId, options: initialOptions }: Ques
             // Optimistic update
             setItems(updatedItemsWithOrder);
 
-            // Persist to backend
             Promise.all(updatedItemsWithOrder.map(item =>
                 updateMutation.mutateAsync({
                     id: item.id,

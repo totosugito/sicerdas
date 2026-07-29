@@ -15,7 +15,7 @@ interface CbtSummaryProps {
 }
 
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
+import { EnumExamSessionMode } from "@/api/exam/types";
 
 export const CbtSummary: React.FC<CbtSummaryProps> = ({ items, mode, className }) => {
   const { t } = useAppTranslation();

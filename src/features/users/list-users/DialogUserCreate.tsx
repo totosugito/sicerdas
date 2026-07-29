@@ -10,7 +10,7 @@ import {
   CreateUserRequest,
   UpdateUserParams,
 } from "@/api/users";
-import { EnumUserRole } from "backend/src/db/schema/users/types";
+import { EnumUserRole } from "@/api/users/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 

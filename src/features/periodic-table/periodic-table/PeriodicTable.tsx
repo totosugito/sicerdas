@@ -6,7 +6,7 @@ import { SearchBar } from "./SearchBar";
 import { ThemeSelector } from "./ThemeSelector";
 import { ElementDetailPopover } from "./ElementDetailPopover";
 import { useAppStore } from "@/stores/useAppStore";
-import { EnumPeriodicGroup } from "backend/src/db/schema/periodic-table/types";
+import { EnumPeriodicGroup } from "@/api/periodic-table/types";
 import { PeriodicTableLegend } from "./PeriodicTableLegend";
 
 interface PeriodicTableProps {

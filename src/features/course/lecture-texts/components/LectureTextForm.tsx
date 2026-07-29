@@ -9,7 +9,7 @@ import { FileText, Save } from "lucide-react";
 import { prepare_blocknote_submission } from "@/lib/blocknote-utils";
 import { useListCategorySimple } from "@/api/education/categories";
 import { useListGradeSimple } from "@/api/education/grades";
-import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
+import { EnumContentStatus } from "@/api/types";
 
 export type LectureTextFormValues = {
   title: string;

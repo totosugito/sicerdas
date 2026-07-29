@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { UploadCloud, Trash2, Info, BookOpen } from "lucide-react";
 import { useListCategorySimple } from "@/api/education/categories";
 import { useListGradeSimple } from "@/api/education/grades";
-import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
+import { EnumContentStatus } from "@/api/types";
 import { CourseFormValues } from "@/api/course/courses";
 import { CourseStatusBadge } from "../components/CourseStatusBadge";
 

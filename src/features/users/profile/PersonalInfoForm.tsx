@@ -4,7 +4,7 @@ import { useAppTranslation, AppTranslation } from "@/lib/i18n-typed";
 import { ControlForm, FormWithDetector } from "@/components/forms";
 import { z } from "zod";
 import { date_to_string, string_to_date } from "@/lib/my-utils";
-import { EnumEducationLevel } from "backend/src/db/schema/enum/enum-app";
+import { EnumEducationLevel } from "@/api/types";
 import { useRef, useEffect } from "react";
 
 // Define the form values type

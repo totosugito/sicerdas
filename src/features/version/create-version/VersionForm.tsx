@@ -4,7 +4,7 @@ import { z } from "zod";
 import { useAppForm } from "@/components/ui/form-tanstack";
 import { ControlForm, FormWithDetector } from "@/components/forms";
 import { CreateVersionRequest } from "@/api/version";
-import { EnumContentStatus, EnumContentType } from "backend/src/db/schema/enum/enum-app";
+import { EnumContentStatus, EnumContentType } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 

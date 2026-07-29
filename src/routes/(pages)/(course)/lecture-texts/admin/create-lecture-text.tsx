@@ -5,7 +5,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { PageTitle } from "@/components/app";
 import { LectureTextForm, LectureTextFormValues } from "@/features/course/lecture-texts";
 import { AppRoute } from "@/constants/app-route";
-import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
+import { EnumContentStatus } from "@/api/types";
 
 export const Route = createFileRoute(
   "/(pages)/(course)/lecture-texts/admin/create-lecture-text",

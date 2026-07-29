@@ -1,6 +1,6 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
+import { EnumContentStatus } from "@/api/types";
 import { cn } from "@/lib/utils";
 
 type CourseStatus = (typeof EnumContentStatus)[keyof typeof EnumContentStatus] | string;

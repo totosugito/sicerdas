@@ -13,7 +13,7 @@ import { useListVersionSimple } from "@/api/version";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { durationOnMinutes } from "@/constants/app-enum";
-import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
+import { EnumContentType } from "@/api/types";
 
 export type DialogSectionFormProps = {
   open: boolean;

@@ -8,9 +8,7 @@ import type {
   UpdateQuestionParams,
 } from "backend/src/modules/exam/questions/index.ts";
 import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
-import { EnumDifficultyLevel, EnumQuestionType, EnumScoringStrategy, EnumSolutionType } from "backend/src/db/schema/exam/enums.ts";
-
-export { EnumDifficultyLevel, EnumQuestionType, EnumScoringStrategy, EnumSolutionType };
+export { EnumDifficultyLevel, EnumQuestionType, EnumScoringStrategy, EnumSolutionType } from "@/api/exam/types";
 
 export type {
   QuestionResponseItemT,

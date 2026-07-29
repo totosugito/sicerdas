@@ -54,4 +54,5 @@ export interface UserSessionsResponse extends BaseResponse {
   data: SessionData[];
 }
 
+export { EnumUserRole } from "backend/src/db/schema/users/types";
 

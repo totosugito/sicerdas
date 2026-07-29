@@ -23,7 +23,7 @@ import { string_to_locale_date } from "@/lib/my-utils";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { CourseStatusBadge } from "@/features/course/courses/components/CourseStatusBadge";
-import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
+import { EnumContentStatus } from "@/api/types";
 
 interface LectureTextTableProps {
   data: PaginatedLectureTextListResponse;

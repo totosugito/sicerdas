@@ -17,7 +17,7 @@ import { ExamSessionMode, EXAM_STATUS_STYLES, EnumExamStatus } from "@/constants
 import { LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CbtSolutionView } from "./CbtSolutionView";
-import { EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
+import { EnumExamSessionMode } from "@/api/exam/types";
 
 interface CbtQuestionViewProps {
   question: QuestionData;

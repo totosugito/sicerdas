@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DialogModal } from "@/components/dialog";
 import { EnumExamStatus, ExamStatus, ExamSessionMode } from "@/constants/exam-var";
 import { HelpCircle, Info } from "lucide-react";
-import { EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
+import { EnumExamSessionMode } from "@/api/exam/types";
 
 export interface SummaryItem {
   status: ExamStatus;

@@ -18,7 +18,7 @@ import {
   CourseCardList,
   CourseSortSelector,
 } from "@/features/course/courses/list-course";
-import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
+import { EnumContentStatus } from "@/api/types";
 import {
   Select,
   SelectContent,

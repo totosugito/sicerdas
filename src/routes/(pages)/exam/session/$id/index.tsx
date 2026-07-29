@@ -9,7 +9,7 @@ import {
 } from "@/api/exam/sessions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { CreateContentReport } from "@/features/layout/CreateContentReport";
-import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
+import { EnumContentType } from "@/api/types";
 import {
   CbtHeader,
   CbtNavigationGrid,
@@ -31,7 +31,7 @@ import {
   DrawerClose,
 } from "@/components/ui/drawer";
 import { ErrorPageDetails } from "@/components/app/ErrorPageDetails";
-import { EnumExamSessionMode, EnumExamSessionStatus } from "backend/src/db/schema/exam/enums";
+import { EnumExamSessionMode, EnumExamSessionStatus } from "@/api/exam/types";
 import { EnumExamStatus, ExamSessionMode, ExamStatus } from "@/constants/exam-var";
 import { useAppTranslation } from "@/lib/i18n-typed";
 

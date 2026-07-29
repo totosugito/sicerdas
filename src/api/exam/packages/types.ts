@@ -21,8 +21,7 @@ import type {
   ThumbnailResponseDataT,
 } from "backend/src/modules/exam/packages/index.ts";
 import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
-import { EnumExamPackageUserStatus as UserStatusValues } from "backend/src/db/schema/exam/enums.ts";
-import { EnumExamType as ExamTypeValues } from "backend/src/db/schema/exam/enums.ts";
+import { EnumExamPackageUserStatus as UserStatusValues, EnumExamType as ExamTypeValues } from "@/api/exam/types";
 
 export type EnumExamPackageUserStatus = (typeof UserStatusValues)[keyof typeof UserStatusValues];
 export type EnumExamType = (typeof ExamTypeValues)[keyof typeof ExamTypeValues];

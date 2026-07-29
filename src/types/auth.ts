@@ -1,4 +1,4 @@
-import { EnumUserRole } from "backend/src/db/schema/users/types";
+import { EnumUserRole } from "@/api/users/types";
 
 export type LoginFormValues = {
   email: string;

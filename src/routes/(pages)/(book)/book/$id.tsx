@@ -11,7 +11,7 @@ import { useState, useEffect, Suspense, lazy, ComponentType } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { CreateContentReport } from "@/features/layout/CreateContentReport";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { EnumContentType } from "backend/src/db/schema/enum/enum-app";
+import { EnumContentType } from "@/api/types";
 
 import { useUpdateDownload } from "@/api/book/update-download";
 import type { DownloadResponse } from "@/api/book";

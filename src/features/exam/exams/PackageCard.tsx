@@ -6,7 +6,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate, Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { Heart, HelpCircle, Layers, CheckCircle2, PlayCircle } from "lucide-react";
-import { EnumExamPackageUserStatus } from "backend/src/db/schema/exam/enums";
+import { EnumExamPackageUserStatus } from "@/api/exam/types";
 import { getGradeColor } from "@/lib/app/exam-utils";
 import { Card } from "@/components/ui/card";
 

@@ -7,7 +7,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import { EnumExamSessionMode } from "backend/src/db/schema/exam/enums";
+import { EnumExamSessionMode } from "@/api/exam/types";
 
 export interface GridItem {
   questionId: string;

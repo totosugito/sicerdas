@@ -20,3 +20,5 @@ export type {
 export interface PeriodicElementResponse<T = ElementData> extends BaseResponse {
   data: T;
 }
+
+export { EnumPeriodicGroup } from "backend/src/db/schema/periodic-table/types";

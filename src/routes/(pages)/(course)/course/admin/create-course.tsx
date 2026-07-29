@@ -9,7 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AppRoute } from "@/constants/app-route";
 import { CourseForm } from "@/features/course/courses/create-course";
 
-import { EnumContentStatus } from "backend/src/db/schema/enum/enum-app.ts";
+import { EnumContentStatus } from "@/api/types";
 
 export const Route = createFileRoute("/(pages)/(course)/course/admin/create-course")({
   component: AdminCourseCreatePage,
