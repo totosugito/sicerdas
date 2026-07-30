@@ -1,25 +1,18 @@
 import { useAppTranslation } from "@/lib/i18n-typed";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectPositioner,
-} from "@/components/ui/select";
-import { ArrowUpAZ, ArrowDownAZ } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { SortSelector } from "@/features/components";
 
 interface QuestionSortSelectorProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
+  disabled?: boolean;
 }
 
 export function QuestionSortSelector({
   sortBy,
   sortOrder,
   onSortChange,
+  disabled,
 }: QuestionSortSelectorProps) {
   const { t } = useAppTranslation();
 
@@ -31,41 +24,13 @@ export function QuestionSortSelector({
   ];
 
   return (
-    <div className="flex items-center gap-2">
-      <Select
-        value={sortBy}
-        onValueChange={(value) => {
-          if (value !== null) {
-            onSortChange(value, sortOrder);
-          }
-        }}
-      >
-        <SelectTrigger className="h-10 w-[180px] bg-background/50 border-border/60 rounded-xl">
-          <SelectValue placeholder={t(($) => $.labels.sortBy)} />
-        </SelectTrigger>
-        <SelectPositioner>
-          <SelectContent>
-            {options.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </SelectPositioner>
-      </Select>
-
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-10 w-10 rounded-xl hover:bg-muted transition-colors"
-        onClick={() => onSortChange(sortBy, sortOrder === "asc" ? "desc" : "asc")}
-      >
-        {sortOrder === "asc" ? (
-          <ArrowUpAZ className="h-4 w-4 text-primary" />
-        ) : (
-          <ArrowDownAZ className="h-4 w-4 text-primary" />
-        )}
-      </Button>
-    </div>
+    <SortSelector
+      options={options}
+      sortBy={sortBy}
+      sortOrder={sortOrder}
+      onSortChange={onSortChange}
+      placeholder={t(($) => $.labels.sortBy)}
+      disabled={disabled}
+    />
   );
 }

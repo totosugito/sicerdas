@@ -5,12 +5,14 @@ interface SectionSortSelectorProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
+  disabled?: boolean;
 }
 
 export const SectionSortSelector = ({
   sortBy,
   sortOrder,
   onSortChange,
+  disabled,
 }: SectionSortSelectorProps) => {
   const { t } = useAppTranslation();
 
@@ -33,6 +35,7 @@ export const SectionSortSelector = ({
       sortOrder={sortOrder}
       onSortChange={onSortChange}
       placeholder={t(($) => $.labels.sortBy)}
+      disabled={disabled}
     />
   );
 };

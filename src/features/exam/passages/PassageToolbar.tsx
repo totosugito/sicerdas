@@ -13,6 +13,7 @@ interface PassageToolbarProps {
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
   viewMode: "table" | "card";
   onViewModeChange: (viewMode: "table" | "card") => void;
+  disabled?: boolean;
 }
 
 export function PassageToolbar({
@@ -25,6 +26,7 @@ export function PassageToolbar({
   onSortChange,
   viewMode,
   onViewModeChange,
+  disabled,
 }: PassageToolbarProps) {
   const { t } = useAppTranslation();
 
@@ -38,6 +40,7 @@ export function PassageToolbar({
             onSubmit={onSearchSubmit}
             onClear={onClearSearch}
             placeholder={t(($) => $.exam.passages.table.search)}
+            disabled={disabled}
           />
         </div>
 
@@ -46,15 +49,17 @@ export function PassageToolbar({
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSortChange={onSortChange}
+            disabled={disabled}
           />
 
-          <div className="h-8 w-px bg-border/60 mx-1 hidden xs:block" />
+          <div className="h-8 w-px bg-border/60 mx-1 hidden sm:block" />
 
           <ViewModeToggle
             viewMode={viewMode}
             onViewModeChange={onViewModeChange}
             tableLabel={t(($) => $.exam.packages.table.viewModes.table)}
             cardLabel={t(($) => $.exam.packages.table.viewModes.card)}
+            disabled={disabled}
           />
         </div>
       </CardContent>

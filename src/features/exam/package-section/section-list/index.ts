@@ -1,6 +1,5 @@
 export { SectionTable } from "./SectionTable";
 export { DialogSectionForm } from "./DialogSectionForm";
-export { SectionCardList } from "./SectionCardList";
 export { SectionCardListItem } from "./SectionCardListItem";
 export { SectionSortSelector } from "./SectionSortSelector";
 export { SectionEmptyState } from "./SectionEmptyState";

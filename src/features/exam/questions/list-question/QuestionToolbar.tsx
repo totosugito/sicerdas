@@ -1,15 +1,13 @@
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { SectionSortSelector } from "./SectionSortSelector";
-import { ViewModeToggle, SearchInput, ExamTypeSelect } from "@/features/components";
+import { QuestionSortSelector } from "./QuestionSortSelector";
+import { ViewModeToggle, SearchInput } from "@/features/components";
 import { Card, CardContent } from "@/components/ui/card";
 
-interface SectionToolbarProps {
+interface QuestionToolbarProps {
   searchTerm: string;
   onSearchTermChange: (value: string) => void;
   onSearchSubmit: () => void;
   onClearSearch: () => void;
-  examTypes: string[];
-  onExamTypesChange: (examTypes: string[]) => void;
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
@@ -18,40 +16,36 @@ interface SectionToolbarProps {
   disabled?: boolean;
 }
 
-export function SectionToolbar({
+export function QuestionToolbar({
   searchTerm,
   onSearchTermChange,
   onSearchSubmit,
   onClearSearch,
-  examTypes,
-  onExamTypesChange,
   sortBy,
   sortOrder,
   onSortChange,
   viewMode,
   onViewModeChange,
   disabled,
-}: SectionToolbarProps) {
+}: QuestionToolbarProps) {
   const { t } = useAppTranslation();
 
   return (
     <Card>
       <CardContent className="flex flex-row flex-wrap items-center justify-between gap-4 p-4 w-full">
-        <div className="flex-1 min-w-[280px] max-w-md">
+        <div className="flex-1 min-w-[280px] max-w-md w-full">
           <SearchInput
             value={searchTerm}
             onChange={onSearchTermChange}
             onSubmit={onSearchSubmit}
             onClear={onClearSearch}
-            placeholder={t(($) => $.exam.sections.table.search)}
+            placeholder={t(($) => $.exam.questions.table.search)}
             disabled={disabled}
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <ExamTypeSelect value={examTypes} onValueChange={onExamTypesChange} disabled={disabled} />
-
-          <SectionSortSelector
+        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto lg:ml-auto">
+          <QuestionSortSelector
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSortChange={onSortChange}

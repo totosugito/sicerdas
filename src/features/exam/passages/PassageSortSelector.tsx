@@ -5,12 +5,14 @@ interface PassageSortSelectorProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
+  disabled?: boolean;
 }
 
 export const PassageSortSelector = ({
   sortBy,
   sortOrder,
   onSortChange,
+  disabled,
 }: PassageSortSelectorProps) => {
   const { t } = useAppTranslation();
 
@@ -28,6 +30,7 @@ export const PassageSortSelector = ({
       sortOrder={sortOrder}
       onSortChange={onSortChange}
       placeholder={t(($) => $.labels.sortBy)}
+      disabled={disabled}
     />
   );
 };

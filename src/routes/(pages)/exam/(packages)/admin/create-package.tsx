@@ -5,7 +5,6 @@ import { PageTitle } from "@/components/general";
 import { useCreatePackage, useUploadPackageThumbnail } from "@/api/exam/packages";
 import type { CreatePackageParams } from "@/api/exam/packages";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
-import { useQueryClient } from "@tanstack/react-query";
 import { AppRoute } from "@/constants/app-route";
 import { PackageForm, PackageFormValues } from "@/features/exam/packages/create-package";
 
@@ -16,7 +15,6 @@ export const Route = createFileRoute("/(pages)/exam/(packages)/admin/create-pack
 function AdminExamPackagesCreatePage() {
   const { t } = useAppTranslation();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const createMutation = useCreatePackage();
   const uploadThumbnailMutation = useUploadPackageThumbnail();
 

@@ -10,17 +10,19 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useEffect, useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
-import { PageTitle } from "@/components/general";
-import { Plus, Trash2 } from "lucide-react";
+import { PageTitle, EmptyState } from "@/components/general";
+import { Plus, Trash2, Layers } from "lucide-react";
 import { DialogModal } from "@/components/dialog";
 import {
   SectionTable,
-  SectionCardList,
+  SectionCardListItem,
   SectionToolbar,
   DialogSectionForm,
 } from "@/features/exam/package-section/section-list";
 import { PaginationData, DataTablePagination } from "@/components/table";
 import { useAppStore } from "@/stores/useAppStore";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { CardListSkeleton, TableSkeleton } from "@/features/components";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
 
@@ -55,7 +57,12 @@ function AdminExamPackageSectionsPage() {
   const examTypes = searchParams.examTypes ?? [];
 
   const { examSections, setExamSections } = useAppStore();
+  const { openSideMenu } = useAuthStore();
   const [searchTerm, setSearchTerm] = useState(search);
+
+  const gridClass = openSideMenu
+    ? "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+    : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6";
 
   // Sync with store on mount - if view is missing, use store value
   useEffect(() => {
@@ -180,6 +187,7 @@ function AdminExamPackageSectionsPage() {
         onViewModeChange={(newView) => {
           navigate({ search: { ...searchParams, view: newView }, replace: true });
         }}
+        disabled={isLoading}
       />
 
       <div
@@ -191,7 +199,19 @@ function AdminExamPackageSectionsPage() {
         )}
       >
         <div className={cn(viewMode === "table" ? "p-4" : "")}>
-          {viewMode === "table" ? (
+          {isLoading ? (
+            viewMode === "table" ? (
+              <TableSkeleton columnCount={6} rowCount={limit} showSearch={false} />
+            ) : (
+              <CardListSkeleton count={limit} />
+            )
+          ) : !data || data.data.items.length === 0 ? (
+            <EmptyState
+              icon={Layers}
+              title={t(($) => $.exam.sections.table.noResult)}
+              description={t(($) => $.exam.sections.description)}
+            />
+          ) : viewMode === "table" ? (
             <SectionTable
               data={data as ListSectionsResponse}
               isLoading={isLoading}
@@ -225,18 +245,23 @@ function AdminExamPackageSectionsPage() {
               showToolbar={false}
             />
           ) : (
-            <SectionCardList
-              data={data as ListSectionsResponse}
-              isLoading={isLoading}
-              paginationData={data?.data.meta as PaginationData}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
+            <div className="flex flex-col gap-8">
+              <div className={cn(gridClass)}>
+                {(data?.data?.items || []).map((section) => (
+                  <SectionCardListItem
+                    key={section.id}
+                    section={section}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            </div>
           )}
         </div>
 
         {/* Adaptive Pagination */}
-        {!isLoading && data?.data.meta && (
+        {!isLoading && data?.data?.items && data.data.items.length > 0 && data.data.meta && (
           <div
             className={cn(
               "transition-all duration-300",

@@ -58,7 +58,7 @@ export function PackageToolbar({
             disabled={disabled}
           />
 
-          <div className="h-8 w-px bg-border/60 mx-1 hidden xs:block" />
+          <div className="h-8 w-px bg-border/60 mx-1 hidden sm:block" />
 
           <ViewModeToggle
             viewMode={viewMode}

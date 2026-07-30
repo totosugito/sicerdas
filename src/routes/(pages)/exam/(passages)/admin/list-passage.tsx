@@ -10,16 +10,18 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useEffect, useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
-import { PageTitle } from "@/components/general";
-import { Plus, Trash2 } from "lucide-react";
+import { PageTitle, EmptyState } from "@/components/general";
+import { Plus, Trash2, BookOpen } from "lucide-react";
 import { DialogModal } from "@/components/dialog";
 import {
   PassageTable,
-  PassageCardList,
+  PassageCardListItem,
   PassageToolbar,
 } from "@/features/exam/passages";
 import { PaginationData, DataTablePagination } from "@/components/table";
 import { useAppStore } from "@/stores/useAppStore";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { CardListSkeleton, TableSkeleton } from "@/features/components";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
 import { AppRoute } from "@/constants/app-route";
@@ -53,7 +55,12 @@ function AdminExamPassagesPage() {
   const subjectId = searchParams.subjectId;
 
   const { examPassages, setExamPassages } = useAppStore();
+  const { openSideMenu } = useAuthStore();
   const [searchTerm, setSearchTerm] = useState(search);
+
+  const gridClass = openSideMenu
+    ? "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+    : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6";
 
   // Sync with store on mount - if view is missing, use store value
   useEffect(() => {
@@ -159,6 +166,7 @@ function AdminExamPassagesPage() {
         onViewModeChange={(newView) => {
           navigate({ search: { ...searchParams, view: newView }, replace: true });
         }}
+        disabled={isLoading}
       />
 
       <div
@@ -170,7 +178,19 @@ function AdminExamPassagesPage() {
         )}
       >
         <div className={cn(viewMode === "table" ? "p-4" : "")}>
-          {viewMode === "table" ? (
+          {isLoading ? (
+            viewMode === "table" ? (
+              <TableSkeleton columnCount={4} rowCount={limit} showSearch={false} />
+            ) : (
+              <CardListSkeleton count={limit} />
+            )
+          ) : !data || data.data.items.length === 0 ? (
+            <EmptyState
+              icon={BookOpen}
+              title={t(($) => $.exam.passages.table.noResult)}
+              description={t(($) => $.exam.passages.description)}
+            />
+          ) : viewMode === "table" ? (
             <PassageTable
               data={data as ListPassagesResponse}
               isLoading={isLoading}
@@ -203,17 +223,22 @@ function AdminExamPassagesPage() {
               showToolbar={false}
             />
           ) : (
-            <PassageCardList
-              data={data as ListPassagesResponse}
-              isLoading={isLoading}
-              paginationData={data?.data.meta as PaginationData}
-              onDelete={handleDelete}
-            />
+            <div className="flex flex-col gap-8">
+              <div className={cn(gridClass)}>
+                {(data?.data?.items || []).map((passage) => (
+                  <PassageCardListItem
+                    key={passage.id}
+                    passage={passage}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            </div>
           )}
         </div>
 
         {/* Adaptive Pagination */}
-        {!isLoading && data?.data.meta && (
+        {!isLoading && data?.data?.items && data.data.items.length > 0 && data.data.meta && (
           <div
             className={cn(
               "transition-all duration-300",
