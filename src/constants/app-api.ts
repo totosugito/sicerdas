@@ -139,6 +139,7 @@ export const AppApi = {
         listSimple: APP_URL_API + "/exam/packages/admin/list-simple",
         detail: APP_URL_API + "/exam/packages/admin/detail/:id",
         thumbnail: APP_URL_API + "/exam/packages/admin/thumbnail/:id",
+        clone: APP_URL_API + "/exam/packages/admin/clone",
       },
       user: {
         bookmark: APP_URL_API + "/exam/packages/user/bookmark",

@@ -241,6 +241,7 @@ export const AdminPackageSimpleBody = Type.Object({
   search: Type.Optional(Type.String()),
   page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
   limit: Type.Optional(Type.Number({ default: 1000, minimum: 1, maximum: 2000 })),
+  examType: Type.Optional(Type.Enum(EnumExamType)),
 });
 
 export const CreatePackageBody = Type.Object({
@@ -449,6 +450,7 @@ export type AdminPackageListParams = Static<typeof AdminPackageListBody>;
 export type AdminPackageSimpleParams = Static<typeof AdminPackageSimpleBody>;
 export type CreatePackageParams = Static<typeof CreatePackageBody>;
 export type ClonePackageParams = Static<typeof ClonePackageBody>;
+export type ClonePackageResponse = Static<typeof ClonePackageResponse>;
 export type UpdatePackageParams = Static<typeof UpdatePackageBody>;
 export type UpdateBookmarkParams = Static<typeof UpdateBookmarkBody>;
 export type UpdateRatingParams = Static<typeof UpdateRatingBody>;

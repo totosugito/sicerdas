@@ -1,6 +1,6 @@
 import React from "react";
 import { ExamPackage, ListPackagesResponse } from "@/api/exam/packages";
-import { PaginationData, DataTablePagination } from "@/components/table";
+import { PaginationData } from "@/components/table";
 import { PackageCardListItem } from "./PackageCardListItem";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { PackageOpen } from "lucide-react";
@@ -13,6 +13,7 @@ interface PackageCardListProps {
   paginationData: PaginationData;
   onPaginationChange?: (pagination: { page: number; limit: number }) => void;
   onDelete: (pkg: ExamPackage) => void;
+  onClone?: (pkg: ExamPackage) => void;
 }
 
 export function PackageCardList({
@@ -21,6 +22,7 @@ export function PackageCardList({
   paginationData,
   onPaginationChange,
   onDelete,
+  onClone,
 }: PackageCardListProps) {
   const { t } = useAppTranslation();
   const { openSideMenu } = useAuthStore();
@@ -58,7 +60,9 @@ export function PackageCardList({
               className="aspect-[3/4] rounded-2xl bg-muted/40 animate-pulse border border-border/20"
             />
           ))
-          : items.map((pkg) => <PackageCardListItem key={pkg.id} pkg={pkg} onDelete={onDelete} />)}
+          : items.map((pkg) => (
+            <PackageCardListItem key={pkg.id} pkg={pkg} onDelete={onDelete} onClone={onClone} />
+          ))}
       </div>
     </div>
   );

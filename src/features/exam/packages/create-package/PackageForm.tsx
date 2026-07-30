@@ -119,6 +119,10 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
       label: t(($) => $.exam.packages.form.examType.options.custom_practice),
       value: EnumExamType.CUSTOM_PRACTICE,
     },
+    {
+      label: t(($) => $.exam.packages.form.examType.options.course_exam),
+      value: EnumExamType.COURSE_EXAM,
+    },
   ];
   const versionOptions =
     versionData?.data?.items?.map((v) => ({

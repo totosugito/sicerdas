@@ -15,6 +15,7 @@ import {
   HelpCircle,
   Bookmark,
   Star,
+  Copy,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -33,9 +34,10 @@ import { cn } from "@/lib/utils";
 interface PackageCardListItemProps {
   pkg: ExamPackage;
   onDelete: (pkg: ExamPackage) => void;
+  onClone?: (pkg: ExamPackage) => void;
 }
 
-export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps) {
+export function PackageCardListItem({ pkg, onDelete, onClone }: PackageCardListItemProps) {
   const { t } = useAppTranslation();
   const [hasError, setHasError] = React.useState(false);
 
@@ -125,6 +127,15 @@ export function PackageCardListItem({ pkg, onDelete }: PackageCardListItemProps)
                     {t(($) => $.exam.packages.table.actions.edit)}
                   </Link>
                 </DropdownMenuItem>
+                {onClone && pkg.examType !== "course_exam" && (
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => onClone(pkg)}
+                  >
+                    <Copy className="mr-2 h-4 w-4 text-emerald-500" />
+                    {t(($) => $.exam.packages.table.actions.clone)}
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem
                   className="text-destructive focus:text-destructive cursor-pointer"
                   onClick={() => onDelete(pkg)}

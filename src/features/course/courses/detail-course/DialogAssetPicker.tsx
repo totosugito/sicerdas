@@ -10,15 +10,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectPositioner } from "@/components/ui/select";
-import { Search, Loader2, BookOpen, GraduationCap, CheckCircle2, ChevronRight, FileText } from "lucide-react";
+import { Search, Loader2, BookOpen, GraduationCap, CheckCircle2, ChevronRight, FileText, X } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useListLectureTextSimple, useDetailLectureText } from "@/api/course/lecture-texts";
-import { useListPackageSimple } from "@/api/exam/packages/admin/list-package-simple";
+import { useListPackageSimple } from "@/api/exam/packages";
 import { useListPackageSectionSimple } from "@/api/exam/package-sections/admin/list-section-simple";
 import { useListCategorySimple } from "@/api/education/categories/list-category-simple";
 import { useListGradeSimple } from "@/api/education/grades/list-grade-simple";
 import { Badge } from "@/components/ui/badge";
 import { EnumContentStatus } from "@/api/types";
+import { useDebounce } from "@/hooks/use-debounce";
+import { EnumExamType } from "@/api/exam/types";
 
 export type DialogAssetPickerProps = {
   open: boolean;
@@ -207,6 +209,7 @@ export function DialogAssetPicker({ open, onOpenChange, type, onSelect }: Dialog
 
   // Search & filter states
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
   const [categoryId, setCategoryId] = useState("");
   const [educationGradeId, setEducationGradeId] = useState("");
 
@@ -220,6 +223,14 @@ export function DialogAssetPicker({ open, onOpenChange, type, onSelect }: Dialog
     packageId?: string;
   } | null>(null);
 
+  // Reset states when tab or modal changes
+  React.useEffect(() => {
+    if (open) {
+      setExpandedPackageId(null);
+      setSelectedItem(null);
+    }
+  }, [open]);
+
   // Load category and grade list options
   const { data: categoryData } = useListCategorySimple({ limit: 100 }, { enabled: open });
   const { data: gradeData } = useListGradeSimple({ limit: 100 }, { enabled: open });
@@ -227,7 +238,7 @@ export function DialogAssetPicker({ open, onOpenChange, type, onSelect }: Dialog
   // Query Text Articles (Simple)
   const { data: textData, isLoading: isTextLoading } = useListLectureTextSimple(
     {
-      search: search || undefined,
+      search: debouncedSearch || undefined,
       categoryId: categoryId || undefined,
       educationGradeId: educationGradeId ? Number(educationGradeId) : undefined,
       status: EnumContentStatus.PUBLISHED,
@@ -236,10 +247,11 @@ export function DialogAssetPicker({ open, onOpenChange, type, onSelect }: Dialog
     { enabled: open && type === "text" }
   );
 
-  // Query Exam Packages (Simple)
+  // Query Exam Packages (Simple) - Only course_exam
   const { data: packageData, isLoading: isPackageLoading } = useListPackageSimple(
     {
-      search: search || undefined,
+      search: debouncedSearch || undefined,
+      examType: type === "exam" ? EnumExamType.COURSE_EXAM : undefined,
       limit: 100,
     },
     { enabled: open && type === "exam" }
@@ -271,49 +283,84 @@ export function DialogAssetPicker({ open, onOpenChange, type, onSelect }: Dialog
           </DialogDescription>
         </DialogHeader>
 
+
+
         {/* Filter Bar */}
         <div className="px-6 py-3 bg-muted/20 border-b grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t(($) => $.course.lectures.picker.searchPlaceholder)}
-              className="pl-8 h-9 text-xs"
-            />
+          <div className="flex flex-col gap-1.5 col-span-1">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {t(($) => $.course.lectures.picker.searchLabel)}
+            </span>
+            <div className="relative flex items-center">
+              <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={t(($) => $.course.lectures.picker.searchPlaceholder)}
+                className="pl-8 pr-8 h-9 text-xs"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="absolute right-2.5 p-0.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
           </div>
 
-          <Select value={categoryId || "all"} onValueChange={(val) => setCategoryId(val === "all" || !val ? "" : val)}>
-            <SelectTrigger className="h-9 text-xs bg-transparent">
-              <SelectValue placeholder={t(($) => $.course.lectures.picker.allCategories)} />
-            </SelectTrigger>
-            <SelectPositioner>
-              <SelectContent>
-                <SelectItem value="all">{t(($) => $.course.lectures.picker.allCategories)}</SelectItem>
-                {categories.map((c) => (
-                  <SelectItem key={c.value} value={c.value}>
-                    {c.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </SelectPositioner>
-          </Select>
+          {type === "text" ? (
+            <>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  {t(($) => $.course.courses.form.categoryId.label)}
+                </span>
+                <Select value={categoryId || "all"} onValueChange={(val) => setCategoryId(val === "all" || !val ? "" : val)}>
+                  <SelectTrigger className="h-9 text-xs bg-transparent">
+                    <SelectValue placeholder={t(($) => $.course.lectures.picker.allCategories)} />
+                  </SelectTrigger>
+                  <SelectPositioner>
+                    <SelectContent>
+                      <SelectItem value="all">{t(($) => $.course.lectures.picker.allCategories)}</SelectItem>
+                      {categories.map((c) => (
+                        <SelectItem key={c.value} value={c.value}>
+                          {c.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectPositioner>
+                </Select>
+              </div>
 
-          <Select value={educationGradeId || "all"} onValueChange={(val) => setEducationGradeId(val === "all" || !val ? "" : val)}>
-            <SelectTrigger className="h-9 text-xs bg-transparent">
-              <SelectValue placeholder={t(($) => $.course.lectures.picker.allGrades)} />
-            </SelectTrigger>
-            <SelectPositioner>
-              <SelectContent>
-                <SelectItem value="all">{t(($) => $.course.lectures.picker.allGrades)}</SelectItem>
-                {grades.map((g) => (
-                  <SelectItem key={g.value} value={g.value}>
-                    {g.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </SelectPositioner>
-          </Select>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  {t(($) => $.course.courses.form.educationGradeId.label)}
+                </span>
+                <Select value={educationGradeId || "all"} onValueChange={(val) => setEducationGradeId(val === "all" || !val ? "" : val)}>
+                  <SelectTrigger className="h-9 text-xs bg-transparent">
+                    <SelectValue placeholder={t(($) => $.course.lectures.picker.allGrades)} />
+                  </SelectTrigger>
+                  <SelectPositioner>
+                    <SelectContent>
+                      <SelectItem value="all">{t(($) => $.course.lectures.picker.allGrades)}</SelectItem>
+                      {grades.map((g) => (
+                        <SelectItem key={g.value} value={g.value}>
+                          {g.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectPositioner>
+                </Select>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="hidden sm:block" />
+              <div className="hidden sm:block" />
+            </>
+          )}
         </div>
 
         {/* Workspace Body: Split Panel */}

@@ -3,6 +3,7 @@ import {
   examPackages,
   examPackageSections,
   examPackageQuestions,
+  EnumExamType,
 } from "../../../../../db/schema/exam/index.ts";
 import { eq } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../../types/index.ts";
@@ -35,6 +36,14 @@ export async function clonePackageService(
       success: false,
       statusCode: 404,
       errorKey: ($) => $.exam.packages.delete.notFound,
+    };
+  }
+
+  if (sourcePackage.examType === EnumExamType.COURSE_EXAM) {
+    return {
+      success: false,
+      statusCode: 400,
+      errorKey: ($) => $.exam.packages.clone.cannotCloneCloned,
     };
   }
 

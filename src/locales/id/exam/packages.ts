@@ -52,6 +52,7 @@ export default {
       detail: "Detail",
       edit: "Ubah",
       delete: "Hapus",
+      clone: "Duplikat",
       openMenu: "Buka menu",
     },
     noResult: "Tidak ada data paket yang ditemukan.",
@@ -87,6 +88,12 @@ export default {
     success: "Paket ujian berhasil dihapus.",
     error: "Gagal menghapus paket ujian.",
   },
+  clone: {
+    confirmTitle: "Duplikat Paket Ujian",
+    confirmDesc: "Apakah Anda yakin ingin menduplikasi paket '{{title}}'?",
+    success: "Paket ujian berhasil diduplikasi.",
+    error: "Gagal menduplikasi paket ujian.",
+  },
   form: {
     title: {
       label: "Judul Paket",
@@ -105,6 +112,7 @@ export default {
       options: {
         official: "Resmi",
         custom_practice: "Custom",
+        course_exam: "Kuis Kursus",
       },
     },
     durationMinutes: {

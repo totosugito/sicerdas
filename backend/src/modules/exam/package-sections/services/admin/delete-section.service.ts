@@ -18,20 +18,11 @@ export async function deleteSectionService(id: string): Promise<ServiceResponse>
     };
   }
 
-  // Check if section is in use by any questions
-  const inUseCheck = await db.query.examPackageQuestions.findFirst({
-    where: eq(examPackageQuestions.sectionId, id),
-  });
-
-  if (inUseCheck) {
-    return {
-      success: false,
-      statusCode: 400,
-      errorKey: ($) => $.exam.package_sections.delete.inUse,
-    };
-  }
-
   await db.transaction(async (tx) => {
+    // Delete question mappings associated with this section
+    await tx.delete(examPackageQuestions).where(eq(examPackageQuestions.sectionId, id));
+
+    // Delete the section itself
     await tx.delete(examPackageSections).where(eq(examPackageSections.id, id));
 
     // Update counts and duration in the parent package in a single operation
@@ -40,6 +31,8 @@ export async function deleteSectionService(id: string): Promise<ServiceResponse>
       .set({
         totalSections: sql`${examPackages.totalSections} - 1`,
         activeSections: existing.isActive ? sql`${examPackages.activeSections} - 1` : undefined,
+        totalQuestions: sql`GREATEST(${examPackages.totalQuestions} - ${existing.totalQuestions}, 0)`,
+        activeQuestions: sql`GREATEST(${examPackages.activeQuestions} - ${existing.activeQuestions}, 0)`,
         durationMinutes: sql`(
           SELECT COALESCE(SUM(${examPackageSections.durationMinutes}), 0)
           FROM ${examPackageSections}

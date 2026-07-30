@@ -34,6 +34,7 @@ export { useUpdatePackageSection } from "./admin/update-section";
 export { useDeletePackageSection } from "./admin/delete-section";
 export { useListPackageSection } from "./admin/list-section";
 export { useListPackageSectionSimple } from "./admin/list-section-simple";
+export { useListPackageSectionSimpleMutation } from "./admin/list-section-simple-mutation";
 export { useDetailPackageSection } from "./admin/detail-section";
 
 // Client exports

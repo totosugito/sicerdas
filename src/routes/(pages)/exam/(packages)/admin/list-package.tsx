@@ -2,9 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   useListPackage,
   useDeletePackage,
+  useClonePackage,
   ExamPackage,
   ListPackagesResponse,
 } from "@/api/exam/packages";
+import { EnumExamType } from "@/api/exam/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useEffect, useState } from "react";
@@ -18,7 +20,7 @@ import {
   PackageCardList,
   PackageSortSelector,
 } from "@/features/exam/packages/list-package";
-import { LayoutGrid, ListIcon, Plus, Trash2, Search, X } from "lucide-react";
+import { LayoutGrid, ListIcon, Plus, Trash2, Search, X, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { PaginationData, DataTablePagination } from "@/components/table";
 import { z } from "zod";
@@ -85,9 +87,11 @@ function AdminExamPackagesPage() {
   });
 
   const deleteMutation = useDeletePackage();
+  const cloneMutation = useClonePackage();
 
   // Dialog & Modal States
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showCloneDialog, setShowCloneDialog] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<ExamPackage | null>(null);
 
   // Handlers
@@ -108,6 +112,32 @@ function AdminExamPackagesPage() {
         showNotifError({ message: err.message || t(($) => $.labels.error) });
       },
     });
+  };
+
+  const handleClone = (pkg: ExamPackage) => {
+    setSelectedPackage(pkg);
+    setShowCloneDialog(true);
+  };
+
+  const confirmClone = () => {
+    if (!selectedPackage) return;
+    cloneMutation.mutate(
+      {
+        sourcePackageId: selectedPackage.id,
+        title: `${selectedPackage.title} (Cloned)`,
+        examType: EnumExamType.COURSE_EXAM,
+      },
+      {
+        onSuccess: (res) => {
+          showNotifSuccess({ message: res.message || t(($) => $.exam.packages.clone.success) });
+          queryClient.invalidateQueries({ queryKey: ["admin-exam-packages-list"] });
+          setShowCloneDialog(false);
+        },
+        onError: (err: any) => {
+          showNotifError({ message: err.message || t(($) => $.exam.packages.clone.error) });
+        },
+      }
+    );
   };
 
   return (
@@ -240,6 +270,7 @@ function AdminExamPackagesPage() {
                 });
               }}
               onDelete={handleDelete}
+              onClone={handleClone}
               showPagination={false}
             />
           ) : (
@@ -248,6 +279,7 @@ function AdminExamPackagesPage() {
               isLoading={isLoading}
               paginationData={data?.data.meta as PaginationData}
               onDelete={handleDelete}
+              onClone={handleClone}
             />
           )}
         </div>
@@ -300,6 +332,21 @@ function AdminExamPackagesPage() {
           textCancel: t(($) => $.labels.cancel),
           textConfirm: t(($) => $.labels.delete),
           onConfirmClick: confirmDelete,
+        }}
+      />
+
+      <DialogModal
+        open={showCloneDialog}
+        onOpenChange={setShowCloneDialog}
+        modal={{
+          title: t(($) => $.exam.packages.clone.confirmTitle),
+          desc: t(($) => $.exam.packages.clone.confirmDesc, { title: selectedPackage?.title }),
+          variant: "default",
+          iconType: "info",
+          headerIcon: <Copy className="h-5 w-5 text-primary" />,
+          textCancel: t(($) => $.labels.cancel),
+          textConfirm: t(($) => $.exam.packages.table.actions.clone),
+          onConfirmClick: confirmClone,
         }}
       />
     </div>

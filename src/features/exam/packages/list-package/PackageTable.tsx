@@ -10,7 +10,7 @@ import {
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, Pencil, Trash2, Eye, ImageIcon, Bookmark, Star } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, Eye, ImageIcon, Bookmark, Star, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -35,6 +35,7 @@ interface PackageTableProps {
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
   onDelete: (pkg: ExamPackage) => void;
+  onClone?: (pkg: ExamPackage) => void;
   showPagination?: boolean;
 }
 
@@ -48,6 +49,7 @@ export function PackageTable({
   sortOrder,
   onSortChange,
   onDelete,
+  onClone,
   showPagination = true,
 }: PackageTableProps) {
   const { t } = useAppTranslation();
@@ -407,6 +409,15 @@ export function PackageTable({
                       {t(($) => $.exam.packages.table.actions.edit)}
                     </Link>
                   </DropdownMenuItem>
+                  {onClone && pkg.examType !== "course_exam" && (
+                    <DropdownMenuItem
+                      onClick={() => onClone(pkg)}
+                      className="cursor-pointer"
+                    >
+                      <Copy className="mr-2 h-4 w-4 text-emerald-500" />
+                      {t(($) => $.exam.packages.table.actions.clone)}
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem
                     className="text-destructive focus:text-destructive"
                     onClick={() => onDelete(pkg)}

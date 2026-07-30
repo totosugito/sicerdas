@@ -42,6 +42,7 @@ export { useListPackageSimple } from "./admin/list-package-simple";
 export { useDetailPackage } from "./admin/detail-package";
 export { useUploadPackageThumbnail } from "./admin/upload-thumbnail";
 export type { UploadThumbnailRequest } from "./admin/upload-thumbnail";
+export { useClonePackage } from "./admin/clone-package";
 
 // Client exports
 export { useListPackageClient } from "./list-package";

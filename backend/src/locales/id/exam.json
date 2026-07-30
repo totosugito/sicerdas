@@ -118,6 +118,10 @@
       "create": {
         "success": "Paket ujian berhasil dibuat"
       },
+      "clone": {
+        "success": "Paket ujian berhasil diduplikasi",
+        "cannotCloneCloned": "Paket ujian yang sudah diduplikasi tidak dapat diduplikasi kembali"
+      },
       "list": {
         "success": "Berhasil mengambil daftar paket ujian"
       },

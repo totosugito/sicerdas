@@ -17,6 +17,8 @@ import type {
   AdminSimplePackageItemT,
   AdminPackageSimpleParams,
   CreatePackageParams,
+  ClonePackageParams,
+  ClonePackageResponse,
   UpdatePackageParams,
   ThumbnailResponseDataT,
 } from "backend/src/modules/exam/packages/index.ts";
@@ -45,6 +47,8 @@ export type {
   AdminSimplePackageItemT,
   AdminPackageSimpleParams,
   CreatePackageParams,
+  ClonePackageParams,
+  ClonePackageResponse,
   UpdatePackageParams,
   ThumbnailResponseDataT,
   BaseResponse,
