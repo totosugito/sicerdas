@@ -7,6 +7,7 @@ interface ViewModeToggleProps {
   onViewModeChange: (viewMode: "table" | "card") => void;
   tableLabel?: string;
   cardLabel?: string;
+  disabled?: boolean;
 }
 
 export const ViewModeToggle = ({
@@ -14,6 +15,7 @@ export const ViewModeToggle = ({
   onViewModeChange,
   tableLabel = "Table",
   cardLabel = "Card",
+  disabled,
 }: ViewModeToggleProps) => {
   return (
     <div className="flex items-center gap-1 bg-muted/50 p-[3px] rounded-md border border-border/40">
@@ -25,6 +27,7 @@ export const ViewModeToggle = ({
           viewMode === "table" ? "bg-background shadow-sm" : "",
         )}
         onClick={() => onViewModeChange("table")}
+        disabled={disabled}
       >
         <ListIcon className="h-3.5 w-3.5" />
         <span>{tableLabel}</span>
@@ -37,6 +40,7 @@ export const ViewModeToggle = ({
           viewMode === "card" ? "bg-background shadow-sm" : "",
         )}
         onClick={() => onViewModeChange("card")}
+        disabled={disabled}
       >
         <LayoutGrid className="h-3.5 w-3.5" />
         <span>{cardLabel}</span>

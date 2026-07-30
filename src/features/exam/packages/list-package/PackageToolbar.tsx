@@ -15,6 +15,7 @@ interface PackageToolbarProps {
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
   viewMode: "table" | "card";
   onViewModeChange: (viewMode: "table" | "card") => void;
+  disabled?: boolean;
 }
 
 export function PackageToolbar({
@@ -29,6 +30,7 @@ export function PackageToolbar({
   onSortChange,
   viewMode,
   onViewModeChange,
+  disabled,
 }: PackageToolbarProps) {
   const { t } = useAppTranslation();
 
@@ -42,16 +44,18 @@ export function PackageToolbar({
             onSubmit={onSearchSubmit}
             onClear={onClearSearch}
             placeholder={t(($) => $.exam.packages.table.search)}
+            disabled={disabled}
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <ExamTypeSelect value={examTypes} onValueChange={onExamTypesChange} />
+          <ExamTypeSelect value={examTypes} onValueChange={onExamTypesChange} disabled={disabled} />
 
           <PackageSortSelector
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSortChange={onSortChange}
+            disabled={disabled}
           />
 
           <div className="h-8 w-px bg-border/60 mx-1 hidden xs:block" />
@@ -61,6 +65,7 @@ export function PackageToolbar({
             onViewModeChange={onViewModeChange}
             tableLabel={t(($) => $.exam.packages.table.viewModes.table)}
             cardLabel={t(($) => $.exam.packages.table.viewModes.card)}
+            disabled={disabled}
           />
         </div>
       </CardContent>

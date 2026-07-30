@@ -12,15 +12,17 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useEffect, useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
-import { PageTitle } from "@/components/general";
+import { PageTitle, EmptyState } from "@/components/general";
 import { DialogModal } from "@/components/dialog";
 import { useAppStore } from "@/stores/useAppStore";
+import { useAuthStore } from "@/stores/useAuthStore";
 import {
   PackageTable,
-  PackageCardList,
+  PackageCardListItem,
   PackageToolbar,
 } from "@/features/exam/packages/list-package";
-import { Plus, Trash2, Copy } from "lucide-react";
+import { Plus, Trash2, Copy, PackageOpen } from "lucide-react";
+import { CardListSkeleton, TableSkeleton } from "@/features/components";
 
 import { PaginationData, DataTablePagination } from "@/components/table";
 import { z } from "zod";
@@ -56,7 +58,12 @@ function AdminExamPackagesPage() {
   const viewMode = searchParams.view ?? "card";
 
   const { examPackages, setExamPackages } = useAppStore();
+  const { openSideMenu } = useAuthStore();
   const [searchTerm, setSearchTerm] = useState(search);
+
+  const gridClass = openSideMenu
+    ? "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+    : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6";
 
   // Sync with store on mount - if view is missing, use store value
   useEffect(() => {
@@ -201,6 +208,7 @@ function AdminExamPackagesPage() {
         onViewModeChange={(newView) => {
           navigate({ search: { ...searchParams, view: newView }, replace: true });
         }}
+        disabled={isLoading}
       />
 
       <div
@@ -212,7 +220,19 @@ function AdminExamPackagesPage() {
         )}
       >
         <div className={cn(viewMode === "table" ? "p-4" : "")}>
-          {viewMode === "table" ? (
+          {isLoading ? (
+            viewMode === "table" ? (
+              <TableSkeleton columnCount={7} rowCount={limit} showSearch={false} />
+            ) : (
+              <CardListSkeleton count={limit} />
+            )
+          ) : !data || data.data.items.length === 0 ? (
+            <EmptyState
+              icon={PackageOpen}
+              title={t(($) => $.exam.packages.table.noResult)}
+              description={t(($) => $.exam.packages.description)}
+            />
+          ) : viewMode === "table" ? (
             <PackageTable
               data={data as ListPackagesResponse}
               isLoading={isLoading}
@@ -245,18 +265,23 @@ function AdminExamPackagesPage() {
               showPagination={false}
             />
           ) : (
-            <PackageCardList
-              data={data as ListPackagesResponse}
-              isLoading={isLoading}
-              paginationData={data?.data.meta as PaginationData}
-              onDelete={handleDelete}
-              onClone={handleClone}
-            />
+            <div className="flex flex-col gap-8">
+              <div className={cn(gridClass)}>
+                {(data?.data?.items || []).map((pkg) => (
+                  <PackageCardListItem
+                    key={pkg.id}
+                    pkg={pkg}
+                    onDelete={handleDelete}
+                    onClone={handleClone}
+                  />
+                ))}
+              </div>
+            </div>
           )}
         </div>
 
         {/* Adaptive Pagination (Merged Tray for Table / Floating Dock for Card) */}
-        {!isLoading && data?.data.meta && (
+        {!isLoading && data?.data?.items && data.data.items.length > 0 && data.data.meta && (
           <div
             className={cn(
               "transition-all duration-300",

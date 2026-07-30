@@ -5,9 +5,10 @@ import { EnumExamType } from "@/api/exam/types";
 interface ExamTypeSelectProps {
   value: string[];
   onValueChange: (examTypes: string[]) => void;
+  disabled?: boolean;
 }
 
-export const ExamTypeSelect = ({ value, onValueChange }: ExamTypeSelectProps) => {
+export const ExamTypeSelect = ({ value, onValueChange, disabled }: ExamTypeSelectProps) => {
   const { t } = useAppTranslation();
 
   return (
@@ -31,6 +32,7 @@ export const ExamTypeSelect = ({ value, onValueChange }: ExamTypeSelectProps) =>
       placeholder={t(($) => $.exam.packages.form.examType.label)}
       className="w-full sm:w-[180px]"
       showAsSimple
+      disabled={disabled}
     />
   );
 };

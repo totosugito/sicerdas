@@ -1,4 +1,4 @@
 export { PackageTable } from "./PackageTable";
-export { PackageCardList } from "./PackageCardList";
+export { PackageCardListItem } from "./PackageCardListItem";
 export { PackageSortSelector } from "./PackageSortSelector";
 export { PackageToolbar } from "./PackageToolbar";

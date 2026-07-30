@@ -5,12 +5,14 @@ interface PackageSortSelectorProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
+  disabled?: boolean;
 }
 
 export const PackageSortSelector = ({
   sortBy,
   sortOrder,
   onSortChange,
+  disabled,
 }: PackageSortSelectorProps) => {
   const { t } = useAppTranslation();
 
@@ -37,6 +39,7 @@ export const PackageSortSelector = ({
       sortOrder={sortOrder}
       onSortChange={onSortChange}
       placeholder={t(($) => $.exam.packages.table.sort.placeholder)}
+      disabled={disabled}
     />
   );
 };

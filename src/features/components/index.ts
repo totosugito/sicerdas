@@ -4,3 +4,4 @@ export { ViewModeToggle } from "./ViewModeToggle";
 export { SearchInput } from "./SearchInput";
 export { ExamTypeSelect } from "./ExamTypeSelect";
 export { CardListSkeleton } from "./CardListSkeleton";
+export { TableSkeleton } from "./TableSkeleton";

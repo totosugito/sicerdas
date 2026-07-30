@@ -9,6 +9,7 @@ interface SearchInputProps {
   onClear: () => void;
   placeholder?: string;
   debounce?: number;
+  disabled?: boolean;
 }
 
 export const SearchInput = ({
@@ -18,6 +19,7 @@ export const SearchInput = ({
   onClear,
   placeholder = "Search...",
   debounce = 500,
+  disabled,
 }: SearchInputProps) => {
   const [displayValue, setDisplayValue] = useState(value);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -77,10 +79,11 @@ export const SearchInput = ({
         value={displayValue}
         onChange={(e) => handleChange(e.target.value)}
         onKeyDown={handleKeyDown}
+        disabled={disabled}
       />
       {displayValue && (
         <button
-          className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+          className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground disabled:opacity-50"
           onClick={() => {
             setDisplayValue("");
             if (timerRef.current) {
@@ -89,6 +92,7 @@ export const SearchInput = ({
             }
             onClear();
           }}
+          disabled={disabled}
         >
           <X className="h-3.5 w-3.5" />
         </button>

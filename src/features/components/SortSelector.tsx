@@ -19,6 +19,7 @@ interface SortSelectorProps {
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export const SortSelector = ({
@@ -27,6 +28,7 @@ export const SortSelector = ({
   sortOrder,
   onSortChange,
   placeholder = "Sort by...",
+  disabled,
 }: SortSelectorProps) => {
   const handleSortFieldChange = (value: string | null) => {
     if (value !== null) {
@@ -43,7 +45,7 @@ export const SortSelector = ({
 
   return (
     <div className="flex items-center gap-3">
-      <Select value={sortBy} onValueChange={handleSortFieldChange}>
+      <Select value={sortBy} onValueChange={handleSortFieldChange} disabled={disabled}>
         <SelectTrigger className="w-[180px]">
           <div className="flex items-center gap-2 min-w-0">
             <ArrowUpDown className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -66,6 +68,7 @@ export const SortSelector = ({
         size="icon"
         className=""
         title={sortOrder === "asc" ? "Ascending" : "Descending"}
+        disabled={disabled}
       >
         {sortOrder === "asc" ? (
           <ArrowUpAZ className="h-4 w-4" />

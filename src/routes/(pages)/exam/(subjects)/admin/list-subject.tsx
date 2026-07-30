@@ -10,10 +10,10 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
-import { PageTitle } from "@/components/general";
-import { Plus, Trash2 } from "lucide-react";
+import { PageTitle, EmptyState } from "@/components/general";
+import { Plus, Trash2, Inbox } from "lucide-react";
 import { DialogModal } from "@/components/dialog";
-import { SubjectTable, DialogSubjectCreate } from "@/features/exam/subjects";
+import { SubjectTable, DialogSubjectCreate, SubjectTableSkeleton } from "@/features/exam/subjects";
 import { PaginationData } from "@/components/table";
 import { z } from "zod";
 
@@ -100,46 +100,56 @@ function AdminExamSubjectsPage() {
         </Button>
       </div>
 
-      <SubjectTable
-        data={data as SubjectListResponse}
-        isLoading={isLoading}
-        paginationData={data?.data.meta as PaginationData}
-        onPaginationChange={(pagination: { page: number; limit: number }) => {
-          navigate({
-            search: {
-              ...searchParams,
-              page: pagination.page,
-              limit: pagination.limit,
-            },
-            replace: true,
-          });
-        }}
-        setSearch={(newSearch) => {
-          navigate({
-            search: {
-              ...searchParams,
-              search: newSearch || undefined,
-              page: 1,
-            },
-            replace: true,
-          });
-        }}
-        sortBy={sortBy}
-        sortOrder={sortOrder as "asc" | "desc"}
-        onSortChange={(newSortBy, newSortOrder) => {
-          navigate({
-            search: {
-              ...searchParams,
-              sortBy: newSortBy,
-              sortOrder: newSortOrder,
-              page: 1, // Reset to page 1 on resort
-            },
-            replace: true,
-          });
-        }}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      {isLoading ? (
+        <SubjectTableSkeleton />
+      ) : !data || data.data.items.length === 0 ? (
+        <EmptyState
+          icon={Inbox}
+          title={t(($) => $.exam.subjects.table.noData)}
+          description={t(($) => $.exam.subjects.description)}
+        />
+      ) : (
+        <SubjectTable
+          data={data as SubjectListResponse}
+          isLoading={isLoading}
+          paginationData={data?.data.meta as PaginationData}
+          onPaginationChange={(pagination: { page: number; limit: number }) => {
+            navigate({
+              search: {
+                ...searchParams,
+                page: pagination.page,
+                limit: pagination.limit,
+              },
+              replace: true,
+            });
+          }}
+          setSearch={(newSearch) => {
+            navigate({
+              search: {
+                ...searchParams,
+                search: newSearch || undefined,
+                page: 1,
+              },
+              replace: true,
+            });
+          }}
+          sortBy={sortBy}
+          sortOrder={sortOrder as "asc" | "desc"}
+          onSortChange={(newSortBy, newSortOrder) => {
+            navigate({
+              search: {
+                ...searchParams,
+                sortBy: newSortBy,
+                sortOrder: newSortOrder,
+                page: 1, // Reset to page 1 on resort
+              },
+              replace: true,
+            });
+          }}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
 
       <DialogSubjectCreate
         open={showDialog}
