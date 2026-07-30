@@ -10,16 +10,18 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
-import { PageTitle } from "@/components/general";
+import { PageTitle, EmptyState } from "@/components/general";
 import {
   LectureTextTable,
-  LectureTextCardList,
+  LectureTextCard,
   LectureTextToolbar,
 } from "@/features/course/lecture-texts";
 import { DialogLectureTextPreview } from "@/features/course/lecture-texts/DialogLectureTextPreview";
 import { DialogLectureTextDelete } from "@/features/course/lecture-texts/DialogLectureTextDelete";
-import { Plus } from "lucide-react";
+import { Plus, FileText } from "lucide-react";
 import { DataTablePagination, PaginationData } from "@/components/table";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { CardListSkeleton, TableSkeleton } from "@/features/components";
 import { z } from "zod";
 import { AppRoute } from "@/constants/app-route";
 import { cn } from "@/lib/utils";
@@ -59,6 +61,11 @@ function AdminLectureTextListPage() {
 
   const [searchTerm, setSearchTerm] = useState(search);
   const [selectedArticle, setSelectedArticle] = useState<LectureTextItem | null>(null);
+  const { openSideMenu } = useAuthStore();
+
+  const gridClass = openSideMenu
+    ? "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+    : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6";
 
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -183,6 +190,13 @@ function AdminLectureTextListPage() {
             replace: true,
           })
         }
+        onClearFilters={() =>
+          navigate({
+            search: { ...searchParams, categoryId: undefined, educationGradeId: undefined, page: 1 },
+            replace: true,
+          })
+        }
+        disabled={isLoading}
       />
 
       {/* Main Content Area: Table / Card Grid */}
@@ -195,14 +209,29 @@ function AdminLectureTextListPage() {
         )}
       >
         <div className={cn(viewMode === "table" ? "p-4" : "")}>
-          {viewMode === "card" ? (
-            <LectureTextCardList
-              items={items}
-              isLoading={isLoading}
-              limit={meta.limit}
-              onPreview={handlePreview}
-              onDelete={handleDelete}
+          {isLoading ? (
+            viewMode === "table" ? (
+              <TableSkeleton columnCount={5} rowCount={limit} showSearch={false} />
+            ) : (
+              <CardListSkeleton count={limit} />
+            )
+          ) : !data || items.length === 0 ? (
+            <EmptyState
+              icon={FileText}
+              title={t(($) => $.course.lectureTexts.table.noData)}
+              description={t(($) => $.course.lectureTexts.description)}
             />
+          ) : viewMode === "card" ? (
+            <div className={cn(gridClass)}>
+              {items.map((item) => (
+                <LectureTextCard
+                  key={item.id}
+                  article={item}
+                  onPreview={handlePreview}
+                  onDelete={handleDelete}
+                />
+              ))}
+            </div>
           ) : (
             <LectureTextTable
               data={data as PaginatedLectureTextListResponse}
@@ -223,7 +252,7 @@ function AdminLectureTextListPage() {
         </div>
 
         {/* Adaptive Pagination Footer */}
-        {!isLoading && meta.total > 0 && (
+        {!isLoading && items.length > 0 && meta.total > 0 && (
           <div
             className={cn(
               "transition-all duration-300",

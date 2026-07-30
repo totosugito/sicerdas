@@ -10,19 +10,21 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useEffect, useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
-import { PageTitle } from "@/components/general";
+import { PageTitle, EmptyState } from "@/components/general";
 import { DialogModal } from "@/components/dialog";
 import { useAppStore } from "@/stores/useAppStore";
+import { useAuthStore } from "@/stores/useAuthStore";
 import {
   CourseTable,
-  CourseCardList,
+  CourseCardListItem,
   CourseToolbar,
 } from "@/features/course/courses/list-course";
 import { PaginationData, DataTablePagination } from "@/components/table";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, BookOpen } from "lucide-react";
+import { CardListSkeleton, TableSkeleton } from "@/features/components";
+import { cn } from "@/lib/utils";
 import { z } from "zod";
 import { AppRoute } from "@/constants/app-route";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/(pages)/(course)/course/admin/list-course")({
   validateSearch: z.object({
@@ -57,6 +59,11 @@ function AdminCourseListPage() {
 
   const { courses, setCourses } = useAppStore();
   const [searchTerm, setSearchTerm] = useState(search);
+  const { openSideMenu } = useAuthStore();
+
+  const gridClass = openSideMenu
+    ? "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+    : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6";
 
   // Modal & Dialog States
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -95,6 +102,9 @@ function AdminCourseListPage() {
   });
 
   const deleteMutation = useDeleteCourse();
+
+  const items = data?.data?.items || [];
+  const meta = data?.data?.meta || { total: 0, page: 1, limit: 10, totalPages: 1 };
 
   const handleDelete = (course: CourseItem) => {
     setSelectedCourse(course);
@@ -201,6 +211,13 @@ function AdminCourseListPage() {
             replace: true,
           })
         }
+        onClearFilters={() =>
+          navigate({
+            search: { ...searchParams, categoryId: undefined, educationGradeId: undefined, page: 1 },
+            replace: true,
+          })
+        }
+        disabled={isLoading}
       />
 
       {/* Main Content Area: Table / Card Grid */}
@@ -213,11 +230,29 @@ function AdminCourseListPage() {
         )}
       >
         <div className={cn(viewMode === "table" ? "p-4" : "")}>
-          {viewMode === "table" ? (
+          {isLoading ? (
+            viewMode === "table" ? (
+              <TableSkeleton columnCount={5} rowCount={limit} showSearch={false} />
+            ) : (
+              <CardListSkeleton count={limit} />
+            )
+          ) : !data || items.length === 0 ? (
+            <EmptyState
+              icon={BookOpen}
+              title={t(($) => $.course.courses.table.noData)}
+              description={t(($) => $.course.courses.description)}
+            />
+          ) : viewMode === "card" ? (
+            <div className={cn(gridClass)}>
+              {items.map((course) => (
+                <CourseCardListItem key={course.id} course={course} onDelete={handleDelete} />
+              ))}
+            </div>
+          ) : (
             <CourseTable
               data={data as PaginatedCourseListResponse}
               isLoading={isLoading}
-              paginationData={(data?.data?.meta as PaginationData) || { page, limit, total: 0, totalPages: 0 }}
+              paginationData={meta as PaginationData}
               setSearch={(newSearch) => {
                 navigate({
                   search: {
@@ -244,18 +279,11 @@ function AdminCourseListPage() {
               onDelete={handleDelete}
               showPagination={false}
             />
-          ) : (
-            <CourseCardList
-              data={data as PaginatedCourseListResponse}
-              isLoading={isLoading}
-              paginationData={(data?.data?.meta as PaginationData) || { page, limit, total: 0, totalPages: 0 }}
-              onDelete={handleDelete}
-            />
           )}
         </div>
 
         {/* Adaptive Pagination Footer */}
-        {!isLoading && data?.data?.meta && (
+        {!isLoading && items.length > 0 && meta.total > 0 && (
           <div
             className={cn(
               "transition-all duration-300",
@@ -265,12 +293,22 @@ function AdminCourseListPage() {
             )}
           >
             <DataTablePagination
-              paginationData={data.data.meta as PaginationData}
-              pageIndex={((data.data.meta as PaginationData).page || 1) - 1}
-              setPageIndex={() => { }}
-              pageSize={(data.data.meta as PaginationData).limit || 10}
-              setPageSize={() => { }}
-              rowsCount={(data.data.meta as PaginationData).total || 0}
+              paginationData={meta as PaginationData}
+              pageIndex={meta.page - 1}
+              setPageIndex={(newPageIndex: number) =>
+                navigate({
+                  search: { ...searchParams, page: newPageIndex + 1 },
+                  replace: true,
+                })
+              }
+              pageSize={meta.limit}
+              setPageSize={(newPageSize: number) =>
+                navigate({
+                  search: { ...searchParams, limit: newPageSize, page: 1 },
+                  replace: true,
+                })
+              }
+              rowsCount={meta.total}
               onPaginationChange={(pagination: { page: number; limit: number }) => {
                 navigate({
                   search: {

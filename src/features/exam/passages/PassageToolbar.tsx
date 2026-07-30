@@ -33,7 +33,7 @@ export function PassageToolbar({
   return (
     <Card>
       <CardContent className="flex flex-row flex-wrap items-center justify-between gap-4 p-4 w-full">
-        <div className="flex-1 min-w-[280px] max-w-md">
+        <div className="flex-1 min-w-[280px] max-w-md w-full">
           <SearchInput
             value={searchTerm}
             onChange={onSearchTermChange}
