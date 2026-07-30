@@ -7,3 +7,4 @@ export { ErrorContainer } from "./ErrorContainer";
 export { LoadingView } from "./LoadingView";
 export { ErrorPageDetails } from "./ErrorPageDetails";
 export { default as PageTitle } from "./PageTitle";
+export { EmptyState } from "./EmptyState";

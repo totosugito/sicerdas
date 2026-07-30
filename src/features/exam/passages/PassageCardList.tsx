@@ -5,7 +5,8 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { BookOpen } from "lucide-react";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { cn } from "@/lib/utils";
-import { EmptyState, CardListSkeleton } from "@/features/components";
+import { CardListSkeleton } from "@/features/components";
+import { EmptyState } from "@/components/general";
 
 interface PassageCardListProps {
   data: ListPassagesResponse | undefined;
