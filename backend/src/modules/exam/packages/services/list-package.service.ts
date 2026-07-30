@@ -77,6 +77,7 @@ export async function publicListPackageService(
       thumbnail: examPackages.thumbnail,
       requiredTier: examPackages.requiredTier,
       isActive: examPackages.isActive,
+      parentPackageId: examPackages.parentPackageId,
       activeSections: examPackages.activeSections,
       activeQuestions: examPackages.activeQuestions,
       createdAt: examPackages.createdAt,
@@ -188,6 +189,7 @@ export async function publicListPackageService(
           thumbnail: getPackageThumbnailUrl(item.thumbnail),
           requiredTier: item.requiredTier,
           isActive: item.isActive,
+          parentPackageId: item.parentPackageId,
           stats: {
             activeSections: item.activeSections,
             activeQuestions: item.activeQuestions,

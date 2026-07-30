@@ -19,6 +19,9 @@ import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
 import { LectureRow } from "./LectureRow";
 import { DialogLectureForm } from "./DialogLectureForm";
 import { DialogModal } from "@/components/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { ArticlePreview, SectionPreview } from "./DialogAssetPicker";
+import { EnumLectureType } from "@/api/course/types";
 
 interface ChapterRowProps {
   chapter: ChapterItem;
@@ -69,6 +72,9 @@ export function ChapterRow({ chapter, lectures, index, onEdit, onDelete }: Chapt
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [lectureToDelete, setLectureToDelete] = useState<LectureItem | null>(null);
 
+  const [showPreviewDialog, setShowPreviewDialog] = useState(false);
+  const [previewLecture, setPreviewLecture] = useState<LectureItem | null>(null);
+
   const handleAddLecture = (e: React.MouseEvent) => {
     e.stopPropagation();
     setSelectedLecture(null);
@@ -84,6 +90,11 @@ export function ChapterRow({ chapter, lectures, index, onEdit, onDelete }: Chapt
   const handleDeleteLecture = (lecture: LectureItem) => {
     setLectureToDelete(lecture);
     setShowDeleteDialog(true);
+  };
+
+  const handlePreviewLecture = (lecture: LectureItem) => {
+    setPreviewLecture(lecture);
+    setShowPreviewDialog(true);
   };
 
   const confirmDeleteLecture = () => {
@@ -246,6 +257,7 @@ export function ChapterRow({ chapter, lectures, index, onEdit, onDelete }: Chapt
                       index={idx}
                       onEdit={handleEditLecture}
                       onDelete={handleDeleteLecture}
+                      onPreview={handlePreviewLecture}
                     />
                   ))}
                 </div>
@@ -297,6 +309,58 @@ export function ChapterRow({ chapter, lectures, index, onEdit, onDelete }: Chapt
           },
         }}
       />
+      <Dialog open={showPreviewDialog} onOpenChange={setShowPreviewDialog}>
+        <DialogContent className="sm:max-w-[70vw] md:max-w-[60vw] lg:max-w-[800px] max-h-[85vh] flex flex-col p-6 overflow-hidden">
+          <DialogHeader className="pb-4 border-b">
+            <DialogTitle className="text-lg font-bold text-foreground">
+              {t(($) => $.labels.preview)}: {previewLecture?.title || ""}
+            </DialogTitle>
+            {previewLecture?.description && (
+              <DialogDescription className="text-xs text-muted-foreground mt-1">
+                {previewLecture.description}
+              </DialogDescription>
+            )}
+          </DialogHeader>
+
+          <div className="flex-1 overflow-y-auto pr-1 py-4 text-left">
+            {previewLecture && (
+              <>
+                {previewLecture.type === EnumLectureType.TEXT && (
+                  <ArticlePreview id={previewLecture.referenceUrl || ""} />
+                )}
+                {previewLecture.type === EnumLectureType.EXAM && (
+                  <SectionPreview id={previewLecture.referenceUrl || ""} />
+                )}
+                {previewLecture.type === EnumLectureType.VIDEO && (
+                  <div className="space-y-3 p-4 bg-muted/30 rounded-lg border text-sm">
+                    <div>
+                      <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">Video Link / URL</span>
+                      <a href={previewLecture.referenceUrl || ""} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-mono text-xs break-all block mt-1">
+                        {previewLecture.referenceUrl}
+                      </a>
+                    </div>
+                  </div>
+                )}
+                {previewLecture.type === EnumLectureType.PDF && (
+                  <div className="space-y-3 p-4 bg-muted/30 rounded-lg border text-sm">
+                    <div>
+                      <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">PDF File URL</span>
+                      <a href={previewLecture.referenceUrl || ""} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-mono text-xs break-all block mt-1">
+                        {previewLecture.referenceUrl}
+                      </a>
+                    </div>
+                  </div>
+                )}
+                {![EnumLectureType.TEXT, EnumLectureType.EXAM, EnumLectureType.VIDEO, EnumLectureType.PDF].includes(previewLecture.type as any) && (
+                  <div className="text-xs text-muted-foreground italic text-center p-4">
+                    {t(($) => $.course.lectures.picker.noAdditionalDetails)}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

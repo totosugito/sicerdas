@@ -66,6 +66,9 @@ const AdminSectionDetailItem = Type.Object({
   categoryId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
   educationGradeId: Type.Union([Type.Number(), Type.Null()]),
   isNew: Type.Boolean(),
+  totalQuestions: Type.Number(),
+  activeQuestions: Type.Number(),
+  maxScore: Type.Number(),
 });
 
 const AdminSimpleSectionItem = Type.Object({

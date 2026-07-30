@@ -15,7 +15,7 @@ export interface AdminListPackageSimpleResult extends ServiceResponse {
 export async function adminListPackageSimpleService(
   params: AdminPackageSimpleParams,
 ): Promise<AdminListPackageSimpleResult> {
-  const { page = 1, limit = 1000, search, examType } = params;
+  const { page = 1, limit = 1000, search, examType, categoryId, educationGradeId } = params;
   const offset = (page - 1) * limit;
 
   const conditions = [eq(examPackages.isActive, true)];
@@ -26,6 +26,14 @@ export async function adminListPackageSimpleService(
 
   if (examType) {
     conditions.push(eq(examPackages.examType, examType));
+  }
+
+  if (categoryId) {
+    conditions.push(eq(examPackages.categoryId, categoryId));
+  }
+
+  if (educationGradeId) {
+    conditions.push(eq(examPackages.educationGradeId, educationGradeId));
   }
 
   // Count

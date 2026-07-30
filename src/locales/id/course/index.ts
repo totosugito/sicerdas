@@ -240,6 +240,11 @@ export default {
         label: "Status",
         description: "Status keaktifan materi",
       },
+      successThreshold: {
+        label: "Passing Grade / KKM",
+        placeholder: "Contoh: 70",
+        description: "Nilai minimum (0-100) untuk kelulusan materi ini. Isi 0 jika tidak ada batas.",
+      },
     },
     picker: {
       textTitle: "Cari & Pilih Artikel Bacaan",
@@ -271,6 +276,9 @@ export default {
       btnSearchExam: "Cari Subtes...",
       selectArticlePlaceholder: "Belum ada artikel dipilih",
       selectExamPlaceholder: "Belum ada subtes dipilih",
+      unlimitedDuration: "Tanpa Batas",
+      maxScore: "Skor Maksimal",
+      noAdditionalDetails: "Tidak ada detail tambahan untuk tipe materi ini.",
     },
   },
 };

@@ -76,6 +76,11 @@ export function PackageCardListItem({ pkg, onDelete, onClone }: PackageCardListI
 
         {/* Status Badge Overlay */}
         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+          {pkg.parentPackageId && (
+            <Badge className="bg-sky-500 text-white hover:bg-sky-500/90 dark:bg-sky-500/20 dark:text-sky-400 dark:border-sky-500/30 shadow-sm border-transparent whitespace-nowrap">
+              {t(($) => $.exam.packages.table.actions.clone)}
+            </Badge>
+          )}
           <Badge
             className={cn(
               "shadow-sm border-transparent",

@@ -40,6 +40,7 @@ export async function publicDetailPackageService(
       thumbnail: examPackages.thumbnail,
       requiredTier: examPackages.requiredTier,
       isActive: examPackages.isActive,
+      parentPackageId: examPackages.parentPackageId,
       activeSections: examPackages.activeSections,
       activeQuestions: examPackages.activeQuestions,
       createdAt: examPackages.createdAt,
@@ -117,6 +118,7 @@ export async function publicDetailPackageService(
     thumbnail: getPackageThumbnailUrl(pkg.thumbnail),
     requiredTier: pkg.requiredTier,
     isActive: pkg.isActive,
+    parentPackageId: pkg.parentPackageId,
     stats: {
       activeSections: pkg.activeSections,
       activeQuestions: pkg.activeQuestions,

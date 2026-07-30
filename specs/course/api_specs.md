@@ -68,9 +68,9 @@ Handles atomic content items. (`referenceUrl` stores `course_lecture_texts.id` f
 - [x] `PUT /reorder/:chapterId`: Bulk update lecture positions
 
 ### Admin Exam Package Selection & Linking
-- [ ] Backend: Ensure `admin/list-simple` or package query supports filtering by `examType` (so we can filter by `course_exam` or other types)
-- [ ] Backend: Utilize existing `/exam/package/clone` to clone public exam packages into `course_exam` package types (preserving lineage via `parentPackageId`).
-- [ ] Frontend: Admin selects target section from `course_exam` package sections list and saves `sectionId` to lecture `referenceUrl`.
+- [x] Backend: Ensure `admin/list-simple` or package query supports filtering by `examType` (so we can filter by `course_exam` or other types)
+- [x] Backend: Utilize existing `/exam/package/clone` to clone public exam packages into `course_exam` package types (preserving lineage via `parentPackageId`).
+- [x] Frontend: Admin selects target section from `course_exam` package sections list and saves `sectionId` to lecture `referenceUrl`.
 
 #### Database Schema Requirement (`exam_packages` Table)
 Add `parent_package_id` column to support package cloning lineage:
@@ -88,7 +88,7 @@ Add `parent_package_id` column to support package cloning lineage:
 - [x] Edit Lecture Form / Modal (title, description, referenceUrl, extra JSON settings)
 - [x] Delete Lecture confirmation dialog
 - [x] Lecture Drag-and-Drop / Reorder component within Chapter
-- [ ] Exam Package Selection & Cloning Modal (display official packages, show a "Clone" action to clone to `course_exam`, and then select section -> set `referenceUrl`)
+- [x] Exam Package Selection & Cloning Modal (display official packages, show a "Clone" action to clone to `course_exam`, and then select section -> set `referenceUrl`)
 - [x] Lecture Text Picker Dropdown (search & link existing `course_lecture_texts` article)
 
 ---

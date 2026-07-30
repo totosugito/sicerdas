@@ -3,7 +3,7 @@ import { examPackages } from "../../../../../db/schema/exam/packages.ts";
 import { examPackageEventStats } from "../../../../../db/schema/exam/index.ts";
 import { educationCategories } from "../../../../../db/schema/education/categories.ts";
 import { educationGrades } from "../../../../../db/schema/education/grades.ts";
-import { desc, ilike, and, sql, eq, asc, or } from "drizzle-orm";
+import { desc, ilike, and, sql, eq, asc, or, inArray } from "drizzle-orm";
 import { getPackageThumbnailUrl } from "../../../../../utils/exam/exam-utils.ts";
 import type { ServiceResponse } from "../../../../../types/index.ts";
 import type { PaginationMeta } from "../../../../../types/response.ts";
@@ -50,7 +50,9 @@ export async function adminListPackageService(
 
   if (categoryId) conditions.push(eq(examPackages.categoryId, categoryId));
   if (categoryKey) conditions.push(eq(educationCategories.key, categoryKey));
-  if (examType) conditions.push(eq(examPackages.examType, examType as any));
+  if (examType && examType.length > 0) {
+    conditions.push(inArray(examPackages.examType, examType as any));
+  }
   if (educationGradeId) conditions.push(eq(examPackages.educationGradeId, educationGradeId));
 
   if (search && search.trim() !== "") {

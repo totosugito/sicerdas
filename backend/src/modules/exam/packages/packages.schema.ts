@@ -13,6 +13,7 @@ const PackageBaseFields = {
   thumbnail: Type.Union([Type.String(), Type.Null()]),
   requiredTier: Type.Union([Type.String(), Type.Null()]),
   isActive: Type.Boolean(),
+  parentPackageId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
 };
@@ -222,7 +223,7 @@ export const AdminPackageListBody = Type.Object({
   search: Type.Optional(Type.String({ description: "Search term for package title" })),
   categoryId: Type.Optional(Type.String({ format: "uuid" })),
   categoryKey: Type.Optional(Type.String({ description: "Search by category human-readable key" })),
-  examType: Type.Optional(Type.String()),
+  examType: Type.Optional(Type.Array(Type.String())),
   isActive: Type.Optional(Type.Boolean()),
   educationGradeId: Type.Optional(Type.Number()),
   sortBy: Type.Optional(
@@ -242,6 +243,8 @@ export const AdminPackageSimpleBody = Type.Object({
   page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
   limit: Type.Optional(Type.Number({ default: 1000, minimum: 1, maximum: 2000 })),
   examType: Type.Optional(Type.Enum(EnumExamType)),
+  categoryId: Type.Optional(Type.String({ format: "uuid" })),
+  educationGradeId: Type.Optional(Type.Number()),
 });
 
 export const CreatePackageBody = Type.Object({

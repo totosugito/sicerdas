@@ -1,5 +1,5 @@
 import React from "react";
-import { GripVertical, Pencil, Trash2, FileText, Video, GraduationCap, FileMinus, MessageSquare, File } from "lucide-react";
+import { GripVertical, Pencil, Trash2, FileText, Video, GraduationCap, FileMinus, MessageSquare, File, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
@@ -13,9 +13,10 @@ interface LectureRowProps {
   index: number;
   onEdit: (lecture: LectureItem) => void;
   onDelete: (lecture: LectureItem) => void;
+  onPreview: (lecture: LectureItem) => void;
 }
 
-export function LectureRow({ lecture, index, onEdit, onDelete }: LectureRowProps) {
+export function LectureRow({ lecture, index, onEdit, onDelete, onPreview }: LectureRowProps) {
   const { t } = useAppTranslation();
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -79,6 +80,14 @@ export function LectureRow({ lecture, index, onEdit, onDelete }: LectureRowProps
             >
               {lecture.isActive ? t(($) => $.labels.active) : t(($) => $.labels.inactive)}
             </Badge>
+            {lecture.type === EnumLectureType.EXAM && (lecture.extra as any)?.successThreshold !== undefined && (
+              <Badge
+                variant="outline"
+                className="text-[9px] px-1.5 py-0 border-emerald-500/20 bg-emerald-500/5 text-emerald-600 dark:text-emerald-400 font-medium"
+              >
+                {t(($) => $.course.lectures.form.successThreshold.label)}: {(lecture.extra as any).successThreshold}
+              </Badge>
+            )}
           </div>
           {lecture.description && (
             <p className="text-xs text-muted-foreground truncate max-w-md mt-0.5">
@@ -89,6 +98,14 @@ export function LectureRow({ lecture, index, onEdit, onDelete }: LectureRowProps
       </div>
 
       <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={() => onPreview(lecture)}
+          title={t(($) => $.labels.preview || "Pratinjau")}
+        >
+          <Eye className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
+        </Button>
         <Button
           variant="ghost"
           size="icon-sm"

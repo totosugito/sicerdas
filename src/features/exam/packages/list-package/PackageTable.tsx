@@ -60,26 +60,26 @@ export function PackageTable({
       size: 50,
       paginationData: paginationData,
     }),
-    {
-      accessorKey: "thumbnail",
-      enableSorting: false,
-      header: "",
-      size: 100,
-      cell: ({ row }) => {
-        const thumbnail = row.original.thumbnail;
-        return (
-          <div className="w-20 aspect-video rounded-md overflow-hidden bg-muted border border-border/50">
-            {thumbnail ? (
-              <img src={thumbnail} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
-                <ImageIcon className="h-4 w-4" />
-              </div>
-            )}
-          </div>
-        );
-      },
-    },
+    // {
+    //   accessorKey: "thumbnail",
+    //   enableSorting: false,
+    //   header: "",
+    //   size: 100,
+    //   cell: ({ row }) => {
+    //     const thumbnail = row.original.thumbnail;
+    //     return (
+    //       <div className="w-20 aspect-video rounded-md overflow-hidden bg-muted border border-border/50">
+    //         {thumbnail ? (
+    //           <img src={thumbnail} alt="" className="w-full h-full object-cover" />
+    //         ) : (
+    //           <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
+    //             <ImageIcon className="h-4 w-4" />
+    //           </div>
+    //         )}
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       accessorKey: "title",
       enableSorting: true,
@@ -92,13 +92,18 @@ export function PackageTable({
       cell: ({ row }) => {
         const pkg = row.original;
         return (
-          <div className="font-medium text-primary">
+          <div className="flex items-center gap-2 font-medium text-primary">
             <Link
               to={AppRoute.exam.packages.admin.detail.url.replace("$id", pkg.id)}
               className="hover:underline"
             >
               {row.getValue("title")}
             </Link>
+            {pkg.parentPackageId && (
+              <Badge variant="secondary" className="bg-sky-500/10 text-sky-600 border border-sky-500/20 dark:bg-sky-500/20 dark:text-sky-400 dark:border-sky-500/30 text-[10px] py-0.5 px-1.5 h-auto">
+                {t(($) => $.exam.packages.table.actions.clone)}
+              </Badge>
+            )}
           </div>
         );
       },
@@ -156,7 +161,6 @@ export function PackageTable({
     {
       accessorKey: "totalSections",
       enableSorting: true,
-      size: 100,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -188,7 +192,6 @@ export function PackageTable({
     {
       accessorKey: "totalQuestions",
       enableSorting: true,
-      size: 100,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -220,7 +223,6 @@ export function PackageTable({
     {
       accessorKey: "viewCount",
       enableSorting: true,
-      size: 80,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -241,7 +243,6 @@ export function PackageTable({
     {
       accessorKey: "bookmarkCount",
       enableSorting: true,
-      size: 80,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -262,7 +263,6 @@ export function PackageTable({
     {
       accessorKey: "rating",
       enableSorting: true,
-      size: 80,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -285,8 +285,6 @@ export function PackageTable({
     {
       accessorKey: "durationMinutes",
       enableSorting: true,
-      minSize: 70,
-      maxSize: 100,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -306,9 +304,6 @@ export function PackageTable({
     {
       accessorKey: "isActive",
       enableSorting: true,
-      size: 70,
-      minSize: 70,
-      maxSize: 70,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -332,7 +327,6 @@ export function PackageTable({
     {
       accessorKey: "versionId",
       enableSorting: true,
-      size: 80,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -352,8 +346,6 @@ export function PackageTable({
     {
       accessorKey: "updatedAt",
       enableSorting: true,
-      minSize: 70,
-      maxSize: 100,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -368,8 +360,6 @@ export function PackageTable({
     },
     {
       id: "actions",
-      minSize: 50,
-      maxSize: 50,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}

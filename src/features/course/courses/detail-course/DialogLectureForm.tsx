@@ -96,22 +96,40 @@ const FormConditionalFields = ({
 
   if (currentType === EnumLectureType.EXAM) {
     return (
-      <div className="flex flex-col gap-2 mt-1">
-        <label className="text-xs font-semibold text-muted-foreground">
-          {t(($: any) => $.course.lectures.form.referenceUrl.label)}
-        </label>
-        <div className="flex gap-2">
-          <Input value={selectedSectionLabel} readOnly className="bg-muted text-xs flex-1 h-9" />
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => setShowPicker(true)}
-            className="shrink-0 h-9 text-xs"
-          >
-            {t(($) => $.course.lectures.picker.btnSearchExam)}
-          </Button>
+      <div className="flex flex-col gap-3 mt-1">
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-semibold text-muted-foreground">
+            {t(($: any) => $.course.lectures.form.referenceUrl.label)}
+          </label>
+          <div className="flex gap-2">
+            <Input value={selectedSectionLabel} readOnly className="bg-muted text-xs flex-1 h-9" />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowPicker(true)}
+              className="shrink-0 h-9 text-xs"
+            >
+              {t(($) => $.course.lectures.picker.btnSearchExam)}
+            </Button>
+          </div>
         </div>
+
+        <form.AppField name="successThreshold">
+          {(field: any) => (
+            <ControlForm
+              field={field}
+              item={{
+                type: "number",
+                name: "successThreshold",
+                label: t(($) => $.course.lectures.form.successThreshold.label),
+                placeholder: t(($) => $.course.lectures.form.successThreshold.placeholder),
+                description: t(($) => $.course.lectures.form.successThreshold.description),
+              }}
+              showMessage={false}
+            />
+          )}
+        </form.AppField>
 
         <DialogAssetPicker
           open={showPicker}
@@ -228,6 +246,7 @@ export const DialogLectureForm = ({
     type: z.string().min(1, t(($) => $.course.lectures.form.type.required)),
     packageId: z.string().optional().nullable(),
     referenceUrl: z.string().min(1, t(($) => $.course.lectures.form.referenceUrl.required)),
+    successThreshold: z.preprocess((val) => val === "" || val === undefined ? undefined : Number(val), z.number().min(0).max(100).optional()),
     isActive: z.boolean().default(true),
   };
 
@@ -260,10 +279,15 @@ export const DialogLectureForm = ({
     },
   };
 
-  // Restore packageId from extra if editing an exam lecture
+  // Restore packageId and successThreshold from extra if editing an exam lecture
   const defaultPackageId =
     lecture?.type === EnumLectureType.EXAM && lecture?.extra
-      ? (lecture.extra as any).packageId
+      ? (lecture.extra as any).packageId || ""
+      : "";
+
+  const defaultSuccessThreshold =
+    lecture?.type === EnumLectureType.EXAM && lecture?.extra
+      ? (lecture.extra as any).successThreshold ?? ""
       : "";
 
   const modalProps: ModalFormProps = {
@@ -285,6 +309,7 @@ export const DialogLectureForm = ({
       type: lecture?.type || "",
       packageId: defaultPackageId,
       referenceUrl: lecture?.referenceUrl || "",
+      successThreshold: defaultSuccessThreshold,
       isActive: lecture?.isActive ?? true,
     },
     child: formConfig,
@@ -298,7 +323,16 @@ export const DialogLectureForm = ({
         type: values.type,
         referenceUrl: values.referenceUrl,
         isActive: values.isActive,
-        extra: values.type === EnumLectureType.EXAM ? { packageId: values.packageId } : null,
+        extra:
+          values.type === EnumLectureType.EXAM
+            ? {
+              packageId: values.packageId,
+              successThreshold:
+                values.successThreshold !== undefined && values.successThreshold !== ""
+                  ? Number(values.successThreshold)
+                  : undefined,
+            }
+            : null,
       };
 
       if (lecture) {

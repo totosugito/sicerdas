@@ -14,7 +14,7 @@ import { Search, Loader2, BookOpen, GraduationCap, CheckCircle2, ChevronRight, F
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useListLectureTextSimple, useDetailLectureText } from "@/api/course/lecture-texts";
 import { useListPackageSimple } from "@/api/exam/packages";
-import { useListPackageSectionSimple } from "@/api/exam/package-sections/admin/list-section-simple";
+import { useListPackageSectionSimple, useDetailPackageSection } from "@/api/exam/package-sections";
 import { useListCategorySimple } from "@/api/education/categories/list-category-simple";
 import { useListGradeSimple } from "@/api/education/grades/list-grade-simple";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,7 @@ export type DialogAssetPickerProps = {
 };
 
 // Text Article Preview Component
-const ArticlePreview = ({ id }: { id: string }) => {
+export const ArticlePreview = ({ id }: { id: string }) => {
   const { t } = useAppTranslation();
   const { data: detailData, isLoading } = useDetailLectureText(id);
 
@@ -112,26 +112,56 @@ const ArticlePreview = ({ id }: { id: string }) => {
 };
 
 // Exam Section Preview Component
-const SectionPreview = ({ id }: { id: string }) => {
+export const SectionPreview = ({ id }: { id: string }) => {
   const { t } = useAppTranslation();
+  const { data: sectionRes, isLoading } = useDetailPackageSection(id);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center p-6">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const detail = sectionRes?.data;
+  if (!detail) return null;
+
   return (
     <div className="space-y-4">
       <div>
         <h4 className="font-bold text-base text-foreground leading-snug">
-          {t(($) => $.course.lectures.picker.sectionDetailTitle)}
+          {detail.title}
         </h4>
+        <p className="text-xs text-muted-foreground mt-1">{detail.packageName}</p>
       </div>
       <div className="h-px bg-border/60" />
       <div className="space-y-3 text-sm text-muted-foreground">
-        <p className="italic text-xs">{t(($) => $.course.lectures.picker.selectedSectionHint)}</p>
+        {detail.description && <p>{detail.description}</p>}
         <div className="grid grid-cols-2 gap-3 mt-4 bg-muted/30 p-3 rounded-lg border border-border/40">
           <div>
-            <span className="text-[10px] uppercase tracking-wider block font-semibold text-muted-foreground">ID Seksi</span>
-            <span className="text-xs text-foreground font-mono truncate block max-w-full">{id}</span>
+            <span className="text-[10px] uppercase tracking-wider block font-semibold text-muted-foreground">
+              {t(($) => $.exam.packages.table.columns.duration)}
+            </span>
+            <span className="text-xs text-foreground block">
+              {(detail.durationMinutes ?? 0) > 0
+                ? t(($) => $.exam.sections.duration, { minutes: detail.durationMinutes })
+                : t(($) => $.course.lectures.picker.unlimitedDuration)}
+            </span>
           </div>
           <div>
-            <span className="text-[10px] uppercase tracking-wider block font-semibold text-muted-foreground">Sistem</span>
-            <span className="text-xs text-foreground block">{t(($) => $.course.lectures.picker.sectionSystem)}</span>
+            <span className="text-[10px] uppercase tracking-wider block font-semibold text-muted-foreground">
+              {t(($) => $.exam.packages.table.columns.questions)}
+            </span>
+            <span className="text-xs text-foreground block">
+              {t(($) => $.exam.sections.questions, { count: detail.totalQuestions })}
+            </span>
+          </div>
+          <div>
+            <span className="text-[10px] uppercase tracking-wider block font-semibold text-muted-foreground">
+              {t(($) => $.course.lectures.picker.maxScore)}
+            </span>
+            <span className="text-xs text-foreground block">{detail.maxScore}</span>
           </div>
         </div>
       </div>
@@ -252,6 +282,8 @@ export function DialogAssetPicker({ open, onOpenChange, type, onSelect }: Dialog
     {
       search: debouncedSearch || undefined,
       examType: type === "exam" ? EnumExamType.COURSE_EXAM : undefined,
+      categoryId: categoryId || undefined,
+      educationGradeId: educationGradeId ? Number(educationGradeId) : undefined,
       limit: 100,
     },
     { enabled: open && type === "exam" }
@@ -311,56 +343,47 @@ export function DialogAssetPicker({ open, onOpenChange, type, onSelect }: Dialog
             </div>
           </div>
 
-          {type === "text" ? (
-            <>
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  {t(($) => $.course.courses.form.categoryId.label)}
-                </span>
-                <Select value={categoryId || "all"} onValueChange={(val) => setCategoryId(val === "all" || !val ? "" : val)}>
-                  <SelectTrigger className="h-9 text-xs bg-transparent">
-                    <SelectValue placeholder={t(($) => $.course.lectures.picker.allCategories)} />
-                  </SelectTrigger>
-                  <SelectPositioner>
-                    <SelectContent>
-                      <SelectItem value="all">{t(($) => $.course.lectures.picker.allCategories)}</SelectItem>
-                      {categories.map((c) => (
-                        <SelectItem key={c.value} value={c.value}>
-                          {c.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </SelectPositioner>
-                </Select>
-              </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {t(($) => $.course.courses.form.categoryId.label)}
+            </span>
+            <Select value={categoryId || "all"} onValueChange={(val) => setCategoryId(val === "all" || !val ? "" : val)}>
+              <SelectTrigger className="h-9 text-xs bg-transparent">
+                <SelectValue placeholder={t(($) => $.course.lectures.picker.allCategories)} />
+              </SelectTrigger>
+              <SelectPositioner>
+                <SelectContent>
+                  <SelectItem value="all">{t(($) => $.course.lectures.picker.allCategories)}</SelectItem>
+                  {categories.map((c) => (
+                    <SelectItem key={c.value} value={c.value}>
+                      {c.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectPositioner>
+            </Select>
+          </div>
 
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  {t(($) => $.course.courses.form.educationGradeId.label)}
-                </span>
-                <Select value={educationGradeId || "all"} onValueChange={(val) => setEducationGradeId(val === "all" || !val ? "" : val)}>
-                  <SelectTrigger className="h-9 text-xs bg-transparent">
-                    <SelectValue placeholder={t(($) => $.course.lectures.picker.allGrades)} />
-                  </SelectTrigger>
-                  <SelectPositioner>
-                    <SelectContent>
-                      <SelectItem value="all">{t(($) => $.course.lectures.picker.allGrades)}</SelectItem>
-                      {grades.map((g) => (
-                        <SelectItem key={g.value} value={g.value}>
-                          {g.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </SelectPositioner>
-                </Select>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="hidden sm:block" />
-              <div className="hidden sm:block" />
-            </>
-          )}
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {t(($) => $.course.courses.form.educationGradeId.label)}
+            </span>
+            <Select value={educationGradeId || "all"} onValueChange={(val) => setEducationGradeId(val === "all" || !val ? "" : val)}>
+              <SelectTrigger className="h-9 text-xs bg-transparent">
+                <SelectValue placeholder={t(($) => $.course.lectures.picker.allGrades)} />
+              </SelectTrigger>
+              <SelectPositioner>
+                <SelectContent>
+                  <SelectItem value="all">{t(($) => $.course.lectures.picker.allGrades)}</SelectItem>
+                  {grades.map((g) => (
+                    <SelectItem key={g.value} value={g.value}>
+                      {g.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectPositioner>
+            </Select>
+          </div>
         </div>
 
         {/* Workspace Body: Split Panel */}
