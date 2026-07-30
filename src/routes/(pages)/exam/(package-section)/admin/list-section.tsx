@@ -32,6 +32,7 @@ export const Route = createFileRoute("/(pages)/exam/(package-section)/admin/list
     sortBy: z.string().optional().catch(undefined),
     sortOrder: z.enum(["asc", "desc"]).optional().catch(undefined),
     packageId: z.string().optional().catch(undefined),
+    examTypes: z.array(z.string()).optional().catch(undefined),
     view: z.enum(["table", "card"]).optional().catch(undefined),
   }),
   component: AdminExamPackageSectionsPage,
@@ -51,6 +52,7 @@ function AdminExamPackageSectionsPage() {
   const sortOrder = searchParams.sortOrder ?? "asc";
   const viewMode = searchParams.view ?? "card";
   const packageId = searchParams.packageId;
+  const examTypes = searchParams.examTypes ?? [];
 
   const { examSections, setExamSections } = useAppStore();
   const [searchTerm, setSearchTerm] = useState(search);
@@ -84,6 +86,7 @@ function AdminExamPackageSectionsPage() {
     sortOrder,
     search,
     packageId,
+    examType: examTypes.length > 0 ? examTypes : undefined,
   });
 
   const deleteMutation = useDeletePackageSection();
@@ -155,6 +158,13 @@ function AdminExamPackageSectionsPage() {
           setSearchTerm("");
           navigate({
             search: { ...searchParams, search: undefined, page: 1 },
+            replace: true,
+          });
+        }}
+        examTypes={examTypes}
+        onExamTypesChange={(newTypes) => {
+          navigate({
+            search: { ...searchParams, examTypes: newTypes.length > 0 ? newTypes : undefined, page: 1 },
             replace: true,
           });
         }}

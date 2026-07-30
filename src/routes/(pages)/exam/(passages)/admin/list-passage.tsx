@@ -11,13 +11,12 @@ import { useEffect, useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
 import { PageTitle } from "@/components/app";
-import { LayoutGrid, ListIcon, Plus, Trash2, Search, X } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Plus, Trash2 } from "lucide-react";
 import { DialogModal } from "@/components/dialog";
 import {
   PassageTable,
   PassageCardList,
-  PassageSortSelector,
+  PassageToolbar,
 } from "@/features/exam/passages";
 import { PaginationData, DataTablePagination } from "@/components/table";
 import { useAppStore } from "@/stores/useAppStore";
@@ -32,7 +31,7 @@ export const Route = createFileRoute("/(pages)/exam/(passages)/admin/list-passag
     search: z.string().optional().catch(undefined),
     sortBy: z.string().optional().catch(undefined),
     sortOrder: z.enum(["asc", "desc"]).optional().catch(undefined),
-    subjectId: z.string().uuid().optional().catch(undefined),
+    subjectId: z.uuid().optional().catch(undefined),
     view: z.enum(["table", "card"]).optional().catch(undefined),
   }),
   component: AdminExamPassagesPage,
@@ -126,84 +125,41 @@ function AdminExamPassagesPage() {
         </Button>
       </div>
 
-      {/* Unified Toolbar */}
-      <div className="flex flex-col lg:flex-row items-center gap-4 bg-card/60 backdrop-blur-sm p-4 rounded-2xl border border-border/50 shadow-sm">
-        <div className="relative w-full lg:max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder={t(($) => $.exam.passages.table.search)}
-            className="pl-10 h-10 bg-background/50 border-border/60 rounded-xl focus-visible:ring-primary/20"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                navigate({
-                  search: { ...searchParams, search: searchTerm || undefined, page: 1 },
-                  replace: true,
-                });
-              }
-            }}
-          />
-          {searchTerm && (
-            <button
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-              onClick={() => {
-                setSearchTerm("");
-                navigate({
-                  search: { ...searchParams, search: undefined, page: 1 },
-                  replace: true,
-                });
-              }}
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto lg:ml-auto">
-          <PassageSortSelector
-            sortBy={sortBy}
-            sortOrder={sortOrder as "asc" | "desc"}
-            onSortChange={(newSortBy, newSortOrder) => {
-              navigate({
-                search: { ...searchParams, sortBy: newSortBy, sortOrder: newSortOrder, page: 1 },
-                replace: true,
-              });
-            }}
-          />
-
-          <div className="h-8 w-px bg-border/60 mx-1 hidden sm:block" />
-
-          <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-xl border border-border/40">
-            <Button
-              variant={viewMode === "table" ? "secondary" : "ghost"}
-              size="sm"
-              className={cn(
-                "h-8 px-3 rounded-lg font-bold text-xs gap-2 transition-all",
-                viewMode === "table" ? "bg-background shadow-sm" : "",
-              )}
-              onClick={() =>
-                navigate({ search: { ...searchParams, view: "table" }, replace: true })
-              }
-            >
-              <ListIcon className="h-3.5 w-3.5" />
-              <span>{t(($) => $.exam.packages.table.viewModes.table)}</span>
-            </Button>
-            <Button
-              variant={viewMode === "card" ? "secondary" : "ghost"}
-              size="sm"
-              className={cn(
-                "h-8 px-3 rounded-lg font-bold text-xs gap-2 transition-all",
-                viewMode === "card" ? "bg-background shadow-sm" : "",
-              )}
-              onClick={() => navigate({ search: { ...searchParams, view: "card" }, replace: true })}
-            >
-              <LayoutGrid className="h-3.5 w-3.5" />
-              <span>{t(($) => $.exam.packages.table.viewModes.card)}</span>
-            </Button>
-          </div>
-        </div>
-      </div>
+      <PassageToolbar
+        searchTerm={searchTerm}
+        onSearchTermChange={(val) => {
+          setSearchTerm(val);
+          navigate({
+            search: { ...searchParams, search: val || undefined, page: 1 },
+            replace: true,
+          });
+        }}
+        onSearchSubmit={() => {
+          navigate({
+            search: { ...searchParams, search: searchTerm || undefined, page: 1 },
+            replace: true,
+          });
+        }}
+        onClearSearch={() => {
+          setSearchTerm("");
+          navigate({
+            search: { ...searchParams, search: undefined, page: 1 },
+            replace: true,
+          });
+        }}
+        sortBy={sortBy}
+        sortOrder={sortOrder as "asc" | "desc"}
+        onSortChange={(newSortBy, newSortOrder) => {
+          navigate({
+            search: { ...searchParams, sortBy: newSortBy, sortOrder: newSortOrder, page: 1 },
+            replace: true,
+          });
+        }}
+        viewMode={viewMode}
+        onViewModeChange={(newView) => {
+          navigate({ search: { ...searchParams, view: newView }, replace: true });
+        }}
+      />
 
       <div
         className={cn(

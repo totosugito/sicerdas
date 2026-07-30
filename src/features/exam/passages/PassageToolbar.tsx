@@ -1,15 +1,13 @@
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { SectionSortSelector } from "./SectionSortSelector";
-import { ViewModeToggle, SearchInput, ExamTypeSelect } from "@/features/components";
+import { PassageSortSelector } from "./PassageSortSelector";
+import { ViewModeToggle, SearchInput } from "@/features/components";
 import { Card, CardContent } from "@/components/ui/card";
 
-interface SectionToolbarProps {
+interface PassageToolbarProps {
   searchTerm: string;
   onSearchTermChange: (value: string) => void;
   onSearchSubmit: () => void;
   onClearSearch: () => void;
-  examTypes: string[];
-  onExamTypesChange: (examTypes: string[]) => void;
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
@@ -17,19 +15,17 @@ interface SectionToolbarProps {
   onViewModeChange: (viewMode: "table" | "card") => void;
 }
 
-export function SectionToolbar({
+export function PassageToolbar({
   searchTerm,
   onSearchTermChange,
   onSearchSubmit,
   onClearSearch,
-  examTypes,
-  onExamTypesChange,
   sortBy,
   sortOrder,
   onSortChange,
   viewMode,
   onViewModeChange,
-}: SectionToolbarProps) {
+}: PassageToolbarProps) {
   const { t } = useAppTranslation();
 
   return (
@@ -41,14 +37,12 @@ export function SectionToolbar({
             onChange={onSearchTermChange}
             onSubmit={onSearchSubmit}
             onClear={onClearSearch}
-            placeholder={t(($) => $.exam.sections.table.search)}
+            placeholder={t(($) => $.exam.passages.table.search)}
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <ExamTypeSelect value={examTypes} onValueChange={onExamTypesChange} />
-
-          <SectionSortSelector
+          <PassageSortSelector
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSortChange={onSortChange}

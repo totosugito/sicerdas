@@ -1,14 +1,5 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectPositioner,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { ArrowUpAZ, ArrowDownAZ } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
+import { SortSelector } from "@/features/components";
 
 interface PassageSortSelectorProps {
   sortBy: string;
@@ -30,46 +21,13 @@ export const PassageSortSelector = ({
     { value: "totalQuestions", label: t(($) => $.exam.passages.table.columns.questions) },
   ];
 
-  const handleSortFieldChange = (value: string | null) => {
-    if (value !== null) {
-      onSortChange(value, sortOrder);
-    }
-  };
-
-  const toggleSortOrder = () => {
-    const newOrder = sortOrder === "asc" ? "desc" : "asc";
-    onSortChange(sortBy, newOrder);
-  };
-
   return (
-    <div className="flex items-center gap-2">
-      <Select value={sortBy} onValueChange={handleSortFieldChange}>
-        <SelectTrigger className="w-[180px] bg-card shadow-sm border-border/60">
-          <SelectValue placeholder={t(($) => $.labels.sortBy)} />
-        </SelectTrigger>
-        <SelectPositioner>
-          <SelectContent>
-            {sortOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </SelectPositioner>
-      </Select>
-      <Button
-        variant="outline"
-        onClick={toggleSortOrder}
-        size="icon"
-        className="bg-card shadow-sm border-border/60"
-        title={sortOrder === "asc" ? "Ascending" : "Descending"}
-      >
-        {sortOrder === "asc" ? (
-          <ArrowUpAZ className="h-4 w-4" />
-        ) : (
-          <ArrowDownAZ className="h-4 w-4" />
-        )}
-      </Button>
-    </div>
+    <SortSelector
+      options={sortOptions}
+      sortBy={sortBy}
+      sortOrder={sortOrder}
+      onSortChange={onSortChange}
+      placeholder={t(($) => $.labels.sortBy)}
+    />
   );
 };

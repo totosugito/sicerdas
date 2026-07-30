@@ -85,6 +85,7 @@ export const ListSectionBody = Type.Object({
 export const AdminSectionListBody = Type.Object({
   search: Type.Optional(Type.String({ description: "Search term for section title" })),
   packageId: Type.Optional(Type.String({ format: "uuid" })),
+  examType: Type.Optional(Type.Array(Type.String(), { description: "Filter by exam type" })),
   isActive: Type.Optional(Type.Boolean()),
   sortBy: Type.Optional(
     Type.String({

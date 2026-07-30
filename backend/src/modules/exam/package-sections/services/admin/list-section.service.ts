@@ -1,7 +1,7 @@
 import { db } from "../../../../../db/db-pool.ts";
 import { examPackageSections } from "../../../../../db/schema/exam/package-sections.ts";
 import { examPackages } from "../../../../../db/schema/exam/packages.ts";
-import { and, eq, sql, desc, ilike } from "drizzle-orm";
+import { and, eq, sql, desc, ilike, inArray } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../../types/index.ts";
 import type { PaginationMeta } from "../../../../../types/response.ts";
 import type { AdminSectionListParams, AdminSectionItemT } from "../../package-sections.schema.ts";
@@ -22,6 +22,7 @@ export async function adminListSectionService(
   const {
     search,
     packageId,
+    examType,
     isActive,
     sortBy = "updatedAt",
     sortOrder = "desc",
@@ -58,6 +59,10 @@ export async function adminListSectionService(
     returnPackageName = existingPackage.title;
 
     conditions.push(eq(examPackageSections.packageId, packageId));
+  }
+
+  if (examType && examType.length > 0) {
+    conditions.push(inArray(examPackages.examType, examType as any));
   }
 
   let activeSortBy = sortBy;
