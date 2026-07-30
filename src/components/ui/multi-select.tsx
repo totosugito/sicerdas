@@ -207,7 +207,7 @@ export const MultiSelect = React.forwardRef<
                 onClick={handleTogglePopover}
                 variant={"outline"}
                 className={cn(
-                  "w-full p-1 items-center justify-between [&_svg]:pointer-events-auto border-input",
+                  "w-full p-1 items-center justify-between [&_svg]:pointer-events-auto border-input hover:bg-transparent",
                   className
                 )}
               >
@@ -215,7 +215,7 @@ export const MultiSelect = React.forwardRef<
                   <div className="flex items-center justify-between w-full">
                     <div className="flex flex-wrap items-center gap-1">
                       {showAsSimple ? (
-                        <span className="text-sm text-foreground mx-3 font-medium">
+                        <span className="text-sm text-foreground mx-3 font-normal">
                           {selectedValues.length > 1
                             ? `${selectedValues.length} selected`
                             : options.find((o) => o.value === selectedValues[0])?.label}

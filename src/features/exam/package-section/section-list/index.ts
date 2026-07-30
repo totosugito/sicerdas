@@ -7,3 +7,4 @@ export { SectionEmptyState } from "./SectionEmptyState";
 export { SectionList } from "./SectionList";
 export { SectionListSkeleton } from "./SectionListSkeleton";
 export { SectionRow } from "./SectionRow";
+export { SectionToolbar } from "./SectionToolbar";

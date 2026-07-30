@@ -158,7 +158,13 @@ function AdminExamPackagesPage() {
 
       <PackageToolbar
         searchTerm={searchTerm}
-        onSearchTermChange={setSearchTerm}
+        onSearchTermChange={(val) => {
+          setSearchTerm(val);
+          navigate({
+            search: { ...searchParams, search: val || undefined, page:1 },
+            replace: true,
+          });
+        }}
         onSearchSubmit={() => {
           navigate({
             search: { ...searchParams, search: searchTerm || undefined, page: 1 },
