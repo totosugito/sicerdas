@@ -4,8 +4,7 @@ import { AppRoute } from "@/constants/app-route";
 import { useState, useMemo } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { AlertCircle } from "lucide-react";
-import { LoadingView } from "@/components/app/LoadingView";
-import { ErrorPageDetails } from "@/components/app/ErrorPageDetails";
+import { LoadingView, ErrorPageDetails } from "@/components/general";
 import { Button } from "@/components/ui/button";
 import {
   ResultsHeader,

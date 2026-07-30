@@ -1,7 +1,7 @@
 import React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { PageTitle, ErrorContainer, LoadingView } from "@/components/app";
+import { PageTitle, ErrorContainer, LoadingView } from "@/components/general";
 import { AppRoute } from "@/constants/app-route";
 import { useDetailQuestion } from "@/api/exam/questions";
 import { QuestionDetailView } from "@/features/exam/questions/detail-question";

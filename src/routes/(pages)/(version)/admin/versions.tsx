@@ -5,7 +5,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
-import { PageTitle } from "@/components/app";
+import { PageTitle } from "@/components/general";
 import { Plus, Trash2 } from "lucide-react";
 import { DialogModal } from "@/components/dialog";
 import { VersionTable } from "@/features/version/list-version/VersionTable";

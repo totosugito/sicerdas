@@ -36,7 +36,7 @@ import { string_to_date } from "@/lib/my-utils";
 import { useAuth } from "@/hooks/use-auth";
 
 import { authClient } from "@/lib/auth-client";
-import { PageTitle } from "@/components/app";
+import { PageTitle } from '@/components/general'
 
 // Add validation for query parameters
 const profileSearchSchema = z.object({

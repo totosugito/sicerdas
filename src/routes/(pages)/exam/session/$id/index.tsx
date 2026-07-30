@@ -17,7 +17,6 @@ import {
   CbtAnswerPad,
   CbtSummary,
 } from "@/features/exam/sessions/cbt";
-import { LoadingView } from "@/components/app/LoadingView";
 import { useQueryClient } from "@tanstack/react-query";
 import { Menu, AlertCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,7 +29,7 @@ import {
   DrawerDescription,
   DrawerClose,
 } from "@/components/ui/drawer";
-import { ErrorPageDetails } from "@/components/app/ErrorPageDetails";
+import { ErrorPageDetails, LoadingView } from "@/components/general";
 import { EnumExamSessionMode, EnumExamSessionStatus } from "@/api/exam/types";
 import { EnumExamStatus, ExamSessionMode, ExamStatus } from "@/constants/exam-var";
 import { useAppTranslation } from "@/lib/i18n-typed";

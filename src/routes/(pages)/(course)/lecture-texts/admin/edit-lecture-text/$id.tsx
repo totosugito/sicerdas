@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useDetailLectureText, useUpdateLectureText } from "@/api/course/lecture-texts";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
-import { PageTitle, ErrorContainer } from "@/components/app";
+import { PageTitle, ErrorContainer } from "@/components/general";
 import { LectureTextForm, LectureTextFormValues } from "@/features/course/lecture-texts";
 import { AppRoute } from "@/constants/app-route";
 import { EnumContentStatus } from "@/api/types";
@@ -28,12 +28,12 @@ function EditLectureTextPage() {
       values instanceof FormData
         ? values
         : {
-            title: values.title.trim(),
-            content: values.content || [],
-            categoryId: values.categoryId || null,
-            educationGradeId: values.educationGradeId || null,
-            status: values.status || EnumContentStatus.DRAFT,
-          };
+          title: values.title.trim(),
+          content: values.content || [],
+          categoryId: values.categoryId || null,
+          educationGradeId: values.educationGradeId || null,
+          status: values.status || EnumContentStatus.DRAFT,
+        };
 
     updateMutation.mutate(
       {

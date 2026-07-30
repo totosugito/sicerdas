@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useAppTranslation } from '@/lib/i18n-typed'
 import { APP_CONFIG } from '@/constants/config'
-import PageTitle from '@/components/app/PageTitle'
+import { PageTitle } from '@/components/general'
 import { Card, CardContent } from '@/components/ui/card'
 
 export const Route = createFileRoute('/(pages)/(web)/terms')({

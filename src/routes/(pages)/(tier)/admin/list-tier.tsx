@@ -8,7 +8,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
-import { PageTitle } from "@/components/app";
+import { PageTitle } from "@/components/general";
 import { AppRoute } from "@/constants/app-route";
 import { Plus, Trash2 } from "lucide-react";
 import { DialogModal } from "@/components/dialog";

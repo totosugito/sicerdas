@@ -7,7 +7,7 @@ import {
   useSyncPackageQuestionsOrder,
 } from "@/api/exam/package-questions";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { PageTitle, LoadingView, ErrorContainer } from "@/components/app";
+import { PageTitle, LoadingView, ErrorContainer } from "@/components/general";
 import { AppRoute } from "@/constants/app-route";
 import { ListChecks, Plus } from "lucide-react";
 import {

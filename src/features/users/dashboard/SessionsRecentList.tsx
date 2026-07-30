@@ -1,7 +1,6 @@
-import { useAllSessionHistory, type AllSessionHistoryResponse } from "@/api/exam/sessions";
+import { type AllSessionHistoryResponse } from "@/api/exam/sessions";
 import { EnumExamSessionStatus, EnumExamSessionMode } from "@/api/exam/sessions/types";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { AppRoute } from "@/constants/app-route";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { cn } from "@/lib/utils";

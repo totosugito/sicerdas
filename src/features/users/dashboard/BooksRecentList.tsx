@@ -6,7 +6,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { getBookDetailId } from "@/lib/app/book-utils";
-import { Button } from "@/components/ui/button";
 import { getGradeColor } from "@/lib/app/exam-utils";
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";

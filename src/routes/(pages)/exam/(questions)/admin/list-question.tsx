@@ -13,7 +13,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useEffect, useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
-import { PageTitle } from "@/components/app";
+import { PageTitle } from "@/components/general";
 import { LayoutGrid, ListIcon, Plus, Trash2, Search, X, ChevronDown, FileJson } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {

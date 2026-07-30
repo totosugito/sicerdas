@@ -12,7 +12,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useEffect, useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
-import { PageTitle } from "@/components/app";
+import { PageTitle } from "@/components/general";
 import { DialogModal } from "@/components/dialog";
 import { useAppStore } from "@/stores/useAppStore";
 import {
@@ -161,7 +161,7 @@ function AdminExamPackagesPage() {
         onSearchTermChange={(val) => {
           setSearchTerm(val);
           navigate({
-            search: { ...searchParams, search: val || undefined, page:1 },
+            search: { ...searchParams, search: val || undefined, page: 1 },
             replace: true,
           });
         }}

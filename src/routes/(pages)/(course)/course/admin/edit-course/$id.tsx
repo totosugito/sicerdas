@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { PageTitle, ErrorContainer } from "@/components/app";
+import { PageTitle, ErrorContainer } from "@/components/general";
 import { EnumContentStatus } from "@/api/types";
 import {
   useUpdateCourse,

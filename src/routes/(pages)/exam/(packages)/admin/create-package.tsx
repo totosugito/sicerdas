@@ -1,7 +1,7 @@
 import React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { PageTitle } from "@/components/app";
+import { PageTitle } from "@/components/general";
 import { useCreatePackage, useUploadPackageThumbnail } from "@/api/exam/packages";
 import type { CreatePackageParams } from "@/api/exam/packages";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";

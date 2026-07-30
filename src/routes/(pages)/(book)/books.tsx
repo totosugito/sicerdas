@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { z } from "zod";
 import { Trans } from "react-i18next";
 import { useBookList, useBookFilterParams } from "@/api/book";
-import type { BookListItemData, BookListResponse } from "@/api/book";
 import { LayoutGrid, ListIcon } from "lucide-react";
 import { showNotifError } from "@/lib/show-notif";
 import {

@@ -4,7 +4,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { useQueryClient } from "@tanstack/react-query";
 import { KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
-import { PageTitle, ErrorContainer } from "@/components/app";
+import { PageTitle, ErrorContainer } from "@/components/general";
 import { DialogModal } from "@/components/dialog";
 import { AppRoute } from "@/constants/app-route";
 import { useDetailCourse, useAdminCourseStructure } from "@/api/course/courses";
@@ -240,12 +240,12 @@ function DetailCoursePage() {
             { text: t(($) => $.course.chapters.deleteConsequence1) },
             ...(chapterToDelete && chapterToDelete.lectures && chapterToDelete.lectures.length > 0
               ? [
-                  {
-                    text: t(($) => $.course.chapters.deleteConsequenceWithCount, {
-                      count: chapterToDelete.lectures.length,
-                    }),
-                  },
-                ]
+                {
+                  text: t(($) => $.course.chapters.deleteConsequenceWithCount, {
+                    count: chapterToDelete.lectures.length,
+                  }),
+                },
+              ]
               : []),
             { text: t(($) => $.course.chapters.deleteConsequence2) },
           ],

@@ -16,7 +16,7 @@ import { AppRoute } from "@/constants/app-route";
 import { z } from "zod";
 import { APP_CONFIG } from "@/constants/config";
 import { AuthHeader, AuthLayout } from "@/features/auth";
-import NotFoundError from "@/components/errors/NotFoundError";
+import NotFoundError from "@/components/general/NotFoundError";
 
 
 // Timer duration in seconds (default 120 seconds = 2 minutes)

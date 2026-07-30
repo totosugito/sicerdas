@@ -11,7 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 import './i18n';
 import { Theme, ThemeProvider } from "@/lib/theme-provider";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { NotFoundError } from "@/components/errors";
+import { NotFoundError } from "@/components/general";
 
 // Register things for typesafety
 // declare module '@tanstack/react-router' {

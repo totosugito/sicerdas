@@ -1,7 +1,7 @@
 import React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { PageTitle } from "@/components/app";
+import { PageTitle } from "@/components/general";
 import { AppRoute } from "@/constants/app-route";
 import { useAppStore } from "@/stores/useAppStore";
 import { PromptGeneratorForm } from "@/features/exam/questions/prompt-generator";

@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useMemo } from "react";
 import { z } from "zod";
-import { PageTitle, ErrorContainer, LoadingView } from "@/components/app";
+import { PageTitle, ErrorContainer, LoadingView } from "@/components/general";
 import { AppRoute } from "@/constants/app-route";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {

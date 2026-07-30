@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useAppTranslation } from '@/lib/i18n-typed'
-import PageTitle from '@/components/app/PageTitle'
+import { PageTitle } from '@/components/general'
 import { Card, CardContent } from '@/components/ui/card'
 import { APP_CONFIG } from '@/constants/config'
 

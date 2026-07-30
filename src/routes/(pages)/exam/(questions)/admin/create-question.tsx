@@ -1,7 +1,7 @@
 import React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { PageTitle } from "@/components/app";
+import { PageTitle } from "@/components/general";
 import { useCreateQuestion } from "@/api/exam/questions";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useQueryClient } from "@tanstack/react-query";

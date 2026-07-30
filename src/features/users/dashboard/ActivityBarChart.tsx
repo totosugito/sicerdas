@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { BarChart3 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { id } from "date-fns/locale";
-import { LoadingView } from "@/components/app/LoadingView";
+import { LoadingView } from "@/components/general";
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Activity } from "lucide-react";

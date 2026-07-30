@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useQueryClient } from "@tanstack/react-query";
-import { PageTitle } from "@/components/app";
+import { PageTitle } from "@/components/general";
 import { CreateTierForm } from "@/features/tier/create-tier";
 import { useCreateTier, CreateTierParams } from "@/api/tier";
 import { showNotifSuccess } from "@/lib/show-notif";

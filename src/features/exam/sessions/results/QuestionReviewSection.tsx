@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSessionQuestion } from "@/api/exam/sessions";
-import { LoadingView } from "@/components/app/LoadingView";
+import { LoadingView } from "@/components/general";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";

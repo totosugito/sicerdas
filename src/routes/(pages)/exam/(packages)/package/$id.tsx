@@ -12,7 +12,7 @@ import {
 } from "@/features/exam/packages/detail-package";
 import { useStartSession, ExamSessionMode } from "@/api/exam/sessions";
 import { AppRoute } from "@/constants/app-route";
-import { ErrorPageDetails, PageTitle } from "@/components/app";
+import { ErrorPageDetails, PageTitle } from "@/components/general";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";

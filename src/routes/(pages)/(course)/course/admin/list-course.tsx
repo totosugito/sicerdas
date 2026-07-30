@@ -10,7 +10,7 @@ import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useEffect, useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
-import { PageTitle } from "@/components/app";
+import { PageTitle } from "@/components/general";
 import { DialogModal } from "@/components/dialog";
 import { useAppStore } from "@/stores/useAppStore";
 import {
@@ -267,9 +267,9 @@ function AdminCourseListPage() {
             <DataTablePagination
               paginationData={data.data.meta as PaginationData}
               pageIndex={((data.data.meta as PaginationData).page || 1) - 1}
-              setPageIndex={() => {}}
+              setPageIndex={() => { }}
               pageSize={(data.data.meta as PaginationData).limit || 10}
-              setPageSize={() => {}}
+              setPageSize={() => { }}
               rowsCount={(data.data.meta as PaginationData).total || 0}
               onPaginationChange={(pagination: { page: number; limit: number }) => {
                 navigate({

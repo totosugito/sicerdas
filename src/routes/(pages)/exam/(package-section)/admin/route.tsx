@@ -1,4 +1,4 @@
-import { NotFoundError } from "@/components/errors";
+import { NotFoundError } from "@/components/general";
 import { useAuth } from "@/hooks/use-auth";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { EnumUserRole } from "@/api/users/types";

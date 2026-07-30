@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCreateLectureText } from "@/api/course/lecture-texts";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
-import { PageTitle } from "@/components/app";
+import { PageTitle } from "@/components/general";
 import { LectureTextForm, LectureTextFormValues } from "@/features/course/lecture-texts";
 import { AppRoute } from "@/constants/app-route";
 import { EnumContentStatus } from "@/api/types";

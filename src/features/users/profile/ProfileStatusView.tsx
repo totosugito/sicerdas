@@ -3,7 +3,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, User } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { PageTitle } from "@/components/app";
+import { PageTitle } from "@/components/general";
 
 interface ProfileLoadingViewProps {
   isLoading?: boolean;

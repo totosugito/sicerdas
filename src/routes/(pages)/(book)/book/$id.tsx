@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useBookDetail, useRateBook, useBookmarkBook } from "@/api/book";
 import { BookDetail } from "@/features/book/book/BookDetail";
 import { BookDetailSkeleton } from "@/features/book/book/BookDetailSkeleton";
-import { ErrorPageDetails, PageTitle } from "@/components/app";
+import { ErrorPageDetails, PageTitle } from "@/components/general";
 import { AlertTriangle } from "lucide-react";
 import { AppRoute } from "@/constants/app-route";
 import { useAppTranslation } from "@/lib/i18n-typed";

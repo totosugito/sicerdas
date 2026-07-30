@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { PageTitle } from "@/components/app";
+import { PageTitle } from "@/components/general";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/useAppStore";
 import { Upload, Trash2, ClipboardPaste } from "lucide-react";
