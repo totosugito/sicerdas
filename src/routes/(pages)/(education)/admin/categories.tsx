@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { useAppTranslation } from '@/lib/i18n-typed';
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/general';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { DialogModal } from '@/components/dialog';
 import { CategoryTable, DialogCategoryCreate } from '@/features/education';
 import { PaginationData } from '@/components/table';
@@ -150,14 +150,26 @@ function AdminExamCategoriesPage() {
             <DialogModal
                 open={showDeleteDialog}
                 onOpenChange={setShowDeleteDialog}
+                variantSubmit="destructive"
                 modal={{
                     title: t($ => $.education.categories.delete.confirmTitle),
-                    desc: t($ => $.education.categories.delete.confirmDesc, { name: selectedCategory?.name }),
+                    desc: (() => {
+                        const confirmTemplate = t($ => $.education.categories.delete.confirmDesc, { name: "__NAME__" });
+                        const [before, after] = confirmTemplate.replace("'__NAME__'", "__NAME__").split("__NAME__");
+                        return (
+                            <span>
+                                {before}
+                                <span className="font-semibold text-foreground bg-muted px-1.5 py-0.5 rounded border border-border/50">
+                                    {selectedCategory?.name}
+                                </span>
+                                {after}
+                            </span>
+                        );
+                    })(),
                     infoContainer: t($ => $.education.categories.delete.deleteInfo),
                     infoContainerVariant: "error",
                     variant: "destructive",
-                    iconType: "error",
-                    headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
+                    iconType: "delete",
                     textCancel: t($ => $.labels.cancel),
                     textConfirm: t($ => $.labels.delete),
                     onConfirmClick: confirmDelete,

@@ -24,6 +24,7 @@ import {
 import { string_to_locale_date } from "@/lib/my-utils";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
+import { EnumExamType } from "@/api/exam/types";
 
 interface PackageTableProps {
   data: ListPackagesResponse;
@@ -391,7 +392,7 @@ export function PackageTable({
                       {t(($) => $.exam.packages.table.actions.edit)}
                     </Link>
                   </DropdownMenuItem>
-                  {onClone && pkg.examType !== "course_exam" && (
+                  {onClone && pkg.examType !== EnumExamType.COURSE_EXAM && (
                     <DropdownMenuItem
                       onClick={() => onClone(pkg)}
                       className="cursor-pointer"

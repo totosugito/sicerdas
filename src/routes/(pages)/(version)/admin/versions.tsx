@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Button } from "@/components/ui/button";
 import { PageTitle } from "@/components/general";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { DialogModal } from "@/components/dialog";
 import { VersionTable } from "@/features/version/list-version/VersionTable";
 import { PaginationData } from "@/components/table";
@@ -131,16 +131,28 @@ function AdminVersionsPage() {
       <DialogModal
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
+        variantSubmit="destructive"
         modal={{
           title: t(($) => $.version.delete.confirmTitle),
-          desc: t(($) => $.version.delete.confirmDesc, {
-            title: selectedVersion?.name || "No Name",
-          }),
+          desc: (() => {
+            const confirmTemplate = t(($) => $.version.delete.confirmDesc, {
+              title: "__TITLE__",
+            });
+            const [before, after] = confirmTemplate.replace("'__TITLE__'", "__TITLE__").split("__TITLE__");
+            return (
+              <span>
+                {before}
+                <span className="font-semibold text-foreground bg-muted px-1.5 py-0.5 rounded border border-border/50">
+                  {selectedVersion?.name || "No Name"}
+                </span>
+                {after}
+              </span>
+            );
+          })(),
           infoContainer: t(($) => $.version.delete.deleteInfo),
           infoContainerVariant: "error",
           variant: "destructive",
-          iconType: "error",
-          headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
+          iconType: "delete",
           textCancel: t(($) => $.labels.cancel),
           textConfirm: t(($) => $.labels.delete),
           onConfirmClick: confirmDelete,

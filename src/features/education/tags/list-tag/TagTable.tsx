@@ -10,9 +10,9 @@ import {
 import { LongText } from "@/components/ui/long-text";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ActiveStatusBadge } from "@/features/components";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -81,7 +81,7 @@ export function TagTable({
         <LongText
           text={row.getValue("description") || "-"}
           title={row.getValue("name")}
-          className="max-w-[300px] text-muted-foreground italic text-sm"
+          className="text-muted-foreground italic text-sm"
         />
       ),
     },
@@ -107,8 +107,6 @@ export function TagTable({
     {
       accessorKey: "isActive",
       enableSorting: true,
-      minSize: 70,
-      maxSize: 70,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -120,11 +118,7 @@ export function TagTable({
         const isActive = row.getValue("isActive") as boolean;
         return (
           <div className="flex justify-center">
-            <Badge variant={isActive ? "success" : "secondary"}>
-              {isActive
-                ? t(($) => $.education.tags.table.status.active)
-                : t(($) => $.education.tags.table.status.inactive)}
-            </Badge>
+            <ActiveStatusBadge isActive={isActive} />
           </div>
         );
       },
@@ -132,8 +126,6 @@ export function TagTable({
     {
       accessorKey: "updatedAt",
       enableSorting: true,
-      minSize: 100,
-      maxSize: 100,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -148,8 +140,6 @@ export function TagTable({
     },
     {
       id: "actions",
-      minSize: 50,
-      maxSize: 50,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -185,7 +175,7 @@ export function TagTable({
                     className="text-destructive focus:text-destructive"
                     onClick={() => onDelete(tag)}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    <Trash2 className="mr-2 h-4 w-4 text-destructive focus:text-destructive" />
                     {t(($) => $.education.tags.table.actions.delete)}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>

@@ -24,8 +24,7 @@ const version = {
   },
   delete: {
     confirmTitle: "Hapus Versi",
-    confirmDesc:
-      "Apakah Anda yakin ingin menghapus versi {{title}}? Tindakan ini tidak dapat dibatalkan.",
+    confirmDesc: "Apakah Anda yakin ingin menghapus versi {{title}}?",
     deleteInfo: "Menghapus versi ini akan menghapus data versi secara permanen.",
     success: "Versi berhasil dihapus",
     error: "Gagal memuat detail versi",

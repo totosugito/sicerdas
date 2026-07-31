@@ -13,6 +13,9 @@ export { ActiveStatusBadge } from "./badge/ActiveStatusBadge";
 export { NewBadge } from "./badge/NewBadge";
 export { GradeBadge } from "./badge/GradeBadge";
 export { CategoryBadge } from "./badge/CategoryBadge";
+export { DefaultStatusBadge } from "./badge/DefaultStatusBadge";
+export { ContentStatusBadge } from "./badge/ContentStatusBadge";
+export { ContentTypeBadge } from "./badge/ContentTypeBadge";
 
 
 

@@ -16,10 +16,6 @@ export default {
       updatedAt: "Diperbarui",
       actions: "Aksi",
     },
-    status: {
-      default: "Ya",
-      notDefault: "Tidak",
-    },
     actions: {
       openMenu: "Buka menu",
       edit: "Ubah",

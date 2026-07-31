@@ -10,9 +10,9 @@ import {
 import { LongText } from "@/components/ui/long-text";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ActiveStatusBadge } from "@/features/components";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -81,15 +81,13 @@ export function CategoryTable({
         <LongText
           text={row.getValue("description") || "-"}
           title={row.getValue("name")}
-          className="max-w-[300px] text-muted-foreground italic text-sm"
+          className="text-muted-foreground italic text-sm"
         />
       ),
     },
     {
       accessorKey: "isActive",
       enableSorting: true,
-      minSize: 70,
-      maxSize: 70,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -101,11 +99,7 @@ export function CategoryTable({
         const isActive = row.getValue("isActive") as boolean;
         return (
           <div className="flex justify-center">
-            <Badge variant={isActive ? "success" : "secondary"}>
-              {isActive
-                ? t(($) => $.education.categories.table.status.active)
-                : t(($) => $.education.categories.table.status.inactive)}
-            </Badge>
+            <ActiveStatusBadge isActive={isActive} />
           </div>
         );
       },
@@ -113,8 +107,6 @@ export function CategoryTable({
     {
       accessorKey: "updatedAt",
       enableSorting: true,
-      minSize: 100,
-      maxSize: 100,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -129,8 +121,6 @@ export function CategoryTable({
     },
     {
       id: "actions",
-      minSize: 50,
-      maxSize: 50,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -166,7 +156,7 @@ export function CategoryTable({
                     className="text-destructive focus:text-destructive"
                     onClick={() => onDelete(category)}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    <Trash2 className="mr-2 h-4 w-4 text-destructive focus:text-destructive" />
                     {t(($) => $.education.categories.table.actions.delete)}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>

@@ -157,12 +157,12 @@ function AdminTierPricingPage() {
       <DialogModal
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
+        variantSubmit="destructive"
         modal={{
           title: t(($) => $.tier.list.deleteDialog.title, { name: tierToDelete?.name }),
           desc: t(($) => $.tier.list.deleteDialog.description),
           variant: "destructive",
-          iconType: "error",
-          headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
+          iconType: "delete",
           showInfoSection: true,
           infoTitle: t(($) => $.tier.list.deleteDialog.infoTitle),
           infoItems: [

@@ -11,8 +11,8 @@ import { LongText } from "@/components/ui/long-text";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DefaultStatusBadge } from "@/features/components";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -99,7 +99,6 @@ export function GradeTable({
     {
       accessorKey: "isDefault",
       enableSorting: true,
-      size: 100,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -111,11 +110,7 @@ export function GradeTable({
         const isDefault = row.getValue("isDefault") as boolean;
         return (
           <div className="flex justify-center">
-            <Badge variant={isDefault ? "success" : "secondary"}>
-              {isDefault
-                ? t(($) => $.education.grade.table.status.default)
-                : t(($) => $.education.grade.table.status.notDefault)}
-            </Badge>
+            <DefaultStatusBadge isDefault={isDefault} />
           </div>
         );
       },
@@ -123,8 +118,6 @@ export function GradeTable({
     {
       accessorKey: "updatedAt",
       enableSorting: true,
-      minSize: 100,
-      maxSize: 100,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -142,8 +135,6 @@ export function GradeTable({
     },
     {
       id: "actions",
-      minSize: 50,
-      maxSize: 50,
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -179,7 +170,7 @@ export function GradeTable({
                     className="text-destructive focus:text-destructive"
                     onClick={() => onDelete(grade)}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    <Trash2 className="mr-2 h-4 w-4 text-destructive focus:text-destructive" />
                     {t(($) => $.education.grade.table.actions.delete)}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>

@@ -150,14 +150,26 @@ function AdminExamTagsPage() {
       <DialogModal
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
+        variantSubmit="destructive"
         modal={{
           title: t($ => $.education.tags.delete.confirmTitle),
-          desc: t($ => $.education.tags.delete.confirmDesc, { name: selectedTag?.name }),
+          desc: (() => {
+            const confirmTemplate = t($ => $.education.tags.delete.confirmDesc, { name: "__NAME__" });
+            const [before, after] = confirmTemplate.replace("'__NAME__'", "__NAME__").split("__NAME__");
+            return (
+              <span>
+                {before}
+                <span className="font-semibold text-foreground bg-muted px-1.5 py-0.5 rounded border border-border/50">
+                  {selectedTag?.name}
+                </span>
+                {after}
+              </span>
+            );
+          })(),
           infoContainer: t($ => $.education.tags.delete.deleteInfo),
           infoContainerVariant: "error",
           variant: "destructive",
-          iconType: "error",
-          headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
+          iconType: "delete",
           textCancel: t($ => $.labels.cancel),
           textConfirm: t($ => $.labels.delete),
           onConfirmClick: confirmDelete,

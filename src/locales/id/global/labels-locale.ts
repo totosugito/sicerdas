@@ -44,6 +44,14 @@ export default {
   management: "Manajemen",
   active: "Aktif",
   inactive: "Tidak Aktif",
+  yesNo: {
+    yes: "Ya",
+    no: "Tidak",
+  },
+  activeStatus: {
+    active: "Aktif",
+    inactive: "Tidak Aktif",
+  },
   banned: "Terblokir",
   status: "Status",
   actions: "Aksi",

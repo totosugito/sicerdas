@@ -3,7 +3,6 @@ import {
   DataTable,
   useDataTable,
   DataTableFilter,
-  createRowNumberColumn,
   DataTableColumnHeader,
   PaginationData,
 } from "@/components/table";
@@ -12,6 +11,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ContentStatusBadge, ContentTypeBadge } from "@/features/components";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -148,7 +148,7 @@ export function VersionTable({
       ),
       cell: ({ row }) => (
         <div className="flex justify-center">
-          <Badge variant="secondary">{row.getValue("dataType")}</Badge>
+          <ContentTypeBadge type={row.getValue("dataType")} />
         </div>
       ),
     },
@@ -166,13 +166,7 @@ export function VersionTable({
         const status = row.getValue("status") as string;
         return (
           <div className="flex justify-center">
-            <Badge
-              variant={
-                status === "PUBLISHED" ? "success" : status === "DRAFT" ? "warning" : "secondary"
-              }
-            >
-              {status}
-            </Badge>
+            <ContentStatusBadge status={status} />
           </div>
         );
       },
@@ -233,7 +227,7 @@ export function VersionTable({
                     className="text-destructive focus:text-destructive"
                     onClick={() => onDelete(version)}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    <Trash2 className="mr-2 h-4 w-4 text-destructive focus:text-destructive" />
                     {t(($) => $.labels.delete)}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
