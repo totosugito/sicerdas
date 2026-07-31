@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { CourseStatusBadge } from "@/features/course/courses/components/CourseStatusBadge";
+import { CourseStatusBadge } from "@/features/components";
 
 import { Badge } from "@/components/ui/badge";
 

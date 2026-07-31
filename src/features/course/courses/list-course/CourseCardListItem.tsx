@@ -1,7 +1,6 @@
 import React from "react";
 import { CourseItem } from "@/api/course/courses";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   MoreHorizontal,
@@ -25,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { CourseStatusBadge } from "../components/CourseStatusBadge";
+import { CourseStatusBadge } from "@/features/components";
 import { string_to_locale_date } from "@/lib/my-utils";
 
 interface CourseCardListItemProps {

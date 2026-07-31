@@ -12,7 +12,7 @@ import { useListCategorySimple } from "@/api/education/categories";
 import { useListGradeSimple } from "@/api/education/grades";
 import { EnumContentStatus } from "@/api/types";
 import { CourseFormValues } from "@/api/course/courses";
-import { CourseStatusBadge } from "../components/CourseStatusBadge";
+import { CourseStatusBadge } from "@/features/components";
 
 type CourseFormProps = {
   defaultValues?: Partial<CourseFormValues>;

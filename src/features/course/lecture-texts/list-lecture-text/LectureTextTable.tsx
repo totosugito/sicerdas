@@ -22,7 +22,7 @@ import {
 import { string_to_locale_date } from "@/lib/my-utils";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { CourseStatusBadge } from "@/features/course/courses/components/CourseStatusBadge";
+import { CourseStatusBadge } from "@/features/components";
 import { EnumContentStatus } from "@/api/types";
 
 interface LectureTextTableProps {

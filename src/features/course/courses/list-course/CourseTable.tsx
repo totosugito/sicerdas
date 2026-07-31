@@ -9,7 +9,7 @@ import {
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, Pencil, Trash2, Eye, ImageIcon } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -23,7 +23,7 @@ import {
 import { string_to_locale_date } from "@/lib/my-utils";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { CourseStatusBadge } from "../components/CourseStatusBadge";
+import { CourseStatusBadge } from "@/features/components";
 
 interface CourseTableProps {
   data: PaginatedCourseListResponse;

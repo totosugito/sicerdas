@@ -1,7 +1,7 @@
 import React from "react";
 import { CourseItem } from "@/api/course/courses";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { CourseStatusBadge } from "../components/CourseStatusBadge";
+import { CourseStatusBadge } from "@/features/components";
 import { BookOpen, Layers, Users, Star, GraduationCap, FolderTree } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
