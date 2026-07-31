@@ -163,3 +163,28 @@ export const CourseStructureResponse = Type.Object({
   ...BaseResponseSchema.properties,
   data: Type.Array(CourseStructureChapterSchema),
 });
+
+export const FilterParamsGradeStatsSchema = Type.Object({
+  activeCount: Type.Number(),
+  totalCount: Type.Number(),
+});
+
+export const FilterParamsGradeSchema = Type.Object({
+  id: Type.Number(),
+  name: Type.String(),
+  stats: FilterParamsGradeStatsSchema,
+});
+
+export const FilterParamsCategoryItemSchema = Type.Object({
+  id: Type.String({ format: "uuid" }),
+  name: Type.String(),
+  key: Type.String(),
+  description: Type.Union([Type.String(), Type.Null()]),
+  grades: Type.Array(FilterParamsGradeSchema),
+});
+
+export const CourseFilterParamsResponse = Type.Object({
+  ...BaseResponseSchema.properties,
+  data: Type.Array(FilterParamsCategoryItemSchema),
+});
+

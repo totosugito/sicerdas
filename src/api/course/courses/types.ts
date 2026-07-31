@@ -54,3 +54,25 @@ export type CourseFormValues = Omit<AdminCreateCourseInput, "educationGradeId" |
   newThumbnailFile?: File | null;
 };
 
+export interface FilterParamsGrade {
+  id: number;
+  name: string;
+  stats: {
+    activeCount: number;
+    totalCount: number;
+  };
+}
+
+export interface FilterParamsCategoryData {
+  id: string;
+  name: string;
+  key: string;
+  description: string | null;
+  grades: FilterParamsGrade[];
+}
+
+export interface CourseFilterParamsResponse extends BaseResponse {
+  data: FilterParamsCategoryData[];
+}
+
+

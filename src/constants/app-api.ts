@@ -87,6 +87,14 @@ export const AppApi = {
       },
       list: APP_URL_API + "/course/courses/list",
       detail: APP_URL_API + "/course/courses/detail/:id",
+      structure: APP_URL_API + "/course/courses/structure/:id",
+      filterParams: APP_URL_API + "/course/courses/filter-params",
+      user: {
+        bookmark: APP_URL_API + "/course/courses/user/bookmark",
+        rating: APP_URL_API + "/course/courses/user/rating",
+        favorites: APP_URL_API + "/course/courses/user/favorites",
+        like: APP_URL_API + "/course/courses/user/like",
+      },
     },
     chapters: {
       admin: {

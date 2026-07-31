@@ -51,6 +51,7 @@ export const AppRoute = {
         edit: { url: "/course/admin/edit-course/$id" },
         detail: { url: "/course/admin/detail-course/$id" },
       },
+      courses: { url: "/courses" },
       detail: { url: "/course/$id" },
     },
     lectureTexts: {

@@ -32,3 +32,7 @@ export { useAdminCourseStructure } from "./admin/structure-course";
 // Public/Client exports
 export { useListCourseClient } from "./list-course";
 export { useDetailCourseClient } from "./detail-course";
+export { useCourseFilterParams } from "./filter-params";
+export { useCourseStructureClient } from "./structure-course";
+export type { FilterParamsCategoryData, FilterParamsGrade } from "./types";
+
