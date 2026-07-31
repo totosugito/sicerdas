@@ -219,7 +219,9 @@ export function UserAnalyticsChart({
             <div className="flex items-center justify-between text-xs text-muted-foreground px-2 pt-2 border-t border-border/40">
               <span>
                 {t(($) => $.user.management.dashboard.analytics.granularityLabel)}:{" "}
-                <strong className="capitalize text-foreground">{periodType}</strong>
+                <strong className="capitalize text-foreground">
+                  {periods.find((p) => p.id === periodType)?.label ?? periodType}
+                </strong>
               </span>
               <span>
                 {t(($) => $.user.management.dashboard.analytics.showingSnapshots, { count: history.length })}

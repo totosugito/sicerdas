@@ -18,7 +18,7 @@ export function UserKpiCards({ kpi, isLoading }: UserKpiCardsProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
           <Card key={i} className="shadow-xs">
-            <CardContent className="p-4 flex items-center justify-between">
+            <CardContent className="p-6 flex flex-row items-center justify-between gap-6">
               <div className="space-y-2">
                 <Skeleton className="h-4 w-24" />
                 <Skeleton className="h-7 w-16" />
@@ -118,7 +118,7 @@ export function UserKpiCards({ kpi, isLoading }: UserKpiCardsProps) {
             key={idx}
             className={`transition-all duration-200 hover:shadow-md border ${card.borderColor}`}
           >
-            <CardContent className="p-4 flex items-center justify-between">
+            <CardContent className="p-6 flex flex-row items-center justify-between gap-6">
               <div className="space-y-1">
                 <p className="text-xs font-medium text-muted-foreground">{card.title}</p>
                 <div className="text-2xl font-bold tracking-tight">{card.value}</div>
