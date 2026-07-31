@@ -47,6 +47,7 @@ export async function createCourseService(
       publishDateEnd: input.publishDateEnd ? new Date(input.publishDateEnd) : null,
       isPublic: input.isPublic ?? false,
       isSequential: input.isSequential ?? true,
+      versionId: input.versionId,
     })
     .returning();
 

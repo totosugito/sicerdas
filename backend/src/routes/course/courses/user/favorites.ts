@@ -5,7 +5,7 @@ import {
   FavoritesQuerySchema,
   FavoritesResponse,
   getFavoritesService,
-} from "../../../../modules/course/interactions/index.ts";
+} from "../../../../modules/course/courses/index.ts";
 
 const favoritesRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({

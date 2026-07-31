@@ -2,10 +2,10 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { ErrorResponseSchema } from "../../../../types/response.ts";
 import {
-  CourseIdParams,
+  CourseInteractionIdParams,
   LikeResponse,
   toggleLikeService,
-} from "../../../../modules/course/interactions/index.ts";
+} from "../../../../modules/course/courses/index.ts";
 
 const likeRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -13,14 +13,14 @@ const likeRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "POST",
     schema: {
       tags: ["User Course Interactions"],
-      params: CourseIdParams,
+      params: CourseInteractionIdParams,
       response: {
         200: LikeResponse,
         "4xx": ErrorResponseSchema,
       },
     },
     handler: async function handler(
-      request: FastifyRequest<{ Params: typeof CourseIdParams.static }>,
+      request: FastifyRequest<{ Params: typeof CourseInteractionIdParams.static }>,
       reply: FastifyReply,
     ) {
       const userId = request.session.user.id;

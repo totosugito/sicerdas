@@ -1,16 +1,18 @@
 import React from "react";
-import { Popover, PopoverContent, PopoverPositioner, PopoverTrigger } from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { Button } from "@/components/ui/button";
+import { ChevronsUpDown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  Combobox,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxItemIndicator,
+  ComboboxList,
+  ComboboxPopup,
+  ComboboxPositioner,
+  ComboboxTrigger,
+  ComboboxValue,
+} from "@/components/ui/combobox";
 
 export type FormComboboxProps = {
   field: any; // TanStack Form Field instance
@@ -41,12 +43,13 @@ export const FormCombobox = ({
   labelClassName = "",
   showMessage = true,
   className,
+  disabled,
   ...props
 }: FormComboboxProps) => {
   const popoverClassName = item.popoverClassName ?? "min-w-[250px]";
   const [open, setOpen] = React.useState(false);
+  const [searchValue, setSearchValue] = React.useState("");
 
-  const selectedRef = React.useRef<HTMLDivElement>(null);
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
@@ -67,15 +70,19 @@ export const FormCombobox = ({
     [item],
   );
 
-  React.useEffect(() => {
-    if (open) {
-      requestAnimationFrame(() => {
-        if (selectedRef.current) {
-          selectedRef.current.scrollIntoView({ block: "nearest" });
-        }
-      });
-    }
-  }, [open]);
+  const handleInputValueChange = React.useCallback(
+    (value: string, eventInfo: { reason: any }) => {
+      setSearchValue(value);
+      if (eventInfo.reason === "input" && item?.onSearchChange) {
+        handleSearchChange(value);
+      }
+    },
+    [item?.onSearchChange, handleSearchChange]
+  );
+
+  const selectedOption = React.useMemo(() => {
+    return item?.options.find((opt) => opt.value === field.state.value) || null;
+  }, [item?.options, field.state.value]);
 
   return (
     <div data-slot="form-item" className="grid gap-2">
@@ -83,93 +90,74 @@ export const FormCombobox = ({
         {item.label}
         {item.required && <span className="text-red-500">*</span>}
       </field.Label>
-      <Popover open={open} onOpenChange={setOpen} {...props} modal={true}>
+      <Combobox
+        open={open}
+        onOpenChange={setOpen}
+        value={selectedOption}
+        onValueChange={(nextVal) => {
+          field.handleChange(nextVal ? nextVal.value : "");
+        }}
+        items={item?.options || []}
+        itemToStringLabel={(opt) => opt.label}
+        filter={item?.serverSideSearch ? null : undefined}
+        inputValue={searchValue}
+        onInputValueChange={handleInputValueChange}
+        {...props}
+      >
         <field.Control>
-          <PopoverTrigger
-            render={
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={open}
-                className={cn(
-                  "w-full justify-between font-normal min-w-0 pr-10 relative",
-                  field.state.value ? "" : "text-muted-foreground",
-                  className,
-                )}
-                disabled={props?.disabled}
-              >
-                <span className="truncate overflow-hidden text-left flex-1 mr-2">
-                  {field.state.value
-                    ? item?.options.find((it: any) => it.value === field.state.value)?.label
-                    : item?.placeholder ?? "Select option"}
-                </span>
-                <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 absolute right-3 top-1/2 -translate-y-1/2" />
-              </Button>
-            }
-          />
+          <ComboboxTrigger
+            className={cn(
+              "w-full justify-between font-normal min-w-0 pr-10 relative text-left",
+              field.state.value ? "" : "text-muted-foreground",
+              className,
+            )}
+            disabled={disabled}
+          >
+            <ComboboxValue placeholder={item?.placeholder ?? "Select option"} />
+            <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 absolute right-3 top-1/2 -translate-y-1/2" />
+          </ComboboxTrigger>
         </field.Control>
-        <PopoverPositioner>
-          <PopoverContent
+        <ComboboxPositioner sideOffset={4}>
+          <ComboboxPopup
             className={cn(
               "w-[var(--anchor-width)] p-0 z-50",
               popoverClassName,
             )}
+            onScroll={(e) => {
+              const target = e.currentTarget;
+              if (target.scrollHeight - target.scrollTop <= target.clientHeight + 1) {
+                if (item?.onScrollEnd) {
+                  item.onScrollEnd();
+                }
+              }
+            }}
           >
-            <Command
-              key={`${item?.options?.length ?? 0}-${item?.isLoading ? "loading" : "ready"}`}
-              shouldFilter={!item?.serverSideSearch}
-              filter={(value, search) => {
-                if (item?.serverSideSearch) return 1;
-                const option = item?.options.find(
-                  (it: any) => String(it.value).toLowerCase() === value.toLowerCase(),
-                );
-                if (!option) return 0;
-                return option.label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
-              }}
-            >
-              <CommandInput
-                placeholder={item?.searchPlaceholder ?? "Search..."}
-                className="h-9"
-                onValueChange={item?.onSearchChange ? handleSearchChange : undefined}
-              />
-              <CommandList
-                onScroll={(e) => {
-                  const target = e.currentTarget;
-                  if (target.scrollHeight - target.scrollTop <= target.clientHeight + 1) {
-                    if (item?.onScrollEnd) {
-                      item.onScrollEnd();
-                    }
-                  }
-                }}
-              >
-                <CommandEmpty>{item.isLoading ? "Loading..." : "No item found."}</CommandEmpty>
-                <CommandGroup>
-                  {item?.options.map((it: any) => (
-                    <CommandItem
-                      ref={field.state.value === it.value ? selectedRef : null}
-                      key={it.value}
-                      value={it.value}
-                      onSelect={() => {
-                        const newValue = it.value === field.state.value ? "" : it.value;
-                        field.handleChange(newValue);
-                        setOpen(false);
-                      }}
-                    >
-                      {it.label}
-                      <Check
-                        className={cn(
-                          "ml-auto h-4 w-4",
-                          field.state.value === it.value ? "opacity-100" : "opacity-0",
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </PopoverPositioner>
-      </Popover>
+            <ComboboxInput
+              placeholder={item?.searchPlaceholder ?? "Search..."}
+              className="h-9 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 border-b focus-visible:border-border rounded-none"
+            />
+            <ComboboxEmpty className="text-center text-sm text-muted-foreground empty:p-0">
+              {item.isLoading || (searchValue && !item?.options.some(opt => opt.label.toLowerCase().includes(searchValue.toLowerCase()))) ? (
+                <div className="py-6">
+                  {item.isLoading ? "Loading..." : "No item found."}
+                </div>
+              ) : null}
+            </ComboboxEmpty>
+            <ComboboxList className="p-1">
+              {(it: { label: string; value: string }) => (
+                <ComboboxItem
+                  key={it.value}
+                  value={it}
+                  className="cursor-pointer flex items-center justify-between pl-4 pr-4 py-2"
+                >
+                  <span className="truncate">{it.label}</span>
+                  <ComboboxItemIndicator className="col-start-auto ml-auto shrink-0" />
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxPopup>
+        </ComboboxPositioner>
+      </Combobox>
       {item?.description && <field.Description>{item.description}</field.Description>}
       {showMessage && <field.Message />}
     </div>

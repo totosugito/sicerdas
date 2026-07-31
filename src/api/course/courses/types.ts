@@ -47,9 +47,10 @@ export interface UploadCourseThumbnailRequest {
   action?: "remove";
 }
 
-export type CourseFormValues = Omit<AdminCreateCourseInput, "educationGradeId" | "price"> & {
+export type CourseFormValues = Omit<AdminCreateCourseInput, "educationGradeId" | "price" | "versionId"> & {
   educationGradeId: string | number;
   price?: number | string;
+  versionId: string | number;
   thumbnail?: string | null;
   newThumbnailFile?: File | null;
 };

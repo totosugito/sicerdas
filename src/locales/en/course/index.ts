@@ -94,6 +94,11 @@ export default {
         label: "Sequential Learning",
         description: "Lectures must be completed in order",
       },
+      versionId: {
+        label: "Version",
+        placeholder: "Select version",
+        required: "Version is required",
+      },
       thumbnail: {
         label: "Course Thumbnail",
         upload: "Upload Image",

@@ -6,6 +6,7 @@ import {
   CourseListResponse,
 } from "../../../modules/course/courses/courses.schema.ts";
 import { listCourseService } from "../../../modules/course/courses/services/admin/list-course.service.ts";
+import { EnumContentType } from "../../../db/schema/enum/enum-app.ts";
 
 const publicListRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -24,7 +25,11 @@ const publicListRoute: FastifyPluginAsyncTypebox = async (app) => {
       req: FastifyRequest<{ Body: typeof CourseListQuery.static }>,
       reply: FastifyReply,
     ) {
-      const result = await listCourseService(req.body, true);
+      const latestVersionId = app.versionCache.get(EnumContentType.COURSE);
+      const result = await listCourseService(
+        { ...req.body, versionId: req.body.versionId ?? (latestVersionId ?? undefined) },
+        true,
+      );
 
       if (!result.success) {
         const message = req.t(result.errorKey!);

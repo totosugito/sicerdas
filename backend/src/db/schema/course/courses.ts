@@ -20,6 +20,7 @@ import {
   PgEnumPublishDateType,
 } from "./enums.ts";
 import { educationCategories, educationGrades } from "../education/index.ts";
+import { appVersion } from "../app/app-version.ts";
 
 
 /**
@@ -93,6 +94,7 @@ export const courses = pgTable(
     activeChapters: integer("active_chapters").notNull().default(0),
     totalLectures: integer("total_lectures").notNull().default(0),
     activeLectures: integer("active_lectures").notNull().default(0),
+    versionId: integer("version_id").references(() => appVersion.id, { onDelete: "set null" }),
     extra: jsonb("extra").$type<Record<string, unknown>>().default({}),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -105,6 +107,7 @@ export const courses = pgTable(
     index("courses_status_idx").on(table.status),
     index("courses_is_public_idx").on(table.isPublic),
     index("courses_created_at_idx").on(table.createdAt),
+    index("courses_version_id_idx").on(table.versionId),
   ],
 );
 

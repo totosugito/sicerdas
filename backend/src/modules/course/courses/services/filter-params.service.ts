@@ -2,7 +2,7 @@ import { db } from "../../../../db/db-pool.ts";
 import { courses } from "../../../../db/schema/course/courses.ts";
 import { educationCategories } from "../../../../db/schema/education/categories.ts";
 import { educationGrades } from "../../../../db/schema/education/grades.ts";
-import { eq, count } from "drizzle-orm";
+import { eq, count, and } from "drizzle-orm";
 import { EnumContentStatus } from "../../../../db/schema/enum/enum-app.ts";
 import type { ServiceResponse } from "../../../../types/index.ts";
 
@@ -41,7 +41,12 @@ export async function filterParamsService(): Promise<FilterParamsResult> {
     .from(courses)
     .innerJoin(educationCategories, eq(courses.categoryId, educationCategories.id))
     .innerJoin(educationGrades, eq(courses.educationGradeId, educationGrades.id))
-    .where(eq(courses.status, EnumContentStatus.PUBLISHED))
+    .where(
+      and(
+        eq(courses.status, EnumContentStatus.PUBLISHED),
+        eq(courses.isPublic, true)
+      )
+    )
     .groupBy(
       educationCategories.id,
       educationCategories.name,

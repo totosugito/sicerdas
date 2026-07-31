@@ -31,6 +31,7 @@ export async function listCourseService(
     status,
     sortBy = "createdAt",
     sortOrder = "desc",
+    versionId,
   } = params;
 
   const offset = (page - 1) * limit;
@@ -43,6 +44,10 @@ export async function listCourseService(
     conditions.push(eq(courses.status, status));
   } else {
     conditions.push(ne(courses.status, EnumContentStatus.DELETED));
+  }
+
+  if (versionId) {
+    conditions.push(eq(courses.versionId, versionId));
   }
 
   if (categoryKey) {

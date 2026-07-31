@@ -2,11 +2,11 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { ErrorResponseSchema } from "../../../../types/response.ts";
 import {
-  CourseIdParams,
+  CourseInteractionIdParams,
   RatingBody,
   RatingResponse,
   rateCourseService,
-} from "../../../../modules/course/interactions/index.ts";
+} from "../../../../modules/course/courses/index.ts";
 
 const ratingRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -14,7 +14,7 @@ const ratingRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "POST",
     schema: {
       tags: ["User Course Interactions"],
-      params: CourseIdParams,
+      params: CourseInteractionIdParams,
       body: RatingBody,
       response: {
         200: RatingResponse,
@@ -23,7 +23,7 @@ const ratingRoute: FastifyPluginAsyncTypebox = async (app) => {
     },
     handler: async function handler(
       request: FastifyRequest<{
-        Params: typeof CourseIdParams.static;
+        Params: typeof CourseInteractionIdParams.static;
         Body: typeof RatingBody.static;
       }>,
       reply: FastifyReply,

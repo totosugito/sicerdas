@@ -47,6 +47,7 @@ function AdminCourseEditPage() {
       status: (courseData?.status as any) || EnumContentStatus.DRAFT,
       isPublic: courseData?.isPublic ?? false,
       isSequential: courseData?.isSequential ?? true,
+      versionId: courseData?.versionId ? String(courseData.versionId) : "",
       thumbnail: courseData?.thumbnail,
     };
   }, [courseData]);
@@ -73,6 +74,7 @@ function AdminCourseEditPage() {
       status: (values.status as any) || EnumContentStatus.DRAFT,
       isPublic: values.isPublic ?? false,
       isSequential: values.isSequential ?? true,
+      versionId: Number(values.versionId),
     };
 
     updateMutation.mutate(

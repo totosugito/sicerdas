@@ -10,7 +10,8 @@ import { cn } from "@/lib/utils";
 import { UploadCloud, Trash2, Info, BookOpen } from "lucide-react";
 import { useListCategorySimple } from "@/api/education/categories";
 import { useListGradeSimple } from "@/api/education/grades";
-import { EnumContentStatus } from "@/api/types";
+import { EnumContentStatus, EnumContentType } from "@/api/types";
+import { useListVersionSimple } from "@/api/version/list-version-simple";
 import { CourseFormValues } from "@/api/course/courses";
 import { CourseStatusBadge } from "@/features/components";
 
@@ -26,6 +27,10 @@ export function CourseForm({ defaultValues, onSubmit, isPending }: CourseFormPro
 
   const { data: categoriesData, isLoading: isLoadingCategories } = useListCategorySimple({ limit: 1000 });
   const { data: gradesData, isLoading: isLoadingGrades } = useListGradeSimple({ limit: 1000 });
+  const { data: versionData, isLoading: isLoadingVersions } = useListVersionSimple({
+    dataType: EnumContentType.COURSE,
+    limit: 1000,
+  });
 
   const categoryOptions = (categoriesData?.data?.items || []).map((cat) => ({
     label: cat.label,
@@ -35,6 +40,11 @@ export function CourseForm({ defaultValues, onSubmit, isPending }: CourseFormPro
   const gradeOptions = (gradesData?.data?.items || []).map((grade) => ({
     label: grade.label,
     value: grade.value,
+  }));
+
+  const versionOptions = (versionData?.data?.items || []).map((v) => ({
+    label: `${v.id} - ${v.name}`,
+    value: v.id.toString(),
   }));
 
   const statusOptions = Object.entries(EnumContentStatus).map(([_, val]) => ({
@@ -47,6 +57,7 @@ export function CourseForm({ defaultValues, onSubmit, isPending }: CourseFormPro
     courseName: z.string().min(2, t(($) => $.course.courses.form.courseName.required)),
     categoryId: z.string().min(1, t(($) => $.course.courses.form.categoryId.required)),
     educationGradeId: z.coerce.number().min(1, t(($) => $.course.courses.form.educationGradeId.required)),
+    versionId: z.coerce.number().min(1, t(($) => $.course.courses.form.versionId.required)),
     courseDescription: z.string().optional(),
     whatYouWillLearn: z.string().optional(),
     price: z.coerce.number().min(0).optional(),
@@ -64,6 +75,7 @@ export function CourseForm({ defaultValues, onSubmit, isPending }: CourseFormPro
       courseName: "",
       categoryId: "",
       educationGradeId: "",
+      versionId: "",
       courseDescription: "",
       whatYouWillLearn: "",
       price: 0,
@@ -86,6 +98,7 @@ export function CourseForm({ defaultValues, onSubmit, isPending }: CourseFormPro
         courseName: "",
         categoryId: "",
         educationGradeId: "",
+        versionId: "",
         courseDescription: "",
         whatYouWillLearn: "",
         price: 0,
@@ -147,6 +160,15 @@ export function CourseForm({ defaultValues, onSubmit, isPending }: CourseFormPro
       placeholder: t(($) => $.course.courses.form.educationGradeId.placeholder),
       options: gradeOptions,
       isLoading: isLoadingGrades,
+      required: true,
+    },
+    versionId: {
+      type: "combobox",
+      name: "versionId",
+      label: t(($) => $.course.courses.form.versionId.label),
+      placeholder: t(($) => $.course.courses.form.versionId.placeholder),
+      options: versionOptions,
+      isLoading: isLoadingVersions,
       required: true,
     },
     price: {
@@ -285,6 +307,10 @@ export function CourseForm({ defaultValues, onSubmit, isPending }: CourseFormPro
 
                 <form.AppField name="educationGradeId">
                   {(field: any) => <ControlForm field={field} item={formConfig.educationGradeId} showMessage={false} />}
+                </form.AppField>
+
+                <form.AppField name="versionId">
+                  {(field: any) => <ControlForm field={field} item={formConfig.versionId} showMessage={false} />}
                 </form.AppField>
 
                 <form.AppField name="price">

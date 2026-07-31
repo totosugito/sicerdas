@@ -26,6 +26,7 @@ export const CourseBaseFields = {
   publishDateEnd: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
   isPublic: Type.Boolean(),
   isSequential: Type.Boolean(),
+  versionId: Type.Union([Type.Number(), Type.Null()]),
   extra: Type.Any(),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
@@ -74,6 +75,7 @@ export const AdminCreateCourseBody = Type.Object({
   publishDateEnd: Type.Optional(Type.String({ format: "date-time" })),
   isPublic: Type.Optional(Type.Boolean({ default: false })),
   isSequential: Type.Optional(Type.Boolean({ default: true })),
+  versionId: Type.Number(),
 });
 
 export type AdminCreateCourseInput = Static<typeof AdminCreateCourseBody>;
@@ -135,6 +137,7 @@ export const CourseListQuery = Type.Object({
   status: Type.Optional(Type.Enum(EnumContentStatus)),
   sortBy: Type.Optional(Type.String({ default: "createdAt" })),
   sortOrder: Type.Optional(Type.String({ default: "desc" })),
+  versionId: Type.Optional(Type.Number()),
 });
 
 export type CourseListQueryParams = Static<typeof CourseListQuery>;
@@ -186,5 +189,67 @@ export const FilterParamsCategoryItemSchema = Type.Object({
 export const CourseFilterParamsResponse = Type.Object({
   ...BaseResponseSchema.properties,
   data: Type.Array(FilterParamsCategoryItemSchema),
+});
+
+// --- User Interaction Schemas ---
+
+export const CourseInteractionIdParams = Type.Object({
+  courseId: Type.String({ format: "uuid" }),
+});
+export type CourseInteractionIdParamsType = Static<typeof CourseInteractionIdParams>;
+
+export const FavoritesQuerySchema = Type.Object({
+  page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
+  limit: Type.Optional(Type.Number({ default: 10, minimum: 1, maximum: 100 })),
+});
+export type FavoritesQuerySchemaType = Static<typeof FavoritesQuerySchema>;
+
+export const RatingBody = Type.Object({
+  rating: Type.Number({ minimum: 0, maximum: 5 }),
+});
+export type RatingBodyType = Static<typeof RatingBody>;
+
+export const InteractionDataSchema = Type.Object({
+  courseId: Type.String({ format: "uuid" }),
+  userId: Type.String({ format: "uuid" }),
+  rating: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
+  bookmarked: Type.Optional(Type.Boolean()),
+  liked: Type.Optional(Type.Boolean()),
+  disliked: Type.Optional(Type.Boolean()),
+});
+
+export const RatingResponse = Type.Object({
+  ...BaseResponseSchema.properties,
+  data: InteractionDataSchema,
+});
+
+export const BookmarkResponse = Type.Object({
+  ...BaseResponseSchema.properties,
+  data: InteractionDataSchema,
+});
+
+export const LikeResponse = Type.Object({
+  ...BaseResponseSchema.properties,
+  data: InteractionDataSchema,
+});
+
+export const FavoriteCourseItemSchema = Type.Object({
+  id: Type.String({ format: "uuid" }),
+  courseCode: Type.String(),
+  courseName: Type.String(),
+  courseDescription: Type.Union([Type.String(), Type.Null()]),
+  thumbnail: Type.Union([Type.String(), Type.Null()]),
+  price: Type.Number(),
+  bookmarked: Type.Boolean(),
+  liked: Type.Boolean(),
+  rating: Type.Union([Type.Number(), Type.Null()]),
+});
+
+export const FavoritesResponse = Type.Object({
+  ...BaseResponseSchema.properties,
+  data: Type.Object({
+    items: Type.Array(FavoriteCourseItemSchema),
+    meta: PaginationMetaSchema,
+  }),
 });
 

@@ -68,6 +68,7 @@ export async function updateCourseService(
       }),
       ...(input.isPublic !== undefined && { isPublic: input.isPublic }),
       ...(input.isSequential !== undefined && { isSequential: input.isSequential }),
+      ...(input.versionId !== undefined && { versionId: input.versionId }),
       updatedAt: new Date(),
     })
     .where(eq(courses.id, id))

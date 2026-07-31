@@ -102,6 +102,11 @@ export default {
         label: "Pembelajaran Berurutan",
         description: "Modul harus diselesaikan secara berurutan",
       },
+      versionId: {
+        label: "Versi",
+        placeholder: "Pilih versi",
+        required: "Versi wajib dipilih",
+      },
       thumbnail: {
         label: "Thumbnail Kursus",
         upload: "Unggah Gambar",

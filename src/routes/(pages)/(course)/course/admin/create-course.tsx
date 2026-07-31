@@ -34,6 +34,7 @@ function AdminCourseCreatePage() {
       status: values.status || EnumContentStatus.DRAFT,
       isPublic: values.isPublic ?? false,
       isSequential: values.isSequential ?? true,
+      versionId: Number(values.versionId),
     };
 
     createMutation.mutate(payload, {
