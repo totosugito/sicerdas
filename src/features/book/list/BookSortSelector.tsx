@@ -1,7 +1,5 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectPositioner } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { ArrowUpAZ, ArrowDownAZ } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
+import { SortSelector } from "@/features/components";
 
 interface BookSortSelectorProps {
   sortBy: string;
@@ -24,44 +22,13 @@ export const BookSortSelector = ({
     // { value: 'downloadCount', label: t($ => $.book.info.sort.downloadCount) },
   ];
 
-  const handleSortFieldChange = (value: string | null) => {
-    if (value !== null) {
-      onSortChange(value, sortOrder);
-    }
-  };
-
-  const toggleSortOrder = () => {
-    const newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-    onSortChange(sortBy, newOrder);
-  };
-
   return (
-    <div className="flex items-center gap-2">
-      <Select value={sortBy} onValueChange={handleSortFieldChange}>
-        <SelectTrigger className="w-[160px]">
-          <SelectValue placeholder={t($ => $.book.info.sort.placeholder)} />
-        </SelectTrigger>
-        <SelectPositioner>
-          <SelectContent>
-            {sortOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </SelectPositioner>
-      </Select>
-      <Button
-        variant="outline"
-        onClick={toggleSortOrder}
-        className="p-0"
-      >
-        {sortOrder === 'asc' ? (
-          <ArrowUpAZ className="h-4 w-4" />
-        ) : (
-          <ArrowDownAZ className="h-4 w-4" />
-        )}
-      </Button>
-    </div>
+    <SortSelector
+      options={sortOptions}
+      sortBy={sortBy}
+      sortOrder={sortOrder}
+      onSortChange={onSortChange}
+      placeholder={t($ => $.book.info.sort.placeholder)}
+    />
   );
 };

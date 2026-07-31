@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { z } from "zod";
 import { useBookList, useBookFilterParams } from "@/api/book";
-import { LayoutGrid, ListIcon, BookOpen } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { showNotifError } from "@/lib/show-notif";
 import {
   BooksSkeleton,
@@ -19,6 +19,7 @@ import { useAppStore } from "@/stores/useAppStore";
 import { Button } from "@/components/ui/button";
 import { Trans } from "react-i18next";
 import { useAppTranslation, getTranslationKey } from "@/lib/i18n-typed";
+import { ViewModeToggle } from "@/features/components";
 
 export const Route = createFileRoute("/(pages)/(book)/books")({
   validateSearch: z.object({
@@ -230,22 +231,11 @@ function RouteComponent() {
                   sortOrder={sortOrder}
                   onSortChange={handleSortChange}
                 />
-                <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
-                  <Button
-                    variant={viewMode === "grid" ? "default" : "ghost"}
-                    className="h-7 w-7"
-                    onClick={() => handleViewModeChange?.("grid")}
-                  >
-                    <LayoutGrid className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === "list" ? "default" : "ghost"}
-                    className="h-7 w-7"
-                    onClick={() => handleViewModeChange?.("list")}
-                  >
-                    <ListIcon className="w-4 h-4" />
-                  </Button>
-                </div>
+                <ViewModeToggle
+                  viewMode={viewMode}
+                  onViewModeChange={handleViewModeChange}
+                  iconOnly
+                />
               </div>
             </div>
             {/* Books Display */}
