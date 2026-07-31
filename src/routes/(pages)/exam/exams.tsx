@@ -18,7 +18,7 @@ import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from "@/components/table";
 import { useAppStore } from "@/stores/useAppStore";
 import { Button } from "@/components/ui/button";
-import { useAppTranslation } from "@/lib/i18n-typed";
+import { useAppTranslation, getTranslationKey } from "@/lib/i18n-typed";
 
 export const Route = createFileRoute("/(pages)/exam/exams")({
   validateSearch: z.object({
@@ -206,7 +206,7 @@ function RouteComponent() {
               {totalExams !== undefined && (
                 <p className="text-slate-500 dark:text-slate-400">
                   <Trans
-                    i18nKey="exam.packages.table.sort.showingText"
+                    i18nKey={getTranslationKey(($) => $.exam.packages.table.sort.showingText)}
                     values={{ count: exams.length, total: totalExams }}
                     components={{
                       bold: <span className="font-bold text-slate-900 dark:text-white" />,

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { z } from "zod";
-import { Trans } from "react-i18next";
 import { useBookList, useBookFilterParams } from "@/api/book";
 import { LayoutGrid, ListIcon, BookOpen } from "lucide-react";
 import { showNotifError } from "@/lib/show-notif";
@@ -18,7 +17,8 @@ import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from "@/components/table";
 import { useAppStore } from "@/stores/useAppStore";
 import { Button } from "@/components/ui/button";
-import { useAppTranslation } from "@/lib/i18n-typed";
+import { Trans } from "react-i18next";
+import { useAppTranslation, getTranslationKey } from "@/lib/i18n-typed";
 
 export const Route = createFileRoute("/(pages)/(book)/books")({
   validateSearch: z.object({
@@ -215,10 +215,10 @@ function RouteComponent() {
               {totalBooks !== undefined && (
                 <p className="text-slate-500 dark:text-slate-400">
                   <Trans
-                    i18nKey="book.info.showingText"
+                    i18nKey={getTranslationKey(($) => $.book.info.showingText)}
                     values={{ count: books.length, total: totalBooks }}
                     components={{
-                      bold: <span className="font-bold text-slate-900 dark:text-white" />,
+                      Bold: <span className="font-bold text-slate-900 dark:text-white" />,
                     }}
                   />
                 </p>

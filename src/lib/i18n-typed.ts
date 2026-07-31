@@ -63,3 +63,34 @@ export function useAppTranslation() {
 
     return { t, i18n };
 }
+
+/**
+ * Get the string key path of a translation selector dynamically for components like <Trans>.
+ * This ensures type safety for i18n keys while utilizing Trans component's interpolation features.
+ */
+export function getTranslationKey(selector: (s: TranslationSchema) => any): string {
+    const path: string[] = [];
+
+    const proxy = new Proxy({}, {
+        get(_, prop) {
+            const propertyName = prop.toString();
+            path.push(propertyName);
+
+            const nestedProxy = (innerPath: string[]): any => {
+                return new Proxy({}, {
+                    get(_, innerProp) {
+                        const innerPropertyName = innerProp.toString();
+                        innerPath.push(innerPropertyName);
+                        return nestedProxy(innerPath);
+                    }
+                });
+            };
+
+            return nestedProxy(path);
+        }
+    });
+
+    selector(proxy as any);
+    return path.join('.');
+}
+

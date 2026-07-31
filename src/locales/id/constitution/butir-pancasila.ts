@@ -15,5 +15,6 @@ export default {
     silaLower: "sila",
     noResultTitle: "Tidak Ada Hasil",
     noResultDesc: "Tidak ditemukan butir Pancasila yang sesuai dengan pencarian \"{{query}}\"",
-    clearSearch: "Hapus Pencarian"
+    clearSearch: "Hapus Pencarian",
+    foundResult: "Ditemukan <1>{{butirCount}}</1> butir dari <3>{{silaCount}}</3> sila"
 }
