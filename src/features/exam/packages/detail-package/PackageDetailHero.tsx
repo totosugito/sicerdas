@@ -1,12 +1,11 @@
 import type { PublicPackageDetailData } from "@/api/exam/packages";
-import { Badge } from "@/components/ui/badge";
+import { NewBadge, GradeBadge, CategoryBadge } from "@/features/components";
 import { Button } from "@/components/ui/button";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { cn } from "@/lib/utils";
 import { to_decimal_formatted } from "@/lib/my-utils";
 import { Heart, Star, ImageOff } from "lucide-react";
 import { useState } from "react";
-import { getGradeColor } from "@/lib/app/exam-utils";
 
 interface PackageDetailHeroProps {
   pkg: PublicPackageDetailData;
@@ -54,29 +53,9 @@ export const PackageDetailHero = ({
         <div className="flex flex-1 flex-col">
           <div className="flex flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
-              {pkg.isNew && (
-                <Badge
-                  variant="secondary"
-                  className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
-                >
-                  {t(($) => $.labels.new)}
-                </Badge>
-              )}
-              {pkg.category.name && (
-                <Badge variant="outline" className="bg-primary/5 text-primary">
-                  {pkg.category.name}
-                </Badge>
-              )}
-              {pkg.grade.name && (
-                <Badge
-                  className={cn(
-                    getGradeColor(pkg.grade.name),
-                    "text-white border-none shadow-sm text-xs px-2 py-0.5 font-medium",
-                  )}
-                >
-                  {pkg.grade.name}
-                </Badge>
-              )}
+              {pkg.isNew && <NewBadge variant="subtle" />}
+              {pkg.category.name && <CategoryBadge categoryName={pkg.category.name} />}
+              {pkg.grade.name && <GradeBadge gradeName={pkg.grade.name} />}
             </div>
 
             <div className="flex items-center gap-2 shrink-0">

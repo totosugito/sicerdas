@@ -10,6 +10,7 @@ import {
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
+import { ActiveStatusBadge } from "@/features/components";
 import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -206,11 +207,7 @@ export function SectionTable({
         const isActive = row.getValue("isActive") as boolean;
         return (
           <div className="flex justify-center">
-            <Badge variant={isActive ? "success" : "secondary"}>
-              {isActive
-                ? t(($) => $.exam.sections.table.status.active)
-                : t(($) => $.exam.sections.table.status.inactive)}
-            </Badge>
+            <ActiveStatusBadge isActive={isActive} />
           </div>
         );
       },
@@ -294,7 +291,7 @@ export function SectionTable({
                     className="text-destructive focus:text-destructive"
                     onClick={() => onDelete(section)}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    <Trash2 className="mr-2 h-4 w-4 text-destructive focus:text-destructive" />
                     {t(($) => $.exam.sections.table.actions.delete)}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>

@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { string_to_locale_date } from "@/lib/my-utils";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { ActiveStatusBadge } from "@/features/components";
 
 interface SubjectTableProps {
   data: SubjectListResponse;
@@ -100,26 +100,9 @@ export function SubjectTable({
       ),
       cell: ({ row }) => {
         const isActive = row.getValue("isActive") as boolean;
-        const colorClass = isActive
-          ? "bg-emerald-500/10 text-emerald-600 border-emerald-200 dark:border-emerald-900/50 dark:text-emerald-400"
-          : "bg-red-500/10 text-red-600 border-red-200 dark:border-red-900/50 dark:text-red-400";
-
-        const dotColor = isActive ? "bg-emerald-500" : "bg-red-500";
-        const label = isActive
-          ? t(($) => $.exam.subjects.table.status.active)
-          : t(($) => $.exam.subjects.table.status.inactive);
-
         return (
           <div className="flex justify-center">
-            <div
-              className={cn(
-                "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider",
-                colorClass,
-              )}
-            >
-              <span className={cn("h-1.5 w-1.5 rounded-full", dotColor)} />
-              <span>{label}</span>
-            </div>
+            <ActiveStatusBadge isActive={isActive} />
           </div>
         );
       },
@@ -178,7 +161,7 @@ export function SubjectTable({
                     className="text-destructive focus:text-destructive"
                     onClick={() => onDelete(subject)}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    <Trash2 className="mr-2 h-4 w-4 text-destructive focus:text-destructive" />
                     {t(($) => $.exam.subjects.table.actions.delete)}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>

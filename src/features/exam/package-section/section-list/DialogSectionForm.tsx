@@ -14,6 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { durationOnMinutes } from "@/constants/app-enum";
 import { EnumContentType } from "@/api/types";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export type DialogSectionFormProps = {
   open: boolean;
@@ -25,48 +26,59 @@ export type DialogSectionFormProps = {
 };
 
 const FormEntity = ({ values, form, packageIdDisabled }: any) => {
+  const { t } = useAppTranslation();
   return (
-    <div className="flex flex-col gap-4 w-full">
-      {values.packageId && (
-        <form.AppField name="packageId">
-          {(field: any) => (
-            <ControlForm
-              field={field}
-              item={values.packageId}
-              showMessage={false}
-              disabled={packageIdDisabled}
-            />
-          )}
+    <Tabs defaultValue="general" className="w-full">
+      <TabsList className="grid grid-cols-2 mb-4">
+        <TabsTrigger value="general">{t(($) => $.exam.sections.tabGeneral)}</TabsTrigger>
+        <TabsTrigger value="settings">{t(($) => $.exam.sections.tabSettings)}</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="general" className="flex flex-col gap-4 mt-2">
+        {values.packageId && (
+          <form.AppField name="packageId">
+            {(field: any) => (
+              <ControlForm
+                field={field}
+                item={values.packageId}
+                showMessage={false}
+                disabled={packageIdDisabled}
+              />
+            )}
+          </form.AppField>
+        )}
+        <form.AppField name="title">
+          {(field: any) => <ControlForm field={field} item={values.title} showMessage={false} />}
         </form.AppField>
-      )}
-      <form.AppField name="title">
-        {(field: any) => <ControlForm field={field} item={values.title} showMessage={false} />}
-      </form.AppField>
-      <form.AppField name="groupName">
-        {(field: any) => <ControlForm field={field} item={values.groupName} showMessage={false} />}
-      </form.AppField>
-      <form.AppField name="description">
-        {(field: any) => <ControlForm field={field} item={values.description} showMessage={false} />}
-      </form.AppField>
-      <form.AppField name="durationMinutes">
-        {(field: any) => <ControlForm field={field} item={values.durationMinutes} showMessage={false} />}
-      </form.AppField>
-      <form.AppField name="versionId">
-        {(field: any) => <ControlForm field={field} item={values.versionId} showMessage={false} />}
-      </form.AppField>
-      <form.AppField name="questionLimit">
-        {(field: any) => <ControlForm field={field} item={values.questionLimit} showMessage={false} />}
-      </form.AppField>
-      <form.AppField name="isActive">
-        {(field: any) => <ControlForm field={field} item={values.isActive} showMessage={false} />}
-      </form.AppField>
-      <form.AppField name="isRandomItem">
-        {(field: any) => <ControlForm field={field} item={values.isRandomItem} showMessage={false} />}
-      </form.AppField>
-      <form.AppField name="isRandomChoice">
-        {(field: any) => <ControlForm field={field} item={values.isRandomChoice} showMessage={false} />}
-      </form.AppField>
-    </div>
+        <form.AppField name="groupName">
+          {(field: any) => <ControlForm field={field} item={values.groupName} showMessage={false} />}
+        </form.AppField>
+        <form.AppField name="description">
+          {(field: any) => <ControlForm field={field} item={values.description} showMessage={false} />}
+        </form.AppField>
+        <form.AppField name="isActive">
+          {(field: any) => <ControlForm field={field} item={values.isActive} showMessage={false} />}
+        </form.AppField>
+      </TabsContent>
+
+      <TabsContent value="settings" className="flex flex-col gap-4 mt-2">
+        <form.AppField name="durationMinutes">
+          {(field: any) => <ControlForm field={field} item={values.durationMinutes} showMessage={false} />}
+        </form.AppField>
+        <form.AppField name="versionId">
+          {(field: any) => <ControlForm field={field} item={values.versionId} showMessage={false} />}
+        </form.AppField>
+        <form.AppField name="questionLimit">
+          {(field: any) => <ControlForm field={field} item={values.questionLimit} showMessage={false} />}
+        </form.AppField>
+        <form.AppField name="isRandomItem">
+          {(field: any) => <ControlForm field={field} item={values.isRandomItem} showMessage={false} />}
+        </form.AppField>
+        <form.AppField name="isRandomChoice">
+          {(field: any) => <ControlForm field={field} item={values.isRandomChoice} showMessage={false} />}
+        </form.AppField>
+      </TabsContent>
+    </Tabs>
   );
 };
 

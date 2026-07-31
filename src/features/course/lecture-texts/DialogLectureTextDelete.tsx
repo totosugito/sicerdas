@@ -38,7 +38,7 @@ export function DialogLectureTextDelete({
           </span>
         ),
         variant: "destructive",
-        iconType: "error",
+        iconType: "delete",
         headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
         showInfoSection: true,
         infoTitle: t(($) => $.course.lectureTexts.deleteInfoTitle),

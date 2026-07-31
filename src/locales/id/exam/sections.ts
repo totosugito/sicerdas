@@ -32,6 +32,8 @@ export default {
   createError: "Gagal membuat bagian",
   pageTitle: "Detail Paket Ujian",
   createButton: "Tambah Bagian",
+  tabGeneral: "Informasi Umum",
+  tabSettings: "Pengaturan & Acak Soal",
 
   curriculumDescription: "Kelola bagian-bagian untuk paket ujian ini.",
   noSections: "Tidak ada bagian",
@@ -74,10 +76,6 @@ export default {
       actions: "Aksi",
       description: "Deskripsi",
       version: "Versi",
-    },
-    status: {
-      active: "Aktif",
-      inactive: "Tidak Aktif",
     },
     actions: {
       openMenu: "Buka menu",

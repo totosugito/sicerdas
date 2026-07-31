@@ -304,13 +304,26 @@ function AdminExamPackageSectionsPage() {
       <DialogModal
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
+        variantSubmit="destructive"
         modal={{
           title: t(($) => $.exam.sections.delete.confirmTitle),
-          desc: t(($) => $.exam.sections.delete.confirmDesc, { title: selectedSection?.title }),
+          desc: (() => {
+            const confirmTemplate = t(($) => $.exam.sections.delete.confirmDesc, { title: "__TITLE__" });
+            const [before, after] = confirmTemplate.replace("'__TITLE__'", "__TITLE__").split("__TITLE__");
+            return (
+              <span>
+                {before}
+                <span className="font-semibold text-foreground bg-muted px-1.5 py-0.5 rounded border border-border/50">
+                  {selectedSection?.title}
+                </span>
+                {after}
+              </span>
+            );
+          })(),
           infoContainer: t(($) => $.exam.sections.delete.deleteInfo),
           infoContainerVariant: "error",
           variant: "destructive",
-          iconType: "error",
+          iconType: "delete",
           headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
           textCancel: t(($) => $.labels.cancel),
           textConfirm: t(($) => $.labels.delete),

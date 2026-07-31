@@ -13,7 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
-import { AlertTriangle, CheckCircle, Info, XCircle, HelpCircle, X } from "lucide-react";
+import { AlertTriangle, CheckCircle, Info, XCircle, HelpCircle, X, Trash2 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 
 export type DialogInfoItem = {
@@ -31,7 +31,7 @@ export type ModalProps = {
   onCancelClick?: () => void;
   modal?: boolean;
   icon?: React.ReactNode;
-  iconType?: "warning" | "success" | "info" | "error" | "question";
+  iconType?: "warning" | "success" | "info" | "error" | "question" | "delete" | "trash";
   showCloseButton?: boolean;
   variant?: "default" | "destructive";
   headerIcon?: React.ReactNode;
@@ -84,6 +84,18 @@ const THEMES = {
   },
   error: {
     icon: XCircle,
+    iconColor: "text-destructive",
+    bg: "bg-destructive/10",
+    infoClass: "border-destructive/20 bg-destructive/5",
+  },
+  delete: {
+    icon: Trash2,
+    iconColor: "text-destructive",
+    bg: "bg-destructive/10",
+    infoClass: "border-destructive/20 bg-destructive/5",
+  },
+  trash: {
+    icon: Trash2,
     iconColor: "text-destructive",
     bg: "bg-destructive/10",
     infoClass: "border-destructive/20 bg-destructive/5",

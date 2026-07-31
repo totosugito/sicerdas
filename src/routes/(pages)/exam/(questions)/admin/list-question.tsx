@@ -317,13 +317,14 @@ function AdminExamQuestionsPage() {
       <DialogModal
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
+        variantSubmit="destructive"
         modal={{
           title: t(($) => $.exam.questions.delete.confirmTitle),
           desc: t(($) => $.exam.questions.delete.confirmDesc),
           infoContainer: t(($) => $.exam.questions.delete.deleteInfo),
           infoContainerVariant: "error",
           variant: "destructive",
-          iconType: "error",
+          iconType: "delete",
           headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
           textCancel: t(($) => $.labels.cancel),
           textConfirm: t(($) => $.labels.delete),

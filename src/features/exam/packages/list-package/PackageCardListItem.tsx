@@ -1,7 +1,7 @@
 import React from "react";
 import { ExamPackage } from "@/api/exam/packages";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { Badge } from "@/components/ui/badge";
+import { ActiveStatusBadge, ClonedBadge, NewBadge } from "@/features/components";
 import { Button } from "@/components/ui/button";
 import {
   Clock,
@@ -29,7 +29,6 @@ import {
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { string_to_locale_date } from "@/lib/my-utils";
-import { cn } from "@/lib/utils";
 
 interface PackageCardListItemProps {
   pkg: ExamPackage;
@@ -76,27 +75,10 @@ export function PackageCardListItem({ pkg, onDelete, onClone }: PackageCardListI
 
         {/* Status Badge Overlay */}
         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-          {pkg.parentPackageId && (
-            <Badge className="bg-sky-500 text-white hover:bg-sky-500/90 dark:bg-sky-500/20 dark:text-sky-400 dark:border-sky-500/30 shadow-sm border-transparent whitespace-nowrap">
-              {t(($) => $.exam.packages.table.actions.clone)}
-            </Badge>
-          )}
-          <Badge
-            className={cn(
-              "shadow-sm border-transparent",
-              pkg.isActive
-                ? "bg-emerald-600 text-white hover:bg-emerald-600/90 dark:bg-emerald-600/20 dark:text-emerald-400 dark:border-emerald-500/30"
-                : "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-400",
-            )}
-          >
-            {pkg.isActive ? t(($) => $.labels.active) : t(($) => $.labels.inactive)}
-          </Badge>
+          {pkg.parentPackageId && <ClonedBadge />}
+          <ActiveStatusBadge isActive={pkg.isActive} />
 
-          {pkg.isNew && (
-            <Badge className="bg-amber-500 text-white hover:bg-amber-500/90 shadow-sm border-transparent animate-pulse whitespace-nowrap">
-              {t(($) => $.labels.new)}
-            </Badge>
-          )}
+          {pkg.isNew && <NewBadge />}
         </div>
 
         <div className="absolute top-3 right-3 z-10">
@@ -145,7 +127,7 @@ export function PackageCardListItem({ pkg, onDelete, onClone }: PackageCardListI
                   className="text-destructive focus:text-destructive cursor-pointer"
                   onClick={() => onDelete(pkg)}
                 >
-                  <Trash2 className="mr-2 h-4 w-4" />
+                  <Trash2 className="mr-2 h-4 w-4 text-destructive focus:text-destructive" />
                   {t(($) => $.labels.delete)}
                 </DropdownMenuItem>
               </DropdownMenuGroup>

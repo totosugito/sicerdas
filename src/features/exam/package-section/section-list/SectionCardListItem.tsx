@@ -21,9 +21,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
 import { string_to_locale_date } from "@/lib/my-utils";
-import { cn } from "@/lib/utils";
+import { ClonedBadge, ActiveStatusBadge } from "@/features/components";
 
 interface SectionCardListItemProps {
   section: ExamPackageSection;
@@ -59,17 +58,9 @@ export function SectionCardListItem({ section, onEdit, onDelete }: SectionCardLi
           </svg>
         </div>
 
-        <div className="absolute top-4 left-4 flex gap-2">
-          <Badge
-            className={cn(
-              "shadow-sm border-transparent",
-              section.isActive
-                ? "bg-emerald-600 text-white hover:bg-emerald-600/90 dark:bg-emerald-600/20 dark:text-emerald-400 dark:border-emerald-500/30"
-                : "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-400",
-            )}
-          >
-            {section.isActive ? t(($) => $.labels.active) : t(($) => $.labels.inactive)}
-          </Badge>
+        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+          {section.parentPackageId && <ClonedBadge />}
+          <ActiveStatusBadge isActive={section.isActive} />
         </div>
 
         <div className="absolute top-3 right-3 z-10">
@@ -95,7 +86,7 @@ export function SectionCardListItem({ section, onEdit, onDelete }: SectionCardLi
                   className="text-destructive focus:text-destructive cursor-pointer"
                   onClick={() => onDelete(section)}
                 >
-                  <Trash2 className="mr-2 h-4 w-4" />
+                  <Trash2 className="mr-2 h-4 w-4 text-destructive focus:text-destructive" />
                   {t(($) => $.labels.delete)}
                 </DropdownMenuItem>
               </DropdownMenuGroup>

@@ -78,6 +78,7 @@ export async function adminListSectionService(
     .select({
       section: examPackageSections,
       packageName: examPackages.title,
+      parentPackageId: examPackages.parentPackageId,
       isNew: latestVersionId
         ? sql<boolean>`${examPackageSections.versionId} = ${latestVersionId}`.as("isNew")
         : sql<boolean>`false`.as("isNew"),
@@ -177,6 +178,7 @@ export async function adminListSectionService(
         return {
           ...s,
           packageName: r.packageName,
+          parentPackageId: r.parentPackageId,
           versionId: s.versionId,
           isNew: !!r.isNew,
           createdAt: s.createdAt.toISOString(),

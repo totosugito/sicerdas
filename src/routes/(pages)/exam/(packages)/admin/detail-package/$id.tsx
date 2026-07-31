@@ -209,11 +209,12 @@ function DetailPackagePage() {
       <DialogModal
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
+        variantSubmit="destructive"
         modal={{
           title: t(($) => $.exam.sections.deleteConfirm.title, { name: sectionToDelete?.title }),
           desc: t(($) => $.exam.sections.deleteConfirm.description),
           variant: "destructive",
-          iconType: "error",
+          iconType: "delete",
           headerIcon: <Trash2 className="h-5 w-5 text-destructive" />,
           showInfoSection: true,
           infoTitle: t(($) => $.exam.sections.deleteConfirm.infoTitle),

@@ -44,10 +44,6 @@ export default {
       updatedAt: "Diperbarui Pada",
       actions: "Aksi",
     },
-    status: {
-      active: "Aktif",
-      inactive: "Tidak Aktif",
-    },
     actions: {
       detail: "Detail",
       edit: "Ubah",

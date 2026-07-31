@@ -2,7 +2,6 @@ import { ExamPackage, ListPackagesResponse } from "@/api/exam/packages";
 import {
   DataTable,
   useDataTable,
-  DataTableFilter,
   createRowNumberColumn,
   DataTableColumnHeader,
   PaginationData,
@@ -10,7 +9,8 @@ import {
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, Pencil, Trash2, Eye, ImageIcon, Bookmark, Star, Copy } from "lucide-react";
+import { ClonedBadge, ActiveStatusBadge } from "@/features/components";
+import { MoreHorizontal, Pencil, Trash2, Eye, Bookmark, Star, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -99,11 +99,7 @@ export function PackageTable({
             >
               {row.getValue("title")}
             </Link>
-            {pkg.parentPackageId && (
-              <Badge variant="secondary" className="bg-sky-500/10 text-sky-600 border border-sky-500/20 dark:bg-sky-500/20 dark:text-sky-400 dark:border-sky-500/30 text-[10px] py-0.5 px-1.5 h-auto">
-                {t(($) => $.exam.packages.table.actions.clone)}
-              </Badge>
-            )}
+            {pkg.parentPackageId && <ClonedBadge variant="subtle" />}
           </div>
         );
       },
@@ -315,11 +311,7 @@ export function PackageTable({
         const isActive = row.getValue("isActive") as boolean;
         return (
           <div className="flex justify-center">
-            <Badge variant={isActive ? "success" : "secondary"}>
-              {isActive
-                ? t(($) => $.exam.packages.table.status.active)
-                : t(($) => $.exam.packages.table.status.inactive)}
-            </Badge>
+            <ActiveStatusBadge isActive={isActive} />
           </div>
         );
       },
@@ -412,7 +404,7 @@ export function PackageTable({
                     className="text-destructive focus:text-destructive"
                     onClick={() => onDelete(pkg)}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    <Trash2 className="mr-2 h-4 w-4 text-destructive focus:text-destructive" />
                     {t(($) => $.exam.packages.table.actions.delete)}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>

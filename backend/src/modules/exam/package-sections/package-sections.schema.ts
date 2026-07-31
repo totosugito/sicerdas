@@ -55,6 +55,7 @@ const PublicSectionItem = Type.Object({
 const AdminSectionItem = Type.Object({
   ...SectionBaseFields,
   packageName: Type.Union([Type.String(), Type.Null()]),
+  parentPackageId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
   isNew: Type.Boolean(),
   totalQuestions: Type.Number(),
   activeQuestions: Type.Number(),
