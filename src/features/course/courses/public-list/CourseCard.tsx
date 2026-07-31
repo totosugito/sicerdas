@@ -1,6 +1,5 @@
 import React from "react";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { GradeBadge } from "@/features/components/badge/GradeBadge";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import type { CourseItem } from "@/api/course/courses";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -51,21 +50,92 @@ const CourseCardView = ({ course, viewMode }: CourseCardViewProps) => {
     });
   };
 
+  if (isListView) {
+    return (
+      <Card
+        className="group hover:shadow-md hover:border-primary/30 transition-all duration-300 overflow-hidden cursor-pointer flex flex-row items-center gap-3 py-2 px-3"
+        onClick={handleCardClick}
+      >
+        {/* Thumbnail — small, contained */}
+        <div className="relative overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 w-20 h-16 sm:w-24 sm:h-18 rounded-md">
+          {course.thumbnail && !hasError ? (
+            <img
+              src={course.thumbnail}
+              alt={course.courseName}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              onError={() => setHasError(true)}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 via-primary/5 to-transparent">
+              <ImageIcon className="h-6 w-6 text-primary/20" />
+            </div>
+          )}
+        </div>
+
+        {/* Content — fills remaining space */}
+        <div className="flex flex-col flex-1 min-w-0 py-1 justify-center gap-1">
+          {/* Title, category, description */}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold text-primary uppercase tracking-wider">
+              {course.category?.name || t(($) => $.course.courses.table.columns.category)}
+            </span>
+            <GradeBadge
+              gradeName={course.grade?.name || t(($) => $.course.courses.table.gradeFilter)}
+              className="text-[9px] px-1.5 py-0 rounded"
+            />
+          </div>
+          <h3 className="font-semibold text-slate-900 dark:text-white leading-tight group-hover:text-primary transition-colors text-sm line-clamp-1">
+            <Link
+              to={AppRoute.course.courses.detail.url}
+              params={{ id: course.id }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {course.courseName}
+            </Link>
+          </h3>
+          {course.courseDescription && (
+            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 leading-relaxed">
+              {course.courseDescription}
+            </p>
+          )}
+
+          {/* Stats + rating — bottom row */}
+          <div className="flex items-center gap-4 mt-1 text-xs text-slate-500 dark:text-slate-400">
+            <div className="flex items-center gap-1" title={t(($) => $.course.courses.table.cardLabels.chapters)}>
+              <Layers className="h-3 w-3 text-primary/60" />
+              <span className="font-medium">{course.totalChapters ?? 0}</span>
+            </div>
+            <div className="flex items-center gap-1" title={t(($) => $.course.courses.table.cardLabels.lectures)}>
+              <BookOpen className="h-3 w-3 text-blue-500/60" />
+              <span className="font-medium">{course.totalLectures ?? 0}</span>
+            </div>
+            <div className="flex items-center gap-1" title={t(($) => $.course.courses.table.cardLabels.enrolled)}>
+              <Users className="h-3 w-3 text-emerald-500/60" />
+              <span className="font-medium">{course.enrolledCount ?? 0}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+              <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">
+                {Number(course.averageRating || 0).toFixed(1)}
+              </span>
+              <span className="text-[10px] text-amber-600/70 dark:text-amber-400/70">
+                ({course.totalRatings ?? 0})
+              </span>
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
+  // Grid view (unchanged)
   return (
     <Card
-      className={cn(
-        "group hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden cursor-pointer",
-        isListView ? "flex flex-row h-auto min-h-[180px]" : "flex flex-col h-full",
-      )}
+      className="group hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden cursor-pointer flex flex-col h-full"
       onClick={handleCardClick}
     >
       {/* Thumbnail Area */}
-      <div
-        className={cn(
-          "relative overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0",
-          isListView ? "w-40 sm:w-56" : "aspect-[16/9] w-full",
-        )}
-      >
+      <div className="relative overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 aspect-[16/9] w-full">
         {course.thumbnail && !hasError ? (
           <img
             src={course.thumbnail}
@@ -81,9 +151,10 @@ const CourseCardView = ({ course, viewMode }: CourseCardViewProps) => {
 
         {/* Grade Badge */}
         <div className="absolute top-3 left-3">
-          <Badge className="bg-primary hover:bg-primary/95 text-white rounded shadow-sm backdrop-blur-sm text-xs px-2 py-0.5 border-none">
-            {course.grade?.name || t(($) => $.course.courses.table.gradeFilter)}
-          </Badge>
+          <GradeBadge
+            gradeName={course.grade?.name || t(($) => $.course.courses.table.gradeFilter)}
+            className="backdrop-blur-sm rounded"
+          />
         </div>
       </div>
 
@@ -93,12 +164,7 @@ const CourseCardView = ({ course, viewMode }: CourseCardViewProps) => {
           <span className="text-[10px] font-bold text-primary uppercase tracking-wider">
             {course.category?.name || t(($) => $.course.courses.table.columns.category)}
           </span>
-          <h3
-            className={cn(
-              "font-bold text-slate-900 dark:text-white leading-tight group-hover:text-primary transition-colors",
-              isListView ? "text-base sm:text-lg line-clamp-2" : "text-base line-clamp-2",
-            )}
-          >
+          <h3 className="font-bold text-slate-900 dark:text-white leading-tight group-hover:text-primary transition-colors text-base line-clamp-2">
             <Link
               to={AppRoute.course.courses.detail.url}
               params={{ id: course.id }}
@@ -156,14 +222,6 @@ const CourseCardView = ({ course, viewMode }: CourseCardViewProps) => {
             <span className="text-[10px] text-amber-600/80 dark:text-amber-400/80 font-medium">
               ({course.totalRatings ?? 0})
             </span>
-          </div>
-          
-          <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
-            {course.price === 0 ? (
-              <span className="text-emerald-600 dark:text-emerald-400 font-extrabold uppercase">{t(($) => $.course.public.detail.free)}</span>
-            ) : (
-              `Rp ${course.price.toLocaleString("id-ID")}`
-            )}
           </div>
         </div>
       </div>

@@ -29,6 +29,7 @@ export const Route = createFileRoute("/(pages)/(course)/courses")({
     grade: z.array(z.number()).optional().catch(undefined),
     sortBy: z.string().optional().catch(undefined),
     sortOrder: z.enum(["asc", "desc"]).optional().catch(undefined),
+    viewMode: z.enum(["grid", "list"]).optional().catch(undefined),
   }),
   component: RouteComponent,
 });
@@ -45,6 +46,7 @@ function RouteComponent() {
     grade: urlGrade,
     sortBy: urlSortBy,
     sortOrder: urlSortOrder,
+    viewMode: urlViewMode,
   } = Route.useSearch();
   const navigate = Route.useNavigate();
 
@@ -52,7 +54,7 @@ function RouteComponent() {
   const [currentPage, setCurrentPage] = useState(urlPage ?? 1);
   const [sortBy, setSortBy] = useState(urlSortBy ?? "createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">(urlSortOrder ?? "desc");
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [viewMode, setViewMode] = useState<ViewMode>(urlViewMode ?? "grid");
 
   const selectedFilters = {
     categories: urlCategory ?? [],
@@ -84,6 +86,7 @@ function RouteComponent() {
     newFilters?: { categories: string[]; grades: number[] },
     newSortBy?: string,
     newSortOrder?: "asc" | "desc",
+    newViewMode?: ViewMode,
   ) => {
     navigate({
       search: {
@@ -94,6 +97,7 @@ function RouteComponent() {
         grade: newFilters?.grades || selectedFilters.grades,
         sortBy: newSortBy !== undefined ? newSortBy : sortBy,
         sortOrder: newSortOrder !== undefined ? newSortOrder : sortOrder,
+        viewMode: newViewMode !== undefined ? newViewMode : viewMode,
       },
       replace: true,
     });
@@ -104,16 +108,18 @@ function RouteComponent() {
     const effectiveSearch = urlSearch ?? "";
     const effectiveSortBy = urlSortBy ?? "createdAt";
     const effectiveSortOrder = urlSortOrder ?? "desc";
+    const effectiveViewMode = urlViewMode ?? "grid";
 
     setCurrentPage(effectivePage);
     setSearchTerm(effectiveSearch);
     setSortBy(effectiveSortBy);
     setSortOrder(effectiveSortOrder);
+    setViewMode(effectiveViewMode);
 
     if (isError) {
       showNotifError({ message: t(($) => $.labels.error) });
     }
-  }, [urlPage, urlSearch, urlSortBy, urlSortOrder, isError]);
+  }, [urlPage, urlSearch, urlSortBy, urlSortOrder, urlViewMode, isError]);
 
   const handleSearch = (term: string = searchTerm) => {
     updateUrlParams(1, term);
@@ -194,7 +200,10 @@ function RouteComponent() {
               />
               <ViewModeToggle
                 viewMode={viewMode}
-                onViewModeChange={setViewMode}
+                onViewModeChange={(mode) => {
+                  setViewMode(mode);
+                  updateUrlParams(undefined, undefined, undefined, undefined, undefined, mode);
+                }}
                 iconOnly
               />
             </div>
