@@ -12,7 +12,7 @@ export async function deleteQuestionService(
   existingQuestion: { id: string; passageId: string | null; createdAt: Date },
   logger?: any,
 ): Promise<ServiceResponse> {
-  await db.transaction(async (tx) => {
+  const result = await db.transaction(async (tx) => {
     // Identify related sections before deleting
     const relatedSections = await tx
       .select({
@@ -21,6 +21,10 @@ export async function deleteQuestionService(
       })
       .from(examPackageQuestions)
       .where(eq(examPackageQuestions.questionId, id));
+
+    if (relatedSections.length > 0) {
+      return { success: false, errorKey: ($: any) => $.exam.questions.delete.inUse };
+    }
 
     // Perform Hard Delete. The database schema has `onDelete: 'cascade'` for options
     // and solutions, so they will be automatically deleted by PostgreSQL.
@@ -41,7 +45,13 @@ export async function deleteQuestionService(
     if (existingQuestion.passageId) {
       await syncPassage(existingQuestion.passageId, tx);
     }
+
+    return { success: true };
   });
+
+  if (!result.success) {
+    return result;
+  }
 
   // Clean up directory from disk
   await deleteStorageDirectory(

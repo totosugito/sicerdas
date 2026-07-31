@@ -6,6 +6,7 @@ import env from "../../../../config/env.config.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
   processBlockNoteFiles,
+  processExternalImages,
   replaceBlockNoteUrls,
   resolveBlockNoteUrls,
   stripBlockNoteUrls,
@@ -37,20 +38,27 @@ export async function createPassageService(
     return { success: false, statusCode: 404, errorKey: ($) => $.exam.subjects.detail.notFound };
   }
 
+  // Process uploaded files if any
+  let finalContent = content ? stripBlockNoteUrls(content) : [];
+
   // Create the passage record first to get the ID
   const [newPassage] = await db
     .insert(examPassages)
     .values({
       title: title || null,
-      content: content || [],
+      content: finalContent,
       isActive: isActive !== undefined ? isActive : true,
       subjectId,
       createdByUserId: userId,
     })
     .returning();
 
-  // Process uploaded files if any
-  let finalContent = content ? stripBlockNoteUrls(content) : [];
+  finalContent = await processExternalImages(
+    env.server.uploadsPassageDir,
+    newPassage.id,
+    finalContent,
+    newPassage.createdAt,
+  );
 
   if (files.length > 0) {
     const urlMap = await processBlockNoteFiles(
@@ -62,15 +70,15 @@ export async function createPassageService(
 
     // Replace blob URLs with final URLs in content
     finalContent = replaceBlockNoteUrls(finalContent, urlMap);
-
-    // Update the passage with final content
-    await db
-      .update(examPassages)
-      .set({
-        content: finalContent,
-      })
-      .where(eq(examPassages.id, newPassage.id));
   }
+
+  // Always update the passage with final content (to save external images and blocknote file mappings)
+  await db
+    .update(examPassages)
+    .set({
+      content: finalContent,
+    })
+    .where(eq(examPassages.id, newPassage.id));
 
   return {
     success: true,

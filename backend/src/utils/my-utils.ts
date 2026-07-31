@@ -10,12 +10,22 @@ export const cleanTextFormat = (original: string) => {
     .replace(/(\.\w+)?$/, (_: string, ext: string | undefined) => ext || "");
 };
 
-export const createUniqueFileName = (original: string, defaultName: string, newExt?: string) => {
+export const createUniqueFileName = (
+  original: string,
+  defaultName: string,
+  newExt?: string,
+  maxBaseLength = 64,
+) => {
   const cleanName = cleanTextFormat(original);
 
   // Generate a unique filename with cleaned name
   const fileExt = cleanName.split(".").pop();
-  const baseName = cleanName.replace(/\.[^/.]+$/, "") || defaultName;
+  let baseName = cleanName.replace(/\.[^/.]+$/, "") || defaultName;
+  
+  if (baseName.length > maxBaseLength) {
+    baseName = baseName.substring(0, maxBaseLength);
+  }
+
   if (newExt) {
     return `${baseName}_${randomUUID().substring(0, 8)}.${newExt}`;
   }

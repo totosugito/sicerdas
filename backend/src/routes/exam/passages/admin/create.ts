@@ -4,7 +4,6 @@ import type { UploadedFile } from "../../../../types/file.ts";
 import { ErrorResponseSchema } from "../../../../types/response.ts";
 import { createPassageService } from "../../../../modules/exam/passages/services/create-passage.service.ts";
 import {
-  CreatePassageBody,
   PassageDetailResponse,
 } from "../../../../modules/exam/passages/passages.schema.ts";
 
@@ -15,7 +14,6 @@ const createPassageRoute: FastifyPluginAsyncTypebox = async (app) => {
     schema: {
       tags: ["Admin Exam Passages"],
       consumes: ["multipart/form-data"],
-      body: CreatePassageBody,
       response: {
         201: PassageDetailResponse,
         "4xx": ErrorResponseSchema,

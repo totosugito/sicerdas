@@ -130,7 +130,7 @@ export function PassageForm({ defaultValues, onSubmit, isPending }: PassageFormP
 
   return (
     <form.AppForm>
-      <FormWithDetector form={form} onSubmit={onFormSubmit} className="">
+      <FormWithDetector form={form} onSubmit={onFormSubmit} className="" errorClassName="mt-0 mb-6">
         <div className="border border-border rounded-lg bg-card p-6 space-y-6">
           <form.AppField name="title">
             {(field: any) => <ControlForm field={field} item={formConfig.title} showMessage={false} />}

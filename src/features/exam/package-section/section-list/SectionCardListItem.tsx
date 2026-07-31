@@ -10,6 +10,7 @@ import {
   HelpCircle,
   Hash,
   CalendarDays,
+  Package,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +24,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { string_to_locale_date } from "@/lib/my-utils";
 import { ClonedBadge, ActiveStatusBadge } from "@/features/components";
+import { Link } from "@tanstack/react-router";
+import { AppRoute } from "@/constants/app-route";
 
 interface SectionCardListItemProps {
   section: ExamPackageSection;
@@ -97,6 +100,21 @@ export function SectionCardListItem({ section, onEdit, onDelete }: SectionCardLi
 
       {/* Content Area */}
       <div className="flex flex-col p-5 flex-grow">
+        {section.packageName && (
+          <div className="mb-3">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">
+              {t(($) => $.exam.sections.table.columns.package)}
+            </span>
+            <Link
+              to={AppRoute.exam.packages.admin.detail.url.replace("$id", section.packageId)}
+              className="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1.5 bg-primary/5 px-2 py-1 rounded-md border border-primary/10 transition-all duration-200 hover:bg-primary/10 hover:border-primary/20"
+            >
+              <Package className="h-3.5 w-3.5 text-primary/60 shrink-0" />
+              <span className="truncate max-w-[200px]">{section.packageName}</span>
+            </Link>
+          </div>
+        )}
+
         <div className="group/title cursor-pointer mb-4 flex-grow" onClick={() => onEdit(section)}>
           <div className="flex flex-col gap-1.5 mb-2">
             <span className="text-xs font-bold text-primary uppercase tracking-wider">

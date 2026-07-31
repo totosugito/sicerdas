@@ -8,6 +8,7 @@ import type { UploadedFile } from "../../../../types/file.ts";
 import {
   cleanupBlockNoteFiles,
   processBlockNoteFiles,
+  processExternalImages,
   replaceBlockNoteUrls,
   resolveBlockNoteUrls,
   stripBlockNoteUrls,
@@ -40,6 +41,15 @@ export async function updatePassageService(
   // Process uploaded files if any
   let finalContent = content ? stripBlockNoteUrls(content) : (existingPassage.content as any[]);
 
+  if (content !== undefined) {
+    finalContent = await processExternalImages(
+      env.server.uploadsPassageDir,
+      id,
+      finalContent,
+      existingPassage.createdAt,
+    );
+  }
+
   if (files.length > 0) {
     const urlMap = await processBlockNoteFiles(
       env.server.uploadsPassageDir,
@@ -50,7 +60,7 @@ export async function updatePassageService(
 
     // Replace blob URLs with final URLs
     if (content !== undefined) {
-      finalContent = replaceBlockNoteUrls(content, urlMap);
+      finalContent = replaceBlockNoteUrls(finalContent, urlMap);
     }
   }
 

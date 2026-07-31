@@ -5,7 +5,6 @@ import { ErrorResponseSchema } from "../../../../types/response.ts";
 import { updatePassageService } from "../../../../modules/exam/passages/services/update-passage.service.ts";
 import {
   PassageParams,
-  UpdatePassageBody,
   PassageDetailResponse,
 } from "../../../../modules/exam/passages/passages.schema.ts";
 
@@ -17,7 +16,6 @@ const updatePassageRoute: FastifyPluginAsyncTypebox = async (app) => {
       tags: ["Admin Exam Passages"],
       consumes: ["multipart/form-data"],
       params: PassageParams,
-      body: UpdatePassageBody,
       response: {
         200: PassageDetailResponse,
         "4xx": ErrorResponseSchema,

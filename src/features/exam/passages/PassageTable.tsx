@@ -10,6 +10,7 @@ import {
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
+import { ActiveStatusBadge } from "@/features/components";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -153,9 +154,7 @@ export function PassageTable({
         const isActive = row.getValue("isActive") as boolean;
         return (
           <div className="flex justify-center">
-            <Badge variant={isActive ? "success" : "secondary"}>
-              {isActive ? t(($) => $.labels.active) : t(($) => $.labels.inactive)}
-            </Badge>
+            <ActiveStatusBadge isActive={isActive} />
           </div>
         );
       },

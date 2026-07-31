@@ -18,7 +18,7 @@ export async function adminListPackageSimpleService(
   const { page = 1, limit = 1000, search, examType, categoryId, educationGradeId } = params;
   const offset = (page - 1) * limit;
 
-  const conditions = [eq(examPackages.isActive, true)];
+  const conditions = [];
 
   if (search) {
     conditions.push(ilike(examPackages.title, `%${search}%`));

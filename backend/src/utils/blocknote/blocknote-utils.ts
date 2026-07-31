@@ -373,7 +373,20 @@ export const processExternalImages = async (
                 if (urlExt && urlExt.length <= 4) ext = urlExt;
               }
 
-              const fileName = createUniqueFileName(`external_image.${ext}`, "blocknote_file");
+              let originalName = "external_image";
+              try {
+                const urlObj = new URL(url);
+                const pathname = urlObj.pathname;
+                const baseName = pathname.substring(pathname.lastIndexOf("/") + 1);
+                const nameWithoutExt = baseName.includes(".") ? baseName.substring(0, baseName.lastIndexOf(".")) : baseName;
+                if (nameWithoutExt) {
+                  originalName = decodeURIComponent(nameWithoutExt);
+                }
+              } catch (e) {
+                // Keep "external_image"
+              }
+
+              const fileName = createUniqueFileName(`${originalName}.${ext}`, "blocknote_file");
               const relativePath = getBlockNoteFileUrl(subDir, yearMonth, entityId, fileName);
 
               await saveFile(relativePath, buffer, contentType);
