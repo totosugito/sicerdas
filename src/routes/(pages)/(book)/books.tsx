@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { z } from "zod";
 import { Trans } from "react-i18next";
 import { useBookList, useBookFilterParams } from "@/api/book";
-import { LayoutGrid, ListIcon } from "lucide-react";
+import { LayoutGrid, ListIcon, BookOpen } from "lucide-react";
 import { showNotifError } from "@/lib/show-notif";
 import {
   BooksSkeleton,
@@ -11,8 +11,8 @@ import {
   BookCard,
   BookSearchBar,
   BookSortSelector,
-  BooksEmptyState,
 } from "@/features/book/list";
+import { EmptyState } from "@/components/general/EmptyState";
 import { Card, CardContent } from "@/components/ui/card";
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from "@/components/table";
@@ -256,18 +256,31 @@ function RouteComponent() {
 
           {/* Empty State */}
           {!isLoading && books.length === 0 && (
-            <BooksEmptyState
-              searchTerm={searchTerm}
-              hasActiveFilters={isAnyFilterActive}
-              onReset={() => {
-                if (searchTerm) {
-                  setSearchTerm("");
-                  updateUrlParams(1, "");
-                } else if (isAnyFilterActive) {
-                  updateUrlParams(1, searchTerm, { categories: [0], groups: [], grades: [] });
-                }
-              }}
-            />
+            <EmptyState
+              icon={BookOpen}
+              title={t(($) => $.book.noBooksFound)}
+              description={
+                searchTerm
+                  ? `${t(($) => $.book.noSearchResults)} "${searchTerm}"`
+                  : t(($) => $.book.noBooksAvailable)
+              }
+            >
+              {(searchTerm || isAnyFilterActive) && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    if (searchTerm) {
+                      setSearchTerm("");
+                      updateUrlParams(1, "");
+                    } else if (isAnyFilterActive) {
+                      updateUrlParams(1, searchTerm, { categories: [0], groups: [], grades: [] });
+                    }
+                  }}
+                >
+                  {t(($) => $.book.clearSearch)}
+                </Button>
+              )}
+            </EmptyState>
           )}
 
           {/* Pagination */}

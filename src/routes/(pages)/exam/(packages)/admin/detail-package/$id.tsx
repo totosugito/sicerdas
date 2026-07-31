@@ -5,9 +5,9 @@ import { useState, useEffect } from "react";
 import { KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Inbox } from "lucide-react";
 import { DialogModal } from "@/components/dialog";
-import { PageTitle, ErrorContainer } from "@/components/general";
+import { PageTitle, ErrorContainer, EmptyState } from "@/components/general";
 import { AppRoute } from "@/constants/app-route";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import {
@@ -21,7 +21,6 @@ import { PackageStatsHeader } from "@/features/exam/packages/detail-package/Pack
 import {
   SectionList,
   SectionListSkeleton,
-  SectionEmptyState,
   DialogSectionForm,
 } from "@/features/exam/package-section/section-list";
 
@@ -186,7 +185,16 @@ function DetailPackagePage() {
         {isLoading ? (
           <SectionListSkeleton />
         ) : items.length === 0 ? (
-          <SectionEmptyState onAdd={handleAdd} />
+          <EmptyState
+            icon={Inbox}
+            title={t(($) => $.exam.sections.noDataTitle)}
+            description={t(($) => $.exam.sections.noDataDescription)}
+          >
+            <Button onClick={handleAdd} className="gap-2">
+              <Plus className="h-4 w-4" />
+              {t(($) => $.exam.sections.createButton)}
+            </Button>
+          </EmptyState>
         ) : (
           <SectionList
             items={items}

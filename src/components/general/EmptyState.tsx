@@ -6,9 +6,10 @@ interface EmptyStateProps {
   title: string;
   description: string;
   className?: string;
+  children?: React.ReactNode;
 }
 
-export function EmptyState({ icon: Icon, title, description, className }: EmptyStateProps) {
+export function EmptyState({ icon: Icon, title, description, className, children }: EmptyStateProps) {
   return (
     <div
       className={cn(
@@ -23,6 +24,7 @@ export function EmptyState({ icon: Icon, title, description, className }: EmptyS
       <p className="text-muted-foreground text-sm max-w-md mx-auto leading-relaxed">
         {description}
       </p>
+      {children && <div className="mt-6">{children}</div>}
     </div>
   );
 }

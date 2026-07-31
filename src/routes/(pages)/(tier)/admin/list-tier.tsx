@@ -1,4 +1,4 @@
-import { TierList, TierListSkeleton, TierEmptyState } from "@/features/tier/list-tier";
+import { TierList, TierListSkeleton } from "@/features/tier/list-tier";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useListTier, useDeleteTier, useUpdateTier, TierItem } from "@/api/tier";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,9 +8,9 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
-import { PageTitle } from "@/components/general";
+import { PageTitle, EmptyState } from "@/components/general";
 import { AppRoute } from "@/constants/app-route";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Inbox } from "lucide-react";
 import { DialogModal } from "@/components/dialog";
 
 export const Route = createFileRoute("/(pages)/(tier)/admin/list-tier")({
@@ -134,7 +134,16 @@ function AdminTierPricingPage() {
         )}
       </div>
       {items.length === 0 ? (
-        <TierEmptyState />
+        <EmptyState
+          icon={Inbox}
+          title={t(($) => $.tier.list.noDataTitle)}
+          description={t(($) => $.tier.list.noDataDescription)}
+        >
+          <Button render={<Link to={AppRoute.app.tier.admin.create.url} className="gap-2" />} nativeButton={false}>
+            <Plus className="h-4 w-4" />
+            {t(($) => $.tier.list.createButton)}
+          </Button>
+        </EmptyState>
       ) : (
         <TierList
           items={items}

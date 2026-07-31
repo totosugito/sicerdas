@@ -4,4 +4,3 @@ export { BooksSkeleton } from "./BooksSkeleton";
 export { BookCard } from "./BookCard";
 export { BookSearchBar } from "./BookSearchBar";
 export { BookSortSelector } from "./BookSortSelector";
-export { BooksEmptyState } from "./BooksEmptyState";

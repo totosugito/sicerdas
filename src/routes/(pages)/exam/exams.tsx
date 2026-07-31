@@ -3,16 +3,16 @@ import { useState, useEffect } from "react";
 import { z } from "zod";
 import { Trans } from "react-i18next";
 import { useListPackageClient, useExamFilterParams } from "@/api/exam/packages";
-import { LayoutGrid, ListIcon } from "lucide-react";
+import { LayoutGrid, ListIcon, BookOpen } from "lucide-react";
 import { showNotifError } from "@/lib/show-notif";
 import {
   PackageSkeleton,
-  PackageEmptyState,
   PackageFilter,
   PackageCard,
   PackageSearchBar,
   PackageSortSelector,
 } from "@/features/exam/exams";
+import { EmptyState } from "@/components/general/EmptyState";
 import { Card, CardContent } from "@/components/ui/card";
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from "@/components/table";
@@ -248,18 +248,31 @@ function RouteComponent() {
 
           {/* Empty State */}
           {!isLoading && exams.length === 0 && (
-            <PackageEmptyState
-              searchTerm={searchTerm}
-              hasActiveFilters={isAnyFilterActive}
-              onReset={() => {
-                if (searchTerm) {
-                  setSearchTerm("");
-                  updateUrlParams(1, "");
-                } else if (isAnyFilterActive) {
-                  updateUrlParams(1, searchTerm, { categoryKey: "", grades: [] });
-                }
-              }}
-            />
+            <EmptyState
+              icon={BookOpen}
+              title={t(($) => $.exam.packages.table.noResult)}
+              description={
+                searchTerm
+                  ? `${t(($) => $.exam.packages.table.noData)} "${searchTerm}"`
+                  : t(($) => $.exam.packages.table.noData)
+              }
+            >
+              {(searchTerm || isAnyFilterActive) && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    if (searchTerm) {
+                      setSearchTerm("");
+                      updateUrlParams(1, "");
+                    } else if (isAnyFilterActive) {
+                      updateUrlParams(1, searchTerm, { categoryKey: "", grades: [] });
+                    }
+                  }}
+                >
+                  {t(($) => $.exam.reset)}
+                </Button>
+              )}
+            </EmptyState>
           )}
 
           {/* Pagination */}
