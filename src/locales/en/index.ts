@@ -13,6 +13,12 @@ const localeEn = {
       elementDetail: elementDetail
     },
     course: course,
+    labels: {
+      visibility: {
+        public: "Public",
+        private: "Private",
+      },
+    },
   }
 }
 

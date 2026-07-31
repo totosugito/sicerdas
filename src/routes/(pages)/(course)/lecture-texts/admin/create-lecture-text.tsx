@@ -40,7 +40,7 @@ function CreateLectureTextPage() {
   };
 
   return (
-    <div className="container mx-auto space-y-6 p-4 md:p-6">
+    <div className="flex flex-col gap-6 w-full">
       <div className="flex items-center justify-between">
         <PageTitle
           title={t(($) => $.course.lectureTexts.createTitle)}

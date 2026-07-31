@@ -133,7 +133,7 @@ function AdminLectureTextListPage() {
   const meta = data?.data?.meta || { total: 0, page: 1, limit: 10, totalPages: 1 };
 
   return (
-    <div className="container mx-auto space-y-6 p-4 md:p-6">
+    <div className="flex flex-col gap-6 w-full">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <PageTitle
           title={t(($) => $.course.lectureTexts.title)}

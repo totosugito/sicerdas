@@ -16,6 +16,7 @@ export { CategoryBadge } from "./badge/CategoryBadge";
 export { DefaultStatusBadge } from "./badge/DefaultStatusBadge";
 export { ContentStatusBadge } from "./badge/ContentStatusBadge";
 export { ContentTypeBadge } from "./badge/ContentTypeBadge";
+export { PublicStatusBadge } from "./badge/PublicStatusBadge";
 
 
 

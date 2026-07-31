@@ -150,7 +150,7 @@ function DetailCoursePage() {
   }
 
   return (
-    <div className="flex flex-col w-full space-y-6 container mx-auto p-4 md:p-6">
+    <div className="flex flex-col gap-6 w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <PageTitle
           title={course?.courseName || t(($) => $.course.courses.detail.title)}

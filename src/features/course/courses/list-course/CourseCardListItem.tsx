@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
-import { CourseStatusBadge } from "@/features/components";
+import { CourseStatusBadge, PublicStatusBadge } from "@/features/components";
 import { string_to_locale_date } from "@/lib/my-utils";
 
 interface CourseCardListItemProps {
@@ -71,6 +71,7 @@ export function CourseCardListItem({ course, onDelete }: CourseCardListItemProps
         {/* Status Badge Overlay */}
         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
           <CourseStatusBadge status={course.status} />
+          <PublicStatusBadge isPublic={course.isPublic} />
         </div>
 
         {/* Action Menu Button */}

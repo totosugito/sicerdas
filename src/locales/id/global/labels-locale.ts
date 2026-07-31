@@ -126,4 +126,8 @@ export default {
   },
   ascending: "Menaik",
   descending: "Menurun",
+  visibility: {
+    public: "Publik",
+    private: "Privat",
+  },
 };
