@@ -7,6 +7,7 @@ import type { UploadedFile } from "../../../../types/file.ts";
 import {
   cleanupBlockNoteFiles,
   processBlockNoteFiles,
+  processExternalImages,
   replaceBlockNoteUrls,
   resolveBlockNoteUrls,
   stripBlockNoteUrls,
@@ -50,12 +51,22 @@ export async function updateQuestionSolutionService(
   let finalContent = content ? stripBlockNoteUrls(content) : (existingSolution.content as any[]);
   const targetQuestionId = questionId || existingSolution.questionId;
 
-  if (files.length > 0) {
-    // Fetch the parent question to get createdAt for path consistency
-    const parentQuestion = await db.query.examQuestions.findFirst({
-      where: eq(examQuestions.id, targetQuestionId),
-    });
+  // Fetch the parent question to get createdAt for path consistency
+  const parentQuestion = await db.query.examQuestions.findFirst({
+    where: eq(examQuestions.id, targetQuestionId),
+  });
 
+  // Process external images if updated
+  if (content !== undefined) {
+    finalContent = await processExternalImages(
+      env.server.uploadsQuestionDir,
+      targetQuestionId,
+      finalContent,
+      parentQuestion?.createdAt,
+    );
+  }
+
+  if (files.length > 0) {
     const urlMap = await processBlockNoteFiles(
       env.server.uploadsQuestionDir,
       targetQuestionId,
@@ -65,7 +76,7 @@ export async function updateQuestionSolutionService(
 
     // Replace blob URLs with final URLs
     if (content !== undefined) {
-      finalContent = replaceBlockNoteUrls(content, urlMap);
+      finalContent = replaceBlockNoteUrls(finalContent, urlMap);
     }
   }
 

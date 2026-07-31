@@ -126,7 +126,8 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
   ];
   const versionOptions =
     versionData?.data?.items?.map((v) => ({
-      label: `${v.id} - ${v.name}${v.published ? ` [${t(($) => $.labels.publishedText)}]` : ""}`,
+      // label: `${v.id} - ${v.name}${v.published ? ` [${t(($) => $.labels.publishedText)}]` : ""}`,
+      label: `${v.id} - ${v.name}`,
       value: v.id.toString(),
     })) || [];
 
@@ -222,6 +223,7 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
         form={form}
         onSubmit={(values) => onSubmit(values as PackageFormValues)}
         className="w-full"
+        errorClassName="mt-0 mb-6"
       >
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           {/* Left: Form Controls */}
@@ -344,12 +346,12 @@ export function PackageForm({ defaultValues, onSubmit, isPending }: PackageFormP
                 <Button
                   type="button"
                   variant="outline"
-                  className="rounded-full px-6"
+                  className="px-6"
                   onClick={() => form.reset()}
                 >
                   {t(($) => $.labels.cancel)}
                 </Button>
-                <Button type="submit" className="rounded-full px-8 font-bold" disabled={isPending}>
+                <Button type="submit" className="px-8 font-bold" disabled={isPending}>
                   {isPending ? t(($) => $.labels.saving) : t(($) => $.labels.save)}
                 </Button>
               </div>

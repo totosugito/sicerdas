@@ -2,6 +2,7 @@ import { db } from "../../../../../db/db-pool.ts";
 import { examPackageSections } from "../../../../../db/schema/exam/package-sections.ts";
 import { examPackageQuestions } from "../../../../../db/schema/exam/package-questions.ts";
 import { examPackages } from "../../../../../db/schema/exam/packages.ts";
+import { examSessions } from "../../../../../db/schema/exam/sessions.ts";
 import { eq, sql } from "drizzle-orm";
 import type { ServiceResponse } from "../../../../../types/index.ts";
 
@@ -15,6 +16,19 @@ export async function deleteSectionService(id: string): Promise<ServiceResponse>
       success: false,
       statusCode: 404,
       errorKey: ($) => $.exam.package_sections.delete.notFound,
+    };
+  }
+
+  // Check if section is in use by any sessions
+  const inUseCheck = await db.query.examSessions.findFirst({
+    where: eq(examSessions.sectionId, id),
+  });
+
+  if (inUseCheck) {
+    return {
+      success: false,
+      statusCode: 400,
+      errorKey: ($) => $.exam.package_sections.delete.inUse,
     };
   }
 

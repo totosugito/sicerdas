@@ -2,6 +2,7 @@ import { saveFile, deleteFile } from "../../platform/storage/storage.ts";
 import env from "../../config/env.config.ts";
 import { createUniqueFileName } from "../my-utils.ts";
 import type { UploadedFile } from "../../types/file.ts";
+import sharp from "sharp";
 import { ServerBlockNoteEditor } from "@blocknote/server-util";
 import {
   BlockNoteSchema,
@@ -63,7 +64,7 @@ const AlertBlock = createBlockSpec(
       const wrapper = document.createElement("div");
       wrapper.setAttribute("data-type", "alert");
       wrapper.setAttribute("data-alert-type", block.props.type);
-      
+
       const content = document.createElement("div");
       content.setAttribute("class", "alert-content");
       wrapper.appendChild(content);
@@ -152,6 +153,40 @@ export const replaceBlockNoteUrls = (
 };
 
 /**
+ * Helper to compress and optionally resize a JPEG, PNG, or WebP image buffer.
+ */
+export const resizeAndCompressImage = async (
+  buffer: Buffer,
+  contentType: string,
+  resizeWidth: number = 1024,
+  quality: number = 80,
+  logger?: any,
+): Promise<Buffer> => {
+  const resizableMimeTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+  if (!resizableMimeTypes.includes(contentType.toLowerCase())) {
+    return buffer;
+  }
+
+  try {
+    let image = sharp(buffer);
+    const metadata = await image.metadata();
+
+    if (resizeWidth && metadata.width && metadata.width > resizeWidth) {
+      image = image.resize({ width: resizeWidth, withoutEnlargement: true });
+    }
+
+    return await image
+      .jpeg({ quality, progressive: true, force: false })
+      .png({ quality, force: false })
+      .webp({ quality, force: false })
+      .toBuffer();
+  } catch (error) {
+    logger?.warn?.({ err: error }, "Failed to process/compress image");
+    return buffer;
+  }
+};
+
+/**
  * Processes and saves uploaded BlockNote files, returning a map of original names to final URLs
  */
 export const processBlockNoteFiles = async (
@@ -159,16 +194,21 @@ export const processBlockNoteFiles = async (
   entityId: string,
   files: UploadedFile[],
   createdAt?: Date | string,
+  resizeWidth: number = 1024,
+  quality: number = 80,
 ): Promise<Record<string, string>> => {
   const date = createdAt ? new Date(createdAt) : new Date();
   const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
   const urlMap: Record<string, string> = {};
 
   for (const file of files) {
+    const contentType = file.mimetype.toLowerCase();
+    const buffer = await resizeAndCompressImage(file.buffer, contentType, resizeWidth, quality);
+
     const fileName = createUniqueFileName(file.filename, "blocknote_file");
     const relativePath = getBlockNoteFileUrl(subDir, yearMonth, entityId, fileName);
 
-    await saveFile(relativePath, file.buffer, file.mimetype);
+    await saveFile(relativePath, buffer, file.mimetype);
 
     urlMap[file.filename] = relativePath;
   }
@@ -323,6 +363,8 @@ export const processExternalImages = async (
   createdAt?: Date | string,
   types: string[] = ["image"],
   logger?: any,
+  resizeWidth: number = 1024,
+  quality: number = 80,
 ): Promise<any[]> => {
   if (!content || !Array.isArray(content) || content.length === 0) return [];
 
@@ -359,9 +401,7 @@ export const processExternalImages = async (
 
             if (response.ok) {
               const arrayBuffer = await response.arrayBuffer();
-              const buffer = Buffer.from(arrayBuffer);
               const contentType = response.headers.get("content-type") || "image/jpeg";
-
               let ext = "png";
               if (contentType.includes("jpeg") || contentType.includes("jpg")) ext = "jpg";
               else if (contentType.includes("webp")) ext = "webp";
@@ -372,6 +412,14 @@ export const processExternalImages = async (
                 const urlExt = url.split("?")[0].split(".").pop();
                 if (urlExt && urlExt.length <= 4) ext = urlExt;
               }
+
+              const buffer = await resizeAndCompressImage(
+                Buffer.from(arrayBuffer),
+                contentType,
+                resizeWidth,
+                quality,
+                logger,
+              );
 
               let originalName = "external_image";
               try {

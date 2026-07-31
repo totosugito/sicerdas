@@ -9,6 +9,7 @@ import { EnumDifficultyLevel, EnumQuestionType, EnumScoringStrategy } from "../.
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
   processBlockNoteFiles,
+  processExternalImages,
   replaceBlockNoteUrls,
   cleanupBlockNoteFiles,
   resolveBlockNoteUrls,
@@ -80,6 +81,24 @@ export async function updateQuestionService(
     ? stripBlockNoteUrls(reasonContent)
     : existingReasonContent;
 
+  // Process external images if updated
+  if (content !== undefined) {
+    finalContent = await processExternalImages(
+      env.server.uploadsQuestionDir,
+      id,
+      finalContent,
+      existingCreatedAt,
+    );
+  }
+  if (reasonContent !== undefined) {
+    finalReasonContent = await processExternalImages(
+      env.server.uploadsQuestionDir,
+      id,
+      finalReasonContent,
+      existingCreatedAt,
+    );
+  }
+
   if (files.length > 0) {
     const urlMap = await processBlockNoteFiles(
       env.server.uploadsQuestionDir,
@@ -90,10 +109,10 @@ export async function updateQuestionService(
 
     // Replace blob URLs with final URLs
     if (content !== undefined) {
-      finalContent = replaceBlockNoteUrls(content, urlMap);
+      finalContent = replaceBlockNoteUrls(finalContent, urlMap);
     }
     if (reasonContent !== undefined) {
-      finalReasonContent = replaceBlockNoteUrls(reasonContent, urlMap);
+      finalReasonContent = replaceBlockNoteUrls(finalReasonContent, urlMap);
     }
   }
 

@@ -6,6 +6,7 @@ import env from "../../../../config/env.config.ts";
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
   processBlockNoteFiles,
+  processExternalImages,
   replaceBlockNoteUrls,
   resolveBlockNoteUrls,
   stripBlockNoteUrls,
@@ -52,6 +53,14 @@ export async function createQuestionOptionService(
   // Process uploaded files if any
   let finalContent = content ? stripBlockNoteUrls(content) : [];
 
+  // Process external images first
+  finalContent = await processExternalImages(
+    env.server.uploadsQuestionDir,
+    questionId,
+    finalContent,
+    existingQuestion.createdAt,
+  );
+
   if (files.length > 0) {
     const urlMap = await processBlockNoteFiles(
       env.server.uploadsQuestionDir,
@@ -62,15 +71,15 @@ export async function createQuestionOptionService(
 
     // Replace blob URLs with final URLs in content
     finalContent = replaceBlockNoteUrls(finalContent, urlMap);
-
-    // Update the option with final content
-    await db
-      .update(examQuestionOptions)
-      .set({
-        content: finalContent,
-      })
-      .where(eq(examQuestionOptions.id, newOption.id));
   }
+
+  // Always update the option with final content (to save external images and blocknote file mappings)
+  await db
+    .update(examQuestionOptions)
+    .set({
+      content: finalContent,
+    })
+    .where(eq(examQuestionOptions.id, newOption.id));
 
   // Sync Question Max Score
   await syncQuestionMaxScore(questionId);

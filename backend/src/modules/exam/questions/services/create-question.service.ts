@@ -8,6 +8,7 @@ import { EnumDifficultyLevel, EnumQuestionType, EnumScoringStrategy } from "../.
 import type { UploadedFile } from "../../../../types/file.ts";
 import {
   processBlockNoteFiles,
+  processExternalImages,
   replaceBlockNoteUrls,
   stripBlockNoteUrls,
 } from "../../../../utils/blocknote/blocknote-utils.ts";
@@ -105,6 +106,20 @@ export async function createQuestionService(
   let finalContent = content ? stripBlockNoteUrls(content) : [];
   let finalReasonContent = reasonContent ? stripBlockNoteUrls(reasonContent) : [];
 
+  // Process external images first
+  finalContent = await processExternalImages(
+    env.server.uploadsQuestionDir,
+    newQuestion.id,
+    finalContent,
+    newQuestion.createdAt,
+  );
+  finalReasonContent = await processExternalImages(
+    env.server.uploadsQuestionDir,
+    newQuestion.id,
+    finalReasonContent,
+    newQuestion.createdAt,
+  );
+
   if (files.length > 0) {
     const urlMap = await processBlockNoteFiles(
       env.server.uploadsQuestionDir,
@@ -116,16 +131,16 @@ export async function createQuestionService(
     // Replace blob URLs with final URLs in content
     finalContent = replaceBlockNoteUrls(finalContent, urlMap);
     finalReasonContent = replaceBlockNoteUrls(finalReasonContent, urlMap);
-
-    // Update the question with final content
-    await db
-      .update(examQuestions)
-      .set({
-        content: finalContent,
-        reasonContent: finalReasonContent,
-      })
-      .where(eq(examQuestions.id, newQuestion.id));
   }
+
+  // Always update the question with final content (to save external images and blocknote file mappings)
+  await db
+    .update(examQuestions)
+    .set({
+      content: finalContent,
+      reasonContent: finalReasonContent,
+    })
+    .where(eq(examQuestions.id, newQuestion.id));
 
   return {
     success: true,
