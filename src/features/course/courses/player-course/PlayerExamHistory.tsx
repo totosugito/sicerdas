@@ -11,27 +11,35 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 
+import { LocalePagination } from "@/components/ui/locale-pagination";
+
 interface PlayerExamHistoryProps {
   packageId?: string;
   sectionId?: string;
   onSetExamSessionId: (sessionId?: string) => void;
+  courseId?: string;
+  lectureId?: string;
 }
 
 export const PlayerExamHistory: React.FC<PlayerExamHistoryProps> = ({
   packageId,
   sectionId,
   onSetExamSessionId,
+  courseId,
+  lectureId,
 }) => {
   const { t } = useAppTranslation();
   const navigate = useNavigate();
+  const [page, setPage] = React.useState(1);
 
   const { data: historyRes, isLoading: isHistoryLoading } = useSessionHistory(
     packageId,
     sectionId,
-    { page: 1, limit: 10 }
+    { page, limit: 5 }
   );
 
   const history = historyRes?.data?.items || [];
+  const totalPages = historyRes?.data?.meta?.totalPages || 0;
 
   const getStatusBadge = (status: string) => {
     const config = ExamSessionStatusConfig[status as keyof typeof ExamSessionStatusConfig];
@@ -77,6 +85,10 @@ export const PlayerExamHistory: React.FC<PlayerExamHistoryProps> = ({
                   navigate({
                     to: AppRoute.exam.results.url,
                     params: { id: item.id },
+                    search: {
+                      courseId,
+                      lectureId,
+                    },
                   });
                 } else {
                   onSetExamSessionId(item.id);
@@ -110,6 +122,14 @@ export const PlayerExamHistory: React.FC<PlayerExamHistoryProps> = ({
         <div className="text-center py-6 text-sm text-muted-foreground border rounded-xl border-dashed">
           {t(($) => $.exam.sessions.history.empty)}
         </div>
+      )}
+      {totalPages > 1 && (
+        <LocalePagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          className="mt-2"
+        />
       )}
     </div>
   );

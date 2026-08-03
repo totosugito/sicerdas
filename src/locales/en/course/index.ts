@@ -144,6 +144,7 @@ export default {
       confirmCompleteDesc: "Are you sure you want to mark this lecture as completed?",
       previous: "Previous",
       next: "Next",
+      backToCourse: "Back to Course",
     },
     noGradesInCategory: "No grade levels in this category",
     selectCategoryToViewGrades: "Select category to view grade levels",

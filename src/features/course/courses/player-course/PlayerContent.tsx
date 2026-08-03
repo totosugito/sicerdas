@@ -14,7 +14,7 @@ import { useSessionHistory } from "@/api/exam/sessions";
 import { PlayerCbtView } from "./PlayerCbtView";
 import { PlayerExamHistory } from "./PlayerExamHistory";
 import { EnumExamSessionStatus } from "@/api/exam/types";
- 
+
 interface PlayerContentProps {
   selected?: LectureProgressItem;
   textLoading: boolean;
@@ -29,6 +29,7 @@ interface PlayerContentProps {
   hasNext: boolean;
   examSessionId?: string;
   onSetExamSessionId: (sessionId?: string) => void;
+  courseId?: string;
 }
 
 export function PlayerContent({
@@ -45,6 +46,7 @@ export function PlayerContent({
   hasNext,
   examSessionId,
   onSetExamSessionId,
+  courseId,
 }: PlayerContentProps) {
   const { t, i18n } = useAppTranslation();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -54,7 +56,7 @@ export function PlayerContent({
   const { data: historyRes } = useSessionHistory(
     isExam ? (selected?.packageId ?? undefined) : undefined,
     isExam ? (selected?.referenceUrl ?? undefined) : undefined,
-    { page: 1, limit: 10 }
+    { page: 1, limit: 5 }
   );
 
   const history = historyRes?.data?.items || [];
@@ -153,6 +155,8 @@ export function PlayerContent({
               packageId={selected?.packageId ?? undefined}
               sectionId={selected?.referenceUrl ?? undefined}
               onSetExamSessionId={onSetExamSessionId}
+              courseId={courseId}
+              lectureId={selected?.id}
             />
           </div>
         )}

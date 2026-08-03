@@ -188,6 +188,7 @@ function CoursePlayerPage() {
             hasNext={hasNext}
             examSessionId={examSessionId}
             onSetExamSessionId={handleSetExamSessionId}
+            courseId={id}
           />
         </div>
 

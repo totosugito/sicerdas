@@ -19,6 +19,8 @@ type ResultsSearch = {
   view?: "grid" | "list";
   page?: number;
   q?: string;
+  courseId?: string;
+  lectureId?: string;
 };
 
 export const Route = createFileRoute("/(pages)/exam/session/$id/results")({
@@ -27,6 +29,8 @@ export const Route = createFileRoute("/(pages)/exam/session/$id/results")({
       view: (search.view as "grid" | "list") || "grid",
       page: Number(search.page) || 1,
       q: search.q as string | undefined,
+      courseId: search.courseId as string | undefined,
+      lectureId: search.lectureId as string | undefined,
     };
   },
   component: SessionResultsComponent,
@@ -35,7 +39,7 @@ export const Route = createFileRoute("/(pages)/exam/session/$id/results")({
 function SessionResultsComponent() {
   const { t } = useAppTranslation();
   const { id: sessionId } = Route.useParams();
-  const { view: viewMode, page, q: selectedReviewId } = Route.useSearch();
+  const { view: viewMode, page, q: selectedReviewId, courseId, lectureId } = Route.useSearch();
   const [searchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate({ from: Route.fullPath });
@@ -107,12 +111,22 @@ function SessionResultsComponent() {
         }
         onRetry={() => refetchDetails()}
         onBack={() =>
-          navigate({
-            to: AppRoute.exam.exams.url,
-          })
+          courseId
+            ? navigate({
+                to: AppRoute.course.courses.player.url,
+                params: { id: courseId },
+                search: { lectureId },
+              })
+            : navigate({
+                to: AppRoute.exam.exams.url,
+              })
         }
         retryLabel={t(($) => $.labels.retry)}
-        backLabel={t(($) => $.exam.packages.detail.backToList)}
+        backLabel={
+          courseId
+            ? t(($) => $.course.public.player.backToCourse)
+            : t(($) => $.exam.packages.detail.backToList)
+        }
       />
     );
   }
@@ -151,7 +165,12 @@ function SessionResultsComponent() {
         sectionTitle={section?.title}
         gradeName={pkg?.grade?.name ?? undefined}
       >
-        <ResultsActions sessionId={sessionId} packageId={pkg?.id} />
+        <ResultsActions
+          sessionId={sessionId}
+          packageId={pkg?.id}
+          courseId={courseId}
+          lectureId={lectureId}
+        />
       </ResultsHeader>
 
       <div className="w-full space-y-6">

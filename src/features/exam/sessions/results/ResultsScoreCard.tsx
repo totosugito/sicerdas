@@ -80,7 +80,7 @@ export const ResultsScoreCard: React.FC<ResultsScoreCardProps> = ({
             {t(($) => $.exam.sessions.results.finalScore)}
           </p>
 
-          <div className="relative my-6 flex h-36 w-44 items-center justify-center">
+          <div className="relative my-6 flex h-36 w-36 items-center justify-center">
             <svg className="absolute inset-0 -rotate-90" viewBox="0 0 160 160">
               <circle cx="80" cy="80" r={radius} stroke="var(--primary-soft)" strokeWidth="12" fill="none" />
               <circle

@@ -314,6 +314,7 @@ export default {
       confirmCompleteDesc: "Apakah Anda yakin ingin menandai materi ini sebagai selesai?",
       previous: "Sebelumnya",
       next: "Berikutnya",
+      backToCourse: "Kembali ke Kursus",
     },
     noGradesInCategory: "Tidak ada tingkatan kelas dalam kategori ini",
     selectCategoryToViewGrades: "Pilih kategori untuk melihat kelas",
