@@ -4,6 +4,8 @@ import type {
   AdminUpdateCourseInput,
   ThumbnailResponseDataT,
   CourseListQueryParams,
+  RatingResponseT,
+  BookmarkResponseT,
 } from "backend/src/modules/course/courses/courses.schema.ts";
 import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
 
@@ -15,6 +17,8 @@ export type {
   CourseListQueryParams,
   BaseResponse,
   PaginationMeta,
+  RatingResponseT,
+  BookmarkResponseT,
 };
 
 export interface CourseApiResponse<T = unknown> extends BaseResponse {
@@ -28,6 +32,8 @@ export type CreateCourseResponse = CourseApiResponse<CourseItem>;
 export type UpdateCourseResponse = CourseApiResponse<CourseItem>;
 export type DeleteCourseResponse = BaseResponse;
 export type ThumbnailResponse = CourseApiResponse<ThumbnailResponseDataT>;
+export type RatingResponse = RatingResponseT;
+export type BookmarkResponse = BookmarkResponseT;
 
 export interface PaginatedCourseListResponse extends BaseResponse {
   data: {

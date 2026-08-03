@@ -170,9 +170,9 @@ Handles user ratings and bookmarks (tied to `course_enrollments`).
 
 ### Frontend Implementation Checklist
 #### User UI
-- [ ] Course Rating Star Component & Review Submit Modal
-- [ ] Bookmark Toggle Button Component (with active/inactive states)
-- [ ] Like / Dislike Toggle Buttons Component
+- [x] Course Rating Star Component & Review Submit Modal
+- [x] Bookmark Toggle Button Component (with active/inactive states)
+- [ ] ~~Like / Dislike Toggle Buttons Component~~ (Removed - Like/dislike support not focused)
 - [ ] "My Favorites & Bookmarks" Page / Grid View
 
 ---

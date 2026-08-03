@@ -19,6 +19,12 @@
         "success": "Detail kursus berhasil diambil"
       }
     },
+    "bookmark": {
+      "updated": "Status bookmark berhasil diperbarui"
+    },
+    "rating": {
+      "updated": "Rating berhasil diperbarui"
+    },
     "chapters": {
       "notFound": "Bab tidak ditemukan",
       "create": {

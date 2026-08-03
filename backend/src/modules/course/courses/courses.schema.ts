@@ -300,6 +300,9 @@ export const LikeResponse = Type.Object({
   data: InteractionDataSchema,
 });
 
+export type RatingResponseT = Static<typeof RatingResponse>;
+export type BookmarkResponseT = Static<typeof BookmarkResponse>;
+
 export const FavoriteCourseItemSchema = Type.Object({
   id: Type.String({ format: "uuid" }),
   courseCode: Type.String(),

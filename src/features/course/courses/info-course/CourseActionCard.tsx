@@ -3,7 +3,7 @@ import { CourseUserDetail, useBookmarkCourse, useRateCourse } from "@/api/course
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ImageIcon, ChevronRight, CheckCircle2, Loader2, BookOpen, Bookmark, Star } from "lucide-react";
-import { toast } from "sonner";
+import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -32,10 +32,10 @@ export function CourseActionCard({ course }: CourseActionCardProps) {
     if (!course) return;
     bookmarkMutation.mutate(course.id, {
       onSuccess: (res: any) => {
-        toast.success(res?.message || t(($) => $.course.chapters.form.updateSuccess));
+        showNotifSuccess({ message: res?.message || t(($) => $.course.chapters.form.updateSuccess) });
       },
       onError: (err: any) => {
-        toast.error(err?.message || t(($) => $.course.public.player.loadError));
+        showNotifError({ message: err?.message || t(($) => $.course.public.player.loadError) });
       },
     });
   };
@@ -44,9 +44,9 @@ export function CourseActionCard({ course }: CourseActionCardProps) {
     if (!course) return;
     try {
       const res = await rateMutation.mutateAsync({ courseId: course.id, rating });
-      toast.success(res?.message || t(($) => $.course.chapters.form.updateSuccess));
+      showNotifSuccess({ message: res?.message || t(($) => $.course.chapters.form.updateSuccess) });
     } catch (err: any) {
-      toast.error(err?.message || t(($) => $.course.public.player.loadError));
+      showNotifError({ message: err?.message || t(($) => $.course.public.player.loadError) });
       throw err;
     }
   };

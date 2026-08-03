@@ -1,7 +1,7 @@
 import { db } from "../../../../../db/db-pool.ts";
 import { courseEnrollments } from "../../../../../db/schema/course/course-enrollments.ts";
 import { courseStats } from "../../../../../db/schema/course/course-stats.ts";
-import { eq, and, isNotNull } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 export async function rateCourseService(courseId: string, userId: string, rating: number) {
   // Check if user is enrolled in the course
@@ -17,6 +17,19 @@ export async function rateCourseService(courseId: string, userId: string, rating
     };
   }
 
+  const oldRating = enrollment.rating ? parseFloat(enrollment.rating.toString()) : 0;
+
+  if (oldRating === rating) {
+    return {
+      success: true,
+      data: {
+        courseId,
+        userId,
+        rating,
+      },
+    };
+  }
+
   // Update enrollment rating
   await db
     .update(courseEnrollments)
@@ -25,41 +38,37 @@ export async function rateCourseService(courseId: string, userId: string, rating
     })
     .where(eq(courseEnrollments.id, enrollment.id));
 
-  // Recalculate average rating and total ratings in course_stats
-  const allRatings = await db.query.courseEnrollments.findMany({
-    where: and(
-      eq(courseEnrollments.courseId, courseId),
-      isNotNull(courseEnrollments.rating)
-    ),
-  });
+  const isFirstTime = oldRating === 0;
+  const ratingDiff = rating - oldRating;
 
-  const validRatings = allRatings.map((r) => Number(r.rating)).filter((r) => !isNaN(r));
-  const totalRatings = validRatings.length;
-  const ratingSum = validRatings.reduce((sum, val) => sum + val, 0).toFixed(2);
-  const averageRating = totalRatings > 0
-    ? (validRatings.reduce((sum, val) => sum + val, 0) / totalRatings).toFixed(2)
-    : "0.00";
-
+  // Insert or update courseStats incrementally
   await db
     .insert(courseStats)
     .values({
       courseId,
-      totalRatings,
-      ratingCount: totalRatings,
-      ratingSum,
-      averageRating,
+      totalRatings: 1,
+      ratingCount: 1,
+      ratingSum: rating.toFixed(2),
+      averageRating: rating.toFixed(2),
       lastUpdated: new Date(),
     })
     .onConflictDoUpdate({
       target: courseStats.courseId,
       set: {
-        totalRatings,
-        ratingCount: totalRatings,
-        ratingSum,
-        averageRating,
+        ratingSum: sql`${courseStats.ratingSum} + ${ratingDiff}`,
+        totalRatings: isFirstTime ? sql`${courseStats.totalRatings} + 1` : sql`${courseStats.totalRatings}`,
+        ratingCount: isFirstTime ? sql`${courseStats.ratingCount} + 1` : sql`${courseStats.ratingCount}`,
         lastUpdated: new Date(),
       },
     });
+
+  // Calculate averageRating based on the updated sum/count
+  await db
+    .update(courseStats)
+    .set({
+      averageRating: sql`CASE WHEN ${courseStats.totalRatings} > 0 THEN ${courseStats.ratingSum} / ${courseStats.totalRatings} ELSE 0 END`,
+    })
+    .where(eq(courseStats.courseId, courseId));
 
   return {
     success: true,

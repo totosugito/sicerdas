@@ -43,7 +43,7 @@ const ratingRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: request.t(($) => $.course.courses.detail.success),
+        message: request.t(($) => $.course.rating.updated),
         data: result.data!,
       });
     },
