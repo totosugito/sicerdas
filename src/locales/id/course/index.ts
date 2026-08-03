@@ -311,6 +311,7 @@ export default {
       startExam: "Buka ujian",
       examUnavailable: "Peluncur ujian belum terhubung.",
       markComplete: "Tandai selesai",
+      confirmCompleteDesc: "Apakah Anda yakin ingin menandai materi ini sebagai selesai?",
       previous: "Sebelumnya",
       next: "Berikutnya",
     },

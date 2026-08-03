@@ -9,6 +9,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEnrollCourse } from "@/api/course/enrollments";
 import { AppRoute } from "@/constants/app-route";
 import { DialogModal } from "@/components/dialog/DialogModal";
+import { Progress } from "@/components/ui/progress";
+import { EnumEnrollmentStatus } from "@/api/course/types";
 
 interface CourseActionCardProps {
   course?: CourseUserDetail;
@@ -24,7 +26,7 @@ export function CourseActionCard({ course }: CourseActionCardProps) {
   const handleEnrollOrStart = () => {
     if (!course) return;
 
-    if (course.progress?.enrollmentStatus === "active") {
+    if (course.progress?.enrollmentStatus === EnumEnrollmentStatus.ACTIVE || course.progress?.enrollmentStatus === EnumEnrollmentStatus.COMPLETED) {
       navigate({
         to: AppRoute.course.courses.player.url,
         params: { id: course.id },
@@ -54,7 +56,9 @@ export function CourseActionCard({ course }: CourseActionCardProps) {
     });
   };
 
-  const isEnrolled = course?.progress?.enrollmentStatus === "active";
+  const isEnrolled =
+    course?.progress?.enrollmentStatus === EnumEnrollmentStatus.ACTIVE ||
+    course?.progress?.enrollmentStatus === EnumEnrollmentStatus.COMPLETED;
 
   return (
     <>
@@ -75,23 +79,40 @@ export function CourseActionCard({ course }: CourseActionCardProps) {
         </div>
 
         <CardContent className="p-6 space-y-6">
-          <div>
-            <span className="text-xs text-slate-400 dark:text-slate-500 uppercase font-bold block mb-1">
-              {t(($) => $.course.public.detail.pricing)}
-            </span>
-            <div className="text-2xl font-extrabold text-slate-900 dark:text-white">
-              {course?.price === 0 ? (
-                <span className="text-emerald-600 dark:text-emerald-400">
-                  {t(($) => $.course.public.detail.free)}
+          {isEnrolled && course?.progress ? (
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="font-bold text-slate-700 dark:text-slate-350">
+                  {t(($) => $.course.public.player.progress)}
                 </span>
-              ) : (
-                `Rp ${course?.price?.toLocaleString("id-ID")}`
-              )}
+                <span className="font-extrabold text-primary">
+                  {course.progress.progressPercentage}%
+                </span>
+              </div>
+              <Progress value={course.progress.progressPercentage} />
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                {course.progress.completedLectures}/{course.totalLectures} {t(($) => $.course.public.player.completed)}
+              </p>
             </div>
-          </div>
+          ) : (
+            <div>
+              <span className="text-xs text-slate-400 dark:text-slate-500 uppercase font-bold block mb-1">
+                {t(($) => $.course.public.detail.pricing)}
+              </span>
+              <div className="text-2xl font-extrabold text-slate-900 dark:text-white">
+                {course?.price === 0 ? (
+                  <span className="text-emerald-600 dark:text-emerald-400">
+                    {t(($) => $.course.public.detail.free)}
+                  </span>
+                ) : (
+                  `Rp ${course?.price?.toLocaleString("id-ID")}`
+                )}
+              </div>
+            </div>
+          )}
 
           <Button
-            className="w-full py-6 font-bold text-base rounded-xl shadow-md gap-2"
+            className="w-full font-bold gap-2"
             onClick={handleEnrollOrStart}
             disabled={enrollMutation.isPending}
           >

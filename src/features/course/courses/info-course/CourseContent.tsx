@@ -2,16 +2,16 @@ import React from "react";
 import { CourseStructureChapter } from "@/api/course/courses/admin/structure-course";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { PlayCircle, FileText } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
+import { LectureIcon, LectureStatusBadge } from "@/features/components";
 
 interface CourseContentProps {
   chapters: CourseStructureChapter[];
   isStructureLoading: boolean;
+  isEnrolled?: boolean;
 }
 
-export function CourseContent({ chapters, isStructureLoading }: CourseContentProps) {
+export function CourseContent({ chapters, isStructureLoading, isEnrolled }: CourseContentProps) {
   const { t } = useAppTranslation();
 
   return (
@@ -57,11 +57,7 @@ export function CourseContent({ chapters, isStructureLoading }: CourseContentPro
                         className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/40"
                       >
                         <div className="flex items-center gap-3">
-                          {lecture.type === "video" ? (
-                            <PlayCircle className="h-4.5 w-4.5 text-primary shrink-0" />
-                          ) : (
-                            <FileText className="h-4.5 w-4.5 text-blue-500 shrink-0" />
-                          )}
+                          <LectureIcon type={lecture.type} />
                           <div className="flex flex-col">
                             <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">
                               {t(($) => $.course.public.detail.lecture)} {lIdx + 1} • {lecture.type.toUpperCase()}
@@ -72,9 +68,10 @@ export function CourseContent({ chapters, isStructureLoading }: CourseContentPro
                           </div>
                         </div>
 
-                        <Badge variant="outline" className="text-[10px] font-medium text-slate-400">
-                          {t(($) => $.course.public.detail.locked)}
-                        </Badge>
+                        <LectureStatusBadge
+                          isEnrolled={isEnrolled}
+                          isCompleted={(lecture as any).isCompleted}
+                        />
                       </div>
                     ))
                   ) : (

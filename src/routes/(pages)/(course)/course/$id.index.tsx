@@ -5,6 +5,8 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { PageTitle, ErrorPageDetails } from "@/components/general";
 import { AppRoute } from "@/constants/app-route";
 import { AlertCircle } from "lucide-react";
+import { EnumEnrollmentStatus } from "@/api/course/types";
+import { useCourseSyllabus } from "@/api/course/user-progress";
 import {
   CourseHeader,
   CourseContent,
@@ -29,8 +31,20 @@ function CourseDetailPage() {
   } = useDetailCourseClient(id);
   const course = detailData?.data;
 
+  const isEnrolled =
+    course?.progress?.enrollmentStatus === EnumEnrollmentStatus.ACTIVE ||
+    course?.progress?.enrollmentStatus === EnumEnrollmentStatus.COMPLETED;
+
   const { data: structureData, isLoading: isStructureLoading } = useCourseStructureClient(id);
-  const chapters = structureData?.data || [];
+  const { data: syllabusData, isLoading: isSyllabusLoading } = useCourseSyllabus(id, { enabled: isEnrolled });
+
+  const chapters = isEnrolled
+    ? (syllabusData?.data?.chapters || [])
+    : (structureData?.data || []);
+
+  const isStructureLoadingCombined = isEnrolled
+    ? isStructureLoading || isSyllabusLoading
+    : isStructureLoading;
 
   if (isDetailLoading) {
     return <CourseDetailSkeleton />;
@@ -65,7 +79,11 @@ function CourseDetailPage() {
           {/* Main details (Left Side) */}
           <div className="lg:col-span-2 space-y-6">
             <CourseHeader course={course} />
-            <CourseContent chapters={chapters} isStructureLoading={isStructureLoading} />
+            <CourseContent
+              chapters={chapters as any}
+              isStructureLoading={isStructureLoadingCombined}
+              isEnrolled={isEnrolled}
+            />
           </div>
 
           {/* Action Card (Right Side) */}

@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { AlertCircle, RotateCcw } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCourseSyllabus, useCompleteLecture } from "@/api/course/user-progress";
+import { useCourseSyllabus, useCompleteLecture, LectureProgressItem, ChapterProgressItem } from "@/api/course/user-progress";
 import { useCourseLectureText } from "@/api/course/lecture-texts";
 import { useEnrollCourse } from "@/api/course/enrollments";
 import { useDetailCourseClient } from "@/api/course/courses";
@@ -15,19 +15,32 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
 import { useStartSession } from "@/api/exam/sessions";
 import { EnumExamSessionMode } from "@/api/exam/types";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import {
   PlayerHeader,
   PlayerSidebar,
   PlayerContent,
   PlayerSkeleton,
-  PlayerLecture,
-  PlayerChapter,
 } from "@/features/course/courses/player-course";
 
-export const Route = createFileRoute("/(pages)/(course)/course/$id/player")({ component: CoursePlayerPage });
+type CoursePlayerSearch = {
+  lectureId?: string;
+  examSessionId?: string;
+};
+
+export const Route = createFileRoute("/(pages)/(course)/course/$id/player")({
+  validateSearch: (search: Record<string, unknown>): CoursePlayerSearch => {
+    return {
+      lectureId: search.lectureId as string | undefined,
+      examSessionId: search.examSessionId as string | undefined,
+    };
+  },
+  component: CoursePlayerPage,
+});
 
 function CoursePlayerPage() {
   const { id } = Route.useParams();
+  const { lectureId, examSessionId } = Route.useSearch();
   const navigate = useNavigate();
   const { t } = useAppTranslation();
   const queryClient = useQueryClient();
@@ -36,21 +49,38 @@ function CoursePlayerPage() {
   const enroll = useEnrollCourse();
   const complete = useCompleteLecture();
   const startSession = useStartSession();
-  const [selectedId, setSelectedId] = useState<string>();
+  const [isMobileSyllabusOpen, setIsMobileSyllabusOpen] = useState(false);
 
-  const lectures = useMemo(() => syllabus.data?.data.chapters.flatMap((chapter) => chapter.lectures as PlayerLecture[]) ?? [], [syllabus.data]);
-  const selected = lectures.find((lecture) => lecture.id === selectedId) ?? lectures[0];
+  const lectures = useMemo(() => syllabus.data?.data.chapters.flatMap((chapter) => chapter.lectures as LectureProgressItem[]) ?? [], [syllabus.data]);
+
+  const selected = useMemo(() => {
+    if (lectureId) {
+      const found = lectures.find((l) => l.id === lectureId);
+      if (found) return found;
+    }
+    return lectures[0];
+  }, [lectures, lectureId]);
+
   const selectedTextId = selected?.type === EnumLectureType.TEXT ? selected.referenceUrl : null;
   const text = useCourseLectureText(selectedTextId);
 
   useEffect(() => {
-    if (selected?.id) {
-      setSelectedId(selected.id);
+    if (lectures.length > 0 && !lectureId) {
+      navigate({
+        to: ".",
+        search: (prev: CoursePlayerSearch) => ({ ...prev, lectureId: lectures[0].id }),
+        replace: true,
+      });
     }
-  }, [selected?.id]);
+  }, [lectures, lectureId, navigate]);
 
-  const selectLecture = (lecture: PlayerLecture) => {
-    setSelectedId(lecture.id);
+  const selectLecture = (lecture: LectureProgressItem) => {
+    navigate({
+      to: ".",
+      search: (prev: CoursePlayerSearch) => ({ ...prev, lectureId: lecture.id, examSessionId: undefined }),
+      replace: true,
+    });
+    setIsMobileSyllabusOpen(false);
   };
 
   const markComplete = () => {
@@ -77,10 +107,24 @@ function CoursePlayerPage() {
     startSession.mutate(
       { packageId: selected.packageId, sectionId: selected.referenceUrl, mode: EnumExamSessionMode.TRYOUT },
       {
-        onSuccess: (response) => navigate({ to: AppRoute.exam.session.url, params: { id: response.data.sessionId } }),
+        onSuccess: (response) => {
+          navigate({
+            to: ".",
+            search: (prev: CoursePlayerSearch) => ({ ...prev, examSessionId: response.data.sessionId }),
+            replace: true,
+          });
+        },
         onError: (error: any) => showNotifError({ message: error?.message || t(($) => $.course.public.player.examUnavailable) }),
       },
     );
+  };
+
+  const handleSetExamSessionId = (sessionId?: string) => {
+    navigate({
+      to: ".",
+      search: (prev: CoursePlayerSearch) => ({ ...prev, examSessionId: sessionId }),
+      replace: true,
+    });
   };
 
   const moveLecture = (direction: -1 | 1) => {
@@ -119,14 +163,17 @@ function CoursePlayerPage() {
           totalLectures={syllabus.data?.data.totalLectures}
           progressPercentage={syllabus.data?.data.progressPercentage}
           onBack={() => navigate({ to: AppRoute.course.courses.detail.url, params: { id } })}
+          onOpenSyllabus={() => setIsMobileSyllabusOpen(true)}
         />
 
         <div className="grid gap-5 lg:grid-cols-[300px_1fr]">
-          <PlayerSidebar
-            chapters={(syllabus.data?.data.chapters || []) as PlayerChapter[]}
-            selectedId={selected?.id}
-            onSelectLecture={selectLecture}
-          />
+          <div className="hidden lg:block">
+            <PlayerSidebar
+              chapters={(syllabus.data?.data.chapters || []) as ChapterProgressItem[]}
+              selectedId={selected?.id}
+              onSelectLecture={selectLecture}
+            />
+          </div>
           <PlayerContent
             selected={selected}
             textLoading={text.isLoading}
@@ -139,8 +186,23 @@ function CoursePlayerPage() {
             onNext={() => moveLecture(1)}
             hasPrev={hasPrev}
             hasNext={hasNext}
+            examSessionId={examSessionId}
+            onSetExamSessionId={handleSetExamSessionId}
           />
         </div>
+
+        <Sheet open={isMobileSyllabusOpen} onOpenChange={setIsMobileSyllabusOpen}>
+          <SheetContent side="left" className="p-0 w-[300px] max-w-[85vw] border-r dark:border-slate-800 bg-white dark:bg-slate-950 shadow-lg">
+            <div className="h-full pt-10 overflow-y-auto">
+              <PlayerSidebar
+                chapters={(syllabus.data?.data.chapters || []) as ChapterProgressItem[]}
+                selectedId={selected?.id}
+                onSelectLecture={selectLecture}
+                className="border-none shadow-none bg-transparent lg:static"
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
         {syllabus.data?.data.totalLectures === 0 && <Card><CardContent className="flex flex-col items-center gap-3 p-8 text-center"><RotateCcw className="h-8 w-8 text-muted-foreground" /><p>{t(($) => $.course.public.player.empty)}</p><Button onClick={handleEnroll} disabled={enroll.isPending}>{t(($) => $.course.public.detail.enroll)}</Button></CardContent></Card>}
       </div>
     </div>

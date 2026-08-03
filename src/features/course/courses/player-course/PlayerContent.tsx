@@ -1,17 +1,22 @@
-import React from "react";
-import { CheckCircle2, ChevronLeft, ChevronRight, Lock } from "lucide-react";
+import React, { useState } from "react";
+import { CheckCircle2, ChevronLeft, ChevronRight, Lock, Clock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LoadingView } from "@/components/general";
 import { BlockNoteStatic } from "@/components/custom/blocknote";
-import { EnumLectureType } from "backend/src/db/schema/course/enums.ts";
+import { DialogModal } from "@/components/dialog/DialogModal";
+import { EnumLectureType } from "@/api/course/types";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { string_to_locale_date } from "@/lib/my-utils";
-import type { PlayerLecture } from "./PlayerSidebar";
-
+import type { LectureProgressItem } from "@/api/course/user-progress";
+import { useSessionHistory } from "@/api/exam/sessions";
+import { PlayerCbtView } from "./PlayerCbtView";
+import { PlayerExamHistory } from "./PlayerExamHistory";
+import { EnumExamSessionStatus } from "@/api/exam/types";
+ 
 interface PlayerContentProps {
-  selected?: PlayerLecture;
+  selected?: LectureProgressItem;
   textLoading: boolean;
   textContent?: any[];
   examPending: boolean;
@@ -22,6 +27,8 @@ interface PlayerContentProps {
   onNext: () => void;
   hasPrev: boolean;
   hasNext: boolean;
+  examSessionId?: string;
+  onSetExamSessionId: (sessionId?: string) => void;
 }
 
 export function PlayerContent({
@@ -36,15 +43,40 @@ export function PlayerContent({
   onNext,
   hasPrev,
   hasNext,
+  examSessionId,
+  onSetExamSessionId,
 }: PlayerContentProps) {
   const { t, i18n } = useAppTranslation();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  // Fetch history if selected is an exam
+  const isExam = selected?.type === EnumLectureType.EXAM;
+  const { data: historyRes } = useSessionHistory(
+    isExam ? (selected?.packageId ?? undefined) : undefined,
+    isExam ? (selected?.referenceUrl ?? undefined) : undefined,
+    { page: 1, limit: 10 }
+  );
+
+  const history = historyRes?.data?.items || [];
+  const activeSession = history.find((h) => h.status === EnumExamSessionStatus.IN_PROGRESS);
+
+  // If there's an active inline exam session, render CBT player directly instead of standard lecture card
+  if (examSessionId) {
+    return (
+      <PlayerCbtView
+        sessionId={examSessionId}
+        packageId={selected?.packageId ?? undefined}
+        sectionId={selected?.referenceUrl ?? undefined}
+        onFinished={() => onSetExamSessionId(undefined)}
+      />
+    );
+  }
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-0">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <Badge variant="secondary">{selected?.type?.toUpperCase()}</Badge>
             <CardTitle className="mt-2">{selected?.title}</CardTitle>
             <p className="mt-1 text-sm text-muted-foreground">
               {selected?.description}
@@ -91,37 +123,73 @@ export function PlayerContent({
         )}
 
         {selected?.type === EnumLectureType.EXAM && (
-          <div className="rounded-xl border border-primary/20 bg-primary/5 p-6 text-center">
-            <Lock className="mx-auto mb-3 h-8 w-8 text-primary" />
-            <p className="mb-4 text-sm text-muted-foreground">
-              {t(($) => $.course.public.player.examHint)}
-            </p>
-            <Button onClick={onLaunchExam} disabled={examPending}>
-              {t(($) => $.course.public.player.startExam)}
-            </Button>
+          <div className="space-y-6">
+            <div className="rounded-xl border border-primary/20 bg-primary/5 p-6 text-center">
+              <Lock className="mx-auto mb-3 h-8 w-8 text-primary" />
+              <p className="mb-4 text-sm text-muted-foreground">
+                {activeSession
+                  ? t(($) => $.exam.sessions.active.continueDesc)
+                  : t(($) => $.course.public.player.examHint)}
+              </p>
+              {activeSession ? (
+                <Button
+                  size={"sm"}
+                  onClick={() => onSetExamSessionId(activeSession.id)}
+                  disabled={examPending}
+                  className="bg-amber-600 hover:bg-amber-700 text-white font-bold"
+                >
+                  <Clock className="mr-2 h-4 w-4" />
+                  {t(($) => $.exam.sessions.active.continue)}
+                </Button>
+              ) : (
+                <Button onClick={onLaunchExam} disabled={examPending} className="font-bold" size={"sm"}>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  {t(($) => $.course.public.player.startExam)}
+                </Button>
+              )}
+            </div>
+
+            <PlayerExamHistory
+              packageId={selected?.packageId ?? undefined}
+              sectionId={selected?.referenceUrl ?? undefined}
+              onSetExamSessionId={onSetExamSessionId}
+            />
           </div>
         )}
 
         {!selected?.isCompleted && selected?.type !== EnumLectureType.EXAM && (
-          <Button
-            onClick={onMarkComplete}
-            disabled={completePending}
-            className="w-full sm:w-auto"
-          >
-            <CheckCircle2 className="mr-2 h-4 w-4" />
-            {t(($) => $.course.public.player.markComplete)}
-          </Button>
+          <>
+            <Button
+              onClick={() => setIsConfirmOpen(true)}
+              disabled={completePending}
+              className="w-full sm:w-auto"
+            >
+              <CheckCircle2 className="mr-2 h-4 w-4" />
+              {t(($) => $.course.public.player.markComplete)}
+            </Button>
+
+            <DialogModal
+              open={isConfirmOpen}
+              onOpenChange={setIsConfirmOpen}
+              variantSubmit="default"
+              modal={{
+                title: t(($) => $.course.public.player.markComplete),
+                desc: t(($) => $.course.public.player.confirmCompleteDesc),
+                textConfirm: t(($) => $.course.public.player.markComplete),
+                textCancel: t(($) => $.course.lectures.picker.btnCancel),
+                iconType: "question",
+                showCloseButton: true,
+                onConfirmClick: () => {
+                  setIsConfirmOpen(false);
+                  onMarkComplete();
+                },
+                onCancelClick: () => setIsConfirmOpen(false),
+              }}
+            />
+          </>
         )}
 
-        {selected?.type === EnumLectureType.EXAM && (
-          <Button
-            onClick={onMarkComplete}
-            disabled={completePending}
-            variant="outline"
-          >
-            {t(($) => $.course.public.player.markComplete)}
-          </Button>
-        )}
+
 
         <div className="flex justify-between border-t pt-4">
           <Button variant="outline" onClick={onPrev} disabled={!hasPrev}>

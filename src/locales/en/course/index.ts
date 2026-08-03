@@ -141,6 +141,7 @@ export default {
       startExam: "Open exam",
       examUnavailable: "Exam launcher is not connected yet.",
       markComplete: "Mark as complete",
+      confirmCompleteDesc: "Are you sure you want to mark this lecture as completed?",
       previous: "Previous",
       next: "Next",
     },

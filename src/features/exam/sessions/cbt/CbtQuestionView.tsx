@@ -47,7 +47,7 @@ export const CbtQuestionView: React.FC<CbtQuestionViewProps> = ({
   allowDirectOptionSelect = false,
 }) => {
   const { t } = useAppTranslation();
-  const { isSaving, fontSize, setFontSize, draftOptionId } = useCbtStore();
+  const { isSaving, fontSize, setFontSize, draftOptionId, setDraftOptionId } = useCbtStore();
   const [showSolution, setShowSolution] = useState(false);
 
   const fontSizes: { label: string; value: any }[] = [
@@ -221,7 +221,7 @@ export const CbtQuestionView: React.FC<CbtQuestionViewProps> = ({
                   if (!allowDirectOptionSelect) return;
                   // Lock options in study mode if already answered
                   if (mode === EnumExamSessionMode.STUDY && evaluation) return;
-                  onOptionSelect(option.id);
+                  setDraftOptionId(option.id);
                 }}
                 className={`relative flex items-start gap-4 p-4 rounded-xl border transition-all duration-200 ${getOptionStyles(option.id)}`}
               >

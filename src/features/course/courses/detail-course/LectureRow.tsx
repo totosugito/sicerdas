@@ -1,5 +1,5 @@
 import React from "react";
-import { GripVertical, Pencil, Trash2, FileText, Video, GraduationCap, FileMinus, MessageSquare, File, Eye } from "lucide-react";
+import { GripVertical, Pencil, Trash2, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
@@ -7,6 +7,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { LectureItem } from "@/api/course/lectures";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { EnumLectureType } from "@/api/course/types";
+import { LectureIcon } from "@/features/components";
 
 interface LectureRowProps {
   lecture: LectureItem;
@@ -26,23 +27,6 @@ export function LectureRow({ lecture, index, onEdit, onDelete, onPreview }: Lect
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  };
-
-  const getLectureIcon = (type: string) => {
-    switch (type) {
-      case EnumLectureType.VIDEO:
-        return <Video className="h-4 w-4 text-sky-500" />;
-      case EnumLectureType.EXAM:
-        return <GraduationCap className="h-4 w-4 text-emerald-500" />;
-      case EnumLectureType.TEXT:
-        return <FileText className="h-4 w-4 text-amber-500" />;
-      case EnumLectureType.PDF:
-        return <FileMinus className="h-4 w-4 text-rose-500" />;
-      case EnumLectureType.DISCUSSION:
-        return <MessageSquare className="h-4 w-4 text-indigo-500" />;
-      default:
-        return <File className="h-4 w-4 text-muted-foreground" />;
-    }
   };
 
   return (
@@ -67,7 +51,7 @@ export function LectureRow({ lecture, index, onEdit, onDelete, onPreview }: Lect
           {index + 1}
         </div>
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-background border border-border/40">
-          {getLectureIcon(lecture.type)}
+          <LectureIcon type={lecture.type} className="h-4 w-4" />
         </div>
         <div>
           <div className="flex items-center gap-2">

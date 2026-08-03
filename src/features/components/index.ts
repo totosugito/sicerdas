@@ -17,6 +17,8 @@ export { DefaultStatusBadge } from "./badge/DefaultStatusBadge";
 export { ContentStatusBadge } from "./badge/ContentStatusBadge";
 export { ContentTypeBadge } from "./badge/ContentTypeBadge";
 export { PublicStatusBadge } from "./badge/PublicStatusBadge";
+export { LectureIcon } from "./course/LectureIcon";
+export { LectureStatusBadge } from "./badge/LectureStatusBadge";
 
 
 
