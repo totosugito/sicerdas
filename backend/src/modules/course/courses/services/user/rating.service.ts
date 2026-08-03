@@ -35,6 +35,7 @@ export async function rateCourseService(courseId: string, userId: string, rating
 
   const validRatings = allRatings.map((r) => Number(r.rating)).filter((r) => !isNaN(r));
   const totalRatings = validRatings.length;
+  const ratingSum = validRatings.reduce((sum, val) => sum + val, 0).toFixed(2);
   const averageRating = totalRatings > 0
     ? (validRatings.reduce((sum, val) => sum + val, 0) / totalRatings).toFixed(2)
     : "0.00";
@@ -44,6 +45,8 @@ export async function rateCourseService(courseId: string, userId: string, rating
     .values({
       courseId,
       totalRatings,
+      ratingCount: totalRatings,
+      ratingSum,
       averageRating,
       lastUpdated: new Date(),
     })
@@ -51,6 +54,8 @@ export async function rateCourseService(courseId: string, userId: string, rating
       target: courseStats.courseId,
       set: {
         totalRatings,
+        ratingCount: totalRatings,
+        ratingSum,
         averageRating,
         lastUpdated: new Date(),
       },

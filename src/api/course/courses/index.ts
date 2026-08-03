@@ -36,4 +36,6 @@ export { useListCourseClient } from "./list-course";
 export { useDetailCourseClient } from "./detail-course";
 export { useCourseFilterParams } from "./filter-params";
 export { useCourseStructureClient } from "./structure-course";
+export { useBookmarkCourse } from "./user/bookmark";
+export { useRateCourse } from "./user/rating";
 export type { FilterParamsCategoryData, FilterParamsGrade } from "./types";

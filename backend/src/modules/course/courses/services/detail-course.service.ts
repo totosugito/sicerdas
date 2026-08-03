@@ -40,6 +40,8 @@ export async function userDetailCourseService(id: string, userId?: string): Prom
       },
       enrollmentStatus: enrollment.status,
       completedLectures: progress.completedLectures,
+      rating: enrollment.rating,
+      bookmarked: enrollment.bookmarked,
     })
     .from(courses)
     .leftJoin(educationCategories, eq(courses.categoryId, educationCategories.id))
@@ -52,7 +54,7 @@ export async function userDetailCourseService(id: string, userId?: string): Prom
 
   if (!result) return { success: false, statusCode: 404, errorKey: ($) => $.course.courses.notFound };
 
-  const ratingCount = result.stats?.ratingCount ?? result.stats?.totalRatings ?? 0;
+  const ratingCount = result.stats?.totalRatings || result.stats?.ratingCount || 0;
   const completedLectures = Number(result.completedLectures ?? 0);
   const totalLectures = result.course.totalLectures ?? 0;
 
@@ -78,6 +80,8 @@ export async function userDetailCourseService(id: string, userId?: string): Prom
             enrollmentStatus: result.enrollmentStatus,
             completedLectures,
             progressPercentage: totalLectures > 0 ? Math.round((completedLectures / totalLectures) * 100) : 0,
+            rating: result.rating ? Number(result.rating) : null,
+            bookmarked: result.bookmarked ?? false,
           }
         : null,
     },

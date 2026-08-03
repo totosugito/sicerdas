@@ -88,6 +88,8 @@ export const CourseUserDetailSchema = Type.Object({
       enrollmentStatus: Type.String(),
       completedLectures: Type.Number(),
       progressPercentage: Type.Number(),
+      rating: Type.Union([Type.Number(), Type.Null()]),
+      bookmarked: Type.Boolean(),
     }),
     Type.Null(),
   ]),

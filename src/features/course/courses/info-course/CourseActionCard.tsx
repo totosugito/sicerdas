@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { CourseUserDetail } from "@/api/course/courses";
+import { CourseUserDetail, useBookmarkCourse, useRateCourse } from "@/api/course/courses";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ImageIcon, ChevronRight, CheckCircle2, Loader2, BookOpen } from "lucide-react";
+import { ImageIcon, ChevronRight, CheckCircle2, Loader2, BookOpen, Bookmark, Star } from "lucide-react";
+import { toast } from "sonner";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -11,6 +12,7 @@ import { AppRoute } from "@/constants/app-route";
 import { DialogModal } from "@/components/dialog/DialogModal";
 import { Progress } from "@/components/ui/progress";
 import { EnumEnrollmentStatus } from "@/api/course/types";
+import { CourseRatingDialog } from "./CourseRatingDialog";
 
 interface CourseActionCardProps {
   course?: CourseUserDetail;
@@ -21,7 +23,33 @@ export function CourseActionCard({ course }: CourseActionCardProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const enrollMutation = useEnrollCourse();
+  const bookmarkMutation = useBookmarkCourse();
+  const rateMutation = useRateCourse();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isRatingOpen, setIsRatingOpen] = useState(false);
+
+  const handleToggleBookmark = () => {
+    if (!course) return;
+    bookmarkMutation.mutate(course.id, {
+      onSuccess: (res: any) => {
+        toast.success(res?.message || t(($) => $.course.chapters.form.updateSuccess));
+      },
+      onError: (err: any) => {
+        toast.error(err?.message || t(($) => $.course.public.player.loadError));
+      },
+    });
+  };
+
+  const handleRate = async (rating: number) => {
+    if (!course) return;
+    try {
+      const res = await rateMutation.mutateAsync({ courseId: course.id, rating });
+      toast.success(res?.message || t(($) => $.course.chapters.form.updateSuccess));
+    } catch (err: any) {
+      toast.error(err?.message || t(($) => $.course.public.player.loadError));
+      throw err;
+    }
+  };
 
   const handleEnrollOrStart = () => {
     if (!course) return;
@@ -111,24 +139,76 @@ export function CourseActionCard({ course }: CourseActionCardProps) {
             </div>
           )}
 
-          <Button
-            className="w-full font-bold gap-2"
-            onClick={handleEnrollOrStart}
-            disabled={enrollMutation.isPending}
-          >
-            {enrollMutation.isPending ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              <>
-                <span>
-                  {isEnrolled
-                    ? t(($) => $.course.public.player.continueCourse)
-                    : t(($) => $.course.public.detail.enroll)}
-                </span>
-                <ChevronRight className="h-5 w-5" />
-              </>
+          <div className="flex gap-2">
+            <Button
+              className="flex-1 font-bold gap-2"
+              onClick={handleEnrollOrStart}
+              disabled={enrollMutation.isPending}
+            >
+              {enrollMutation.isPending ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <>
+                  <span>
+                    {isEnrolled
+                      ? t(($) => $.course.public.player.continueCourse)
+                      : t(($) => $.course.public.detail.enroll)}
+                  </span>
+                  <ChevronRight className="h-5 w-5" />
+                </>
+              )}
+            </Button>
+
+            {isEnrolled && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleToggleBookmark}
+                disabled={bookmarkMutation.isPending}
+                className="h-8 w-8"
+              >
+                {bookmarkMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Bookmark
+                    className={`h-5 w-5 ${course?.progress?.bookmarked
+                      ? "text-primary fill-primary"
+                      : "text-slate-500"
+                      }`}
+                  />
+                )}
+              </Button>
             )}
-          </Button>
+          </div>
+
+          {isEnrolled && (
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-555 uppercase tracking-wider">
+                  {t(($) => $.labels.rating)}
+                </span>
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const isFilled = star <= (course?.progress?.rating || 0);
+                    return (
+                      <button
+                        key={star}
+                        onClick={() => setIsRatingOpen(true)}
+                        className="focus:outline-none transition-transform active:scale-90"
+                      >
+                        <Star
+                          className={`h-5 w-5 transition-colors ${isFilled
+                            ? "text-amber-500 fill-amber-500"
+                            : "text-slate-350 dark:text-slate-650 hover:text-amber-400"
+                            }`}
+                        />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Info Bullet points */}
           <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
@@ -170,6 +250,14 @@ export function CourseActionCard({ course }: CourseActionCardProps) {
           onConfirmClick: handleConfirmEnroll,
           onCancelClick: () => setIsConfirmOpen(false),
         }}
+      />
+
+      <CourseRatingDialog
+        isOpen={isRatingOpen}
+        onOpenChange={setIsRatingOpen}
+        onRate={handleRate}
+        initialRating={course?.progress?.rating ?? 0}
+        courseTitle={course?.courseName}
       />
     </>
   );
