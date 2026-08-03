@@ -3,13 +3,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Layers, Calendar, ArrowRight } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
+import { string_to_locale_date } from "@/lib/my-utils";
 
 interface SectionInfoCardProps {
   section: SectionDetailItem;
 }
 
 export function SectionInfoCard({ section }: SectionInfoCardProps) {
-  const { t } = useAppTranslation();
+  const { t, i18n } = useAppTranslation();
 
   return (
     <Card className="shadow-sm border-primary/10 overflow-hidden">
@@ -91,7 +92,11 @@ export function SectionInfoCard({ section }: SectionInfoCardProps) {
                   {t(($) => $.exam.sections.detail.infoCard.createdAt)}
                 </span>
                 <span className="text-xs font-medium tabular-nums truncate">
-                  {new Date(section.createdAt).toLocaleDateString("id-ID", { dateStyle: "medium" })}
+                  {string_to_locale_date(i18n.language, section.createdAt, {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  }) || ""}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-4">
@@ -99,7 +104,11 @@ export function SectionInfoCard({ section }: SectionInfoCardProps) {
                   {t(($) => $.exam.sections.detail.infoCard.updatedAt)}
                 </span>
                 <span className="text-xs font-medium tabular-nums truncate font-bold text-primary">
-                  {new Date(section.updatedAt).toLocaleDateString("id-ID", { dateStyle: "medium" })}
+                  {string_to_locale_date(i18n.language, section.updatedAt, {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  }) || ""}
                 </span>
               </div>
             </div>

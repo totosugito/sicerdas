@@ -126,7 +126,24 @@ export default {
     notFound: "Courses Not Found",
     noSearchDesc: "No search results for \"{{search}}\"",
     noDataDesc: "No courses available yet",
+    loadError: "Unable to load courses. Please try again.",
     clearSearch: "Clear Search",
+    player: {
+      progress: "Course progress",
+      completed: "Completed",
+      continueCourse: "Continue course",
+      completeSuccess: "Lecture marked complete",
+      enrollSuccess: "Course enrollment successful",
+      loadError: "Unable to load course player.",
+      empty: "No lectures available yet.",
+      noContent: "Lecture content is not available.",
+      examHint: "Complete the linked exam to unlock this lecture.",
+      startExam: "Open exam",
+      examUnavailable: "Exam launcher is not connected yet.",
+      markComplete: "Mark as complete",
+      previous: "Previous",
+      next: "Next",
+    },
     noGradesInCategory: "No grade levels in this category",
     selectCategoryToViewGrades: "Select category to view grade levels",
     detail: {
@@ -139,6 +156,7 @@ export default {
       pricing: "Access Price",
       free: "FREE",
       enroll: "Enroll Course",
+      confirmEnrollDesc: "Are you sure you want to enroll in the course",
       noChapterLectures: "No learning materials in this chapter yet",
       bullet1: "Lifetime access to all learning materials",
       bullet2: "Self-paced interactive evaluation quizzes",
@@ -146,4 +164,3 @@ export default {
     },
   },
 };
-

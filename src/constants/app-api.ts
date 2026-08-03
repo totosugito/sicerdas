@@ -85,16 +85,16 @@ export const AppApi = {
         thumbnail: APP_URL_API + "/course/courses/admin/thumbnail/:id",
         structure: APP_URL_API + "/course/courses/admin/structure/:id",
       },
-      list: APP_URL_API + "/course/courses/list",
-      detail: APP_URL_API + "/course/courses/detail/:id",
-      structure: APP_URL_API + "/course/courses/structure/:id",
-      filterParams: APP_URL_API + "/course/courses/filter-params",
       user: {
         bookmark: APP_URL_API + "/course/courses/user/bookmark",
         rating: APP_URL_API + "/course/courses/user/rating",
         favorites: APP_URL_API + "/course/courses/user/favorites",
         like: APP_URL_API + "/course/courses/user/like",
       },
+      list: APP_URL_API + "/course/courses/list",
+      detail: APP_URL_API + "/course/courses/detail/:id",
+      structure: APP_URL_API + "/course/courses/structure/:id",
+      filterParams: APP_URL_API + "/course/courses/filter-params",
     },
     chapters: {
       admin: {
@@ -115,6 +115,20 @@ export const AppApi = {
         update: APP_URL_API + "/course/lecture-texts/admin/update/:id",
         delete: APP_URL_API + "/course/lecture-texts/admin/delete/:id",
       },
+    },
+    enrollments: {
+      user: {
+        enroll: APP_URL_API + "/course/enrollments/user/enroll/:courseId",
+        active: APP_URL_API + "/course/enrollments/user/active",
+        completed: APP_URL_API + "/course/enrollments/user/completed",
+      }
+    },
+    userProgress: {
+      user: {
+        syllabus: APP_URL_API + "/course/user-progress/user/syllabus/:courseId",
+        complete: APP_URL_API + "/course/user-progress/user/lecture/:lectureId/complete",
+        watchTime: APP_URL_API + "/course/user-progress/user/lecture/:lectureId/watch-time",
+      }
     },
     lectures: {
       admin: {

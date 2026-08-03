@@ -36,36 +36,15 @@ export async function enrollCourseService(
   });
 
   if (existing) {
-    if (existing.status === EnumEnrollmentStatus.ACTIVE) {
-      return {
-        success: true,
-        data: {
-          id: existing.id,
-          courseId: existing.courseId,
-          userId: existing.userId,
-          status: existing.status,
-          enrolledAt: existing.enrolledAt.toISOString(),
-          completedAt: existing.completedAt ? existing.completedAt.toISOString() : null,
-        },
-      };
-    }
-
-    // Reactivate if dropped
-    const [updated] = await db
-      .update(courseEnrollments)
-      .set({ status: EnumEnrollmentStatus.ACTIVE, enrolledAt: new Date() })
-      .where(eq(courseEnrollments.id, existing.id))
-      .returning();
-
     return {
       success: true,
       data: {
-        id: updated.id,
-        courseId: updated.courseId,
-        userId: updated.userId,
-        status: updated.status,
-        enrolledAt: updated.enrolledAt.toISOString(),
-        completedAt: updated.completedAt ? updated.completedAt.toISOString() : null,
+        id: existing.id,
+        courseId: existing.courseId,
+        userId: existing.userId,
+        status: existing.status,
+        enrolledAt: existing.enrolledAt.toISOString(),
+        completedAt: existing.completedAt ? existing.completedAt.toISOString() : null,
       },
     };
   }

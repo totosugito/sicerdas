@@ -53,6 +53,7 @@ export const AppRoute = {
       },
       courses: { url: "/courses" },
       detail: { url: "/course/$id" },
+      player: { url: "/course/$id/player" },
     },
     lectureTexts: {
       admin: {

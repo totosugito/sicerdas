@@ -31,7 +31,7 @@ Handles the high-level course metadata, catalog, and admin CRUD.
 
 #### User / Public UI
 - [ ] Public Course Catalog / Exploration Page (with category, grade, & keyword filters)
-- [ ] Public Course Detail & Preview Page (overview, syllabus summary, pricing, enroll CTA)
+- [x] Public Course Detail & Preview Page (overview, syllabus summary, pricing, enroll CTA)
 
 ---
 
@@ -132,7 +132,7 @@ Handles the 1:1 relationship between users and courses.
 - [ ] Drop Student confirmation dialog
 
 #### User UI
-- [ ] Course Enrollment Action Button & Tier Requirements Check Modal
+- [x] Course Enrollment Action Button & Tier Requirements Check Modal
 - [ ] "My Courses - Active" Tab / Page
 - [ ] "My Courses - Completed" Tab / Page
 
@@ -146,16 +146,16 @@ Handles tracking granular lecture completion.
 - [x] `POST /lecture/:lectureId/complete`: **The Progression Bridge**.
   - For Videos/PDFs: Mark as completed.
   - For EXAMs: Fetch CBT `exam_sessions` score, compare with `successThreshold`.
-- [x] `PUT /lecture/:lectureId/watch-time`: Incremental updates for video watch time.
+- [ ] `~~PUT /lecture/:lectureId/watch-time~~`: (Removed - Video support not focused)
 
 ### Frontend Implementation Checklist
 #### User UI
-- [ ] Interactive Course Player & Navigation Sidebar (Chapters + Lectures with completion icons & overall progress bar)
-- [ ] Article / Text Lecture Reader View (renders BlockNote content)
-- [ ] Video Lecture Player View (with video controls & auto watch-time heartbeat integration)
-- [ ] PDF Document Viewer Component
-- [ ] Embedded CBT Exam Launcher & Progression Result Evaluation Screen (checks score against `successThreshold`)
-- [ ] "Mark as Complete" Action Button & progression toast notifications
+- [x] Interactive Course Player & Navigation Sidebar (Chapters + Lectures with completion icons & overall progress bar)
+- [x] Article / Text Lecture Reader View (renders BlockNote content)
+- [ ] `~~Video Lecture Player View~~` (Removed - Video support not focused)
+- [ ] `~~PDF Document Viewer Component~~` (Removed - PDF support not focused)
+- [x] Embedded CBT Exam Launcher & Progression Result Evaluation Screen (checks score against `successThreshold`)
+- [x] "Mark as Complete" Action Button & progression toast notifications
 
 ---
 

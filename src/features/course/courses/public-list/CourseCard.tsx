@@ -42,6 +42,8 @@ const CourseCardView = ({ course, viewMode }: CourseCardViewProps) => {
   const navigate = useNavigate();
   const [hasError, setHasError] = React.useState(false);
   const isListView = viewMode === "list";
+  const isEnrolled = !!course.progress;
+  const progress = course.progress?.progressPercentage;
 
   const handleCardClick = () => {
     navigate({
@@ -98,6 +100,7 @@ const CourseCardView = ({ course, viewMode }: CourseCardViewProps) => {
               {course.courseDescription}
             </p>
           )}
+          {isEnrolled && <CourseProgressBadge progress={progress ?? 0} />}
 
           {/* Stats + rating — bottom row */}
           <div className="flex items-center gap-4 mt-1 text-xs text-slate-500 dark:text-slate-400">
@@ -181,6 +184,8 @@ const CourseCardView = ({ course, viewMode }: CourseCardViewProps) => {
           </p>
         )}
 
+        {isEnrolled && <CourseProgressBadge progress={progress ?? 0} />}
+
         {/* Info row / columns */}
         <div className="grid grid-cols-3 gap-2 py-2 mb-3 border-y border-slate-100 dark:border-slate-800 text-center">
           <div className="flex flex-col items-center gap-0.5">
@@ -228,3 +233,17 @@ const CourseCardView = ({ course, viewMode }: CourseCardViewProps) => {
     </Card>
   );
 };
+
+function CourseProgressBadge({ progress }: { progress: number }) {
+  const { t } = useAppTranslation();
+
+  return (
+    <div className="mb-3 rounded-lg border border-primary/15 bg-primary/5 px-3 py-2">
+      <div className="mb-1 flex items-center justify-between text-[11px] font-semibold">
+        <span className="text-primary">{t(($) => $.course.public.player.progress)}</span>
+        <span>{progress}%</span>
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-primary/15"><div className="h-full rounded-full bg-primary transition-all" style={{ width: `${progress}%` }} /></div>
+    </div>
+  );
+}

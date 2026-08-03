@@ -27,6 +27,7 @@
     "db:push": "cross-env drizzle-kit push",
     "db:push_dev": "cross-env NODE_ENV=development drizzle-kit push",
     "db:init_all": "cross-env NODE_ENV=development bun src/scripts/init/run-inital-data.ts --trace-warnings",
+    "db:seed_demo_course": "cross-env NODE_ENV=development bun src/scripts/demo/seed-course-exam.ts --trace-warnings",
     "db:schedule": "cross-env NODE_ENV=development bun src/scripts/schedule/daily/daily.ts --trace-warnings",
     "db:init_user": "cross-env NODE_ENV=development bun src/scripts/init/jobs/init-user.ts --trace-warnings"
   },

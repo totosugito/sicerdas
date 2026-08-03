@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, BookOpen, FileText, Heart, Star, Download, Flag, ImageOff } from "lucide-react";
-import { formatFileSize, to_decimal_formatted } from "@/lib/my-utils";
+import { formatFileSize, to_decimal_formatted, string_to_locale_date } from "@/lib/my-utils";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { SamplePages } from "./SamplePages";
 import { BookDetailInfoCard } from "./BookDetailInfoCard";
@@ -38,7 +38,7 @@ export const BookDetail = ({
   isRatingDialogOpen,
   onRatingDialogOpenChange,
 }: BookDetailProps) => {
-  const { t } = useAppTranslation();
+  const { t, i18n } = useAppTranslation();
   const [imageError, setImageError] = useState(false);
 
   const userRating = book.userInteraction?.rating || 0;
@@ -221,11 +221,11 @@ export const BookDetail = ({
               <BookDetailInfoCard
                 icon={Calendar}
                 label={t(($) => $.labels.addedOn)}
-                value={new Date(book.createdAt).toLocaleDateString(undefined, {
+                value={string_to_locale_date(i18n.language, book.createdAt, {
                   month: "short",
                   day: "numeric",
                   year: "numeric",
-                })}
+                }) || ""}
               />
             </div>
           </div>

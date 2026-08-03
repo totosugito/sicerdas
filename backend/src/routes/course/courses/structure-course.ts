@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { ErrorResponseSchema } from "../../../types/response.ts";
-import { CourseStructureResponse } from "../../../modules/course/courses/courses.schema.ts";
+import { PublicCourseStructureResponse } from "../../../modules/course/courses/courses.schema.ts";
 import { structureCourseService } from "../../../modules/course/courses/services/admin/structure-course.service.ts";
 
 const ParamsSchema = Type.Object({
@@ -18,7 +18,7 @@ const publicStructureRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: "Get course structure/syllabus preview",
       params: ParamsSchema,
       response: {
-        200: CourseStructureResponse,
+        200: PublicCourseStructureResponse,
         "4xx": ErrorResponseSchema,
       },
     },
@@ -33,10 +33,26 @@ const publicStructureRoute: FastifyPluginAsyncTypebox = async (app) => {
         return reply.badRequest(message);
       }
 
+      // Map to simple structure response
+      const publicData = (result.data || []).map((chapter: any) => ({
+        id: chapter.id,
+        chapterName: chapter.chapterName,
+        courseId: chapter.courseId,
+        position: chapter.position,
+        lectures: (chapter.lectures || []).map((lecture: any) => ({
+          id: lecture.id,
+          title: lecture.title,
+          description: lecture.description,
+          chapterId: lecture.chapterId,
+          type: lecture.type,
+          position: lecture.position,
+        })),
+      }));
+
       return reply.status(200).send({
         success: true,
         message: req.t(($) => $.course.courses.detail.success),
-        data: result.data!,
+        data: publicData,
       });
     },
   });

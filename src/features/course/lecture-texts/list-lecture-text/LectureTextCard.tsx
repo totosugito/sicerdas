@@ -3,8 +3,8 @@ import { LectureTextItem } from "@/api/course/lecture-texts";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Eye, Edit, Trash2, Calendar, Clock } from "lucide-react";
-import { format } from "date-fns";
 import { useAppTranslation } from "@/lib/i18n-typed";
+import { string_to_locale_date } from "@/lib/my-utils";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { CourseStatusBadge } from "@/features/components";
@@ -18,7 +18,7 @@ interface LectureTextCardProps {
 }
 
 export function LectureTextCard({ article, onPreview, onDelete }: LectureTextCardProps) {
-  const { t } = useAppTranslation();
+  const { t, i18n } = useAppTranslation();
 
   const blocksCount = article.content?.length || 0;
 
@@ -65,11 +65,22 @@ export function LectureTextCard({ article, onPreview, onDelete }: LectureTextCar
         <div className="flex items-center justify-between border-t border-border/40 pt-3 text-[11px]">
           <span className="flex items-center gap-1">
             <Calendar className="h-3 w-3" />
-            {article.createdAt ? format(new Date(article.createdAt), "dd MMM yyyy") : "-"}
+            {article.createdAt
+              ? string_to_locale_date(i18n.language, article.createdAt, {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })
+              : "-"}
           </span>
           <span className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
-            {article.updatedAt ? format(new Date(article.updatedAt), "HH:mm") : "-"}
+            {article.updatedAt
+              ? string_to_locale_date(i18n.language, article.updatedAt, {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : "-"}
           </span>
         </div>
       </CardContent>

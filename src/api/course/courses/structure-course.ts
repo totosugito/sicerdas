@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
-import type { BaseResponse } from "backend/src/types/index.ts";
 import type { CourseStructureResponse } from "./admin/structure-course";
 
 export const useCourseStructureClient = (courseId: string) => {

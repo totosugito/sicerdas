@@ -4,9 +4,11 @@ import { ErrorResponseSchema } from "../../../types/response.ts";
 import {
   CourseListQuery,
   CourseListResponse,
-} from "../../../modules/course/courses/courses.schema.ts";
-import { listCourseService } from "../../../modules/course/courses/services/admin/list-course.service.ts";
+  userListCourseService,
+} from "../../../modules/course/courses/index.ts";
 import { EnumContentType } from "../../../db/schema/enum/enum-app.ts";
+import { fromNodeHeaders } from "better-auth/node";
+import { getAuthInstance } from "../../../decorators/auth.decorator.ts";
 
 const publicListRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -26,9 +28,12 @@ const publicListRoute: FastifyPluginAsyncTypebox = async (app) => {
       reply: FastifyReply,
     ) {
       const latestVersionId = app.versionCache.get(EnumContentType.COURSE);
-      const result = await listCourseService(
+      const session = await getAuthInstance(app).api.getSession({
+        headers: fromNodeHeaders(req.headers),
+      });
+      const result = await userListCourseService(
         { ...req.body, versionId: req.body.versionId ?? (latestVersionId ?? undefined) },
-        true,
+        session?.user?.id,
       );
 
       if (!result.success) {

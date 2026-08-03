@@ -12,6 +12,7 @@ import {
   CourseSortSelector,
 } from "@/features/course/courses/public-list";
 import { EmptyState } from "@/components/general/EmptyState";
+import { ErrorContainer } from "@/components/general";
 import { Card, CardContent } from "@/components/ui/card";
 import { EnumViewMode } from "@/constants/app-enum";
 import { DataTablePagination } from "@/components/table";
@@ -66,7 +67,7 @@ function RouteComponent() {
     limit: urlLimit ?? 12,
     search: searchTerm.trim() || undefined,
     categoryId: selectedFilters.categories[0] || undefined,
-    educationGradeId: selectedFilters.grades[0] || undefined,
+    educationGradeIds: selectedFilters.grades.length > 0 ? selectedFilters.grades : undefined,
     sortBy,
     sortOrder,
   });
@@ -79,6 +80,11 @@ function RouteComponent() {
   const courses = response?.data?.items || [];
   const totalPages = response?.data?.meta?.totalPages || 0;
   const totalCourses = response?.data?.meta?.total || 0;
+
+  const clearAllFilters = () => {
+    setSearchTerm("");
+    updateUrlParams(1, "", { categories: [], grades: [] });
+  };
 
   const updateUrlParams = (
     newPage?: number,
@@ -143,9 +149,24 @@ function RouteComponent() {
   };
 
   const isAnyFilterActive = !!(
+    searchTerm ||
     selectedFilters.categories.length > 0 ||
     selectedFilters.grades.length > 0
   );
+
+  if (isError) {
+    return (
+      <div className="flex flex-1 w-full px-6 py-6">
+        <ErrorContainer
+          className="min-h-[420px]"
+          title={t(($) => $.labels.error)}
+          message={t(($) => $.course.public.loadError)}
+          buttonText={t(($) => $.labels.retry)}
+          onButtonClick={() => courseListQuery.refetch()}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col flex-1 w-full px-6 pb-6">
@@ -214,7 +235,10 @@ function RouteComponent() {
 
           {/* Courses Display */}
           {!isLoading && courses.length > 0 && (
-            <CourseCard courses={courses} viewMode={viewMode === "grid" ? "grid" : "list"} />
+            <CourseCard
+              courses={courses}
+              viewMode={viewMode === "grid" ? "grid" : "list"}
+            />
           )}
 
           {/* Empty State */}
@@ -231,14 +255,7 @@ function RouteComponent() {
               {(searchTerm || isAnyFilterActive) && (
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    if (searchTerm) {
-                      setSearchTerm("");
-                      updateUrlParams(1, "");
-                    } else if (isAnyFilterActive) {
-                      updateUrlParams(1, searchTerm, { categories: [], grades: [] });
-                    }
-                  }}
+                  onClick={clearAllFilters}
                 >
                   {t(($) => $.course.public.clearSearch)}
                 </Button>

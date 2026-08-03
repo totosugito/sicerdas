@@ -13,13 +13,6 @@ export const UserLectureIdParams = Type.Object({
 });
 export type UserLectureIdParamsType = Static<typeof UserLectureIdParams>;
 
-// --- Request Body Schemas ---
-
-export const UpdateWatchTimeBody = Type.Object({
-  watchTimeSeconds: Type.Number({ minimum: 0 }),
-});
-export type UpdateWatchTimeBodyType = Static<typeof UpdateWatchTimeBody>;
-
 // --- Item Schemas ---
 
 export const LectureProgressItemSchema = Type.Object({
@@ -30,11 +23,13 @@ export const LectureProgressItemSchema = Type.Object({
   type: Type.String(),
   referenceUrl: Type.Union([Type.String(), Type.Null()]),
   extra: Type.Any(),
+  packageId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]),
   position: Type.String(),
   isCompleted: Type.Boolean(),
   watchTimeSeconds: Type.Number(),
   completedAt: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
 });
+export type LectureProgressItem = Static<typeof LectureProgressItemSchema>;
 
 export const ChapterProgressItemSchema = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -43,6 +38,7 @@ export const ChapterProgressItemSchema = Type.Object({
   position: Type.String(),
   lectures: Type.Array(LectureProgressItemSchema),
 });
+export type ChapterProgressItem = Static<typeof ChapterProgressItemSchema>;
 
 export const SyllabusDataSchema = Type.Object({
   courseId: Type.String({ format: "uuid" }),
@@ -51,6 +47,7 @@ export const SyllabusDataSchema = Type.Object({
   progressPercentage: Type.Number(),
   chapters: Type.Array(ChapterProgressItemSchema),
 });
+export type SyllabusData = Static<typeof SyllabusDataSchema>;
 
 // --- Response Schemas ---
 
@@ -72,14 +69,4 @@ export const CompleteLectureResponse = Type.Object({
   ...BaseResponseSchema.properties,
   data: CompleteLectureDataSchema,
 });
-
-export const WatchTimeDataSchema = Type.Object({
-  lectureId: Type.String({ format: "uuid" }),
-  courseId: Type.String({ format: "uuid" }),
-  watchTimeSeconds: Type.Number(),
-});
-
-export const WatchTimeResponse = Type.Object({
-  ...BaseResponseSchema.properties,
-  data: WatchTimeDataSchema,
-});
+export type CompleteLectureData = Static<typeof CompleteLectureDataSchema>;

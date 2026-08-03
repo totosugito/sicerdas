@@ -296,7 +296,24 @@ export default {
     notFound: "Kursus Tidak Ditemukan",
     noSearchDesc: "Tidak ada hasil pencarian untuk \"{{search}}\"",
     noDataDesc: "Belum ada kursus yang tersedia",
+    loadError: "Kursus gagal dimuat. Silakan coba lagi.",
     clearSearch: "Bersihkan Pencarian",
+    player: {
+      progress: "Progress kursus",
+      completed: "Selesai",
+      continueCourse: "Lanjutkan kursus",
+      completeSuccess: "Materi ditandai selesai",
+      enrollSuccess: "Berhasil mendaftar kursus",
+      loadError: "Pemutar kursus gagal dimuat.",
+      empty: "Belum ada materi.",
+      noContent: "Konten materi tidak tersedia.",
+      examHint: "Selesaikan ujian terkait untuk membuka materi ini.",
+      startExam: "Buka ujian",
+      examUnavailable: "Peluncur ujian belum terhubung.",
+      markComplete: "Tandai selesai",
+      previous: "Sebelumnya",
+      next: "Berikutnya",
+    },
     noGradesInCategory: "Tidak ada tingkatan kelas dalam kategori ini",
     selectCategoryToViewGrades: "Pilih kategori untuk melihat kelas",
     detail: {
@@ -309,6 +326,7 @@ export default {
       pricing: "Harga Akses",
       free: "GRATIS",
       enroll: "Daftar Kursus",
+      confirmEnrollDesc: "Apakah Anda yakin ingin mendaftar ke kursus",
       noChapterLectures: "Belum ada materi pelajaran dalam bab ini",
       bullet1: "Akses selamanya ke semua materi pelajaran",
       bullet2: "Kuis evaluasi mandiri interaktif",
@@ -316,4 +334,3 @@ export default {
     },
   },
 };
-

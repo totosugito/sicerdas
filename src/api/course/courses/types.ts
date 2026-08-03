@@ -22,6 +22,8 @@ export interface CourseApiResponse<T = unknown> extends BaseResponse {
 }
 
 export type CourseDetailResponse = CourseApiResponse<CourseItem>;
+export type CourseUserDetail = import("backend/src/modules/course/courses/courses.schema.ts").CourseUserDetail;
+export type CourseUserDetailResponse = CourseApiResponse<CourseUserDetail>;
 export type CreateCourseResponse = CourseApiResponse<CourseItem>;
 export type UpdateCourseResponse = CourseApiResponse<CourseItem>;
 export type DeleteCourseResponse = BaseResponse;
@@ -75,5 +77,4 @@ export interface FilterParamsCategoryData {
 export interface CourseFilterParamsResponse extends BaseResponse {
   data: FilterParamsCategoryData[];
 }
-
 

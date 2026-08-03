@@ -2,6 +2,7 @@ import type { PublicPackageDetailData } from "@/api/exam/packages";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Clock, HelpCircle, LayoutGrid, LucideIcon, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { string_to_locale_date } from "@/lib/my-utils";
 
 interface PackageDetailInfoProps {
   pkg: PublicPackageDetailData;
@@ -42,7 +43,7 @@ const InfoCard = ({
 );
 
 export const PackageDetailInfo = ({ pkg }: PackageDetailInfoProps) => {
-  const { t } = useAppTranslation();
+  const { t, i18n } = useAppTranslation();
 
   return (
     <div className="flex flex-col gap-8">
@@ -69,11 +70,11 @@ export const PackageDetailInfo = ({ pkg }: PackageDetailInfoProps) => {
         <InfoCard
           icon={Calendar}
           label={t(($) => $.labels.addedOn)}
-          value={new Date(pkg.createdAt).toLocaleDateString(undefined, {
+          value={string_to_locale_date(i18n.language, pkg.createdAt, {
             day: "numeric",
             month: "short",
             year: "numeric",
-          })}
+          }) || ""}
           colorClass="bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
         />
       </div>

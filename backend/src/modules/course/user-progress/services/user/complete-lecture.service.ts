@@ -8,8 +8,14 @@ import { examSessions } from "../../../../../db/schema/exam/sessions.ts";
 import { EnumEnrollmentStatus, EnumLectureType } from "../../../../../db/schema/course/enums.ts";
 import { EnumExamSessionStatus } from "../../../../../db/schema/exam/enums.ts";
 import { eq, and, desc, sql } from "drizzle-orm";
+import type { ServiceResponse } from "../../../../../types/index.ts";
+import type { CompleteLectureData } from "../../user-progress.schema.ts";
 
-export async function completeLectureService(lectureId: string, userId: string) {
+export interface CompleteLectureResult extends ServiceResponse {
+  data?: CompleteLectureData;
+}
+
+export async function completeLectureService(lectureId: string, userId: string): Promise<CompleteLectureResult> {
   // 1. Fetch lecture details
   const lecture = await db.query.courseLectures.findFirst({
     where: and(eq(courseLectures.id, lectureId), eq(courseLectures.isActive, true)),

@@ -1,6 +1,16 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { BaseResponseSchema, PaginationMetaSchema } from "../../../types/response.ts";
-import { EnumEnrollmentStatus } from "../../../db/schema/course/enums.ts";
+
+// --- User Request Schemas ---
+
+export const UserCourseIdParams = Type.Object({
+  courseId: Type.String({ format: "uuid" }),
+});
+
+export const UserCourseListQuery = Type.Object({
+  page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
+  limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100, default: 10 })),
+});
 
 // --- Shared Field Definitions ---
 
@@ -21,48 +31,7 @@ export const EnrollmentItemSchema = Type.Object({
   student: Type.Optional(Type.Object(StudentFields)),
 });
 
-// --- Admin Request Schemas ---
-
-export const AdminListEnrollmentsQuery = Type.Object({
-  page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
-  limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100, default: 10 })),
-  status: Type.Optional(Type.Enum(EnumEnrollmentStatus)),
-});
-
-export const AdminCourseIdParams = Type.Object({
-  courseId: Type.String({ format: "uuid" }),
-});
-
-export const AdminAddEnrollmentBody = Type.Object({
-  courseId: Type.String({ format: "uuid" }),
-  userId: Type.String({ format: "uuid" }),
-});
-
-export const AdminRemoveEnrollmentBody = Type.Object({
-  courseId: Type.String({ format: "uuid" }),
-  userId: Type.String({ format: "uuid" }),
-});
-
-// --- User Request Schemas ---
-
-export const UserCourseIdParams = Type.Object({
-  courseId: Type.String({ format: "uuid" }),
-});
-
-export const UserCourseListQuery = Type.Object({
-  page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
-  limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100, default: 10 })),
-});
-
 // --- Response Schemas ---
-
-export const AdminListEnrollmentsResponse = Type.Intersect([
-  BaseResponseSchema,
-  Type.Object({
-    data: Type.Array(EnrollmentItemSchema),
-    pagination: PaginationMetaSchema,
-  }),
-]);
 
 export const EnrollmentDetailResponse = Type.Intersect([
   BaseResponseSchema,
@@ -93,11 +62,9 @@ export const UserCourseListResponse = Type.Intersect([
     pagination: PaginationMetaSchema,
   }),
 ]);
+export type UserCourseItem = Static<typeof UserCourseListResponse>['data'][number];
 
 // --- Static Types ---
 
 export type EnrollmentItem = Static<typeof EnrollmentItemSchema>;
-export type AdminListEnrollmentsQueryParams = Static<typeof AdminListEnrollmentsQuery>;
-export type AdminAddEnrollmentInput = Static<typeof AdminAddEnrollmentBody>;
-export type AdminRemoveEnrollmentInput = Static<typeof AdminRemoveEnrollmentBody>;
 export type UserCourseListQueryParams = Static<typeof UserCourseListQuery>;

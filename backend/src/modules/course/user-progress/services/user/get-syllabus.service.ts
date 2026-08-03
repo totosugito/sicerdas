@@ -5,8 +5,15 @@ import { courseLectures } from "../../../../../db/schema/course/lectures.ts";
 import { courseUserProgress, type SchemaCourseUserProgressSelect } from "../../../../../db/schema/course/user-progress.ts";
 import { EnumContentStatus } from "../../../../../db/schema/enum/enum-app.ts";
 import { eq, and, asc } from "drizzle-orm";
+import { EnumLectureType } from "../../../../../db/schema/course/enums.ts";
+import type { ServiceResponse } from "../../../../../types/index.ts";
+import type { SyllabusData } from "../../user-progress.schema.ts";
 
-export async function getSyllabusService(courseId: string, userId: string) {
+export interface GetSyllabusResult extends ServiceResponse {
+  data?: SyllabusData;
+}
+
+export async function getSyllabusService(courseId: string, userId: string): Promise<GetSyllabusResult> {
   // Check if course exists and is published
   const course = await db.query.courses.findFirst({
     where: and(eq(courses.id, courseId), eq(courses.status, EnumContentStatus.PUBLISHED)),
@@ -47,6 +54,16 @@ export async function getSyllabusService(courseId: string, userId: string) {
   });
 
   const courseLecturesFiltered = lecturesList.filter((l) => chapterIds.includes(l.chapterId));
+  const examSectionIds = courseLecturesFiltered
+    .filter((lecture) => lecture.type === EnumLectureType.EXAM && lecture.referenceUrl)
+    .map((lecture) => lecture.referenceUrl!);
+  const examSections = examSectionIds.length > 0
+    ? await db.query.examPackageSections.findMany({
+        where: (sections, operators) => operators.inArray(sections.id, examSectionIds),
+        columns: { id: true, packageId: true },
+      })
+    : [];
+  const packageBySectionId = new Map(examSections.map((section) => [section.id, section.packageId]));
 
   // Get user progress for this course
   const progressRecords = await db.query.courseUserProgress.findMany({
@@ -78,6 +95,7 @@ export async function getSyllabusService(courseId: string, userId: string) {
           type: l.type,
           referenceUrl: l.referenceUrl,
           extra: l.extra,
+          packageId: l.referenceUrl ? packageBySectionId.get(l.referenceUrl) ?? null : null,
           position: l.position,
           isCompleted,
           watchTimeSeconds: prog?.watchTimeSeconds ?? 0,

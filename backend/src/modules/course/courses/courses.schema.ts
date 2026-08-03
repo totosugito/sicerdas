@@ -2,6 +2,7 @@ import { Type, type Static } from "@sinclair/typebox";
 import { BaseResponseSchema, PaginationMetaSchema } from "../../../types/response.ts";
 import { EnumPublishDateType } from "../../../db/schema/course/index.ts";
 import { EnumContentStatus } from "../../../db/schema/enum/enum-app.ts";
+import { EnumLectureType } from "../../../db/schema/course/enums.ts";
 import { ChapterItemSchema } from "../chapters/chapters.schema.ts";
 import { LectureItemSchema } from "../lectures/lectures.schema.ts";
 
@@ -53,9 +54,51 @@ export const CourseItemSchema = Type.Object({
   enrolledCount: Type.Optional(Type.Number()),
   totalRatings: Type.Optional(Type.Number()),
   averageRating: Type.Optional(Type.Number()),
+  progress: Type.Optional(
+    Type.Union([
+      Type.Object({
+        enrollmentStatus: Type.String(),
+        completedLectures: Type.Number(),
+        progressPercentage: Type.Number(),
+      }),
+      Type.Null(),
+    ])
+  ),
 });
 
 export type CourseItem = Static<typeof CourseItemSchema>;
+
+export const CourseUserDetailSchema = Type.Object({
+  id: Type.String({ format: "uuid" }),
+  courseCode: Type.String(),
+  courseName: Type.String(),
+  courseDescription: Type.Union([Type.String(), Type.Null()]),
+  whatYouWillLearn: Type.Union([Type.String(), Type.Null()]),
+  price: Type.Number(),
+  thumbnail: Type.Union([Type.String(), Type.Null()]),
+  category: Type.Union([Type.Object(CategoryFields), Type.Null()]),
+  grade: Type.Union([Type.Object(GradeFields), Type.Null()]),
+  totalChapters: Type.Number(),
+  totalLectures: Type.Number(),
+  enrolledCount: Type.Number(),
+  totalRatings: Type.Number(),
+  averageRating: Type.Number(),
+  progress: Type.Union([
+    Type.Object({
+      enrollmentStatus: Type.String(),
+      completedLectures: Type.Number(),
+      progressPercentage: Type.Number(),
+    }),
+    Type.Null(),
+  ]),
+});
+
+export type CourseUserDetail = Static<typeof CourseUserDetailSchema>;
+
+export const CourseUserDetailResponse = Type.Object({
+  ...BaseResponseSchema.properties,
+  data: CourseUserDetailSchema,
+});
 
 // --- Admin Request Schemas ---
 
@@ -167,6 +210,28 @@ export const CourseStructureResponse = Type.Object({
   data: Type.Array(CourseStructureChapterSchema),
 });
 
+export const PublicCourseStructureLectureSchema = Type.Object({
+  id: Type.String({ format: "uuid" }),
+  title: Type.Union([Type.String(), Type.Null()]),
+  description: Type.Union([Type.String(), Type.Null()]),
+  chapterId: Type.String({ format: "uuid" }),
+  type: Type.Enum(EnumLectureType),
+  position: Type.String(),
+});
+
+export const PublicCourseStructureChapterSchema = Type.Object({
+  id: Type.String({ format: "uuid" }),
+  chapterName: Type.Union([Type.String(), Type.Null()]),
+  courseId: Type.String({ format: "uuid" }),
+  position: Type.Union([Type.String(), Type.Null()]),
+  lectures: Type.Array(PublicCourseStructureLectureSchema),
+});
+
+export const PublicCourseStructureResponse = Type.Object({
+  ...BaseResponseSchema.properties,
+  data: Type.Array(PublicCourseStructureChapterSchema),
+});
+
 export const FilterParamsGradeStatsSchema = Type.Object({
   activeCount: Type.Number(),
   totalCount: Type.Number(),
@@ -252,4 +317,3 @@ export const FavoritesResponse = Type.Object({
     meta: PaginationMetaSchema,
   }),
 });
-
