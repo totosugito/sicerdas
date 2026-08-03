@@ -9,10 +9,10 @@ import { educationCategories, educationGrades } from "../../../../db/schema/educ
 import { EnumContentStatus } from "../../../../db/schema/enum/enum-app.ts";
 import { getCourseThumbnailUrl } from "../../../../utils/course/course-utils.ts";
 import type { ServiceResponse } from "../../../../types/index.ts";
-import type { CourseItem } from "../courses.schema.ts";
+import type { CourseUserDetail } from "../courses.schema.ts";
 
 export interface UserDetailCourseResult extends ServiceResponse {
-  data?: CourseItem;
+  data?: CourseUserDetail;
 }
 
 export async function userDetailCourseService(id: string, userId?: string): Promise<UserDetailCourseResult> {
@@ -59,16 +59,13 @@ export async function userDetailCourseService(id: string, userId?: string): Prom
   return {
     success: true,
     data: {
-      ...result.course,
-      thumbnail: getCourseThumbnailUrl(result.course.thumbnail),
+      id: result.course.id,
+      courseCode: result.course.courseCode,
+      courseName: result.course.courseName,
+      courseDescription: result.course.courseDescription,
+      whatYouWillLearn: result.course.whatYouWillLearn,
       price: result.course.price ?? 0,
-      tags: result.course.tags ?? [],
-      status: result.course.status!,
-      publishDateType: result.course.publishDateType!,
-      createdAt: result.course.createdAt.toISOString(),
-      updatedAt: result.course.updatedAt.toISOString(),
-      publishDateStart: result.course.publishDateStart ? result.course.publishDateStart.toISOString() : null,
-      publishDateEnd: result.course.publishDateEnd ? result.course.publishDateEnd.toISOString() : null,
+      thumbnail: getCourseThumbnailUrl(result.course.thumbnail),
       category: result.category?.id ? result.category : null,
       grade: result.grade?.id ? result.grade : null,
       totalChapters: result.course.totalChapters,
@@ -76,9 +73,13 @@ export async function userDetailCourseService(id: string, userId?: string): Prom
       enrolledCount: result.stats?.totalStudents ?? 0,
       totalRatings: ratingCount,
       averageRating: ratingCount === 0 ? 5 : Number(result.stats?.averageRating ?? 5),
-      enrollmentStatus: result.enrollmentStatus ?? null,
-      completedLectures,
-      progressPercentage: totalLectures > 0 ? Math.round((completedLectures / totalLectures) * 100) : 0,
+      progress: result.enrollmentStatus
+        ? {
+            enrollmentStatus: result.enrollmentStatus,
+            completedLectures,
+            progressPercentage: totalLectures > 0 ? Math.round((completedLectures / totalLectures) * 100) : 0,
+          }
+        : null,
     },
   };
 }

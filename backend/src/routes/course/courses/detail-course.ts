@@ -40,35 +40,11 @@ const publicDetailRoute: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       const course = result.data!;
-      // Filter out admin/metadata fields
-      const publicDetails = {
-        id: course.id,
-        courseCode: course.courseCode,
-        courseName: course.courseName,
-        courseDescription: course.courseDescription,
-        whatYouWillLearn: course.whatYouWillLearn,
-        price: course.price,
-        thumbnail: course.thumbnail,
-        category: course.category,
-        grade: course.grade,
-        totalChapters: course.totalChapters ?? 0,
-        totalLectures: course.totalLectures ?? 0,
-        enrolledCount: course.enrolledCount ?? 0,
-        totalRatings: course.totalRatings ?? 0,
-        averageRating: course.averageRating ?? 5,
-        progress: course.enrollmentStatus
-          ? {
-              enrollmentStatus: course.enrollmentStatus,
-              completedLectures: course.completedLectures ?? 0,
-              progressPercentage: course.progressPercentage ?? 0,
-            }
-          : null,
-      };
 
       return reply.status(200).send({
         success: true,
         message: req.t(($) => $.course.courses.detail.success),
-        data: publicDetails,
+        data: course,
       });
     },
   });

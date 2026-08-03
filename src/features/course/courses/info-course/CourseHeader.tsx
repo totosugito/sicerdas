@@ -1,12 +1,12 @@
 import React from "react";
-import { CourseItem } from "@/api/course/courses";
+import { CourseUserDetail } from "@/api/course/courses";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Layers, BookOpen } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 
 interface CourseHeaderProps {
-  course?: CourseItem;
+  course?: CourseUserDetail;
 }
 
 export function CourseHeader({ course }: CourseHeaderProps) {

@@ -17,6 +17,8 @@ export type {
   PublicCourseListParams,
   UpdateCourseRequest,
   UploadCourseThumbnailRequest,
+  CourseUserDetail,
+  CourseUserDetailResponse,
   CourseFormValues,
 } from "./types";
 
@@ -34,5 +36,4 @@ export { useListCourseClient } from "./list-course";
 export { useDetailCourseClient } from "./detail-course";
 export { useCourseFilterParams } from "./filter-params";
 export { useCourseStructureClient } from "./structure-course";
-export { useUserDetailCourseClient } from "./user-detail-course";
 export type { FilterParamsCategoryData, FilterParamsGrade } from "./types";

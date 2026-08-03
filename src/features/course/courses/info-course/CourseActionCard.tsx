@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CourseItem } from "@/api/course/courses";
+import { CourseUserDetail } from "@/api/course/courses";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ImageIcon, ChevronRight, CheckCircle2, Loader2, BookOpen } from "lucide-react";
@@ -11,7 +11,7 @@ import { AppRoute } from "@/constants/app-route";
 import { DialogModal } from "@/components/dialog/DialogModal";
 
 interface CourseActionCardProps {
-  course?: CourseItem;
+  course?: CourseUserDetail;
 }
 
 export function CourseActionCard({ course }: CourseActionCardProps) {

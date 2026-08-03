@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import type { CourseDetailResponse } from "./types";
+import type { CourseUserDetailResponse } from "./types";
 
 export const useDetailCourseClient = (id: string) => {
   return useQuery({
@@ -12,7 +12,7 @@ export const useDetailCourseClient = (id: string) => {
         url: AppApi.course.courses.detail.replace(":id", id),
         withCredentials: true,
       });
-      return response as CourseDetailResponse;
+      return response as CourseUserDetailResponse;
     },
     enabled: !!id,
   });
