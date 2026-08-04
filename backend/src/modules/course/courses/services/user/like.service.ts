@@ -1,8 +1,17 @@
 import { db } from "../../../../../db/db-pool.ts";
 import { courseEnrollments } from "../../../../../db/schema/course/course-enrollments.ts";
 import { eq, and } from "drizzle-orm";
+import type { ServiceResponse } from "../../../../../types/index.ts";
+import type { LikeResponseT } from "../../courses.schema.ts";
 
-export async function toggleLikeService(courseId: string, userId: string) {
+export interface ToggleLikeResult extends ServiceResponse {
+  data?: LikeResponseT["data"];
+}
+
+export async function toggleLikeService(
+  courseId: string,
+  userId: string,
+): Promise<ToggleLikeResult> {
   const enrollment = await db.query.courseEnrollments.findFirst({
     where: and(eq(courseEnrollments.courseId, courseId), eq(courseEnrollments.userId, userId)),
   });

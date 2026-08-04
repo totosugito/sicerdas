@@ -302,6 +302,7 @@ export const LikeResponse = Type.Object({
 
 export type RatingResponseT = Static<typeof RatingResponse>;
 export type BookmarkResponseT = Static<typeof BookmarkResponse>;
+export type LikeResponseT = Static<typeof LikeResponse>;
 
 export const FavoriteCourseItemSchema = Type.Object({
   id: Type.String({ format: "uuid" }),
@@ -322,3 +323,7 @@ export const FavoritesResponse = Type.Object({
     meta: PaginationMetaSchema,
   }),
 });
+
+export type FavoriteCourseItem = Static<typeof FavoriteCourseItemSchema>;
+export type FavoritesResponseT = Static<typeof FavoritesResponse>;
+

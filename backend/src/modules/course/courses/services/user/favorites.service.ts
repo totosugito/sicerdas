@@ -2,8 +2,18 @@ import { db } from "../../../../../db/db-pool.ts";
 import { courseEnrollments } from "../../../../../db/schema/course/course-enrollments.ts";
 import { courses } from "../../../../../db/schema/course/courses.ts";
 import { eq, and, or, sql } from "drizzle-orm";
+import type { ServiceResponse } from "../../../../../types/index.ts";
+import type { FavoritesResponseT } from "../../courses.schema.ts";
 
-export async function getFavoritesService(userId: string, page = 1, limit = 10) {
+export interface GetFavoritesResult extends ServiceResponse {
+  data?: FavoritesResponseT["data"];
+}
+
+export async function getFavoritesService(
+  userId: string,
+  page = 1,
+  limit = 10,
+): Promise<GetFavoritesResult> {
   const offset = (page - 1) * limit;
 
   // Filter enrollments where userId matches and bookmarked or liked is true

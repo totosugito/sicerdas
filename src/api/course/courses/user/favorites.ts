@@ -2,25 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+import type { FavoriteCourseItem, FavoritesResponseT } from "backend/src/modules/course/courses/courses.schema.ts";
 
-export interface FavoriteCourseItem {
-  id: string;
-  courseCode: string;
-  courseName: string;
-  courseDescription: string | null;
-  thumbnail: string | null;
-  price: number;
-  bookmarked: boolean;
-  liked: boolean;
-  rating: number | null;
-}
+export type { FavoriteCourseItem };
+export type FavoriteCoursesResponse = FavoritesResponseT;
 
-export interface FavoriteCoursesResponse extends BaseResponse {
-  data: {
-    items: FavoriteCourseItem[];
-    meta: PaginationMeta;
-  };
-}
 
 export function useFavoriteCourses(params?: { page?: number; limit?: number }, options?: { enabled?: boolean; staleTime?: number }) {
   const page = params?.page ?? 1;

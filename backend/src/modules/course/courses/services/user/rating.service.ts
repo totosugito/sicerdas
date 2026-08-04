@@ -2,8 +2,18 @@ import { db } from "../../../../../db/db-pool.ts";
 import { courseEnrollments } from "../../../../../db/schema/course/course-enrollments.ts";
 import { courseStats } from "../../../../../db/schema/course/course-stats.ts";
 import { eq, and, sql } from "drizzle-orm";
+import type { ServiceResponse } from "../../../../../types/index.ts";
+import type { RatingResponseT } from "../../courses.schema.ts";
 
-export async function rateCourseService(courseId: string, userId: string, rating: number) {
+export interface RateCourseResult extends ServiceResponse {
+  data?: RatingResponseT["data"];
+}
+
+export async function rateCourseService(
+  courseId: string,
+  userId: string,
+  rating: number,
+): Promise<RateCourseResult> {
   // Check if user is enrolled in the course
   const enrollment = await db.query.courseEnrollments.findFirst({
     where: and(eq(courseEnrollments.courseId, courseId), eq(courseEnrollments.userId, userId)),

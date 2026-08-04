@@ -1,8 +1,17 @@
 import { db } from "../../../../../db/db-pool.ts";
 import { courseEnrollments } from "../../../../../db/schema/course/course-enrollments.ts";
 import { eq, and } from "drizzle-orm";
+import type { ServiceResponse } from "../../../../../types/index.ts";
+import type { BookmarkResponseT } from "../../courses.schema.ts";
 
-export async function toggleBookmarkService(courseId: string, userId: string) {
+export interface ToggleBookmarkResult extends ServiceResponse {
+  data?: BookmarkResponseT["data"];
+}
+
+export async function toggleBookmarkService(
+  courseId: string,
+  userId: string,
+): Promise<ToggleBookmarkResult> {
   const enrollment = await db.query.courseEnrollments.findFirst({
     where: and(eq(courseEnrollments.courseId, courseId), eq(courseEnrollments.userId, userId)),
   });
