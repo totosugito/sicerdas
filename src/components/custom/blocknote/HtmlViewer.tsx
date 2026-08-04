@@ -2,6 +2,8 @@ import parse, { domToReact } from 'html-react-parser';
 import katex from 'katex';
 import "katex/dist/katex.min.css";
 import { alertTypes, getAlertStyles, AlertType } from './lib/alert-utils';
+import { ChartRenderer } from './block/charts';
+import { cn } from "@/lib/utils";
 import "@/assets/custom-blocknote.css";
 
 function renderMath(equation: string) {
@@ -25,6 +27,24 @@ export default function HtmlViewer({ html, className }: { html: string; classNam
                         }}
                     />
                 );
+            }
+
+            if (domNode.attribs && domNode.attribs['data-type'] === 'chart') {
+                try {
+                    const chartData = JSON.parse(domNode.attribs['data-chart'] || '{}');
+                    const alignment = chartData.options?.alignment || "center";
+                    const width = chartData.options?.width || "full";
+                    const widthClass = width === "small" ? "w-full md:w-1/2" : width === "medium" ? "w-full md:w-3/4" : "w-full";
+                    const alignClass = alignment === "left" ? "mr-auto ml-0" : alignment === "right" ? "ml-auto mr-0" : "mx-auto";
+
+                    return (
+                        <div className={cn("my-4", widthClass, alignClass)}>
+                            <ChartRenderer data={chartData} />
+                        </div>
+                    );
+                } catch (e) {
+                    console.error("Failed to parse chart HTML data attribute", e);
+                }
             }
 
             if (domNode.attribs && domNode.attribs['data-type'] === 'alert') {

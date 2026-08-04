@@ -33,6 +33,7 @@ export type FormBlockNoteProps = {
 
 import { schema, getAlertSlashMenuItem } from "./lib/blocknote-config";
 import { getMathSlashMenuItems } from "./block/math";
+import { getChartSlashMenuItem } from "./block/charts";
 import "@/assets/custom-blocknote.css";
 
 export const FormBlockNote = ({
@@ -206,6 +207,7 @@ export const FormBlockNote = ({
                 ...getDefaultReactSlashMenuItems(editor),
                 ...getMathSlashMenuItems(editor),
                 getAlertSlashMenuItem(editor),
+                getChartSlashMenuItem(editor),
               ];
               return filterSuggestionItems(allItems, query);
             }}

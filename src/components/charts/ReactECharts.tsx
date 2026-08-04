@@ -5,7 +5,7 @@ import { getInstanceByDom, init, use } from "echarts/core";
 import { cn } from "@/lib/utils";
 
 import { CanvasRenderer } from "echarts/renderers";
-import { BarChart, LineChart, ScatterChart, FunnelChart, RadarChart } from "echarts/charts";
+import { BarChart, LineChart, ScatterChart, FunnelChart, RadarChart, PieChart } from "echarts/charts";
 import { GridComponent, LegendComponent, TitleComponent, ToolboxComponent, TooltipComponent, GraphicComponent, RadarComponent } from "echarts/components";
 import { useTheme } from "@/lib/theme-provider";
 
@@ -14,6 +14,7 @@ use([
   ScatterChart,
   LineChart,
   BarChart,
+  PieChart,
   FunnelChart,
   RadarChart,
   GridComponent,
@@ -260,19 +261,20 @@ const ReactECharts = forwardRef(({
   }, [loading]);
 
   useEffect(() => {
-    if (chartRef.current && series) {
+    if (chartRef.current && options) {
       const chart = getInstanceByDom(chartRef.current);
-      chart?.setOption({ ...options, series }, optionSettings);
+      if (chart) {
+        chart.setOption(
+          {
+            ...EChartsDefaultsOptions,
+            ...options,
+            series: series && series.length > 0 ? series : (options?.series || []),
+          },
+          { notMerge: true, ...optionSettings }
+        );
+      }
     }
-  }, [series]);
-
-  // useEffect(() => {
-  //   if (chartRef.current && option) {
-  //     const chart = getInstanceByDom(chartRef.current);
-  //     chart?.setOption(option, optionSettings);
-  //   }
-  // }, [series]);
-  // }, [option]);
+  }, [options, series]);
 
   return <div ref={chartRef} className={cn("h-full w-full", className)} {...props} />
 })
