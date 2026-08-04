@@ -1,0 +1,33 @@
+export default {
+  title: "Chapters & Materials",
+  description: "Manage chapter structure and learning materials for this class.",
+  createButton: "Add Chapter",
+  emptyTitle: "No Chapters Yet",
+  emptyDesc: "Start building the curriculum structure by adding a new Chapter for this class.",
+  deleteSuccess: "Chapter deleted successfully",
+  deleteConfirmTitle: "Delete Chapter",
+  deleteConfirmDesc: "Are you sure you want to delete chapter",
+  deleteInfoTitle: "Deletion Consequences",
+  deleteConsequence1: "All materials within this chapter will also be deleted.",
+  deleteConsequenceWithCount: "Learning materials in this chapter ({{count}} materials) will be permanently deleted.",
+  deleteConsequence2: "This action cannot be undone.",
+  unnamedChapter: "Unnamed Chapter",
+  lecturesCount: "{{count}} Lectures",
+  form: {
+    chapterName: {
+      label: "Chapter Name",
+      placeholder: "e.g.: Chapter 1 - Basic Introduction",
+      required: "Chapter name is required",
+    },
+    isActive: {
+      label: "Status",
+      description: "Chapter active status in class materials",
+    },
+    addTitle: "Add Chapter",
+    editTitle: "Edit Chapter",
+    createDesc: "Add a new chapter for this class curriculum",
+    editDesc: "Edit this chapter's information",
+    createSuccess: "Chapter added successfully",
+    updateSuccess: "Chapter updated successfully",
+  },
+};

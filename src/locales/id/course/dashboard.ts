@@ -1,0 +1,51 @@
+export default {
+  title: "Aktivitas Belajar Saya",
+  description: "Akses cepat ke kursus yang sedang dipelajari, diselesaikan, atau difavoritkan",
+  completedLectures: "Materi Selesai",
+  stats: {
+    enrolledDesc: "Kursus aktif yang sedang diikuti",
+    completedDesc: "Kursus yang telah selesai diikuti",
+    lecturesDesc: "Jumlah materi pelajaran yang diselesaikan",
+  },
+  tabs: {
+    active: "Aktif",
+    completed: "Selesai",
+    favorites: "Favorit",
+  },
+  favorites: {
+    empty: "Belum ada kursus favorit",
+    emptyDesc: "Sukai atau tandai kursus menarik dari katalog untuk menyimpannya di sini.",
+    title: "Kursus Favorit & Disukai",
+    description: "Koleksi kursus yang telah Anda bookmark",
+    removeConfirm: "Hapus dari Favorit?",
+    removeConfirmDesc: "Apakah Anda yakin ingin menghapus kursus ini dari daftar favorit Anda?",
+    removeAction: "Ya, Hapus",
+    cancelAction: "Batal",
+  },
+  active: {
+    empty: "Belum ada kursus aktif",
+    emptyDesc: "Mulai jelajahi kursus di katalog pembelajaran untuk memulai petualangan belajarmu.",
+    title: "Kursus Sedang Diikuti",
+    description: "Lanjutkan materi pembelajaran kursus aktif Anda",
+    enrolledAt: "Terdaftar sejak {{date}}",
+  },
+  completed: {
+    empty: "Belum ada kursus selesai",
+    emptyDesc: "Selesaikan materi dan kuis pada kursus aktif Anda untuk melihatnya di sini.",
+    title: "Kursus Telah Selesai",
+    description: "Daftar pencapaian kursus yang telah diselesaikan",
+    completedAt: "Selesai pada {{date}}",
+  },
+  charts: {
+    category: {
+      title: "Progress Berdasarkan Kategori",
+      description: "Jumlah kursus yang diikuti dan diselesaikan di setiap kategori",
+      enrolled: "Terdaftar",
+      completed: "Selesai",
+      loading: "Progress Kategori",
+      loadingDesc: "Memuat analisis data...",
+      empty: "Belum ada aktivitas belajar per kategori",
+      emptyDesc: "Ikuti kursus dari katalog belajar untuk melihat progres per kategori di sini.",
+    },
+  },
+};

@@ -1,0 +1,33 @@
+export default {
+  title: "Daftar Bab & Materi",
+  description: "Kelola struktur bab dan materi pembelajaran untuk kelas ini.",
+  createButton: "Tambah Bab",
+  emptyTitle: "Belum Ada Bab",
+  emptyDesc: "Mulai buat struktur kurikulum dengan menambahkan Bab baru untuk kelas ini.",
+  deleteSuccess: "Bab berhasil dihapus",
+  deleteConfirmTitle: "Hapus Bab",
+  deleteConfirmDesc: "Apakah Anda yakin ingin menghapus bab",
+  deleteInfoTitle: "Konsekuensi Penghapusan",
+  deleteConsequence1: "Semua materi di dalam bab ini juga akan terhapus.",
+  deleteConsequenceWithCount: "Materi pembelajaran di dalam bab ini ({{count}} materi) akan dihapus secara permanen.",
+  deleteConsequence2: "Tindakan ini tidak dapat dibatalkan.",
+  unnamedChapter: "Bab Tanpa Nama",
+  lecturesCount: "{{count}} Materi",
+  form: {
+    chapterName: {
+      label: "Nama Bab",
+      placeholder: "Contoh: Bab 1 - Pengenalan Dasar",
+      required: "Nama bab wajib diisi",
+    },
+    isActive: {
+      label: "Status",
+      description: "Status keaktifan bab pada materi kelas",
+    },
+    addTitle: "Tambah Bab",
+    editTitle: "Ubah Bab",
+    createDesc: "Tambahkan bab baru untuk kurikulum kelas ini",
+    editDesc: "Ubah informasi bab ini",
+    createSuccess: "Bab berhasil ditambahkan",
+    updateSuccess: "Bab berhasil diperbarui",
+  },
+};

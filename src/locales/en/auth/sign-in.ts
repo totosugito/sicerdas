@@ -1,0 +1,15 @@
+export default {
+    title: "Welcome",
+    subtitle: "Learning Management System",
+    tagline: "Share Knowledge • Grow Together • Achieve Excellence",
+    welcomeBack: "Welcome Back",
+    signInDescription: "Sign in to access your books and materials",
+    emailPlaceholder: "student@example.com",
+    passwordPlaceholder: "Enter password",
+    newUser: "New User?",
+    invalidEmail: "Invalid email",
+    passwordRequired: "Password is required",
+    orContinueWith: "Or continue with",
+    continueWithGoogle: "Continue with Google",
+    googleSignInError: "Failed to sign in with Google. Please try again.",
+}

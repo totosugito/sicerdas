@@ -1,0 +1,17 @@
+export default {
+    title: "Reset Password",
+    description: "Reset Your Account Password",
+    instructions: "Enter your new password and confirm password",
+    successMessage: "Your password has been reset successfully.",
+    errorMessage: "Failed to reset password. Please try again.",
+    invalidToken: "Password reset token is invalid or has expired.",
+    backToSignIn: "Back to Sign In",
+    tryAgain: "Try Again",
+    successTitle: "Password Reset Successful",
+    validatingToken: "Validating password reset token...",
+    newPasswordPlaceholder: "Enter new password",
+    confirmPasswordPlaceholder: "Confirm new password",
+    newPassword: "New Password",
+    confirmPassword: "Confirm Password",
+    errorTitle: "Password Reset Failed",
+}

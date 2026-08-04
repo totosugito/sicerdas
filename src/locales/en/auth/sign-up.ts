@@ -1,0 +1,17 @@
+export default {
+    title: "Sign Up",
+    description: "Create a new account",
+    signUpDescription: "Enter your details to create a new account",
+    successMessage: "Your account has been created successfully.",
+    failedMessage: "Failed to create account. Please try again.",
+    alreadyHaveAccount: "Already have an account?",
+    backToSignIn: "Back to Sign In",
+    tryAgain: "Try Again",
+    signUpSuccessTitle: "Registration Successful",
+    signUpSuccessMessage: "Your account has been created successfully. Please sign in to continue.",
+    signUpFailedTitle: "Registration Failed",
+    signUpFailedMessage: "Failed to register. Please try again.",
+    namePlaceholder: "Enter your full name",
+    emailPlaceholder: "Enter your email",
+    passwordPlaceholder: "Enter your password",
+}
