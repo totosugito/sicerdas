@@ -2,7 +2,6 @@ import React from "react";
 import { BlockNoteSchema, defaultBlockSpecs } from "@blocknote/core";
 import { DefaultReactSuggestionItem } from "@blocknote/react";
 import { Info } from "lucide-react";
-import { MathBlock } from "../block/MathBlock";
 import { AlertBlock } from "../block/AlertBlock";
 import { mathBlockSpecs, latexInlineContentSpecs } from "../block/math";
 
@@ -32,29 +31,12 @@ export type ValidBlockType = (typeof VALID_BLOCK_TYPES)[number];
 // Using .extend is the standard way to add blocks to original schema
 export const schema = BlockNoteSchema.create().extend({
   blockSpecs: {
-    math: MathBlock(),
     ...mathBlockSpecs,
     alert: AlertBlock(),
   },
   inlineContentSpecs: {
     ...latexInlineContentSpecs,
   },
-});
-
-// Helper to get slash menu item for the equation
-export const getEquationSlashMenuItem = (editor: any): DefaultReactSuggestionItem => ({
-  title: "Equation",
-  onItemClick: () => {
-    editor.insertBlocks(
-      [{ type: "math", props: { equation: "E=mc^2" } }],
-      editor.getTextCursorPosition().block,
-      "after",
-    );
-  },
-  aliases: ["math", "equation", "formula", "katex", "latex"],
-  group: "Custom",
-  icon: React.createElement("span", null, "∑"),
-  subtext: "Insert a mathematical formula using KaTeX",
 });
 
 // Helper to get slash menu item for alerts

@@ -15,11 +15,11 @@ function renderMath(equation: string) {
 export default function HtmlViewer({ html, className }: { html: string; className?: string }) {
     const options = {
         replace: (domNode: any) => {
-            if (domNode.attribs && domNode.attribs['data-type'] === 'math') {
-                const eq = domNode.attribs['data-equation'] || '';
+            if (domNode.attribs && domNode.attribs['data-type'] === 'equation') {
+                const eq = domNode.attribs['data-latex'] || '';
                 return (
                     <div
-                        className="math-block py-2 my-2 flex justify-center overflow-x-auto scrollbar-hide"
+                        className="math-block bn-equation py-2 my-2 flex justify-center overflow-x-auto scrollbar-hide"
                         dangerouslySetInnerHTML={{
                             __html: renderMath(eq),
                         }}

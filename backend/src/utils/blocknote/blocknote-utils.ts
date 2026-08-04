@@ -11,18 +11,15 @@ import {
   defaultProps,
 } from "@blocknote/core";
 
-// Define the custom Math block for the server
-const MathBlock = createBlockSpec(
+// Define the custom Equation block for the server
+const EquationBlock = createBlockSpec(
   {
-    type: "math",
+    type: "equation",
     propSchema: {
       textAlignment: defaultProps.textAlignment,
       textColor: defaultProps.textColor,
-      equation: {
+      latex: {
         default: "",
-      },
-      fontSize: {
-        default: 18,
       },
     },
     content: "none",
@@ -30,14 +27,10 @@ const MathBlock = createBlockSpec(
   {
     render: (block) => {
       const wrapper = document.createElement("div");
-      wrapper.setAttribute("data-type", "math");
-      wrapper.setAttribute("class", "math-block");
-      wrapper.setAttribute("data-equation", block.props.equation);
-      wrapper.setAttribute("data-font-size", block.props.fontSize.toString());
-      wrapper.style.textAlign = block.props.textAlignment;
-      wrapper.style.fontSize = `${block.props.fontSize}px`;
+      wrapper.setAttribute("class", "bn-equation");
+      wrapper.setAttribute("data-latex", block.props.latex);
       // Wrap in $$ for KaTeX auto-renderers on the frontend
-      wrapper.textContent = `$$${block.props.equation}$$`;
+      wrapper.textContent = `$$${block.props.latex}$$`;
       return {
         dom: wrapper,
       };
@@ -81,7 +74,7 @@ const AlertBlock = createBlockSpec(
 const schema = BlockNoteSchema.create({
   blockSpecs: {
     ...defaultBlockSpecs,
-    math: MathBlock(),
+    equation: EquationBlock(),
     alert: AlertBlock(),
   },
 });
