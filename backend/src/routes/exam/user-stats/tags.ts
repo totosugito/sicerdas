@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { tagStatsService } from "../../../modules/exam/user-stats/services/tag-stats.service.ts";
-import { TagStatsResponse } from "../../../modules/exam/user-stats/user-stats.schema.ts";
+import { TagStatsQuery, TagStatsResponse } from "../../../modules/exam/user-stats/user-stats.schema.ts";
 
 const getTagStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
   app.route({
@@ -9,11 +9,15 @@ const getTagStatsRoute: FastifyPluginAsyncTypebox = async (app) => {
     method: "GET",
     schema: {
       tags: ["Client Exam Analytics"],
+      querystring: TagStatsQuery,
       response: { 200: TagStatsResponse },
     },
-    handler: async function handler(request: FastifyRequest, reply: FastifyReply): Promise<typeof TagStatsResponse.static> {
+    handler: async function handler(
+      request: FastifyRequest<{ Querystring: typeof TagStatsQuery.static }>,
+      reply: FastifyReply,
+    ): Promise<typeof TagStatsResponse.static> {
       const userId = (request as any).session.user.id;
-      const result = await tagStatsService(userId);
+      const result = await tagStatsService(userId, request.query);
 
       return reply.status(200).send({
         success: true,

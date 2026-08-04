@@ -28,13 +28,15 @@ import {
 import {
   DashboardHero,
   SessionsRecentList,
-  PackagesFavoriteList,
   BooksRecentList,
   BooksFavoriteList,
   SubjectRadarChart,
   ActivityBarChart,
   OverviewStats,
-  StatsBook
+  StatsBook,
+  StatsExam,
+  ExamDashboardLists,
+  ExamTagAccuracyChart
 } from "@/features/users/dashboard";
 import {
   Tabs,
@@ -50,6 +52,7 @@ export const dashboardSearchSchema = z.object({
   bookFavPage: z.number().optional().catch(1),
   bookRecentPage: z.number().optional().catch(1),
   assessmentPage: z.number().optional().catch(1),
+  assessmentActivePage: z.number().optional().catch(1),
   packageFavPage: z.number().optional().catch(1),
   courseActivePage: z.number().optional().catch(1),
   courseCompletedPage: z.number().optional().catch(1),
@@ -73,6 +76,7 @@ function ExamDashboardComponent() {
   const bookFavPage = search.bookFavPage || 1;
   const bookRecentPage = search.bookRecentPage || 1;
   const assessmentPage = search.assessmentPage || 1;
+  const assessmentActivePage = search.assessmentActivePage || 1;
   const packageFavPage = search.packageFavPage || 1;
   const courseActivePage = search.courseActivePage || 1;
   const courseCompletedPage = search.courseCompletedPage || 1;
@@ -151,6 +155,13 @@ function ExamDashboardComponent() {
   const handleAssessmentPageChange = (page: number) => {
     navigate({
       search: (prev: DashboardSearch) => ({ ...prev, assessmentPage: page }),
+      resetScroll: false,
+    });
+  };
+
+  const handleAssessmentActivePageChange = (page: number) => {
+    navigate({
+      search: (prev: DashboardSearch) => ({ ...prev, assessmentActivePage: page }),
       resetScroll: false,
     });
   };
@@ -284,20 +295,27 @@ function ExamDashboardComponent() {
 
           {/* --- ASSESSMENTS TAB --- */}
           <TabsContent value="assessments" className="mt-0 outline-none space-y-6 animate-in fade-in duration-300">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <SessionsRecentList
-                history={history}
-                isLoading={isLoadingHistory}
-                page={assessmentPage}
-                onPageChange={handleAssessmentPageChange}
-                title={t(($) => $.exam.sessions.dashboard.charts.recentActivity)}
-                description={t(($) => $.exam.sessions.dashboard.charts.recentActivityDesc)}
-              />
+            {/* Global Exam Stats */}
+            <StatsExam />
 
-              <PackagesFavoriteList
-                page={packageFavPage}
-                onPageChange={handlePackageFavPageChange}
-              />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Column: Tabbed Lists */}
+              <div className="lg:col-span-1">
+                <ExamDashboardLists
+                  activePage={assessmentActivePage}
+                  onActivePageChange={handleAssessmentActivePageChange}
+                  completedPage={assessmentPage}
+                  onCompletedPageChange={handleAssessmentPageChange}
+                  favPage={packageFavPage}
+                  onFavPageChange={handlePackageFavPageChange}
+                  className="h-full"
+                />
+              </div>
+
+              {/* Right Column: Tag Accuracy Chart */}
+              <div className="lg:col-span-1">
+                <ExamTagAccuracyChart className="h-full" />
+              </div>
             </div>
           </TabsContent>
 

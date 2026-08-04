@@ -169,6 +169,11 @@ export default {
     title: "My Learning Activity",
     description: "Quick access to courses you are learning, completed, or favorited",
     completedLectures: "Completed Lectures",
+    stats: {
+      enrolledDesc: "Active and ongoing courses",
+      completedDesc: "Successfully finished courses",
+      lecturesDesc: "Total individual lectures completed",
+    },
     tabs: {
       active: "Active",
       completed: "Completed",

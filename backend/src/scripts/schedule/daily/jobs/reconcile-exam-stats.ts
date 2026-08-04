@@ -23,7 +23,7 @@ async function reconcileExamStats() {
         SELECT 
           es.user_id,
           COUNT(DISTINCT CASE WHEN es.status = 'completed' THEN es.id END)::int as total_exams_taken,
-          COUNT(esa.id)::int as total_questions_answered,
+          COUNT(CASE WHEN esa.is_correct IS NOT NULL THEN 1 END)::int as total_questions_answered,
           COUNT(CASE WHEN esa.is_correct = true THEN 1 END)::int as total_correct_answers,
           COUNT(CASE WHEN esa.is_correct = false THEN 1 END)::int as total_wrong_answers,
           COALESCE(AVG(CASE WHEN es.status = 'completed' THEN es.score END), 0)::numeric(10,2) as average_score,
@@ -63,10 +63,10 @@ async function reconcileExamStats() {
         SELECT 
           es.user_id,
           eq.subject_id,
-          COUNT(esa.id)::int as total_questions_answered,
+          COUNT(CASE WHEN esa.is_correct IS NOT NULL THEN 1 END)::int as total_questions_answered,
           COUNT(CASE WHEN esa.is_correct = true THEN 1 END)::int as total_correct,
           COUNT(CASE WHEN esa.is_correct = false THEN 1 END)::int as total_wrong,
-          COALESCE((COUNT(CASE WHEN esa.is_correct = true THEN 1 END)::numeric / NULLIF(COUNT(esa.id), 0)) * 100, 0)::numeric(5,2) as accuracy_rate
+          COALESCE((COUNT(CASE WHEN esa.is_correct = true THEN 1 END)::numeric / NULLIF(COUNT(CASE WHEN esa.is_correct IS NOT NULL THEN 1 END), 0)) * 100, 0)::numeric(5,2) as accuracy_rate
         FROM exam_sessions es
         INNER JOIN exam_session_answers esa ON esa.session_id = es.id
         INNER JOIN exam_questions eq ON eq.id = esa.question_id
@@ -100,10 +100,10 @@ async function reconcileExamStats() {
         SELECT 
           es.user_id,
           eqt.tag_id,
-          COUNT(esa.id)::int as total_questions_answered,
+          COUNT(CASE WHEN esa.is_correct IS NOT NULL THEN 1 END)::int as total_questions_answered,
           COUNT(CASE WHEN esa.is_correct = true THEN 1 END)::int as total_correct,
           COUNT(CASE WHEN esa.is_correct = false THEN 1 END)::int as total_wrong,
-          COALESCE((COUNT(CASE WHEN esa.is_correct = true THEN 1 END)::numeric / NULLIF(COUNT(esa.id), 0)) * 100, 0)::numeric(5,2) as accuracy_rate
+          COALESCE((COUNT(CASE WHEN esa.is_correct = true THEN 1 END)::numeric / NULLIF(COUNT(CASE WHEN esa.is_correct IS NOT NULL THEN 1 END), 0)) * 100, 0)::numeric(5,2) as accuracy_rate
         FROM exam_sessions es
         INNER JOIN exam_session_answers esa ON esa.session_id = es.id
         INNER JOIN exam_question_tags eqt ON eqt.question_id = esa.question_id

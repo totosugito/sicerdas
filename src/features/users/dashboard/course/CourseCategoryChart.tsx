@@ -5,6 +5,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { useMemo } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
+import { EmptyState } from "@/components/general";
 
 interface CourseCategoryChartProps {
   className?: string;
@@ -157,9 +158,14 @@ export const CourseCategoryChart = ({ className }: CourseCategoryChartProps) => 
             />
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-center p-6 border-2 border-dashed rounded-xl border-slate-200 dark:border-slate-800">
-            <p className="text-sm font-medium text-slate-500">{t(($) => $.course.dashboard.charts.category.empty)}</p>
-          </div>
+          <EmptyState
+            variant="glow"
+            color="primary"
+            icon={BarChart3}
+            title={t(($) => $.course.dashboard.charts.category.empty)}
+            description={t(($) => $.course.dashboard.charts.category.emptyDesc)}
+            className="border-0 py-8"
+          />
         )}
       </CardContent>
     </Card>

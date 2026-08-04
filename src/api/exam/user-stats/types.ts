@@ -4,6 +4,7 @@ import type {
   TagStatsData,
   ActivityData,
   SubjectStatsParams,
+  TagStatsParams,
 } from "backend/src/modules/exam/user-stats/index.ts";
 import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
 
@@ -13,6 +14,7 @@ export type {
   TagStatsData,
   ActivityData,
   SubjectStatsParams,
+  TagStatsParams,
 };
 
 export interface GlobalStatsResponse extends BaseResponse {
@@ -27,7 +29,10 @@ export interface SubjectStatsResponse extends BaseResponse {
 }
 
 export interface TagStatsResponse extends BaseResponse {
-  data: TagStatsData[];
+  data: {
+    items: TagStatsData[];
+    meta: PaginationMeta;
+  };
 }
 
 export interface ActivityStatsResponse extends BaseResponse {

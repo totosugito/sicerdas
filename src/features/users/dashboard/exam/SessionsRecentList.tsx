@@ -20,6 +20,7 @@ interface SessionsRecentListProps {
   onPageChange?: (page: number) => void;
   title?: string;
   description?: string;
+  hideCard?: boolean;
 }
 
 export const SessionsRecentList = ({
@@ -28,7 +29,8 @@ export const SessionsRecentList = ({
   page,
   onPageChange,
   title,
-  description
+  description,
+  hideCard = false,
 }: SessionsRecentListProps) => {
   const { t, i18n } = useAppTranslation();
 
@@ -172,6 +174,12 @@ export const SessionsRecentList = ({
     );
   };
 
+  const listContent = renderContent();
+
+  if (hideCard) {
+    return listContent;
+  }
+
   return (
     <Card className="shadow-sm overflow-hidden">
       <CardHeader className="bg-muted/10 border-b flex flex-row items-center justify-between">
@@ -190,7 +198,7 @@ export const SessionsRecentList = ({
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        {renderContent()}
+        {listContent}
       </CardContent>
     </Card>
   );

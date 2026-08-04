@@ -19,9 +19,10 @@ interface PackagesFavoriteListProps {
   page: number;
   onPageChange: (page: number) => void;
   limit?: number;
+  hideCard?: boolean;
 }
 
-export const PackagesFavoriteList = ({ page, onPageChange, limit }: PackagesFavoriteListProps) => {
+export const PackagesFavoriteList = ({ page, onPageChange, limit, hideCard = false }: PackagesFavoriteListProps) => {
   const { t } = useAppTranslation();
   const queryClient = useQueryClient();
 
@@ -165,6 +166,39 @@ export const PackagesFavoriteList = ({ page, onPageChange, limit }: PackagesFavo
     );
   };
 
+  const listContent = renderContent();
+
+  const dialogElement = (
+    <DialogModal
+      open={!!deleteId}
+      onOpenChange={(open) => !open && setDeleteId(null)}
+      modal={{
+        title: t(($) => $.exam.sessions.dashboard.favorites.removeConfirm),
+        desc: t(($) => $.exam.sessions.dashboard.favorites.removeConfirmDesc),
+        textConfirm: t(($) => $.exam.sessions.dashboard.favorites.removeAction),
+        textCancel: t(($) => $.exam.sessions.dashboard.favorites.cancelAction),
+        iconType: "error",
+        variant: "destructive",
+        showInfoSection: !!selectedPackage,
+        infoItems: selectedPackage ? [{ text: selectedPackage.title }] : [],
+        onConfirmClick: () => {
+          if (deleteId) handleRemove(deleteId);
+          setDeleteId(null);
+        },
+      }}
+      variantSubmit="destructive"
+    />
+  );
+
+  if (hideCard) {
+    return (
+      <>
+        {listContent}
+        {dialogElement}
+      </>
+    );
+  }
+
   return (
     <Card className="shadow-sm overflow-hidden">
       <CardHeader className="bg-muted/10 border-b flex flex-row items-center justify-between">
@@ -179,28 +213,9 @@ export const PackagesFavoriteList = ({ page, onPageChange, limit }: PackagesFavo
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        {renderContent()}
+        {listContent}
       </CardContent>
-
-      <DialogModal
-        open={!!deleteId}
-        onOpenChange={(open) => !open && setDeleteId(null)}
-        modal={{
-          title: t(($) => $.exam.sessions.dashboard.favorites.removeConfirm),
-          desc: t(($) => $.exam.sessions.dashboard.favorites.removeConfirmDesc),
-          textConfirm: t(($) => $.exam.sessions.dashboard.favorites.removeAction),
-          textCancel: t(($) => $.exam.sessions.dashboard.favorites.cancelAction),
-          iconType: "error",
-          variant: "destructive",
-          showInfoSection: !!selectedPackage,
-          infoItems: selectedPackage ? [{ text: selectedPackage.title }] : [],
-          onConfirmClick: () => {
-            if (deleteId) handleRemove(deleteId);
-            setDeleteId(null);
-          },
-        }}
-        variantSubmit="destructive"
-      />
+      {dialogElement}
     </Card>
   );
 };

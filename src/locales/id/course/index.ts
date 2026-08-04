@@ -339,6 +339,11 @@ export default {
     title: "Aktivitas Belajar Saya",
     description: "Akses cepat ke kursus yang sedang dipelajari, diselesaikan, atau difavoritkan",
     completedLectures: "Materi Selesai",
+    stats: {
+      enrolledDesc: "Kursus aktif yang sedang diikuti",
+      completedDesc: "Kursus yang telah selesai diikuti",
+      lecturesDesc: "Jumlah materi pelajaran yang diselesaikan",
+    },
     tabs: {
       active: "Aktif",
       completed: "Selesai",
@@ -376,7 +381,8 @@ export default {
         completed: "Selesai",
         loading: "Progress Kategori",
         loadingDesc: "Memuat analisis data...",
-        empty: "Belum ada aktivitas belajar per kategori.",
+        empty: "Belum ada aktivitas belajar per kategori",
+        emptyDesc: "Ikuti kursus dari katalog belajar untuk melihat progres per kategori di sini.",
       },
     },
   },

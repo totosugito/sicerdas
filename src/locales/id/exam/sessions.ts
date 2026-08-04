@@ -177,6 +177,8 @@ export default {
       period: "Periode",
       subjectPerformance: "Performa Per Subjek",
       subjectPerformanceDesc: "Akurasi Anda di setiap mata pelajaran",
+      notAttempted: "Belum dikerjakan",
+      showingEntries: "Menampilkan {{start}} - {{end}} dari {{total}}",
       activityHistory: "Statistik Aktivitas",
       activityHistoryDesc: "Pantau progres pengerjaan soal harian kamu",
       activityRange: {

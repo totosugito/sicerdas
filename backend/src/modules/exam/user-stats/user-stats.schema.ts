@@ -73,8 +73,22 @@ export const SubjectStatsResponse = Type.Intersect([
 
 export const TagStatsResponse = Type.Intersect([
   BaseResponseSchema,
-  Type.Object({ data: Type.Array(TagStatsItem) }),
+  Type.Object({
+    data: Type.Object({
+      items: Type.Array(TagStatsItem),
+      meta: PaginationMetaSchema,
+    }),
+  }),
 ]);
+
+export const TagStatsQuery = Type.Object({
+  page: Type.Optional(Type.Number({ default: 1, minimum: 1 })),
+  limit: Type.Optional(Type.Number({ default: 5, minimum: 1, maximum: 100 })),
+  sortBy: Type.Optional(Type.String({ default: "accuracyRate" })),
+  order: Type.Optional(
+    Type.Union([Type.Literal("asc"), Type.Literal("desc")], { default: "desc" }),
+  )
+});
 
 export const ActivityResponse = Type.Intersect([
   BaseResponseSchema,
@@ -86,3 +100,4 @@ export type SubjectStatsData = Static<typeof SubjectStatsItem>;
 export type TagStatsData = Static<typeof TagStatsItem>;
 export type ActivityData = Static<typeof ActivityItem>;
 export type SubjectStatsParams = Static<typeof SubjectStatsBody>;
+export type TagStatsParams = Static<typeof TagStatsQuery>;

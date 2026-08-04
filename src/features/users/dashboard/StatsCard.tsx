@@ -34,7 +34,7 @@ export const StatsCard = ({
             </p>
             <h3 className="text-2xl font-bold tracking-tight">{value}</h3>
             {description && (
-              <p className="text-[11px] text-muted-foreground font-medium">
+              <p className="text-xs text-muted-foreground font-medium">
                 {description}
               </p>
             )}
