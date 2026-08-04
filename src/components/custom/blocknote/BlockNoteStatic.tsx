@@ -44,16 +44,19 @@ export const BlockNoteStatic = ({
           overflow-x: visible !important;
           overflow-y: hidden !important;
         }
-        /* Definitively hide scrollbars in math blocks even when they are compact/fit-content */
-        .bn-editor [data-content-type="math"] * {
+        /* Definitively hide scrollbars in math/equation blocks even when they are compact/fit-content */
+        .bn-editor [data-content-type="math"] *,
+        .bn-editor [data-content-type="equation"] * {
           scrollbar-width: none !important;
           -ms-overflow-style: none !important;
         }
-        .bn-editor [data-content-type="math"] *::-webkit-scrollbar {
+        .bn-editor [data-content-type="math"] *::-webkit-scrollbar,
+        .bn-editor [data-content-type="equation"] *::-webkit-scrollbar {
           display: none !important;
         }
-        /* Remove any borders/focus rings when clicking math blocks in static view */
-        .bn-editor [data-content-type="math"] > div {
+        /* Remove any borders/focus rings when clicking math/equation blocks in static view */
+        .bn-editor [data-content-type="math"] > div,
+        .bn-editor [data-content-type="equation"] > div {
           border: none !important;
           outline: none !important;
           box-shadow: none !important;

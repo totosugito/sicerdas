@@ -14,29 +14,37 @@ export function injectVariablesIntoBlocks(
     return items.map((item) => {
       const newItem = { ...item };
 
-      // Replace in text content
+      // Replace in text content / inline latex
       if (newItem.content && Array.isArray(newItem.content)) {
-        newItem.content = newItem.content.map((textItem: any) => {
-          if (textItem.type === "text" && textItem.text) {
-            let newText = textItem.text;
+        newItem.content = newItem.content.map((inlineItem: any) => {
+          if (inlineItem.type === "text" && inlineItem.text) {
+            let newText = inlineItem.text;
             Object.entries(variables).forEach(([key, value]) => {
               const placeholder = `{{${key}}}`;
               newText = newText.split(placeholder).join(String(value));
             });
-            return { ...textItem, text: newText };
+            return { ...inlineItem, text: newText };
           }
-          return textItem;
+          if (inlineItem.type === "latex" && inlineItem.props?.latex) {
+            let newLatex = inlineItem.props.latex;
+            Object.entries(variables).forEach(([key, value]) => {
+              const placeholder = `{{${key}}}`;
+              newLatex = newLatex.split(placeholder).join(String(value));
+            });
+            return { ...inlineItem, props: { ...inlineItem.props, latex: newLatex } };
+          }
+          return inlineItem;
         });
       }
 
-      // Replace in specific block types (like math/equation)
-      if (newItem.type === "math" && newItem.props?.equation) {
-        let newEquation = newItem.props.equation;
+      // Replace in specific block types (like equation)
+      if (newItem.type === "equation" && newItem.props?.latex) {
+        let newLatex = newItem.props.latex;
         Object.entries(variables).forEach(([key, value]) => {
           const placeholder = `{{${key}}}`;
-          newEquation = newEquation.split(placeholder).join(String(value));
+          newLatex = newLatex.split(placeholder).join(String(value));
         });
-        newItem.props = { ...newItem.props, equation: newEquation };
+        newItem.props = { ...newItem.props, latex: newLatex };
       }
 
       // Recurse into children

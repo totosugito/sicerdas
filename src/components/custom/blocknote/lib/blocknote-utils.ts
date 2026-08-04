@@ -13,12 +13,21 @@ export function blocknote_to_text(
   try {
     return content
       .map((block: any) => {
-        if (options.includeMath && block.type === "math") {
-          return block.props?.equation || "";
+        if (options.includeMath) {
+          if (block.type === "equation") {
+            return block.props?.latex || "";
+          }
         }
 
         if (block.content && Array.isArray(block.content)) {
-          return block.content.map((item: any) => item.text || "").join("");
+          return block.content
+            .map((item: any) => {
+              if (options.includeMath && item.type === "latex") {
+                return item.props?.latex || "";
+              }
+              return item.text || "";
+            })
+            .join("");
         }
         return "";
       })

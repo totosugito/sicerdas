@@ -4,6 +4,7 @@ import { DefaultReactSuggestionItem } from "@blocknote/react";
 import { Info } from "lucide-react";
 import { MathBlock } from "../block/MathBlock";
 import { AlertBlock } from "../block/AlertBlock";
+import { mathBlockSpecs, latexInlineContentSpecs } from "../block/math";
 
 // List of all valid block types in our schema
 export const VALID_BLOCK_TYPES = [
@@ -21,6 +22,7 @@ export const VALID_BLOCK_TYPES = [
   "codeBlock",
   // Custom blocks
   "math",
+  "equation",
   "alert",
 ] as const;
 
@@ -31,7 +33,11 @@ export type ValidBlockType = (typeof VALID_BLOCK_TYPES)[number];
 export const schema = BlockNoteSchema.create().extend({
   blockSpecs: {
     math: MathBlock(),
+    ...mathBlockSpecs,
     alert: AlertBlock(),
+  },
+  inlineContentSpecs: {
+    ...latexInlineContentSpecs,
   },
 });
 

@@ -1,0 +1,221 @@
+.bn-equation-host {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.bn-block-content:has(.bn-equation-host),
+.bn-block-content:has(.bn-equation-host)>*,
+.bn-react-node-view-renderer:has(.bn-equation-host) {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.bn-equation {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: .4rem;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 2.5rem;
+    padding: .35rem .75rem;
+    color: inherit;
+    text-align: center;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    border-radius: var(--bn-border-radius-medium, .35rem);
+    appearance: none;
+    transition: background-color 120ms ease;
+    box-sizing: border-box;
+}
+
+.bn-equation:not(:has(.katex))::before {
+    content: "∑";
+    font-size: .95em;
+    opacity: .6;
+}
+
+.bn-equation:not(:has(.katex)) {
+    justify-content: flex-start;
+    color: var(--bn-colors-side-menu, #9b9a97);
+    font-size: .95rem;
+}
+
+.bn-equation:hover,
+.bn-equation:focus-visible,
+.bn-equation[data-editing="true"] {
+    background: var(--bn-math-hover, var(--bn-colors-hovered-background, rgb(99 91 255 / 7%)));
+    outline: none;
+}
+
+.bn-equation:focus-visible {
+    box-shadow: 0 0 0 2px var(--bn-colors-highlights-blue-text, #635bff);
+}
+
+.bn-equation .katex-display {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+}
+
+.bn-equation .katex-display>.katex,
+.bn-latex .katex-display>.katex {
+    white-space: normal;
+}
+
+.bn-equation .katex-html>.base,
+.bn-latex .katex-html>.base {
+    display: inline;
+    width: auto;
+    white-space: normal;
+}
+
+.bn-equation-popover {
+    width: min(27rem, calc(100vw - .75rem));
+    max-height: calc(100vh - 1rem);
+    max-height: calc(100dvh - 1rem);
+    padding: .45rem;
+    overflow: hidden;
+    color: var(--bn-math-text, var(--bn-colors-menu-text, #20222b));
+    background: var(--bn-math-surface, var(--bn-colors-menu-background, #fff));
+    border: 1px solid var(--bn-math-border, var(--bn-colors-border, #e1e1e8));
+    border-radius: var(--bn-border-radius-medium, .5rem);
+    outline: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+    outline-offset: -1px;
+    box-shadow: 0 8px 24px var(--bn-math-shadow, rgb(15 23 42 / 16%));
+    box-sizing: border-box;
+    overscroll-behavior: contain;
+}
+
+.bn-equation-popover__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: .4rem;
+    min-width: 0;
+    min-height: 0;
+}
+
+.bn-equation-popover textarea {
+    display: block;
+    width: 100%;
+    min-height: 3.25rem;
+    max-height: min(40vh, 18rem);
+    max-height: min(40dvh, 18rem);
+    padding: .55rem .6rem;
+    overflow-y: auto;
+    color: inherit;
+    font: .875rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    line-height: 1.45;
+    background: var(--bn-math-input, var(--bn-colors-hovered-background, rgb(0 0 0 / 3%)));
+    border: 1px solid transparent;
+    border-radius: var(--bn-border-radius-small, .3rem);
+    outline: none;
+    resize: none;
+    box-sizing: border-box;
+}
+
+.bn-equation-popover textarea::placeholder {
+    color: var(--bn-math-muted, var(--bn-colors-side-menu, #9b9a97));
+}
+
+.bn-equation-popover textarea:focus {
+    border-color: var(--bn-colors-highlights-blue-text, #635bff);
+}
+
+.bn-equation-popover textarea[aria-invalid="true"] {
+    border-color: var(--bn-colors-highlights-red-text, #d14343);
+}
+
+.bn-equation-popover__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    min-height: 1.75rem;
+    padding-left: .25rem;
+    color: var(--bn-math-muted, var(--bn-colors-side-menu, #6b7280));
+    font-size: .7rem;
+}
+
+.bn-equation-popover__error {
+    color: var(--bn-colors-highlights-red-text, #d14343);
+}
+
+.bn-equation-popover__button {
+    flex: 0 0 auto;
+    min-height: 1.75rem;
+    padding: .3rem .65rem;
+    color: var(--bn-colors-selected-text, #fff);
+    font: inherit;
+    font-size: .75rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--bn-colors-selected-background, #2f2f2f);
+    border: 0;
+    border-radius: var(--bn-border-radius-small, .3rem);
+}
+
+.bn-equation-popover__button:hover:not(:disabled) {
+    filter: brightness(.92);
+}
+
+.bn-equation-popover__button:focus-visible {
+    outline: 2px solid var(--bn-colors-highlights-blue-text, #635bff);
+    outline-offset: 2px;
+}
+
+.bn-equation-popover__button:disabled {
+    cursor: not-allowed;
+    opacity: .4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bn-equation {
+        transition: none;
+    }
+}
+
+.bn-latex {
+    display: inline;
+    padding: .05em .25em;
+    margin: 0 .05em;
+    border-radius: var(--bn-border-radius-small, 4px);
+    cursor: pointer;
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+
+.bn-latex:hover,
+.bn-latex:focus-visible,
+.bn-latex[data-editing="true"] {
+    background: var(--bn-colors-hovered-background, rgb(99 91 255 / 8%));
+    outline: none;
+}
+
+.bn-latex:focus-visible {
+    box-shadow: 0 0 0 2px var(--bn-colors-highlights-blue-text, #635bff);
+}
+
+.bn-latex-rendered {
+    display: inline;
+}
+
+.bn-latex-placeholder {
+    color: var(--bn-colors-side-menu, #9b9a97);
+    font-family: Georgia, serif;
+}
+
+.bn-latex.bn-latex-display {
+    display: block;
+    width: 100%;
+    margin: .5em 0;
+    padding: .35rem .5rem;
+    text-align: center;
+}
