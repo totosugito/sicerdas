@@ -1,5 +1,6 @@
 import { ChartData, DEFAULT_PALETTE } from "./chart-types";
-import { ChartTooltip } from "@/components/charts/ReactECharts";
+import { renderBlockNoteChartTooltip } from "./utils/tooltip";
+import { computeLinearRegression } from "./utils/trendline";
 
 export function chartDataToEChartsOption(data: ChartData) {
   const { chartType, title, categories, series, options } = data;
@@ -143,39 +144,35 @@ export function chartDataToEChartsOption(data: ChartData) {
         : undefined,
       radar: {
         indicator: indicator,
-        center: ["50%", hasTitle ? "55%" : "50%"],
+        center: ["50%", hasLegend ? (hasTitle ? "48%" : "44%") : (hasTitle ? "55%" : "50%")],
         radius: "60%",
-        splitArea: {
-          show: showGrid,
-        },
-        splitLine: {
-          show: showGrid,
-        },
       },
       series: [
         {
           type: "radar",
           data: radarSeriesData,
-          label: {
-            show: showValues,
-          },
         },
       ],
     };
   }
 
-  // Handle Bar, Line, Area charts
   const isHorizontal = chartType === "bar" && options?.horizontal;
+  const isScatter = chartType === "scatter";
+  const isNumericX = isScatter && categories.length > 0 && categories.every((c) => !isNaN(parseFloat(c)) && c.trim() !== "");
 
   const echartsSeries = series.map((s, idx) => {
     const seriesColor = s.color || DEFAULT_PALETTE[idx % DEFAULT_PALETTE.length];
     const isArea = chartType === "area";
     const actualType = isArea ? "line" : chartType;
 
+    const seriesData = isNumericX
+      ? s.values.map((v, i) => [parseFloat(categories[i]), v])
+      : s.values;
+
     return {
       name: s.name || `Series ${idx + 1}`,
       type: actualType,
-      data: s.values,
+      data: seriesData,
       symbolSize: chartType === "scatter" ? 10 : 6,
       itemStyle: {
         color: seriesColor,
@@ -196,10 +193,30 @@ export function chartDataToEChartsOption(data: ChartData) {
       label: {
         show: showValues,
         position: isHorizontal ? "right" : "top",
+        fontSize: 10,
+        formatter: (params: any) => {
+          const formatMode = options?.valueLabelFormat || "y";
+          if (formatMode === "xy") {
+            if (Array.isArray(params.value)) {
+              return `(${params.value[0]}, ${params.value[1]})`;
+            }
+            return `(${params.name}, ${params.value})`;
+          }
+          if (Array.isArray(params.value)) {
+            return `${params.value[1]}`;
+          }
+          return `${params.value}`;
+        },
       },
       stack: options?.stacked ? "total" : undefined,
     };
   });
+
+  // Linear Regression Trendline (y = mx + c)
+  const trendlineSeries = computeLinearRegression(categories, series, options, isNumericX);
+  if (trendlineSeries) {
+    echartsSeries.push(trendlineSeries);
+  }
 
   const categoryAxis = {
     type: "category",
@@ -224,6 +241,17 @@ export function chartDataToEChartsOption(data: ChartData) {
     },
   };
 
+  const numericXAxis = {
+    type: "value",
+    name: options?.xAxisLabel,
+    nameLocation: "middle",
+    nameGap: 30,
+    nameTextStyle: {
+      fontWeight: 600,
+      fontSize: 11,
+    },
+  };
+
   const hasYLabel = isHorizontal ? options?.xAxisLabel : options?.yAxisLabel;
   const hasXLabel = isHorizontal ? options?.yAxisLabel : options?.xAxisLabel;
 
@@ -236,13 +264,13 @@ export function chartDataToEChartsOption(data: ChartData) {
       }
       : undefined,
     tooltip: {
-      trigger: "axis",
+      trigger: (isScatter && !options?.showTrendline) ? "item" : "axis",
       renderMode: "html",
       className: "custom-echarts-tooltip",
       axisPointer: {
-        type: chartType === "bar" ? "shadow" : "line",
+        type: isScatter ? "cross" : (chartType === "bar" ? "shadow" : "line"),
       },
-      formatter: (params: any) => ChartTooltip({ params, useSeriesColor: false }),
+      formatter: renderBlockNoteChartTooltip,
     },
     legend: showLegend
       ? {
@@ -257,8 +285,12 @@ export function chartDataToEChartsOption(data: ChartData) {
       containLabel: true,
       show: showGrid,
     },
-    xAxis: isHorizontal ? valueAxis : categoryAxis,
+    xAxis: isNumericX ? numericXAxis : (isHorizontal ? valueAxis : categoryAxis),
     yAxis: isHorizontal ? categoryAxis : valueAxis,
     series: echartsSeries,
   };
+}
+
+export function mapChartDataToOption(data: ChartData): any {
+  return chartDataToEChartsOption(data);
 }

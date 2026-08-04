@@ -31,17 +31,17 @@ export function LectureTextCard({ article, onPreview, onDelete }: LectureTextCar
               <FileText className="h-5 w-5" />
             </div>
             <div className="space-y-1 overflow-hidden">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between gap-2">
                 <h4 className="font-semibold text-base leading-tight tracking-tight truncate group-hover:text-primary transition-colors">
                   {article.title || t(($) => $.course.lectureTexts.unnamedArticle)}
                 </h4>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span>{blocksCount} {t(($) => $.course.lectureTexts.blocksCount)}</span>
                 {article.status && (
                   <CourseStatusBadge status={article.status} />
                 )}
               </div>
-              <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-                <span>{blocksCount} {t(($) => $.course.lectureTexts.blocksCount)}</span>
-              </p>
               {(article.category?.name || article.grade?.name) && (
                 <div className="flex flex-wrap gap-1.5 pt-1.5">
                   {article.category?.name && (

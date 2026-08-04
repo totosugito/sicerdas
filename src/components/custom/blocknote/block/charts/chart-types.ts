@@ -13,6 +13,10 @@ export interface ChartOptions {
   stacked?: boolean;
   horizontal?: boolean;
   showValues?: boolean;
+  valueLabelFormat?: "y" | "xy";
+  showTrendline?: boolean;
+  fullTrendline?: boolean;
+  trendlineStyle?: "dashed" | "solid";
   xAxisLabel?: string;
   yAxisLabel?: string;
   alignment?: "left" | "center" | "right";
