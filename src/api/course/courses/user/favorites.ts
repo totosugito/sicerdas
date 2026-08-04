@@ -22,7 +22,7 @@ export interface FavoriteCoursesResponse extends BaseResponse {
   };
 }
 
-export function useFavoriteCourses(params?: { page?: number; limit?: number }, options?: { enabled?: boolean }) {
+export function useFavoriteCourses(params?: { page?: number; limit?: number }, options?: { enabled?: boolean; staleTime?: number }) {
   const page = params?.page ?? 1;
   const limit = params?.limit ?? 10;
   return useQuery<FavoriteCoursesResponse>({
@@ -34,5 +34,6 @@ export function useFavoriteCourses(params?: { page?: number; limit?: number }, o
       withCredentials: true,
     }) as Promise<FavoriteCoursesResponse>,
     enabled: options?.enabled ?? true,
+    staleTime: options?.staleTime ?? 30000,
   });
 }

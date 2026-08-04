@@ -121,6 +121,7 @@ function ExamDashboardComponent() {
   const handleTabChange = (value: string) => {
     navigate({
       search: (prev: DashboardSearch) => ({ ...prev, tab: value }),
+      resetScroll: false,
     });
   };
 
@@ -128,6 +129,7 @@ function ExamDashboardComponent() {
     if (value !== null) {
       navigate({
         search: (prev: DashboardSearch) => ({ ...prev, days: parseInt(value) }),
+        resetScroll: false,
       });
     }
   };
@@ -135,42 +137,49 @@ function ExamDashboardComponent() {
   const handleBookFavPageChange = (page: number) => {
     navigate({
       search: (prev: DashboardSearch) => ({ ...prev, bookFavPage: page }),
+      resetScroll: false,
     });
   };
 
   const handleBookRecentPageChange = (page: number) => {
     navigate({
       search: (prev: DashboardSearch) => ({ ...prev, bookRecentPage: page }),
+      resetScroll: false,
     });
   };
 
   const handleAssessmentPageChange = (page: number) => {
     navigate({
       search: (prev: DashboardSearch) => ({ ...prev, assessmentPage: page }),
+      resetScroll: false,
     });
   };
 
   const handlePackageFavPageChange = (page: number) => {
     navigate({
       search: (prev: DashboardSearch) => ({ ...prev, packageFavPage: page }),
+      resetScroll: false,
     });
   };
 
   const handleCourseActivePageChange = (page: number) => {
     navigate({
       search: (prev: DashboardSearch) => ({ ...prev, courseActivePage: page }),
+      resetScroll: false,
     });
   };
 
   const handleCourseCompletedPageChange = (page: number) => {
     navigate({
       search: (prev: DashboardSearch) => ({ ...prev, courseCompletedPage: page }),
+      resetScroll: false,
     });
   };
 
   const handleCourseFavPageChange = (page: number) => {
     navigate({
       search: (prev: DashboardSearch) => ({ ...prev, courseFavPage: page }),
+      resetScroll: false,
     });
   };
 
@@ -325,6 +334,7 @@ function ExamDashboardComponent() {
                   onCompletedPageChange={handleCourseCompletedPageChange}
                   favPage={courseFavPage}
                   onFavPageChange={handleCourseFavPageChange}
+                  className="h-full"
                 />
               </div>
 

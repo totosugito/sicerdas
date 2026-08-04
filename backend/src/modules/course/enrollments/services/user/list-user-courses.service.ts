@@ -5,6 +5,7 @@ import { EnumEnrollmentStatus } from "../../../../../db/schema/course/enums.ts";
 import { eq, and, count, desc } from "drizzle-orm";
 import type { ServiceResponse, PaginationMeta } from "../../../../../types/response.ts";
 import type { UserCourseListQueryParams } from "../../enrollments.schema.ts";
+import { getCourseThumbnailUrl } from "../../../../../utils/course/course-utils.ts";
 
 export interface ListUserCoursesResult extends ServiceResponse {
   data?: Array<{
@@ -75,7 +76,7 @@ export async function listUserCoursesService(
       courseCode: r.courseCode,
       courseName: r.courseName,
       courseDescription: r.courseDescription,
-      thumbnail: r.thumbnail,
+      thumbnail: getCourseThumbnailUrl(r.thumbnail),
       price: Number(r.price),
     },
   }));

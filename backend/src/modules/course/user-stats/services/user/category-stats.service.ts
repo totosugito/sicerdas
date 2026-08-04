@@ -1,11 +1,13 @@
 import { db } from "../../../../../db/db-pool.ts";
 import { courseUserStatsCategory } from "../../../../../db/schema/course/user-stats-category.ts";
 import { educationCategories } from "../../../../../db/schema/education/categories.ts";
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, desc } from "drizzle-orm";
 
 export async function getCategoryStatsService(userId: string) {
   const categoryStatsList = await db.query.courseUserStatsCategory.findMany({
     where: eq(courseUserStatsCategory.userId, userId),
+    orderBy: [desc(courseUserStatsCategory.coursesEnrolled), desc(courseUserStatsCategory.updatedAt)],
+    limit: 10,
   });
 
   const categoryIds = categoryStatsList.map((c) => c.categoryId);

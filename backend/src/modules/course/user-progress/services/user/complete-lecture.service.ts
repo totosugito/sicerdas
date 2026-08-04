@@ -4,6 +4,8 @@ import { courseChapters } from "../../../../../db/schema/course/chapters.ts";
 import { courseUserProgress } from "../../../../../db/schema/course/user-progress.ts";
 import { courseEnrollments } from "../../../../../db/schema/course/course-enrollments.ts";
 import { courseUserStatsGlobal } from "../../../../../db/schema/course/user-stats-global.ts";
+import { courseUserStatsCategory } from "../../../../../db/schema/course/user-stats-category.ts";
+import { courses } from "../../../../../db/schema/course/courses.ts";
 import { examSessions } from "../../../../../db/schema/exam/sessions.ts";
 import { EnumEnrollmentStatus, EnumLectureType } from "../../../../../db/schema/course/enums.ts";
 import { EnumExamSessionStatus } from "../../../../../db/schema/exam/enums.ts";
@@ -43,6 +45,19 @@ export async function completeLectureService(lectureId: string, userId: string):
   }
 
   const courseId = chapter.courseId;
+
+  // Fetch course details for categoryId
+  const course = await db.query.courses.findFirst({
+    where: eq(courses.id, courseId),
+  });
+
+  if (!course) {
+    return {
+      success: false,
+      statusCode: 404,
+      errorKey: ($: any) => $.course.courses.notFound,
+    };
+  }
 
   // Check enrollment
   const enrollment = await db.query.courseEnrollments.findFirst({
@@ -184,6 +199,22 @@ export async function completeLectureService(lectureId: string, userId: string):
             totalCoursesCompleted: sql`${courseUserStatsGlobal.totalCoursesCompleted} + 1`,
             totalLecturesCompleted: sql`${courseUserStatsGlobal.totalLecturesCompleted} + 1`,
             lastActiveAt: now,
+            updatedAt: now,
+          },
+        });
+
+      // Increment course category stats for user
+      await db
+        .insert(courseUserStatsCategory)
+        .values({
+          userId,
+          categoryId: course.categoryId,
+          coursesCompleted: 1,
+        })
+        .onConflictDoUpdate({
+          target: [courseUserStatsCategory.userId, courseUserStatsCategory.categoryId],
+          set: {
+            coursesCompleted: sql`${courseUserStatsCategory.coursesCompleted} + 1`,
             updatedAt: now,
           },
         });

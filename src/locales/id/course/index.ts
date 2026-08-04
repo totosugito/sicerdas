@@ -349,6 +349,10 @@ export default {
       emptyDesc: "Sukai atau tandai kursus menarik dari katalog untuk menyimpannya di sini.",
       title: "Kursus Favorit & Disukai",
       description: "Koleksi kursus yang telah Anda bookmark",
+      removeConfirm: "Hapus dari Favorit?",
+      removeConfirmDesc: "Apakah Anda yakin ingin menghapus kursus ini dari daftar favorit Anda?",
+      removeAction: "Ya, Hapus",
+      cancelAction: "Batal",
     },
     active: {
       empty: "Belum ada kursus aktif",
@@ -363,6 +367,17 @@ export default {
       title: "Kursus Telah Selesai",
       description: "Daftar pencapaian kursus yang telah diselesaikan",
       completedAt: "Selesai pada {{date}}",
+    },
+    charts: {
+      category: {
+        title: "Progress Berdasarkan Kategori",
+        description: "Jumlah kursus yang diikuti dan diselesaikan di setiap kategori",
+        enrolled: "Terdaftar",
+        completed: "Selesai",
+        loading: "Progress Kategori",
+        loadingDesc: "Memuat analisis data...",
+        empty: "Belum ada aktivitas belajar per kategori.",
+      },
     },
   },
 };

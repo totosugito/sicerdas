@@ -18,6 +18,9 @@ export const CourseCategoryChart = ({ className }: CourseCategoryChartProps) => 
   const { data: statsRes, isLoading } = useCourseCategoryStats();
   const stats = statsRes?.data || [];
 
+  const enrolledLabel = t(($) => $.course.dashboard.charts.category.enrolled);
+  const completedLabel = t(($) => $.course.dashboard.charts.category.completed);
+
   const options = useMemo(() => {
     if (stats.length === 0) return null;
 
@@ -46,7 +49,7 @@ export const CourseCategoryChart = ({ className }: CourseCategoryChartProps) => 
         },
       },
       legend: {
-        data: ["Terdaftar", "Selesai"],
+        data: [enrolledLabel, completedLabel],
         top: "0%",
         right: "center",
         textStyle: {
@@ -82,7 +85,7 @@ export const CourseCategoryChart = ({ className }: CourseCategoryChartProps) => 
       },
       series: [
         {
-          name: "Terdaftar",
+          name: enrolledLabel,
           type: "bar",
           data: enrolledData,
           itemStyle: {
@@ -92,7 +95,7 @@ export const CourseCategoryChart = ({ className }: CourseCategoryChartProps) => 
           barWidth: "30%",
         },
         {
-          name: "Selesai",
+          name: completedLabel,
           type: "bar",
           data: completedData,
           itemStyle: {
@@ -100,18 +103,28 @@ export const CourseCategoryChart = ({ className }: CourseCategoryChartProps) => 
             borderRadius: [0, 4, 4, 0],
           },
           barWidth: "30%",
+          barGap: "-100%", // Overlap the completed bar on top of the enrolled bar
         },
       ],
     };
-  }, [stats, isDark]);
+  }, [stats, isDark, enrolledLabel, completedLabel]);
+
+  const chartHeight = useMemo(() => {
+    return Math.max(280, stats.length * 45);
+  }, [stats]);
 
   if (isLoading) {
     return (
-      <Card className={className}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <div className="space-y-1">
-            <CardTitle className="text-lg font-bold">Progress Kategori</CardTitle>
-            <CardDescription>Memuat analisis data...</CardDescription>
+      <Card className={`w-full shadow-sm overflow-hidden ${className || ""}`}>
+        <CardHeader className="bg-muted/10 border-b">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center animate-pulse">
+              <BarChart3 className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <CardTitle className="text-lg font-bold">{t(($) => $.course.dashboard.charts.category.loading)}</CardTitle>
+              <CardDescription className="text-xs font-medium">{t(($) => $.course.dashboard.charts.category.loadingDesc)}</CardDescription>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="h-[280px] flex items-center justify-center animate-pulse">
@@ -122,22 +135,30 @@ export const CourseCategoryChart = ({ className }: CourseCategoryChartProps) => 
   }
 
   return (
-    <Card className={className}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <div className="space-y-1">
-          <CardTitle className="text-lg font-bold flex items-center gap-2">
+    <Card className={`w-full shadow-sm overflow-hidden flex flex-col ${className || ""}`}>
+      <CardHeader className="bg-muted/10 border-b">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
             <BarChart3 className="w-5 h-5 text-primary" />
-            Progress Berdasarkan Kategori
-          </CardTitle>
-          <CardDescription>Jumlah kursus yang diikuti dan diselesaikan di setiap kategori</CardDescription>
+          </div>
+          <div>
+            <CardTitle className="text-lg font-bold">{t(($) => $.course.dashboard.charts.category.title)}</CardTitle>
+            <CardDescription className="text-xs font-medium">{t(($) => $.course.dashboard.charts.category.description)}</CardDescription>
+          </div>
         </div>
       </CardHeader>
-      <CardContent className="h-[280px]">
+      <CardContent className="min-h-[280px] flex-1 overflow-y-auto">
         {stats.length > 0 && options ? (
-          <ReactECharts options={options} className="h-full w-full" />
+          <div style={{ height: `${chartHeight}px` }} className="w-full">
+            <ReactECharts
+              key={`${isDark}-${enrolledLabel}-${completedLabel}-${stats.map((s) => s.categoryId + s.coursesEnrolled + s.coursesCompleted).join("-")}`}
+              options={options}
+              className="h-full w-full"
+            />
+          </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-center p-6 border-2 border-dashed rounded-xl border-slate-200 dark:border-slate-800">
-            <p className="text-sm font-medium text-slate-500">Belum ada aktivitas belajar per kategori.</p>
+            <p className="text-sm font-medium text-slate-500">{t(($) => $.course.dashboard.charts.category.empty)}</p>
           </div>
         )}
       </CardContent>

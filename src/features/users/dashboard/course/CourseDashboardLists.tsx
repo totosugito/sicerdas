@@ -14,6 +14,7 @@ interface CourseDashboardListsProps {
   onCompletedPageChange: (page: number) => void;
   favPage: number;
   onFavPageChange: (page: number) => void;
+  className?: string;
 }
 
 export const CourseDashboardLists = ({
@@ -23,12 +24,13 @@ export const CourseDashboardLists = ({
   onCompletedPageChange,
   favPage,
   onFavPageChange,
+  className,
 }: CourseDashboardListsProps) => {
   const { t } = useAppTranslation();
   const [subTab, setSubTab] = useState<string>("active");
 
   return (
-    <Card className="w-full shadow-sm overflow-hidden">
+    <Card className={`w-full shadow-sm overflow-hidden flex flex-col ${className || ""}`}>
       <CardHeader className="bg-muted/10 border-b">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -40,8 +42,8 @@ export const CourseDashboardLists = ({
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-0">
-        <Tabs value={subTab} onValueChange={setSubTab} className="w-full">
+      <CardContent className="p-0 flex-1 flex flex-col">
+        <Tabs value={subTab} onValueChange={setSubTab} className="w-full flex-1 flex flex-col">
           <div className="px-6 pt-5 pb-2">
             <TabsList>
               {[
@@ -60,21 +62,21 @@ export const CourseDashboardLists = ({
             </TabsList>
           </div>
 
-          <TabsContent value="active" className="mt-0 outline-none">
+          <TabsContent value="active" className="mt-0 outline-none flex-1 flex flex-col">
             <CoursesActiveList
               page={activePage}
               onPageChange={onActivePageChange}
             />
           </TabsContent>
 
-          <TabsContent value="completed" className="mt-0 outline-none">
+          <TabsContent value="completed" className="mt-0 outline-none flex-1 flex flex-col">
             <CoursesCompletedList
               page={completedPage}
               onPageChange={onCompletedPageChange}
             />
           </TabsContent>
 
-          <TabsContent value="favorites" className="mt-0 outline-none">
+          <TabsContent value="favorites" className="mt-0 outline-none flex-1 flex flex-col">
             <CoursesFavoriteList
               page={favPage}
               onPageChange={onFavPageChange}
