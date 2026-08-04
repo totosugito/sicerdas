@@ -13,6 +13,7 @@ import { DialogModal } from "@/components/dialog";
 import { useQueryClient } from "@tanstack/react-query";
 import { LocalePagination } from "@/components/ui/locale-pagination";
 import { getGradeColor } from "@/lib/app/exam-utils";
+import { EmptyState } from "@/components/general";
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
@@ -81,25 +82,13 @@ export const BooksFavoriteList = ({ page, onPageChange, limit }: BooksFavoriteLi
 
     if (favorites.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-          <div className="relative mb-6">
-            <div className="absolute inset-0 bg-amber-500/20 blur-3xl rounded-full" />
-            <div className="relative w-20 h-20 bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/40 dark:to-amber-900/20 rounded-3xl flex items-center justify-center border border-amber-200/50 dark:border-amber-700/30 shadow-xl shadow-amber-500/10">
-              <Bookmark className="w-10 h-10 text-amber-600 dark:text-amber-400" />
-            </div>
-          </div>
-          <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
-            {t(($) => $.book.dashboard.favorites.empty)}
-          </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[280px] mt-2 mb-6 font-medium leading-relaxed">
-            {t(($) => $.book.dashboard.favorites.emptyDesc)}
-          </p>
-          {/* <Link to={AppRoute.book.books.url}>
-            <Button variant="outline" className="px-8 transition-all duration-300">
-              {t(($) => $.book.detail.backToBooks)}
-            </Button>
-          </Link> */}
-        </div>
+        <EmptyState
+          variant="glow"
+          color="amber"
+          icon={Bookmark}
+          title={t(($) => $.book.dashboard.favorites.empty)}
+          description={t(($) => $.book.dashboard.favorites.emptyDesc)}
+        />
       );
     }
 

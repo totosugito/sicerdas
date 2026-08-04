@@ -30,7 +30,7 @@ Handles the high-level course metadata, catalog, and admin CRUD.
 - [x] Delete Course confirmation modal
 
 #### User / Public UI
-- [ ] Public Course Catalog / Exploration Page (with category, grade, & keyword filters)
+- [x] Public Course Catalog / Exploration Page (with category, grade, & keyword filters)
 - [x] Public Course Detail & Preview Page (overview, syllabus summary, pricing, enroll CTA)
 
 ---
@@ -116,9 +116,9 @@ Handles standalone, reusable rich text articles (BlockNote JSON format) referenc
 Handles the 1:1 relationship between users and courses.
 
 ### Admin Services (`/course/enrollments/admin`)
-- [x] `GET /list/:courseId`: List all enrolled students in a course
-- [x] `POST /add`: Manually enroll a student (e.g., bypassing payment)
-- [x] `DELETE /remove`: Drop a student from a course
+- [ ] `GET /list/:courseId`: List all enrolled students in a course
+- [ ] `POST /add`: Manually enroll a student (e.g., bypassing payment)
+- [ ] `DELETE /remove`: Drop a student from a course
 
 ### User Services (`/course/enrollments/user`)
 - [x] `POST /enroll/:courseId`: User enrolls in a course (checks `requiredTier`)
@@ -133,8 +133,8 @@ Handles the 1:1 relationship between users and courses.
 
 #### User UI
 - [x] Course Enrollment Action Button & Tier Requirements Check Modal
-- [ ] "My Courses - Active" Tab / Page
-- [ ] "My Courses - Completed" Tab / Page
+- [x] "My Courses - Active" Tab / Page
+- [x] "My Courses - Completed" Tab / Page
 
 ---
 
@@ -173,7 +173,7 @@ Handles user ratings and bookmarks (tied to `course_enrollments`).
 - [x] Course Rating Star Component & Review Submit Modal
 - [x] Bookmark Toggle Button Component (with active/inactive states)
 - [ ] ~~Like / Dislike Toggle Buttons Component~~ (Removed - Like/dislike support not focused)
-- [ ] "My Favorites & Bookmarks" Page / Grid View
+- [x] "My Favorites & Bookmarks" Page / Grid View
 
 ---
 
@@ -186,8 +186,8 @@ Handles user dashboard analytics.
 
 ### Frontend Implementation Checklist
 #### User UI
-- [ ] Learning Dashboard Overview Cards (Total Courses Enrolled, Completed, Total Watch Time)
-- [ ] Progress by Category Chart / Visual Breakdown Component
+- [x] Learning Dashboard Overview Cards (Total Courses Enrolled, Completed, Total Watch Time)
+- [x] Progress by Category Chart / Visual Breakdown Component
 
 ---
 

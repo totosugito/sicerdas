@@ -1,10 +1,10 @@
-export { SessionsRecentList } from "./SessionsRecentList";
+export { SessionsRecentList } from "./exam/SessionsRecentList";
 export { StatsCard } from "./StatsCard";
 export { SubjectRadarChart } from "./SubjectRadarChart";
-export { PackagesFavoriteList } from "./PackagesFavoriteList";
+export { PackagesFavoriteList } from "./exam/PackagesFavoriteList";
 export { ActivityBarChart } from "./ActivityBarChart";
-export { BooksFavoriteList } from "./BooksFavoriteList";
-export { BooksRecentList } from "./BooksRecentList";
+export { BooksFavoriteList } from "./book/BooksFavoriteList";
+export { BooksRecentList } from "./book/BooksRecentList";
 export { DashboardHero } from "./DashboardHero";
 export { OverviewStats } from "./OverviewStats";
-export { StatsBook } from "./StatsBook";
+export { StatsBook } from "./book/StatsBook";

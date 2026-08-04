@@ -12,6 +12,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { History } from "lucide-react";
 
 import { LocalePagination } from "@/components/ui/locale-pagination";
+import { EmptyState } from "@/components/general";
 
 interface BooksRecentListProps {
   page?: number;
@@ -51,25 +52,13 @@ export const BooksRecentList = ({ page = 1, onPageChange, limit = 5 }: BooksRece
 
     if (recentBooks.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-          <div className="relative mb-6">
-            <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full" />
-            <div className="relative w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-900/20 rounded-3xl flex items-center justify-center border border-blue-200/50 dark:border-blue-700/30 shadow-xl shadow-blue-500/10">
-              <Clock className="w-10 h-10 text-blue-600 dark:text-blue-400" />
-            </div>
-          </div>
-          <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
-            {t(($) => $.book.dashboard.history.empty)}
-          </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[280px] mt-2 mb-6 font-medium leading-relaxed">
-            {t(($) => $.book.dashboard.history.emptyDesc)}
-          </p>
-          {/* <Link to={AppRoute.book.books.url}>
-            <Button variant="outline" className="px-8 transition-all duration-300">
-              {t(($) => $.book.detail.backToBooks)}
-            </Button>
-          </Link> */}
-        </div>
+        <EmptyState
+          variant="glow"
+          color="blue"
+          icon={Clock}
+          title={t(($) => $.book.dashboard.history.empty)}
+          description={t(($) => $.book.dashboard.history.emptyDesc)}
+        />
       );
     }
 

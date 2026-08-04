@@ -335,4 +335,34 @@ export default {
       bullet3: "Belajar kapan saja & di mana saja secara fleksibel",
     },
   },
+  dashboard: {
+    title: "Aktivitas Belajar Saya",
+    description: "Akses cepat ke kursus yang sedang dipelajari, diselesaikan, atau difavoritkan",
+    completedLectures: "Materi Selesai",
+    tabs: {
+      active: "Aktif",
+      completed: "Selesai",
+      favorites: "Favorit",
+    },
+    favorites: {
+      empty: "Belum ada kursus favorit",
+      emptyDesc: "Sukai atau tandai kursus menarik dari katalog untuk menyimpannya di sini.",
+      title: "Kursus Favorit & Disukai",
+      description: "Koleksi kursus yang telah Anda bookmark",
+    },
+    active: {
+      empty: "Belum ada kursus aktif",
+      emptyDesc: "Mulai jelajahi kursus di katalog pembelajaran untuk memulai petualangan belajarmu.",
+      title: "Kursus Sedang Diikuti",
+      description: "Lanjutkan materi pembelajaran kursus aktif Anda",
+      enrolledAt: "Terdaftar sejak {{date}}",
+    },
+    completed: {
+      empty: "Belum ada kursus selesai",
+      emptyDesc: "Selesaikan materi dan kuis pada kursus aktif Anda untuk melihatnya di sini.",
+      title: "Kursus Telah Selesai",
+      description: "Daftar pencapaian kursus yang telah diselesaikan",
+      completedAt: "Selesai pada {{date}}",
+    },
+  },
 };

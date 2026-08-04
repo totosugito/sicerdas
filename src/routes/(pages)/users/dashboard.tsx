@@ -10,8 +10,14 @@ import {
   Trophy,
   Book,
   LayoutGrid,
-  Clock
+  Clock,
+  BookOpen,
 } from "lucide-react";
+import {
+  StatsCourse,
+  CourseDashboardLists,
+  CourseCategoryChart,
+} from "@/features/users/dashboard/course";
 import {
   Select,
   SelectContent,
@@ -39,12 +45,15 @@ import {
 import { z } from "zod";
 
 export const dashboardSearchSchema = z.object({
-  tab: z.enum(["overview", "assessments", "library"]).optional().catch("overview"),
+  tab: z.enum(["overview", "assessments", "library", "courses"]).optional().catch("overview"),
   days: z.number().optional().catch(7),
   bookFavPage: z.number().optional().catch(1),
   bookRecentPage: z.number().optional().catch(1),
   assessmentPage: z.number().optional().catch(1),
   packageFavPage: z.number().optional().catch(1),
+  courseActivePage: z.number().optional().catch(1),
+  courseCompletedPage: z.number().optional().catch(1),
+  courseFavPage: z.number().optional().catch(1),
 });
 
 export type DashboardSearch = z.infer<typeof dashboardSearchSchema>;
@@ -65,6 +74,9 @@ function ExamDashboardComponent() {
   const bookRecentPage = search.bookRecentPage || 1;
   const assessmentPage = search.assessmentPage || 1;
   const packageFavPage = search.packageFavPage || 1;
+  const courseActivePage = search.courseActivePage || 1;
+  const courseCompletedPage = search.courseCompletedPage || 1;
+  const courseFavPage = search.courseFavPage || 1;
 
   // Data Fetching
   const { data: globalStatsRes } = useGlobalStats({ enabled: activeTab === "overview" });
@@ -144,6 +156,24 @@ function ExamDashboardComponent() {
     });
   };
 
+  const handleCourseActivePageChange = (page: number) => {
+    navigate({
+      search: (prev: DashboardSearch) => ({ ...prev, courseActivePage: page }),
+    });
+  };
+
+  const handleCourseCompletedPageChange = (page: number) => {
+    navigate({
+      search: (prev: DashboardSearch) => ({ ...prev, courseCompletedPage: page }),
+    });
+  };
+
+  const handleCourseFavPageChange = (page: number) => {
+    navigate({
+      search: (prev: DashboardSearch) => ({ ...prev, courseFavPage: page }),
+    });
+  };
+
 
   return (
     <div className="page-container">
@@ -165,18 +195,25 @@ function ExamDashboardComponent() {
                 {t(($) => $.exam.sessions.dashboard.tabs.overview)}
               </TabsTrigger>
               <TabsTrigger
-                value="assessments"
-                className="px-6 py-2.5 rounded-xl font-bold text-sm transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary data-[state=active]:shadow-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 gap-2"
-              >
-                <Trophy className="w-4 h-4 transition-transform data-[state=active]:scale-110" />
-                {t(($) => $.exam.sessions.dashboard.tabs.assessments)}
-              </TabsTrigger>
-              <TabsTrigger
                 value="library"
                 className="px-6 py-2.5 rounded-xl font-bold text-sm transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary data-[state=active]:shadow-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 gap-2"
               >
                 <Book className="w-4 h-4 transition-transform data-[state=active]:scale-110" />
                 {t(($) => $.exam.sessions.dashboard.tabs.library)}
+              </TabsTrigger>
+              <TabsTrigger
+                value="courses"
+                className="px-6 py-2.5 rounded-xl font-bold text-sm transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary data-[state=active]:shadow-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 gap-2"
+              >
+                <BookOpen className="w-4 h-4 transition-transform data-[state=active]:scale-110" />
+                {t(($) => $.course.menu)}
+              </TabsTrigger>
+              <TabsTrigger
+                value="assessments"
+                className="px-6 py-2.5 rounded-xl font-bold text-sm transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary data-[state=active]:shadow-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 gap-2"
+              >
+                <Trophy className="w-4 h-4 transition-transform data-[state=active]:scale-110" />
+                {t(($) => $.exam.sessions.dashboard.tabs.assessments)}
               </TabsTrigger>
             </TabsList>
           </div>
@@ -270,6 +307,31 @@ function ExamDashboardComponent() {
                 onPageChange={handleBookRecentPageChange}
               />
               <BooksFavoriteList page={bookFavPage} onPageChange={handleBookFavPageChange} />
+            </div>
+          </TabsContent>
+
+          {/* --- COURSES TAB --- */}
+          <TabsContent value="courses" className="mt-0 outline-none space-y-6 animate-in fade-in duration-300">
+            {/* Global Course Stats */}
+            <StatsCourse />
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Column: Tabbed Lists */}
+              <div className="lg:col-span-1">
+                <CourseDashboardLists
+                  activePage={courseActivePage}
+                  onActivePageChange={handleCourseActivePageChange}
+                  completedPage={courseCompletedPage}
+                  onCompletedPageChange={handleCourseCompletedPageChange}
+                  favPage={courseFavPage}
+                  onFavPageChange={handleCourseFavPageChange}
+                />
+              </div>
+
+              {/* Right Column: Category Chart */}
+              <div className="lg:col-span-1">
+                <CourseCategoryChart className="h-full" />
+              </div>
             </div>
           </TabsContent>
 

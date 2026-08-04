@@ -165,4 +165,34 @@ export default {
       bullet3: "Learn anytime & anywhere flexibly",
     },
   },
+  dashboard: {
+    title: "My Learning Activity",
+    description: "Quick access to courses you are learning, completed, or favorited",
+    completedLectures: "Completed Lectures",
+    tabs: {
+      active: "Active",
+      completed: "Completed",
+      favorites: "Favorites",
+    },
+    favorites: {
+      empty: "No favorite courses yet",
+      emptyDesc: "Like or bookmark interesting courses from the catalog to save them here.",
+      title: "Favorite & Liked Courses",
+      description: "Collection of courses you have bookmarked",
+    },
+    active: {
+      empty: "No active courses yet",
+      emptyDesc: "Start exploring courses in the catalog to begin your learning journey.",
+      title: "Enrolled Courses",
+      description: "Continue learning your active course materials",
+      enrolledAt: "Enrolled since {{date}}",
+    },
+    completed: {
+      empty: "No completed courses yet",
+      emptyDesc: "Complete all materials and quizzes in your active courses to see them here.",
+      title: "Completed Courses",
+      description: "List of your completed course achievements",
+      completedAt: "Completed on {{date}}",
+    },
+  },
 };

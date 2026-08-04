@@ -38,4 +38,5 @@ export { useCourseFilterParams } from "./filter-params";
 export { useCourseStructureClient } from "./structure-course";
 export { useBookmarkCourse } from "./user/bookmark";
 export { useRateCourse } from "./user/rating";
+export { useFavoriteCourses } from "./user/favorites";
 export type { FilterParamsCategoryData, FilterParamsGrade } from "./types";

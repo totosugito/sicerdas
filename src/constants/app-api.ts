@@ -130,6 +130,12 @@ export const AppApi = {
         watchTime: APP_URL_API + "/course/user-progress/user/lecture/:lectureId/watch-time",
       }
     },
+    userStats: {
+      user: {
+        global: APP_URL_API + "/course/user-stats/user/global",
+        categories: APP_URL_API + "/course/user-stats/user/categories",
+      }
+    },
     lectures: {
       admin: {
         list: APP_URL_API + "/course/lectures/admin/list/:chapterId",

@@ -11,6 +11,7 @@ import { string_to_locale_date } from "@/lib/my-utils";
 import { EXAM_MODE_STYLES } from "@/constants/exam-var";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { LocalePagination } from "@/components/ui/locale-pagination";
+import { EmptyState } from "@/components/general";
 
 interface SessionsRecentListProps {
   history?: AllSessionHistoryResponse["data"];
@@ -58,22 +59,14 @@ export const SessionsRecentList = ({
     }
 
     if (history.items.length === 0) {
-      // ... (empty logic remains same)
       return (
-        <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-          <div className="relative mb-6">
-            <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
-            <div className="relative w-20 h-20 bg-gradient-to-br from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 dark:border-primary/80 shadow-xl shadow-primary/5">
-              <Activity className="w-10 h-10 text-primary" />
-            </div>
-          </div>
-          <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
-            {t(($) => $.exam.sessions.history.empty)}
-          </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[280px] mt-2 font-medium leading-relaxed">
-            {t(($) => $.exam.sessions.dashboard.empty.noStatsDesc)}
-          </p>
-        </div>
+        <EmptyState
+          variant="glow"
+          color="primary"
+          icon={Activity}
+          title={t(($) => $.exam.sessions.history.empty)}
+          description={t(($) => $.exam.sessions.dashboard.empty.noStatsDesc)}
+        />
       );
     }
 

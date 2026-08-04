@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Type, type Static } from "@sinclair/typebox";
 import { BaseResponseSchema } from "../../../types/response.ts";
 
 export const GlobalStatsDataSchema = Type.Object({
@@ -26,3 +26,8 @@ export const CategoryStatsResponse = Type.Object({
   ...BaseResponseSchema.properties,
   data: Type.Array(CategoryStatItemSchema),
 });
+
+export type SchemaGlobalStatsData = Static<typeof GlobalStatsDataSchema>;
+export type SchemaGlobalStatsResponse = Static<typeof GlobalStatsResponse>;
+export type SchemaCategoryStatItem = Static<typeof CategoryStatItemSchema>;
+export type SchemaCategoryStatsResponse = Static<typeof CategoryStatsResponse>;
