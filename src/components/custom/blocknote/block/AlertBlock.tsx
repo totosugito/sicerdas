@@ -12,7 +12,7 @@ export const AlertBlock = createReactBlockSpec(
       textColor: defaultProps.textColor,
       type: {
         default: "info",
-        values: ["info", "warning", "success", "error"],
+        values: ["info", "warning", "success", "error", "tip"],
       },
     },
     content: "inline",

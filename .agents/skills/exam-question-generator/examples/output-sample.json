@@ -110,7 +110,9 @@
               {
                 "type": "text",
                 "text": "Diketahui: ",
-                "styles": { "bold": true }
+                "styles": {
+                  "bold": true
+                }
               },
               {
                 "type": "text",
@@ -144,7 +146,9 @@
               {
                 "type": "text",
                 "text": "Ditanya: ",
-                "styles": { "bold": true }
+                "styles": {
+                  "bold": true
+                }
               },
               {
                 "type": "text",
@@ -166,7 +170,9 @@
               {
                 "type": "text",
                 "text": "Pembahasan: ",
-                "styles": { "bold": true }
+                "styles": {
+                  "bold": true
+                }
               },
               {
                 "type": "text",
@@ -200,7 +206,9 @@
               {
                 "type": "text",
                 "text": " (opsi C).",
-                "styles": { "bold": true }
+                "styles": {
+                  "bold": true
+                }
               }
             ]
           }
@@ -212,12 +220,35 @@
     ],
     "variableFormulas": {
       "variables": [
-        { "x": 5, "opt1": 12, "opt2": 15, "opt3": 22, "opt4": 35 },
-        { "x": 3, "opt1": 10, "opt2": 13, "opt3": 16, "opt4": 21 },
-        { "x": 8, "opt1": 24, "opt2": 28, "opt3": 31, "opt4": 40 }
+        {
+          "x": 5,
+          "opt1": 12,
+          "opt2": 15,
+          "opt3": 22,
+          "opt4": 35
+        },
+        {
+          "x": 3,
+          "opt1": 10,
+          "opt2": 13,
+          "opt3": 16,
+          "opt4": 21
+        },
+        {
+          "x": 8,
+          "opt1": 24,
+          "opt2": 28,
+          "opt3": 31,
+          "opt4": 40
+        }
       ],
-      "solutions": { "answer": "3 * x + 7" }
+      "solutions": {
+        "answer": "3 * x + 7"
+      }
     },
-    "tags": ["Matematika", "Aljabar"]
+    "tags": [
+      "Matematika",
+      "Aljabar"
+    ]
   }
 ]

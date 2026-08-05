@@ -33,7 +33,7 @@ export function QuestionVariablesTab({
 
   return (
     <Card className="border-t-0 rounded-t-none">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-0">
         <div className="space-y-1">
           <CardTitle className="text-xl">
             {t(($) => $.exam.questions.edit.variables.title)}

@@ -125,7 +125,7 @@ export function QuestionOptionsTab({ questionId, options: initialOptions }: Ques
 
     return (
         <Card className="border-t-0 rounded-t-none">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-0">
                 <div className='flex flex-col gap-1.5 '>
                     <CardTitle className="text-xl">
                         {t($ => $.exam.options.title)}

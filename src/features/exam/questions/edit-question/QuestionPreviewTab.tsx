@@ -58,7 +58,7 @@ export function QuestionPreviewTab({ question }: QuestionPreviewTabProps) {
 
   return (
     <Card className="border-t-0 rounded-t-none">
-      <CardHeader>
+      <CardHeader className="pb-0">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <CardTitle className="text-xl">

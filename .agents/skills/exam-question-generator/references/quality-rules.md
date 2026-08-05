@@ -14,7 +14,7 @@ Jika soal melibatkan perhitungan atau fungsi matematika, Anda **WAJIB** membuat 
 2. Tempatkan placeholder ini **di dalam** prop `latex` (contoh: `\log_{{{a}}} ({{b}}x - {{c}})` atau `f({{x_val}})`).
 3. Isi `variableFormulas.variables` dengan **3–5 set angka** yang realistis. Pastikan himpunan angka tetap memenuhi syarat matematis (contoh: basis logaritma harus positif dan bukan 1, nilai dalam logaritma harus positif).
 4. Pastikan untuk memasukkan perhitungan nilai opsi yang salah/pengecoh (`opt1`, `opt2`, dst.) ke dalam array variables.
-5. Masukkan rumus turunan jawaban ke `variableFormulas.solutions`.
+5. Masukkan rumus turunan jawaban ke `variableFormulas.solutions` menggunakan ekspresi matematika murni tanpa kurung kurawal (contoh: `"b * x_val - c"` atau `"a + b"`). JANGAN gunakan kurung kurawal mustache seperti `"{{b}} * {{x_val}} - {{c}}"` karena akan menyebabkan `SyntaxError` pada evaluator rumus.
 
 Hanya jika soal murni TEORI (misal: "Siapa penemu gaya gravitasi?"), baru Anda boleh menset `variableFormulas: null`.
 
@@ -63,11 +63,13 @@ Solusi 1 (solutionType: "general"):
   Paragraf 3: "Pembahasan:" (bold) (HARUS berdiri sendiri sebagai paragraf tunggal)
   Paragraf 4: Kalimat pengantar pembahasan (berada di baris baru di bawah label).
   
-  [Blok "alert" type "info" (Opsional)]: Hanya berisi poin singkat atau rumus (misal: "💡 Ingat Sifat Logaritma: ..."). JANGAN menaruh kalimat penjelasan panjang atau gaya percakapan di dalam blok alert. Letakkan penjelasan di paragraf biasa.
+  [Blok "alert" type "tip" (Opsional)]: Hanya berisi poin singkat atau rumus (misal: "Ingat Sifat Logaritma: ..."). Gunakan tipe "tip" agar muncul ikon bohlam/lampu kuning yang cocok untuk sifat/rumus. JANGAN menambahkan emoji seperti 💡 karena UI sudah memiliki icon otomatis. JANGAN menaruh kalimat penjelasan panjang atau gaya percakapan di dalam blok alert. Letakkan penjelasan di paragraf biasa.
   
-  [Blok "paragraph"]: Gunakan paragraf biasa namun beri nomor tebal di awal teks (misal: "1. " dengan style bold) untuk setiap tahapan. JANGAN gunakan numberedListItem karena list akan terputus jika diselingi equation.
+  [Blok "numberedListItem"]: Gunakan ini untuk SELURUH tahapan langkah. 
+  - JANGAN menulis kata "Langkah pertama", "Langkah 1", atau "1. " di dalam teks string karena nomor sudah di-render otomatis oleh badge list item.
+  - WAJIB menaruh blok turunan seperti `equation` dan `alert` di dalam array `children` dari `numberedListItem` ini agar urutan nomor (1, 2, 3...) tetap menyambung dan tidak terputus/ter-reset.
   
-  [Blok "equation"]: Gunakan di sela-sela paragraf untuk perhitungan matematika utama agar menonjol. **PENTING:** Jika perhitungan terdiri dari beberapa tahap penyederhanaan, JANGAN ditulis menyamping panjang. Wajib gunakan environment LaTeX `\begin{aligned} ... \end{aligned}` agar persamaan tersusun turun ke bawah dan sejajar pada tanda sama dengan (`&=`).
+  [Blok "equation"]: Gunakan untuk perhitungan matematika. JIKA di dalam langkah bernomor, WAJIB diletakkan di dalam properti `children` dari blok langkah tersebut. **PENTING:** Jika perhitungan terdiri dari beberapa tahap penyederhanaan, JANGAN ditulis menyamping panjang. Wajib gunakan environment LaTeX `\begin{aligned} ... \end{aligned}`.
   
   Paragraf terakhir (BERLAKU UNTUK SEMUA JENIS SOLUSI): Wajib ditutup dengan kalimat persis seperti ini: `"Jadi, jawaban yang benar adalah [hasil]."` (Gunakan inline latex atau bold untuk hasil). JANGAN gunakan variasi aneh seperti "jawaban cepatnya", "maka hasilnya", dll. JANGAN PERNAH menyebutkan huruf opsi seperti "opsi D" karena opsi akan diacak.
 

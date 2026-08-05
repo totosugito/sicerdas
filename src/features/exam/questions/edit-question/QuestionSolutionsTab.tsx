@@ -132,7 +132,7 @@ export function QuestionSolutionsTab({
 
   return (
     <Card className="border-t-0 rounded-t-none">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 text-center sm:text-left">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 text-center sm:text-left pb-0">
         <div className="flex flex-col gap-1.5 ">
           <CardTitle className="text-xl">{t(($) => $.exam.solutions.title)}</CardTitle>
           <CardDescription>{t(($) => $.exam.solutions.description)}</CardDescription>

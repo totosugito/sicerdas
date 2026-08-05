@@ -1,5 +1,12 @@
 /* Custom BlockNote Styles */
 
+/* Ensure BlockNote container and editor backgrounds are transparent to match parent card background */
+.bn-container,
+.bn-editor {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
 /* Alert Block Styling */
 .bn-editor [data-content-type="alert"] {
   width: 100%;
@@ -80,6 +87,23 @@
 
 .alert-wrapper[data-type="info"] .alert-icon {
   color: #2563eb;
+}
+
+/* Tip (Violet / Purple) */
+.alert-wrapper[data-type="tip"] {
+  background-color: rgba(139, 92, 246, 0.08);
+  border-color: rgba(139, 92, 246, 0.25);
+  color: #6d28d9;
+}
+
+.dark .alert-wrapper[data-type="tip"] {
+  background-color: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #c4b5fd;
+}
+
+.alert-wrapper[data-type="tip"] .alert-icon {
+  color: #8b5cf6;
 }
 
 /* Warning */
@@ -219,4 +243,63 @@
 
 .bn-suggestion-menu::-webkit-scrollbar-thumb:hover {
   background-color: var(--muted-foreground);
+}
+
+/* Custom Numbered List Styling (Pedagogical Steps) */
+
+/* Enable relative positioning for list outer blocks */
+.bn-editor [data-content-type="numberedListItem"] {
+  position: relative;
+}
+
+/* Align BlockNote nested block group vertical line to center of circle badges */
+.bn-editor .bn-block-group .bn-block-group>.bn-block-outer:not([data-prev-depth-changed])::before {
+  left: -0.725rem !important;
+  /* -18px, aligned precisely with circle center */
+  border-left: 1.5px solid rgba(203, 213, 225, 0.8) !important;
+  opacity: 0.7;
+}
+
+.dark .bn-editor .bn-block-group .bn-block-group>.bn-block-outer:not([data-prev-depth-changed])::before {
+  border-left-color: rgba(71, 85, 105, 0.8) !important;
+}
+
+/* Override BlockNote's native ::before content string to remove the trailing dot "." */
+.bn-block-outer[data-prev-type="numberedListItem"]:not([data-prev-index="none"])>.bn-block>.bn-block-content::before {
+  content: var(--prev-index) !important;
+}
+
+.bn-block-outer:not([data-prev-type])>.bn-block>.bn-block-content[data-content-type="numberedListItem"]::before,
+.bn-block-outer:not([data-prev-type])>.bn-block>div[data-type="modification"]>.bn-block-content[data-content-type="numberedListItem"]::before,
+.bn-block-outer:not([data-prev-type])>.bn-block> :is(ins, del)>.bn-suggestion-node>.bn-block-content[data-content-type="numberedListItem"]::before {
+  content: var(--index) !important;
+}
+
+/* Apply Option A Pill/Circle Badge to the numbered list marker */
+.bn-editor .bn-block-content[data-content-type="numberedListItem"]::before {
+  position: relative !important;
+  z-index: 2 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 1.65rem !important;
+  height: 1.65rem !important;
+  min-width: 1.65rem !important;
+  padding-right: 0 !important;
+  margin-right: 0.5rem !important;
+  background-color: rgba(37, 99, 235, 0.1) !important;
+  color: #2563eb !important;
+  border-radius: 9999px !important;
+  font-weight: 700 !important;
+  font-size: 0.825rem !important;
+  line-height: 1 !important;
+  border: 1px solid rgba(37, 99, 235, 0.25) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Dark mode colors for the badge */
+.dark .bn-editor .bn-block-content[data-content-type="numberedListItem"]::before {
+  background-color: rgba(37, 99, 235, 0.2) !important;
+  color: #93c5fd !important;
+  border-color: rgba(37, 99, 235, 0.4) !important;
 }

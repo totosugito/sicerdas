@@ -1,6 +1,6 @@
-import { Info, AlertTriangle, CheckCircle2, XCircle, LucideIcon } from "lucide-react";
+import { Info, AlertTriangle, CheckCircle2, XCircle, Lightbulb, LucideIcon } from "lucide-react";
 
-export type AlertType = "info" | "warning" | "success" | "error";
+export type AlertType = "info" | "warning" | "success" | "error" | "tip";
 
 export interface AlertConfig {
   id: AlertType;
@@ -15,6 +15,12 @@ export const alertTypes: AlertConfig[] = [
     label: "Info",
     icon: Info,
     color: "blue",
+  },
+  {
+    id: "tip",
+    label: "Tip / Sifat",
+    icon: Lightbulb,
+    color: "violet",
   },
   {
     id: "warning",
@@ -41,6 +47,10 @@ export const getAlertStyles = (type: AlertType) => {
     info: {
       wrapper: "bg-blue-500/10 border-blue-500/20 text-blue-900 dark:text-blue-100",
       icon: "text-blue-500",
+    },
+    tip: {
+      wrapper: "bg-violet-500/10 border-violet-500/20 text-violet-900 dark:text-violet-100",
+      icon: "text-violet-500",
     },
     warning: {
       wrapper: "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-100",

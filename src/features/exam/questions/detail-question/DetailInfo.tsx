@@ -28,7 +28,7 @@ export function DetailInfo({ question }: DetailInfoProps) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-0">
         <CardTitle className="text-xl flex items-center gap-2">
           <HelpCircle className="h-5 w-5 text-primary" />
           {t(($) => $.exam.questions.detail.info.title)}

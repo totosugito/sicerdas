@@ -94,7 +94,7 @@ export function QuestionTagsTab({ questionId, tags = [] }: QuestionTagsTabProps)
 
   return (
     <Card className="border-t-0 rounded-t-none">
-      <CardHeader>
+      <CardHeader className="pb-0">
         <CardTitle className="text-xl">{t(($) => $.exam.tags.title)}</CardTitle>
         <CardDescription>{t(($) => $.exam.tags.description)}</CardDescription>
       </CardHeader>
