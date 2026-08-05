@@ -1,0 +1,223 @@
+[
+  {
+    "difficulty": "easy",
+    "type": "multiple_choice",
+    "maxScore": 1,
+    "scoringStrategy": "all_or_nothing",
+    "requiredTier": "free",
+    "isActive": true,
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Berapakah hasil dari ",
+            "styles": {}
+          },
+          {
+            "type": "latex",
+            "props": {
+              "latex": "3x + 7",
+              "displayMode": false
+            }
+          },
+          {
+            "type": "text",
+            "text": " jika ",
+            "styles": {}
+          },
+          {
+            "type": "latex",
+            "props": {
+              "latex": "x = 5",
+              "displayMode": false
+            }
+          },
+          {
+            "type": "text",
+            "text": "?",
+            "styles": {}
+          }
+        ]
+      }
+    ],
+    "options": [
+      {
+        "content": [
+          {
+            "type": "equation",
+            "props": {
+              "latex": "12"
+            },
+            "content": []
+          }
+        ],
+        "isCorrect": false,
+        "score": 0,
+        "order": 1
+      },
+      {
+        "content": [
+          {
+            "type": "equation",
+            "props": {
+              "latex": "15"
+            },
+            "content": []
+          }
+        ],
+        "isCorrect": false,
+        "score": 0,
+        "order": 2
+      },
+      {
+        "content": [
+          {
+            "type": "equation",
+            "props": {
+              "latex": "22"
+            },
+            "content": []
+          }
+        ],
+        "isCorrect": true,
+        "score": 1,
+        "order": 3
+      },
+      {
+        "content": [
+          {
+            "type": "equation",
+            "props": {
+              "latex": "35"
+            },
+            "content": []
+          }
+        ],
+        "isCorrect": false,
+        "score": 0,
+        "order": 4
+      }
+    ],
+    "solutions": [
+      {
+        "title": "Cara Konseptual",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Diketahui: ",
+                "styles": { "bold": true }
+              },
+              {
+                "type": "text",
+                "text": "Fungsi ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "f(x) = 3x + 7",
+                  "displayMode": false
+                }
+              },
+              {
+                "type": "text",
+                "text": " dan nilai ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "x = 5",
+                  "displayMode": false
+                }
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ditanya: ",
+                "styles": { "bold": true }
+              },
+              {
+                "type": "text",
+                "text": "Nilai dari ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "3x + 7",
+                  "displayMode": false
+                }
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Pembahasan: ",
+                "styles": { "bold": true }
+              },
+              {
+                "type": "text",
+                "text": "Substitusikan nilai x = 5 ke dalam ekspresi:",
+                "styles": {}
+              }
+            ]
+          },
+          {
+            "type": "equation",
+            "props": {
+              "latex": "3x + 7 = 3(5) + 7 = 15 + 7 = 22"
+            },
+            "content": []
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Jadi, jawaban yang benar adalah ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "22",
+                  "displayMode": false
+                }
+              },
+              {
+                "type": "text",
+                "text": " (opsi C).",
+                "styles": { "bold": true }
+              }
+            ]
+          }
+        ],
+        "solutionType": "general",
+        "order": 1,
+        "requiredTier": "free"
+      }
+    ],
+    "variableFormulas": {
+      "variables": [
+        { "x": 5, "opt1": 12, "opt2": 15, "opt3": 22, "opt4": 35 },
+        { "x": 3, "opt1": 10, "opt2": 13, "opt3": 16, "opt4": 21 },
+        { "x": 8, "opt1": 24, "opt2": 28, "opt3": 31, "opt4": 40 }
+      ],
+      "solutions": { "answer": "3 * x + 7" }
+    },
+    "tags": ["Matematika", "Aljabar"]
+  }
+]
