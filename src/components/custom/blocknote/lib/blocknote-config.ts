@@ -21,7 +21,6 @@ export const VALID_BLOCK_TYPES = [
   "file",
   "codeBlock",
   // Custom blocks
-  "math",
   "equation",
   "alert",
   "chart",

@@ -50,18 +50,21 @@ You must output the result as a strictly valid JSON array (`[]`) containing ques
 - **Preferred Method:** Save as `questions.json` (downloadable file).
 - **Fallback Method:** Single raw markdown code block.
 
-1. Every `content` property (in the main question, options, and solutions) must be an array of **Block** objects: `{"type": "paragraph" | "heading" | "bulletListItem" | "math" | "alert", "content": [], "props": {}}`.
+1. Every `content` property (in the main question, options, and solutions) must be an array of **Block** objects: `{"type": "paragraph" | "heading" | "bulletListItem" | "equation" | "alert" | "chart", "content": [], "props": {}}`.
 2. **VALID BLOCKNOTE TYPES ONLY:** You may only use the block type strings listed above. Do not use variants like "paragraph1". **NEVER** put an inline `"text"` type object directly in the root of the `"content"` array.
-3. **Mathematics:** For all numbers, formulas, and equations, use the `"math"` block type. Input the pure LaTeX string into `props.equation`. **DO NOT** use `$` or `$$` wrappers.
-4. **Callouts:** Use the `"alert" ` block (with `props.type`: `"info"`, `"warning"`, or `"success"`) to highlight important rules or quick tips. The structure must be: `{"type": "alert", "props": {"type": "info" | "warning" | "success"}, "content": [{"type": "text", "text": "...", "styles": {}}]}`.
-5. **Multiple Questions (Bulk Extraction):** If the source material contains multiple distinct questions (e.g., a photo with numbers 1 to 5), you MUST extract all of them and return them as separate objects within the same JSON array.
+3. **Block-Level Mathematics (Equation):** For standalone formulas and display equations, use the `"equation"` block type. Input the pure LaTeX string into `props.latex`. **DO NOT** use `$` or `$$` wrappers. Structure: `{"type": "equation", "props": {"latex": "E = mc^2"}, "content": []}`.
+4. **Inline Mathematics (Latex):** For math expressions within a line of text, use the `"latex"` inline content type inside a `"paragraph"` block's `content` array alongside regular `"text"` objects. Structure: `{"type": "latex", "props": {"latex": "x^2 + y^2", "displayMode": false}}`. Use `"displayMode": true` for larger centered inline expressions.
+5. **Callouts:** Use the `"alert"` block (with `props.type`: `"info"`, `"warning"`, `"success"`, or `"error"`) to highlight important rules or quick tips. The structure must be: `{"type": "alert", "props": {"type": "info" | "warning" | "success" | "error"}, "content": [{"type": "text", "text": "...", "styles": {}}]}`.
+6. **Charts:** Use the `"chart"` block type to embed interactive charts (bar, line, area, pie, doughnut, radar, scatter). The chart data is stored as a JSON string in `props.chartData`. Structure: `{"type": "chart", "props": {"chartData": "{\"chartType\":\"bar\",\"title\":\"...\",\"categories\":[...],\"series\":[{\"name\":\"...\",\"values\":[...]}],\"options\":{}}"}, "content": []}`. Charts are typically used in solutions to visualize data, not in question content.
+7. **Multiple Questions (Bulk Extraction):** If the source material contains multiple distinct questions (e.g., a photo with numbers 1 to 5), you MUST extract all of them and return them as separate objects within the same JSON array.
 
 **Question Quality & Structure:**
 
-1. **Dynamic Variables (Computation Only):** If the question involves calculation, do NOT hardcode the numbers.
-   - Use placeholders like `{{v}}` or `{{t}}` inside text and math blocks.
-   - Populate the `variableFormulas.variables` array with 3 to 5 realistic, distinct numerical sets.
-   - **DECIMAL FORMATTING:** Prevent excessive infinite decimals. Limit values to an absolute maximum of 5 decimal points, though 2 to 3 decimal points are highly preferred. Ideally, structure the variables to result in clean whole numbers (Bulat) when possible.
+1. **Dynamic Variables (Computation Only):** If the question involves calculation, you MUST parameterize the constants. Do not leave it as `null`.
+   - Scan the math equations and text for constants (e.g., base numbers like 2020, coefficients, evaluated points like $x=2$).
+   - Replace them with placeholders like `{{a}}`, `{{b}}` inside the text and LaTeX strings (e.g., `\log_{{{a}}} ({{b}}x - {{c}})` or `f({{x_val}})`).
+   - Populate the `variableFormulas.variables` array with 3 to 5 realistic, distinct numerical sets. Make sure the math remains valid for each set (e.g. logarithms domain). Include the correct and incorrect option values (`opt1`, `opt2`, etc.) in each set.
+   - **DECIMAL FORMATTING:** Prevent excessive infinite decimals. Limit values to an absolute maximum of 5 decimal points. Ideally, structure the variables to result in clean whole numbers.
    - Put derived formula answers in `variableFormulas.solutions`.
 2. **Statement Reasoning (Benar/Salah):** If `type` is `"statement_reasoning"`, you MUST create exactly two options:
    - Option 1 (order 1): Content text MUST be exactly `"Benar"`.
@@ -76,12 +79,17 @@ You must output the result as a strictly valid JSON array (`[]`) containing ques
         - **CRITICAL BOLDING RULE:** Only the label (e.g., "Pernyataan BENAR: ") should have `"bold": true`. The rest of the explanation text MUST be a separate text object with `"styles": {}`. NEVER bold the entire paragraph.
         - **Paragraph 3**: (Optional) Conclude the relationship.
 3. **Plausible Distractors (Pilihan Pengecoh):** This is mandatory for `multiple_choice` and `multiple_select`. The incorrect options MUST be plausible. Base them on common student mistakes, such as applying the wrong operator or forgetting unit conversions.
-4. **Pedagogical Solutions (Pembahasan):** "Ini buat anak sekolah. Jadi pembahasan harus lengkap. Bisa dibuat multi paragraph jika dibutuhkan." Explanations MUST be thorough, easy to understand, and not skip logical steps. Feel free to use multiple paragraphs and clear lists. Create at least one completely clear solution:
-   - **Solution 1 (Cara Biasa/Konseptual):** Set `solutionType` to `"general"`. Use `Diketahui`, `Ditanya`, and detailed `Pembahasan`. Use multiple paragraphs if the explanation is long.
+4. **Pedagogical Solutions (Pembahasan):** "Ini buat anak sekolah. Jadi pembahasan harus lengkap. Bisa dibuat multi paragraph jika dibutuhkan." Explanations MUST be thorough, easy to understand, and not skip logical steps. Create at least one completely clear solution:
+   - **Solution 1 (Cara Biasa/Konseptual):** Set `solutionType` to `"general"`. Use `Diketahui`, `Ditanya`, and detailed `Pembahasan`. 
+     - **Bulleted Given Info:** For the "Diketahui:" section, write it as a bold paragraph, followed by a bulleted list (`bulletListItem`) for each given variable/equation downward. Do not put them all in a single long line.
+     - **Standalone Pembahasan:** Write `"Pembahasan:"` as a standalone bold paragraph. Put the actual opening explanation on a NEW paragraph below it.
+     - **Numbered Steps:** Because native lists break when interrupted by equation blocks, use a standard `paragraph` block but start the text with a bold number (e.g., `{"type": "text", "text": "1. ", "styles": {"bold": true}}`).
+     - **Concept Reminders:** When applying a specific theorem or formula, insert an `alert` block with `props: {"type": "info"}` before the calculation to remind the student of the concept (e.g., "Ingat Sifat: ...").
    - **Solution 2 (Cara Cepat/Trik Super):** If a valid shortcut exists, provide it as a separate solution block. Set `solutionType` to `"fast_method"`. Use an `"alert"` block (type `"success"`) to explain why the trick works safely.
 5. **No Fake Images:** Do not invent or insert fake image URLs (`"type": "image"`). If the question heavily relies on an image or diagram that you cannot generate, insert a standard `"paragraph"` block with the text `[BUAT_ILUSTRASI: deskripsi singkat]` so the human teacher knows they need to manually upload an image later.
-6. **Self-Verification (Chain of Thought):** Before finalizing the JSON, mentally double-check all arithmetic and logical derivations. Ensure the "correct" option actually matches the derived result in the solution.
-7. **Categorization (Tags):** Automatically populate the `tags` array with 1 to 3 general, high-level topic categories relevant to the question. Do not use overly specific tags. Examples of good, broad tags: `"Matematika"`, `"Bangun Ruang"`, `"KPK"`, `"FPB"`, `"Dinamika"`, `"Trigonometri"`.
+6. **No Option Letters (Randomization):** Since the database will randomize option positions for each student, NEVER reference the option letter (e.g., "opsi D", "jawaban A") in the text or solutions. Just state the final correct value.
+7. **Self-Verification (Chain of Thought):** Before finalizing the JSON, mentally double-check all arithmetic and logical derivations. Ensure the "correct" option actually matches the derived result in the solution.
+8. **Categorization (Tags):** Automatically populate the `tags` array with 1 to 3 general, high-level topic categories relevant to the question. Do not use overly specific tags. Examples of good, broad tags: `"Matematika"`, `"Bangun Ruang"`, `"KPK"`, `"FPB"`, `"Dinamika"`, `"Trigonometri"`.
 8. **Strict Scoring Logic:**
    - For `multiple_choice`, ensure the correct option has `"score": 1` and the question has `"maxScore": 1`.
    - For `multiple_select`, the question's `"maxScore"` must equal the total number of correct options (e.g., if there are 3 correct options, each gets `"score": 1` and the question gets `"maxScore": 3`).
@@ -125,7 +133,19 @@ Please strictly mirror the exact object structure found here. Generate only raw 
         "content": [
           {
             "type": "text",
-            "text": "Berapakah hasil dari {{a}} + {{b}}?",
+            "text": "Berapakah hasil dari ",
+            "styles": {}
+          },
+          {
+            "type": "latex",
+            "props": {
+              "latex": "{{a}} + {{b}}",
+              "displayMode": false
+            }
+          },
+          {
+            "type": "text",
+            "text": "?",
             "styles": {}
           }
         ]
@@ -135,9 +155,9 @@ Please strictly mirror the exact object structure found here. Generate only raw 
       {
         "content": [
           {
-            "type": "math",
+            "type": "equation",
             "props": {
-              "equation": "{{opt1}}"
+              "latex": "{{opt1}}"
             },
             "content": []
           }
@@ -149,9 +169,9 @@ Please strictly mirror the exact object structure found here. Generate only raw 
       {
         "content": [
           {
-            "type": "math",
+            "type": "equation",
             "props": {
-              "equation": "{{opt2}}"
+              "latex": "{{opt2}}"
             },
             "content": []
           }
@@ -170,10 +190,41 @@ Please strictly mirror the exact object structure found here. Generate only raw 
             "content": [
               {
                 "type": "text",
-                "text": "Kita cukup menjumlahkan variabel a ({{a}}) dan variabel b ({{b}}).",
+                "text": "Kita cukup menjumlahkan variabel ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "a = {{a}}",
+                  "displayMode": false
+                }
+              },
+              {
+                "type": "text",
+                "text": " dan variabel ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "b = {{b}}",
+                  "displayMode": false
+                }
+              },
+              {
+                "type": "text",
+                "text": ".",
                 "styles": {}
               }
             ]
+          },
+          {
+            "type": "equation",
+            "props": {
+              "latex": "{{a}} + {{b}} = {{opt1}}"
+            },
+            "content": []
           }
         ],
         "solutionType": "general",

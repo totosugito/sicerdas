@@ -78,39 +78,39 @@ function JsonQuestionsPage() {
   const [importError, setImportError] = useState<string | null>(null);
 
   const setSelectedIndex = (index: number) => {
-    navigate({ search: (prev: any) => ({ ...prev, index }), replace: true });
+    navigate({ search: (prev: any) => ({ ...prev, index }), replace: true, resetScroll: false });
   };
 
   const setIsExpanded = (expanded: boolean) => {
-    navigate({ search: (prev: any) => ({ ...prev, expanded }), replace: true });
+    navigate({ search: (prev: any) => ({ ...prev, expanded }), replace: true, resetScroll: false });
   };
 
   const setContentExpanded = (contentExpanded: boolean) => {
-    navigate({ search: (prev: any) => ({ ...prev, contentExpanded }), replace: true });
+    navigate({ search: (prev: any) => ({ ...prev, contentExpanded }), replace: true, resetScroll: false });
   };
 
   const setOptionsExpanded = (optionsExpanded: boolean) => {
-    navigate({ search: (prev: any) => ({ ...prev, optionsExpanded }), replace: true });
+    navigate({ search: (prev: any) => ({ ...prev, optionsExpanded }), replace: true, resetScroll: false });
   };
 
   const setSolutionsExpanded = (solutionsExpanded: boolean) => {
-    navigate({ search: (prev: any) => ({ ...prev, solutionsExpanded }), replace: true });
+    navigate({ search: (prev: any) => ({ ...prev, solutionsExpanded }), replace: true, resetScroll: false });
   };
 
   const setTagsExpanded = (tagsExpanded: boolean) => {
-    navigate({ search: (prev: any) => ({ ...prev, tagsExpanded }), replace: true });
+    navigate({ search: (prev: any) => ({ ...prev, tagsExpanded }), replace: true, resetScroll: false });
   };
   const setVariablesExpanded = (variablesExpanded: boolean) => {
-    navigate({ search: (prev: any) => ({ ...prev, variablesExpanded }), replace: true });
+    navigate({ search: (prev: any) => ({ ...prev, variablesExpanded }), replace: true, resetScroll: false });
   };
   const setReasonExpanded = (reasonExpanded: boolean) => {
-    navigate({ search: (prev: any) => ({ ...prev, reasonExpanded }), replace: true });
+    navigate({ search: (prev: any) => ({ ...prev, reasonExpanded }), replace: true, resetScroll: false });
   };
   const setPreviewExpanded = (previewExpanded: boolean) => {
-    navigate({ search: (prev: any) => ({ ...prev, previewExpanded }), replace: true });
+    navigate({ search: (prev: any) => ({ ...prev, previewExpanded }), replace: true, resetScroll: false });
   };
   const setTab = (tab: string) => {
-    navigate({ search: (prev: any) => ({ ...prev, tab }), replace: true });
+    navigate({ search: (prev: any) => ({ ...prev, tab }), replace: true, resetScroll: false });
   };
 
   /**

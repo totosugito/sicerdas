@@ -30,6 +30,7 @@ export const AlertBlock = createReactBlockSpec(
           {/* Interactive Icon with Popover for type switching */}
           <Popover>
             <PopoverTrigger
+              nativeButton={false}
               render={
                 <div
                   className="alert-icon-container"

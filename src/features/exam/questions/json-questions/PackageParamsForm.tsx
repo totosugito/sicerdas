@@ -13,11 +13,41 @@ interface PackageParamsFormProps {
   onOpenChange?: (open: boolean) => void;
 }
 
-export function PackageParamsForm({ form, isOpen = true, onOpenChange }: PackageParamsFormProps) {
+function PackageParamsFields({ form }: { form: any }) {
   const { t } = useAppTranslation();
 
-  // Watch package selection to filter sections reactively
-  const packageId = form.useStore((state: any) => state.values.packageId);
+  const { data: packagesData, isFetching: isFetchingPackages } = useListPackageSimple({
+    limit: 1000,
+  });
+
+  const packageOptions = packagesData?.data?.items || [];
+
+  return (
+    <form.Subscribe selector={(state: any) => state.values.packageId}>
+      {(packageId: string) => (
+        <PackageSectionFields
+          form={form}
+          packageId={packageId}
+          packageOptions={packageOptions}
+          isFetchingPackages={isFetchingPackages}
+        />
+      )}
+    </form.Subscribe>
+  );
+}
+
+function PackageSectionFields({
+  form,
+  packageId,
+  packageOptions,
+  isFetchingPackages,
+}: {
+  form: any;
+  packageId?: string;
+  packageOptions: any[];
+  isFetchingPackages: boolean;
+}) {
+  const { t } = useAppTranslation();
   const prevPackageIdRef = React.useRef(packageId);
 
   React.useEffect(() => {
@@ -27,16 +57,11 @@ export function PackageParamsForm({ form, isOpen = true, onOpenChange }: Package
     }
   }, [packageId, form]);
 
-  const { data: packagesData, isFetching: isFetchingPackages } = useListPackageSimple({
-    limit: 1000,
-  });
-
   const { data: sectionsData, isFetching: isFetchingSections } = useListPackageSectionSimple({
     packageId: packageId || undefined,
     limit: 1000,
   });
 
-  const packageOptions = packagesData?.data?.items || [];
   const sectionOptions = sectionsData?.data?.items || [];
 
   const config = {
@@ -61,6 +86,21 @@ export function PackageParamsForm({ form, isOpen = true, onOpenChange }: Package
   };
 
   return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form.AppField name="packageId">
+        {(field: any) => <ControlForm field={field} item={config.packageId} showMessage={true} />}
+      </form.AppField>
+      <form.AppField name="sectionId">
+        {(field: any) => <ControlForm field={field} item={config.sectionId} showMessage={true} />}
+      </form.AppField>
+    </div>
+  );
+}
+
+export function PackageParamsForm({ form, isOpen = true, onOpenChange }: PackageParamsFormProps) {
+  const { t } = useAppTranslation();
+
+  return (
     <div className="border rounded-lg bg-card shadow-sm overflow-hidden">
       <Collapsible open={isOpen} onOpenChange={onOpenChange}>
         <CollapsibleTrigger
@@ -81,18 +121,8 @@ export function PackageParamsForm({ form, isOpen = true, onOpenChange }: Package
         />
         <CollapsibleContent className="p-6">
           <form.AppForm>
-            <FormWithDetector
-              form={form}
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <form.AppField name="packageId">
-                  {(field: any) => <ControlForm field={field} item={config.packageId} showMessage={true} />}
-                </form.AppField>
-                <form.AppField name="sectionId">
-                  {(field: any) => <ControlForm field={field} item={config.sectionId} showMessage={true} />}
-                </form.AppField>
-              </div>
+            <FormWithDetector form={form} onSubmit={(e) => e.preventDefault()}>
+              <PackageParamsFields form={form} />
             </FormWithDetector>
           </form.AppForm>
           <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md flex items-start gap-2 text-sm text-blue-700 dark:text-blue-300">

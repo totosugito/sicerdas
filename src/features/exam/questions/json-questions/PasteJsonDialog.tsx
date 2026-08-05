@@ -28,13 +28,13 @@ export function PasteJsonDialog({ open, onOpenChange, onSubmit }: PasteJsonDialo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl" aria-describedby={undefined}>
+      <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>{t(($) => $.exam.questions.jsonQuestions.pasteModalTitle)}</DialogTitle>
         </DialogHeader>
-        <div className="py-4">
+        <div className="py-4 flex-1 overflow-hidden">
           <Textarea
-            className="min-h-[300px] font-mono text-sm"
+            className="h-[350px] max-h-[55vh] font-mono text-sm resize-none overflow-y-auto"
             placeholder={t(($) => $.exam.questions.jsonQuestions.pasteModalPlaceholder)}
             value={pastedJson}
             onChange={(e) => setPastedJson(e.target.value)}

@@ -12,7 +12,19 @@
         "content": [
           {
             "type": "text",
-            "text": "Berapakah hasil dari {{a}} + {{b}}?",
+            "text": "Berapakah hasil dari ",
+            "styles": {}
+          },
+          {
+            "type": "latex",
+            "props": {
+              "latex": "{{a}} + {{b}}",
+              "displayMode": false
+            }
+          },
+          {
+            "type": "text",
+            "text": "?",
             "styles": {}
           }
         ]
@@ -22,12 +34,16 @@
       {
         "content": [
           {
-            "type": "math",
-            "props": {
-              "equation": "{{opt1}}"
-            },
-            "content": [],
-            "children": []
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "{{opt1}}",
+                  "displayMode": false
+                }
+              }
+            ]
           }
         ],
         "isCorrect": true,
@@ -37,12 +53,16 @@
       {
         "content": [
           {
-            "type": "math",
-            "props": {
-              "equation": "{{opt2}}"
-            },
-            "content": [],
-            "children": []
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "{{opt2}}",
+                  "displayMode": false
+                }
+              }
+            ]
           }
         ],
         "isCorrect": false,
@@ -59,10 +79,41 @@
             "content": [
               {
                 "type": "text",
-                "text": "Kita cukup menjumlahkan variabel a ({{a}}) dan variabel b ({{b}}).",
+                "text": "Kita cukup menjumlahkan variabel ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "a = {{a}}",
+                  "displayMode": false
+                }
+              },
+              {
+                "type": "text",
+                "text": " dan variabel ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "b = {{b}}",
+                  "displayMode": false
+                }
+              },
+              {
+                "type": "text",
+                "text": ".",
                 "styles": {}
               }
             ]
+          },
+          {
+            "type": "equation",
+            "props": {
+              "latex": "{{a}} + {{b}} = {{opt1}}"
+            },
+            "content": []
           }
         ],
         "solutionType": "general",
@@ -140,7 +191,19 @@
             "content": [
               {
                 "type": "text",
-                "text": "Menyebutkan syarat: 𝚺F = 0 (resultan gaya sama dengan nol) (3 poin)",
+                "text": "Menyebutkan syarat: ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "\\Sigma F = 0",
+                  "displayMode": false
+                }
+              },
+              {
+                "type": "text",
+                "text": " (resultan gaya sama dengan nol) (3 poin)",
                 "styles": {}
               }
             ]

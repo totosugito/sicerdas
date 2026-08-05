@@ -33,7 +33,7 @@ export function JsonQuestionVariablesTab({
         <CardHeader className="flex flex-row items-center justify-between space-y-0 px-0 pt-0 pb-4 bg-muted/5">
           <CollapsibleTrigger
             render={
-              <div className="flex flex-col gap-1 cursor-pointer group flex-1">
+              <button type="button" className="flex flex-col text-left gap-1 cursor-pointer group flex-1">
                 <div className="flex items-center gap-2">
                   <CardTitle className="text-xl">
                     {t(($) => $.exam.questions.edit.variables.title)}
@@ -48,7 +48,7 @@ export function JsonQuestionVariablesTab({
                 <CardDescription>
                   {t(($) => $.exam.questions.edit.variables.description)}
                 </CardDescription>
-              </div>
+              </button>
             }
           />
         </CardHeader>
