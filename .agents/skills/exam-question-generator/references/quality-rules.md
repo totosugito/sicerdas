@@ -12,7 +12,7 @@ Jika soal melibatkan perhitungan atau fungsi matematika, Anda **WAJIB** membuat 
 
 1. **Jangan hardcode angka (koefisien, basis, nilai)**. Pindai angka-angka konstan di soal (seperti basis $2020$, fungsi $f(2)$) dan ubah menjadi placeholder `{{a}}`, `{{b}}`, dst.
 2. Tempatkan placeholder ini **di dalam** prop `latex` (contoh: `\log_{{{a}}} ({{b}}x - {{c}})` atau `f({{x_val}})`).
-3. Isi `variableFormulas.variables` dengan **3–5 set angka** yang realistis. Pastikan himpunan angka tetap memenuhi syarat matematis (contoh: basis logaritma harus positif dan bukan 1, nilai dalam logaritma harus positif).
+3. Isi `variableFormulas.variables` dengan **minimal 5 set angka** yang realistis (untuk memaksimalkan variasi soal). Pastikan himpunan angka tetap memenuhi syarat matematis (contoh: basis logaritma harus positif dan bukan 1, nilai dalam logaritma harus positif).
 4. Pastikan untuk memasukkan perhitungan nilai opsi yang salah/pengecoh (`opt1`, `opt2`, dst.) ke dalam array variables.
 5. Masukkan rumus turunan jawaban ke `variableFormulas.solutions` menggunakan ekspresi matematika murni tanpa kurung kurawal (contoh: `"b * x_val - c"` atau `"a + b"`). JANGAN gunakan kurung kurawal mustache seperti `"{{b}} * {{x_val}} - {{c}}"` karena akan menyebabkan `SyntaxError` pada evaluator rumus.
 
@@ -66,8 +66,10 @@ Solusi 1 (solutionType: "general"):
   [Blok "alert" type "tip" (Opsional)]: Hanya berisi poin singkat atau rumus (misal: "Ingat Sifat Logaritma: ..."). Gunakan tipe "tip" agar muncul ikon bohlam/lampu kuning yang cocok untuk sifat/rumus. JANGAN menambahkan emoji seperti 💡 karena UI sudah memiliki icon otomatis. JANGAN menaruh kalimat penjelasan panjang atau gaya percakapan di dalam blok alert. Letakkan penjelasan di paragraf biasa.
   
   [Blok "numberedListItem"]: Gunakan ini untuk SELURUH tahapan langkah. 
+  - **CRITICAL — PANTANGAN CONTENT KOSONG:** Teks utama/kalimat pertama dari langkah tersebut HARUS ditaruh langsung di dalam array `"content"` milik `"numberedListItem"`. JANGAN PERNAH menyisakan `"content": []` kosong pada `"numberedListItem"` dan memasukkan kalimat pertama ke dalam blok `"paragraph"` di `children`, karena BlockNote akan menganggap item tersebut kosong dan menampilkan teks placeholder *"List"* di samping angka list.
+  - **Langkah Berisi Persamaan Tanpa Kalimat Pengantar:** Idealnya setiap langkah memiliki narasi pengantar (misal: `"Sederhanakan persamaan untuk mendapatkan hasil akhir:"`). Namun jika suatu langkah MURNI hanya berupa rumus/persamaan matematika tanpa teks pengantar, dilarang membuat `numberedListItem` kosong dengan `equation` di `children`. Pindahkan rumus tersebut langsung ke dalam `numberedListItem.content` menggunakan objek inline `latex`: `content: [{"type": "latex", "props": {"latex": "...", "displayMode": false}}]` dengan `children: []`.
   - JANGAN menulis kata "Langkah pertama", "Langkah 1", atau "1. " di dalam teks string karena nomor sudah di-render otomatis oleh badge list item.
-  - WAJIB menaruh blok turunan seperti `equation` dan `alert` di dalam array `children` dari `numberedListItem` ini agar urutan nomor (1, 2, 3...) tetap menyambung dan tidak terputus/ter-reset.
+  - Properti `children` HANYA digunakan untuk blok lanjutan/sub-blok tambahan dari langkah tersebut (seperti blok `"equation"`, `"alert"`, atau paragraf turunan di bawahnya) agar urutan nomor (1, 2, 3...) tetap menyambung dan tidak terputus.
   
   [Blok "equation"]: Gunakan untuk perhitungan matematika. JIKA di dalam langkah bernomor, WAJIB diletakkan di dalam properti `children` dari blok langkah tersebut. **PENTING:** Jika perhitungan terdiri dari beberapa tahap penyederhanaan, JANGAN ditulis menyamping panjang. Wajib gunakan environment LaTeX `\begin{aligned} ... \end{aligned}`.
   

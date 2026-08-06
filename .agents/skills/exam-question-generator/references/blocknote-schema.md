@@ -80,6 +80,40 @@ The `styles` object on `text` nodes supports:
 }
 ```
 
+### Numbered List Item with Children
+```json
+{
+  "type": "numberedListItem",
+  "content": [
+    {"type": "text", "text": "Masukkan nilai yang diketahui:", "styles": {}}
+  ],
+  "children": [
+    {
+      "type": "equation",
+      "props": {"latex": "x = 5"},
+      "content": []
+    }
+  ]
+}
+```
+
+### Numbered List Item (Equation Only, No Description)
+```json
+{
+  "type": "numberedListItem",
+  "content": [
+    {
+      "type": "latex",
+      "props": {
+        "latex": "{{res}} = {{ans}} \\times 10^6 \\text{ J/m}^3",
+        "displayMode": false
+      }
+    }
+  ],
+  "children": []
+}
+```
+
 ### Chart block
 ```json
 {
