@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { PageTitle } from "@/components/general";
+import { PageTitle, EmptyState } from "@/components/general";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/useAppStore";
 import { Upload, Trash2, ClipboardPaste } from "lucide-react";
@@ -675,11 +675,29 @@ function JsonQuestionsPage() {
           )}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center p-12 border border-dashed rounded-lg bg-card text-muted-foreground">
-          <Upload className="h-12 w-12 mb-4 text-muted-foreground/50" />
-          <p className="mb-2">{t(($) => $.exam.questions.jsonQuestions.noJsonImported)}</p>
-          <p className="text-sm">{t(($) => $.exam.questions.jsonQuestions.noJsonImportedDesc)}</p>
-        </div>
+        <EmptyState
+          icon={Upload}
+          title={t(($) => $.exam.questions.jsonQuestions.noJsonImported)}
+          description={t(($) => $.exam.questions.jsonQuestions.noJsonImportedDesc)}
+        >
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Button onClick={handleImportClick} className="gap-2">
+              <Upload className="h-4 w-4" />
+              {t(($) => $.exam.questions.jsonQuestions.importButton)}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setImportError(null);
+                setIsPasteModalOpen(true);
+              }}
+              className="gap-2"
+            >
+              <ClipboardPaste className="h-4 w-4" />
+              {t(($) => $.exam.questions.jsonQuestions.pasteButton)}
+            </Button>
+          </div>
+        </EmptyState>
       )}
 
       <PasteJsonDialog

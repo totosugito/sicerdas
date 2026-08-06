@@ -96,9 +96,10 @@ Follow these critical rules:
 
 **This is critical.** Solutions are for school students, so they must be highly structured and easy to read:
 
-1. **Complete and sequential** — Never skip steps. Use `Diketahui → Ditanya → Pembahasan` structure.
-   - For the "Diketahui:" section, write `"Diketahui:"` as a bold paragraph, followed by a bulleted list (`bulletListItem` blocks) for each given variable/equation. Do not put all given info in a single long line.
-   - For the "Pembahasan:" section, write `"Pembahasan:"` as a standalone bold paragraph. Start the actual explanation text on a NEW paragraph below it. Do not combine the label and the explanation in one line.
+1. **Complete and sequential** — Never skip steps. Use `Diketahui → Ditanya → Konsep dan Rumus Dasar → Langkah Penyelesaian` structure.
+   - For the "Diketahui:" section, write `"Diketahui:"` as a bold paragraph, followed by a bulleted list (`bulletListItem` blocks). **CRITICAL**: Extract implicit hidden variables (e.g., "dilepas" = $v_0 = 0$) and explain standard assumptions (e.g., $g = 10$).
+   - For the "Konsep dan Rumus Dasar:" section, write it as a bold paragraph. Explain the fundamental formulas and theory narratively BEFORE calculating.
+   - For the "Langkah Penyelesaian:" section, write it as a bold paragraph. Start the actual calculation steps below it.
 2. **Multi-solution** — Always provide a conceptual solution (`solutionType: "general"`). If a valid shortcut or logical trick exists, you MUST provide a fast method (`solutionType: "fast_method"`).
 3. **Step-by-step Numbering & Detailed Reasoning (CRITICAL):** 
    - Every step in the solution MUST be a native `"numberedListItem"` block.
