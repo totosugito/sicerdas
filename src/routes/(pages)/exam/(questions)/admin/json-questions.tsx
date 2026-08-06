@@ -1,27 +1,13 @@
 import React, { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { PageTitle, EmptyState } from "@/components/general";
-import { Button } from "@/components/ui/button";
+import { PageTitle } from "@/components/general";
 import { useAppStore } from "@/stores/useAppStore";
-import { Upload, Trash2, ClipboardPaste } from "lucide-react";
 import { AppRoute } from "@/constants/app-route";
 import { showNotifError } from "@/lib/show-notif";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDown, AlertCircle, Sparkles } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useCreateQuestion } from "@/api/exam/questions";
-import { useCreateQuestionOption } from "@/api/exam/question-options";
-import { useCreateQuestionSolution } from "@/api/exam/question-solutions";
-import { useAssignQuestionTagByName } from "@/api/exam/question-tags";
 import { useListTagSimple } from "@/api/education/tags";
-import { showNotifSuccess } from "@/lib/show-notif";
-import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { useAppForm } from "@/components/ui/form-tanstack";
 import { EnumDifficultyLevel, EnumQuestionType } from "@/api/exam/questions/types";
@@ -31,10 +17,12 @@ import {
   PasteJsonDialog,
   QuestionNumberGrid,
   JsonQuestionEditView,
+  JsonQuestionsHeaderActions,
+  JsonQuestionsEmptyState,
+  validateAndRepairBlockNoteContent,
+  useExportJsonQuestions,
 } from "@/features/exam/questions/json-questions";
-import { useAssignPackageQuestions } from "@/api/exam/package-questions";
 import { JsonQuestionImport } from "@/api/exam/questions/types";
-import { VALID_BLOCK_TYPES } from "@/components/custom/blocknote/lib/blocknote-config";
 
 const jsonQuestionsSearchSchema = z.object({
   index: z.coerce.number().default(0).catch(0),
@@ -72,31 +60,26 @@ function JsonQuestionsPage() {
     tab,
   } = Route.useSearch();
   const navigate = Route.useNavigate();
+
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
   const [isPasteModalOpen, setIsPasteModalOpen] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
 
   const setSelectedIndex = (index: number) => {
     navigate({ search: (prev: any) => ({ ...prev, index }), replace: true, resetScroll: false });
   };
-
   const setIsExpanded = (expanded: boolean) => {
     navigate({ search: (prev: any) => ({ ...prev, expanded }), replace: true, resetScroll: false });
   };
-
   const setContentExpanded = (contentExpanded: boolean) => {
     navigate({ search: (prev: any) => ({ ...prev, contentExpanded }), replace: true, resetScroll: false });
   };
-
   const setOptionsExpanded = (optionsExpanded: boolean) => {
     navigate({ search: (prev: any) => ({ ...prev, optionsExpanded }), replace: true, resetScroll: false });
   };
-
   const setSolutionsExpanded = (solutionsExpanded: boolean) => {
     navigate({ search: (prev: any) => ({ ...prev, solutionsExpanded }), replace: true, resetScroll: false });
   };
-
   const setTagsExpanded = (tagsExpanded: boolean) => {
     navigate({ search: (prev: any) => ({ ...prev, tagsExpanded }), replace: true, resetScroll: false });
   };
@@ -112,68 +95,10 @@ function JsonQuestionsPage() {
   const setTab = (tab: string) => {
     navigate({ search: (prev: any) => ({ ...prev, tab }), replace: true, resetScroll: false });
   };
-
-  /**
-   * Recursively validates that all blocks in a BlockNote content array have valid types.
-   * Also repairs missing required props to prevent BlockNote from crashing.
-   */
-  const validateAndRepairBlockNoteContent = (
-    blocks: any[],
-  ): { isValid: boolean; errorPath?: string } => {
-    if (!Array.isArray(blocks)) return { isValid: true };
-
-    for (let i = 0; i < blocks.length; i++) {
-      let block = blocks[i];
-      if (typeof block !== "object" || block === null) continue;
-
-      // Automatically repair common AI error: raw inline "text" object used as a block
-      if (block.type === "text") {
-        block = {
-          type: "paragraph",
-          props: {},
-          content: [block],
-          children: [],
-        };
-        blocks[i] = block;
-      }
-
-      // Check the block type
-      if (block.type && !VALID_BLOCK_TYPES.includes(block.type as any)) {
-        return { isValid: false, errorPath: `type: "${block.type}"` };
-      }
-
-      // Automatically repair missing properties to prevent BlockNote crashes
-      if (!block.props) block.props = {};
-
-      if (block.type === "math") {
-        if (!block.props.textAlignment) block.props.textAlignment = "left";
-        if (!block.props.textColor) block.props.textColor = "default";
-        if (block.props.fontSize === undefined) block.props.fontSize = 18;
-      } else if (block.type === "alert") {
-        if (!block.props.type) block.props.type = "info";
-      }
-
-      // Recursively check children
-      if (block.children && Array.isArray(block.children)) {
-        const result = validateAndRepairBlockNoteContent(block.children);
-        if (!result.isValid) {
-          return {
-            isValid: false,
-            errorPath: `${block.type} > ${result.errorPath}`,
-          };
-        }
-      }
-    }
-
-    return { isValid: true };
+  const setPackageExpanded = (expanded: boolean) => {
+    navigate({ search: (prev: any) => ({ ...prev, packageExpanded: expanded }) });
   };
 
-  const queryClient = useQueryClient();
-  const createQuestionMutation = useCreateQuestion();
-  const createOptionMutation = useCreateQuestionOption();
-  const createSolutionMutation = useCreateQuestionSolution();
-  const assignTagByNameMutation = useAssignQuestionTagByName();
-  const assignPackageQuestionMutation = useAssignPackageQuestions();
   const { data: tagsData } = useListTagSimple({ limit: 1000 });
 
   const globalFormSchema = z.object({
@@ -213,7 +138,6 @@ function JsonQuestionsPage() {
     },
   });
 
-  // Watch for changes and sync to store without re-rendering local component reactively
   React.useEffect(() => {
     const sub = globalForm.store.subscribe(() => {
       setJsonQuestionsGlobalParams(globalForm.state.values);
@@ -239,6 +163,17 @@ function JsonQuestionsPage() {
       }
     };
   }, [packageForm, setJsonQuestionsPackageParams]);
+
+  const { isExporting, handleExportSelected } = useExportJsonQuestions({
+    globalForm,
+    packageForm,
+    jsonQuestions,
+    setJsonQuestions,
+    selectedIndices,
+    setSelectedIndices,
+    setSelectedIndex,
+    tagsData,
+  });
 
   const processJsonContent = (content: string) => {
     setImportError(null);
@@ -268,12 +203,10 @@ function JsonQuestionsPage() {
         });
 
         // RE-VALIDATE BLOCKNOTE CONTENT TYPES
-        // This is crucial to prevent crashes in the editor view
         for (let i = 0; i < processed.length; i++) {
           const q = processed[i];
           const questionNum = i + 1;
 
-          // Validate and repair main content
           const mainContentVal = validateAndRepairBlockNoteContent(q.content);
           if (!mainContentVal.isValid) {
             const msg = `Question #${questionNum}: Invalid BlockNote block ${mainContentVal.errorPath}`;
@@ -282,7 +215,6 @@ function JsonQuestionsPage() {
             return false;
           }
 
-          // Validate and repair reason content (for statement_reasoning)
           if (q.reasonContent) {
             const reasonContentVal = validateAndRepairBlockNoteContent(q.reasonContent);
             if (!reasonContentVal.isValid) {
@@ -293,7 +225,6 @@ function JsonQuestionsPage() {
             }
           }
 
-          // Validate and repair options
           if (q.options) {
             for (let j = 0; j < q.options.length; j++) {
               const opt = q.options[j];
@@ -307,7 +238,6 @@ function JsonQuestionsPage() {
             }
           }
 
-          // Validate and repair solutions
           if (q.solutions) {
             for (let j = 0; j < q.solutions.length; j++) {
               const sol = q.solutions[j];
@@ -355,13 +285,9 @@ function JsonQuestionsPage() {
     };
     reader.readAsText(file);
 
-    // Reset input
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  };
-  const setPackageExpanded = (expanded: boolean) => {
-    navigate({ search: (prev: any) => ({ ...prev, packageExpanded: expanded }) });
   };
 
   const onPasteSubmit = (json: string) => {
@@ -396,151 +322,6 @@ function JsonQuestionsPage() {
     }
   };
 
-  const handleExportSelected = async () => {
-    await globalForm.validate("submit");
-    const isValid = globalForm.state.isValid;
-    if (!isValid || selectedIndices.length === 0) return;
-
-    const globalParams = globalForm.state.values;
-    const packageParams = packageForm.state.values;
-
-    if (packageParams.packageId && !packageParams.sectionId) {
-      showNotifError({ message: t(($) => $.exam.questions.form.section.required) });
-      return;
-    }
-
-    setIsExporting(true);
-    const exportedQuestionIds: string[] = [];
-
-    // Prepare tag mapping
-    const tagMap =
-      tagsData?.data?.items.reduce(
-        (acc, tag) => {
-          acc[tag.label.toLowerCase()] = tag.value;
-          return acc;
-        },
-        {} as Record<string, string>,
-      ) || {};
-
-    let successCount = 0;
-    const remainingIndices: number[] = [...selectedIndices];
-
-    try {
-      for (const index of selectedIndices) {
-        const q = jsonQuestions[index];
-
-        // 1. Create Question (Global values as overrides)
-        const transformedData = {
-          ...q,
-          subjectId: globalParams.subjectId,
-          difficulty: globalParams.difficulty,
-          type: globalParams.type,
-          educationGradeId: (() => {
-            const val = globalParams.educationGradeId || q.educationGradeId;
-            if (val === undefined || val === null || val === "") return null;
-            const num = Number(val);
-            return isNaN(num) ? null : num;
-          })(),
-          requiredTier: globalParams.requiredTier || q.requiredTier || null,
-          passageId: globalParams.passageId || q.passageId || null,
-          maxScore: q.maxScore !== undefined && q.maxScore !== null ? Number(q.maxScore) : 1,
-        };
-
-        const formData = new FormData();
-        formData.append("data", JSON.stringify(transformedData));
-
-        const qRes = await createQuestionMutation.mutateAsync(formData);
-
-        const newQuestionId = qRes.data.id;
-
-        // 2. Create Options
-        if (q.options?.length) {
-          for (const opt of q.options) {
-            const optPayload = {
-              questionId: newQuestionId,
-              content: opt.content,
-              isCorrect: opt.isCorrect,
-              order: opt.order,
-            };
-            const optFormData = new FormData();
-            optFormData.append("data", JSON.stringify(optPayload));
-            await createOptionMutation.mutateAsync(optFormData as any);
-          }
-        }
-
-        // 3. Create Solutions
-        if (q.solutions?.length) {
-          for (const sol of q.solutions) {
-            const solPayload = {
-              questionId: newQuestionId,
-              title: sol.title,
-              content: sol.content,
-              solutionType: sol.solutionType,
-              order: sol.order,
-              requiredTier: sol.requiredTier,
-            };
-            const solFormData = new FormData();
-            solFormData.append("data", JSON.stringify(solPayload));
-            await createSolutionMutation.mutateAsync(solFormData as any);
-          }
-        }
-
-        // 4. Assign Tags
-        if (q.tags?.length) {
-          await assignTagByNameMutation.mutateAsync({
-            questionId: newQuestionId,
-            tags: q.tags,
-          });
-        }
-
-        exportedQuestionIds.push(newQuestionId);
-
-        successCount++;
-        // Keep track of which one to remove
-        remainingIndices.splice(remainingIndices.indexOf(index), 1);
-      }
-
-      // 5. Assign to Package if selected
-      if (packageParams.packageId && packageParams.sectionId && exportedQuestionIds.length > 0) {
-        await assignPackageQuestionMutation.mutateAsync({
-          packageId: packageParams.packageId,
-          sectionId: packageParams.sectionId,
-          questionIds: exportedQuestionIds,
-        });
-      }
-
-      showNotifSuccess({
-        message: t(($) => $.exam.questions.jsonQuestions.exportSuccess).replace(
-          "{count}",
-          successCount.toString(),
-        ),
-      });
-
-      // Update local store: remove successfully exported questions
-      const newJsonQuestions = jsonQuestions.filter((_, i) => !selectedIndices.includes(i));
-      setJsonQuestions(newJsonQuestions);
-      setSelectedIndices([]);
-      setSelectedIndex(0);
-      queryClient.invalidateQueries({ queryKey: ["admin-exam-questions-list"] });
-    } catch (err: any) {
-      showNotifError({
-        message: t(($) => $.exam.questions.jsonQuestions.exportError).replace(
-          "{error}",
-          err.message || "Unknown error",
-        ),
-      });
-
-      // Still remove whichever were successful before error
-      const exportedIndices = selectedIndices.filter((i) => !remainingIndices.includes(i));
-      const newJsonQuestions = jsonQuestions.filter((_, i) => !exportedIndices.includes(i));
-      setJsonQuestions(newJsonQuestions);
-      setSelectedIndices([]);
-      setSelectedIndex(0);
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
   const currentQuestion = jsonQuestions[selectedIndex];
 
   return (
@@ -551,62 +332,21 @@ function JsonQuestionsPage() {
         showBack
         backTo={AppRoute.exam.questions.admin.list.url}
         extra={
-          <div className="flex gap-2">
-            <input
-              type="file"
-              accept=".json"
-              className="hidden"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-            />
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button className="gap-2">
-                  {t(($) => $.labels.actions)}
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[200px]">
-                <DropdownMenuItem
-                  className="gap-2"
-                  onClick={() =>
-                    navigate({ to: AppRoute.exam.questions.admin.promptGenerator.url })
-                  }
-                >
-                  <Sparkles className="h-4 w-4 text-primary" />
-                  {t(($) => $.exam.questions.jsonQuestions.promptGeneratorButton)}
-                </DropdownMenuItem>
-                <DropdownMenuItem className="gap-2" onClick={handleImportClick}>
-                  <Upload className="h-4 w-4" />
-                  {t(($) => $.exam.questions.jsonQuestions.importButton)}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="gap-2"
-                  onClick={() => {
-                    setImportError(null);
-                    setIsPasteModalOpen(true);
-                  }}
-                >
-                  <ClipboardPaste className="h-4 w-4" />
-                  {t(($) => $.exam.questions.jsonQuestions.pasteButton)}
-                </DropdownMenuItem>
-                {jsonQuestions.length > 0 && (
-                  <>
-                    <DropdownMenuItem
-                      variant="destructive"
-                      className="gap-2"
-                      onClick={clearQuestions}
-                      disabled={isExporting}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      {t(($) => $.exam.questions.jsonQuestions.clearButton)}
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <JsonQuestionsHeaderActions
+            fileInputRef={fileInputRef}
+            onFileChange={handleFileChange}
+            onImportClick={handleImportClick}
+            onOpenPasteModal={() => {
+              setImportError(null);
+              setIsPasteModalOpen(true);
+            }}
+            onClearQuestions={clearQuestions}
+            hasQuestions={jsonQuestions.length > 0}
+            isExporting={isExporting}
+            onNavigatePromptGenerator={() =>
+              navigate({ to: AppRoute.exam.questions.admin.promptGenerator.url })
+            }
+          />
         }
       />
 
@@ -675,29 +415,13 @@ function JsonQuestionsPage() {
           )}
         </div>
       ) : (
-        <EmptyState
-          icon={Upload}
-          title={t(($) => $.exam.questions.jsonQuestions.noJsonImported)}
-          description={t(($) => $.exam.questions.jsonQuestions.noJsonImportedDesc)}
-        >
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button onClick={handleImportClick} className="gap-2">
-              <Upload className="h-4 w-4" />
-              {t(($) => $.exam.questions.jsonQuestions.importButton)}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setImportError(null);
-                setIsPasteModalOpen(true);
-              }}
-              className="gap-2"
-            >
-              <ClipboardPaste className="h-4 w-4" />
-              {t(($) => $.exam.questions.jsonQuestions.pasteButton)}
-            </Button>
-          </div>
-        </EmptyState>
+        <JsonQuestionsEmptyState
+          onImportClick={handleImportClick}
+          onOpenPasteModal={() => {
+            setImportError(null);
+            setIsPasteModalOpen(true);
+          }}
+        />
       )}
 
       <PasteJsonDialog

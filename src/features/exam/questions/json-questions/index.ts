@@ -6,3 +6,7 @@ export { JsonQuestionEditView } from "./JsonQuestionEditView";
 export { JsonTagsContentTab } from "./JsonTagsContentTab";
 export { JsonQuestionVariablesTab } from "./JsonQuestionVariablesTab";
 export { JsonQuestionPreviewTab } from "./JsonQuestionPreviewTab";
+export { JsonQuestionsHeaderActions } from "./JsonQuestionsHeaderActions";
+export { JsonQuestionsEmptyState } from "./JsonQuestionsEmptyState";
+export { validateAndRepairBlockNoteContent } from "./utils/validate-blocknote-content";
+export { useExportJsonQuestions } from "./hooks/useExportJsonQuestions";
