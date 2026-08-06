@@ -121,3 +121,24 @@ Untuk `multiple_choice` dan `multiple_select`, opsi salah **HARUS masuk akal**:
 - Hapus nomor soal dari sumber (`"1."`, `"Soal 5:"`, dll.)
 - Hapus wrapper LaTeX `$` dan `$$` — masukkan LaTeX mentah ke prop `latex`
 - Jaga pemisahan antara teks dan ekspresi math
+
+## Penanganan Gambar (Auto-Search SVG & Inspeksi Informasi Diagram)
+
+Jika sumber soal memuat referensi gambar (misal `![diagram](soal-01.png)` atau `soal-01.jpg`):
+1. **Wajib Membaca Informasi Diagram:** Agent HARUS membaca/membuka file SVG atau gambar tersebut (`view_file`)! Sangat sering informasi penting (seperti angka variabel, sudut $\theta$, tinggi $h$, gaya $F$, atau label grafik) **hanya ada di dalam diagram** dan tidak tertulis di teks markdown soal. Ambil seluruh data variabel dari diagram tersebut dan masukkan ke bagian `Diketahui:` pada solusi serta ke `variableFormulas`.
+2. **Cari File SVG Pendamping:** Cari file dengan nama yang sama tetapi ber-ekstensi `.svg` (misal `soal-01.svg`) pada direktori yang sama.
+3. **Jika file `.svg` ditemukan:**
+   - Baca isi kode SVG tersebut.
+   - Encode menjadi Data URI string: `data:image/svg+xml;utf8,<svg ...>`.
+   - Masukkan sebagai blok `image` di BlockNote `content`:
+     ```json
+     {
+       "type": "image",
+       "props": {
+         "url": "data:image/svg+xml;utf8,<svg ...>",
+         "caption": "Deskripsi gambar"
+       },
+       "content": []
+     }
+     ```
+4. **Jika file `.svg` tidak ditemukan** (hanya ada raster `.jpg`/`.png`), catat peringatan `[MISSING_SVG]` pada ringkasan laporan agar pengguna tahu perlu membuat versi SVG-nya.

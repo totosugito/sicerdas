@@ -41,7 +41,7 @@
 2. Tidak perlu membuat script untuk mengekstrak konten markdown dari file *.md. Dibaca manual saja karena pemisah tiap soal tidak standard dan kadang lanjutan soal ada di file markdown selanjutnya.
 3. Baca seluruh file dengan ekstensi `*.md` yang ada di dalam Folder Input.
 4. Temukan seluruh soal yang terdapat pada semua file Markdown.
-5. Abaikan soal jika memiliki `img` pada bagian pertanyaan. Sebab untuk saat ini belum bisa handle soal dengan gambar.
+5. Jika soal memiliki gambar (misal JPG/PNG), cari file .svg dengan nama yang sama di direktori tersebut. Jika .svg ditemukan, proses soal tersebut. Jika .svg tidak ada, baru abaikan/skip.
 6. Buat folder `exam/` di dalam Folder Input jika belum ada.
 7. Proses setiap soal menggunakan **skill `exam-question-generator`**.
 8. Untuk setiap soal:

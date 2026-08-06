@@ -72,6 +72,26 @@ Follow these critical rules:
 
 6. **Variable Formulas (CRITICAL for math):** Always parameterize math questions! Do not leave `variableFormulas: null` for calculation questions. Scan the equations for constants (e.g., base numbers like 2020, coefficients like 3, evaluated points like $f(2)$). Replace these constants with placeholders like `{{a}}`, `{{b}}` inside the LaTeX strings (e.g., `\log_{{{a}}} ({{b}}x)`). Generate **at least 5 distinct sets** of valid values in `variableFormulas.variables` (to maximize question variation), ensuring mathematical rules (like log domains) remain valid. Include `opt1`, `opt2`, etc., in the variables. **CRITICAL FOR `variableFormulas.solutions`:** Write formulas as plain math expressions with bare variable names (e.g., `"b * x_val - c"` or `"a + b"`). DO NOT wrap variables in mustache braces like `"{{b}} * {{x_val}} - {{c}}"` in `variableFormulas.solutions`, as this will crash the formula evaluator engine with a `SyntaxError`.
 
+7. **Image Handling (Automatic SVG Companion Embedding & Context Inspection):**
+   - When a question references an image (e.g., `![caption](image.jpg)`, `![alt](./fig1.png)`, or `<img>` tag):
+   - Look in the same directory for a companion file with the **same base filename but `.svg` extension** (e.g., `fig1.svg`).
+   - **CRITICAL — Inspect Diagram Information:** Always inspect the SVG file (or image file) using `view_file`! Diagrams often contain essential numbers, angles, vector labels, or given values (e.g., $v_0 = 20\text{ m/s}$, $\theta = 45^\circ$) that are NOT written in the markdown text. You MUST extract these diagram parameters and include them in the solution (`Diketahui: ...`) and parameterize them in `variableFormulas`.
+   - If the `.svg` file exists:
+     1. Read the SVG file contents.
+     2. Encode it as a Data URI string: `data:image/svg+xml;utf8,<raw_svg_code>` (or URL-encoded).
+     3. Insert a BlockNote `image` block into the question's `content` array:
+        ```json
+        {
+          "type": "image",
+          "props": {
+            "url": "data:image/svg+xml;utf8,<svg ...>",
+            "caption": "Deskripsi gambar"
+          },
+          "content": []
+        }
+        ```
+   - If no `.svg` file exists, log a warning `[MISSING_SVG]` in the Step 6 report so the user knows an SVG conversion is needed.
+
 ### Step 5 — Generate Solutions (Pembahasan)
 
 **This is critical.** Solutions are for school students, so they must be highly structured and easy to read:
