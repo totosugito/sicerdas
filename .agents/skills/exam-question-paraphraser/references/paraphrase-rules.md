@@ -36,7 +36,20 @@ When rephrasing questions, swap narrative entities with realistic, culturally fa
 
 ---
 
-## 3. Strict Invariant Rules (What MUST NOT Change)
+## 3. Child-Friendly Language Guidelines (Bahasa Ramah Anak)
+
+All rephrased content must be accessible, engaging, and easy to read for Indonesian school children (SD/SMP/SMA):
+
+1. **Simple Vocabulary:** Use clear, everyday words in Bahasa Indonesia. Avoid obscure administrative words or convoluted academic terms.
+   - *Instead of:* "Mengakumulasikan komoditas..." $\rightarrow$ *Use:* "Mengumpulkan barang..."
+   - *Instead of:* "Mengidentifikasi besaran..." $\rightarrow$ *Use:* "Mencari nilai..."
+2. **Short & Clear Sentence Structure:** Keep sentence length manageable. Avoid nested clauses that confuse young readers.
+3. **Relatable Contexts:** Use scenarios and objects that children encounter in daily life (e.g. toys, school supplies, snacks, games, sports).
+4. **Friendly Tone:** Keep the phrasing encouraging, clear, and natural.
+
+---
+
+## 4. Strict Invariant Rules (What MUST NOT Change)
 
 1. **Mathematical Equations & Numerical Constants:**
    - Keep LaTeX expressions (e.g., $x^2 + 3x - 4 = 0$, $v_0 = 40\text{ m/s}$) unchanged unless the user explicitly requests randomized numbers.

@@ -1,13 +1,13 @@
 # Common Fixes Reference
 
-Katalog lengkap masalah umum pada teks input dan cara memperbaikinya.
+Comprehensive catalog of common raw input text issues and how to fix them.
 
 ## 1. Encoding & Mojibake
 
-Tabel karakter mojibake yang paling sering muncul (UTF-8 salah dibaca sebagai Latin-1/Windows-1252):
+Table of the most frequent mojibake character corruptions (UTF-8 misread as Latin-1/Windows-1252):
 
-| Mojibake | Karakter Benar | Deskripsi |
-|----------|---------------|-----------|
+| Mojibake | Correct Character | Description |
+|----------|-------------------|-------------|
 | `â€"` | `—` | Em dash |
 | `â€"` | `–` | En dash |
 | `â€™` | `'` | Right single quote |
@@ -32,18 +32,18 @@ Tabel karakter mojibake yang paling sering muncul (UTF-8 salah dibaca sebagai La
 | `Ïƒ` | `σ` | Sigma |
 | `â†'` | `→` | Right arrow |
 | `â†'` | `⇒` | Double right arrow |
-| `âˆš` | `√` | Square root |
+| `âˆ√` | `√` | Square root |
 | `âˆž` | `∞` | Infinity |
 | `Â±` | `±` | Plus-minus |
 
 ### HTML Entities
 
-| Entity | Karakter |
-|--------|----------|
+| Entity | Correct Character |
+|--------|-------------------|
 | `&amp;` | `&` |
 | `&lt;` | `<` |
 | `&gt;` | `>` |
-| `&nbsp;` | ` ` (spasi biasa) |
+| `&nbsp;` | ` ` (regular space) |
 | `&#8211;` | `–` |
 | `&#8212;` | `—` |
 | `&#8216;` | `'` |
@@ -51,10 +51,10 @@ Tabel karakter mojibake yang paling sering muncul (UTF-8 salah dibaca sebagai La
 | `&#8220;` | `"` |
 | `&#8221;` | `"` |
 
-### Invisible Characters (Hapus Sepenuhnya)
+### Invisible Characters (Remove Completely)
 
-| Karakter | Unicode | Deskripsi |
-|----------|---------|-----------|
+| Character | Unicode | Description |
+|-----------|---------|-------------|
 | (BOM) | `U+FEFF` | Byte Order Mark |
 | (ZWSP) | `U+200B` | Zero Width Space |
 | (ZWNJ) | `U+200C` | Zero Width Non-Joiner |
@@ -67,42 +67,42 @@ Tabel karakter mojibake yang paling sering muncul (UTF-8 salah dibaca sebagai La
 
 ## 2. OCR Artifacts
 
-### Karakter Mirip (Context-dependent — hati-hati!)
+### Confusable Lookalike Characters (Context-dependent — use caution!)
 
-| OCR Salah | Benar | Konteks |
-|-----------|-------|---------|
-| `l` | `1` | Dalam angka: `l23` → `123` |
-| `1` | `l` | Dalam kata: `1ogaritma` → `logaritma` |
-| `O` | `0` | Dalam angka: `1O0` → `100` |
-| `0` | `O` | Dalam kata: `0leh` → `Oleh` |
-| `rn` | `m` | Dalam kata: `pernainan` → `permainan` |
-| `cl` | `d` | Dalam kata: `clengan` → `dengan` |
-| `vv` | `w` | Dalam kata: `javvaban` → `jawaban` |
-| `ii` | `n` | Konteks tertentu |
-| `I` | `l` | Dalam kata: `Iogika` → `logika` |
-| `S` | `5` | Dalam angka |
-| `B` | `8` | Dalam angka |
+| Misread OCR | Correct | Context Example |
+|-------------|---------|-----------------|
+| `l` | `1` | In numbers: `l23` → `123` |
+| `1` | `l` | In words: `1ogaritma` → `logaritma` |
+| `O` | `0` | In numbers: `1O0` → `100` |
+| `0` | `O` | In words: `0leh` → `Oleh` |
+| `rn` | `m` | In words: `pernainan` → `permainan` |
+| `cl` | `d` | In words: `clengan` → `dengan` |
+| `vv` | `w` | In words: `javvaban` → `jawaban` |
+| `ii` | `n` | Certain word contexts |
+| `I` | `l` | In words: `Iogika` → `logika` |
+| `S` | `5` | In numbers |
+| `B` | `8` | In numbers |
 
 ### Line Break Artifacts
 
 ```
-SALAH: persa-
-       maan linear
-BENAR: persamaan linear
+INCORRECT: persa-
+           maan linear
+CORRECT:   persamaan linear
 
-SALAH: dike-
-       tahui
-BENAR: diketahui
+INCORRECT: dike-
+           tahui
+CORRECT:   diketahui
 ```
 
 ---
 
-## 3. Typo Bahasa Indonesia (EYD)
+## 3. Bahasa Indonesia Typo & EYD Fixes
 
-### Kata Umum
+### Common Words
 
-| Salah | Benar |
-|-------|-------|
+| Incorrect | Correct |
+|-----------|---------|
 | `menenukan` | `menentukan` |
 | `persamaaan` | `persamaan` |
 | `penguragan` | `pengurangan` |
@@ -130,7 +130,6 @@ BENAR: diketahui
 | `dna` | `dan` |
 | `yng` | `yang` |
 | `adlah` | `adalah` |
-| `maka` | `maka` |
 | `apabiila` | `apabila` |
 | `sedangakn` | `sedangkan` |
 | `sebgai` | `sebagai` |
@@ -139,10 +138,10 @@ BENAR: diketahui
 | `kemudain` | `kemudian` |
 | `manakla` | `manakala` |
 
-### Istilah Matematika
+### Mathematics Terms
 
-| Salah | Benar |
-|-------|-------|
+| Incorrect | Correct |
+|-----------|---------|
 | `logritma` | `logaritma` |
 | `trigonmetri` | `trigonometri` |
 | `ekspoensial` | `eksponensial` |
@@ -170,10 +169,10 @@ BENAR: diketahui
 | `gradein` | `gradien` |
 | `koordinta` | `koordinat` |
 
-### Istilah Fisika
+### Physics Terms
 
-| Salah | Benar |
-|-------|-------|
+| Incorrect | Correct |
+|-----------|---------|
 | `keceptan` | `kecepatan` |
 | `percepatn` | `percepatan` |
 | `gravitsi` | `gravitasi` |
@@ -191,10 +190,10 @@ BENAR: diketahui
 | `momentm` | `momentum` |
 | `impls` | `impuls` |
 
-### Istilah Kimia
+### Chemistry Terms
 
-| Salah | Benar |
-|-------|-------|
+| Incorrect | Correct |
+|-----------|---------|
 | `stoikiomteri` | `stoikiometri` |
 | `termokima` | `termokimia` |
 | `elektrlisis` | `elektrolisis` |
@@ -206,24 +205,24 @@ BENAR: diketahui
 | `molaltas` | `molalitas` |
 | `molartas` | `molaritas` |
 
-### Kapitalisasi
+### Capitalization
 
-- Awal kalimat selalu kapital
-- Proper nouns: `einstein` → `Einstein`, `newton` → `Newton`, `pythagoras` → `Pythagoras`
-- Satuan SI: `kg`, `m`, `s`, `N`, `J`, `W`, `Pa`, `Hz` (case-sensitive — jangan ubah)
-- Akronim: `SMA`, `SMK`, `EYD`, `SBMPTN`, `UTBK`
+- Always capitalize the start of a sentence.
+- Proper nouns: `einstein` → `Einstein`, `newton` → `Newton`, `pythagoras` → `Pythagoras`.
+- SI Units: `kg`, `m`, `s`, `N`, `J`, `W`, `Pa`, `Hz` (case-sensitive — do not change).
+- Acronyms: `SMA`, `SMK`, `EYD`, `SBMPTN`, `UTBK`.
 
-### Tanda Baca
+### Punctuation Spacing
 
 ```
-SALAH: kata .         → BENAR: kata.
-SALAH: kata,kata      → BENAR: kata, kata
-SALAH: kata ;kata     → BENAR: kata; kata  (atau "kata, kata" tergantung konteks)
-SALAH: kata :         → BENAR: kata:
-SALAH: ( x + 1 )     → BENAR: (x + 1)   (khusus di teks, bukan LaTeX)
-SALAH: kata...        → BENAR: kata...    (tiga titik OK)
-SALAH: kata....       → BENAR: kata...    (lebih dari tiga → tiga)
-SALAH: kata,,         → BENAR: kata,
+INCORRECT: word .         → CORRECT: word.
+INCORRECT: word,word      → CORRECT: word, word
+INCORRECT: word ;word     → CORRECT: word; word
+INCORRECT: word :         → CORRECT: word:
+INCORRECT: ( x + 1 )     → CORRECT: (x + 1)   (in regular text, outside LaTeX)
+INCORRECT: word...        → CORRECT: word...    (3 dots OK)
+INCORRECT: word....       → CORRECT: word...    (more than 3 -> 3)
+INCORRECT: word,,         → CORRECT: word,
 ```
 
 ---
@@ -233,18 +232,18 @@ SALAH: kata,,         → BENAR: kata,
 ### Delimiter Normalization
 
 ```
-SALAH: \( x^2 + 1 \)      → BENAR: $ x^2 + 1 $
-SALAH: \[ x^2 + 1 \]      → BENAR: $$ x^2 + 1 $$
-SALAH: $ x^2 + 1$         → BENAR: $ x^2 + 1 $     (normalize spacing)
-SALAH: $x^2 + 1 $         → BENAR: $ x^2 + 1 $     (normalize spacing)
+INCORRECT: \( x^2 + 1 \)      → CORRECT: $ x^2 + 1 $
+INCORRECT: \[ x^2 + 1 \]      → CORRECT: $$ x^2 + 1 $$
+INCORRECT: $ x^2 + 1$         → CORRECT: $ x^2 + 1 $     (normalize spacing)
+INCORRECT: $x^2 + 1 $         → CORRECT: $ x^2 + 1 $     (normalize spacing)
 ```
 
 ### Common LaTeX Typos
 
-| Salah | Benar | Catatan |
-|-------|-------|---------|
-| `\frac x y` | `\frac{x}{y}` | Butuh kurung kurawal |
-| `\sqr{x}` | `\sqrt{x}` | Perintah salah |
+| Incorrect | Correct | Notes |
+|-----------|---------|-------|
+| `\frac x y` | `\frac{x}{y}` | Needs curly braces |
+| `\sqr{x}` | `\sqrt{x}` | Incorrect command |
 | `\tmes` | `\times` | Typo |
 | `\tiems` | `\times` | Typo |
 | `\aplha` | `\alpha` | Typo |
@@ -271,13 +270,13 @@ SALAH: $x^2 + 1 $         → BENAR: $ x^2 + 1 $     (normalize spacing)
 | `ln` (in math) | `\ln` | Missing backslash |
 | `lim` (in math) | `\lim` | Missing backslash |
 | `sum` (in math) | `\sum` | Missing backslash |
-| `int` (in math) | `\int` | Missing backslash (integration, bukan "integer") |
+| `int` (in math) | `\int` | Missing backslash (integration) |
 
 ### Curly Brace Mismatches
 
-Hitung jumlah `{` dan `}` di setiap ekspresi LaTeX. Jika tidak sama:
-- Jika jelas mana yang hilang → perbaiki otomatis
-- Jika ambigu → tandai sebagai `[BROKEN_LATEX: ...]`
+Count `{` and `}` in each LaTeX expression. If unbalanced:
+- If obvious which brace is missing → fix automatically
+- If ambiguous → flag as `[BROKEN_LATEX: ...]`
 
 ---
 
@@ -286,34 +285,34 @@ Hitung jumlah `{` dan `}` di setiap ekspresi LaTeX. Jika tidak sama:
 ### Option Markers
 
 ```
-SALAH: a) jawaban    → BENAR: (a) jawaban
-SALAH: a. jawaban    → BENAR: (a) jawaban
-SALAH: A) jawaban    → BENAR: (a) jawaban
-SALAH: A. jawaban    → BENAR: (a) jawaban
-SALAH: (A) jawaban   → BENAR: (a) jawaban
+INCORRECT: a) option    → CORRECT: (a) option
+INCORRECT: a. option    → CORRECT: (a) option
+INCORRECT: A) option    → CORRECT: (a) option
+INCORRECT: A. option    → CORRECT: (a) option
+INCORRECT: (A) option   → CORRECT: (a) option
 ```
 
 ### Spacing
 
 ```
-SALAH:
-1. Soal pertama?
-(a) opsi 1
-(b) opsi 2
-2. Soal kedua?
+INCORRECT:
+1. Question one?
+(a) option 1
+(b) option 2
+2. Question two?
 
-BENAR:
-1. Soal pertama?
+CORRECT:
+1. Question one?
 
-(a) opsi 1
-(b) opsi 2
+(a) option 1
+(b) option 2
 
-2. Soal kedua?
+2. Question two?
 ```
 
-### Stray Content (Hapus)
+### Stray Content (Remove)
 
-- Nomor halaman: `- 1 -`, `Page 2`, `Halaman 3`
-- Header/footer berulang: `UAS Matematika Semester 1`
-- Watermark teks: `DRAFT`, `CONFIDENTIAL`
-- Empty bullet points atau list items
+- Page numbers: `- 1 -`, `Page 2`, `Halaman 3`
+- Repeating headers/footers: `UAS Matematika Semester 1`
+- Watermark text: `DRAFT`, `CONFIDENTIAL`
+- Empty bullet points or list items

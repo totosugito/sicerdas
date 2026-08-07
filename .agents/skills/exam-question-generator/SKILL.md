@@ -16,19 +16,6 @@ Converts markdown source files containing raw exam questions into strictly valid
 
 ## Workflow
 
-### Step 0 — Pre-process: Fix Input Text (On-the-fly)
-
-Before parsing, automatically clean up the source markdown using the `text-input-fixer` skill:
-
-1. Read the `text-input-fixer` skill instructions: `../text-input-fixer/SKILL.md`
-2. Also read its reference file: `../text-input-fixer/references/common-fixes.md`
-3. Read the user's markdown file using `view_file`.
-4. Apply all text fixes **in memory** — DO NOT overwrite or modify the original input file.
-5. The fixes include: encoding/mojibake repair, OCR artifact correction, Indonesian typo/EYD fixes, LaTeX fixes, and markdown structure normalization (see the `text-input-fixer` skill for the full catalog).
-6. Keep a running log of all fixes applied (category, original text, fixed text, line number).
-7. Use the cleaned text (in memory) as the input for all subsequent steps.
-8. Include the fix summary in the final output report (Step 6).
-
 ### Step 1 — Read References
 
 Before generating any output, read these reference files to understand the exact schema:
@@ -39,8 +26,8 @@ Before generating any output, read these reference files to understand the exact
 
 ### Step 2 — Read and Parse the Source File
 
-1. Use the **cleaned text from Step 0** (not the raw file) as input.
-2. Identify each distinct question by looking for numbered items (e.g., `1.`, `2.`), options (e.g., `(a)`, `(b)`), and LaTeX expressions (`$...$` or `$$...$$`).
+1. Read the clean single-question `.md` file (from the `ori/` folder).
+2. Identify question content by looking for numbered items (e.g., `1.`), options (e.g., `(a)`, `(b)`), and LaTeX expressions (`$...$` or `$$...$$`).
 3. Strip question numbers — the system handles ordering.
 
 ### Step 3 — Determine Question Metadata
@@ -121,10 +108,6 @@ Follow these critical rules:
 1. Write the JSON to the path requested by the user (or suggest `questions-output.json` in the same directory as the source).
 2. Validate with: `python3 -m json.tool <output_file> > /dev/null`
 3. Report the number of questions generated and any issues.
-4. Include the **Text Fix Report** from Step 0 in your output summary:
-   - Total number of fixes applied, grouped by category (encoding, OCR, typo, LaTeX, markdown)
-   - Any `[REVIEW]`, `[UNREADABLE]`, or `[BROKEN_LATEX]` flags that need human attention
-   - Note: The original input file was NOT modified — all fixes were applied on-the-fly
 
 ## CRITICAL: Common Mistakes to AVOID
 

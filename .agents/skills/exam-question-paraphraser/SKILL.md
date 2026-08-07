@@ -32,14 +32,16 @@ Before processing, read these reference files:
 ### Step 3 — Apply Paraphrasing Rules
 
 1. **Entity & Scenario Swapping:** Replace names, items, and settings with appropriate, culturally familiar alternatives in Bahasa Indonesia.
-2. **Sentence Restructuring:** Rephrase sentence structure (e.g., passive to active voice) without changing the question intent or target calculation.
-3. **Option Synchronization:** Ensure all multiple-choice options (`(a)`, `(b)`, `(c)`, etc.) remain consistent with the new entities/units if applicable.
-4. **Preserve LaTeX & Math Formulas:** Keep LaTeX math expressions (`$...$`, `$$...$$`) and numeric values intact unless explicitly asked to randomize numbers.
+2. **Child-Friendly Language (CRITICAL):** Ensure all rephrased sentences use simple, friendly, clear, and easy-to-understand Bahasa Indonesia tailored specifically for school children. Avoid stiff formal jargon or overly complex vocabulary.
+3. **Sentence Restructuring:** Rephrase sentence structure (e.g., passive to active voice) without changing the question intent or target calculation.
+4. **Option Synchronization:** Ensure all multiple-choice options (`(a)`, `(b)`, `(c)`, etc.) remain consistent with the new entities/units if applicable.
+5. **Preserve LaTeX & Math Formulas:** Keep LaTeX math expressions (`$...$`, `$$...$$`) and numeric values intact unless explicitly asked to randomize numbers.
 
 ### Step 4 — Output
 
-1. Write the paraphrased Markdown content to the target file specified by the user (or append `_varied.md` / overwrite as requested) using `write_to_file`.
+1. Save all paraphrased files into a dedicated subfolder named `phraser/` at the same level as `ori/` (e.g. `ori/01_q01.md` $\rightarrow$ `phraser/01_q01.md`), maintaining identical filenames using `write_to_file`.
 2. Present a **Paraphrase Report** summarizing:
+   - Output folder path (`phraser/`)
    - Total number of questions paraphrased
    - Summary of entity/scenario swaps applied (e.g., "Ibu" $\rightarrow$ "Ayah", "apel" $\rightarrow$ "jeruk")
    - Confirmation that mathematical formulas and answer keys remain valid
@@ -49,6 +51,9 @@ Before processing, read these reference files:
 ```
 ❌ BAD:  Changing mathematical values or formulas (e.g. changing 3x + 2 to 5x - 1) unless explicitly requested
 ✅ GOOD: Keep math formulas identical while changing scenario text (e.g. "Ibu membeli 3 kg apel..." -> "Ayah membeli 3 kg jeruk...")
+
+❌ BAD:  Using overly complex, stiff, or adult formal vocabulary
+✅ GOOD: Use simple, clear, and friendly Bahasa Indonesia tailored for school children
 
 ❌ BAD:  Altering scientific facts (e.g. changing acceleration of gravity or chemical element symbols)
 ✅ GOOD: Preserve scientific principles while rephrasing the problem narrative

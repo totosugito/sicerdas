@@ -1,48 +1,66 @@
 ---
 name: markdown-question-splitter
-description: Memecah satu file markdown yang berisi banyak soal menjadi file-file kecil yang masing-masing hanya berisi satu soal. Gunakan skill ini sebelum memanggil exam-question-generator pada file sumber yang panjang.
+description: Splits a single markdown file containing multiple exam questions into individual single-question markdown files. Use before calling exam-question-generator on long multi-question source files.
 ---
 
 # Markdown Question Splitter Skill
 
-Skill ini bertugas membaca satu file sumber `.md` yang berisi banyak soal, mendeteksi batas setiap soal, dan memecahnya menjadi file-file mandiri agar lebih mudah (dan lebih akurat) untuk diproses oleh LLM di tahap selanjutnya.
+Reads a source `.md` file containing multiple exam questions, cleans the input text, detects question boundaries, and extracts each question into an independent, standalone file to ensure accurate downstream processing by LLMs.
+
+## When to Use
+
+- User asks to "split questions from markdown file"
+- User asks to "break multi-question file into single files"
+- Pre-processing large exam files before running `exam-question-generator`
 
 ## Workflow
 
-### Step 1 — Analisis Input
-1. Baca file sumber `.md` yang diberikan oleh pengguna menggunakan `view_file`.
-2. Pahami struktur dan pola file tersebut. Batas antar soal biasanya ditandai oleh:
-   - Penomoran standar angka (`1. `, `2. `) di awal baris.
-   - Teks pertanyaan yang diakhiri oleh blok opsi jawaban berderet (`(A)`, `(B)`, `(C)`, `(D)`, `(E)`).
-   - Teks "Soal No. X".
+### Step 0 — Pre-process: Clean Raw Input Text (text-input-fixer)
 
-### Step 2 — Ekstraksi
-1. Pisahkan teks secara hati-hati berdasarkan batas soal yang telah diidentifikasi.
-2. Pastikan SETIAP potongan soal mandiri yang diekstrak memuat:
-   - Teks pertanyaan secara utuh.
-   - Semua opsi jawaban (jika ada).
-   - Referensi gambar (contoh: `![gambar](img.jpg)`) atau tabel yang mendampingi soal tersebut.
-3. **CRITICAL - Konteks Wacana Bersama:** Jika di dalam file sumber terdapat narasi panjang/wacana teks yang dipakai untuk beberapa soal berurutan (misal: *"Untuk soal no 1-3, perhatikan cerita berikut..."*), Anda **WAJIB** menyalin dan menyisipkan teks wacana tersebut ke bagian atas masing-masing file (soal 1, soal 2, dan soal 3). Jangan biarkan sebuah soal kehilangan teks rujukan utamanya karena terpisah dari soal sebelumnya.
-4. **CRITICAL - Update Path Gambar:** Karena file hasil pecahan disimpan di subfolder `ori/` (satu level lebih dalam dari file sumber), semua path gambar relatif di dalam teks markdown **WAJIB** di-update agar tetap menunjuk ke lokasi yang benar. Tambahkan prefix `../` pada setiap path gambar relatif.
-   - **Contoh:** `imgs/img_chart.jpg` → `../imgs/img_chart.jpg`
-   - **Contoh:** `![diagram](gambar.png)` → `![diagram](../gambar.png)`
-   - **Contoh:** `<img src="imgs/fig1.jpg" ...>` → `<img src="../imgs/fig1.jpg" ...>`
-   - **JANGAN** ubah path yang sudah absolut (dimulai dengan `/` atau `http`).
+Before analyzing and splitting questions, clean up the source `.md` file using rules from the `text-input-fixer` skill:
+1. Read the `text-input-fixer` skill instructions: `../text-input-fixer/SKILL.md` and reference file `common-fixes.md`.
+2. Apply all necessary text fixes (encoding/mojibake repair, Indonesian typo/EYD corrections, OCR artifact fixes, numbering/option formatting, and LaTeX syntax fixes).
+3. Perform all text fixes **in-memory** or prepare the cleaned text before proceeding to Step 1 to guarantee precise question boundary detection.
 
-### Step 3 — Penyimpanan Otomatis (Output Location)
-1. Simpan semua file pecahan secara terpusat ke dalam folder bernama `ori/` yang berada di direktori yang sama dengan file sumber. (Jangan membuat sub-folder baru untuk tiap-tiap file).
-   - **Contoh:** Jika file sumber adalah `/home/toto/Documents/sicerdas/test/page_01.md`, maka lokasi ekstraksinya wajib disimpan di `/home/toto/Documents/sicerdas/test/ori/`.
-2. Simpan setiap soal yang telah diekstrak ke dalam folder `ori/` tersebut menggunakan `write_to_file`.
-   - **Aturan Nama File:** Ambil angka pengidentifikasi dari nama file sumber asli (misal `page_01.md` -> `01`), lalu gabungkan dengan nomor urut soal. Formatnya: `<ID_file>_q<no_soal>.md`.
-   - **Contoh Nama File:** Jika input `page_01.md`, maka hasil pemecahannya bernama `01_q01.md`, `01_q02.md`, `01_q03.md`, dst. Jika nama file aslinya tidak mengandung angka (misal `soal.md`), gunakan nama aslinya menjadi `soal_q01.md`.
+### Step 1 — Input Analysis
 
-### Step 4 — Laporan (Report)
-1. Setelah seluruh file disimpan, tampilkan laporan singkat.
-2. Laporan memuat:
-   - Path/Lokasi folder tempat file-file pecahan disimpan.
-   - Total jumlah soal yang berhasil diekstrak.
-   - Rekomendasi langkah selanjutnya (mengingatkan user untuk memproses isi folder split tersebut menggunakan `exam-question-generator`).
+1. Read the source `.md` file provided by the user using `view_file` (using the cleaned text from Step 0).
+2. Identify the file structure and boundaries. Question boundaries are typically marked by:
+   - Standard numbering (e.g., `1. `, `2. `) at the beginning of a line.
+   - Question text followed by option blocks (e.g., `(A)`, `(B)`, `(C)`, `(D)`, `(E)`).
+   - Markers such as "Soal No. X".
 
-## Keselamatan (Safety)
-- **JANGAN** pernah memodifikasi (edit/overwrite) atau menghapus file sumber `.md` aslinya.
-- Jika teks nomor soal acak-acakan (misal loncat dari 3 ke 5 akibat typo di sumber), buang saja angka nomor soal aslinya di teks pecahan, karena penamaan file `q04.md` sudah mewakili urutannya.
+### Step 2 — Extraction
+
+1. Carefully split the text based on the identified question boundaries.
+2. Ensure EACH extracted standalone question includes:
+   - The complete question text.
+   - All answer options (if applicable).
+   - Accompanying image references (e.g., `![image](img.jpg)`) or tables.
+3. **CRITICAL — Shared Reading Context / Passage:** If the source file contains a shared reading passage or narrative block (e.g., *"For questions 1–3, read the following passage..."*), you **MUST** copy and prepend this shared passage text to the top of EACH corresponding question file (e.g., Q1, Q2, and Q3). Never allow a question to lose its primary reference context.
+4. **CRITICAL — Relative Image Path Update:** Because output files are stored inside a `ori/` subfolder (one level deeper than the source file), all relative image paths inside the markdown **MUST** be updated by prepending `../`.
+   - **Example:** `imgs/img_chart.jpg` → `../imgs/img_chart.jpg`
+   - **Example:** `![diagram](gambar.png)` → `![diagram](../gambar.png)`
+   - **Example:** `<img src="imgs/fig1.jpg" ...>` → `<img src="../imgs/fig1.jpg" ...>`
+   - **DO NOT** modify absolute paths (starting with `/` or `http`).
+
+### Step 3 — Automated Storage (Output Location)
+
+1. Save all extracted question files into a central folder named `ori/` located in the same directory as the source file. (Do not create nested subfolders for individual questions).
+   - **Example:** If source file is `/home/toto/Documents/sicerdas/test/page_01.md`, output files must be saved in `/home/toto/Documents/sicerdas/test/ori/`.
+2. Save each extracted question using `write_to_file`.
+   - **File Naming Convention:** Extract the numeric identifier from the source file name (e.g., `page_01.md` -> `01`), then combine with the sequential question number: `<ID_file>_q<no_soal>.md`.
+   - **Example:** For input `page_01.md`, extracted files should be named `01_q01.md`, `01_q02.md`, `01_q03.md`, etc. If the source filename lacks a number (e.g., `soal.md`), use `soal_q01.md`.
+
+### Step 4 — Report
+
+1. After all files are saved, present a concise report.
+2. The report must include:
+   - Path to the `ori/` output directory where split files are saved.
+   - Total number of questions successfully extracted.
+   - Next step recommendation (remind user to process files in the `ori/` folder using `exam-question-generator`).
+
+## Safety Guidelines
+
+- **NEVER** modify (edit/overwrite) or delete the original source `.md` file.
+- If question numbering in the source text is inconsistent or missing, strip the original number prefix in the extracted content—the filename `q04.md` preserves ordering.

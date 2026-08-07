@@ -1,10 +1,10 @@
 # Before & After Examples
 
-Contoh konkret perbaikan teks input dari berbagai jenis masalah.
+Concrete examples of raw input text corrections across various issue categories.
 
 ---
 
-## Contoh 1: Encoding & Mojibake
+## Example 1: Encoding & Mojibake
 
 ### Before
 ```markdown
@@ -34,7 +34,7 @@ $$ x² + 3x — 4 = 0 $$
 
 ---
 
-## Contoh 2: OCR Artifacts
+## Example 2: OCR Artifacts
 
 ### Before
 ```markdown
@@ -73,7 +73,7 @@ d) Luas = 106 cm², Keliling = 4O cm
 
 ---
 
-## Contoh 3: Typo Bahasa Indonesia
+## Example 3: Bahasa Indonesia Typo Fixes
 
 ### Before
 ```markdown
@@ -107,7 +107,7 @@ d) 450
 
 ---
 
-## Contoh 4: LaTeX Fixes
+## Example 4: LaTeX Fixes
 
 ### Before
 ```markdown
@@ -138,7 +138,7 @@ d) $\frac{1}{2} $
 
 ---
 
-## Contoh 5: Mixed Issues (Real-world OCR scan)
+## Example 5: Mixed Issues (Real-world OCR scan)
 
 ### Before
 ```markdown
