@@ -1,13 +1,14 @@
 import React, { useMemo } from "react";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/shadcn/style.css";
+import "katex/dist/katex.min.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/lib/theme-provider";
 
 import { schema } from "./lib/blocknote-config";
-import "@/assets/custom-blocknote.css";
+import { validateAndRepairBlockNoteContent } from "@/features/exam/questions/json-questions/utils/validate-blocknote-content";
 
 export type BlockNoteStaticProps = {
   content: any[];
@@ -38,11 +39,21 @@ export const BlockNoteStatic = ({
         .ProseMirror-trailingBreak {
           display: none !important;
         }
-        /* KaTeX specific fixes for BlockNote */
+        /* Allow KaTeX formulas to overflow naturally without clipping */
+        .bn-editor,
+        .bn-block-content,
+        .bn-block-outer,
+        .bn-block,
+        .bn-equation-host,
+        .bn-equation {
+          overflow: visible !important;
+        }
+        .bn-equation {
+          padding: 0.5rem 0.75rem !important;
+          min-height: auto !important;
+        }
         .katex-display {
           margin: 0 !important;
-          overflow-x: visible !important;
-          overflow-y: hidden !important;
         }
         /* Definitively hide scrollbars in equation blocks even when they are compact/fit-content */
         .bn-editor [data-content-type="equation"] * {
@@ -71,21 +82,28 @@ export const BlockNoteStatic = ({
       : appTheme;
   }, [appTheme]);
 
+  const safeContent = useMemo(() => {
+    if (!content || !Array.isArray(content) || content.length === 0) return undefined;
+    const cloned = JSON.parse(JSON.stringify(content));
+    validateAndRepairBlockNoteContent(cloned);
+    return cloned;
+  }, [content]);
+
   const editor = useCreateBlockNote({
     schema, // Shared schema with math block support
-    initialContent: content && content.length > 0 ? content : undefined,
+    initialContent: safeContent,
   });
 
   // Update content whenever it changes without remounting the entire view
   React.useEffect(() => {
-    if (editor && content) {
-      editor.replaceBlocks(editor.document, content);
+    if (editor && safeContent) {
+      editor.replaceBlocks(editor.document, safeContent);
     }
-  }, [editor, content]);
+  }, [editor, safeContent]);
 
   return (
     <div
-      className={cn("border bg-card overflow-hidden transition-all", className)}
+      className={cn("border bg-card transition-all", className)}
       style={{ minHeight }}
     >
       {styleTag}

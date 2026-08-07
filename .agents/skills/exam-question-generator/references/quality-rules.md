@@ -63,7 +63,7 @@ Solution 1 (solutionType: "general"):
   Paragraph 4: ["paragraph" Block] **MANDATORY THEORY EXPLANATION.** Narratively explain the core concepts and general formulas in a friendly tone BEFORE calculating.
   Paragraph 5: "Langkah Penyelesaian:" (bold) (Standalone header)
   
-  ["alert" Block type "tip" (Optional)]: Contains short formulas or reminders (e.g., "Ingat Sifat Logaritma: ..."). Use "tip" type so the yellow lightbulb icon renders. DO NOT add emojis (like 💡) as the UI provides icons automatically. DO NOT put long narrative explanations inside callout alerts.
+  ["alert" Block type "tip" (Optional)]: Contains short formulas or reminders (e.g., "Ingat Sifat Logaritma: ..."). Use "tip" type so the yellow lightbulb icon renders. **CRITICAL:** The alert's text and inline latex nodes MUST be placed directly inside `alert.content`. NEVER leave `content: []` empty on an `alert` block! DO NOT add emojis (like 💡) as the UI provides icons automatically. DO NOT put long narrative explanations inside callout alerts.
   
   ["numberedListItem" Blocks]: Use this for ALL solution steps.
   - **CRITICAL — NO EMPTY CONTENT:** The primary line/first text of the step MUST be placed directly inside the `"numberedListItem"` block's own `"content"` array. NEVER leave `"content": []` empty on a `"numberedListItem"` and put the sentence in a child `"paragraph"` block in `children`, as BlockNote will render an empty item with placeholder text like *"List"* next to the number badge.
@@ -80,7 +80,7 @@ Solution 1 (solutionType: "general"):
 
 Solution 2 (solutionType: "fast_method") — OPTIONAL:
   Only if a valid shortcut exists.
-  Paragraph 1: ["alert" Block type "success"] Contains the shortcut name/formula.
+  Paragraph 1: ["alert" Block type "success" or "tip"] Contains the shortcut name/formula inside `alert.content`.
   Paragraph 2: ["paragraph" Block] **MANDATORY EXPLANATION.** Narratively explain how the shortcut formula applies to this problem before calculating. DO NOT jump directly from alert to an equation block.
   Paragraph 3: ["equation" Block] Mathematical calculation (use `\begin{aligned}` for multi-line steps).
   Paragraph 4: "Jadi, jawaban yang benar adalah [hasil]."

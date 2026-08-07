@@ -318,20 +318,24 @@ html {
   --animate-scale-in: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-accordion-collapse: accordion-collapse var(--tw-duration, 200ms) ease-out;
   --animate-accordion-expand: accordion-expand var(--tw-duration, 200ms) ease-out;
+
   @keyframes accordion-collapse {
-  from {
-    height: var(--accordion-panel-height, auto);
+    from {
+      height: var(--accordion-panel-height, auto);
     }
-  to {
-    height: 0;
+
+    to {
+      height: 0;
     }
   }
+
   @keyframes accordion-expand {
-  from {
-    height: 0;
+    from {
+      height: 0;
     }
-  to {
-    height: var(--accordion-panel-height, auto);
+
+    to {
+      height: var(--accordion-panel-height, auto);
     }
   }
 }

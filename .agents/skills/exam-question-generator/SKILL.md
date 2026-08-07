@@ -95,7 +95,7 @@ Follow these critical rules:
    - **DO NOT** wrap the step's main text inside a child `"paragraph"` block in `"children"`.
    - Use `"children"` ONLY for *subsequent* sub-blocks belonging to that step (such as standalone `"equation"` blocks, `"alert"` callouts, or secondary sub-paragraphs).
    - DO NOT write words like `"Langkah pertama"`, `"Langkah 1"`, or `"1. "` inside the text string, as the `"numberedListItem"` already renders the step number badge automatically.
-4. **Concept Reminders (Callouts)** — Insert an `alert` block (`type: "tip"`) inside a step's `children` array to highlight a formula. The alert must be extremely concise. **CRITICAL JSON FORMAT:** If the alert contains a math formula, you MUST split the `content` array. Do not put raw LaTeX inside the `text` string! Example: `content: [{"type": "text", "text": "Ingat Sifat: "}, {"type": "latex", "props": {"latex": "a^{\\log_a b} = b", "displayMode": false}}]`. **NOTE:** DO NOT include emojis (like 💡 or 🚀) in the text, as the UI already renders an icon automatically.
+4. **Concept Reminders (Callouts)** — Insert an `alert` block (`type: "tip"`) inside a step's `children` array to highlight a formula. The alert must be extremely concise. **CRITICAL JSON FORMAT:** ALL text and inline math nodes MUST be placed directly inside the `alert` block's own `content` array (`"content": [...]`). NEVER leave `"content": []` empty on an `alert` block and follow it with a separate `"paragraph"` block! If the alert contains math, split `content` into `text` and inline `latex` nodes. Example: `"type": "alert", "props": {"type": "tip"}, "content": [{"type": "text", "text": "Jarak jatuh: ", "styles": {}}, {"type": "latex", "props": {"latex": "\\Delta h = \\frac{1}{2} g t^2", "displayMode": false}}]`. **NOTE:** DO NOT include emojis (like 💡 or 🚀) in the text, as the UI already renders an icon automatically.
 5. **Multi-line Equations** — For key formulas and calculations, use `equation` blocks. **CRITICAL:** If a calculation involves multiple steps (e.g., A = B = C), DO NOT write it horizontally in one long line. You MUST use the LaTeX `\begin{aligned} ... \end{aligned}` environment to break it into multiple lines aligned at the equals sign (`&=`).
 6. **Use inline latex** when referencing variables/values within explanatory text.
 7. **Bold labels only** — Use `{"bold": true}` only for labels like `"Diketahui:"` and step numbers (`"1. "`).
@@ -114,6 +114,12 @@ Follow these critical rules:
 ```
 ❌ BAD:  "content": [{"type": "text", "text": "...", "styles": {}}]
 ✅ GOOD: "content": [{"type": "paragraph", "content": [{"type": "text", "text": "...", "styles": {}}]}]
+
+❌ BAD:  Empty alert content followed by paragraph:
+        {"type": "alert", "props": {"type": "tip"}, "content": []},
+        {"type": "paragraph", "content": [{"type": "text", "text": "Cara Cepat: ..."}]}
+✅ GOOD: Text and inline latex directly inside alert.content:
+        {"type": "alert", "props": {"type": "tip"}, "content": [{"type": "text", "text": "Cara Cepat: ...", "styles": {}}, {"type": "latex", "props": {"latex": "...", "displayMode": false}}]}
 
 ❌ BAD:  "type": "math", "props": {"equation": "..."}
 ✅ GOOD: "type": "equation", "props": {"latex": "..."}

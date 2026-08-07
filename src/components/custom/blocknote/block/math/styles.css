@@ -21,8 +21,8 @@
     width: 100%;
     min-width: 0;
     max-width: 100%;
-    min-height: 2.5rem;
-    padding: .35rem .75rem;
+    min-height: 2.75rem;
+    padding: .45rem .65rem;
     color: inherit;
     text-align: center;
     cursor: pointer;
@@ -32,6 +32,7 @@
     appearance: none;
     transition: background-color 120ms ease;
     box-sizing: border-box;
+    overflow: visible;
 }
 
 .bn-equation:not(:has(.katex))::before {
@@ -62,18 +63,6 @@
     width: 100%;
     min-width: 0;
     margin: 0;
-}
-
-.bn-equation .katex-display>.katex,
-.bn-latex .katex-display>.katex {
-    white-space: normal;
-}
-
-.bn-equation .katex-html>.base,
-.bn-latex .katex-html>.base {
-    display: inline;
-    width: auto;
-    white-space: normal;
 }
 
 .bn-equation-popover {

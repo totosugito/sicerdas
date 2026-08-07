@@ -13,7 +13,7 @@ These are the ONLY types allowed at the root of any `content` array:
 | `bulletListItem` | `{}` | Inline content array | Unordered list items |
 | `numberedListItem` | `{}` | Inline content array | Ordered list items |
 | `equation` | `{"latex": "..."}` | `[]` (empty) | Standalone display math |
-| `alert` | `{"type": "info"\|"warning"\|"success"\|"error"}` | Inline content array | Callout/highlight boxes |
+| `alert` | `{"type": "tip"\|"info"\|"warning"\|"success"\|"error"}` | Inline content array (MUST NOT be empty) | Callout/highlight boxes |
 | `chart` | `{"chartData": "<JSON string>"}` | `[]` (empty) | Interactive charts |
 | `image` | `{"url": "...", "caption": "..."}` | `[]` (empty) | Images |
 | `table` | `{}` | Table-specific content | Data tables |
@@ -69,13 +69,14 @@ The `styles` object on `text` nodes supports:
 }
 ```
 
-### Alert / Callout block
+### Alert / Callout block (Text + Inline Latex)
 ```json
 {
   "type": "alert",
-  "props": {"type": "success"},
+  "props": {"type": "tip"},
   "content": [
-    {"type": "text", "text": "Trik: Gunakan rumus cepat ABC!", "styles": {}}
+    {"type": "text", "text": "Jarak jatuh: ", "styles": {}},
+    {"type": "latex", "props": {"latex": "\\Delta h = \\frac{1}{2} g t^2", "displayMode": false}}
   ]
 }
 ```
