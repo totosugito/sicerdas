@@ -1,12 +1,14 @@
 import { SectionQuestionItem } from "@/api/exam/package-sections/types";
-import { DataTableColumnHeader, DataTablePagination } from "@/components/table";
+import { DataTableColumnHeader, DataTablePagination, CustomColumnDef } from "@/components/table";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import {
   ColumnDef,
+  createPaginatedRowModel,
   flexRender,
-  getCoreRowModel,
-  useReactTable,
   PaginationState,
+  rowPaginationFeature,
+  tableFeatures,
+  useTable,
 } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
@@ -66,7 +68,7 @@ export function SectionQuestionTable({
     }),
   );
 
-  const columns: ColumnDef<SectionQuestionItem>[] = [
+  const columns: CustomColumnDef<SectionQuestionItem>[] = [
     {
       id: "drag-handle",
       size: 40,
@@ -178,10 +180,15 @@ export function SectionQuestionTable({
     pageSize: meta?.limit || 10,
   };
 
-  const table = useReactTable({
+  const tableFeaturesList = tableFeatures({
+    rowPaginationFeature,
+    paginatedRowModel: createPaginatedRowModel(),
+  });
+
+  const table = useTable({
+    features: tableFeaturesList,
     data: questions,
     columns,
-    getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     pageCount: meta?.totalPages || -1,
     state: {
@@ -267,9 +274,9 @@ export function SectionQuestionTable({
 
       <div className="p-4 border-t">
         <DataTablePagination
-          pageIndex={table.getState().pagination.pageIndex}
+          pageIndex={table.state.pagination.pageIndex}
           setPageIndex={table.setPageIndex}
-          pageSize={table.getState().pagination.pageSize}
+          pageSize={table.state.pagination.pageSize}
           setPageSize={table.setPageSize}
           rowsCount={meta?.total || 0}
           paginationData={meta}

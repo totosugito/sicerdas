@@ -3,6 +3,8 @@ import {
   flexRender,
   type Table as TanstackTable,
   type Header,
+  type TableFeatures,
+  type RowData,
 } from "@tanstack/react-table";
 import type * as React from "react";
 import { DataTablePagination } from "./data-table-pagination";
@@ -19,12 +21,11 @@ import { cn } from "@/lib/utils";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { Checkbox } from "@/components/ui/checkbox";
 
-interface DataTableProps<TData> extends React.ComponentProps<"div"> {
-  table: TanstackTable<TData>;
+interface DataTableProps<TData extends RowData = any> extends React.ComponentProps<"div"> {
+  table: TanstackTable<TableFeatures, TData>;
   actionBar?: React.ReactNode;
-  totalRowCount?: number; // Total row count for manual pagination (overrides table.getRowCount())
+  totalRowCount?: number;
   paginationData?: {
-    // Optional pagination object for manual pagination
     page: number;
     limit: number;
     total: number;
@@ -33,10 +34,10 @@ interface DataTableProps<TData> extends React.ComponentProps<"div"> {
   pinned?: {
     withBorder?: boolean;
   };
-  isStickyHeader?: boolean; // Show/hide sticky header
-  showSideBorders?: boolean; // Show/hide table side borders
-  showZebraStriping?: boolean; // Show/hide zebra striping
-  zebraStripingClassName?: string; // Custom class for zebra striping
+  isStickyHeader?: boolean;
+  showSideBorders?: boolean;
+  showZebraStriping?: boolean;
+  zebraStripingClassName?: string;
   styles?: {
     container?: {
       default?: string;
@@ -58,7 +59,7 @@ interface DataTableProps<TData> extends React.ComponentProps<"div"> {
   showPagination?: boolean;
 }
 
-type RowNumberColumnDef<T> = ColumnDef<T> & {
+type RowNumberColumnDef<T extends RowData = any> = ColumnDef<TableFeatures, T> & {
   id?: string;
   accessorKey?: string;
   header?: string;
@@ -67,7 +68,6 @@ type RowNumberColumnDef<T> = ColumnDef<T> & {
   enableSorting?: boolean;
   enableColumnFilter?: boolean;
   paginationData?: {
-    // Optional pagination object for manual pagination
     page: number;
     limit: number;
     total: number;
@@ -83,7 +83,7 @@ type RowNumberColumnDef<T> = ColumnDef<T> & {
   };
 };
 
-export function createRowNumberColumn<T>({
+export function createRowNumberColumn<T extends RowData = any>({
   id = "__row_number__",
   accessorKey = "__row_number__",
   header = "No",
@@ -93,7 +93,7 @@ export function createRowNumberColumn<T>({
   enableColumnFilter = false,
   paginationData,
   styles,
-}: RowNumberColumnDef<T>): ColumnDef<T> {
+}: RowNumberColumnDef<T>): ColumnDef<TableFeatures, T> {
   return {
     id: id,
     accessorKey: accessorKey,
@@ -113,7 +113,7 @@ export function createRowNumberColumn<T>({
         <div className={cn("flex justify-center", styles?.cell?.default)}>
           {paginationData
             ? (paginationData.page - 1) * paginationData.limit + row.index + 1
-            : table.getState().pagination.pageIndex * table.getState().pagination.pageSize +
+            : table.store.get().pagination.pageIndex * table.store.get().pagination.pageSize +
             row.index +
             1}
         </div>
@@ -140,13 +140,13 @@ type RowSelectColumnDef = {
   };
 };
 
-export function createRowSelectColumn<T>({
+export function createRowSelectColumn<T extends RowData = any>({
   id = "select",
   size = 40,
   enableSorting = false,
   enableHiding = false,
   styles,
-}: RowSelectColumnDef = {}): ColumnDef<T> {
+}: RowSelectColumnDef = {}): ColumnDef<TableFeatures, T> {
   return {
     id: id,
     size: size,
@@ -181,7 +181,7 @@ export function createRowSelectColumn<T>({
   };
 }
 
-export function DataTable<TData>({
+export function DataTable<TData extends RowData = any>({
   table,
   actionBar,
   children,
@@ -211,7 +211,6 @@ export function DataTable<TData>({
         className={cn(
           "w-full overflow-hidden",
           isStickyHeader ? "[&>div]:max-h-[80vh]" : "",
-          // !showSideBorders && "[&>div]:overflow-x-hidden",
           styles?.container?.default,
         )}
       >
@@ -230,7 +229,7 @@ export function DataTable<TData>({
           >
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="">
-                {headerGroup.headers.map((header: Header<TData, any>) => {
+                {headerGroup.headers.map((header: Header<TableFeatures, TData, any>) => {
                   return (
                     <TableHead
                       className={cn(
@@ -326,13 +325,13 @@ export function DataTable<TData>({
       {showPagination && (
         <div className={cn("flex flex-col gap-2 px-6 pb-6 pt-2", styles?.pagination?.default)}>
           <DataTablePagination
-            pageIndex={table.getState().pagination.pageIndex}
+            pageIndex={table.store.get().pagination.pageIndex}
             setPageIndex={table.setPageIndex}
-            pageSize={table.getState().pagination.pageSize}
+            pageSize={table.store.get().pagination.pageSize}
             setPageSize={table.setPageSize}
-            rowsCount={totalRowCount ?? table.getRowCount()} // Use totalRowCount if provided for manual pagination
+            rowsCount={totalRowCount ?? table.getRowCount()}
             pageSizeOptions={pageSizeOptions}
-            paginationData={paginationData} // Pass pagination object for manual pagination
+            paginationData={paginationData}
           />
 
           {actionBar && rowLength > 0 && actionBar}

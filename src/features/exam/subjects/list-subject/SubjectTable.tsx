@@ -6,10 +6,10 @@ import {
   createRowNumberColumn,
   DataTableColumnHeader,
   PaginationData,
+  CustomColumnDef,
 } from "@/components/table";
 import { LongText } from "@/components/ui/long-text";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,7 +52,7 @@ export function SubjectTable({
 }: SubjectTableProps) {
   const { t } = useAppTranslation();
 
-  const columns: ColumnDef<SubjectData>[] = [
+  const columns: CustomColumnDef<SubjectData>[] = [
     createRowNumberColumn<SubjectData>({
       id: "no",
       size: 50,
@@ -192,7 +192,7 @@ export function SubjectTable({
     manualSorting: true,
     onSortingChange: (updater: any) => {
       const nextSorting =
-        typeof updater === "function" ? updater(table.getState().sorting) : updater;
+        typeof updater === "function" ? updater(table.state.sorting) : updater;
       if (nextSorting && nextSorting.length > 0) {
         onSortChange(nextSorting[0].id, nextSorting[0].desc ? "desc" : "asc");
       } else {
@@ -202,7 +202,7 @@ export function SubjectTable({
     manualPagination: true,
     onPaginationChange: (updater: any) => {
       const nextPagination =
-        typeof updater === "function" ? updater(table.getState().pagination) : updater;
+        typeof updater === "function" ? updater(table.state.pagination) : updater;
       if (onPaginationChange) {
         onPaginationChange({
           page: nextPagination.pageIndex + 1,

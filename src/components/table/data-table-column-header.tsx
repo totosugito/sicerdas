@@ -1,19 +1,19 @@
 "use client";
 
-import type { Column } from "@tanstack/react-table";
+import type { Column, TableFeatures, RowData } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverPositioner, PopoverTrigger } from "@/components/ui/popover";
 
-interface DataTableColumnHeaderProps<TData, TValue> {
-  column: Column<TData, TValue>;
+interface DataTableColumnHeaderProps<TData extends RowData = any, TValue = unknown> {
+  column: Column<TableFeatures, TData, TValue>;
   title: string;
   className?: string;
 }
 
-export function DataTableColumnHeader<TData, TValue>({
+export function DataTableColumnHeader<TData extends RowData = any, TValue = unknown>({
   column,
   title,
   className,
@@ -24,11 +24,10 @@ export function DataTableColumnHeader<TData, TValue>({
 
   const handleSort = (direction: 'asc' | 'desc' | 'toggle') => {
     if (direction === 'toggle') {
-      // Toggle through sort states: asc <-> desc
       if (isSorted !== 'asc') {
-        column.toggleSorting(false); // Enable asc
+        column.toggleSorting(false);
       } else {
-        column.toggleSorting(true); // Enable desc
+        column.toggleSorting(true);
       }
     } else {
       column.toggleSorting(direction === 'desc');
@@ -36,23 +35,13 @@ export function DataTableColumnHeader<TData, TValue>({
     setIsOpen(false);
   };
 
-  // const minSize = column.columnDef.minSize;
-  // const maxSize = column.columnDef.maxSize;
-  // const style: React.CSSProperties = {
-  //   minWidth: minSize ? `${minSize}px` : undefined,
-  //   maxWidth: maxSize ? `${maxSize}px` : undefined,
-  // };
-
   if (!canSort) {
-    return <div className={cn("flex items-center", className)}
-    // style={style}
-    >{title}</div>;
+    return <div className={cn("flex items-center", className)}>{title}</div>;
   }
 
   return (
     <div
       className={cn("group flex items-center space-x-1 cursor-pointer select-none hover:text-foreground transition-colors w-full min-w-0", className)}
-      // style={style}
       onClick={() => handleSort('toggle')}
     >
       <span className="group-hover:text-foreground break-words leading-tight flex-1">{title}</span>

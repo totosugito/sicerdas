@@ -6,8 +6,10 @@ import { flexRender, Row } from "@tanstack/react-table";
 import { GripVertical } from "lucide-react";
 import { SectionQuestionItem } from "@/api/exam/package-sections/types";
 
+import { CustomRow } from "@/components/table";
+
 interface SortableRowProps {
-  row: Row<SectionQuestionItem>;
+  row: CustomRow<SectionQuestionItem>;
 }
 
 export function SortableRow({ row }: SortableRowProps) {

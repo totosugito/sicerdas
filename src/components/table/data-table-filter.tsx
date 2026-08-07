@@ -1,20 +1,20 @@
 "use client";
 
-import type { Table } from "@tanstack/react-table";
+import type { Table, TableFeatures, RowData } from "@tanstack/react-table";
 import { Search, CircleXIcon } from "lucide-react";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-interface DataTableFilterProps<TData> extends React.ComponentProps<"div"> {
-  table: Table<TData>;
+interface DataTableFilterProps<TData extends RowData = any> extends React.ComponentProps<"div"> {
+  table: Table<TableFeatures, TData>;
   searchPlaceholder?: string;
   searchColumnIds?: string[];
   searchOnEnter?: boolean;
 }
 
-export function DataTableFilter<TData>({
+export function DataTableFilter<TData extends RowData = any>({
   table,
   children,
   className,
@@ -25,25 +25,20 @@ export function DataTableFilter<TData>({
 }: DataTableFilterProps<TData>) {
   const [searchValue, setSearchValue] = React.useState("");
 
-  // Handle global search
   const handleGlobalSearch = (value: string, force: boolean = false) => {
     setSearchValue(value);
 
     if (searchOnEnter && !force) return;
 
-    // If table has manual filtering enabled, only update the filter state
-    // The parent component will handle the actual filtering via onColumnFiltersChange
     if (table.options.manualFiltering) {
       if (searchColumnIds.length === 0) {
         table.setGlobalFilter(value || undefined);
       } else {
-        // For manual filtering with specific columns, set a special filter
         table.setColumnFilters([{ id: 'search', value: value || undefined }]);
       }
       return;
     }
 
-    // Original automatic filtering logic for non-manual tables
     if (searchColumnIds.length === 0) {
       table.setGlobalFilter(value || undefined);
     } else {
@@ -112,7 +107,6 @@ export function DataTableFilter<TData>({
         </div>
       </div>
 
-      {/* Individual column filters (optional) */}
       {React.Children.count(children) > 0 && (
         <div className="flex items-center gap-2">
           {children}

@@ -1,18 +1,20 @@
-import type { Column } from "@tanstack/react-table";
+import type { Column, TableFeatures, RowData } from "@tanstack/react-table";
 import React from "react";
 
-export function getCommonPinningStyles<TData>({
+export function getCommonPinningStyles<TData extends RowData = any>({
   column,
   withBorder = false,
 }: {
-  column: Column<TData>;
+  column: Column<TableFeatures, TData>;
   withBorder?: boolean;
 }): React.CSSProperties {
   const isPinned = column.getIsPinned();
+  const isLeftPinned = (isPinned as any) === "left";
+  const isRightPinned = (isPinned as any) === "right";
   const isLastLeftPinnedColumn =
-    isPinned === "left" && column.getIsLastColumn("left");
+    isLeftPinned && column.getIsLastColumn("left" as any);
   const isFirstRightPinnedColumn =
-    isPinned === "right" && column.getIsFirstColumn("right");
+    isRightPinned && column.getIsFirstColumn("right" as any);
 
   return {
     boxShadow: withBorder
@@ -22,11 +24,10 @@ export function getCommonPinningStyles<TData>({
           ? "4px 0 4px -4px var(--border) inset"
           : undefined
       : undefined,
-    left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
-    right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
+    left: isLeftPinned ? `${column.getStart("left" as any)}px` : undefined,
+    right: isRightPinned ? `${column.getAfter("right" as any)}px` : undefined,
     opacity: isPinned ? 0.97 : 1,
     position: isPinned ? "sticky" : "relative",
-    // background: isPinned ? "var(--card)" : "var(--card)",
     width: column.getSize(),
     zIndex: isPinned ? 1 : 0,
   };

@@ -1,12 +1,14 @@
 "use client";
 
-import type { Table } from "@tanstack/react-table";
-import { Check, ChevronsUpDown, Filter } from "lucide-react";
+import type { Table, TableFeatures, RowData } from "@tanstack/react-table";
+import { Check, Filter } from "lucide-react";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Command,
+  CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
@@ -18,86 +20,58 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import type { ColumnMeta } from "./types/types";
 
-// 🔑 custom filterFn (OR logic)
-const multiSelectFilter = (row: any, columnId: string, filterValue: string[]) => {
+export const filterUniqueFn = (row: any, columnId: string, filterValue: any[]) => {
   if (!filterValue || filterValue.length === 0) return true;
   const cellValue = row.getValue(columnId);
   return filterValue.includes(cellValue);
 };
 
-interface DataTableViewUniqueProps<TData> {
-  table: Table<TData>;
+interface DataTableViewUniqueProps<TData extends RowData = any> {
+  table: Table<TableFeatures, TData>;
   columnId: string;
   title?: string;
 }
 
-export function DataTableViewUnique<TData>({
+export function DataTableViewUnique<TData extends RowData = any>({
   table,
   columnId,
   title,
 }: DataTableViewUniqueProps<TData>) {
+  const column = table.getColumn(columnId);
   const [open, setOpen] = React.useState(false);
 
-  // Get unique values
-  const uniqueValues = React.useMemo(() => {
-    const column = table.getColumn(columnId);
-    if (!column) return [];
-    const values = Array.from(column.getFacetedUniqueValues().keys());
-    return values.sort();
-  }, [table.getColumn(columnId)?.getFacetedUniqueValues()]);
+  if (!column) {
+    return null;
+  }
 
-  // Get counts for each value
-  const valueCounts = React.useMemo(() => {
-    const column = table.getColumn(columnId);
-    if (!column) return new Map();
-    return column.getFacetedUniqueValues();
-  }, [table.getColumn(columnId)?.getFacetedUniqueValues()]);
+  const facetedUniqueValues = column.getFacetedUniqueValues();
+  const options = React.useMemo(() => {
+    if (!facetedUniqueValues) return [];
+    return Array.from(facetedUniqueValues.keys())
+      .filter((val) => val != null && val !== "")
+      .sort();
+  }, [facetedUniqueValues]);
 
-  const selectedValues = React.useMemo(() => {
-    const filterValue = table.getColumn(columnId)?.getFilterValue() as string[];
-    return filterValue ?? [];
-  }, [table.getColumn(columnId)?.getFilterValue()]);
+  const selectedValues = new Set((column.getFilterValue() as string[]) || []);
 
-  const handleValueChange = (checked: boolean, value: string) => {
-    const column = table.getColumn(columnId);
-    if (!column) return;
-
-    const filterValue = (column.getFilterValue() as string[]) ?? [];
-    const newFilterValue = [...filterValue];
-
-    if (checked) {
-      if (!newFilterValue.includes(value)) newFilterValue.push(value);
+  const handleSelect = (value: string) => {
+    const nextValues = new Set(selectedValues);
+    if (nextValues.has(value)) {
+      nextValues.delete(value);
     } else {
-      const index = newFilterValue.indexOf(value);
-      if (index > -1) {
-        newFilterValue.splice(index, 1);
-      }
+      nextValues.add(value);
     }
 
-    // ✅ ensure column uses multiSelect filterFn
-    if (typeof column.columnDef.filterFn !== "function") {
-      column.columnDef.filterFn = multiSelectFilter;
-    }
-
-    column.setFilterValue(newFilterValue.length ? newFilterValue : undefined);
+    const filterValue = Array.from(nextValues);
+    column.setFilterValue(filterValue.length ? filterValue : undefined);
   };
 
-  // Clear all selected values
-  const clearAllValues = () => {
-    const column = table.getColumn(columnId);
-    if (!column) return;
+  const handleClear = () => {
     column.setFilterValue(undefined);
   };
 
-  // Get column meta for display
-  const columnMeta = React.useMemo(() => {
-    const column = table.getColumn(columnId);
-    return column?.columnDef.meta as ColumnMeta<TData> | undefined;
-  }, [table, columnId]);
-
-  const displayTitle = title || columnMeta?.label || columnId;
+  const displayTitle = title || column.id;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -105,77 +79,84 @@ export function DataTableViewUnique<TData>({
         render={
           <Button
             variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="justify-between"
-          />
+            size="sm"
+            className="h-9 border-dashed flex items-center gap-1.5"
+          >
+            <Filter className="h-3.5 w-3.5" />
+            <span>{displayTitle}</span>
+            {selectedValues.size > 0 && (
+              <Badge
+                variant="secondary"
+                className="rounded-sm px-1 font-normal lg:hidden"
+              >
+                {selectedValues.size}
+              </Badge>
+            )}
+            {selectedValues.size > 0 && (
+              <div className="hidden space-x-1 lg:flex">
+                <Badge
+                  variant="secondary"
+                  className="rounded-sm px-1 font-normal"
+                >
+                  {selectedValues.size} selected
+                </Badge>
+              </div>
+            )}
+          </Button>
         }
-      >
-        <Filter className="mr-2 h-4 w-4" />
-        {displayTitle}
-        {selectedValues.length > 0 && (
-          <Badge variant="secondary" className="ml-2">
-            {selectedValues.length}
-          </Badge>
-        )}
-        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-      </PopoverTrigger>
+      />
       <PopoverPositioner align="start">
-        <PopoverContent className="w-auto min-w-36 max-w-56 p-2">
-        <Command>
-          <CommandList>
-            <CommandGroup>
-              {uniqueValues.map((value) => {
-                const isSelected = selectedValues.includes(value as string);
-                const count = valueCounts.get(value) || 0;
+        <PopoverContent className="w-[200px] p-0">
+          <Command>
+            <CommandInput placeholder={displayTitle} />
+            <CommandList>
+              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandGroup>
+                {options.map((option) => {
+                  const isSelected = selectedValues.has(option);
+                  const count = facetedUniqueValues?.get(option) || 0;
 
-                return (
-                  <CommandItem
-                    key={value}
-                    value={String(value)}
-                    onSelect={() => {
-                      handleValueChange(!isSelected, String(value));
-                    }}
-                    className="justify-between"
-                  >
-                    <div className="flex items-center">
+                  return (
+                    <CommandItem
+                      key={option}
+                      onSelect={() => handleSelect(option)}
+                    >
                       <div
                         className={cn(
-                          "mr-2 flex h-4 w-4 items-center justify-center rounded border border-primary",
+                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
                           isSelected
-                            ? "bg-primary"
-                            : "opacity-50 [&_svg]:invisible"
+                            ? "bg-primary text-primary-foreground"
+                            : "opacity-50 [&_svg]:hidden"
                         )}
                       >
-                        <Check className="h-4 w-4 text-primary-foreground" />
+                        <Check className="h-4 w-4" />
                       </div>
-                      <span className="truncate">
-                        {value === null || value === undefined || value === ""
-                          ? "(Empty)"
-                          : String(value)}
+                      <span className="flex-1 truncate">{option}</span>
+                      <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs text-muted-foreground">
+                        {count}
                       </span>
-                    </div>
-                    <Badge variant="outline">{count}</Badge>
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
-          </CommandList>
-          {selectedValues.length > 0 && (
-            <div className="border-t pt-1 px-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full"
-                onClick={clearAllValues}
-              >
-                Clear Filter
-              </Button>
-            </div>
-          )}
-        </Command>
-      </PopoverContent>
-    </PopoverPositioner>
-  </Popover>
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
+              {selectedValues.size > 0 && (
+                <>
+                  <div className="p-1 border-t border-border">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleClear}
+                      className="w-full justify-center text-xs h-8"
+                    >
+                      Clear filters
+                    </Button>
+                  </div>
+                </>
+              )}
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </PopoverPositioner>
+    </Popover>
   );
 }

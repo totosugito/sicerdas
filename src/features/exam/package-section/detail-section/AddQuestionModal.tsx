@@ -11,9 +11,12 @@ import { Button } from "@/components/ui/button";
 import {
   DataTable,
   useDataTable,
-  DataTableColumnHeader,
-  createRowSelectColumn,
+  DataTableFilter,
+  DataTableSelection,
   createRowNumberColumn,
+  createRowSelectColumn,
+  DataTableColumnHeader,
+  CustomColumnDef,
 } from "@/components/table";
 import {
   useListQuestionSimple,
@@ -21,7 +24,6 @@ import {
   EnumDifficultyLevel,
   EnumQuestionType,
 } from "@/api/exam/questions";
-import { ColumnDef } from "@tanstack/react-table";
 import { blocknote_to_text } from "@/lib/blocknote-utils";
 import { LongText } from "@/components/ui/long-text";
 import { PaginationData } from "@/components/table";
@@ -126,7 +128,7 @@ export function AddQuestionModal({
 
   const isTableLoading = isLoading || isFetching;
 
-  const columns: ColumnDef<ExamQuestion>[] = [
+  const columns: CustomColumnDef<ExamQuestion>[] = [
     createRowSelectColumn<ExamQuestion>({
       id: "select",
       size: 40,
@@ -212,7 +214,7 @@ export function AddQuestionModal({
     manualSorting: true,
     onSortingChange: (updater: any) => {
       const nextSorting =
-        typeof updater === "function" ? updater(table.getState().sorting) : updater;
+        typeof updater === "function" ? updater(table.state.sorting) : updater;
       if (nextSorting && nextSorting.length > 0) {
         setSortBy(nextSorting[0].id);
         setSortOrder(nextSorting[0].desc ? "desc" : "asc");
@@ -224,7 +226,7 @@ export function AddQuestionModal({
     },
     onPaginationChange: (updater: any) => {
       const nextPagination =
-        typeof updater === "function" ? updater(table.getState().pagination) : updater;
+        typeof updater === "function" ? updater(table.state.pagination) : updater;
       setPagination({
         page: nextPagination.pageIndex + 1,
         limit: nextPagination.pageSize,
@@ -234,7 +236,7 @@ export function AddQuestionModal({
   });
 
   const handleConfirm = () => {
-    const selectedSelection = table.getState().rowSelection;
+    const selectedSelection = table.state.rowSelection;
     const selectedIds = Object.keys(selectedSelection);
     if (selectedIds.length > 0) {
       onConfirm(selectedIds);
@@ -247,7 +249,7 @@ export function AddQuestionModal({
     table.resetRowSelection();
   };
 
-  const selectedCount = Object.keys(table.getState().rowSelection).length;
+  const selectedCount = Object.keys(table.state.rowSelection).length;
   const hasFilters =
     filterValues.subjectId !== "all" ||
     filterValues.gradeId !== "all" ||

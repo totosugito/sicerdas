@@ -1,14 +1,14 @@
 "use client";
 
-import type { Table } from "@tanstack/react-table";
+import type { Table, TableFeatures, RowData } from "@tanstack/react-table";
 import { CheckCircle2, X } from "lucide-react";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-interface DataTableSelectionProps<TData> extends React.ComponentProps<"div"> {
-  table: Table<TData>;
+interface DataTableSelectionProps<TData extends RowData = any> extends React.ComponentProps<"div"> {
+  table: Table<TableFeatures, TData>;
   onSelectionChange?: (selectedData: TData[]) => void;
   showClearButton?: boolean;
   selectionText?: {
@@ -18,7 +18,7 @@ interface DataTableSelectionProps<TData> extends React.ComponentProps<"div"> {
   };
 }
 
-export function DataTableSelection<TData>({
+export function DataTableSelection<TData extends RowData = any>({
   table,
   children,
   className,
@@ -35,7 +35,6 @@ export function DataTableSelection<TData>({
   const selectedCount = selectedRows.length;
   const selectedData = selectedRows.map(row => row.original);
 
-  // Call the callback when selection changes
   React.useEffect(() => {
     if (onSelectionChange) {
       onSelectionChange(selectedData);
@@ -76,14 +75,12 @@ export function DataTableSelection<TData>({
       </div>
       
       <div className="flex items-center gap-2">
-        {/* Custom action buttons from children */}
         {React.Children.count(children) > 0 && (
           <div className="flex items-center gap-2">
             {children}
           </div>
         )}
         
-        {/* Clear selection button */}
         {showClearButton && (
           <Button
             variant="outline"

@@ -2,12 +2,13 @@ import { LectureTextItem, PaginatedLectureTextListResponse } from "@/api/course/
 import {
   DataTable,
   useDataTable,
+  DataTableFilter,
   createRowNumberColumn,
   DataTableColumnHeader,
   PaginationData,
+  CustomColumnDef,
 } from "@/components/table";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { ColumnDef } from "@tanstack/react-table";
 import { FileText, Eye, Edit, Trash2, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -48,7 +49,7 @@ export function LectureTextTable({
 }: LectureTextTableProps) {
   const { t } = useAppTranslation();
 
-  const columns: ColumnDef<LectureTextItem>[] = [
+  const columns: CustomColumnDef<LectureTextItem>[] = [
     createRowNumberColumn<LectureTextItem>({
       id: "no",
       size: 50,
@@ -239,7 +240,7 @@ export function LectureTextTable({
     manualSorting: true,
     onSortingChange: (updater: any) => {
       const nextSorting =
-        typeof updater === "function" ? updater(table.getState().sorting) : updater;
+        typeof updater === "function" ? updater(table.state.sorting) : updater;
       if (nextSorting && nextSorting.length > 0) {
         onSortChange(nextSorting[0].id, nextSorting[0].desc ? "desc" : "asc");
       } else {

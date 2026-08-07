@@ -1,37 +1,73 @@
 import {
-  ColumnFiltersState, ExpandedState,
-  getCoreRowModel, getExpandedRowModel, getFacetedMinMaxValues,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
+  ColumnFiltersState,
+  ColumnVisibilityState,
+  columnFacetingFeature,
+  columnFilteringFeature,
+  columnPinningFeature,
+  columnResizingFeature,
+  columnSizingFeature,
+  columnVisibilityFeature,
+  createExpandedRowModel,
+  createFacetedMinMaxValues,
+  createFacetedRowModel,
+  createFacetedUniqueValues,
+  createFilteredRowModel,
+  createPaginatedRowModel,
+  createSortedRowModel,
+  ExpandedState,
   PaginationState,
+  rowExpandingFeature,
+  rowPaginationFeature,
+  rowSelectionFeature,
   RowSelectionState,
+  rowSortingFeature,
   SortingState,
   TableOptions,
   TableState,
-  useReactTable,
-  VisibilityState
+  tableFeatures,
+  useTable,
 } from "@tanstack/react-table";
 import * as React from "react";
 import { useState } from "react";
 
-interface UseDataTableProps<TData>
+import type { TableFeatures, RowData } from "@tanstack/react-table";
+
+interface UseDataTableProps<TData extends RowData = any>
   extends Omit<
-    TableOptions<TData>,
-    |
-    "state" |
-    "pageCount" |
-    "getCoreRowModel" |
-    "getSubRows"
+    TableOptions<TableFeatures, TData>,
+    | "state"
+    | "pageCount"
+    | "features"
+    | "getSubRows"
   >,
-  Required<Pick<TableOptions<TData>, "pageCount">> {
+  Required<Pick<TableOptions<TableFeatures, TData>, "pageCount">> {
   getSubRows?: (row: TData) => TData[] | undefined;
-  initialState?: Omit<Partial<TableState>, "columnFilters"> & {};
+  initialState?: Omit<Partial<TableState<TableFeatures>>, "columnFilters"> & {};
 }
 
-export function useDataTable<TData>(props: UseDataTableProps<TData>) {
+export const defaultFeatures = tableFeatures({
+  columnFilteringFeature,
+  columnVisibilityFeature,
+  columnSizingFeature,
+  columnResizingFeature,
+  columnPinningFeature,
+  columnFacetingFeature,
+  rowSortingFeature,
+  rowPaginationFeature,
+  rowSelectionFeature,
+  rowExpandingFeature,
+  filteredRowModel: createFilteredRowModel(),
+  sortedRowModel: createSortedRowModel(),
+  paginatedRowModel: createPaginatedRowModel(),
+  expandedRowModel: createExpandedRowModel(),
+  facetedRowModel: createFacetedRowModel(),
+  facetedUniqueValues: createFacetedUniqueValues(),
+  facetedMinMaxValues: createFacetedMinMaxValues(),
+});
+
+export type TableFeaturesType = typeof defaultFeatures;
+
+export function useDataTable<TData extends RowData = any>(props: UseDataTableProps<TData>) {
   const {
     columns,
     pageCount = -1,
@@ -51,21 +87,23 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>(
     initialState?.rowSelection ?? {},
   );
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(initialState?.columnVisibility ?? {});
+  const [columnVisibility, setColumnVisibility] = React.useState<ColumnVisibilityState>(
+    initialState?.columnVisibility ?? {}
+  );
 
   const [sorting, setSorting] = React.useState<SortingState>(initialState?.sorting ?? []);
   const [pagination, setPagination] = React.useState<PaginationState>(
-    initialState?.pagination ??
-    {
+    initialState?.pagination ?? {
       pageIndex: 0,
       pageSize: 10,
-    });
+    }
+  );
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>(initialState?.expanded ?? {});
 
   React.useEffect(() => {
     if (initialState?.pagination) {
-      setPagination(prev => {
+      setPagination((prev) => {
         const nextPageIndex = initialState.pagination?.pageIndex ?? prev.pageIndex;
         const nextPageSize = initialState.pagination?.pageSize ?? prev.pageSize;
         if (prev.pageIndex !== nextPageIndex || prev.pageSize !== nextPageSize) {
@@ -92,8 +130,9 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
   const handleColumnFiltersChange = manualFiltering ? onColumnFiltersChange : setColumnFilters;
   const handleExpandedChange = manualExpanding ? onExpandedChange : setExpanded;
 
-  const table = useReactTable({
+  const table = useTable({
     ...tableProps,
+    features: defaultFeatures,
     columns,
     initialState,
     pageCount,
@@ -103,25 +142,17 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
       columnVisibility,
       rowSelection,
       columnFilters,
-      expanded
+      expanded,
     },
     getSubRows: getSubRows || ((row: any) => row?.subRows),
-    getExpandedRowModel: getExpandedRowModel(),
     onExpandedChange: handleExpandedChange,
 
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
-    onPaginationChange: handlePaginationChange, // const next = typeof updater === "function" ? updater(table.getState().pagination) : updater;
+    onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
-    onColumnFiltersChange: handleColumnFiltersChange, // const nextFilters = typeof updater === "function" ? updater(table.getState().columnFilters) : updater;
+    onColumnFiltersChange: handleColumnFiltersChange,
     onColumnVisibilityChange: setColumnVisibility,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getFacetedMinMaxValues: getFacetedMinMaxValues(),
     manualPagination: manualPagination,
     manualSorting: manualSorting,
     manualFiltering: manualFiltering,
@@ -130,7 +161,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     columnResizeMode: columnResizeMode,
     meta: {
       ...(tableProps.meta ?? {}),
-    }
+    },
   });
 
   return { table };
