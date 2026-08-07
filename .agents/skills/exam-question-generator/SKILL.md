@@ -39,7 +39,7 @@ For each question, determine:
 | `type` | Has options → `multiple_choice` or `multiple_select`. No options → `essay`. Has Benar/Salah → `statement_reasoning`. |
 | `difficulty` | Recall/memorization → `easy`. Application → `medium`. Analysis/HOTS → `hard`. |
 | `scoringStrategy` | Default `all_or_nothing`. Use `partial` only for `multiple_select` or `essay`. |
-| `tags` | 1–3 broad topic tags in Bahasa Indonesia (e.g., `"Trigonometri"`, `"Logaritma"`). |
+| `tags` | 1–3 broad topic tags in Bahasa Indonesia. **CRITICAL:** If the markdown source contains a chapter/section header (e.g., `# BAB 7: GETARAN DAN GELOMBANG`), ALWAYS extract the chapter title (e.g., `"Getaran dan Gelombang"`) as the primary tag, alongside specific sub-topic tags (e.g., `"Pegas"`). |
 
 ### Step 4 — Convert to BlockNote JSON
 
