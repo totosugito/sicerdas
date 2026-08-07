@@ -105,7 +105,7 @@ exam-question-generator/
       ]
     }
   ],
-  "options": ["equation blocks untuk setiap opsi"],
+  "options": ["paragraph blocks berisi inline latex/text untuk setiap opsi"],
   "solutions": ["Diketahui → Ditanya → Pembahasan lengkap"],
   "tags": ["Matematika", "Aljabar"]
 }

@@ -76,7 +76,10 @@ export function evaluateFormulas(
   Object.entries(formulas).forEach(([key, formula]) => {
     try {
       // Evaluate within the current scope
-      const result = evaluate(formula, scope);
+      let result = evaluate(formula, scope);
+      if (typeof result === "number") {
+        result = Number(result.toPrecision(12));
+      }
       results[key] = result;
       // Update scope so subsequent formulas can use this result
       scope[key] = result;
