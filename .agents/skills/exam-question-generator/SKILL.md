@@ -88,7 +88,9 @@ Follow these critical rules:
    - For the "Diketahui:" section, write `"Diketahui:"` as a bold paragraph, followed by a bulleted list (`bulletListItem` blocks). **CRITICAL**: Extract implicit hidden variables (e.g., "dilepas" = $v_0 = 0$) and explain standard assumptions (e.g., $g = 10$).
    - For the "Konsep dan Rumus Dasar:" section, write it as a bold paragraph. Explain the fundamental formulas and theory narratively BEFORE calculating.
    - For the "Langkah Penyelesaian:" section, write it as a bold paragraph. Start the actual calculation steps below it.
-2. **Multi-solution** — Always provide a conceptual solution (`solutionType: "general"`). If a valid shortcut or logical trick exists, you MUST provide a fast method (`solutionType: "fast_method"`).
+2. **Multi-solution Support:**
+   - **Solution 1 (`solutionType: "general"`, `title: "Cara Konseptual"`):** MANDATORY for all questions. Full step-by-step conceptual explanation using standard curriculum methods.
+   - **Solution 2 (`solutionType: "fast_method"`, `title: "Trik Cepat"`):** Provide whenever a calculation shortcut, formula trick, or quick elimination method exists. Omit `fast_method` ONLY for pure conceptual, definition, or direct recall questions where no shortcut applies.
 3. **Step-by-step Numbering & Detailed Reasoning (CRITICAL):** 
    - **Single-step solutions (ONLY 1 STEP):** DO NOT use `"numberedListItem"`. Use a standard `"paragraph"` block for the step's introductory text (followed by the `"equation"` block). Using `"numberedListItem"` on a single step renders an awkward `(1)` badge icon when there are no subsequent steps.
    - **Multi-step solutions (2 OR MORE STEPS):** Use native `"numberedListItem"` blocks for each step so sequential numbers `(1)`, `(2)`, `(3)...` are rendered properly.
@@ -105,11 +107,15 @@ Follow these critical rules:
 9. **No Option Letters (CRITICAL)** — Since option positions will be randomized in the database, NEVER reference the option letter (e.g., "opsi D", "jawaban A") in the solution. Just state the final correct value.
 10. **Friendly Tone (CRITICAL)** — Do not use stiff or robotic language. Use a friendly, natural, and conversational teaching style suitable for Indonesian school children.
 
-### Step 6 — Output
+### Step 6 — Output & Validation
 
 1. Write the JSON to the path requested by the user (or suggest `questions-output.json` in the same directory as the source).
-2. Validate with: `python3 -m json.tool <output_file> > /dev/null`
-3. Report the number of questions generated and any issues.
+2. **Validate output JSON:** Run the offline validator script to verify schema compliance, BlockNote rules, option layouts, and mathjs formulas:
+   ```bash
+   python .agents/skills/exam-question-generator/scripts/validate_questions.py <output_file_or_directory>
+   ```
+3. Fix any errors or warnings flagged by the validator script.
+4. Report the number of questions generated, validation results, and any issues.
 
 ## CRITICAL: Common Mistakes to AVOID
 
@@ -131,4 +137,9 @@ Follow these critical rules:
 
 ❌ BAD:  Solusi pendek satu paragraf
 ✅ GOOD: Solusi lengkap: Diketahui, Ditanya, Pembahasan bertahap dengan equation blocks
+
+❌ BAD:  Single-step solution using numberedListItem (renders awkward badge icon (1) with no step 2):
+        {"type": "numberedListItem", "content": [{"type": "text", "text": "Substitusikan nilai ke dalam rumus:"}]}
+✅ GOOD: Use paragraph for single-step solutions (use numberedListItem ONLY when there are 2 or more steps):
+        {"type": "paragraph", "content": [{"type": "text", "text": "Substitusikan nilai ke dalam rumus:"}]}
 ```

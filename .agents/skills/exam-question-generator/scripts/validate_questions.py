@@ -106,6 +106,14 @@ class QuestionValidator:
                         if isinstance(content_list, list):
                             self._validate_block_list(content_list, f"{prefix} -> solution[{idx}]")
                             
+                            # Check for single-step numberedListItem
+                            num_list_count = self._count_block_types(content_list, "numberedListItem")
+                            if num_list_count == 1:
+                                self.warnings.append(
+                                    f"{prefix} -> solution[{idx}]: Single-step solution uses 'numberedListItem'! "
+                                    f"Use standard 'paragraph' block instead when there is only 1 step (to prevent rendering an awkward (1) badge icon)."
+                                )
+
                             # Check for incomplete fast_method (alert only, missing equations or conclusion)
                             if stype == "fast_method":
                                 block_types = [b.get("type") for b in content_list if isinstance(b, dict)]
@@ -178,6 +186,19 @@ class QuestionValidator:
         matches = re.findall(pattern, sol_str)
         if matches:
             self.warnings.append(f"{location}: Solution references option letters {matches}. Option positions are randomized in database!")
+
+    def _count_block_types(self, blocks: list, target_type: str) -> int:
+        count = 0
+        if not isinstance(blocks, list):
+            return count
+        for block in blocks:
+            if isinstance(block, dict):
+                if block.get("type") == target_type:
+                    count += 1
+                children = block.get("children", [])
+                if isinstance(children, list):
+                    count += self._count_block_types(children, target_type)
+        return count
 
 
 def main():

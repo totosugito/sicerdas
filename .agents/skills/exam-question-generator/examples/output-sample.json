@@ -225,16 +225,81 @@
               },
               {
                 "type": "text",
-                "text": " (opsi C).",
-                "styles": {
-                  "bold": true
-                }
+                "text": ".",
+                "styles": {}
               }
             ]
           }
         ],
         "solutionType": "general",
         "order": 1,
+        "requiredTier": "free"
+      },
+      {
+        "title": "Trik Cepat",
+        "content": [
+          {
+            "type": "alert",
+            "props": {
+              "type": "tip"
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Trik Cepat: Substitusi langsung ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "x = 5",
+                  "displayMode": false
+                }
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Perhitungan singkat tanpa menuliskan langkah umum panjang:",
+                "styles": {}
+              }
+            ]
+          },
+          {
+            "type": "equation",
+            "props": {
+              "latex": "3(5) + 7 = 22"
+            },
+            "content": []
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Jadi, jawaban yang benar adalah ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "22",
+                  "displayMode": false
+                }
+              },
+              {
+                "type": "text",
+                "text": ".",
+                "styles": {}
+              }
+            ]
+          }
+        ],
+        "solutionType": "fast_method",
+        "order": 2,
         "requiredTier": "free"
       }
     ],
