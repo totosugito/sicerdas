@@ -113,7 +113,7 @@ exam-question-generator/
 
 ## Tips
 
-- **Soal hitungan:** Skill akan otomatis membuat `variableFormulas` dengan 3–5 set angka berbeda
+- **Soal hitungan:** Skill akan otomatis membuat `variableFormulas` dengan minimal 5 set angka berbeda
 - **Soal teori:** `variableFormulas` akan di-set `null`
 - **Banyak soal:** Taruh semua soal dalam satu file, pisahkan dengan nomor (`1.`, `2.`, dst.)
 - **Jangan khawatir formatting:** Skill akan otomatis memisahkan teks dan ekspresi matematika ke tipe yang benar (`text` vs `latex` vs `equation`)

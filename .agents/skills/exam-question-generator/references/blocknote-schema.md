@@ -12,11 +12,14 @@ These are the ONLY types allowed at the root of any `content` array:
 | `heading` | `{"level": 1\|2\|3}` | Inline content array | Section headers |
 | `bulletListItem` | `{}` | Inline content array | Unordered list items |
 | `numberedListItem` | `{}` | Inline content array | Ordered list items |
+| `checkListItem` | `{"checked": boolean}` | Inline content array | Checkbox list items |
 | `equation` | `{"latex": "..."}` | `[]` (empty) | Standalone display math |
 | `alert` | `{"type": "tip"\|"info"\|"warning"\|"success"\|"error"}` | Inline content array (MUST NOT be empty) | Callout/highlight boxes |
 | `chart` | `{"chartData": "<JSON string>"}` | `[]` (empty) | Interactive charts |
 | `image` | `{"url": "...", "caption": "..."}` | `[]` (empty) | Images |
 | `table` | `{}` | Table-specific content | Data tables |
+| `codeBlock` | `{"language": "..."}` | `[]` (empty) | Code snippets |
+| `video` / `audio` / `file` | `{"url": "..."}` | `[]` (empty) | Embedded media / attachments |
 
 ## Valid Inline Content Types
 

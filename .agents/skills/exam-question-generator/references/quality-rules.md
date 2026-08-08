@@ -6,15 +6,34 @@
 - Use clear, straightforward language suitable for Indonesian school students.
 - Avoid informal language, slang, or unnecessary English terms.
 
+## Top-Level Required Fields
+
+Every generated question object **MUST** contain the following top-level fields:
+
+| Field | Type | Description / Default |
+|-------|------|-----------------------|
+| `type` | String | `"multiple_choice"`, `"multiple_select"`, `"essay"`, or `"statement_reasoning"` |
+| `difficulty` | String | `"easy"`, `"medium"`, or `"hard"` |
+| `maxScore` | Integer | Points for the question (Default: `1`) |
+| `scoringStrategy` | String | `"all_or_nothing"` (default), `"partial"`, or `"partial_with_penalty"` |
+| `requiredTier` | String | `"free"` (default), `"pro"`, or `"enterprise"` |
+| `isActive` | Boolean | `true` (default) |
+| `content` | Array | BlockNote block array containing question text |
+| `options` | Array | Array of option objects (required for `multiple_choice` & `multiple_select`) |
+| `solutions` | Array | Array of solution objects (at least 1 `general` solution is MANDATORY) |
+| `tags` | Array | Array of 1-3 string tags in Bahasa Indonesia |
+| `variableFormulas` | Object/Null | Parameterization object (`variables` ≥ 5 sets) or `null` for non-math questions |
+
 ## Dynamic Variables (Computational Questions)
 
 For questions involving calculations or mathematical functions, you **MUST** parameterize the question:
 
 1. **Convert Number Words to Digits & Avoid Hardcoding**: If numbers are written as words in the question text (e.g., "Dua detik", "Tiga buah"), you **MUST** convert them to numeric digits ("2 detik", "3 buah") in the JSON text strings so they can be parameterized with placeholders like `{{a}}`. Scan all constant numbers and replace them with placeholders like `{{a}}`, `{{b}}`, etc.
 2. Place these placeholders **inside** the `latex` prop (e.g., `\log_{{{a}}} ({{b}}x - {{c}})` or `{{t}} \text{ detik}`).
-3. Populate `variableFormulas.variables` with **at least 5 realistic sets** of numbers to maximize question variations. Ensure generated number sets satisfy all mathematical constraints (e.g., logarithm bases must be positive and $\neq 1$, arguments inside logarithms must be positive).
-4. Include calculations for plausible incorrect options/distractors (`opt1`, `opt2`, etc.) in the variables array.
-5. Write formulas in `variableFormulas.solutions` using plain mathematical expressions with bare variable names (e.g., `"b * x_val - c"` or `"a + b"`). **DO NOT** use mustache braces like `"{{b}} * {{x_val}} - {{c}}"` as this will cause a `SyntaxError` in the formula evaluator. **DO NOT** use JavaScript `Math.` prefix for math functions (e.g., use `"sqrt((n - 1) * 10 * r)"` NOT `"Math.sqrt((n - 1) * 10 * r)"`). `mathjs` evaluates expressions natively with functions like `sqrt()`, `abs()`, `log()`, `pow()`, `sin()`, `cos()`.
+3. **Parameterize Solution Steps & Final Conclusions (CRITICAL):** Do NOT hardcode numbers inside `solutions.content` text or equations (e.g., write `x = {{x}}`, `3({{x}}) + 7 = {{answer}}`, `Jadi, jawaban yang benar adalah {{answer}}.`). Define intermediate calculations and final answers in `variableFormulas.solutions` (e.g. `"term1": "3 * x"`, `"answer": "3 * x + 7"`). This ensures that when the system switches variations during an exam or review, all solution calculation steps update dynamically!
+4. Populate `variableFormulas.variables` with **at least 5 realistic sets** of numbers to maximize question variations. Ensure generated number sets satisfy all mathematical constraints (e.g., logarithm bases must be positive and $\neq 1$, arguments inside logarithms must be positive).
+5. Include calculations for plausible incorrect options/distractors (`opt1`, `opt2`, etc.) in the variables array.
+6. Write formulas in `variableFormulas.solutions` using plain mathematical expressions with bare variable names (e.g., `"b * x_val - c"` or `"a + b"`). **DO NOT** use mustache braces like `"{{b}} * {{x_val}} - {{c}}"` as this will cause a `SyntaxError` in the formula evaluator. **DO NOT** use JavaScript `Math.` prefix for math functions (e.g., use `"sqrt((n - 1) * 10 * r)"` NOT `"Math.sqrt((n - 1) * 10 * r)"`). `mathjs` evaluates expressions natively with functions like `sqrt()`, `abs()`, `log()`, `pow()`, `sin()`, `cos()`.
 
 Set `variableFormulas: null` ONLY for pure conceptual/theoretical questions (e.g., "Who discovered gravity?").
 
@@ -77,12 +96,19 @@ Solution 1 (solutionType: "general"):
   
   ["equation" Block]: Used for mathematical calculations. IF inside a numbered step, MUST be placed in the `children` array of that step.
   **CRITICAL FOR MULTI-LINE EQUATIONS & INTERMEDIATE STEPS:**
+  - **MULTI-PHASE BREAKDOWN:** For problems requiring calculation of multiple sequential quantities (e.g., $C_s \rightarrow Q \rightarrow V_1$), NEVER merge all calculations into a single giant equation block. Split each logical phase into a separate `paragraph` header (e.g., `"Mencari kapasitas gabungan seri (C_s):"`) followed by a dedicated `equation` block using `\begin{aligned}`.
+  - **KEEP RECIPROCAL INVERSION IN SAME BLOCK:** For inverse fraction calculations (e.g., $\frac{1}{C_s} \rightarrow C_s$ or $\frac{1}{R_p} \rightarrow R_p$), NEVER split the final inverted variable into a separate standalone `equation` block. Keep it as the final line inside the same `\begin{aligned}` block using `\\[6pt] \implies C_s = \dots` (or `\\[6pt] C_s &= \dots`).
+  - **SINGLE EQUAL SIGN PER LINE:** Each line inside a TeX equation MUST contain at most ONE `=` operator.
   - If a calculation spans multiple simplification steps, DO NOT write it horizontally in one long line and **NEVER jump directly from substitution to the final answer**.
   - You MUST include explicit intermediate arithmetic evaluation lines (e.g., formula → substitution → powers/products evaluation → intermediate sums → final value).
   - You MUST parameterize intermediate steps in `variableFormulas.solutions` (e.g. `"r1_sq": "r1^2"`, `"term1": "m1 * r1_sq"`, `"ans": "term1 + term2 + term3"`) so intermediate lines render real values for all variations.
-  - **DO NOT repeat the left-hand variable on subsequent lines!**
+  - **DO NOT repeat the left-hand variable on subsequent lines!** The left-hand variable appears ONLY ONCE on line 1; subsequent lines MUST start directly with `&=`.
   - **CORRECT:**
-    `\begin{aligned} I &= m_1 r_1^2 + m_2 r_2^2 + m_3 r_3^2 \\ &= ({{m1}})({{r1}})^2 + ({{m2}})({{r2}})^2 + ({{m3}})({{r3}})^2 \\ &= ({{m1}})({{r1_sq}}) + ({{m2}})({{r2_sq}}) + ({{m3}})({{r3_sq}}) \\ &= {{term1}} + {{term2}} + {{term3}} \\ &= {{ans}} \text{ kg cm}^2 \end{aligned}`
+    `\begin{aligned} \frac{1}{C_s} &= \frac{1}{C_1} + \frac{1}{C_2} + \frac{1}{C_3} \\ &= \frac{1}{3} + \frac{1}{6} + \frac{1}{9} \\ &= \frac{6+3+2}{18} \\ &= \frac{11}{18} \\[6pt] \implies C_s &= \frac{18}{11} \text{ F} \end{aligned}`
+  - **INCORRECT (Repeating left variable \frac{1}{C_s} on line 2 AND chaining = signs horizontally):**
+    `\begin{aligned} \frac{1}{C_s} = \frac{1}{C_1} + \frac{1}{C_2} \\ \frac{1}{C_s} = \frac{1}{3} + \frac{1}{6} = \frac{3}{6} \end{aligned}`
+  - **INCORRECT (Long horizontal chain on a single line):**
+    `Q = C_s \times V = \frac{18}{11} \times 220 = 18 \times 20 = 360 \text{ C}`
   - **INCORRECT (Jumping directly to final answer without intermediate steps):**
     `\begin{aligned} I &= m_1 r_1^2 + m_2 r_2^2 + m_3 r_3^2 \\ I &= ({{m1}})({{r1}})^2 + ({{m2}})({{r2}})^2 + ({{m3}})({{r3}})^2 \\ I &= {{ans}} \text{ kg cm}^2 \end{aligned}`
   

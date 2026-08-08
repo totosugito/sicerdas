@@ -38,7 +38,10 @@ For each question, determine:
 |-------|--------------|
 | `type` | Has options → `multiple_choice` or `multiple_select`. No options → `essay`. Has Benar/Salah → `statement_reasoning`. |
 | `difficulty` | Recall/memorization → `easy`. Application → `medium`. Analysis/HOTS → `hard`. |
-| `scoringStrategy` | Default `all_or_nothing`. Use `partial` only for `multiple_select` or `essay`. |
+| `maxScore` | Default `1` for single-answer MC or SR. Sum of scores for `multiple_select`. Rubric total for `essay`. |
+| `scoringStrategy` | Default `"all_or_nothing"`. Use `"partial"` only for `multiple_select` or `essay`. |
+| `requiredTier` | Default `"free"`. Use `"pro"` or `"enterprise"` if specified. |
+| `isActive` | Default `true`. |
 | `tags` | 1–3 broad topic tags in Bahasa Indonesia. **CRITICAL:** If the markdown source contains a chapter/section header (e.g., `# BAB 7: GETARAN DAN GELOMBANG`), ALWAYS extract the chapter title (e.g., `"Getaran dan Gelombang"`) as the primary tag, alongside specific sub-topic tags (e.g., `"Pegas"`). |
 
 ### Step 4 — Convert to BlockNote JSON
@@ -58,7 +61,7 @@ Follow these critical rules:
 
 5. **Language:** All text output (questions, options, solutions, tags) must be in **Bahasa Indonesia** with proper **EYD** spelling.
 
-6. **Variable Formulas (CRITICAL for math):** Always parameterize math questions! Do not leave `variableFormulas: null` for calculation questions. Scan the equations for constants (e.g., base numbers like 2020, coefficients like 3, evaluated points like $f(2)$). Replace these constants with placeholders like `{{a}}`, `{{b}}` inside the LaTeX strings (e.g., `\log_{{{a}}} ({{b}}x)`). Generate **at least 5 distinct sets** of valid values in `variableFormulas.variables` (to maximize question variation), ensuring mathematical rules (like log domains) remain valid. Include `opt1`, `opt2`, etc., in the variables. **CRITICAL FOR `variableFormulas.solutions`:** Write formulas as plain math expressions with bare variable names (e.g., `"b * x_val - c"` or `"a + b"`). DO NOT wrap variables in mustache braces like `"{{b}} * {{x_val}} - {{c}}"` in `variableFormulas.solutions`, as this will crash the formula evaluator engine with a `SyntaxError`. **CRITICAL FOR MATHJS FUNCTIONS:** Use built-in `mathjs` functions directly (e.g. `sqrt(...)`, `abs(...)`, `log(...)`, `pow(...)`, `sin(...)`, `cos(...)`) WITHOUT the JavaScript `Math.` prefix (e.g., `"sqrt((n - 1) * 10 * r)"` NOT `"Math.sqrt((n - 1) * 10 * r)"`). Using `Math.*` will cause a runtime evaluation error in mathjs.
+6. **Variable Formulas (CRITICAL for math):** Always parameterize math questions! Do not leave `variableFormulas: null` for calculation questions. Scan the equations for constants (e.g., base numbers like 2020, coefficients like 3, evaluated points like $f(2)$). Replace these constants with placeholders like `{{a}}`, `{{b}}` inside the LaTeX strings (e.g., `\log_{{{a}}} ({{b}}x)`). Generate **at least 5 distinct sets** of valid values in `variableFormulas.variables` (to maximize question variation), ensuring mathematical rules (like log domains) remain valid. Include `opt1`, `opt2`, etc., in the variables. **CRITICAL FOR SOLUTION STEPS & TEXT:** Do NOT hardcode evaluated numbers in `content`, `options`, or `solutions` text and equations! Use placeholders (e.g., `x = {{x}}`, `3({{x}}) + 7 = {{answer}}`, `Jadi, jawaban yang benar adalah {{answer}}.`) so that solution steps update dynamically across all variations. Define derived intermediate steps and final answers in `variableFormulas.solutions` (e.g. `"term1": "3 * x"`, `"answer": "3 * x + 7"`). **CRITICAL FOR `variableFormulas.solutions`:** Write formulas as plain math expressions with bare variable names (e.g., `"b * x_val - c"` or `"a + b"`). DO NOT wrap variables in mustache braces like `"{{b}} * {{x_val}} - {{c}}"` in `variableFormulas.solutions`, as this will crash the formula evaluator engine with a `SyntaxError`. **CRITICAL FOR MATHJS FUNCTIONS:** Use built-in `mathjs` functions directly (e.g. `sqrt(...)`, `abs(...)`, `log(...)`, `pow(...)`, `sin(...)`, `cos(...)`) WITHOUT the JavaScript `Math.` prefix (e.g., `"sqrt((n - 1) * 10 * r)"` NOT `"Math.sqrt((n - 1) * 10 * r)"`). Using `Math.*` will cause a runtime evaluation error in mathjs.
 
 7. **Image Handling (Automatic SVG Companion Embedding & Context Inspection):**
    - When a question references an image (e.g., `![caption](image.jpg)`, `![alt](./fig1.png)`, or `<img>` tag):
@@ -100,7 +103,13 @@ Follow these critical rules:
    - Use `"children"` ONLY for *subsequent* sub-blocks belonging to that step (such as standalone `"equation"` blocks, `"alert"` callouts, or secondary sub-paragraphs).
    - DO NOT write words like `"Langkah pertama"`, `"Langkah 1"`, or `"1. "` inside the text string, as the `"numberedListItem"` already renders the step number badge automatically.
 4. **Concept Reminders (Callouts)** — Insert an `alert` block (`type: "tip"`) inside a step's `children` array to highlight a formula. The alert must be extremely concise. **CRITICAL JSON FORMAT:** ALL text and inline math nodes MUST be placed directly inside the `alert` block's own `content` array (`"content": [...]`). NEVER leave `"content": []` empty on an `alert` block and follow it with a separate `"paragraph"` block! If the alert contains math, split `content` into `text` and inline `latex` nodes. Example: `"type": "alert", "props": {"type": "tip"}, "content": [{"type": "text", "text": "Jarak jatuh: ", "styles": {}}, {"type": "latex", "props": {"latex": "\\Delta h = \\frac{1}{2} g t^2", "displayMode": false}}]`. **NOTE:** DO NOT include emojis (like 💡 or 🚀) in the text, as the UI already renders an icon automatically.
-5. **Multi-line Equations & Intermediate Steps (CRITICAL):** For key formulas and calculations, use `equation` blocks with `\begin{aligned} ... \end{aligned}`. **NEVER jump directly from substitution to the final result.** You MUST write explicit intermediate arithmetic evaluation lines (e.g., formula → substitution → powers/products evaluation → intermediate sums → final value) and include intermediate variables in `variableFormulas.solutions` (e.g. `"r1_sq": "r1^2"`, `"term1": "m1 * r1_sq"`). Aligned lines MUST use `&=` and DO NOT repeat the left-hand variable on subsequent lines.
+5. **Multi-line Equations & Intermediate Steps (CRITICAL):** For key formulas and calculations, ALWAYS format math into clear, vertical step-by-step blocks:
+   - **MULTI-PHASE BREAKDOWN:** For problems requiring calculation of multiple sequential quantities (e.g. $C_s \rightarrow Q \rightarrow V_1$), NEVER merge all calculations into a single giant equation block. Split each logical phase into a separate `paragraph` header (e.g., `"Mencari kapasitas gabungan seri (C_s):"`) followed by a dedicated `equation` block using `\begin{aligned}`.
+   - **KEEP RECIPROCAL INVERSION IN SAME BLOCK:** For inverse fraction calculations (e.g. $\frac{1}{C_s} \rightarrow C_s$ or $\frac{1}{R_p} \rightarrow R_p$), NEVER split the final inverted variable into a separate standalone `equation` block. Keep it as the final line inside the same `\begin{aligned}` block using `\\[6pt] \implies C_s = \dots` (or `\\[6pt] C_s &= \dots`).
+   - **SINGLE EQUAL SIGN PER LINE:** Each line inside a TeX equation MUST contain at most ONE `=` operator.
+   - **NO HORIZONTAL EQUATION CHAINS:** NEVER write a horizontal equation chain on a single line (e.g., `Q = C_s \times V = \frac{18}{11} \times 220 = 18 \times 20 = 360 \text{ C}`). Every single step MUST get its own vertical line in the `aligned` block using `&=`.
+   - **NO REPEATING LEFT-HAND VARIABLE:** The left-hand variable (e.g., `\frac{1}{C_s}` or `Q`) MUST appear **ONLY ONCE** on the first line. Subsequent lines MUST start directly with `&=` (e.g. `&= \frac{1}{3} + ...`).
+   - **NO JUMPING TO FINAL RESULT:** You MUST write explicit intermediate arithmetic evaluation lines (e.g., formula → substitution → powers/products evaluation → intermediate sums → final value) and include intermediate variables in `variableFormulas.solutions` (e.g. `"r1_sq": "r1^2"`, `"term1": "m1 * r1_sq"`).
 6. **Use inline latex** when referencing variables/values within explanatory text.
 7. **Bold labels only** — Use `{"bold": true}` only for labels like `"Diketahui:"` and step numbers (`"1. "`).
 8. **Universal Conclusion** — The final concluding paragraph of ANY solution (general or fast method) must ALWAYS be exactly: `"Jadi, jawaban yang benar adalah [hasil]."`. Never use weird phrasing like "jawaban cepatnya".
@@ -112,7 +121,7 @@ Follow these critical rules:
 1. Write the JSON to the path requested by the user (or suggest `questions-output.json` in the same directory as the source).
 2. **Validate output JSON:** Run the offline validator script to verify schema compliance, BlockNote rules, option layouts, and mathjs formulas:
    ```bash
-   python .agents/skills/exam-question-generator/scripts/validate_questions.py <output_file_or_directory>
+   python3 .agents/skills/exam-question-generator/scripts/validate_questions.py <output_file_or_directory>
    ```
 3. Fix any errors or warnings flagged by the validator script.
 4. Report the number of questions generated, validation results, and any issues.
@@ -131,6 +140,13 @@ Follow these critical rules:
 
 ❌ BAD:  "type": "math", "props": {"equation": "..."}
 ✅ GOOD: "type": "equation", "props": {"latex": "..."}
+
+❌ BAD:  Mengulang variabel sisi kiri (\frac{1}{C_s}) & merangkai '=' secara horizontal:
+        "latex": "\\begin{aligned} \\frac{1}{C_s} = \\frac{1}{C_1} + \\frac{1}{C_2} \\\\ \\frac{1}{C_s} = \\frac{1}{3} + \\frac{1}{6} = \\frac{3}{6} = \\frac{1}{2} \\end{aligned}"
+        "latex": "Q = C_s \\times V = \\frac{18}{11} \\times 220 = 18 \\times 20 = 360 \\text{ C}"
+✅ GOOD: Variabel sisi kiri HANYA 1 kali di baris 1, baris berikutnya langsung &= per baris baru, dan pembalikan pecahan menggunakan \implies di blok yang sama:
+        "latex": "\\begin{aligned} \\frac{1}{C_s} &= \\frac{1}{C_1} + \\frac{1}{C_2} + \\frac{1}{C_3} \\\\ &= \\frac{1}{3} + \\frac{1}{6} + \\frac{1}{9} \\\\ &= \\frac{6+3+2}{18} \\\\ &= \\frac{11}{18} \\\\[6pt] \\implies C_s &= \\frac{18}{11} \\text{ F} \\end{aligned}"
+        "latex": "\\begin{aligned} Q &= C_s \\times V \\\\ &= \\frac{18}{11} \\times 220 \\\\ &= 18 \\times 20 \\\\ &= 360 \\text{ C} \\end{aligned}"
 
 ❌ BAD:  Mixing "$x^2$" in text strings
 ✅ GOOD: Split into text + inline latex: {"type": "text"}, {"type": "latex", "props": {...}}, {"type": "text"}
