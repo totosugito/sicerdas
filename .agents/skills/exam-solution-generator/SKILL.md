@@ -91,7 +91,7 @@ Must follow this structure:
 #### Solution 2: `## Pembahasan: Trik Cepat` (OPTIONAL)
 
 Include when a genuine calculation shortcut exists. Structure:
-1. `> **Tip:**` callout with shortcut name/formula
+1. `> **Tip:**` callout with concrete formula/shortcut equation (omit callout if no distinct formula shortcut exists)
 2. Paragraph explaining how the shortcut applies
 3. Equation block with calculation
 4. Conclusion: `Jadi, jawaban yang benar adalah ${{answer}}$.`

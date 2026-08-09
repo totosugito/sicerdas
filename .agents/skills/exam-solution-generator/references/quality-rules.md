@@ -186,10 +186,12 @@ Never use weird phrasing like "jawaban cepatnya", "maka hasilnya", etc.
 
 ## Callout / Alert Rules
 
-- Use `> **Tip:**` blockquotes for concise formula reminders
-- DO NOT include emojis (💡, 🚀) — the UI renders icons automatically
-- Keep callouts short — formula reminders, not long narrative explanations
-- DO NOT put long explanations inside callouts
+- `> **Tip:**` callouts MUST contain a concrete formula, key mathematical identity, or specific shortcut equation (e.g., `> **Tip:** (\sqrt{x})^y = x^{y/2}`).
+- NEVER use generic procedural phrases like *"Memangkatkan kedua ruas secara langsung"*, *"Substitusi nilai"*, or *"Gunakan rumus"*.
+- If no distinct formula shortcut exists, OMIT the `> **Tip:**` blockquote entirely and start directly with narrative text.
+- DO NOT include emojis (💡, 🚀) — the UI renders icons automatically.
+- Keep callouts concise — short formula/identity reminders, not long narrative explanations.
+- DO NOT put long explanations inside callouts.
 
 ## Tags (Categorization)
 
