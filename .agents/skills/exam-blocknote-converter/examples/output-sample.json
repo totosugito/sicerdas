@@ -1,0 +1,424 @@
+[
+  {
+    "difficulty": "easy",
+    "type": "multiple_choice",
+    "maxScore": 1,
+    "scoringStrategy": "all_or_nothing",
+    "requiredTier": "free",
+    "isActive": true,
+    "content": [
+      {
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "type": "text",
+            "text": "Berapakah hasil dari ",
+            "styles": {}
+          },
+          {
+            "type": "latex",
+            "props": {
+              "latex": "3x + 7",
+              "displayMode": false
+            }
+          },
+          {
+            "type": "text",
+            "text": " jika ",
+            "styles": {}
+          },
+          {
+            "type": "latex",
+            "props": {
+              "latex": "x = {{x}}",
+              "displayMode": false
+            }
+          },
+          {
+            "type": "text",
+            "text": "?",
+            "styles": {}
+          }
+        ],
+        "children": []
+      }
+    ],
+    "options": [
+      {
+        "content": [
+          {
+            "type": "paragraph",
+            "props": {},
+            "content": [
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "{{opt1}}",
+                  "displayMode": false
+                }
+              }
+            ],
+            "children": []
+          }
+        ],
+        "isCorrect": false,
+        "score": 0,
+        "order": 1
+      },
+      {
+        "content": [
+          {
+            "type": "paragraph",
+            "props": {},
+            "content": [
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "{{opt2}}",
+                  "displayMode": false
+                }
+              }
+            ],
+            "children": []
+          }
+        ],
+        "isCorrect": false,
+        "score": 0,
+        "order": 2
+      },
+      {
+        "content": [
+          {
+            "type": "paragraph",
+            "props": {},
+            "content": [
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "{{opt3}}",
+                  "displayMode": false
+                }
+              }
+            ],
+            "children": []
+          }
+        ],
+        "isCorrect": true,
+        "score": 1,
+        "order": 3
+      },
+      {
+        "content": [
+          {
+            "type": "paragraph",
+            "props": {},
+            "content": [
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "{{opt4}}",
+                  "displayMode": false
+                }
+              }
+            ],
+            "children": []
+          }
+        ],
+        "isCorrect": false,
+        "score": 0,
+        "order": 4
+      }
+    ],
+    "solutions": [
+      {
+        "title": "Cara Konseptual",
+        "solutionType": "general",
+        "order": 1,
+        "requiredTier": "free",
+        "content": [
+          {
+            "type": "paragraph",
+            "props": {},
+            "content": [
+              {
+                "type": "text",
+                "text": "Diketahui: ",
+                "styles": {
+                  "bold": true
+                }
+              },
+              {
+                "type": "text",
+                "text": "Fungsi ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "f(x) = 3x + 7",
+                  "displayMode": false
+                }
+              },
+              {
+                "type": "text",
+                "text": " dan nilai ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "x = {{x}}",
+                  "displayMode": false
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "type": "paragraph",
+            "props": {},
+            "content": [
+              {
+                "type": "text",
+                "text": "Ditanya: ",
+                "styles": {
+                  "bold": true
+                }
+              },
+              {
+                "type": "text",
+                "text": "Nilai dari ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "3x + 7",
+                  "displayMode": false
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "type": "paragraph",
+            "props": {},
+            "content": [
+              {
+                "type": "text",
+                "text": "Konsep dan Rumus Dasar: ",
+                "styles": {
+                  "bold": true
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "type": "paragraph",
+            "props": {},
+            "content": [
+              {
+                "type": "text",
+                "text": "Untuk menentukan nilai dari suatu fungsi aljabar linier, substitusikan nilai variabel yang diketahui secara langsung ke dalam aljabar fungsi tersebut.",
+                "styles": {}
+              }
+            ],
+            "children": []
+          },
+          {
+            "type": "paragraph",
+            "props": {},
+            "content": [
+              {
+                "type": "text",
+                "text": "Langkah Penyelesaian: ",
+                "styles": {
+                  "bold": true
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "type": "paragraph",
+            "props": {},
+            "content": [
+              {
+                "type": "text",
+                "text": "Substitusikan nilai x = ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "{{x}}",
+                  "displayMode": false
+                }
+              },
+              {
+                "type": "text",
+                "text": " ke dalam fungsi 3x + 7:",
+                "styles": {}
+              }
+            ],
+            "children": []
+          },
+          {
+            "type": "equation",
+            "props": {
+              "latex": "\\begin{aligned} f({{x}}) &= 3({{x}}) + 7 \\\\ &= {{term1}} + 7 \\\\ &= {{answer}} \\end{aligned}"
+            },
+            "content": [],
+            "children": []
+          },
+          {
+            "type": "paragraph",
+            "props": {},
+            "content": [
+              {
+                "type": "text",
+                "text": "Jadi, jawaban yang benar adalah ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "{{answer}}",
+                  "displayMode": false
+                }
+              },
+              {
+                "type": "text",
+                "text": ".",
+                "styles": {}
+              }
+            ],
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Trik Cepat",
+        "solutionType": "fast_method",
+        "order": 2,
+        "requiredTier": "free",
+        "content": [
+          {
+            "type": "alert",
+            "props": {
+              "type": "tip"
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Trik Cepat: Substitusi langsung ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "x = {{x}}",
+                  "displayMode": false
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "type": "paragraph",
+            "props": {},
+            "content": [
+              {
+                "type": "text",
+                "text": "Perhitungan singkat tanpa menuliskan langkah umum panjang:",
+                "styles": {}
+              }
+            ],
+            "children": []
+          },
+          {
+            "type": "equation",
+            "props": {
+              "latex": "3({{x}}) + 7 = {{answer}}"
+            },
+            "content": [],
+            "children": []
+          },
+          {
+            "type": "paragraph",
+            "props": {},
+            "content": [
+              {
+                "type": "text",
+                "text": "Jadi, jawaban yang benar adalah ",
+                "styles": {}
+              },
+              {
+                "type": "latex",
+                "props": {
+                  "latex": "{{answer}}",
+                  "displayMode": false
+                }
+              },
+              {
+                "type": "text",
+                "text": ".",
+                "styles": {}
+              }
+            ],
+            "children": []
+          }
+        ]
+      }
+    ],
+    "variableFormulas": {
+      "variables": [
+        {
+          "x": 5,
+          "opt1": 12,
+          "opt2": 15,
+          "opt3": 22,
+          "opt4": 35
+        },
+        {
+          "x": 3,
+          "opt1": 10,
+          "opt2": 13,
+          "opt3": 16,
+          "opt4": 21
+        },
+        {
+          "x": 8,
+          "opt1": 24,
+          "opt2": 28,
+          "opt3": 31,
+          "opt4": 40
+        },
+        {
+          "x": 10,
+          "opt1": 27,
+          "opt2": 32,
+          "opt3": 37,
+          "opt4": 45
+        },
+        {
+          "x": 4,
+          "opt1": 14,
+          "opt2": 17,
+          "opt3": 19,
+          "opt4": 25
+        }
+      ],
+      "solutions": {
+        "term1": "3 * x",
+        "answer": "3 * x + 7"
+      }
+    },
+    "tags": [
+      "Matematika",
+      "Aljabar"
+    ]
+  }
+]
