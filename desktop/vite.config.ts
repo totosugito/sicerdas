@@ -1,0 +1,94 @@
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import fs from "fs";
+import path from "path";
+import { scanFsDirectory } from "./src/services/fsScanner";
+
+// Dev plugin to expose local OS filesystem API when running in Vite dev server browser
+function devFsApiPlugin() {
+  return {
+    name: "dev-fs-api",
+    configureServer(server: any) {
+      server.middlewares.use((req: any, res: any, next: any) => {
+        const url = new URL(req.url || "", `http://${req.headers.host || "localhost"}`);
+        if (url.pathname === "/api/fs/tree") {
+          const dirPath = url.searchParams.get("path") || "";
+          const tree = scanFsDirectory(dirPath);
+          res.setHeader("Content-Type", "application/json");
+          res.end(JSON.stringify(tree));
+          return;
+        }
+        if (url.pathname === "/api/fs/read") {
+          const filePath = url.searchParams.get("path") || "";
+          if (fs.existsSync(filePath)) {
+            const content = fs.readFileSync(filePath, "utf-8");
+            res.setHeader("Content-Type", "application/json");
+            res.end(content);
+          } else {
+            res.statusCode = 404;
+            res.end("File not found");
+          }
+          return;
+        }
+        if (url.pathname === "/api/fs/write") {
+          let body = "";
+          req.on("data", (chunk: any) => { body += chunk; });
+          req.on("end", () => {
+            try {
+              const { path: filePath, content } = JSON.parse(body);
+              fs.writeFileSync(filePath, content, "utf-8");
+              res.setHeader("Content-Type", "application/json");
+              res.end(JSON.stringify({ success: true }));
+            } catch (err: any) {
+              res.statusCode = 500;
+              res.end(err.message);
+            }
+          });
+          return;
+        }
+        next();
+      });
+    },
+  };
+}
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react(), tailwindcss(), devFsApiPlugin()],
+  clearScreen: false,
+  server: {
+    port: 1420,
+    strictPort: true,
+    watch: {
+      ignored: ["**/src-tauri/**"],
+    },
+  },
+  resolve: {
+    alias: [
+      {
+        find: "@",
+        replacement: `${path.resolve(import.meta.dirname, "../src")}/`,
+      },
+      {
+        find: "@desktop",
+        replacement: `${path.resolve(import.meta.dirname, "./src")}/`,
+      },
+      {
+        find: "backend",
+        replacement: `${path.resolve(import.meta.dirname, "../backend")}/`,
+      },
+      {
+        find: "react",
+        replacement: path.resolve(import.meta.dirname, "../node_modules/react"),
+      },
+      {
+        find: "react-dom",
+        replacement: path.resolve(import.meta.dirname, "../node_modules/react-dom"),
+      },
+    ],
+  },
+  define: {
+    __BUILD_VERSION__: JSON.stringify("desktop-1.0.0"),
+  },
+});

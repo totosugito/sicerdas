@@ -7,7 +7,9 @@
     "build": "vp build && tsc --noEmit",
     "serve": "vp preview",
     "start": "vp dev",
-    "prepare": "vp config"
+    "prepare": "vp config",
+    "desktop:dev": "bun --cwd desktop dev",
+    "desktop:build": "bun --cwd desktop build"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

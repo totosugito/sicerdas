@@ -10,3 +10,5 @@ export { JsonQuestionsHeaderActions } from "./JsonQuestionsHeaderActions";
 export { JsonQuestionsEmptyState } from "./JsonQuestionsEmptyState";
 export { validateAndRepairBlockNoteContent } from "./utils/validate-blocknote-content";
 export { useExportJsonQuestions } from "./hooks/useExportJsonQuestions";
+export { JsonQuestionsEditorContainer } from "./JsonQuestionsEditorContainer";
+
