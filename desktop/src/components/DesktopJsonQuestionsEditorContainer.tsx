@@ -14,8 +14,13 @@ import {
   useExportJsonQuestions,
 } from "@/features/exam/questions/json-questions";
 import { JsonQuestionImport } from "@/api/exam/questions/types";
+import { appendExportLog } from "../services/exportLogService";
 
-export function DesktopJsonQuestionsEditorContainer() {
+interface DesktopJsonQuestionsEditorContainerProps {
+  onExportSuccess?: () => void;
+}
+
+export function DesktopJsonQuestionsEditorContainer({ onExportSuccess }: DesktopJsonQuestionsEditorContainerProps) {
   const { t } = useAppTranslation();
 
   const [state, setState] = useState({
@@ -73,6 +78,7 @@ export function DesktopJsonQuestionsEditorContainer() {
   const setJsonQuestionsPackageParams = useAppStore(
     (state) => state.setJsonQuestionsPackageParams,
   );
+  const currentJsonFilePath = useAppStore((state) => state.currentJsonFilePath);
 
   const globalForm = useAppForm({
     defaultValues: {
@@ -140,6 +146,20 @@ export function DesktopJsonQuestionsEditorContainer() {
     setSelectedIndices: () => {},
     setSelectedIndex,
     tagsData,
+    onExportSuccess: async (_, questionCount) => {
+      if (!currentJsonFilePath) return;
+      const parts = currentJsonFilePath.replace(/\/$/, "").split("/");
+      parts.pop();
+      parts.pop();
+      const topicDir = parts.join("/");
+      const sourceFile = currentJsonFilePath.replace(/\/$/, "").split("/").slice(-2).join("/");
+      await appendExportLog(topicDir, {
+        sourceFile,
+        questionCount,
+        status: "success",
+      });
+      onExportSuccess?.();
+    },
   });
 
   const handleUpdateQuestion = (updatedQuestion: JsonQuestionImport) => {

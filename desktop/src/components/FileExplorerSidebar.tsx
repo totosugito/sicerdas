@@ -8,6 +8,7 @@ import {
   Maximize2,
   FileText,
   FileImage,
+  CheckCircle2,
 } from "lucide-react";
 import { VscJson, VscMarkdown } from "react-icons/vsc";
 import { ImFilePdf } from "react-icons/im";
@@ -26,6 +27,8 @@ interface FileExplorerSidebarProps {
   onSelectFile: (filePath: string) => void;
   onNavigateFolder: (dirPath: string) => void;
   isDirty?: boolean;
+  exportedFiles?: Set<string>;
+  topicDir?: string | null;
 }
 
 export function FileExplorerSidebar({
@@ -34,6 +37,8 @@ export function FileExplorerSidebar({
   onSelectFile,
   onNavigateFolder,
   isDirty,
+  exportedFiles,
+  topicDir,
 }: FileExplorerSidebarProps) {
   const [width, setWidth] = useState(() => {
     const saved = localStorage.getItem(SIDEBAR_WIDTH_KEY);
@@ -96,6 +101,17 @@ export function FileExplorerSidebar({
     setExpandedFolders(all);
   };
 
+  const isFileExported = (filePath: string): boolean => {
+    if (!exportedFiles || !topicDir) return false;
+    const normalizedTopic = topicDir.replace(/\/$/, "");
+    const normalizedFile = filePath.replace(/\/$/, "");
+    if (normalizedFile.startsWith(normalizedTopic + "/")) {
+      const relativePath = normalizedFile.slice(normalizedTopic.length + 1);
+      return exportedFiles.has(relativePath);
+    }
+    return false;
+  };
+
   const renderTree = (nodes: FileNode[], level = 0) => {
     return (
       <ul className="flex flex-col gap-0.5 select-none text-xs">
@@ -140,6 +156,7 @@ export function FileExplorerSidebar({
           const isMd = node.name.endsWith(".md");
           const isImage = /\.(png|jpe?g|gif|webp|bmp|ico)$/i.test(node.name);
           const isSvg = node.name.endsWith(".svg");
+          const isExported = isJson && isFileExported(node.path);
 
           return (
             <li key={node.path}>
@@ -167,9 +184,16 @@ export function FileExplorerSidebar({
                   )}
                   <span className="truncate">{node.name}</span>
                 </div>
-                {isSelected && isDirty && (
-                  <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse shrink-0" title="Unsaved changes" />
-                )}
+                <div className="flex items-center gap-1 shrink-0">
+                  {isExported && (
+                    <span title="Exported">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                    </span>
+                  )}
+                  {isSelected && isDirty && (
+                    <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" title="Unsaved changes" />
+                  )}
+                </div>
               </div>
             </li>
           );

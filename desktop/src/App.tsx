@@ -8,6 +8,7 @@ import { ImageViewer } from "./components/ImageViewer";
 import { NoFileSelected } from "./components/NoFileSelected";
 import { InvalidFileSelected } from "./components/InvalidFileSelected";
 import { useAppStore } from "@/stores/useAppStore";
+import { getExportedFiles } from "./services/exportLogService";
 
 const storageService = getStorageService();
 
@@ -36,6 +37,7 @@ export function App() {
 
   const [historyStack, setHistoryStack] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(0);
+  const [exportedFiles, setExportedFiles] = useState<Set<string>>(new Set());
 
   // Resolve user's home directory on mount, restore last path if available
   useEffect(() => {
@@ -77,11 +79,20 @@ export function App() {
       storageService.readDirectoryTree(currentFolderPath).then((tree) => {
         setFileTree(tree);
       });
+      refreshExportedFiles();
     }
   }, [currentFolderPath]);
 
+  const refreshExportedFiles = async () => {
+    if (currentFolderPath) {
+      const files = await getExportedFiles(currentFolderPath);
+      setExportedFiles(files);
+    }
+  };
+
   const jsonQuestions = useAppStore((state) => state.jsonQuestions);
   const setJsonQuestions = useAppStore((state) => state.setJsonQuestions);
+  const setCurrentJsonFilePath = useAppStore((state) => state.setCurrentJsonFilePath);
 
   const handleOpenFolder = async () => {
     const folderPath = await storageService.selectDirectory();
@@ -121,6 +132,7 @@ export function App() {
         setSelectedFilePath(filePath);
         setRawFileContent(null);
         setIsDirty(false);
+        setCurrentJsonFilePath(null);
         setSaveStatus("Loaded");
         setTimeout(() => setSaveStatus(null), 2000);
         return;
@@ -133,11 +145,13 @@ export function App() {
       if (isMd) {
         setIsMarkdownFile(true);
         setIsJsonFile(false);
+        setCurrentJsonFilePath(null);
       } else {
         setIsMarkdownFile(false);
         setIsJsonFile(true);
         const parsed = JSON.parse(content);
         setJsonQuestions(Array.isArray(parsed) ? parsed : [parsed]);
+        setCurrentJsonFilePath(filePath);
       }
       setSelectedFilePath(filePath);
       setIsDirty(false);
@@ -244,6 +258,8 @@ export function App() {
           onSelectFile={handleSelectFile}
           onNavigateFolder={handleNavigateToPath}
           isDirty={isDirty}
+          exportedFiles={exportedFiles}
+          topicDir={currentFolderPath}
         />
 
         {/* Right Side Main Editor Container */}
@@ -259,7 +275,7 @@ export function App() {
           ) : selectedFilePath && isMarkdownFile && rawFileContent ? (
             <MarkdownViewer content={rawFileContent} filePath={selectedFilePath} />
           ) : selectedFilePath && isJsonFile ? (
-            <DesktopJsonQuestionsEditorContainer />
+            <DesktopJsonQuestionsEditorContainer onExportSuccess={refreshExportedFiles} />
           ) : selectedFilePath && isImageFile && imageDataUrl ? (
             <ImageViewer src={imageDataUrl} alt={selectedFilePath} />
           ) : selectedFilePath && invalidFile ? (

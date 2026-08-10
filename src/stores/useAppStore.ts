@@ -86,6 +86,8 @@ type Store = {
 
   jsonQuestions: JsonQuestionImport[];
   setJsonQuestions: (questions: JsonQuestionImport[]) => void;
+  currentJsonFilePath: string | null;
+  setCurrentJsonFilePath: (path: string | null) => void;
 
   jsonQuestionsGlobalParams: {
     subjectId: string;
@@ -190,6 +192,7 @@ export const defaultStore = {
   },
   mobileMenu: {} as Record<string, boolean>,
   jsonQuestions: [] as JsonQuestionImport[],
+  currentJsonFilePath: null as string | null,
   jsonQuestionsGlobalParams: {
     subjectId: "",
     passageId: null,
@@ -281,6 +284,8 @@ export const useAppStore = create<Store>()(
 
       jsonQuestions: defaultStore.jsonQuestions,
       setJsonQuestions: (questions: JsonQuestionImport[]) => set({ jsonQuestions: questions }),
+      currentJsonFilePath: defaultStore.currentJsonFilePath,
+      setCurrentJsonFilePath: (path: string | null) => set({ currentJsonFilePath: path }),
 
       jsonQuestionsGlobalParams: defaultStore.jsonQuestionsGlobalParams,
       setJsonQuestionsGlobalParams: (params: any) =>
@@ -307,6 +312,7 @@ export const useAppStore = create<Store>()(
           elementExpandedSections: defaultStore.elementExpandedSections,
           mobileMenu: defaultStore.mobileMenu,
           jsonQuestions: defaultStore.jsonQuestions,
+          currentJsonFilePath: defaultStore.currentJsonFilePath,
           jsonQuestionsGlobalParams: defaultStore.jsonQuestionsGlobalParams,
           jsonQuestionsPackageParams: defaultStore.jsonQuestionsPackageParams,
           examPackages: defaultStore.examPackages,

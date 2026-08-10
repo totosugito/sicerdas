@@ -18,6 +18,7 @@ interface UseExportJsonQuestionsProps {
   setSelectedIndices: (indices: number[]) => void;
   setSelectedIndex: (index: number) => void;
   tagsData?: { data?: { items: Array<{ label: string; value: string }> } };
+  onExportSuccess?: (filePaths: string[], questionCount: number) => void;
 }
 
 export function useExportJsonQuestions({
@@ -29,6 +30,7 @@ export function useExportJsonQuestions({
   setSelectedIndices,
   setSelectedIndex,
   tagsData,
+  onExportSuccess,
 }: UseExportJsonQuestionsProps) {
   const { t } = useAppTranslation();
   const queryClient = useQueryClient();
@@ -152,6 +154,10 @@ export function useExportJsonQuestions({
           successCount.toString(),
         ),
       });
+
+      if (onExportSuccess) {
+        onExportSuccess([], successCount);
+      }
 
       // Update local store: remove successfully exported questions
       const newJsonQuestions = jsonQuestions.filter((_, i) => !targetIndices.includes(i));
