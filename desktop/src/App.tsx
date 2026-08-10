@@ -3,12 +3,17 @@ import { FileExplorerSidebar } from "./components/FileExplorerSidebar";
 import { Toolbar } from "./components/Toolbar";
 import { getStorageService, FileNode } from "./services/fileStorageService";
 import { JsonQuestionsEditorContainer } from "@/features/exam/questions/json-questions";
-import { FileText } from "lucide-react";
+import { MarkdownViewer } from "./components/MarkdownViewer";
+import { ImageViewer } from "./components/ImageViewer";
+import { NoFileSelected } from "./components/NoFileSelected";
+import { InvalidFileSelected } from "./components/InvalidFileSelected";
 import { useAppStore } from "@/stores/useAppStore";
 
 const storageService = getStorageService();
 
 const LAST_PATH_KEY = "sicerdas-desktop:lastPath";
+const RAW_MD_KEY = "sicerdas-desktop:showRawMarkdown";
+const RAW_JSON_KEY = "sicerdas-desktop:showRawJson";
 
 export function App() {
   const [currentFolderPath, setCurrentFolderPath] = useState<string | null>(null);
@@ -16,6 +21,18 @@ export function App() {
   const [selectedFilePath, setSelectedFilePath] = useState<string | null>(null);
   const [isDirty, setIsDirty] = useState(false);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
+  const [rawFileContent, setRawFileContent] = useState<string | null>(null);
+  const [isMarkdownFile, setIsMarkdownFile] = useState(false);
+  const [isJsonFile, setIsJsonFile] = useState(false);
+  const [isImageFile, setIsImageFile] = useState(false);
+  const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
+  const [showRawMarkdown, setShowRawMarkdown] = useState(() => {
+    return localStorage.getItem(RAW_MD_KEY) === "true";
+  });
+  const [showRawJson, setShowRawJson] = useState(() => {
+    return localStorage.getItem(RAW_JSON_KEY) === "true";
+  });
+  const [invalidFile, setInvalidFile] = useState<{ path: string; message: string } | null>(null);
 
   const [historyStack, setHistoryStack] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(0);
@@ -36,6 +53,15 @@ export function App() {
       localStorage.setItem(LAST_PATH_KEY, currentFolderPath);
     }
   }, [currentFolderPath]);
+
+  // Persist raw view toggles to localStorage
+  useEffect(() => {
+    localStorage.setItem(RAW_MD_KEY, String(showRawMarkdown));
+  }, [showRawMarkdown]);
+
+  useEffect(() => {
+    localStorage.setItem(RAW_JSON_KEY, String(showRawJson));
+  }, [showRawJson]);
 
   const pushHistory = (path: string) => {
     setHistoryStack((prev) => {
@@ -68,16 +94,66 @@ export function App() {
   };
 
   const handleSelectFile = async (filePath: string) => {
+    setInvalidFile(null);
+    const isMd = filePath.endsWith(".md");
+    const isJson = filePath.endsWith(".json");
+    const isImage = /\.(png|jpe?g|svg|gif|webp|bmp|ico)$/i.test(filePath);
+
+    if (!isMd && !isJson && !isImage) {
+      setSelectedFilePath(filePath);
+      setIsMarkdownFile(false);
+      setIsJsonFile(false);
+      setIsImageFile(false);
+      setInvalidFile({
+        path: filePath,
+        message: "Unsupported file type. Only .md, .json, and image files are supported.",
+      });
+      return;
+    }
+
     try {
+      if (isImage) {
+        const dataUrl = await storageService.readImageFile(filePath);
+        setImageDataUrl(dataUrl);
+        setIsImageFile(true);
+        setIsMarkdownFile(false);
+        setIsJsonFile(false);
+        setSelectedFilePath(filePath);
+        setRawFileContent(null);
+        setIsDirty(false);
+        setSaveStatus("Loaded");
+        setTimeout(() => setSaveStatus(null), 2000);
+        return;
+      }
+
       const content = await storageService.readJsonFile(filePath);
-      const parsed = JSON.parse(content);
-      setJsonQuestions(Array.isArray(parsed) ? parsed : [parsed]);
+      setRawFileContent(content);
+      setImageDataUrl(null);
+      setIsImageFile(false);
+      if (isMd) {
+        setIsMarkdownFile(true);
+        setIsJsonFile(false);
+      } else {
+        setIsMarkdownFile(false);
+        setIsJsonFile(true);
+        const parsed = JSON.parse(content);
+        setJsonQuestions(Array.isArray(parsed) ? parsed : [parsed]);
+      }
       setSelectedFilePath(filePath);
       setIsDirty(false);
       setSaveStatus("Loaded");
       setTimeout(() => setSaveStatus(null), 2000);
     } catch (err) {
       console.error("Error loading file:", err);
+      setSelectedFilePath(filePath);
+      setIsMarkdownFile(false);
+      setIsJsonFile(false);
+      setIsImageFile(false);
+      setImageDataUrl(null);
+      setInvalidFile({
+        path: filePath,
+        message: err instanceof Error ? err.message : "Could not read or parse this file.",
+      });
     }
   };
 
@@ -114,6 +190,7 @@ export function App() {
 
   const handleNavigateToPath = (path: string) => {
     setSelectedFilePath(null);
+    setRawFileContent(null);
     setCurrentFolderPath(path);
     pushHistory(path);
   };
@@ -123,6 +200,7 @@ export function App() {
     if (prevIndex < 0) return;
     setHistoryIndex(prevIndex);
     setSelectedFilePath(null);
+    setRawFileContent(null);
     setCurrentFolderPath(historyStack[prevIndex]);
   };
 
@@ -131,19 +209,20 @@ export function App() {
     if (nextIndex >= historyStack.length) return;
     setHistoryIndex(nextIndex);
     setSelectedFilePath(null);
+    setRawFileContent(null);
     setCurrentFolderPath(historyStack[nextIndex]);
   };
 
   return (
     <div className="flex flex-col h-screen w-screen bg-background overflow-hidden">
-      {/* 🌟 ULTRA-CLEAN FULL-WIDTH TOP TOOLBAR */}
       <Toolbar
         currentFolderPath={currentFolderPath}
-        selectedFileName={selectedFilePath ? selectedFilePath.split("/").pop() ?? null : null}
         isDirty={isDirty}
         saveStatus={saveStatus}
         canGoBack={historyIndex > 0}
         canGoForward={historyIndex < historyStack.length - 1}
+        showRawMarkdown={showRawMarkdown}
+        showRawJson={showRawJson}
         onBack={handleBack}
         onForward={handleForward}
         onOpenFolder={handleOpenFolder}
@@ -152,6 +231,8 @@ export function App() {
         onGoHome={handleGoHome}
         onNavigateToPath={handleNavigateToPath}
         onSave={handleSaveFile}
+        onToggleRawMarkdown={() => setShowRawMarkdown((v) => !v)}
+        onToggleRawJson={() => setShowRawJson((v) => !v)}
       />
 
       {/* Main App Workspace Layout */}
@@ -167,20 +248,24 @@ export function App() {
 
         {/* Right Side Main Editor Container */}
         <main className="flex-1 h-full min-w-0 overflow-y-auto p-6">
-          {selectedFilePath ? (
+          {selectedFilePath && isMarkdownFile && showRawMarkdown && rawFileContent ? (
+            <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-foreground">
+              {rawFileContent}
+            </pre>
+          ) : selectedFilePath && isJsonFile && showRawJson && rawFileContent ? (
+            <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-foreground">
+              {rawFileContent}
+            </pre>
+          ) : selectedFilePath && isMarkdownFile && rawFileContent ? (
+            <MarkdownViewer content={rawFileContent} filePath={selectedFilePath} />
+          ) : selectedFilePath && isJsonFile ? (
             <JsonQuestionsEditorContainer showBackTitle={false} />
+          ) : selectedFilePath && isImageFile && imageDataUrl ? (
+            <ImageViewer src={imageDataUrl} alt={selectedFilePath} />
+          ) : selectedFilePath && invalidFile ? (
+            <InvalidFileSelected filePath={invalidFile.path} message={invalidFile.message} />
           ) : (
-            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-              <div className="p-4 rounded-full bg-primary/10 mb-4">
-                <FileText className="h-10 w-10 text-primary opacity-80" />
-              </div>
-              <h2 className="text-xl font-semibold text-foreground mb-2">
-                Sicerdas Question Studio
-              </h2>
-              <p className="max-w-md text-sm mb-6">
-                Select a JSON question file from the Explorer sidebar on the left, or use the top address bar to open a different directory.
-              </p>
-            </div>
+            <NoFileSelected />
           )}
         </main>
       </div>

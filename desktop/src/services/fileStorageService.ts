@@ -1,5 +1,5 @@
 import { open } from "@tauri-apps/plugin-dialog";
-import { readDir, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
+import { readDir, readTextFile, writeTextFile, readFile } from "@tauri-apps/plugin-fs";
 import { homeDir } from "@tauri-apps/api/path";
 
 export interface FileNode {
@@ -14,6 +14,7 @@ export interface FileStorageService {
   getHomeDir(): Promise<string>;
   readDirectoryTree(dirPath: string): Promise<FileNode[]>;
   readJsonFile(filePath: string): Promise<string>;
+  readImageFile(filePath: string): Promise<string>;
   writeJsonFile(filePath: string, content: string): Promise<void>;
 }
 
@@ -86,6 +87,18 @@ export class TauriNativeStorageService implements FileStorageService {
     return await readTextFile(filePath);
   }
 
+  async readImageFile(filePath: string): Promise<string> {
+    const bytes = await readFile(filePath);
+    const ext = filePath.split(".").pop()?.toLowerCase() ?? "png";
+    const mime = ext === "svg" ? "image/svg+xml" : ext === "jpg" || ext === "jpeg" ? "image/jpeg" : `image/${ext}`;
+    let binary = "";
+    for (let i = 0; i < bytes.length; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    const base64 = btoa(binary);
+    return `data:${mime};base64,${base64}`;
+  }
+
   async writeJsonFile(filePath: string, content: string): Promise<void> {
     await writeTextFile(filePath, content);
   }
@@ -129,6 +142,22 @@ export class DevWebFsStorageService implements FileStorageService {
       return await res.text();
     }
     throw new Error(`Could not read file at ${filePath}`);
+  }
+
+  async readImageFile(filePath: string): Promise<string> {
+    const res = await fetch(`/api/fs/read?path=${encodeURIComponent(filePath)}`);
+    if (!res.ok) throw new Error(`Could not read file at ${filePath}`);
+    const data = await res.json();
+    if (data.base64 && data.mime) {
+      return `data:${data.mime};base64,${data.base64}`;
+    }
+    const blob = await res.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(blob);
+    });
   }
 
   async writeJsonFile(filePath: string, content: string): Promise<void> {

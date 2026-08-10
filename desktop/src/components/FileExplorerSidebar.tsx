@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import {
   FolderOpen,
-  FileCode,
   Folder,
   ChevronRight,
   ChevronDown,
   Minimize2,
   Maximize2,
+  FileText,
+  FileImage,
 } from "lucide-react";
+import { VscJson, VscMarkdown } from "react-icons/vsc";
+import { ImFilePdf } from "react-icons/im";
+import { TbSvg } from "react-icons/tb";
 import { FileNode } from "../services/fileStorageService";
 import { Button } from "@/components/ui/button";
 
@@ -92,20 +96,33 @@ export function FileExplorerSidebar({
           const isJson = node.name.endsWith(".json");
           const isPdf = node.name.endsWith(".pdf");
           const isMd = node.name.endsWith(".md");
+          const isImage = /\.(png|jpe?g|gif|webp|bmp|ico)$/i.test(node.name);
+          const isSvg = node.name.endsWith(".svg");
 
           return (
             <li key={node.path}>
               <div
                 onClick={() => onSelectFile(node.path)}
-                className={`flex items-center justify-between px-2 py-1.5 rounded cursor-pointer transition-colors ${
-                  isSelected
+                className={`flex items-center justify-between px-2 py-1.5 rounded cursor-pointer transition-colors ${isSelected
                     ? "bg-primary/10 text-primary font-medium border-l-2 border-primary"
                     : "hover:bg-accent/60 text-foreground"
-                }`}
+                  }`}
                 style={{ paddingLeft: `${level * 12 + 20}px` }}
               >
                 <div className="flex items-center gap-1.5 min-w-0">
-                  <FileCode className={`h-3.5 w-3.5 shrink-0 ${isJson ? "text-sky-500" : isPdf ? "text-red-500" : isMd ? "text-emerald-500" : "text-slate-400"}`} />
+                  {isMd ? (
+                    <VscMarkdown className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
+                  ) : isJson ? (
+                    <VscJson className="h-3.5 w-3.5 shrink-0 text-sky-500" />
+                  ) : isPdf ? (
+                    <ImFilePdf className="h-3.5 w-3.5 shrink-0 text-red-500" />
+                  ) : isImage ? (
+                    <FileImage className="h-3.5 w-3.5 shrink-0 text-violet-500" />
+                  ) : isSvg ? (
+                    <TbSvg className="h-3.5 w-3.5 shrink-0 text-blue-500" />
+                  ) : (
+                    <FileText className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+                  )}
                   <span className="truncate">{node.name}</span>
                 </div>
                 {isSelected && isDirty && (
