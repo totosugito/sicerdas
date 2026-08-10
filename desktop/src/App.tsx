@@ -1,29 +1,50 @@
 import React, { useState, useEffect } from "react";
 import { FileExplorerSidebar } from "./components/FileExplorerSidebar";
-import { getStorageService, DEFAULT_OS_PATH, FileNode } from "./services/fileStorageService";
+import { Toolbar } from "./components/Toolbar";
+import { getStorageService, FileNode } from "./services/fileStorageService";
 import { JsonQuestionsEditorContainer } from "@/features/exam/questions/json-questions";
-import {
-  Save,
-  CheckCircle2,
-  FolderOpen,
-  ArrowUp,
-  RefreshCw,
-  Folder,
-  FileText,
-  FilePlus,
-  FolderPlus,
-} from "lucide-react";
+import { FileText } from "lucide-react";
 import { useAppStore } from "@/stores/useAppStore";
-import { Button } from "@/components/ui/button";
 
 const storageService = getStorageService();
 
+const LAST_PATH_KEY = "sicerdas-desktop:lastPath";
+
 export function App() {
-  const [currentFolderPath, setCurrentFolderPath] = useState<string | null>(DEFAULT_OS_PATH);
+  const [currentFolderPath, setCurrentFolderPath] = useState<string | null>(null);
   const [fileTree, setFileTree] = useState<FileNode[]>([]);
   const [selectedFilePath, setSelectedFilePath] = useState<string | null>(null);
   const [isDirty, setIsDirty] = useState(false);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
+
+  const [historyStack, setHistoryStack] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(0);
+
+  // Resolve user's home directory on mount, restore last path if available
+  useEffect(() => {
+    storageService.getHomeDir().then((home) => {
+      const saved = localStorage.getItem(LAST_PATH_KEY);
+      const initial = saved || home;
+      setCurrentFolderPath(initial);
+      setHistoryStack([initial]);
+    });
+  }, []);
+
+  // Persist current path to localStorage
+  useEffect(() => {
+    if (currentFolderPath) {
+      localStorage.setItem(LAST_PATH_KEY, currentFolderPath);
+    }
+  }, [currentFolderPath]);
+
+  const pushHistory = (path: string) => {
+    setHistoryStack((prev) => {
+      const trimmed = prev.slice(0, historyIndex + 1);
+      if (trimmed[trimmed.length - 1] === path) return trimmed;
+      return [...trimmed, path];
+    });
+    setHistoryIndex((prev) => prev + 1);
+  };
 
   useEffect(() => {
     if (currentFolderPath) {
@@ -41,6 +62,7 @@ export function App() {
     if (!folderPath) return;
 
     setCurrentFolderPath(folderPath);
+    pushHistory(folderPath);
     const tree = await storageService.readDirectoryTree(folderPath);
     setFileTree(tree);
   };
@@ -81,80 +103,56 @@ export function App() {
     if (!currentFolderPath || currentFolderPath === "/") return;
     const parentPath = currentFolderPath.replace(/\/+$/, "").split("/").slice(0, -1).join("/") || "/";
     setCurrentFolderPath(parentPath);
+    pushHistory(parentPath);
+  };
+
+  const handleGoHome = async () => {
+    const home = await storageService.getHomeDir();
+    setCurrentFolderPath(home);
+    pushHistory(home);
+  };
+
+  const handleNavigateToPath = (path: string) => {
+    setSelectedFilePath(null);
+    setCurrentFolderPath(path);
+    pushHistory(path);
+  };
+
+  const handleBack = () => {
+    const prevIndex = historyIndex - 1;
+    if (prevIndex < 0) return;
+    setHistoryIndex(prevIndex);
+    setSelectedFilePath(null);
+    setCurrentFolderPath(historyStack[prevIndex]);
+  };
+
+  const handleForward = () => {
+    const nextIndex = historyIndex + 1;
+    if (nextIndex >= historyStack.length) return;
+    setHistoryIndex(nextIndex);
+    setSelectedFilePath(null);
+    setCurrentFolderPath(historyStack[nextIndex]);
   };
 
   return (
     <div className="flex flex-col h-screen w-screen bg-background overflow-hidden">
       {/* 🌟 ULTRA-CLEAN FULL-WIDTH TOP TOOLBAR */}
-      <header className="h-10 w-full border-b bg-card/60 backdrop-blur-md flex items-center justify-between px-3 shrink-0 gap-2">
-        {/* Navigation & Directory Actions */}
-        <div className="flex items-center gap-1 shrink-0">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={handleOpenFolder}
-            title="Open Directory Folder"
-            className="h-7 w-7"
-          >
-            <FolderOpen className="h-4 w-4" />
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={handleNavigateUp}
-            title="Up to Parent Directory"
-            disabled={!currentFolderPath || currentFolderPath === "/"}
-            className="h-7 w-7"
-          >
-            <ArrowUp className="h-4 w-4" />
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={handleRefreshFolder}
-            title="Refresh Folder"
-            className="h-7 w-7"
-          >
-            <RefreshCw className="h-4 w-4" />
-          </Button>
-        </div>
-
-        {/* Center: Full-Width Address Bar */}
-        <div className="flex-1 min-w-0">
-          <input
-            type="text"
-            readOnly
-            value={currentFolderPath || "No folder opened"}
-            onClick={handleOpenFolder}
-            className="w-full h-7 px-2.5 text-[11px] font-mono bg-muted/40 border rounded text-foreground truncate cursor-pointer hover:bg-muted/70 transition focus:outline-none focus:ring-1 focus:ring-primary"
-            title="Click to open folder dialog"
-          />
-        </div>
-
-        {/* Right: Actions */}
-        <div className="flex items-center gap-1.5 shrink-0">
-          {saveStatus && (
-            <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium animate-fadeIn">
-              <CheckCircle2 className="h-3.5 w-3.5" />
-              {saveStatus}
-            </span>
-          )}
-
-          {selectedFilePath && (
-            <Button
-              onClick={handleSaveFile}
-              variant="success"
-              size="icon-sm"
-              className="h-7 w-7 shadow-xs"
-              title="Save file (Ctrl+S)"
-            >
-              <Save className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </header>
+      <Toolbar
+        currentFolderPath={currentFolderPath}
+        selectedFileName={selectedFilePath ? selectedFilePath.split("/").pop() ?? null : null}
+        isDirty={isDirty}
+        saveStatus={saveStatus}
+        canGoBack={historyIndex > 0}
+        canGoForward={historyIndex < historyStack.length - 1}
+        onBack={handleBack}
+        onForward={handleForward}
+        onOpenFolder={handleOpenFolder}
+        onNavigateUp={handleNavigateUp}
+        onRefresh={handleRefreshFolder}
+        onGoHome={handleGoHome}
+        onNavigateToPath={handleNavigateToPath}
+        onSave={handleSaveFile}
+      />
 
       {/* Main App Workspace Layout */}
       <div className="flex-1 flex min-h-0 w-full overflow-hidden">
@@ -163,6 +161,7 @@ export function App() {
           fileTree={fileTree}
           selectedFilePath={selectedFilePath}
           onSelectFile={handleSelectFile}
+          onNavigateFolder={handleNavigateToPath}
           isDirty={isDirty}
         />
 
@@ -176,15 +175,11 @@ export function App() {
                 <FileText className="h-10 w-10 text-primary opacity-80" />
               </div>
               <h2 className="text-xl font-semibold text-foreground mb-2">
-                Sicerdas Desktop Question Studio
+                Sicerdas Question Studio
               </h2>
               <p className="max-w-md text-sm mb-6">
                 Select a JSON question file from the Explorer sidebar on the left, or use the top address bar to open a different directory.
               </p>
-              <Button onClick={handleOpenFolder} size="md" className="gap-2">
-                <FolderOpen className="h-4 w-4" />
-                <span>Open OS Question Folder</span>
-              </Button>
             </div>
           )}
         </main>

@@ -40,7 +40,7 @@ export const SolutionList = ({
                 <div className="flex flex-col gap-4">
                     {items.map((item, index) => (
                         <SolutionRow
-                            key={item.id}
+                            key={item.id ?? `sol-${index}`}
                             solution={item}
                             index={index}
                             onDelete={onDelete}

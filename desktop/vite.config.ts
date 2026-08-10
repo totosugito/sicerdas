@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import fs from "fs";
+import os from "os";
 import path from "path";
 import { scanFsDirectory } from "./src/services/fsScanner";
 
@@ -12,6 +13,11 @@ function devFsApiPlugin() {
     configureServer(server: any) {
       server.middlewares.use((req: any, res: any, next: any) => {
         const url = new URL(req.url || "", `http://${req.headers.host || "localhost"}`);
+        if (url.pathname === "/api/fs/home") {
+          res.setHeader("Content-Type", "text/plain");
+          res.end(os.homedir());
+          return;
+        }
         if (url.pathname === "/api/fs/tree") {
           const dirPath = url.searchParams.get("path") || "";
           const tree = scanFsDirectory(dirPath);
@@ -62,6 +68,9 @@ export default defineConfig({
     strictPort: true,
     watch: {
       ignored: ["**/src-tauri/**"],
+    },
+    fs: {
+      allow: [".."],
     },
   },
   resolve: {

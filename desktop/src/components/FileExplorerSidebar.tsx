@@ -15,6 +15,7 @@ interface FileExplorerSidebarProps {
   fileTree: FileNode[];
   selectedFilePath: string | null;
   onSelectFile: (filePath: string) => void;
+  onNavigateFolder: (dirPath: string) => void;
   isDirty?: boolean;
 }
 
@@ -22,6 +23,7 @@ export function FileExplorerSidebar({
   fileTree,
   selectedFilePath,
   onSelectFile,
+  onNavigateFolder,
   isDirty,
 }: FileExplorerSidebarProps) {
   const [expandedFolders, setExpandedFolders] = useState<Record<string, boolean>>({});
@@ -59,13 +61,28 @@ export function FileExplorerSidebar({
             return (
               <li key={node.path} className="flex flex-col">
                 <div
-                  onClick={() => toggleFolder(node.path)}
                   className="flex items-center gap-1.5 px-2 py-1.5 hover:bg-accent/60 rounded cursor-pointer text-muted-foreground font-medium transition-colors"
                   style={{ paddingLeft: `${level * 12 + 8}px` }}
                 >
-                  {isExpanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
-                  <Folder className="h-3.5 w-3.5 text-amber-500 fill-amber-500/20 shrink-0" />
-                  <span className="truncate">{node.name}</span>
+                  <span
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFolder(node.path);
+                    }}
+                    className="flex items-center shrink-0"
+                  >
+                    {isExpanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                  </span>
+                  <div
+                    onClick={() => {
+                      toggleFolder(node.path);
+                      onNavigateFolder(node.path);
+                    }}
+                    className="flex items-center gap-1.5 min-w-0 flex-1"
+                  >
+                    <Folder className="h-3.5 w-3.5 text-amber-500 fill-amber-500/20 shrink-0" />
+                    <span className="truncate">{node.name}</span>
+                  </div>
                 </div>
                 {isExpanded && node.children && renderTree(node.children, level + 1)}
               </li>

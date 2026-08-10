@@ -1,5 +1,6 @@
 import { open } from "@tauri-apps/plugin-dialog";
 import { readDir, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
+import { homeDir } from "@tauri-apps/api/path";
 
 export interface FileNode {
   name: string;
@@ -10,12 +11,11 @@ export interface FileNode {
 
 export interface FileStorageService {
   selectDirectory(): Promise<string | null>;
+  getHomeDir(): Promise<string>;
   readDirectoryTree(dirPath: string): Promise<FileNode[]>;
   readJsonFile(filePath: string): Promise<string>;
   writeJsonFile(filePath: string, content: string): Promise<void>;
 }
-
-export const DEFAULT_OS_PATH = "/home/toto/Documents/sicerdas-cloud/bimbinganalumniui.com/001-050/";
 
 // Detect if app is executing inside compiled Tauri binary window vs browser dev server
 export const isTauriEnvironment = () => {
@@ -25,17 +25,27 @@ export const isTauriEnvironment = () => {
 // 1. Native Tauri Storage Service (Used when built or launched in Tauri native window)
 export class TauriNativeStorageService implements FileStorageService {
   async selectDirectory(): Promise<string | null> {
+    const home = await this.getHomeDir();
     try {
       const selected = await open({
         directory: true,
         multiple: false,
-        defaultPath: DEFAULT_OS_PATH,
+        defaultPath: home,
       });
       if (typeof selected === "string") return selected;
       return null;
     } catch (err) {
       console.warn("Native folder dialog fallback:", err);
-      return DEFAULT_OS_PATH;
+      return home;
+    }
+  }
+
+  async getHomeDir(): Promise<string> {
+    try {
+      return await homeDir();
+    } catch (err) {
+      console.warn("Failed to get home directory:", err);
+      return "/";
     }
   }
 
@@ -84,8 +94,21 @@ export class TauriNativeStorageService implements FileStorageService {
 // 2. Dev Web Storage Service (Exposes real local OS directory tree via Vite dev middleware when viewing in browser preview)
 export class DevWebFsStorageService implements FileStorageService {
   async selectDirectory(): Promise<string | null> {
-    const inputPath = window.prompt("Enter OS Directory Path to Open:", DEFAULT_OS_PATH);
-    return inputPath || DEFAULT_OS_PATH;
+    const home = await this.getHomeDir();
+    const inputPath = window.prompt("Enter OS Directory Path to Open:", home);
+    return inputPath || home;
+  }
+
+  async getHomeDir(): Promise<string> {
+    try {
+      const res = await fetch("/api/fs/home");
+      if (res.ok) {
+        return await res.text();
+      }
+    } catch (err) {
+      console.warn("Failed to get home directory from dev API:", err);
+    }
+    return "/";
   }
 
   async readDirectoryTree(dirPath: string): Promise<FileNode[]> {
