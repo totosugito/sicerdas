@@ -1,0 +1,5 @@
+@import "@/assets/styles.css";
+@import "katex/dist/katex.min.css";
+
+/* Scan all shared features/components in ../src for Tailwind v4 utility classes */
+@source "../../src";

@@ -160,6 +160,10 @@ export default {
       `${env.PROTOCOL}://${env.HOST}:${env.PORT}`,
       `${env.PROTOCOL}://${env.FRONTEND_URL}`,
       "http://10.0.2.2:5550",
+      "http://127.0.0.1:1420",
+      "http://localhost:1420",
+      "tauri://localhost",
+      "http://tauri.localhost",
     ],
   },
   oauth: {

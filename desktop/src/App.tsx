@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FileExplorerSidebar } from "./components/FileExplorerSidebar";
 import { Toolbar } from "./components/Toolbar";
 import { getStorageService, FileNode } from "./services/fileStorageService";
-import { JsonQuestionsEditorContainer } from "@/features/exam/questions/json-questions";
+import { DesktopJsonQuestionsEditorContainer } from "./components/DesktopJsonQuestionsEditorContainer";
 import { MarkdownViewer } from "./components/MarkdownViewer";
 import { ImageViewer } from "./components/ImageViewer";
 import { NoFileSelected } from "./components/NoFileSelected";
@@ -259,7 +259,7 @@ export function App() {
           ) : selectedFilePath && isMarkdownFile && rawFileContent ? (
             <MarkdownViewer content={rawFileContent} filePath={selectedFilePath} />
           ) : selectedFilePath && isJsonFile ? (
-            <JsonQuestionsEditorContainer showBackTitle={false} />
+            <DesktopJsonQuestionsEditorContainer />
           ) : selectedFilePath && isImageFile && imageDataUrl ? (
             <ImageViewer src={imageDataUrl} alt={selectedFilePath} />
           ) : selectedFilePath && invalidFile ? (

@@ -12,6 +12,8 @@ import { VscMarkdown, VscJson } from "react-icons/vsc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import { DesktopLoginDialog } from "./DesktopLoginDialog";
+
 interface ToolbarProps {
   currentFolderPath: string | null;
   isDirty: boolean;
@@ -185,13 +187,14 @@ export function Toolbar({
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-1.5 shrink-0">
+      <div className="flex items-center gap-2 shrink-0">
         {saveStatus && (
           <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium">
             <CheckCircle2 className="h-3.5 w-3.5" />
             {saveStatus}
           </span>
         )}
+        <DesktopLoginDialog />
       </div>
     </header>
   );

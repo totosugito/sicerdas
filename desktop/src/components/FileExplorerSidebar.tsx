@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import {
   FolderOpen,
   Folder,
@@ -15,6 +15,11 @@ import { TbSvg } from "react-icons/tb";
 import { FileNode } from "../services/fileStorageService";
 import { Button } from "@/components/ui/button";
 
+const SIDEBAR_WIDTH_KEY = "sicerdas-desktop:sidebarWidth";
+const MIN_WIDTH = 180;
+const MAX_WIDTH = 600;
+const DEFAULT_WIDTH = 320;
+
 interface FileExplorerSidebarProps {
   fileTree: FileNode[];
   selectedFilePath: string | null;
@@ -30,7 +35,44 @@ export function FileExplorerSidebar({
   onNavigateFolder,
   isDirty,
 }: FileExplorerSidebarProps) {
+  const [width, setWidth] = useState(() => {
+    const saved = localStorage.getItem(SIDEBAR_WIDTH_KEY);
+    return saved ? Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, Number(saved))) : DEFAULT_WIDTH;
+  });
+  const [isResizing, setIsResizing] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState<Record<string, boolean>>({});
+  const startX = useRef(0);
+  const startWidth = useRef(0);
+
+  useEffect(() => {
+    localStorage.setItem(SIDEBAR_WIDTH_KEY, String(width));
+  }, [width]);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    startX.current = e.clientX;
+    startWidth.current = width;
+    setIsResizing(true);
+  }, [width]);
+
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const delta = e.clientX - startX.current;
+      const newWidth = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, startWidth.current + delta));
+      setWidth(newWidth);
+    };
+
+    const handleMouseUp = () => setIsResizing(false);
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isResizing]);
 
   const toggleFolder = (path: string) => {
     setExpandedFolders((prev) => ({ ...prev, [path]: !prev[path] }));
@@ -137,44 +179,60 @@ export function FileExplorerSidebar({
   };
 
   return (
-    <aside className="w-80 h-full flex flex-col border-r bg-card/40 backdrop-blur-sm shrink-0">
-      {/* Sidebar Sub-Header */}
-      <div className="flex items-center justify-between px-3 py-2 border-b bg-muted/20 text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">
-        <span>Files & Folders</span>
-        <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={expandAll}
-            title="Expand All Folders"
-            className="h-5 w-5"
-          >
-            <Maximize2 className="h-3 w-3" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={collapseAll}
-            title="Collapse All Folders"
-            className="h-5 w-5"
-          >
-            <Minimize2 className="h-3 w-3" />
-          </Button>
-        </div>
-      </div>
-
-      {/* Directory Tree View */}
-      <div className="flex-1 overflow-y-auto p-2">
-        {fileTree.length > 0 ? (
-          renderTree(fileTree)
-        ) : (
-          <div className="flex flex-col items-center justify-center h-48 text-center p-4 text-xs text-muted-foreground">
-            <FolderOpen className="h-8 w-8 mb-2 opacity-40 stroke-1" />
-            <p className="font-medium mb-1">No Files Found</p>
-            <p className="text-[11px]">Use the top toolbar to open an OS directory.</p>
+    <div
+      className="h-full flex shrink-0"
+      style={{ width: `${width}px` }}
+    >
+      <aside
+        className="h-full flex flex-col border-r bg-card/40 backdrop-blur-sm min-w-0 flex-1"
+      >
+        {/* Sidebar Sub-Header */}
+        <div className="flex items-center justify-between px-3 py-2 border-b bg-muted/20 text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">
+          <span>Files & Folders</span>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={expandAll}
+              title="Expand All Folders"
+              className="h-5 w-5"
+            >
+              <Maximize2 className="h-3 w-3" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={collapseAll}
+              title="Collapse All Folders"
+              className="h-5 w-5"
+            >
+              <Minimize2 className="h-3 w-3" />
+            </Button>
           </div>
-        )}
-      </div>
-    </aside>
+        </div>
+
+        {/* Directory Tree View */}
+        <div className="flex-1 overflow-y-auto p-2">
+          {fileTree.length > 0 ? (
+            renderTree(fileTree)
+          ) : (
+            <div className="flex flex-col items-center justify-center h-48 text-center p-4 text-xs text-muted-foreground">
+              <FolderOpen className="h-8 w-8 mb-2 opacity-40 stroke-1" />
+              <p className="font-medium mb-1">No Files Found</p>
+              <p className="text-[11px]">Use the top toolbar to open an OS directory.</p>
+            </div>
+          )}
+        </div>
+      </aside>
+
+      {/* Resize Handle */}
+      <div
+        onMouseDown={handleMouseDown}
+        className={`w-[5px] cursor-col-resize hover:bg-primary/40 active:bg-primary/60 transition-colors shrink-0 ${
+          isResizing ? "bg-primary/60" : ""
+        }`}
+        style={{ touchAction: "none" }}
+      />
+    </div>
   );
 }

@@ -124,8 +124,8 @@ export function DetailInfo({ question }: DetailInfoProps) {
           </h3>
           <div className="flex flex-wrap gap-2 text-md">
             {question.tags && question.tags.length > 0 ? (
-              question.tags.map((tag) => (
-                <Badge key={tag.id} variant="secondary" className="px-3 py-1 text-md">
+              question.tags.map((tag, idx) => (
+                <Badge key={tag.id || tag.name || `tag-${idx}`} variant="secondary" className="px-3 py-1 text-md">
                   {tag.name}
                 </Badge>
               ))

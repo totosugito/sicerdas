@@ -3,8 +3,9 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { PageTitle } from "@/components/general";
 import { useAppStore } from "@/stores/useAppStore";
 import { showNotifError } from "@/lib/show-notif";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Upload } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { useListTagSimple } from "@/api/education/tags";
 import { z } from "zod";
 import { useAppForm } from "@/components/ui/form-tanstack";
@@ -23,7 +24,6 @@ import {
 import { JsonQuestionImport } from "@/api/exam/questions/types";
 
 export interface JsonQuestionsEditorContainerProps {
-  // Optional controlled state for non-router environments (desktop app)
   searchState?: {
     index: number;
     expanded: boolean;
@@ -55,7 +55,6 @@ export function JsonQuestionsEditorContainer({
   const { t } = useAppTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Local fallback state if no external search state handler is passed
   const [internalState, setInternalState] = useState({
     index: 0,
     expanded: true,
@@ -98,59 +97,58 @@ export function JsonQuestionsEditorContainer({
   const [importError, setImportError] = useState<string | null>(null);
 
   const setSelectedIndex = (index: number) => updateState((prev) => ({ ...prev, index }));
-  const setIsExpanded = (expanded: boolean) => updateState((prev) => ({ ...prev, expanded }));
-  const setContentExpanded = (contentExpanded: boolean) => updateState((prev) => ({ ...prev, contentExpanded }));
-  const setOptionsExpanded = (optionsExpanded: boolean) => updateState((prev) => ({ ...prev, optionsExpanded }));
-  const setSolutionsExpanded = (solutionsExpanded: boolean) => updateState((prev) => ({ ...prev, solutionsExpanded }));
-  const setTagsExpanded = (tagsExpanded: boolean) => updateState((prev) => ({ ...prev, tagsExpanded }));
-  const setVariablesExpanded = (variablesExpanded: boolean) => updateState((prev) => ({ ...prev, variablesExpanded }));
-  const setReasonExpanded = (reasonExpanded: boolean) => updateState((prev) => ({ ...prev, reasonExpanded }));
-  const setPreviewExpanded = (previewExpanded: boolean) => updateState((prev) => ({ ...prev, previewExpanded }));
+
+  const setExpanded = (expanded: boolean) => updateState((prev) => ({ ...prev, expanded }));
+  const setContentExpanded = (contentExpanded: boolean) =>
+    updateState((prev) => ({ ...prev, contentExpanded }));
+  const setOptionsExpanded = (optionsExpanded: boolean) =>
+    updateState((prev) => ({ ...prev, optionsExpanded }));
+  const setSolutionsExpanded = (solutionsExpanded: boolean) =>
+    updateState((prev) => ({ ...prev, solutionsExpanded }));
+  const setTagsExpanded = (tagsExpanded: boolean) =>
+    updateState((prev) => ({ ...prev, tagsExpanded }));
+  const setPackageExpanded = (packageExpanded: boolean) =>
+    updateState((prev) => ({ ...prev, packageExpanded }));
+  const setVariablesExpanded = (variablesExpanded: boolean) =>
+    updateState((prev) => ({ ...prev, variablesExpanded }));
+  const setReasonExpanded = (reasonExpanded: boolean) =>
+    updateState((prev) => ({ ...prev, reasonExpanded }));
+  const setPreviewExpanded = (previewExpanded: boolean) =>
+    updateState((prev) => ({ ...prev, previewExpanded }));
   const setTab = (tab: string) => updateState((prev) => ({ ...prev, tab }));
-  const setPackageExpanded = (expanded: boolean) => updateState((prev) => ({ ...prev, packageExpanded: expanded }));
 
   const { data: tagsData } = useListTagSimple({ limit: 1000 });
-
-  const globalFormSchema = z.object({
-    subjectId: z.string().min(
-      1,
-      t(($) => $.exam.questions.form.subject.required),
-    ),
-    passageId: z.string().nullable().optional(),
-    difficulty: z.enum(Object.values(EnumDifficultyLevel) as [string, ...string[]]),
-    type: z.enum(Object.values(EnumQuestionType) as [string, ...string[]]),
-    requiredTier: z.string().nullable().optional(),
-    educationGradeId: z.union([z.number(), z.string(), z.null()]).optional(),
-  });
-
-  const packageFormSchema = z.object({
-    packageId: z.uuid().nullish(),
-    sectionId: z.uuid().nullish(),
-  });
-
   const jsonQuestions = useAppStore((state) => state.jsonQuestions);
   const setJsonQuestions = useAppStore((state) => state.setJsonQuestions);
   const setJsonQuestionsGlobalParams = useAppStore((state) => state.setJsonQuestionsGlobalParams);
-  const jsonQuestionsPackageParams = useAppStore((state) => state.jsonQuestionsPackageParams);
-  const setJsonQuestionsPackageParams = useAppStore((state) => state.setJsonQuestionsPackageParams);
+  const setJsonQuestionsPackageParams = useAppStore(
+    (state) => state.setJsonQuestionsPackageParams,
+  );
 
   const globalForm = useAppForm({
-    defaultValues: useAppStore.getState().jsonQuestionsGlobalParams,
-    validators: {
-      onChange: globalFormSchema as any,
+    defaultValues: {
+      subjectId: "",
+      difficulty: EnumDifficultyLevel.EASY,
+      type: EnumQuestionType.MULTIPLE_CHOICE,
+      educationGradeId: "",
+      requiredTier: "",
+      passageId: "",
     },
+
+    onSubmit: () => { },
   });
 
   const packageForm = useAppForm({
-    defaultValues: jsonQuestionsPackageParams,
-    validators: {
-      onChange: packageFormSchema as any,
+    defaultValues: {
+      packageId: "",
+      sectionId: "",
     },
+    onSubmit: () => { },
   });
 
   React.useEffect(() => {
-    const sub = globalForm.store.subscribe(() => {
-      setJsonQuestionsGlobalParams(globalForm.state.values);
+    const sub = globalForm.store.subscribe((state: any) => {
+      setJsonQuestionsGlobalParams(state.values);
     });
     return () => {
       if (typeof sub === "function") {
@@ -162,8 +160,8 @@ export function JsonQuestionsEditorContainer({
   }, [globalForm, setJsonQuestionsGlobalParams]);
 
   React.useEffect(() => {
-    const sub = packageForm.store.subscribe(() => {
-      setJsonQuestionsPackageParams(packageForm.state.values);
+    const sub = packageForm.store.subscribe((state: any) => {
+      setJsonQuestionsPackageParams(state.values);
     });
     return () => {
       if (typeof sub === "function") {
@@ -212,7 +210,6 @@ export function JsonQuestionsEditorContainer({
           };
         });
 
-        // RE-VALIDATE BLOCKNOTE CONTENT TYPES
         for (let i = 0; i < processed.length; i++) {
           const q = processed[i];
           const questionNum = i + 1;
@@ -356,7 +353,6 @@ export function JsonQuestionsEditorContainer({
               hasQuestions={jsonQuestions.length > 0}
               isExporting={isExporting}
               onNavigatePromptGenerator={onNavigatePromptGenerator || (() => { })}
-
             />
           </div>
         }
@@ -372,7 +368,7 @@ export function JsonQuestionsEditorContainer({
 
       {jsonQuestions.length > 0 ? (
         <div className="flex flex-col gap-6">
-          <GlobalParamsForm form={globalForm} isOpen={isExpanded} onOpenChange={setIsExpanded} />
+          <GlobalParamsForm form={globalForm} isOpen={isExpanded} onOpenChange={setExpanded} />
 
           <PackageParamsForm
             form={packageForm}
@@ -396,7 +392,6 @@ export function JsonQuestionsEditorContainer({
             )}
           </globalForm.Subscribe>
 
-          {/* Main Content Area */}
           {currentQuestion ? (
             <JsonQuestionEditView
               key={currentQuestion.id || `temp-${selectedIndex}`}

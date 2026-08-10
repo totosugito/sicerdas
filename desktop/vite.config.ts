@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import { scanFsDirectory } from "./src/services/fsScanner";
+import { scanFsDirectory } from "./src/services/fsScanner.ts";
 
 // Dev plugin to expose local OS filesystem API when running in Vite dev server browser
 function devFsApiPlugin() {

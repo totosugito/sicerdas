@@ -1,7 +1,7 @@
 import { createAuthClient } from "better-auth/react"
 import { emailOTPClient } from "better-auth/client/plugins"
 
-const APP_BASE_URL = import.meta.env.VITE_APP_BASE_URL
+const APP_BASE_URL = import.meta.env.VITE_APP_BASE_URL;
 export const authClient = createAuthClient({
   baseURL: APP_BASE_URL, // The base URL of your auth server
   fetcher: async (url: any, options: any) => {

@@ -25,7 +25,7 @@ export function DetailSolutions({ question }: DetailSolutionsProps) {
         {question.solutions && question.solutions.length > 0 ? (
           <div className="grid gap-6">
             {question.solutions.map((solution, idx) => (
-              <div key={solution.id} className="space-y-3 p-4 rounded-xl border bg-muted/30">
+              <div key={solution.id || `solution-${idx}`} className="space-y-3 p-4 rounded-xl border bg-muted/30">
                 <div className="flex justify-between items-center">
                   <h4 className="font-bold flex items-center gap-2">
                     <Badge

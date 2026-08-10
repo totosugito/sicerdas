@@ -43,7 +43,13 @@ export function useExportJsonQuestions({
   const handleExportSelected = async () => {
     await globalForm.validate("submit");
     const isValid = globalForm.state.isValid;
-    if (!isValid || selectedIndices.length === 0) return;
+
+    const targetIndices =
+      selectedIndices.length > 0
+        ? selectedIndices
+        : jsonQuestions.map((_, i) => i);
+
+    if (!isValid || targetIndices.length === 0) return;
 
     const globalParams = globalForm.state.values;
     const packageParams = packageForm.state.values;
@@ -57,18 +63,18 @@ export function useExportJsonQuestions({
     const exportedQuestionIds: string[] = [];
 
     let successCount = 0;
-    const remainingIndices: number[] = [...selectedIndices];
+    const remainingIndices: number[] = [...targetIndices];
 
     try {
-      for (const index of selectedIndices) {
+      for (const index of targetIndices) {
         const q = jsonQuestions[index];
 
         // 1. Create Question (Global values as overrides)
         const transformedData = {
           ...q,
-          subjectId: globalParams.subjectId,
-          difficulty: globalParams.difficulty,
-          type: globalParams.type,
+          subjectId: globalParams.subjectId || (q as any).subjectId,
+          difficulty: globalParams.difficulty || q.difficulty,
+          type: globalParams.type || q.type,
           educationGradeId: (() => {
             const val = globalParams.educationGradeId || q.educationGradeId;
             if (val === undefined || val === null || val === "") return null;
@@ -148,7 +154,7 @@ export function useExportJsonQuestions({
       });
 
       // Update local store: remove successfully exported questions
-      const newJsonQuestions = jsonQuestions.filter((_, i) => !selectedIndices.includes(i));
+      const newJsonQuestions = jsonQuestions.filter((_, i) => !targetIndices.includes(i));
       setJsonQuestions(newJsonQuestions);
       setSelectedIndices([]);
       setSelectedIndex(0);
@@ -162,7 +168,7 @@ export function useExportJsonQuestions({
       });
 
       // Still remove whichever were successful before error
-      const exportedIndices = selectedIndices.filter((i) => !remainingIndices.includes(i));
+      const exportedIndices = targetIndices.filter((i) => !remainingIndices.includes(i));
       const newJsonQuestions = jsonQuestions.filter((_, i) => !exportedIndices.includes(i));
       setJsonQuestions(newJsonQuestions);
       setSelectedIndices([]);

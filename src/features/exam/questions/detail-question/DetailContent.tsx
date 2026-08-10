@@ -61,7 +61,7 @@ export function DetailContent({ question }: DetailContentProps) {
           <div className="grid gap-4">
             {question.options?.map((option, idx) => (
               <div
-                key={option.id}
+                key={option.id || `option-${idx}`}
                 className={cn(
                   "relative flex items-start gap-4 p-4 rounded-xl border transition-all",
                   option.isCorrect

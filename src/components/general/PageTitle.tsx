@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { useNavigate, useRouter } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 
 type PageTitleProps = {
   title?: React.ReactElement | string;
@@ -30,18 +30,19 @@ const PageTitle = ({
   onBack,
   extra,
 }: PageTitleProps) => {
-  const navigate = useNavigate();
-  const router = useRouter();
+  const router = useRouter({ warn: false });
 
   const handleBack = () => {
     if (onBack) {
       onBack();
       return;
     }
-    if (backTo) {
-      navigate({ to: backTo });
-    } else {
+    if (backTo && router) {
+      router.navigate({ to: backTo });
+    } else if (router?.history) {
       router.history.back();
+    } else if (typeof window !== "undefined") {
+      window.history.back();
     }
   };
 
