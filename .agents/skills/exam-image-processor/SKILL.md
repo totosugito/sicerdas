@@ -10,7 +10,13 @@ This skill performs vision analysis on cropped question images, extracts visual 
 
 ## Core Responsibilities
 
-1. **Vision Inspection & 3-Tier Image Classification**:
+0. **Single-Agent Execution (Token Efficiency)**:
+   - **WAJIB menggunakan 1 Single Agent saja** untuk memproses seluruh urutan gambar dan soal dalam suatu direktori.
+   - **Dilarang memicu atau membuat subagent** baru untuk tiap-tiap gambar agar menghemat penggunaan token LLM dan mencegah pemborosan konteks.
+
+1. **Joint Text & Vision Inspection (Inspeksi Terpadu Teks Soal + Gambar)**:
+   - **WAJIB membaca teks/narasi soal `.md` terlebih dahulu** sebelum menganalisis gambar cropped OCR.
+   - Ekstrak fakta matematika/fisika dari narasi soal (misal: sifat geometri seperti $AC = DC$, garis sejajar $l_1 \parallel l_2$, persamaan, sudut $p, q$, nilai variabel, atau satuan).
    - Inspect raw crop images (`imgs/img_in_box_...jpg`).
    - Classify the image into one of three tiers:
      * **Tier 1: Grafik / Chart Standard (UCDF Chart JSON + ECharts SSR PNG/SVG)**: Diagram garis, grafik batang, pie chart, area chart, doughnut, radar chart.
@@ -41,8 +47,9 @@ This skill performs vision analysis on cropped question images, extracts visual 
    - Explain the diagram in clear, friendly Bahasa Indonesia suitable for students (SD/SMP/SMA/UTBK).
    - Help students visualize what the diagram represents before diving into numbers.
 
-5. **Wajib: Buat File Deskripsi Gambar (`imgs/<question_id>.md`)**:
+5. **Wajib: Buat File Deskripsi Gambar Komprehensif (`imgs/<question_id>.md`)**:
    - **TETAP BUAT file `.md` untuk SEMUA gambar (Tier 1, Tier 2, maupun Tier 3)**.
+   - File ini harus menjadi **Single Source of Truth** yang menyimpan seluruh konteks gambar dan teks soal secara terpadu.
    - Format:
      ```markdown
      # Analisis & Deskripsi Gambar: [question_id]
@@ -52,7 +59,12 @@ This skill performs vision analysis on cropped question images, extracts visual 
      - **Jenis Visual**: [Line Chart / Bar Chart / Diagram Vektor / Foto Biologi / dll.]
      - **Tipe Series**: [Single-Series | Multi-Series (Jumlah Series: N)]
 
-     ## 2. Universal Chart Data (UCDF JSON) - *Khusus Tier 1 Chart*
+     ## 2. Konteks & Informasi dari Teks Soal
+     - **Narasi Soal**: [Kutipan/rangkuman teks soal terkait gambar]
+     - **Sifat & Hubungan Geometri/Fisika**: [Sifat dasar, misal: $AC = DC$, $l_1 \parallel l_2$, atau massa $m = 2\text{ kg}$]
+     - **Variabel & Nilai Diberikan**: [Nilai variabel dari narasi soal, misal: $p = 65^\circ$, $q = 20^\circ$, target $x^\circ$]
+
+     ## 3. Universal Chart Data (UCDF JSON) - *Khusus Tier 1 Chart*
      ```json
      {
        "chartType": "line",
@@ -72,18 +84,18 @@ This skill performs vision analysis on cropped question images, extracts visual 
      }
      ```
 
-     ## 3. Penjelasan Ringkas (Untuk Siswa)
-     [Penjelasan naratif ramah siswa mengenai isi diagram/grafik/gambar]
+     ## 4. Penjelasan Ringkas (Untuk Siswa)
+     [Penjelasan naratif ramah siswa mengenai isi diagram/grafik/gambar berdasar gabungan teks soal & visual]
 
-     ## 4. Rincian Data & Nilai Terkstrak
-     [Tabel data, koordinat titik, nilai variabel $v_0$, $\theta$, sudut, gaya, dll.]
+     ## 5. Rincian Data & Nilai Terkstrak
+     [Tabel data, koordinat titik, nilai variabel $v_0$, $\theta$, sudut, gaya, dll. Sebutkan sumber data: Teks Soal / Visual Gambar]
 
-     ## 5. Elemen Visual & Parameter Diagram
+     ## 6. Elemen Visual & Parameter Diagram
      - **Sumbu X / Komponen Utama**: [Nama sumbu & rentang]
      - **Sumbu Y / Detail Visual**: [Nama sumbu & rentang]
      - **Keterangan Warna & Elemen**: [Keterangan warna, garis, vektor, legenda]
 
-     ## 6. Petunjuk Edit Manual (Khusus SVG)
+     ## 7. Petunjuk Edit Manual (Khusus SVG)
      [Penjelasan singkat elemen mana di kode SVG yang dapat disesuaikan sendiri]
      ```
 
@@ -93,13 +105,25 @@ This skill performs vision analysis on cropped question images, extracts visual 
      - Untuk Multi-Series Chart, pastikan legenda, warna series, dan label sumbu sesuai UCDF JSON.
      - Simpan ke `imgs/<question_id>.png` atau `imgs/<question_id>.svg`.
    - **Jika Tier 2 (Diagram Sederhana)**:
-     - Buat file SVG murni secara manual (kode SVG teks). Pastikan ukuran `viewBox` di-set secukupnya (tight fit) agar tidak ada area putih (white space) berlebih di sekitar konten diagram.
-     - Bentuk dasar sederhana (`rect`, `line`, `circle`, `path`) dengan komentar di kode.
-     - **Bounding & Padding**: Hitung bounding box aktual seluruh elemen visual terluar, lalu atur `viewBox` agar memiliki **padding simetris yang seragam (contoh: persis 30px)** di keempat sisi (atas, bawah, kiri, kanan). Gunakan elemen `<clipPath>` untuk memotong kurva yang tak berhingga secara rapi.
+     - Buat file SVG murni secara manual (kode SVG teks). 
+     - **Proporsi Skala**: Pastikan **skala bidang bangun ruang cukup besar dan proporsional** bila dibandingkan dengan ukuran *font* teks label (contoh: gunakan minimal 60-80 piksel per 1 unit jarak/skala Cartesius agar bangun tidak terlihat terlalu kecil atau didominasi oleh besarnya teks).
+     - Pastikan ukuran `viewBox` di-set secukupnya (tight fit) agar tidak ada area putih (white space) berlebih di sekitar konten diagram.
+     - Bentuk dasar sederhana (`rect`, `line`, `circle`, `path`) dengan komentar visual pendek di kode (misal `<!-- Segitiga Utama -->`).
+     - **Dilarang Komentar Kalkulasi / Scratchpad Matematika**: **JANGAN menuliskan komentar matematika, rumus trigonometri, atau draf perhitungan koordinat (seperti `<!-- Coordinates Let C be ... -->`) di dalam file SVG**. Lakukan seluruh perhitungan koordinat secara internal saat *thinking mode*. Kode SVG harus bebas dari noise coretan perhitungan.
+     - **Bounding & Padding**: Hitung bounding box aktual seluruh elemen visual terluar, lalu atur `viewBox` agar memiliki **padding simetris yang seragam (contoh: persis 20px)** di keempat sisi (atas, bawah, kiri, kanan). Gunakan elemen `<clipPath>` untuk memotong kurva yang tak berhingga secara rapi.
      - **Penanganan Label & Teks**: Label angka asli ATAU simbol variabel ($v_0$, $\theta$).
      - Pastikan titik koordinat, garis lurus, dan kurva parabola (`Q` Bezier) digambar dengan presisi matematis berdasarkan skala piksel pada sumbu.
      - Garis putus-putus untuk lintasan; marker panah untuk vektor/ukuran.
-     - **Gaya Visual & Warna (Penting!)**: Jangan gunakan warna hitam-putih polos. Berikan warna cerah yang berbeda pada **garis utama (interest line)** (misal garis $l$, kurva lintasan, atau objek utama diberi warna biru `#2563eb`, merah `#dc2626`, atau oranye `#ea580c`) agar lebih menonjol dan kontras dibandingkan garis bantu atau sumbu koordinat (yang bisa menggunakan warna abu-abu/hitam). **Label teks yang terkait langsung dengan garis tersebut (misal teks $l$ di ujung garis) juga harus diberi warna yang sama (`fill` warna) dengan garisnya.** Buatlah visual yang ceria dan ramah siswa.
+     - **Penggunaan Class Style Terpusat di `<defs><style>` (Wajib)**:
+        * **JANGAN mengulang-ulang atribut inline style (seperti `font-family="..."`, `stroke="..."`, `stroke-width="..."`) pada tiap-tiap tag SVG**.
+        * **WAJIB mendefinisikan class CSS terpusat** di dalam `<defs><style>...</style></defs>` di bagian atas SVG (seperti `.line-main`, `.line-sec`, `.point`, `.text-label`, `.text-var`, `.text-highlight`).
+        * Seluruh elemen `<line>`, `<polygon>`, `<path>`, `<circle>`, dan `<text>` WAJIB menggunakan atribut `class="..."` yang merujuk pada CSS style terpusat tersebut.
+     - **Gaya Visual & Skema Warna Default Baku (Wajib)**: 
+        * **JANGAN merandom warna pada setiap eksekusi**. Gunakan skema warna standar baku agar visual konsisten.
+        * **Garis Utama, Flowchart & Geometry**: Gunakan warna dasar `#1e293b` (Charcoal / Hitam Elegan) sebagai warna standar baku untuk seluruh garis bangun utama, kotak flowchart, kurva, atau diagram (`.line-main`). Ini memberikan tampilan profesional yang bersih, kontras tinggi, dan nyaman dibaca siswa seperti cetakan buku soal resmi.
+        * **Sumbu & Garis Bantu**: Gunakan warna `#64748b` (Slate Gray) atau `#94a3b8` untuk sumbu koordinat, grid, dan garis bantu putus-putus (`.line-sec`).
+        * **Highlight Item Target (Interest Item)**: Berikan warna kontras memikat seperti `#dc2626` (Merah) atau `#ea580c` (Oranye) **KHUSUS pada item/elemen target yang ditanyakan dalam soal** (misal: sudut target $x^\circ$, garis $l$ utama yang dicari, atau titik khusus) menggunakan class `.text-highlight` atau `.line-highlight`. Elemen umum lainnya harus tetap memakai warna standar charcoal/hitam (`#1e293b`).
+        * **Teks Label & Halo Stroke di CSS**: Masukkan properti halo stroke (`stroke: rgba(255,255,255,0.95); stroke-width: 4px; paint-order: stroke fill; stroke-linejoin: round;`) langsung di dalam definisi class CSS `.text-label` dan `.text-var` pada `<defs><style>`. **Dilarang menuliskan atribut `stroke="..."` secara inline pada tag `<text>`**. Label yang merujuk langsung ke interest item dapat menggunakan class `.text-highlight` (`fill: #dc2626;`).
      - Simpan ke `imgs/<question_id>.svg`.
      - **WAJIB**: Setelah file tersimpan, jalankan skrip `python .agents/skills/exam-image-processor/scripts/svg_postprocess.py imgs/<question_id>.svg` untuk mengotomatisasi penambahan efek *halo* teks (`stroke` putih) dan latar belakang `rect`.
    - **Jika Tier 3 (Gambar Kompleks)**:
@@ -115,7 +139,28 @@ This skill performs vision analysis on cropped question images, extracts visual 
    - Jika terdapat typo OCR, salah baca simbol (misal "garis 1" padahal gambar menunjukkan "Garis $l$"), atau ketidaksesuaian angka/variabel, perbarui teks soal di file `.md` agar konsisten 100% dengan gambar visual dan menggunakan format inline LaTeX yang rapi (misal `$l$`, `$v_0$`).
 
 9. **Deduplikasi Gambar Bersama (Shared Images / Reuse)**:
-   - Jika beberapa soal merujuk pada gambar asli (crop OCR) yang sama (misalnya soal 421, 422, dan 423 menggunakan `img_in_box_XXX.jpg` yang sama), **JANGAN** membuat duplikat aset (seperti `422.svg` dan `423.svg`) atau file deskripsi (`422.md`, `423.md`).
+   - Jika beberapa soal merujuk pada gambar asli (crop OCR) yang sama (misalnya soal 421, 422, dan 423 menggunakan `img_in_box_XXX.jpg` meggunakan gambar yang sama), **JANGAN** membuat duplikat aset (seperti `422.svg` dan `423.svg`) atau file deskripsi (`422.md`, `423.md`).
    - Buat hanya **satu** set aset menggunakan ID soal pertama dalam grup (misal: `421_q421.svg` dan `421_q421.md`).
    - Perbarui referensi Markdown pada soal-soal lainnya (422 dan 423) agar menunjuk ke aset tunggal tersebut (misal `![diagram](imgs/421_q421.svg)`).
    - Ini bertujuan mengoptimalkan ruang penyimpanan dan menghindari pembuatan berulang untuk gambar yang persis sama.
+
+10. **Verifikasi Akhir & Auto-Fixer Padding Simetris 20px (Wajib)**:
+   - **Eksekusi Post-Processing Script**: Setiap kali file SVG baru dibuat, **WAJIB menjalankan skrip post-processor**:
+     ```bash
+     python .agents/skills/exam-image-processor/scripts/svg_postprocess.py imgs/<question_id>.svg
+     ```
+   - Skrip ini akan secara otomatis:
+     1. Menghitung bounding box elemen visual dan **memperhitungkan font descenders (huruf $y, g, p, q$)** dengan menambahkan buffer vertikal (+20px) agar teks di bawah alas **TIDAK pernah terpotong**.
+     2. Mengatur koordinat `<rect>` latar belakang putih agar selalu menutupi seluruh canvas `viewBox` (mencegah area transparan akibat `viewBox` minus).
+     3. Mengkoreksi atribut `viewBox` menjadi `viewBox="{X_min - 20} {Y_min - 20} {(X_max - X_min) + 40} {(Y_max - Y_min) + 40}"`.
+     4. Menjamin padding pada keempat sisi (atas, bawah, kiri, kanan) **persis 20px simetris** secara otomatis.
+
+## Reference Examples
+
+Refer to the complete, un-truncated reference sample files in the `examples/` directory:
+- [examples/sample-description.md](file://.agents/skills/exam-image-processor/examples/sample-description.md) — Comprehensive companion image description markdown (`imgs/<question_id>.md`)
+- [examples/sample-summary.md](file://.agents/skills/exam-image-processor/examples/sample-summary.md) — Summary report format (`imgs_summary.md`)
+- [examples/sample-diagram.svg](file://.agents/skills/exam-image-processor/examples/sample-diagram.svg) — Clean manual vector SVG format (`imgs/<question_id>.svg`)
+
+
+

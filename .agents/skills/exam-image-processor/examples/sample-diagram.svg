@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 515 375" width="100%" height="100%">
+  <defs>
+    <style>
+      .line-main { stroke: #1e293b; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+      .point { fill: #dc2626; }
+      .text-label { font-family: 'Inter', system-ui, sans-serif; font-size: 20px; font-weight: 600; fill: #1e293b; stroke: rgba(255,255,255,0.95); stroke-width: 4px; paint-order: stroke fill; stroke-linejoin: round; }
+      .text-var { font-family: 'Inter', system-ui, sans-serif; font-size: 18px; font-style: italic; fill: #0f172a; stroke: rgba(255,255,255,0.95); stroke-width: 4px; paint-order: stroke fill; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <!-- Background Rect -->
+  <rect width="100%" height="100%" fill="#ffffff" />
+
+  <!-- Segitiga Utama ADC -->
+  <polygon points="35,325 475,325 135,55" class="line-main" />
+  <line x1="135" y1="55" x2="235" y2="325" class="line-main" />
+
+  <!-- Titik Sudut Red Dots -->
+  <circle cx="35" cy="325" r="4" class="point" />
+  <circle cx="235" cy="325" r="4" class="point" />
+  <circle cx="475" cy="325" r="4" class="point" />
+  <circle cx="135" cy="55" r="4" class="point" />
+
+  <!-- Label Titik Sudut -->
+  <text x="20" y="350" class="text-label">A</text>
+  <text x="230" y="350" class="text-label">B</text>
+  <text x="480" y="350" class="text-label">C</text>
+  <text x="130" y="40" class="text-label">D</text>
+
+  <!-- Label Sudut / Variabel -->
+  <text x="60" y="315" class="text-var">p</text>
+  <text x="165" y="110" class="text-var">q</text>
+  <text x="247" y="315" class="text-var">x°</text>
+</svg>
