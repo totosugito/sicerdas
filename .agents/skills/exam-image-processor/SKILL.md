@@ -101,13 +101,18 @@ This skill performs vision analysis on cropped question images, extracts visual 
 
 6. **Kondisional: Rekreasi Aset Visual**:
    - **Jika Tier 1 (Chart)**:
-     - Render chart menggunakan **ECharts SSR** menjadi file PNG high-DPI atau SVG.
-     - Untuk Multi-Series Chart, pastikan legenda, warna series, dan label sumbu sesuai UCDF JSON.
-     - Simpan ke `imgs/<question_id>.png` atau `imgs/<question_id>.svg`.
-   - **Jika Tier 2 (Diagram Sederhana)**:
-     - Buat file SVG murni secara manual (kode SVG teks). 
-     - **Proporsi Skala**: Pastikan **skala bidang bangun ruang cukup besar dan proporsional** bila dibandingkan dengan ukuran *font* teks label (contoh: gunakan minimal 60-80 piksel per 1 unit jarak/skala Cartesius agar bangun tidak terlihat terlalu kecil atau didominasi oleh besarnya teks).
-     - Pastikan ukuran `viewBox` di-set secukupnya (tight fit) agar tidak ada area putih (white space) berlebih di sekitar konten diagram.
+      - Render chart menggunakan **ECharts SSR** menjadi file PNG high-DPI atau SVG dengan resolusi render baku **`600 × 400` px** (@2x Retina `1200 × 800`).
+      - Untuk Multi-Series Chart, pastikan legenda, warna series, dan label sumbu sesuai UCDF JSON.
+      - Simpan ke `imgs/<question_id>.png` atau `imgs/<question_id>.svg`.
+   - **Jika Tier 2 (Diagram Sederhana & Grafik Matematika)**:
+      - Buat file SVG murni secara manual (kode SVG teks) dengan atribut root `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 W H" width="100%" height="100%">`.
+      - **Preset Ukuran Canvas Standar (Standard Canvas Presets)**:
+        * **Landscape (Default)**: `viewBox="0 0 500 350"` (Diagram Geometri, Bangun Ruang, Fisika/Mekanika, Flowchart, Fungsi 1-2 Kuadran).
+        * **Square (Isometrik 1:1)**: `viewBox="0 0 450 450"` (Grafik Koordinat Kartesius 4 Kuadran, Lingkaran, Diagram Venn, Matriks).
+        * **Wide (Horizontal)**: `viewBox="0 0 650 250"` (Garis Bilangan / Number Line, Rangkaian Listrik Panjang, Garis Waktu).
+      - **Skala 1:1 Isometrik untuk Grafik Matematika (Aspect Ratio 1:1 X dan Y)**: Untuk seluruh grafik fungsi matematika, bidang koordinat Kartesius, kurva kuadrat/parabola, fungsi trigonometri, lingkaran, garis linear, dan daerah arsir integral, **WAJIB menggunakan skala 1:1 antara sumbu X dan sumbu Y** (panjang 1 unit pada sumbu X = panjang 1 unit pada sumbu Y, misal: 1 unit = 40px atau 50px). Ini mutlak agar sudut siku-siku ($90^\circ$), sudut $45^\circ$, gradien kemiringan garis ($m = \Delta y / \Delta x$), dan lingkaran ($x^2+y^2=r^2$) tidak lonjong atau terdistorsi.
+      - **Proporsi Skala**: Pastikan **skala bidang bangun ruang cukup besar dan proporsional** bila dibandingkan dengan ukuran *font* teks label (contoh: gunakan minimal 50-80 piksel per 1 unit jarak/skala Cartesius agar bangun tidak terlihat terlalu kecil atau didominasi oleh besarnya teks).
+      - Pastikan ukuran `viewBox` di-set secukupnya (tight fit) agar tidak ada area putih (white space) berlebih di sekitar konten diagram.
      - Bentuk dasar sederhana (`rect`, `line`, `circle`, `path`) dengan komentar visual pendek di kode (misal `<!-- Segitiga Utama -->`).
      - **Dilarang Komentar Kalkulasi / Scratchpad Matematika**: **JANGAN menuliskan komentar matematika, rumus trigonometri, atau draf perhitungan koordinat (seperti `<!-- Coordinates Let C be ... -->`) di dalam file SVG**. Lakukan seluruh perhitungan koordinat secara internal saat *thinking mode*. Kode SVG harus bebas dari noise coretan perhitungan.
      - **Bounding & Padding**: Hitung bounding box aktual seluruh elemen visual terluar, lalu atur `viewBox` agar memiliki **padding simetris yang seragam (contoh: persis 20px)** di keempat sisi (atas, bawah, kiri, kanan). Gunakan elemen `<clipPath>` untuk memotong kurva yang tak berhingga secara rapi.
@@ -118,12 +123,12 @@ This skill performs vision analysis on cropped question images, extracts visual 
         * **JANGAN mengulang-ulang atribut inline style (seperti `font-family="..."`, `stroke="..."`, `stroke-width="..."`) pada tiap-tiap tag SVG**.
         * **WAJIB mendefinisikan class CSS terpusat** di dalam `<defs><style>...</style></defs>` di bagian atas SVG (seperti `.line-main`, `.line-sec`, `.point`, `.text-label`, `.text-var`, `.text-highlight`).
         * Seluruh elemen `<line>`, `<polygon>`, `<path>`, `<circle>`, dan `<text>` WAJIB menggunakan atribut `class="..."` yang merujuk pada CSS style terpusat tersebut.
-     - **Gaya Visual & Skema Warna Default Baku (Wajib)**: 
-        * **JANGAN merandom warna pada setiap eksekusi**. Gunakan skema warna standar baku agar visual konsisten.
-        * **Garis Utama, Flowchart & Geometry**: Gunakan warna dasar `#1e293b` (Charcoal / Hitam Elegan) sebagai warna standar baku untuk seluruh garis bangun utama, kotak flowchart, kurva, atau diagram (`.line-main`). Ini memberikan tampilan profesional yang bersih, kontras tinggi, dan nyaman dibaca siswa seperti cetakan buku soal resmi.
-        * **Sumbu & Garis Bantu**: Gunakan warna `#64748b` (Slate Gray) atau `#94a3b8` untuk sumbu koordinat, grid, dan garis bantu putus-putus (`.line-sec`).
-        * **Highlight Item Target (Interest Item)**: Berikan warna kontras memikat seperti `#dc2626` (Merah) atau `#ea580c` (Oranye) **KHUSUS pada item/elemen target yang ditanyakan dalam soal** (misal: sudut target $x^\circ$, garis $l$ utama yang dicari, atau titik khusus) menggunakan class `.text-highlight` atau `.line-highlight`. Elemen umum lainnya harus tetap memakai warna standar charcoal/hitam (`#1e293b`).
-        * **Teks Label & Halo Stroke di CSS**: Masukkan properti halo stroke (`stroke: rgba(255,255,255,0.95); stroke-width: 4px; paint-order: stroke fill; stroke-linejoin: round;`) langsung di dalam definisi class CSS `.text-label` dan `.text-var` pada `<defs><style>`. **Dilarang menuliskan atribut `stroke="..."` secara inline pada tag `<text>`**. Label yang merujuk langsung ke interest item dapat menggunakan class `.text-highlight` (`fill: #dc2626;`).
+      - **Gaya Visual & Skema Warna Default Baku (Wajib)**: 
+         * **JANGAN merandom warna pada setiap eksekusi**. Gunakan skema warna standar baku agar visual konsisten.
+         * **Garis Utama, Flowchart & Geometry**: Gunakan warna dasar `#1e293b` (Charcoal / Hitam Elegan) sebagai warna standar baku untuk seluruh garis bangun utama, kotak flowchart, kurva, atau diagram (`.line-main`). Ini memberikan tampilan profesional yang bersih, kontras tinggi, dan nyaman dibaca siswa seperti cetakan buku soal resmi.
+         * **Sumbu & Garis Bantu**: Gunakan warna `#64748b` (Slate Gray) atau `#94a3b8` untuk sumbu koordinat, grid, dan garis bantu putus-putus (`.line-sec`).
+         * **Highlight Item Target (Interest Item)**: Berikan warna kontras memikat seperti `#dc2626` (Merah) atau `#ea580c` (Oranye) **KHUSUS pada item/elemen target yang ditanyakan dalam soal** (misal: sudut target $x^\circ$, garis $l$ utama yang dicari, atau titik khusus) menggunakan class `.text-highlight` atau `.line-highlight`. Elemen umum lainnya harus tetap memakai warna standar charcoal/hitam (`#1e293b`).
+         * **Teks Label & Halo Stroke di CSS**: Masukkan properti halo stroke (`stroke: rgba(255,255,255,0.95); stroke-width: 4px; paint-order: stroke fill; stroke-linejoin: round;`) langsung di dalam definisi class CSS `.text-label` dan `.text-var` pada `<defs><style>`. **Dilarang menuliskan atribut `stroke="..."` secara inline pada tag `<text>`**. Label yang merujuk langsung ke interest item dapat menggunakan class `.text-highlight` (`fill: #dc2626;`).
      - Simpan ke `imgs/<question_id>.svg`.
      - **WAJIB**: Setelah file tersimpan, jalankan skrip `python .agents/skills/exam-image-processor/scripts/svg_postprocess.py imgs/<question_id>.svg` untuk mengotomatisasi penambahan efek *halo* teks (`stroke` putih) dan latar belakang `rect`.
    - **Jika Tier 3 (Gambar Kompleks)**:
