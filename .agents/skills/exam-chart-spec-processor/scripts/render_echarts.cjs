@@ -8,7 +8,7 @@ const specPath = process.argv[2];
 const outPath = process.argv[3];
 
 if (!specPath || !outPath) {
-  console.error("Usage: node render_echarts.js <spec.json> <output.png>");
+  console.error("Usage: node render_echarts.cjs <spec.json> <output.png> [width] [height]");
   process.exit(1);
 }
 
@@ -30,8 +30,37 @@ try {
     spec.animation = false;
   }
 
+  // Default global typography
+  if (!spec.textStyle) {
+    spec.textStyle = { fontSize: 14, fontFamily: 'sans-serif' };
+  } else if (!spec.textStyle.fontSize) {
+    spec.textStyle.fontSize = 14;
+  }
+
   const width = parseInt(process.argv[4]) || 600;
   const height = parseInt(process.argv[5]) || 400;
+
+  // Auto-estimate tight grid padding relative to canvas size to prevent bloated whitespace
+  const hasVisibleAxis = (spec.xAxis && spec.xAxis.show !== false) || (spec.yAxis && spec.yAxis.show !== false);
+  if (!spec.grid && (spec.xAxis || spec.yAxis)) {
+    if (hasVisibleAxis) {
+      // Cartesian graphs with visible axes/arrows/labels: ~6-9% padding
+      spec.grid = {
+        left: Math.max(25, Math.round(width * 0.06)),
+        right: Math.max(35, Math.round(width * 0.08)),
+        top: Math.max(35, Math.round(height * 0.09)),
+        bottom: Math.max(25, Math.round(height * 0.07))
+      };
+    } else {
+      // Geometry/diagrams with hidden axes: ~3-5% minimal tight padding
+      spec.grid = {
+        left: Math.max(15, Math.round(width * 0.04)),
+        right: Math.max(15, Math.round(width * 0.04)),
+        top: Math.max(15, Math.round(height * 0.04)),
+        bottom: Math.max(15, Math.round(height * 0.04))
+      };
+    }
+  }
 
   const canvas = createCanvas(width, height);
   const chartCanvas = echarts.init(canvas, null, { renderer: 'canvas' });
