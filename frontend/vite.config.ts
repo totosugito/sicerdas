@@ -9,10 +9,6 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  staged: {
-    "*": "echo skip check",
-  },
-
   lint: {
     plugins: ["oxc", "typescript", "unicorn", "react"],
     categories: {
@@ -43,7 +39,7 @@ export default defineConfig({
       },
       {
         find: "backend",
-        replacement: `${path.resolve(__dirname, "backend")}/`,
+        replacement: `${path.resolve(__dirname, "../backend")}/`,
       },
     ],
     extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json", ".scss"],
@@ -60,12 +56,13 @@ export default defineConfig({
     chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
-        manualChunks(id) {
+        manualChunks(id: string) {
           // Split node_modules into separate chunks,
           // but skip lazy-loaded heavy libraries so they
           // remain as deferred async chunks.
           if (id.includes("node_modules")) {
-            const pkg = id.toString().split("node_modules/")[1].split("/")[0];
+            const parts = id.toString().split("node_modules/");
+            const pkg = parts[parts.length - 1].split("/")[0];
             if (pkg === "@blocknote" || pkg === "@embedpdf") return undefined;
             return pkg;
           }
@@ -86,4 +83,4 @@ export default defineConfig({
       })(),
     ),
   },
-});
+} as any);
