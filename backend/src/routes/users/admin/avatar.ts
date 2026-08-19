@@ -39,7 +39,7 @@ const updateAvatar: FastifyPluginAsyncTypebox = async (app) => {
       }
 
       if (!targetUserId) {
-        return reply.badRequest(request.t(($) => $.user.management.missingUserId));
+        return reply.badRequest(request.t(($) => $.user.missingUserId));
       }
 
       let fileParam = undefined;

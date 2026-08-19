@@ -6,7 +6,7 @@ export const APP_CONFIG = {
   dayFormat: "yyyy-MM-dd",
   app: {
     name: "SiCerdas",
-    description: "SiCerdas",
+    description: "Learning Platform",
     logo: AppLogo,
     version: __BUILD_VERSION__,
     uploadDirs: "/uploads/", // don't change this

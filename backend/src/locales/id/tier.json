@@ -7,8 +7,7 @@
         },
         "update": {
             "success": "Tier berhasil diperbarui",
-            "notFound": "Tier tidak ditemukan",
-            "defaultData": "Tidak dapat mengubah slug tier pricing default"
+            "notFound": "Tier tidak ditemukan"
         },
         "delete": {
             "success": "Tier berhasil dihapus",

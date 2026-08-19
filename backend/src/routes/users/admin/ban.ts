@@ -42,7 +42,7 @@ const banUser: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: request.t(($) => $.user.management.update.success),
+        message: request.t(($) => $.user.update.success),
       });
     },
   });

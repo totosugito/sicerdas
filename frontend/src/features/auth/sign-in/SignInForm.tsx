@@ -3,47 +3,46 @@ import { Button } from "@/components/ui/button";
 import { LoginFormValues } from "@/types/auth";
 import { FormInput, FormPassword } from "@/components/forms";
 import { Loader2, Mail, Lock, LogIn, AlertCircle } from "lucide-react";
-import { useAppTranslation } from '@/lib/i18n-typed';
+import { useAppTranslation } from "@/lib/i18n-typed";
 import { AppRoute } from "@/constants/app-route";
+import { Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { APP_CONFIG } from "@/constants/config";
 
 type Props = {
   onFormSubmit: (values: FormData) => void;
-  loading?: boolean,
-  errorMessage?: string,
-  onGoogleSignIn?: () => void; // Add Google sign in handler
-}
+  loading?: boolean;
+  errorMessage?: string;
+  onGoogleSignIn?: () => void;
+};
 
 export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn }: Props) => {
   const { t } = useAppTranslation();
 
-  // Define signInFormData directly in this file
   const signInFormData = {
     form: {
       email: {
         type: "text",
         name: "email",
-        label: t($ => $.labels.emailAddress),
-        placeholder: t($ => $.auth.signIn.emailPlaceholder),
+        label: t(($) => $.labels.emailAddress),
+        placeholder: t(($) => $.auth.signIn.emailPlaceholder),
       },
       password: {
         type: "password",
         name: "password",
-        label: t($ => $.labels.password),
-        placeholder: t($ => $.auth.signIn.passwordPlaceholder),
-      }
+        label: t(($) => $.labels.password),
+        placeholder: t(($) => $.auth.signIn.passwordPlaceholder),
+      },
     },
     defaultValue: {
       email: APP_CONFIG.demoUser.email,
       password: APP_CONFIG.demoUser.password,
-    } satisfies LoginFormValues
+    } satisfies LoginFormValues,
   };
 
-  // Create schema with translated error messages directly in this file
   const schema = z.object({
-    email: z.email({ message: t($ => $.auth.signIn.invalidEmail) }),
-    password: z.string().min(1, { message: t($ => $.auth.signIn.passwordRequired) }),
+    email: z.email({ message: t(($) => $.auth.signIn.invalidEmail) }),
+    password: z.string().min(1, { message: t(($) => $.auth.signIn.passwordRequired) }),
   });
 
   const form = useAppForm({
@@ -53,8 +52,8 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
     },
     onSubmit({ value }) {
       const values = new FormData();
-      values.append('email', value.email ?? "");
-      values.append('password', value.password ?? "");
+      values.append("email", value.email ?? "");
+      values.append("password", value.password ?? "");
       onFormSubmit(values);
     },
   });
@@ -67,81 +66,85 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
           e.stopPropagation();
           form.handleSubmit();
         }}
-        className="space-y-5"
+        className="space-y-4"
       >
         {errorMessage && (
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 flex items-start space-x-2">
-            <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-            <div className="text-sm text-destructive font-medium">{errorMessage}</div>
+          <div className="bg-destructive/10 border border-destructive/20 text-destructive rounded-xl p-3.5 flex items-start gap-2.5 text-sm animate-in fade-in-50 duration-200">
+            <AlertCircle className="h-4 w-4 text-destructive flex-shrink-0 mt-0.5" />
+            <div className="font-medium text-xs sm:text-sm">{errorMessage}</div>
           </div>
         )}
-        <div className="space-y-4">
-          <div className="relative">
-            <Mail className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
-            <form.AppField name="email">
-              {(field) => (
-                <FormInput
-                  field={field}
-                  item={signInFormData.form.email}
-                  className="pl-10"
-                  showMessage={false}
-                />
-              )}
-            </form.AppField>
-          </div>
-          <div className="relative">
-            <form.AppField name="password">
-              {(field) => (
-                <FormPassword
-                  field={field}
-                  item={signInFormData.form.password}
-                  className="pl-10"
-                  showMessage={false}
-                />
-              )}
-            </form.AppField>
-            <Lock className="absolute left-3 top-8 transform h-4 w-4 text-muted-foreground" />
-          </div>
+
+        <div className="space-y-3.5">
+          <form.AppField name="email">
+            {(field) => (
+              <FormInput
+                field={field}
+                item={signInFormData.form.email}
+                leftIcon={<Mail />}
+                className="h-10 rounded-xl bg-background/50 focus:bg-background transition-colors"
+                showMessage={true}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="password">
+            {(field) => (
+              <FormPassword
+                field={field}
+                item={signInFormData.form.password}
+                leftIcon={<Lock />}
+                className="h-10 rounded-xl bg-background/50 focus:bg-background transition-colors"
+                showMessage={true}
+              />
+            )}
+          </form.AppField>
         </div>
 
-        <div className="flex items-center justify-between text-sm">
-          <label className="flex items-center space-x-2 text-muted-foreground cursor-pointer">
-            <input type="checkbox" className="rounded border-border" />
-            <span>{t($ => $.labels.rememberMe)}</span>
+        <div className="flex items-center justify-between text-xs sm:text-sm pt-1">
+          <label className="flex items-center space-x-2 text-muted-foreground hover:text-foreground cursor-pointer select-none">
+            <input
+              type="checkbox"
+              className="rounded border-border text-primary focus:ring-primary/40"
+            />
+            <span>{t(($) => $.labels.rememberMe)}</span>
           </label>
-          <a href={AppRoute.auth.otpForgetPassword.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
-            {t($ => $.labels.forgetPassword)}
-          </a>
+          <Link
+            to={AppRoute.auth.otpForgetPassword.url}
+            className="text-primary hover:text-primary/80 font-medium transition-colors hover:underline"
+          >
+            {t(($) => $.labels.forgetPassword)}
+          </Link>
         </div>
 
         <Button
           type="submit"
-          className="w-full"
+          className="w-full h-10 rounded-xl font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all active:scale-[0.99] mt-2"
           disabled={loading}
         >
           {loading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t($ => $.labels.signIn)}...
+              {t(($) => $.labels.signIn)}...
             </>
           ) : (
             <>
               <LogIn className="mr-2 h-4 w-4" />
-              {t($ => $.labels.signIn)}
+              {t(($) => $.labels.signIn)}
             </>
           )}
         </Button>
 
         {/* Google Sign In Button */}
         {onGoogleSignIn && (
-          <div className="space-y-4">
+          <div className="space-y-3 pt-2">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
+                <span className="w-full border-t border-border/70" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  {t($ => $.auth.signIn.orContinueWith)}
+              <div className="relative flex justify-center text-[11px] uppercase tracking-wider">
+                <span className="bg-card px-2.5 text-muted-foreground font-medium">
+                  {t(($) => $.auth.signIn.orContinueWith)}
                 </span>
               </div>
             </div>
@@ -149,7 +152,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
             <Button
               type="button"
               variant="outline"
-              className="w-full"
+              className="w-full h-10 rounded-xl font-medium border-border/80 hover:bg-accent/60 transition-all active:scale-[0.99]"
               onClick={onGoogleSignIn}
             >
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -170,20 +173,23 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
                   fill="#EA4335"
                 />
               </svg>
-              {t($ => $.auth.signIn.continueWithGoogle)}
+              {t(($) => $.auth.signIn.continueWithGoogle)}
             </Button>
           </div>
         )}
 
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            {t($ => $.auth.signIn.newUser)}{" "}
-            <a href={AppRoute.auth.signUp.url} className="text-primary hover:text-primary/80 font-medium transition-colors">
-              {t($ => $.labels.signUp)}
-            </a>
+        <div className="text-center pt-3 border-t border-border/40">
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            {t(($) => $.auth.signIn.newUser)}{" "}
+            <Link
+              to={AppRoute.auth.signUp.url}
+              className="text-primary hover:text-primary/80 font-semibold transition-colors hover:underline"
+            >
+              {t(($) => $.labels.signUp)}
+            </Link>
           </p>
         </div>
       </form>
     </form.AppForm>
-  )
-}
+  );
+};

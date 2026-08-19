@@ -33,7 +33,7 @@ export async function createUserService(params: CreateUserParams): Promise<Creat
     return {
       success: false,
       statusCode: 400,
-      errorKey: ($) => $.user.management.create.emailExists,
+      errorKey: ($) => $.user.create.emailExists,
     };
   }
 

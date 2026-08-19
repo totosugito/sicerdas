@@ -1,6 +1,7 @@
 import { AppRoute } from "@/constants/app-route";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { AppNavbar } from "@/features/app";
 import {
   AndroidAppSection,
   CTASection,
@@ -8,7 +9,6 @@ import {
   Footer,
   HeroSection,
 } from "@/features/landing";
-import { AppNavbar } from "@/components/app";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,

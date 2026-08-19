@@ -6,10 +6,8 @@ import {
 } from "@/api/auth";
 import type { EmailOtpVerifyForgetPasswordResponse, BaseResponse } from "@/api/auth/types";
 
-
-
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { ShieldCheck, Timer, Loader2 } from "lucide-react";
+import { ShieldCheck, Timer, Loader2, RotateCcw } from "lucide-react";
 import { OtpVerificationForm } from "@/features/auth/otp-verification";
 import { useState, useEffect } from "react";
 import { AppRoute } from "@/constants/app-route";
@@ -17,9 +15,9 @@ import { z } from "zod";
 import { APP_CONFIG } from "@/constants/config";
 import { AuthHeader, AuthLayout } from "@/features/auth";
 import NotFoundError from "@/components/general/NotFoundError";
+import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 
-
-// Timer duration in seconds (default 120 seconds = 2 minutes)
 const TIMER_DURATION = APP_CONFIG.RESEND_OTP_DELAY || 120;
 
 export const Route = createFileRoute("/(auth)/otp-verification")({
@@ -27,12 +25,10 @@ export const Route = createFileRoute("/(auth)/otp-verification")({
     email: z.string().optional(),
   }),
   beforeLoad: ({ search }) => {
-    // Redirect to sign in if no email is provided
     if (!search.email) {
       throw redirect({ to: AppRoute.auth.signIn.url });
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(search.email)) {
       throw redirect({ to: AppRoute.auth.signIn.url });
@@ -48,17 +44,15 @@ function OtpVerificationComponent() {
 
   const emailHasOtpQuery = useEmailHasOtpQuery(search.email);
   const emailOtpVerifyForgetPasswordMutation = useEmailOtpVerifyForgetPasswordMutation();
-  const emailOtpForgetPasswordMutation = useEmailOtpForgetPasswordMutation(); // For resending OTP
+  const emailOtpForgetPasswordMutation = useEmailOtpForgetPasswordMutation();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
-  const [showTimer, setShowTimer] = useState<boolean>(true); // Show timer by default
-  const [timer, setTimer] = useState<number>(TIMER_DURATION); // Use configurable timer duration
+  const [showTimer, setShowTimer] = useState<boolean>(true);
+  const [timer, setTimer] = useState<number>(TIMER_DURATION);
   const [canResend, setCanResend] = useState<boolean>(false);
   const [resendLoading, setResendLoading] = useState<boolean>(false);
   const [resendSuccess, setResendSuccess] = useState<boolean>(false);
 
-  // Timer effect
   useEffect(() => {
-    // Countdown timer
     let interval: NodeJS.Timeout | null = null;
     if (showTimer && timer > 0) {
       interval = setInterval(() => {
@@ -78,7 +72,6 @@ function OtpVerificationComponent() {
     };
   }, [showTimer, timer]);
 
-  // Show NotFoundError if the API returns an error (e.g., user not found) or if the user doesn't have OTP
   if (
     (emailHasOtpQuery.isSuccess && emailHasOtpQuery.data && !emailHasOtpQuery.data.hasOtp) ||
     emailHasOtpQuery.isError
@@ -86,18 +79,14 @@ function OtpVerificationComponent() {
     return <NotFoundError />;
   }
 
-
-
-
-  // Show loading state while the query is in progress
   if (emailHasOtpQuery.isLoading) {
     return (
       <AuthLayout>
-        <div className="h-svh flex items-center justify-center">
-          <div className="text-center">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto" />
-            <p className="mt-2">{t(($) => $.auth.otpVerification.checkingPending)}</p>
-          </div>
+        <div className="py-12 flex flex-col items-center justify-center text-center space-y-3">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">
+            {t(($) => $.auth.otpVerification.checkingPending)}
+          </p>
         </div>
       </AuthLayout>
     );
@@ -106,12 +95,10 @@ function OtpVerificationComponent() {
   const onFormSubmit = (data: { otp: string }) => {
     setErrorMessage(undefined);
 
-    // First verify the OTP with the correct parameters
     emailOtpVerifyForgetPasswordMutation.mutate(
       { body: { email: search.email || "", otp: data.otp } },
       {
         onSuccess: (response: EmailOtpVerifyForgetPasswordResponse) => {
-          // If OTP is valid, navigate to reset password page with email and otp parameters
           if (response?.data?.valid) {
             navigate({
               to: AppRoute.auth.otpResetPassword.url,
@@ -132,8 +119,6 @@ function OtpVerificationComponent() {
     );
   };
 
-
-  // Function to resend OTP
   const handleResendOtp = () => {
     if (!search.email) return;
 
@@ -147,8 +132,7 @@ function OtpVerificationComponent() {
         onSuccess: () => {
           setResendSuccess(true);
           setCanResend(false);
-          setTimer(TIMER_DURATION); // Reset timer to configured duration
-          // Hide success message after 3 seconds
+          setTimer(TIMER_DURATION);
           setTimeout(() => {
             setResendSuccess(false);
           }, 3000);
@@ -164,87 +148,83 @@ function OtpVerificationComponent() {
     );
   };
 
-
-
-
-
-  // Format time for display (MM:SS)
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // Default OTP Verification Form View
   return (
     <AuthLayout>
       <AuthHeader
-        icon={<ShieldCheck className="w-8 h-8 text-white" />}
-        appName={t(($) => $.app.appName)}
+        icon={<ShieldCheck className="w-7 h-7 text-white" />}
         title={t(($) => $.auth.otpVerification.title)}
         description={t(($) => $.auth.otpVerification.instructions)}
       />
-      {/* OTP verification form */}
+
       <OtpVerificationForm
         onFormSubmit={onFormSubmit}
         loading={emailOtpVerifyForgetPasswordMutation.isPending}
         errorMessage={errorMessage}
         email={search.email}
       />
+
       {/* Timer and Resend OTP Section */}
       {showTimer && (
-        <div className="mt-4 p-4 bg-muted/50 rounded-lg border border-border">
+        <div className="mt-4 p-3.5 bg-muted/40 rounded-xl border border-border/60 text-xs">
           {!canResend ? (
-            // Show timer and waiting text
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Timer className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
-                  {t(($) => $.auth.otpVerification.timerText)}
-                </span>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Timer className="h-4 w-4 text-primary" />
+                <span>{t(($) => $.auth.otpVerification.timerText)}</span>
               </div>
-              <div className="font-mono text-sm">{formatTime(timer)}</div>
+              <div className="font-mono font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
+                {formatTime(timer)}
+              </div>
             </div>
           ) : (
-            // Show resend text with click event when timer is done
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-              <span className="text-sm text-muted-foreground">
-                {t(($) => $.auth.otpVerification.didNotGetCode)}{" "}
-                <span
-                  onClick={handleResendOtp}
-                  className="text-primary hover:text-primary/80 font-medium cursor-pointer transition-colors"
-                >
-                  {t(($) => $.auth.otpVerification.resendOtp)}
-                </span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-muted-foreground">
+                {t(($) => $.auth.otpVerification.didNotGetCode)}
               </span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleResendOtp}
+                disabled={resendLoading}
+                className="text-primary font-semibold hover:text-primary/80 h-7 px-2"
+              >
+                {resendLoading ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                ) : (
+                  <RotateCcw className="h-3.5 w-3.5 mr-1" />
+                )}
+                {t(($) => $.auth.otpVerification.resendOtp)}
+              </Button>
             </div>
           )}
 
           {resendSuccess && (
-            <div className="mt-3 p-4 bg-green-500/10 border border-green-500/20 rounded text-green-700 dark:text-green-300 text-sm">
+            <div className="mt-2.5 p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-600 dark:text-emerald-400 text-center font-medium animate-in fade-in-50">
               {t(($) => $.auth.otpVerification.resendOtpSuccess)}
-            </div>
-          )}
-
-          {resendLoading && (
-            <div className="mt-3 flex items-center text-sm text-muted-foreground">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t(($) => $.labels.sending)} ...
             </div>
           )}
         </div>
       )}
-      <div className="mt-6 text-center">
-        <p className="text-sm text-muted-foreground">
+
+      <div className="text-center pt-4 border-t border-border/40 mt-4">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           {t(($) => $.auth.otpVerification.backToSignIn)}{" "}
-          <a
-            href={AppRoute.auth.signIn.url}
-            className="text-primary hover:text-primary/80 font-medium transition-colors"
+          <Link
+            to={AppRoute.auth.signIn.url}
+            className="text-primary hover:text-primary/80 font-semibold transition-colors hover:underline"
           >
             {t(($) => $.labels.signIn)}
-          </a>
+          </Link>
         </p>
       </div>
     </AuthLayout>
   );
 }
+

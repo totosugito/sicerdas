@@ -1,13 +1,13 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { Lock, AlertCircle, CheckCircle } from "lucide-react";
+import { Lock, AlertCircle, CheckCircle2, ArrowRight, RotateCcw } from "lucide-react";
 import { ResetPasswordForm } from "@/features/auth/otp-reset-password";
 import { useState, useEffect } from "react";
 import { AppRoute } from "@/constants/app-route";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
+import { Link } from "@tanstack/react-router";
 
-// Add the import for the OTP verification mutation and OTP reset password mutation
 import {
   useEmailOtpVerifyForgetPasswordMutation,
   useEmailOtpResetPasswordMutation,
@@ -17,10 +17,9 @@ import { AuthHeader, AuthLayout } from "@/features/auth";
 export const Route = createFileRoute("/(auth)/otp-reset-password")({
   validateSearch: z.object({
     email: z.string().optional(),
-    otp: z.any().optional(), // Add otp parameter
+    otp: z.any().optional(),
   }),
   beforeLoad: ({ search }) => {
-    // Redirect to sign in if no token or email is provided
     if (!search.email || !search.otp) {
       throw redirect({ to: AppRoute.auth.signIn.url });
     }
@@ -33,18 +32,14 @@ function ResetPasswordComponent() {
   const navigate = Route.useNavigate();
   const search = Route.useSearch();
 
-  // Add OTP verification mutation
   const emailOtpVerifyForgetPasswordMutation = useEmailOtpVerifyForgetPasswordMutation();
-  // Add OTP reset password mutation
   const emailOtpResetPasswordMutation = useEmailOtpResetPasswordMutation();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isOtpInvalid, setIsOtpInvalid] = useState(false);
 
-  // Add effect to verify OTP when component mounts
   useEffect(() => {
-    // Only run if we have both email and otp
     if (search.email && search.otp) {
       emailOtpVerifyForgetPasswordMutation.mutate(
         { body: { email: search.email, otp: search.otp.toString() } },
@@ -65,7 +60,6 @@ function ResetPasswordComponent() {
     setIsSuccess(false);
     setIsOtpInvalid(false);
 
-    // Prepare the data with email, otp, and password
     const resetData = {
       email: search.email || "",
       otp: search.otp?.toString() || "",
@@ -76,13 +70,11 @@ function ResetPasswordComponent() {
       { body: resetData },
       {
         onSuccess: (res) => {
-          // Store the success message from API response
           const message = res?.message || t(($) => $.auth.resetPassword.successMessage);
           setSuccessMessage(message);
           setIsSuccess(true);
         },
         onError: (error) => {
-          // Handle different types of errors
           const errorMsg = error?.message || t(($) => $.auth.resetPassword.errorMessage);
           setErrorMessage(errorMsg);
         },
@@ -99,70 +91,61 @@ function ResetPasswordComponent() {
     return (
       <AuthLayout>
         <AuthHeader
-          icon={<CheckCircle className="w-8 h-8 text-white" />}
-          appName={t(($) => $.app.appName)}
-          title={t(($) => $.auth.resetPassword.title)}
-          description={""}
+          icon={<CheckCircle2 className="w-7 h-7 text-emerald-500" />}
+          title={t(($) => $.auth.resetPassword.successTitle)}
         />
-        {/* Success card */}
-        <div className="text-center space-y-6">
-          <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              {t(($) => $.auth.resetPassword.successTitle)}
-            </h2>
-            <p className="text-muted-foreground">
+        <div className="text-center space-y-6 animate-in fade-in-50 duration-200">
+          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 text-center">
+            <p className="text-sm text-foreground leading-relaxed">
               {successMessage || t(($) => $.auth.resetPassword.successMessage)}
             </p>
           </div>
 
-          <Button onClick={handleBackToLogin} className="w-full">
-            {t(($) => $.auth.resetPassword.backToSignIn)}
+          <Button
+            onClick={handleBackToLogin}
+            className="w-full h-10 rounded-xl font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all"
+          >
+            <span>{t(($) => $.auth.resetPassword.backToSignIn)}</span>
+            <ArrowRight className="w-4 h-4 ml-1.5" />
           </Button>
         </div>
       </AuthLayout>
     );
   }
 
-  // Error View (when there's an error but not success)
-  if (errorMessage) {
+  // Error View (Invalid OTP / Fatal Error)
+  if (errorMessage && isOtpInvalid) {
     return (
       <AuthLayout>
         <AuthHeader
-          icon={<AlertCircle className="w-8 h-8 text-white" />}
-          appName={t(($) => $.app.appName)}
-          title={t(($) => $.auth.resetPassword.title)}
-          description={""}
+          icon={<AlertCircle className="w-7 h-7 text-destructive" />}
+          title={t(($) => $.auth.resetPassword.errorTitle)}
         />
-        {/* Error card */}
-        <div className="text-center space-y-6">
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              {t(($) => $.auth.resetPassword.errorTitle)}
-            </h2>
-            <p className="text-sm text-destructive font-medium">
+        <div className="text-center space-y-6 animate-in fade-in-50 duration-200">
+          <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-5">
+            <p className="text-sm text-destructive font-medium leading-relaxed">
               {errorMessage || t(($) => $.auth.resetPassword.errorMessage)}
             </p>
           </div>
 
-          <div className="flex flex-col gap-3">
-            {isOtpInvalid ? (
-              <Button
-                onClick={() =>
-                  navigate({
-                    to: AppRoute.auth.otpVerification.url,
-                    search: { email: search.email },
-                  })
-                }
-                className="w-full"
-              >
-                {t(($) => $.auth.otpVerification.title)}
-              </Button>
-            ) : (
-              <Button onClick={() => setErrorMessage(undefined)} className="w-full">
-                {t(($) => $.auth.resetPassword.tryAgain)}
-              </Button>
-            )}
-            <Button variant="outline" onClick={handleBackToLogin} className="w-full">
+          <div className="flex flex-col gap-2.5">
+            <Button
+              onClick={() =>
+                navigate({
+                  to: AppRoute.auth.otpVerification.url,
+                  search: { email: search.email },
+                })
+              }
+              className="w-full h-10 rounded-xl font-semibold"
+            >
+              <RotateCcw className="w-4 h-4 mr-1.5" />
+              {t(($) => $.auth.otpVerification.title)}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleBackToLogin}
+              className="w-full h-10 rounded-xl font-medium"
+            >
               {t(($) => $.auth.resetPassword.backToSignIn)}
             </Button>
           </div>
@@ -171,34 +154,33 @@ function ResetPasswordComponent() {
     );
   }
 
-  // Default Form View - only show if token is valid
+  // Default Form View
   return (
     <AuthLayout>
       <AuthHeader
-        icon={<Lock className="w-8 h-8 text-white" />}
-        appName={t(($) => $.app.appName)}
+        icon={<Lock className="w-7 h-7 text-white" />}
         title={t(($) => $.auth.resetPassword.title)}
         description={t(($) => $.auth.resetPassword.instructions)}
       />
 
-      {/* Reset password form */}
       <ResetPasswordForm
         onFormSubmit={onFormSubmit}
         loading={emailOtpResetPasswordMutation.isPending}
         errorMessage={errorMessage}
       />
 
-      <div className="mt-6 text-center">
-        <p className="text-sm text-muted-foreground">
+      <div className="text-center pt-3 border-t border-border/40 mt-4">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           {t(($) => $.auth.resetPassword.backToSignIn)}{" "}
-          <a
-            href={AppRoute.auth.signIn.url}
-            className="text-primary hover:text-primary/80 font-medium transition-colors"
+          <Link
+            to={AppRoute.auth.signIn.url}
+            className="text-primary hover:text-primary/80 font-semibold transition-colors hover:underline"
           >
             {t(($) => $.labels.signIn)}
-          </a>
+          </Link>
         </p>
       </div>
     </AuthLayout>
   );
 }
+

@@ -28,7 +28,7 @@ const protectedRoute: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: request.t(($) => $.user.management.details.success),
+        message: request.t(($) => $.user.details.success),
         data: result.data as any,
       });
     },

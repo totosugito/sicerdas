@@ -3,7 +3,7 @@ import { useAppTranslation } from '@/lib/i18n-typed'
 import { APP_CONFIG } from '@/constants/config'
 import { RiDiscordLine, RiMailLine, RiYoutubeLine } from 'react-icons/ri'
 import { AppRoute } from '@/constants/app-route'
-import { AppLogo } from '@/components/app'
+import { AppLogo } from '@/features/app'
 
 export function Footer() {
     const { t } = useAppTranslation()

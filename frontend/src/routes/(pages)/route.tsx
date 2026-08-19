@@ -1,4 +1,4 @@
-import { AppNavbar } from '@/components/app'
+import { AppNavbar } from '@/features/app'
 import { Footer } from '@/features/landing'
 import { createFileRoute, Outlet, useLocation } from '@tanstack/react-router'
 import { useState, useEffect, useMemo } from 'react'
@@ -7,9 +7,9 @@ import { ChevronUp } from 'lucide-react'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { isAdmin } from '@/types/auth'
-import AppSidebar from '@/components/app/sidebar/AppSidebar'
+import AppSidebar from '@/features/app/sidebar/AppSidebar'
 import { useAdminNav } from '@/constants/admin-nav'
-import { SidebarData } from '@/components/app/sidebar/types'
+import { SidebarData } from '@/features/app/sidebar/types'
 
 export const Route = createFileRoute('/(pages)')({
     component: RouteComponent,

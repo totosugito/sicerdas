@@ -6,9 +6,10 @@ import { SignUpForm } from "@/features/auth/sign-up";
 import { useState } from "react";
 import { AppRoute } from "@/constants/app-route";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, AlertCircle, UserPlus } from "lucide-react";
+import { CheckCircle2, AlertCircle, UserPlus, ArrowRight, RotateCcw } from "lucide-react";
 import { SignUpFormValues } from "@/features/auth/sign-up/SignUpForm";
 import { AuthHeader, AuthLayout } from "@/features/auth";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(auth)/sign-up")({
   validateSearch: z.object({
@@ -40,13 +41,11 @@ function SignUpComponent() {
       { body: data },
       {
         onSuccess: (data: any) => {
-          // Store the success message from API response
           const message = data?.message || t(($) => $.auth.signUp.signUpSuccessMessage);
           setSuccessMessage(message);
           setIsSuccess(true);
         },
         onError: (error: Record<string, any>) => {
-          // Handle different types of errors
           const errorMsg =
             error?.response?.data?.message ||
             error?.response?.data?.error ||
@@ -59,7 +58,6 @@ function SignUpComponent() {
   };
 
   const handleContinueToLogin = () => {
-    // Redirect to the intended destination or sign-in page
     navigate({ to: search.redirect ? search.redirect : AppRoute.auth.signIn.url });
   };
 
@@ -72,56 +70,56 @@ function SignUpComponent() {
     return (
       <AuthLayout>
         <AuthHeader
-          icon={<CheckCircle className="w-8 h-8 text-white" />}
-          appName={t(($) => $.app.appName)}
-          title={t(($) => $.auth.signUp.title)}
-          description={""}
+          icon={<CheckCircle2 className="w-7 h-7 text-emerald-500" />}
+          title={t(($) => $.auth.signUp.signUpSuccessTitle)}
         />
-        {/* Success card */}
-        <div className="text-center space-y-6">
-          <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              {t(($) => $.auth.signUp.signUpSuccessTitle)}
-            </h2>
-            <p className="text-muted-foreground">
+        <div className="text-center space-y-6 animate-in fade-in-50 duration-200">
+          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 text-center">
+            <p className="text-sm text-foreground leading-relaxed">
               {successMessage || t(($) => $.auth.signUp.signUpSuccessMessage)}
             </p>
           </div>
 
-          <Button onClick={handleContinueToLogin} className="w-full">
-            {t(($) => $.labels.signIn)}
+          <Button
+            onClick={handleContinueToLogin}
+            className="w-full h-10 rounded-xl font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all"
+          >
+            <span>{t(($) => $.labels.signIn)}</span>
+            <ArrowRight className="w-4 h-4 ml-1.5" />
           </Button>
         </div>
       </AuthLayout>
     );
   }
 
-  // Error View (when there's an error but not success)
-  if (errorMessage) {
+  // Error View (when there's a standalone fatal error)
+  if (errorMessage && !signUpMutation.isPending && errorMessage.includes("fatal")) {
     return (
       <AuthLayout>
         <AuthHeader
-          icon={<AlertCircle className="w-8 h-8 text-white" />}
-          appName={t(($) => $.app.appName)}
-          title={t(($) => $.auth.signUp.title)}
-          description={""}
+          icon={<AlertCircle className="w-7 h-7 text-destructive" />}
+          title={t(($) => $.auth.signUp.signUpFailedTitle)}
         />
-        {/* Error card */}
-        <div className="text-center space-y-6">
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              {t(($) => $.auth.signUp.signUpFailedTitle)}
-            </h2>
-            <p className="text-sm text-destructive font-medium">
+        <div className="text-center space-y-6 animate-in fade-in-50 duration-200">
+          <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-5">
+            <p className="text-sm text-destructive font-medium leading-relaxed">
               {errorMessage || t(($) => $.auth.signUp.signUpFailedMessage)}
             </p>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <Button onClick={() => setErrorMessage(undefined)} className="w-full">
+          <div className="flex flex-col gap-2.5">
+            <Button
+              onClick={() => setErrorMessage(undefined)}
+              className="w-full h-10 rounded-xl font-semibold"
+            >
+              <RotateCcw className="w-4 h-4 mr-1.5" />
               {t(($) => $.auth.signUp.tryAgain)}
             </Button>
-            <Button variant="outline" onClick={handleBackToLogin} className="w-full">
+            <Button
+              variant="outline"
+              onClick={handleBackToLogin}
+              className="w-full h-10 rounded-xl font-medium"
+            >
               {t(($) => $.labels.signIn)}
             </Button>
           </div>
@@ -134,30 +132,17 @@ function SignUpComponent() {
   return (
     <AuthLayout>
       <AuthHeader
-        icon={<UserPlus className="w-8 h-8 text-white" />}
-        appName={t(($) => $.app.appName)}
+        icon={<UserPlus className="w-7 h-7 text-white" />}
         title={t(($) => $.auth.signUp.title)}
         description={t(($) => $.auth.signUp.signUpDescription)}
       />
 
-      {/* Sign up form */}
       <SignUpForm
         onFormSubmit={onFormSubmit}
         loading={signUpMutation.isPending}
         errorMessage={errorMessage}
       />
-
-      <div className="mt-6 text-center">
-        <p className="text-sm text-muted-foreground">
-          {t(($) => $.auth.signUp.alreadyHaveAccount)}{" "}
-          <a
-            href={AppRoute.auth.signIn.url}
-            className="text-primary hover:text-primary/80 font-medium transition-colors"
-          >
-            {t(($) => $.labels.signIn)}
-          </a>
-        </p>
-      </div>
     </AuthLayout>
   );
 }
+

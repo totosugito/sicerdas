@@ -16,7 +16,8 @@ export type FormPasswordProps = {
   className?: string;
   labelClassName?: string;
   showMessage?: boolean;
-}
+  leftIcon?: React.ReactNode;
+};
 
 export const FormPassword = ({
   field,
@@ -24,6 +25,7 @@ export const FormPassword = ({
   labelClassName = "",
   showMessage = true,
   className,
+  leftIcon,
   ...props
 }: FormPasswordProps) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,7 +39,12 @@ export const FormPassword = ({
         {item.label}
         {item.required && <span className="text-red-500">*</span>}
       </field.Label>
-      <div className="relative">
+      <div className="relative flex items-center">
+        {leftIcon && (
+          <div className="absolute left-3 flex items-center pointer-events-none text-muted-foreground z-10 [&_svg]:size-4">
+            {leftIcon}
+          </div>
+        )}
         <field.Control>
           <Input
             type={showPassword ? "text" : "password"}
@@ -47,21 +54,24 @@ export const FormPassword = ({
             value={field.state.value}
             onBlur={field.handleBlur}
             onChange={(e) => field.handleChange(e.target.value)}
-            className={cn("pr-10", className)}
+            className={cn(leftIcon ? "pl-9" : "", "pr-10", className)}
             {...props}
           />
         </field.Control>
 
         <button
           type="button"
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
+          tabIndex={-1}
+          className="absolute right-3 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors focus:outline-none z-10 cursor-pointer"
           onClick={togglePasswordVisibility}
+          aria-label={showPassword ? "Hide password" : "Show password"}
         >
-          {showPassword ? <EyeOff className="h-4.5 w-4.5" /> : <Eye className="h-4.5 w-4.5" />}
+          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>
       </div>
       {item?.description && <field.Description>{item.description}</field.Description>}
       {showMessage && <field.Message />}
     </div>
   );
-}
+};
+

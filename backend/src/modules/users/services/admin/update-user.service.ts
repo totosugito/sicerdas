@@ -60,7 +60,7 @@ export async function updateUserService(params: UpdateUserParams): Promise<Updat
       return {
         success: false,
         statusCode: 409,
-        errorKey: ($) => $.user.management.update.emailExists,
+        errorKey: ($) => $.user.update.emailExists,
       };
     }
   }

@@ -24,7 +24,7 @@ const deleteUser: FastifyPluginAsyncTypebox = async (app) => {
 
       // Prevent self-deletion
       if (id === request.session.user.id) {
-        return reply.badRequest(request.t(($) => $.user.errors.accessDenied));
+        return reply.badRequest(request.t(($) => $.auth.forbidden));
       }
 
       const result = await deleteUserService({ id, logger: request.log });
@@ -39,7 +39,7 @@ const deleteUser: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: request.t(($) => $.user.management.delete.success),
+        message: request.t(($) => $.user.delete.success),
       });
     },
   });

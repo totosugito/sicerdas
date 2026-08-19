@@ -34,7 +34,7 @@ const bulkDeleteUsers: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: request.t(($) => $.user.management.delete.success),
+        message: request.t(($) => $.user.delete.success),
       });
     },
   });

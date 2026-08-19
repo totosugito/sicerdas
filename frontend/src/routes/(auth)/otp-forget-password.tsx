@@ -1,9 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEmailOtpForgetPasswordMutation } from "@/api/auth/email-otp-forget-password";
-import type { EmailOtpForgetPasswordRequest, EmailOtpForgetPasswordResponse, BaseResponse } from "@/api/auth/types";
+import type {
+  EmailOtpForgetPasswordRequest,
+  EmailOtpForgetPasswordResponse,
+  BaseResponse,
+} from "@/api/auth/types";
 
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { AlertCircle, CheckCircle, Mail } from "lucide-react";
+import { AlertCircle, CheckCircle2, Mail, ArrowRight, RotateCcw } from "lucide-react";
 import { ForgetPasswordForm } from "@/features/auth/otp-forget-password";
 import { useState } from "react";
 import { AppRoute } from "@/constants/app-route";
@@ -33,14 +37,11 @@ function ForgetPasswordComponent() {
       },
       {
         onSuccess: (responseData: EmailOtpForgetPasswordResponse) => {
-          // Store the success message from API response
           const message = responseData?.message || t(($) => $.auth.forgetPassword.successMessage);
           setSuccessMessage(message);
           setIsSuccess(true);
-          // Redirect to OTP verification page with email parameter from form data
           navigate({ to: AppRoute.auth.otpVerification.url, search: { email: data.email } });
         },
-
         onError: (error: BaseResponse) => {
           const errorMsg = error?.message || t(($) => $.auth.forgetPassword.errorMessage);
           setErrorMessage(errorMsg);
@@ -48,8 +49,6 @@ function ForgetPasswordComponent() {
       },
     );
   };
-
-
 
   const handleBackToLogin = () => {
     navigate({ to: AppRoute.auth.signIn.url });
@@ -60,56 +59,56 @@ function ForgetPasswordComponent() {
     return (
       <AuthLayout>
         <AuthHeader
-          icon={<CheckCircle className="w-8 h-8 text-white" />}
-          appName={t(($) => $.app.appName)}
-          title={t(($) => $.auth.forgetPassword.title)}
-          description={""}
+          icon={<CheckCircle2 className="w-7 h-7 text-emerald-500" />}
+          title={t(($) => $.auth.forgetPassword.successTitle)}
         />
-        {/* Success card */}
-        <div className="text-center space-y-6">
-          <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              {t(($) => $.auth.forgetPassword.successTitle)}
-            </h2>
-            <p className="text-muted-foreground">
+        <div className="text-center space-y-6 animate-in fade-in-50 duration-200">
+          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 text-center">
+            <p className="text-sm text-foreground leading-relaxed">
               {successMessage || t(($) => $.auth.forgetPassword.successMessage)}
             </p>
           </div>
 
-          <Button onClick={handleBackToLogin} className="w-full h-12">
-            {t(($) => $.auth.forgetPassword.backToSignIn)}
+          <Button
+            onClick={handleBackToLogin}
+            className="w-full h-10 rounded-xl font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all"
+          >
+            <span>{t(($) => $.auth.forgetPassword.backToSignIn)}</span>
+            <ArrowRight className="w-4 h-4 ml-1.5" />
           </Button>
         </div>
       </AuthLayout>
     );
   }
 
-  // Error View (when there's an error but not success)
-  if (errorMessage) {
+  // Error View
+  if (errorMessage && !emailOtpForgetPassowrdMutation.isPending && errorMessage.includes("fatal")) {
     return (
       <AuthLayout>
         <AuthHeader
-          icon={<AlertCircle className="w-8 h-8 text-white" />}
-          appName={t(($) => $.app.appName)}
-          title={t(($) => $.auth.forgetPassword.title)}
-          description={""}
+          icon={<AlertCircle className="w-7 h-7 text-destructive" />}
+          title={t(($) => $.auth.forgetPassword.failTitle)}
         />
-        {/* Error card */}
-        <div className="text-center space-y-6">
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              {t(($) => $.auth.forgetPassword.failTitle)}
-            </h2>
-            <p className="text-sm text-destructive font-medium">
+        <div className="text-center space-y-6 animate-in fade-in-50 duration-200">
+          <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-5">
+            <p className="text-sm text-destructive font-medium leading-relaxed">
               {errorMessage || t(($) => $.auth.forgetPassword.errorMessage)}
             </p>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <Button onClick={() => setErrorMessage(undefined)} className="w-full">
+          <div className="flex flex-col gap-2.5">
+            <Button
+              onClick={() => setErrorMessage(undefined)}
+              className="w-full h-10 rounded-xl font-semibold"
+            >
+              <RotateCcw className="w-4 h-4 mr-1.5" />
               {t(($) => $.auth.forgetPassword.tryAgain)}
             </Button>
-            <Button variant="outline" onClick={handleBackToLogin} className="w-full">
+            <Button
+              variant="outline"
+              onClick={handleBackToLogin}
+              className="w-full h-10 rounded-xl font-medium"
+            >
               {t(($) => $.auth.forgetPassword.backToSignIn)}
             </Button>
           </div>
@@ -122,30 +121,17 @@ function ForgetPasswordComponent() {
   return (
     <AuthLayout>
       <AuthHeader
-        icon={<Mail className="w-8 h-8 text-white" />}
-        appName={t(($) => $.app.appName)}
+        icon={<Mail className="w-7 h-7 text-white" />}
         title={t(($) => $.auth.forgetPassword.title)}
         description={t(($) => $.auth.forgetPassword.instructions)}
       />
 
-      {/* Forgot password form */}
       <ForgetPasswordForm
         onFormSubmit={onFormSubmit}
         loading={emailOtpForgetPassowrdMutation.isPending}
         errorMessage={errorMessage}
       />
-
-      <div className="mt-6 text-center">
-        <p className="text-sm text-muted-foreground">
-          {t(($) => $.auth.forgetPassword.backToSignIn)}{" "}
-          <a
-            href={AppRoute.auth.signIn.url}
-            className="text-primary hover:text-primary/80 font-medium transition-colors"
-          >
-            {t(($) => $.labels.signIn)}
-          </a>
-        </p>
-      </div>
     </AuthLayout>
   );
 }
+

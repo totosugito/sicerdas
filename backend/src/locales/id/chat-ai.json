@@ -1,6 +1,5 @@
 {
     "chatAi": {
-        "listSuccess": "Daftar model berhasil diambil",
         "model": {
             "create": {
                 "success": "Model AI berhasil dibuat",
@@ -13,22 +12,6 @@
             "detail": {
                 "success": "Berhasil mengambil detail model AI",
                 "notFound": "Model AI tidak ditemukan"
-            },
-            "updateBatch": {
-                "success": "Status model AI berhasil diperbarui",
-                "emptyIds": "Daftar ID model tidak boleh kosong",
-                "noFieldsToUpdate": "Tidak ada field yang akan diperbarui"
-            },
-            "delete": {
-                "success": "Model AI berhasil dihapus",
-                "notFound": "Model AI tidak ditemukan"
-            },
-            "deleteBatch": {
-                "success": "Model AI yang dipilih berhasil dihapus",
-                "emptyIds": "Daftar ID model tidak boleh kosong"
-            },
-            "list": {
-                "success": "Berhasil mengambil daftar model AI"
             },
             "stats": {
                 "success": "Statistik AI berhasil diambil",

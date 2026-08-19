@@ -48,7 +48,7 @@ const createUser: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(201).send({
         success: true,
-        message: request.t(($) => $.user.management.create.success),
+        message: request.t(($) => $.user.create.success),
         data: result.data,
       });
     },

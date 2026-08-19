@@ -15,12 +15,12 @@ export function requireRoles(fastify: FastifyInstance, allowedRoles?: UserRole[]
     });
 
     if (!session?.user) {
-      return res.unauthorized(req.t(($) => $.user.hook.unauthorized));
+      return res.unauthorized(req.t(($) => $.auth.unauthorized));
     }
 
     if (allowedRoles && allowedRoles.length > 0) {
       if (!allowedRoles.includes(session.user.role as UserRole)) {
-        return res.forbidden(req.t(($) => $.user.hook.forbidden));
+        return res.forbidden(req.t(($) => $.auth.forbidden));
       }
     }
 

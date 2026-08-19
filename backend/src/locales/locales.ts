@@ -4,7 +4,6 @@ import book from "./id/book.json" with { type: "json" };
 import chatAi from "./id/chat-ai.json" with { type: "json" };
 import education from "./id/education.json" with { type: "json" };
 import exam from "./id/exam.json" with { type: "json" };
-import login from "./id/login.json" with { type: "json" };
 import periodic from "./id/periodic.json" with { type: "json" };
 import report from "./id/report.json" with { type: "json" };
 import user from "./id/user.json" with { type: "json" };
@@ -19,7 +18,6 @@ const idMessages = {
   ...chatAi,
   ...education,
   ...exam,
-  ...login,
   ...periodic,
   ...report,
   ...user,

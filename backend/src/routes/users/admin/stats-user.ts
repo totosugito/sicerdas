@@ -34,7 +34,7 @@ const statsUser: FastifyPluginAsyncTypebox = async (app) => {
 
       return reply.status(200).send({
         success: true,
-        message: request.t(($) => $.user.management.list.success),
+        message: request.t(($) => $.user.list.success),
         data: result,
       });
     },

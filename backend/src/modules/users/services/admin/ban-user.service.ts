@@ -17,7 +17,7 @@ export async function banUserService(params: BanUserParams): Promise<ServiceResp
     return {
       success: false,
       statusCode: 400,
-      errorKey: ($) => $.user.management.update.cannotBanSelf,
+      errorKey: ($) => $.user.update.cannotBanSelf,
     };
   }
 

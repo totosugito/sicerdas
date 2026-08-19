@@ -37,7 +37,7 @@ export async function deleteUserService(params: DeleteUserParams): Promise<Servi
         return {
           success: false,
           statusCode: 400,
-          errorKey: ($) => $.user.management.delete.inUse,
+          errorKey: ($) => $.user.delete.inUse,
         };
       }
       throw error;
@@ -62,7 +62,7 @@ export async function deleteUserService(params: DeleteUserParams): Promise<Servi
         return {
           success: false,
           statusCode: 400,
-          errorKey: ($) => $.user.management.delete.inUse,
+          errorKey: ($) => $.user.delete.inUse,
         };
       }
       throw error;
@@ -72,6 +72,6 @@ export async function deleteUserService(params: DeleteUserParams): Promise<Servi
   return {
     success: false,
     statusCode: 400,
-    errorKey: ($) => $.user.management.missingUserId,
+    errorKey: ($) => $.user.missingUserId,
   };
 }

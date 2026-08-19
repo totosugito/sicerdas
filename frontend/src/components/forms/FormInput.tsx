@@ -14,7 +14,8 @@ export type FormInputProps = {
   className?: string;
   labelClassName?: string;
   showMessage?: boolean;
-}
+  leftIcon?: React.ReactNode;
+};
 
 export const FormInput = ({
   field,
@@ -22,6 +23,7 @@ export const FormInput = ({
   labelClassName = "",
   showMessage = true,
   className,
+  leftIcon,
   ...props
 }: FormInputProps) => {
   return (
@@ -30,19 +32,27 @@ export const FormInput = ({
         {item.label}
         {item.required && <span className="text-red-500">*</span>}
       </field.Label>
-      <field.Control>
-        <Input
-          placeholder={item.placeholder}
-          name={field.name}
-          value={field.state.value}
-          onBlur={field.handleBlur}
-          onChange={(e) => field.handleChange(e.target.value)}
-          className={className}
-          {...props}
-        />
-      </field.Control>
+      <div className="relative flex items-center">
+        {leftIcon && (
+          <div className="absolute left-3 flex items-center pointer-events-none text-muted-foreground z-10 [&_svg]:size-4">
+            {leftIcon}
+          </div>
+        )}
+        <field.Control>
+          <Input
+            placeholder={item.placeholder}
+            name={field.name}
+            value={field.state.value}
+            onBlur={field.handleBlur}
+            onChange={(e) => field.handleChange(e.target.value)}
+            className={cn(leftIcon ? "pl-9" : "", className)}
+            {...props}
+          />
+        </field.Control>
+      </div>
       {item.description && <field.Description>{item.description}</field.Description>}
       {showMessage && <field.Message />}
     </div>
   );
-}
+};
+
