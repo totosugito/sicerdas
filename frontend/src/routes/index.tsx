@@ -8,6 +8,7 @@ import {
   FeaturesSection,
   Footer,
   HeroSection,
+  QuickAccessSection,
 } from "@/features/landing";
 
 export const Route = createFileRoute("/")({
@@ -26,21 +27,23 @@ function RouteComponent() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen w-full bg-background">
+    <div className="flex flex-col min-h-screen w-full bg-background text-foreground selection:bg-primary/20 selection:text-primary">
       <AppNavbar />
-      <div className="flex flex-col flex-1">
+      <main className="flex flex-col flex-1">
         <HeroSection
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           handleSearch={handleSearch}
         />
 
+        <QuickAccessSection />
+
         <FeaturesSection />
 
         <AndroidAppSection />
 
         <CTASection />
-      </div>
+      </main>
       <Footer />
     </div>
   );

@@ -1,71 +1,68 @@
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { useAppTranslation } from '@/lib/i18n-typed'
-import { Link } from '@tanstack/react-router'
-import { ArrowRight, Heart, LogIn } from 'lucide-react'
-import { AppRoute } from '@/constants/app-route'
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { useAppTranslation } from "@/lib/i18n-typed";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, BookOpen, Sparkles, Smartphone } from "lucide-react";
+import { AppRoute } from "@/constants/app-route";
+import { APP_CONFIG } from "@/constants/config";
 
 export function CTASection() {
-    const { t } = useAppTranslation()
+  const { t } = useAppTranslation();
 
-    return (
-        <section className="py-10 px-6">
-            <div className="container mx-auto max-w-5xl">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                    className="relative overflow-hidden rounded-3xl bg-card p-6 md:p-8 shadow-xl border border-border/50"
-                >
-                    {/* Consistent Background Gradients */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.08] via-transparent to-accent/[0.08] pointer-events-none" />
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,var(--primary-soft),transparent)] pointer-events-none opacity-40" />
+  return (
+    <section className="py-8 md:py-12 px-4 sm:px-6 relative overflow-hidden">
+      <div className="container mx-auto max-w-6xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/15 via-card to-accent/15 p-6 sm:p-8 md:p-10 border border-primary/20 shadow-xl shadow-primary/5 text-center sm:text-left"
+        >
+          {/* Background Ambient Glows */}
+          <div className="absolute -top-32 -right-32 w-80 h-80 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-accent/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
 
-                    {/* Floating Background Elements */}
-                    <motion.div
-                        animate={{
-                            scale: [1, 1.1, 1],
-                            opacity: [0.3, 0.5, 0.3]
-                        }}
-                        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-[100px] pointer-events-none"
-                    />
-                    <motion.div
-                        animate={{
-                            scale: [1, 1.05, 1],
-                            opacity: [0.2, 0.4, 0.2]
-                        }}
-                        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute -bottom-24 -left-24 w-80 h-80 bg-accent/10 rounded-full blur-[100px] pointer-events-none"
-                    />
-
-                    {/* Content */}
-                    <div className="relative z-10 max-w-3xl">
-                        <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4 tracking-tight">
-                            {t($ => $.landing.cta.title)}
-                        </h2>
-                        <p className="mb-6 text-muted-foreground text-lg font-medium leading-relaxed">
-                            {t($ => $.landing.cta.subtitle)}
-                        </p>
-
-                        {/* Buttons */}
-                        <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                            <Link to={AppRoute.book.books.url}>
-                                <Button className="px-8 shadow-lg shadow-primary/20 group transition-all duration-300">
-                                    <div className='flex flex-row gap-3 items-center font-bold'>
-                                        <span>{t($ => $.landing.hero.exploreBooks)}</span>
-                                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                                    </div>
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
-
-                    {/* Subtle grain/noise for texture (Theme-Aware opacity) */}
-                    <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-                </motion.div>
+          {/* Inner Content */}
+          <div className="relative z-10 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider mb-3 border border-primary/20 backdrop-blur-xs">
+              <Sparkles className="h-3.5 w-3.5" />
+              {t(($) => $.landing.cta.badge)}
             </div>
-        </section>
-    )
+
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-foreground tracking-tight leading-tight mb-3">
+              {t(($) => $.landing.cta.title)}
+            </h2>
+
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-6">
+              {t(($) => $.landing.cta.subtitle)}
+            </p>
+
+            {/* Buttons */}
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <Link to={AppRoute.book.books.url} className="w-full sm:w-auto">
+                <Button className="w-full sm:w-auto font-semibold gap-2 shadow-md shadow-primary/20 cursor-pointer">
+                  <BookOpen className="h-4 w-4" />
+                  <span>{t(($) => $.landing.hero.exploreBooks)}</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+
+              <Button
+                variant="outline"
+                className="w-full sm:w-auto font-semibold gap-2 bg-card/80 backdrop-blur-sm border-border/80 hover:bg-muted cursor-pointer"
+                onClick={() => {
+                  window.open(APP_CONFIG.app.playStore, "_blank");
+                }}
+              >
+                <Smartphone className="h-4 w-4 text-emerald-500" />
+                <span>{t(($) => $.landing.cta.downloadAndroid)}</span>
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
 }
