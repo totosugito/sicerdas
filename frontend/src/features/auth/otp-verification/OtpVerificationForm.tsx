@@ -103,7 +103,8 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
 
         <Button
           type="submit"
-          className="w-full h-10 rounded-xl font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all active:scale-[0.99] mt-2"
+          className="w-full font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all active:scale-[0.99] mt-2"
+          size="lg"
           disabled={loading}
         >
           {loading ? (

@@ -82,7 +82,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
                 field={field}
                 item={signInFormData.form.email}
                 leftIcon={<Mail />}
-                className="h-10 rounded-xl bg-background/50 focus:bg-background transition-colors"
+                className="h-10 rounded-md bg-background/50 focus:bg-background transition-colors"
                 showMessage={true}
               />
             )}
@@ -94,7 +94,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
                 field={field}
                 item={signInFormData.form.password}
                 leftIcon={<Lock />}
-                className="h-10 rounded-xl bg-background/50 focus:bg-background transition-colors"
+                className="h-10 rounded-md bg-background/50 focus:bg-background transition-colors"
                 showMessage={true}
               />
             )}
@@ -119,7 +119,8 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
 
         <Button
           type="submit"
-          className="w-full h-10 rounded-xl font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all active:scale-[0.99] mt-2"
+          className="w-full font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all active:scale-[0.99] mt-2"
+          size="lg"
           disabled={loading}
         >
           {loading ? (
@@ -152,7 +153,8 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
             <Button
               type="button"
               variant="outline"
-              className="w-full h-10 rounded-xl font-medium border-border/80 hover:bg-accent/60 transition-all active:scale-[0.99]"
+              className="w-full font-medium border-border/80 hover:bg-accent/60 transition-all active:scale-[0.99]"
+              size="lg"
               onClick={onGoogleSignIn}
             >
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
