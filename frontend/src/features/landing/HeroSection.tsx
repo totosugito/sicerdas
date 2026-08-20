@@ -53,7 +53,10 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
             className="text-2xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tight leading-[1.15] mb-4"
           >
             {t(($) => $.landing.hero.title)}{" "}
-            <span className="bg-gradient-to-r from-primary via-blue-600 to-indigo-500 bg-clip-text text-transparent underline decoration-primary/30 decoration-wavy decoration-from-font">
+            <span
+              className="bg-gradient-to-r from-primary via-blue-600 to-indigo-500 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(var(--color-primary),0.4)] [filter:drop-shadow(0_0_20px_color-mix(in_srgb,var(--color-primary)_30%,transparent))_drop-shadow(0_0_6px_color-mix(in_srgb,var(--color-primary)_20%,transparent))]"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
               {t(($) => $.landing.hero.highlight)}
             </span>
           </motion.h1>
