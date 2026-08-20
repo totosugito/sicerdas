@@ -87,7 +87,7 @@ export default defineConfig({
     alias: [
       {
         find: "@",
-        replacement: `${path.resolve(import.meta.dirname, "../src")}/`,
+        replacement: `${path.resolve(import.meta.dirname, "../frontend/src")}/`,
       },
       {
         find: "@desktop",
@@ -96,14 +96,6 @@ export default defineConfig({
       {
         find: "backend",
         replacement: `${path.resolve(import.meta.dirname, "../backend")}/`,
-      },
-      {
-        find: "react",
-        replacement: path.resolve(import.meta.dirname, "../node_modules/react"),
-      },
-      {
-        find: "react-dom",
-        replacement: path.resolve(import.meta.dirname, "../node_modules/react-dom"),
       },
     ],
   },

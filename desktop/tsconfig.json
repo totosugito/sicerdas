@@ -1,0 +1,26 @@
+{
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "vite.config.ts", "../frontend/src/global.d.ts"],
+  "exclude": ["node_modules", "dist", "src-tauri"],
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ES2022",
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@/*": ["../frontend/src/*"],
+      "@desktop/*": ["./src/*"],
+      "backend/*": ["../backend/*"]
+    },
+    "noEmit": true,
+    "types": ["vite/client"]
+  }
+}
