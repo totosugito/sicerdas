@@ -76,13 +76,13 @@ try {
   }
 
   // Render SVG using node-canvas svg backend
-  const svgOutPath = outPath.replace('.png', '.svg');
-  const canvasSvg = createCanvas(width, height, 'svg');
-  const chartSvg = echarts.init(canvasSvg, null, { renderer: 'canvas' });
-  chartSvg.setOption(spec);
-  fs.writeFileSync(svgOutPath, canvasSvg.toBuffer());
+  // const svgOutPath = outPath.replace('.png', '.svg');
+  // const canvasSvg = createCanvas(width, height, 'svg');
+  // const chartSvg = echarts.init(canvasSvg, null, { renderer: 'canvas' });
+  // chartSvg.setOption(spec);
+  // fs.writeFileSync(svgOutPath, canvasSvg.toBuffer());
 
-  console.log(`[ECharts Render] Successfully rendered PNG to ${outPath} and SVG to ${svgOutPath}`);
+  console.log(`[ECharts Render] Successfully rendered PNG to ${outPath}`);
 } catch (error) {
   console.error(`[ECharts Render] Error rendering ${specPath}:`, error.message);
   process.exit(1);
