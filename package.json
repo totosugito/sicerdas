@@ -12,5 +12,9 @@
     "desktop:dev": "cd desktop && bun run dev",
     "desktop:build": "cd desktop && bun run build"
   },
-  "packageManager": "bun@1.3.14"
+  "packageManager": "bun@1.3.14",
+  "dependencies": {
+    "canvas": "^3.2.3",
+    "echarts": "^6.1.0"
+  }
 }

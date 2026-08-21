@@ -78,13 +78,13 @@ Must follow this structure:
 
 2. **`**Ditanya:**`** (bold label) + target variable/question
 
-3. **`**Konsep dan Rumus Dasar:**`** (bold label, standalone paragraph)
-   - **MANDATORY:** Narratively explain core concepts and general formulas in a friendly tone BEFORE calculating
+3. **`**Konsep Singkat:**`** (bold label, standalone paragraph)
+   - **MANDATORY:** Explain the core concept using very simple, easy-to-understand language and analogies suitable for SD-SMA students BEFORE calculating
 
 4. **`**Langkah Penyelesaian:**`** (bold label, standalone paragraph)
    - Optional: `> **Tip:**` callout with concise formula reminder (no emojis!)
    - Numbered steps `1.`, `2.`, `3.` if multi-step, or regular paragraph if single step
-   - Each step should include introductory narrative text AND equation blocks (`$$...$$`)
+   - Each step should include friendly, easy-to-digest introductory narrative text AND equation blocks (`$$...$$`)
 
 5. **Conclusion:** `Jadi, jawaban yang benar adalah ${{answer}}$.` (or bold text result for prose answers)
 
@@ -122,7 +122,7 @@ Report a summary to the user:
 
 ## CRITICAL: Core Principles
 
+- **Tone & Persona (CRITICAL):** Target audience is Elementary (SD), Middle (SMP), and High School (SMA) students. Use a highly simplified, casual, friendly, and accessible tone—like a teacher explaining directly to a student. STRICTLY AVOID rigid academic jargon, hyper-formal language, or convoluted sentences (e.g., do NOT use "Transformasi Ekstraksi", "Ekuivalensi ordinat"). Use simple, everyday instructions (e.g., "Jadikan satu ruas", "Cari titik potongnya", "Masukkan nilainya").
 - **Parameterize All Math:** Use `{{placeholder}}` inside LaTeX and prose; define derived intermediate steps and final answers in `variableFormulas.solutions` using bare mathjs syntax (no `{{}}`, no `Math.`).
 - **No Option Letter References:** Never write "opsi D" or "jawaban A" (positions are randomized). Always state the value: `Jadi, jawaban yang benar adalah ${{answer}}$.`
-- **Friendly Pedagogical Tone:** Conversational Indonesian suited for school students with complete intermediate steps.
 - **Strict Format Compliance:** Refer to `references/solution-format-spec.md` for exact frontmatter schema and section header tags.
