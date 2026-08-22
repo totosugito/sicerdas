@@ -74,7 +74,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), devFsApiPlugin()],
   clearScreen: false,
   server: {
-    port: 1420,
+    host: "127.0.0.1",
+    port: 1552,
     strictPort: true,
     watch: {
       ignored: ["**/src-tauri/**"],

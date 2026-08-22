@@ -57,10 +57,11 @@ For math/calculation questions, you **MUST** parameterize:
 4. **Include distractor options** (`opt1`, `opt2`, etc.) — make them plausible based on common student mistakes.
 5. **Define intermediate calculations** in `variableFormulas.solutions` with bare mathjs expressions:
    - ✅ PURE NUMERICAL ONLY: `"term1": "3 * x"`, `"answer": "3 * x + 7"`, `"grad": "-a / b"`
-   - ❌ **DILARANG KERAS TERNARY / IF-ELSE / STRING:** Jangan pernah menulis ternary (`? :`), perbandingan (`===`, `==`), atau penggabungan string (`+ '' +`) di dalam `solutions`!
-     - ❌ `"g_x_term": "m === -1 ? '-x' : ..."` (MathJS AKAN ERROR!)
-     - ❌ `"answer": "'1 dan 3 SAJA yang benar'"` (MathJS BUKAN untuk string jawaban teks!)
-   - **SOLUSI FORMAT TEKS / PERSAMAAN:** Jika variabel membutuhkan format teks khusus (misal string persamaan `"-x + 3"`, `"x + 4"`) atau teks jawaban, tuliskan string teks tersebut **langsung di dalam array `variables`** untuk tiap variasi (contoh: `{ m: -1, g_x_eq: "-x + 3" }`), BUKAN dihitung via logika if-else di `solutions`!
+   - ❌ **DILARANG KERAS LOGIKA TERNARY / IF-ELSE (BAIK DI YAML MAUPUN INLINE MARKDOWN):** Jangan pernah menulis logika ternary (`? :`), perbandingan (`===`, `==`, `>`, `<`), pemanggilan fungsi (seperti `abs()`), atau penggabungan string (`+ '' +`) di dalam blok `solutions` YAML **MAUPUN** secara inline/langsung di dalam teks Markdown/LaTeX!
+     - ❌ INLINE MARKDOWN SALAH: `y = {{a == 1 ? '' : a}}x^2 {{b > 0 ? '+' : '-'}} {{abs(b)}}x` (Templating engine tidak mendukung if-else / abs!)
+     - ❌ YAML SOLUTIONS SALAH: `"g_x_term": "m === -1 ? '-x' : ..."` (MathJS AKAN ERROR!)
+     - ❌ YAML SOLUTIONS SALAH: `"answer": "'1 dan 3 SAJA yang benar'"` (MathJS BUKAN untuk string jawaban teks!)
+   - **SOLUSI FORMAT TEKS / PERSAMAAN (CRITICAL):** Jika Anda perlu mengatur format persamaan matematika (misal: menghilangkan angka 1 di depan `x`, mengatur tanda plus/minus `+ 3` vs `- 3`), Anda **WAJIB** membuat satu property utuh berisi string persamaan final tersebut **langsung di dalam array `variables`** untuk tiap variasi (contoh: `{ a: 1, b: -3, eq_str: "x^2 - 3x" }`). Lalu di teks Markdown cukup panggil murni labelnya: `y = {{eq_str}}`. Jangan merakit string ini dengan memecah koefisien plus/minus di dalam template!
 
 Set `variableFormulas: null` untuk soal yang murni konseptual/teori atau soal pilihan ganda teks statis (seperti tipe soal '1, 2, 3 benar').
 

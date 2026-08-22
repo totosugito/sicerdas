@@ -127,27 +127,23 @@ Convert blockquotes with bold prefix to `alert` blocks:
 }
 ```
 
-#### 3.7 Image Handling (SVG Companion Embedding)
+#### 3.7 Image Handling (Standard URL)
 
-When a question references an image (e.g., `![caption](image.jpg)`):
+When a question references an image (e.g., `![caption](../imgs/image.png)`):
 
-1. Look in the same directory for a companion file with the **same base filename but `.svg` extension** (e.g., `image.svg`).
-2. If the `.svg` file exists:
-   - Read the SVG file contents.
-   - Encode as Data URI: `data:image/svg+xml;utf8,<raw_svg_code>`
-   - Insert a BlockNote `image` block:
+1. Extract the URL and caption from the markdown image syntax.
+2. Insert a BlockNote `image` block using the original URL (do NOT encode to Base64):
      ```json
      {
        "type": "image",
        "props": {
-         "url": "data:image/svg+xml;utf8,<svg ...>",
+         "url": "../imgs/image.png",
          "caption": "Deskripsi gambar"
        },
        "content": [],
        "children": []
      }
      ```
-3. If no `.svg` file exists, log a warning `[MISSING_SVG]` in the report.
 
 #### 3.8 Equation Alignment Validation
 
@@ -210,12 +206,12 @@ Fix any errors or warnings flagged by the validator.
    - `solution/q01.md` → `exam/q01.json`
 2. Alternatively, use the build script for batch conversion:
    ```bash
-   python3 .agents/skills/exam-blocknote-converter/scripts/build_blocknote_json.py <solution_dir> <exam_dir> [--skip-missing-svg]
+   python3 .agents/skills/exam-blocknote-converter/scripts/build_blocknote_json.py <solution_dir> <exam_dir> [--skip-missing-image]
    ```
 3. Report:
    - Number of questions converted
    - Validation results (passed, warned, failed)
-   - Any issues (missing SVGs, validation errors)
+   - Any issues (missing images, validation errors)
 
 ## CRITICAL: Common Mistakes to AVOID
 

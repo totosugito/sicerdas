@@ -16,6 +16,63 @@ const LAST_PATH_KEY = "sicerdas-desktop:lastPath";
 const RAW_MD_KEY = "sicerdas-desktop:showRawMarkdown";
 const RAW_JSON_KEY = "sicerdas-desktop:showRawJson";
 
+const resolvePath = (baseDir: string, relative: string) => {
+  const parts = baseDir.split('/');
+  const relParts = relative.split('/');
+  for (const p of relParts) {
+    if (p === '..') parts.pop();
+    else if (p !== '.') parts.push(p);
+  }
+  return parts.join('/');
+};
+
+const resolveImagesForView = async (data: any, filePath: string): Promise<any> => {
+  if (!data || typeof data !== "object") return data;
+  if (Array.isArray(data)) {
+    return Promise.all(data.map(item => resolveImagesForView(item, filePath)));
+  }
+  
+  const newData = { ...data };
+  
+  for (const key of Object.keys(newData)) {
+    const val = newData[key];
+    if (typeof val === "string" && (val.startsWith("../") || val.startsWith("./")) && /\.(png|jpe?g|svg|gif|webp)$/i.test(val)) {
+      try {
+        const dirPath = filePath.substring(0, filePath.lastIndexOf('/'));
+        const absolutePath = resolvePath(dirPath, val);
+        const base64 = await storageService.readImageFile(absolutePath);
+        newData[key] = base64;
+        newData[`_original_${key}`] = val;
+      } catch (e) {
+        console.error("[DEBUG] Failed to resolve string image path:", e);
+      }
+    } else if (typeof val === "object") {
+      newData[key] = await resolveImagesForView(val, filePath);
+    }
+  }
+  return newData;
+};
+
+const revertImagesForSave = (data: any): any => {
+  if (!data || typeof data !== "object") return data;
+  if (Array.isArray(data)) {
+    return data.map(item => revertImagesForSave(item));
+  }
+  
+  const newData = { ...data };
+  
+  for (const key of Object.keys(newData)) {
+    if (key.startsWith("_original_") && typeof newData[key] === "string") {
+      const originalKey = key.substring("_original_".length);
+      newData[originalKey] = newData[key];
+      delete newData[key];
+    } else if (typeof newData[key] === "object") {
+      newData[key] = revertImagesForSave(newData[key]);
+    }
+  }
+  return newData;
+};
+
 export function App() {
   const [currentFolderPath, setCurrentFolderPath] = useState<string | null>(null);
   const [fileTree, setFileTree] = useState<FileNode[]>([]);
@@ -150,7 +207,8 @@ export function App() {
         setIsMarkdownFile(false);
         setIsJsonFile(true);
         const parsed = JSON.parse(content);
-        setJsonQuestions(Array.isArray(parsed) ? parsed : [parsed]);
+        const resolved = await resolveImagesForView(parsed, filePath);
+        setJsonQuestions(Array.isArray(resolved) ? resolved : [resolved]);
         setCurrentJsonFilePath(filePath);
       }
       setSelectedFilePath(filePath);
@@ -174,7 +232,8 @@ export function App() {
   const handleSaveFile = async () => {
     if (!selectedFilePath) return;
     try {
-      await storageService.writeJsonFile(selectedFilePath, JSON.stringify(jsonQuestions, null, 2));
+      const reverted = revertImagesForSave(jsonQuestions);
+      await storageService.writeJsonFile(selectedFilePath, JSON.stringify(reverted, null, 2));
       setIsDirty(false);
       setSaveStatus("Saved to disk!");
       setTimeout(() => setSaveStatus(null), 2500);
