@@ -30,6 +30,45 @@ try {
     spec.animation = false;
   }
 
+  // Helper to ensure text labels always have a solid white halo/stroke for contrast against lines
+  const applyTextStroke = (lbl) => {
+    if (!lbl || typeof lbl !== 'object') return;
+    if (lbl.show !== false) {
+      if (!lbl.textBorderColor) lbl.textBorderColor = '#ffffff';
+      if (!lbl.textBorderWidth) lbl.textBorderWidth = 2;
+      if (!lbl.color) lbl.color = '#222222';
+    }
+  };
+
+  // Ensure line series don't draw point markers on every coordinate unless explicitly asked
+  if (Array.isArray(spec.series)) {
+    spec.series.forEach(s => {
+      if (!s) return;
+      if (s.label) applyTextStroke(s.label);
+      if (s.markPoint && s.markPoint.label) applyTextStroke(s.markPoint.label);
+      if (s.markLine && s.markLine.label) applyTextStroke(s.markLine.label);
+      if (Array.isArray(s.data)) {
+        s.data.forEach(d => {
+          if (d && typeof d === 'object' && d.label) {
+            applyTextStroke(d.label);
+          }
+        });
+      }
+      if (s.type === 'line') {
+        if (s.z === undefined) s.z = 2;
+        if (s.showSymbol === undefined && s.symbol === undefined) {
+          s.showSymbol = false;
+          s.symbol = 'none';
+        }
+      }
+      // Points/scatter should be drawn ON TOP of curves (z: 10) and not show up in the legend
+      if (s.type === 'scatter' || s.type === 'effectScatter') {
+        s.z = 10;
+        delete s.name;
+      }
+    });
+  }
+
   // Default global typography
   if (!spec.textStyle) {
     spec.textStyle = { fontSize: 14, fontFamily: 'sans-serif' };
@@ -67,7 +106,7 @@ try {
   chartCanvas.setOption(spec);
   const buffer = canvas.toBuffer('image/png');
   fs.writeFileSync(outPath, buffer);
-  
+
   try {
     // Compress the PNG in-place to 16 colors
     execSync(`pngquant 16 --ext .png --force "${outPath}"`, { stdio: 'ignore' });

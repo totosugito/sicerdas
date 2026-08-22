@@ -56,12 +56,13 @@ For math/calculation questions, you **MUST** parameterize:
 3. **Generate at least 5 distinct variable sets** that satisfy all mathematical constraints (log domains, positive denominators, no division by zero).
 4. **Include distractor options** (`opt1`, `opt2`, etc.) — make them plausible based on common student mistakes.
 5. **Define intermediate calculations** in `variableFormulas.solutions` with bare mathjs expressions:
-   - ✅ `"term1": "3 * x"`, `"answer": "3 * x + 7"`
-   - ❌ `"term1": "3 * {{x}}"` (no mustache braces in solution formulas!)
-   - ❌ `"answer": "Math.sqrt(x)"` (no `Math.` prefix! Use bare `sqrt(x)`)
-   - Use `mathjs` functions directly: `sqrt()`, `abs()`, `log()`, `pow()`, `sin()`, `cos()`
+   - ✅ PURE NUMERICAL ONLY: `"term1": "3 * x"`, `"answer": "3 * x + 7"`, `"grad": "-a / b"`
+   - ❌ **DILARANG KERAS TERNARY / IF-ELSE / STRING:** Jangan pernah menulis ternary (`? :`), perbandingan (`===`, `==`), atau penggabungan string (`+ '' +`) di dalam `solutions`!
+     - ❌ `"g_x_term": "m === -1 ? '-x' : ..."` (MathJS AKAN ERROR!)
+     - ❌ `"answer": "'1 dan 3 SAJA yang benar'"` (MathJS BUKAN untuk string jawaban teks!)
+   - **SOLUSI FORMAT TEKS / PERSAMAAN:** Jika variabel membutuhkan format teks khusus (misal string persamaan `"-x + 3"`, `"x + 4"`) atau teks jawaban, tuliskan string teks tersebut **langsung di dalam array `variables`** untuk tiap variasi (contoh: `{ m: -1, g_x_eq: "-x + 3" }`), BUKAN dihitung via logika if-else di `solutions`!
 
-Set `variableFormulas: null` ONLY for pure conceptual/theoretical questions.
+Set `variableFormulas: null` untuk soal yang murni konseptual/teori atau soal pilihan ganda teks statis (seperti tipe soal '1, 2, 3 benar').
 
 ### Step 5 — Generate Solutions
 

@@ -49,13 +49,18 @@ variableFormulas:              # REQUIRED for math questions, null for pure conc
 | `variableFormulas` | ✅ | `null` for pure conceptual questions. Object with `variables` (≥5 sets) and `solutions` for math questions. |
 
 ### variableFormulas Rules (CRITICAL)
-
-- **`variables`**: Array of ≥5 objects. Each object maps placeholder names to numeric values. Must include `opt1`, `opt2`, etc.
-- **`solutions`**: Object mapping derived variable names to **plain math expressions with bare variable names**.
-  - ✅ CORRECT: `"term1": "3 * x"`, `"answer": "3 * x + 7"`, `"r1_sq": "r1^2"`
-  - ❌ WRONG: `"term1": "3 * {{x}}"` (no mustache braces in solution formulas!)
-  - ❌ WRONG: `"answer": "Math.sqrt(x)"` (no `Math.` prefix! Use bare `sqrt(x)`)
-- Use built-in `mathjs` functions directly: `sqrt()`, `abs()`, `log()`, `pow()`, `sin()`, `cos()`, `tan()`, `pi`, `e`
+ 
+ - **`variables`**: Array of ≥5 objects. Each object maps placeholder names to numeric or string values. Must include `opt1`, `opt2`, etc.
+ - **`solutions`**: Object mapping derived variable names to **plain numeric math expressions with bare variable names**.
+   - ✅ CORRECT (Pure Math): `"term1": "3 * x"`, `"answer": "3 * x + 7"`, `"r1_sq": "r1^2"`
+   - ❌ WRONG: `"term1": "3 * {{x}}"` (no mustache braces in solution formulas!)
+   - ❌ WRONG: `"answer": "Math.sqrt(x)"` (no `Math.` prefix! Use bare `sqrt(x)`)
+   - ❌ **STRICTLY FORBIDDEN (Ternary / If-Else / String Concatenation):**
+     - ❌ `"term": "m === -1 ? '-x' : 'x'"` (will fail in MathJS evaluation)
+     - ❌ `"g_eq": "term + ' + ' + c"` (no string concatenation)
+     - ❌ `"answer": "'1 dan 3 SAJA'"` (text answers should not be in `solutions`)
+   - **How to handle string/formatting variations:** If a variable is a formatted string or text (e.g., equations like `"-x + 3"` or `"2x - 5"`), specify the pre-formatted string directly inside each object in `variables` (e.g. `variables: [{ m: -1, eq: "-x + 3" }]`).
+ - Use built-in `mathjs` functions directly: `sqrt()`, `abs()`, `log()`, `pow()`, `sin()`, `cos()`, `tan()`, `pi`, `e`
 
 ## Markdown Body Sections
 

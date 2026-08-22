@@ -18,7 +18,7 @@ Unlike `exam-chart-spec-processor` which extracts data from existing images, thi
    - Global Default: Set root `"textStyle": { "fontSize": 14 }`.
    - **Optional Titles**: Chart `title` is OPTIONAL and should generally be omitted to save space and prevent clutter, unless absolutely necessary for context. If used, set `"fontSize": 16` inside `title.textStyle`.
    - Point Labels: `"fontSize": 14` inside `scatter` or `markLine` labels.
-   - Text Readability: ALWAYS use `"textBorderColor": "#fff"` and `"textBorderWidth": 2` for all text labels overlapping lines.
+   - Text Readability (CRITICAL): ALWAYS use `"textBorderColor": "#ffffff"`, `"textBorderWidth": 4`, and dark text `"color": "#222222"` for all text labels overlapping lines/points so they remain ultra-crisp and legible.
 
 ## 2. Diagram Types & Strategies
 
@@ -31,8 +31,14 @@ Unlike `exam-chart-spec-processor` which extracts data from existing images, thi
 ### B. Mathematical Functions (Cartesian Graphs)
 - **Show Axes**: Set `show: true`, use `axisLine: { symbol: ['none', 'arrow'] }` to draw coordinate arrows.
 - **Curve Smoothing**: ECharts needs dense data points to draw mathematical curves. If drawing $f(x) = x^2$, generate an array of points `[x, y]` with a small step (e.g., 0.2) rather than just 3 points. Use `smooth: true` in the line series.
-- **Always Use Legends**: When plotting multiple functions (e.g., $f(x)$ and $g(x)$), ALWAYS add `legend: { show: true, bottom: 0 }` to the chart and assign a simple string to each series `name` (e.g., `"name": "f(x)"` and `"name": "g(x)"`). Do NOT use LaTeX in the legend. This allows students to identify the curves directly on the image without relying solely on the text description.
-- **Clean Legend (No Points)**: For line series representing continuous functions, always add `"symbol": "none"` to the series. This ensures that the line is drawn cleanly without data point dots, and the legend icon will correctly display as a simple line instead of a line with a dot.
+- **Always Use Legends**: When plotting multiple functions, ALWAYS add `legend: { show: true, bottom: 0, icon: "rect", itemHeight: 2, itemWidth: 20 }` to the chart and assign a simple string to each series `name`.
+- **Ultra-Short Function Names (CRITICAL)**: The legend `name` MUST ONLY be short identifiers like `"f(x)"`, `"g(x)"`, `"g_1"`, `"g_2"`, `"Garis 1"`. **DILARANG KERAS** menuliskan rumus persamaan atau deskripsi kondisi di legend (misal: JANGAN `"f(x) = 2^x"`, JANGAN `"g_1 (y = 2)"`, JANGAN `"g (tidak memotong)"`).
+- **Narrative-to-Chart Synchronization (CRITICAL)**: Setiap kali membuat garis-garis uji bantu pada grafik (seperti $g_1, g_2, g_3$), teks pembahasan Markdown **WAJIB secara eksplisit merujuk nama dan warna garis tersebut** agar gambar dan narasi 100% sinkron! Contoh di pembahasan: *"Pada grafik di atas: Garis biru $g_1$ ($y = 2$) memotong kurva, sedangkan garis hijau $g_2$ ($y = -1$) tidak memotong kurva..."*.
+- **NO Points in Legend (CRITICAL)**: Untuk titik potong/titik koordinat (`type: "scatter"`), **DILARANG** memberi atribut `name` (atau jangan masukkan ke legend). Titik koordinat seperti `(1, 2)` atau `(0, 3)` cukup diberi `label` langsung di atas kanvas grafik, JANGAN dimunculkan di legend agar legend tidak penuh sesak dan berantakan.
+- **Grid Spacing for Legend**: If you have a legend at the bottom, ensure the chart grid leaves enough room for it. Set `grid: { bottom: 45 }` (or larger) so the X-axis numbers do not collide with the legend text.
+- **Clean Curves Without Beads/Dots (CRITICAL)**: For mathematical functions and continuous curves, you **MUST** set `"showSymbol": false` and `"symbol": "none"` on each `line` series. If you omit this, ECharts will draw a circle marker on every single coordinate point along the curve, making the line look like a necklace of dots/beads!
+- **Force Legend to be Only Lines (No Points) & Color Sync (CRITICAL)**: To FORCE the legend icon to be a clean, simple line without any center point, you MUST add `icon: "rect", itemHeight: 2, itemWidth: 20` to the `legend` config. Furthermore, NEVER set colors ONLY inside `lineStyle`! You MUST set the root `"color": "..."` on the series object itself so the legend line color perfectly matches the graph line.
+- **Distinct Contrasting Colors (CRITICAL)**: Every line/curve/series plotted on the same chart **MUST ALWAYS use a distinctly different, high-contrast color** (e.g., `#e60000` (Red), `#0055ff` (Blue), `#009933` (Green), `#ff8800` (Orange), `#9900cc` (Purple)). **DILARANG KERAS** menggunakan warna yang sama untuk dua garis berbeda meskipun tipe garisnya berbeda (misal sama-sama biru tapi satu solid dan satu dashed). Karena pada legend keduanya akan terlihat identik, setiap garis wajib memiliki warna uniknya masing-masing!
 - **Isometric Scale**: Maintain 1:1 scale if the shape is geometric (e.g. circle equation). For pure data/statistics, 1:1 is not required.
 
 ### C. Physics & Schematics (Kinematics, Forces)
