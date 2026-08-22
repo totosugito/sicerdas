@@ -61,6 +61,7 @@ export default async function seed() {
     // Insert account
     await db.insert(accounts).values({
       providerId: 'credential', // this is required by better-auth
+      issuer: 'local:credential',
       accountId: user_.id,
       userId: user_.id,
       password: hashedPassword,

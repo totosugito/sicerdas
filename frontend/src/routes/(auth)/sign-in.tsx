@@ -32,7 +32,7 @@ function LoginComponent() {
   const loginMutation = useLoginMutation();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
-  const onFormSubmit = (data: FormData) => {
+  const onFormSubmit = (data: import("@/types/auth").LoginFormValues) => {
     setErrorMessage(undefined);
     loginMutation.mutate(
       { body: data },

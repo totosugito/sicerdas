@@ -19,7 +19,6 @@ export const useLoginMutation = () => {
         method: "POST",
         url: AppApi.auth.signIn,
         body: body,
-        headers: { "Content-Type": "multipart/form-data" },
       });
 
       let userData: AuthProps = { token: null, user: null };

@@ -10,7 +10,7 @@ import { z } from "zod";
 import { APP_CONFIG } from "@/constants/config";
 
 type Props = {
-  onFormSubmit: (values: FormData) => void;
+  onFormSubmit: (values: LoginFormValues) => void;
   loading?: boolean;
   errorMessage?: string;
   onGoogleSignIn?: () => void;
@@ -51,10 +51,10 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
       onChange: schema,
     },
     onSubmit({ value }) {
-      const values = new FormData();
-      values.append("email", value.email ?? "");
-      values.append("password", value.password ?? "");
-      onFormSubmit(values);
+      onFormSubmit({
+        email: value.email ?? "",
+        password: value.password ?? "",
+      });
     },
   });
 

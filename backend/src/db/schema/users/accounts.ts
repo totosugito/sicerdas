@@ -1,5 +1,5 @@
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 import { users } from "./users.ts";
 
 /**
@@ -12,6 +12,7 @@ import { users } from "./users.ts";
  * - id: Unique identifier for the account record
  * - accountId: Unique identifier from the external authentication provider
  * - providerId: Identifier for the authentication provider (e.g., google, github, email)
+ * - issuer: Identity issuer (e.g., local:credential, local:oauth:google) required in Better Auth 1.7+
  * - userId: ID of the user who owns this account
  * - accessToken: OAuth access token (optional)
  * - refreshToken: OAuth refresh token (optional)
@@ -34,6 +35,7 @@ export const accounts = pgTable('users_accounts', {
     id: uuid().primaryKey().notNull().defaultRandom(),
     accountId: text('account_id').notNull(),
     providerId: text('provider_id').notNull(),
+    issuer: text('issuer').notNull(),
     userId: uuid('user_id')
         .notNull()
         .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
@@ -46,7 +48,9 @@ export const accounts = pgTable('users_accounts', {
     password: text('password'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
-});
+}, (table) => [
+    uniqueIndex('account_issuer_accountId_uidx').on(table.issuer, table.accountId),
+]);
 
 export type SchemaAccountSelect = InferSelectModel<typeof accounts>;
 export type SchemaAccountInsert = InferInsertModel<typeof accounts>;

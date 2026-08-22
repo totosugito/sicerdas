@@ -22,7 +22,7 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       summary: "Sign in with email and password",
       description:
         "Authenticate user with email and password and return user data with access token. Expected form-data fields: email, password",
-      consumes: ["multipart/form-data"],
+      consumes: ["multipart/form-data", "application/json"],
       response: {
         200: AuthResponse,
         // Updated to use proper HTTP status codes with Fastify Sensible
@@ -37,16 +37,30 @@ const publicRoute: FastifyPluginAsyncTypebox = async (app) => {
       },
     },
     handler: async (req, reply) => {
-      // Parse form data into a key-value object
-      const formData = new Map<string, string>();
-      if (typeof req.parts === "function") {
+      let email: string | undefined;
+      let password: string | undefined;
+
+      // Parse form data if multipart
+      if (typeof req.isMultipart === "function" && req.isMultipart()) {
+        const formData = new Map<string, string>();
         for await (const part of req.parts()) {
           if (part.type === "field") {
             formData.set(part.fieldname, part.value as string);
           }
         }
+        const entries = Object.fromEntries(formData);
+        email = entries.email;
+        password = entries.password;
       }
-      const { email, password } = Object.fromEntries(formData);
+
+      // Fallback to JSON body if not found in multipart
+      if ((!email || !password) && req.body && typeof req.body === "object") {
+        const body = req.body as Record<string, any>;
+        email = email || body.email;
+        password = password || body.password;
+      }
+
+      email = email?.trim().toLowerCase();
 
       // Validate required fields using Fastify Sensible badRequest
       if (!email || !password) {

@@ -1,4 +1,5 @@
 import FastifyMultipart, { type FastifyMultipartOptions } from '@fastify/multipart';
+import fp from 'fastify-plugin';
 
 export const autoConfig: FastifyMultipartOptions = {
    limits: {
@@ -11,4 +12,4 @@ export const autoConfig: FastifyMultipartOptions = {
    },
 };
 
-export default FastifyMultipart;
+export default fp(FastifyMultipart);
