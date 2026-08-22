@@ -69,6 +69,11 @@ Write complete pedagogical solutions following the rules in `references/quality-
 
 #### Solution 1: `## Pembahasan: Cara Konseptual` (MANDATORY)
 
+**Image Placement Rule:** 
+- **Original OCR Diagrams:** If the image is from the original question text, maintain its exact position/flow relative to the text as it appeared originally.
+- **Auto-Illustrations:** If it's a newly generated illustration for the solution, embed the image where it fits best logically (e.g., inside `**Konsep Singkat:**` or the start of `**Langkah Penyelesaian:**`), followed immediately by the text explaining it. 
+- NEVER dump any images at the very bottom of the solution without context.
+
 Must follow this structure:
 
 1. **`**Diketahui:**`** (bold label) followed by bullet list
@@ -122,7 +127,7 @@ Report a summary to the user:
 
 ## CRITICAL: Core Principles
 
-- **Tone & Persona (CRITICAL):** Target audience is Elementary (SD), Middle (SMP), and High School (SMA) students. Use a highly simplified, casual, friendly, and accessible tone—like a teacher explaining directly to a student. STRICTLY AVOID rigid academic jargon, hyper-formal language, or convoluted sentences (e.g., do NOT use "Transformasi Ekstraksi", "Ekuivalensi ordinat"). Use simple, everyday instructions (e.g., "Jadikan satu ruas", "Cari titik potongnya", "Masukkan nilainya").
+- **Tone & Persona (CRITICAL):** Target audience is Elementary (SD), Middle (SMP), and High School (SMA) students. Use a highly simplified, casual, friendly, and accessible tone—like a teacher explaining directly to a student. STRICTLY AVOID rigid academic jargon, hyper-formal language, or convoluted sentences (e.g., do NOT use "Transformasi Ekstraksi", "Ekuivalensi ordinat"). Use simple, everyday instructions (e.g., "Jadikan satu ruas", "Cari titik potongnya", "Masukkan nilainya"). **CRITICAL:** Do NOT use small talk or conversational greetings like "Halo adik-adik!", "Halo apa kabar", etc. Simple transitions like "Mari kita bahas" are acceptable, but generally prefer getting straight to the point. **CRITICAL:** Avoid overly infantile, dramatic, or bizarre analogies (e.g., do NOT say "masuk ke dalam perut fungsi" for composite functions, or "kurva tabrakan" for intersecting lines). Keep the language simple but mathematically sound (e.g., use "masukkan nilai g(x) ke dalam fungsi f", or "titik di mana kedua kurva bertemu/berpotongan").
 - **Parameterize All Math:** Use `{{placeholder}}` inside LaTeX and prose; define derived intermediate steps and final answers in `variableFormulas.solutions` using bare mathjs syntax (no `{{}}`, no `Math.`).
 - **No Option Letter References:** Never write "opsi D" or "jawaban A" (positions are randomized). Always state the value: `Jadi, jawaban yang benar adalah ${{answer}}$.`
 - **Strict Format Compliance:** Refer to `references/solution-format-spec.md` for exact frontmatter schema and section header tags.

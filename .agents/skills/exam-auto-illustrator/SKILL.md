@@ -31,6 +31,7 @@ Unlike `exam-chart-spec-processor` which extracts data from existing images, thi
 ### B. Mathematical Functions (Cartesian Graphs)
 - **Show Axes**: Set `show: true`, use `axisLine: { symbol: ['none', 'arrow'] }` to draw coordinate arrows.
 - **Curve Smoothing**: ECharts needs dense data points to draw mathematical curves. If drawing $f(x) = x^2$, generate an array of points `[x, y]` with a small step (e.g., 0.2) rather than just 3 points. Use `smooth: true` in the line series.
+- **Always Use Legends**: When plotting multiple functions (e.g., $f(x)$ and $g(x)$), ALWAYS add `legend: { show: true, bottom: 0 }` to the chart and assign a simple string to each series `name` (e.g., `"name": "f(x)"` and `"name": "g(x)"`). Do NOT use LaTeX in the legend. This allows students to identify the curves directly on the image without relying solely on the text description.
 - **Clean Legend (No Points)**: For line series representing continuous functions, always add `"symbol": "none"` to the series. This ensures that the line is drawn cleanly without data point dots, and the legend icon will correctly display as a simple line instead of a line with a dot.
 - **Isometric Scale**: Maintain 1:1 scale if the shape is geometric (e.g. circle equation). For pure data/statistics, 1:1 is not required.
 
