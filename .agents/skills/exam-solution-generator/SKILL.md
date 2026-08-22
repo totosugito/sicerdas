@@ -69,9 +69,9 @@ Write complete pedagogical solutions following the rules in `references/quality-
 
 #### Solution 1: `## Pembahasan: Cara Konseptual` (MANDATORY)
 
-**Image Placement Rule:** 
-- **Original OCR Diagrams:** If the image is from the original question text, maintain its exact position/flow relative to the text as it appeared originally.
-- **Auto-Illustrations:** If it's a newly generated illustration for the solution, embed the image where it fits best logically (e.g., inside `**Konsep Singkat:**` or the start of `**Langkah Penyelesaian:**`), followed immediately by the text explaining it. 
+**Image Placement Rule (CRITICAL):** 
+- **Original OCR Diagrams:** The original image MUST ONLY be placed inside the `## Soal` section (maintaining its exact position relative to the question text). **DO NOT** duplicate or embed the original raw OCR image again inside the `## Pembahasan` section! It is highly redundant since the user already sees it in the question block.
+- **Auto-Illustrations:** If (and ONLY if) it's a *newly generated* illustration specifically for the solution, embed it where it fits best logically inside `## Pembahasan` (e.g., inside `**Konsep Singkat:**` or the start of `**Langkah Penyelesaian:**`), followed immediately by the text explaining it. 
 - NEVER dump any images at the very bottom of the solution without context.
 
 Must follow this structure:
@@ -109,14 +109,14 @@ See `references/quality-rules.md` for full rules on:
 - Multi-phase breakdown (`$$` block per phase)
 - Reciprocal inversion inside the same `\begin{aligned}` block
 - Vertical TeX equation layout (single `=` per line, `&=` per line, no horizontal chains, LHS variable on line 1 only)
-- Intermediate calculation steps & parameterization using `{{placeholder}}` syntax
+- Intermediate calculation steps & parameterization using `{{placeholder}}` syntax. **CRITICAL LATEX RULE:** If a placeholder is used inside a subscript or superscript, you MUST wrap the placeholder in extra LaTeX curly braces: `_{{{placeholder}}}` or `^{{{placeholder}}}` (e.g., `\log_{{{a}}}`, NOT `\log_{{a}}`). Otherwise, multi-digit numbers will render brokenly (e.g. `\log_2020`).
 - Statement Reasoning (`Pernyataan SEBAB Alasan`) handling
 
 ### Step 6 — Write Output File
 
 1. Write the enriched markdown to the `solution/` subfolder of the target directory.
 2. Use the same filename as the source (e.g., `ori/q01.md` → `solution/q01.md`).
-3. The output file must strictly follow `references/solution-format-spec.md`.
+3. **CRITICAL:** The output file MUST contain the complete question structure, NOT just the `## Pembahasan`. You MUST write the parameterized `## Soal` and `## Opsi` sections into the file as well, strictly following `references/solution-format-spec.md`.
 
 ### Step 7 — Report
 
