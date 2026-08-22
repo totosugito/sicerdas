@@ -60,6 +60,8 @@ try {
           s.showSymbol = false;
           s.symbol = 'none';
         }
+        if (!s.lineStyle) s.lineStyle = {};
+        if (s.lineStyle.width === undefined) s.lineStyle.width = 2;
       }
       // Points/scatter should be drawn ON TOP of curves (z: 10) and not show up in the legend
       if (s.type === 'scatter' || s.type === 'effectScatter') {
