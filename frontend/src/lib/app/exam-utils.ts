@@ -151,25 +151,39 @@ export function evaluateFormulas(
   if (!formulas) return {};
 
   const results: Record<string, string | number> = {};
+  const scope: Record<string, any> = { ...variables };
+  const entries = Object.entries(formulas);
+  const remaining = new Map<string, string>(entries);
 
-  // Create a combined scope for mathjs
-  const scope = { ...variables };
-
-  Object.entries(formulas).forEach(([key, formula]) => {
-    try {
-      // Evaluate within the current scope
-      let result = evaluate(formula, scope);
-      if (typeof result === "number") {
-        result = Number(result.toPrecision(12));
+  // Multi-pass resolution for dependency chains regardless of key order
+  let maxPasses = remaining.size;
+  while (remaining.size > 0 && maxPasses > 0) {
+    let resolvedAny = false;
+    for (const [key, formula] of Array.from(remaining.entries())) {
+      try {
+        let result = evaluate(formula, scope);
+        if (typeof result === "number") {
+          result = Number(result.toPrecision(12));
+        }
+        results[key] = result;
+        scope[key] = result;
+        remaining.delete(key);
+        resolvedAny = true;
+      } catch {
+        // Retry in next pass if dependencies are not yet evaluated
       }
-      results[key] = result;
-      // Update scope so subsequent formulas can use this result
-      scope[key] = result;
-    } catch (e) {
-      console.error(`Error evaluating formula for ${key}: ${formula}`, e);
-      results[key] = `[Error: ${formula}]`;
     }
-  });
+    if (!resolvedAny) break;
+    maxPasses--;
+  }
+
+  // Handle any genuine evaluation errors
+  if (remaining.size > 0) {
+    remaining.forEach((formula, key) => {
+      console.error(`Error evaluating formula for ${key}: ${formula}`);
+      results[key] = `[Error: ${formula}]`;
+    });
+  }
 
   return results;
 }

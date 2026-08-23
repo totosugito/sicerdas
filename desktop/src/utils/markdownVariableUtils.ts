@@ -57,7 +57,9 @@ export function parseMarkdownFrontmatter(rawContent: string): ParsedMarkdownQues
 }
 
 /**
- * Evaluates solution formulas based on a chosen variable set scope using mathjs
+ * Evaluates solution formulas based on a chosen variable set scope using mathjs.
+ * Supports multi-pass resolution so dependent variables are evaluated properly
+ * regardless of key declaration order.
  */
 export function evaluateSolutionFormulas(
   formulas: Record<string, string> | undefined,
@@ -66,19 +68,37 @@ export function evaluateSolutionFormulas(
   if (!formulas) return { ...variableSet };
 
   const scope: Record<string, any> = { ...variableSet };
+  const entries = Object.entries(formulas);
+  const remaining = new Map<string, string>(entries);
 
-  Object.entries(formulas).forEach(([key, formula]) => {
-    try {
-      let result = evaluate(formula, scope);
-      if (typeof result === "number") {
-        result = Number(result.toPrecision(12));
+  // Multi-pass resolution (up to remaining.size passes to resolve dependency graph)
+  let maxPasses = remaining.size;
+  while (remaining.size > 0 && maxPasses > 0) {
+    let resolvedAny = false;
+    for (const [key, formula] of Array.from(remaining.entries())) {
+      try {
+        let result = evaluate(formula, scope);
+        if (typeof result === "number") {
+          result = Number(result.toPrecision(12));
+        }
+        scope[key] = result;
+        remaining.delete(key);
+        resolvedAny = true;
+      } catch {
+        // May fail if dependencies are not yet evaluated in earlier keys; retry next pass
       }
-      scope[key] = result;
-    } catch (e) {
-      console.warn(`Error evaluating formula for ${key}: ${formula}`, e);
-      scope[key] = `[Error: ${formula}]`;
     }
-  });
+    if (!resolvedAny) break;
+    maxPasses--;
+  }
+
+  // Handle any remaining failed formulas (e.g. syntax error or genuine circular dependency)
+  if (remaining.size > 0) {
+    remaining.forEach((formula, key) => {
+      console.warn(`Error evaluating formula for ${key}: ${formula}`);
+      scope[key] = `[Error: ${formula}]`;
+    });
+  }
 
   return scope;
 }

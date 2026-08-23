@@ -132,6 +132,7 @@ For questions involving calculations or mathematical functions, you **MUST** par
 3. **Parameterize Solution Steps & Conclusions (CRITICAL):** Do NOT hardcode evaluated numbers in solution text or equations. Use placeholders so solutions update dynamically across all variations:
    - ✅ `$3({{x}}) + 7 = {{answer}}$`
    - ❌ `$3(5) + 7 = 22$`
+   - ❌ **DILARANG MENULIS OPERASI MATEMATIKA DI DALAM PLACEHOLDER:** `{{d * p}}`, `{{d * p - e}}`, `{{a + b}}`. Engine templating HANYA membaca nama variabel murni. Semua langkah perantara wajib didefinisikan di `variableFormulas.solutions` (misal: `d_p: "d * p"`), lalu dipanggil sebagai `{{d_p}}`.
 
 4. **Generate ≥5 Variable Sets**: Each set must satisfy all mathematical constraints (e.g., log domains, positive denominators, no division by zero).
 
