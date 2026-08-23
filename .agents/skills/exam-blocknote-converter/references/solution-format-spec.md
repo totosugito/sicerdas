@@ -177,7 +177,7 @@ Jadi, jawaban yang benar adalah ${{answer}}$.
 
 ### TeX Aligned Equation Example
 ```latex
-$$\begin{aligned} \frac{1}{C_s} &= \frac{1}{C_1} + \frac{1}{C_2} + \frac{1}{C_3} \\ &= \frac{1}{3} + \frac{1}{6} + \frac{1}{9} \\ &= \frac{6+3+2}{18} \\ &= \frac{11}{18} \\[6pt] \implies C_s &= \frac{18}{11} \text{ F} \end{aligned}$$
+$$\begin{aligned} \frac{1}{C_s} &= \frac{1}{C_1} + \frac{1}{C_2} + \frac{1}{C_3} \\ &= \frac{1}{3} + \frac{1}{6} + \frac{1}{9} \\ &= \frac{6+3+2}{18} \\ &= \frac{11}{18} \\ \implies C_s &= \frac{18}{11} \text{ F} \end{aligned}$$
 ```
 
 ## Text & Block Conversion Mapping

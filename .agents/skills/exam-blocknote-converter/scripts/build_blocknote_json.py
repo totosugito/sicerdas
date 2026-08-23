@@ -9,7 +9,7 @@ Features:
 - YAML frontmatter parser for question metadata
 - Markdown section parser (## Soal, ## Opsi, ## Pembahasan, ## Alasan)
 - Automatic LaTeX parser ($inline$ to latex inline block, $$block$$ to equation block)
-- TeX vertical alignment sanitizer (ensures \\begin{aligned} uses single variable line 1, &= per baris, \\[6pt] \\implies)
+- TeX vertical alignment sanitizer (ensures \\begin{aligned} uses single variable line 1, &= per baris, \\implies)
 - Option BlockNote paragraph wrapper (guarantees options use paragraph block with inline text/latex, score & order)
 - SVG Companion auto-embedder with --skip-missing-svg support
 - Block Note sanitizer (prevents empty content: [], fixes single step numberedListItem)
@@ -55,10 +55,9 @@ def clean_latex_string(raw_tex: str) -> str:
 def clean_tex_aligned_block(tex: str) -> str:
     """
     Sanitizes TeX aligned environment to enforce vertical alignment rules:
-    - Single left-hand variable on line 1.
-    - Subsequent lines start directly with &=
-    - Inverse fraction step uses \\[6pt] \\implies
+    - Normalizes equality signs to &= for clean vertical alignment.
     - Replaces horizontal chained '=' with vertical multi-lines.
+    - Preserves left-hand sides for full algebraic equations while normalizing alignment.
     """
     if "\\begin{aligned}" not in tex:
         return tex
@@ -71,11 +70,13 @@ def clean_tex_aligned_block(tex: str) -> str:
     lines = [line.strip() for line in body.split("\\\\") if line.strip()]
 
     cleaned_lines = []
+    first_lhs = None
+
     for idx, line in enumerate(lines):
         # Handle \\implies if present
         prefix = ""
         if "\\implies" in line:
-            prefix = "\\[6pt] \\implies "
+            prefix = "\\implies "
             line = line.replace("\\implies", "").strip()
 
         # Fix horizontal chains like A = B = C
@@ -89,54 +90,104 @@ def clean_tex_aligned_block(tex: str) -> str:
         if idx == 0:
             if "=" in line and "&=" not in line:
                 line = line.replace("=", "&=", 1)
+            # Track first LHS if it's a simple variable (like 'y', 'D', 'f(x)')
+            if "&=" in line:
+                first_lhs = line.split("&=", 1)[0].strip()
             cleaned_lines.append(f"{prefix}{line}")
         else:
-            if "&=" not in line and "=" in line:
+            # If line already has &=, ensure no duplicated exact simple variable from line 1
+            if "&=" in line:
+                left, right = line.split("&=", 1)
+                left = left.strip()
+                if first_lhs and left == first_lhs:
+                    # Strip repeated single variable from line 1 (e.g. y &= ... when line 1 was y &= ...)
+                    line = f"&= {right.strip()}"
+            elif "=" in line:
                 left, right = line.split("=", 1)
-                line = f"&= {right.strip()}"
+                left = left.strip()
+                if first_lhs and left == first_lhs:
+                    line = f"&= {right.strip()}"
+                elif not left:
+                    line = f"&= {right.strip()}"
+                else:
+                    line = f"{left} &= {right.strip()}"
             elif not line.startswith("&=") and not line.startswith("&"):
                 line = f"&= {line}"
             cleaned_lines.append(f"{prefix}{line}")
 
-    new_body = " \\\\\n".join(cleaned_lines)
-    return f"\\begin{{aligned}}\n{new_body}\n\\end{{aligned}}"
+    new_body = " \\\\ ".join(cleaned_lines)
+    return f"\\begin{{aligned}} {new_body} \\end{{aligned}}"
 
 
 # --- Inline Content Builder ---
 
-def text_to_inline_content(text: str) -> list:
+def text_to_inline_content(text: str, base_styles: dict = None) -> list:
     """
-    Parses a text string with embedded math ($...$) into a list of BlockNote inline nodes:
+    Parses a text string into a list of BlockNote inline nodes:
     [{"type": "text", ...}, {"type": "latex", ...}]
+    Handles $$math$$, $math$, **bold**, and *italic* simultaneously.
     """
     if not text:
         return []
+    if base_styles is None:
+        base_styles = {}
 
-    pattern = r'(\$\$.*?\$\$|\$.*?\$)'
-    parts = re.split(pattern, text)
+    # Match groups:
+    # 1: $$math$$
+    # 2: $math$
+    # 3: **bold**
+    # 4: *italic*
+    pattern = re.compile(r'(\$\$.*?\$\$)|(\$(?!\$).*?\$)|(\*\*.*?\*\*)|(\*[^\*]+\*)')
+    
     inline_nodes = []
-
-    for part in parts:
-        if not part:
-            continue
-        if (part.startswith("$$") and part.endswith("$$")) or (part.startswith("$") and part.endswith("$")):
-            latex_code = clean_latex_string(part)
+    last_idx = 0
+    
+    for match in pattern.finditer(text):
+        start, end = match.span()
+        
+        # Text before match
+        if start > last_idx:
+            inline_nodes.append({
+                "type": "text",
+                "text": text[last_idx:start],
+                "styles": base_styles.copy()
+            })
+            
+        # Determine which group matched
+        if match.group(1) or match.group(2):
+            latex_code = clean_latex_string(match.group(1) or match.group(2))
             inline_nodes.append({
                 "type": "latex",
                 "props": {
                     "latex": latex_code,
-                    "displayMode": False
+                    "displayMode": bool(match.group(1))
                 }
             })
-        else:
-            inline_nodes.append({
-                "type": "text",
-                "text": part,
-                "styles": {}
-            })
+        elif match.group(3):
+            # Bold
+            bold_text = match.group(3)[2:-2]
+            # Recursively parse inside bold in case of nested math, though we just keep it simple
+            # Actually, to support math inside bold, it's easier to recursively call text_to_inline_content
+            # BlockNote doesn't support latex nodes with styles, so math inside bold will just be normal math
+            nested_nodes = text_to_inline_content(bold_text, {**base_styles, "bold": True})
+            inline_nodes.extend(nested_nodes)
+        elif match.group(4):
+            # Italic
+            italic_text = match.group(4)[1:-1]
+            nested_nodes = text_to_inline_content(italic_text, {**base_styles, "italic": True})
+            inline_nodes.extend(nested_nodes)
+            
+        last_idx = end
 
+    # Remaining text
+    if last_idx < len(text):
+        inline_nodes.append({
+            "type": "text",
+            "text": text[last_idx:],
+            "styles": base_styles.copy()
+        })
+        
     return inline_nodes
-
 
 # --- Block Builders ---
 
@@ -202,6 +253,7 @@ def process_image_tags(text: str, base_dir: Path, skip_missing_svg: bool = False
     """
     Detects markdown image tags ![caption](filename), checks for .svg companion file,
     encodes to SVG Data URI, and returns (clean_text, image_blocks).
+    Supports template variables like {{img_path}} bypassing file checks.
     """
     image_blocks = []
     pattern = r'!\[(.*?)\]\((.*?)\)'
@@ -209,10 +261,12 @@ def process_image_tags(text: str, base_dir: Path, skip_missing_svg: bool = False
     matches = list(re.finditer(pattern, text))
     for match in matches:
         img_path_str = match.group(2)
+        is_template = img_path_str.startswith("{{") and img_path_str.endswith("}}")
+        
         img_file = base_dir / img_path_str
         svg_file = img_file.with_suffix(".svg")
 
-        if not svg_file.exists():
+        if not svg_file.exists() and not is_template:
             msg = f"[SKIPPED_MISSING_SVG] Image '{img_path_str}' referenced, but companion SVG '{svg_file.name}' was not found in {base_dir}."
             print(msg, file=sys.stderr)
             if skip_missing_svg:
@@ -221,6 +275,8 @@ def process_image_tags(text: str, base_dir: Path, skip_missing_svg: bool = False
     def replacer(match):
         caption = match.group(1)
         img_path_str = match.group(2)
+        is_template = img_path_str.startswith("{{") and img_path_str.endswith("}}")
+        
         img_file = base_dir / img_path_str
         svg_file = img_file.with_suffix(".svg")
 
@@ -239,11 +295,12 @@ def process_image_tags(text: str, base_dir: Path, skip_missing_svg: bool = False
                 })
             except Exception as e:
                 print(f"[MISSING_SVG] Failed to read SVG {svg_file}: {e}")
-        elif img_file.exists():
+        elif img_file.exists() or is_template:
+            url = img_path_str if is_template else f"./{img_path_str}"
             image_blocks.append({
                 "type": "image",
                 "props": {
-                    "url": f"./{img_path_str}",
+                    "url": url,
                     "caption": caption or "Deskripsi gambar"
                 },
                 "content": [],
@@ -381,7 +438,7 @@ def parse_solution_section(sol_text: str, base_dir: Path, skip_missing_svg: bool
                     i += 1
             else:
                 i += 1
-            eq_text = "\n".join(eq_lines)
+            eq_text = " ".join(eq_lines)
             blocks.append(create_equation_block(eq_text))
             continue
 
@@ -442,7 +499,7 @@ def parse_solution_section(sol_text: str, base_dir: Path, skip_missing_svg: bool
                             i += 1
                     else:
                         i += 1
-                    eq_text = "\n".join(eq_lines)
+                    eq_text = " ".join(eq_lines)
                     item_children.append(create_equation_block(eq_text))
                 elif next_line.strip().startswith(">"):
                     # Callout child
@@ -514,7 +571,7 @@ def parse_question_content(soal_text: str, base_dir: Path, skip_missing_svg: boo
                     i += 1
             else:
                 i += 1
-            eq_text = "\n".join(eq_lines)
+            eq_text = " ".join(eq_lines)
             blocks.append(create_equation_block(eq_text))
             continue
 
@@ -535,51 +592,6 @@ def parse_question_content(soal_text: str, base_dir: Path, skip_missing_svg: boo
 
 # --- Bold Label Converter ---
 
-def convert_bold_in_inline_content(content_nodes: list) -> list:
-    """
-    Post-processes inline content to convert markdown **bold** into BlockNote bold styles.
-    Splits text nodes containing **...** into styled segments.
-    """
-    result = []
-    for node in content_nodes:
-        if node.get("type") != "text":
-            result.append(node)
-            continue
-
-        text = node["text"]
-        if "**" not in text:
-            result.append(node)
-            continue
-
-        # Split by **...** pattern
-        parts = re.split(r'(\*\*.*?\*\*)', text)
-        for part in parts:
-            if not part:
-                continue
-            if part.startswith("**") and part.endswith("**"):
-                result.append({
-                    "type": "text",
-                    "text": part[2:-2],
-                    "styles": {"bold": True}
-                })
-            else:
-                result.append({
-                    "type": "text",
-                    "text": part,
-                    "styles": {}
-                })
-
-    return result
-
-
-def post_process_blocks(blocks: list) -> list:
-    """Post-processes all blocks to convert **bold** markers in text content."""
-    for block in blocks:
-        if "content" in block and isinstance(block["content"], list):
-            block["content"] = convert_bold_in_inline_content(block["content"])
-        if "children" in block and isinstance(block["children"], list):
-            post_process_blocks(block["children"])
-    return blocks
 
 
 # --- Main Builder ---
@@ -620,7 +632,6 @@ def build_from_solution_markdown(filepath: Path, skip_missing_svg: bool = False)
         gen_blocks = parse_solution_section(
             sections["Pembahasan: Cara Konseptual"], base_dir, skip_missing_svg
         )
-        gen_blocks = post_process_blocks(gen_blocks)
         solutions.append({
             "solutionType": "general",
             "title": "Cara Konseptual",
@@ -634,7 +645,6 @@ def build_from_solution_markdown(filepath: Path, skip_missing_svg: bool = False)
         fast_blocks = parse_solution_section(
             sections["Pembahasan: Trik Cepat"], base_dir, skip_missing_svg
         )
-        fast_blocks = post_process_blocks(fast_blocks)
         solutions.append({
             "solutionType": "fast_method",
             "title": "Trik Cepat",
@@ -642,9 +652,6 @@ def build_from_solution_markdown(filepath: Path, skip_missing_svg: bool = False)
             "content": fast_blocks
         })
         sol_order += 1
-
-    # 7. Post-process content blocks for bold markers
-    content_blocks = post_process_blocks(content_blocks)
 
     # 8. Build final JSON
     q_type = metadata.get("type", "multiple_choice")

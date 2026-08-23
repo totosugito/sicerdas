@@ -284,12 +284,21 @@ class QuestionValidator:
                         if match:
                             body = match.group(1).strip()
                             lines = [l.strip() for l in body.split("\\\\") if l.strip()]
+                            first_lhs = None
+                            if lines:
+                                l1 = lines[0]
+                                if "&=" in l1:
+                                    first_lhs = l1.split("&=", 1)[0].strip()
+                                elif "=" in l1:
+                                    first_lhs = l1.split("=", 1)[0].strip()
+
                             for l_idx, line in enumerate(lines[1:], start=2):
-                                if not line.startswith("&=") and not line.startswith("& ="):
-                                    if "=" in line:
-                                        self.errors.append(
-                                            f"{location}[{idx}]: Line {l_idx} in \\begin{{aligned}} repeats left-hand variable before '=' ('{line[:30]}...')! "
-                                            f"The left variable must appear ONLY ONCE on line 1. Subsequent lines MUST start directly with '&='."
+                                if first_lhs and ("&=" in line or "=" in line):
+                                    cur_lhs = line.split("&=" if "&=" in line else "=", 1)[0].strip()
+                                    if cur_lhs == first_lhs:
+                                        self.warnings.append(
+                                            f"{location}[{idx}]: Line {l_idx} in \\begin{{aligned}} repeats identical left-hand variable ('{cur_lhs}')! "
+                                            f"For simple evaluation chains, subsequent lines should start directly with '&='."
                                         )
                                 if line.count("=") >= 2:
                                     self.errors.append(

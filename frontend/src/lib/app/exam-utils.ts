@@ -1,6 +1,61 @@
 import { evaluate } from "mathjs";
 
 /**
+ * Parses a text string containing $math$ and **bold** into an array of text and latex inline nodes.
+ */
+function parseTextToInlineNodes(text: string, baseStyles: any = {}): any[] {
+  // Match groups:
+  // 1: $$math$$
+  // 2: $math$
+  // 3: **bold**
+  const regex = /\$\$([\s\S]+?)\$\$|\$((?!\$)[\s\S]+?)\$|\*\*([\s\S]+?)\*\*/g;
+  let match;
+  let lastIndex = 0;
+  const result: any[] = [];
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      result.push({
+        type: "text",
+        text: text.substring(lastIndex, match.index),
+        styles: baseStyles,
+      });
+    }
+
+    if (match[1] || match[2]) {
+      // Math node
+      const latex = match[1] || match[2];
+      result.push({
+        type: "latex",
+        props: {
+          latex: latex,
+          displayMode: !!match[1],
+        },
+      });
+    } else if (match[3]) {
+      // Bold text node
+      result.push({
+        type: "text",
+        text: match[3],
+        styles: { ...baseStyles, bold: true },
+      });
+    }
+
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    result.push({
+      type: "text",
+      text: text.substring(lastIndex),
+      styles: baseStyles,
+    });
+  }
+
+  return result.length > 0 ? result : [{ type: "text", text: text, styles: baseStyles }];
+}
+
+/**
  * Recursively injects variables into a BlockNote JSON structure.
  * It replaces {{key}} placeholders in text and equation properties.
  */
@@ -16,13 +71,23 @@ export function injectVariablesIntoBlocks(
 
       // Replace in text content / inline latex
       if (newItem.content && Array.isArray(newItem.content)) {
-        newItem.content = newItem.content.map((inlineItem: any) => {
+        newItem.content = newItem.content.flatMap((inlineItem: any) => {
           if (inlineItem.type === "text" && inlineItem.text) {
             let newText = inlineItem.text;
+            let hasReplacement = false;
             Object.entries(variables).forEach(([key, value]) => {
               const placeholder = `{{${key}}}`;
-              newText = newText.split(placeholder).join(String(value));
+              if (newText.includes(placeholder)) {
+                newText = newText.split(placeholder).join(String(value));
+                hasReplacement = true;
+              }
             });
+            
+            // If we replaced a variable and the new text contains math or bold syntax, parse it
+            if (hasReplacement && (newText.includes("$") || newText.includes("**"))) {
+              return parseTextToInlineNodes(newText, inlineItem.styles);
+            }
+            
             return { ...inlineItem, text: newText };
           }
           if (inlineItem.type === "latex" && inlineItem.props?.latex) {
@@ -45,6 +110,23 @@ export function injectVariablesIntoBlocks(
           newLatex = newLatex.split(placeholder).join(String(value));
         });
         newItem.props = { ...newItem.props, latex: newLatex };
+      }
+
+      // Replace in image blocks (url and caption)
+      if (newItem.type === "image" && newItem.props?.url) {
+        let newUrl = newItem.props.url;
+        let newCaption = newItem.props.caption || "";
+        Object.entries(variables).forEach(([key, value]) => {
+          const placeholder = `{{${key}}}`;
+          newUrl = newUrl.split(placeholder).join(String(value));
+          newCaption = newCaption.split(placeholder).join(String(value));
+        });
+        
+        if (newUrl.startsWith("../")) {
+          newUrl = `./${newUrl}`;
+        }
+        
+        newItem.props = { ...newItem.props, url: newUrl, caption: newCaption };
       }
 
       // Recurse into children

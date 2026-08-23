@@ -149,11 +149,11 @@ When a question references an image (e.g., `![caption](../imgs/image.png)`):
 
 When converting `$$\begin{aligned}...\end{aligned}$$` blocks, validate and sanitize:
 
-1. **No horizontal equation chains** — If 2+ `=` signs detected outside `\begin{aligned}`, flag as error.
-2. **Lines 2+ must start with `&=`** — If a line repeats the left-hand variable, auto-fix or flag.
-3. **No multiple `=` per line** — Each line must have at most one `=`.
+1. **No horizontal equation chains** — If 2+ `=` signs detected outside `\begin{aligned}` (or on a single line), flag/convert to vertical multi-lines.
+2. **Align with `&=`** — Ensure `=` signs have alignment `&=`.
+3. **Preserve full equation steps** — Keep left-hand side expressions for equation manipulations (e.g. `B^2 - 4AC &= 0`), only strip repeated single variables if identical to line 1 LHS in simple evaluation chains.
 
-Use the `clean_tex_aligned_block()` function in `scripts/build_blocknote_json.py` to auto-fix violations.
+Use the `clean_tex_aligned_block()` function in `scripts/build_blocknote_json.py` to auto-format.
 
 #### 3.9 Solution Structure
 
@@ -231,7 +231,7 @@ Fix any errors or warnings flagged by the validator.
 ❌ BAD:  Repeating left variable & horizontal '=' chains:
         "latex": "\\begin{aligned} \\frac{1}{C_s} = \\frac{1}{C_1} + \\frac{1}{C_2} \\\\ \\frac{1}{C_s} = \\frac{1}{3} + \\frac{1}{6} = \\frac{3}{6} = \\frac{1}{2} \\end{aligned}"
 ✅ GOOD: Left variable ONLY once on line 1, &= per line, \\implies for inversion:
-        "latex": "\\begin{aligned} \\frac{1}{C_s} &= \\frac{1}{C_1} + \\frac{1}{C_2} + \\frac{1}{C_3} \\\\ &= \\frac{1}{3} + \\frac{1}{6} + \\frac{1}{9} \\\\ &= \\frac{6+3+2}{18} \\\\ &= \\frac{11}{18} \\\\[6pt] \\implies C_s &= \\frac{18}{11} \\text{ F} \\end{aligned}"
+        "latex": "\\begin{aligned} \\frac{1}{C_s} &= \\frac{1}{C_1} + \\frac{1}{C_2} + \\frac{1}{C_3} \\\\ &= \\frac{1}{3} + \\frac{1}{6} + \\frac{1}{9} \\\\ &= \\frac{6+3+2}{18} \\\\ &= \\frac{11}{18} \\\\ \\implies C_s &= \\frac{18}{11} \\text{ F} \\end{aligned}"
 
 ❌ BAD:  Mixing "$x^2$" in text strings
 ✅ GOOD: Split into text + inline latex: {"type": "text"}, {"type": "latex", "props": {...}}, {"type": "text"}

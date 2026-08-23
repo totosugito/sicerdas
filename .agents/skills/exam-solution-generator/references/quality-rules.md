@@ -73,7 +73,7 @@ For key formulas and calculations, ALWAYS format math into clear, vertical step-
 
 1. **MULTI-PHASE BREAKDOWN:** For problems requiring calculation of multiple sequential quantities (e.g., $C_s \rightarrow Q \rightarrow V_1$), NEVER merge all calculations into a single giant equation block. Split each logical phase into a **separate `$$` equation block** with a paragraph header between them (e.g., "Mencari kapasitas gabungan seri ($C_s$):").
 
-2. **KEEP RECIPROCAL INVERSION IN SAME BLOCK:** For inverse fraction calculations (e.g., $\frac{1}{C_s} \rightarrow C_s$ or $\frac{1}{R_p} \rightarrow R_p$), NEVER split the final inverted variable into a separate standalone `$$` block. Keep it as the final line inside the same `\begin{aligned}` block using `\\[6pt] \implies C_s &= \dots`.
+2. **KEEP RECIPROCAL INVERSION IN SAME BLOCK:** For inverse fraction calculations (e.g., $\frac{1}{C_s} \rightarrow C_s$ or $\frac{1}{R_p} \rightarrow R_p$), NEVER split the final inverted variable into a separate standalone `$$` block. Keep it as the final line inside the same `\begin{aligned}` block using `\implies C_s &= \dots`.
 
 3. **SINGLE EQUAL SIGN PER LINE:** Each line inside a TeX equation MUST contain at most ONE `=` operator.
 
@@ -83,10 +83,14 @@ For key formulas and calculations, ALWAYS format math into clear, vertical step-
 
 6. **NO JUMPING TO FINAL RESULT:** You MUST write explicit intermediate arithmetic evaluation lines (e.g., formula → substitution → powers/products evaluation → intermediate sums → final value) and include intermediate variables in `variableFormulas.solutions` (e.g., `"r1_sq": "r1^2"`, `"term1": "m1 * r1_sq"`).
 
+7. **NO NESTED OR DUPLICATED ALIGNED BLOCKS (CRITICAL):** NEVER nest `\begin{aligned}` inside another `\begin{aligned}`. NEVER output duplicate tags like `$$\begin{aligned} \begin{aligned}` or `\end{aligned} \end{aligned}$$`. Use exactly ONE `\begin{aligned}` and ONE `\end{aligned}` inside each `$$ ... $$` block.
+
+8. **DO NOT BREAK SINGLE DERIVATIONS INTO MULTIPLE `$$` BLOCKS:** A continuous vertical derivation (e.g., solving for x) MUST be placed inside a **SINGLE** `$$ \begin{aligned} ... \end{aligned} $$` block using `\\` for newlines. NEVER wrap every single line of the derivation into its own separate `$$` block!
+
 ### Correct Equation Example
 
 ```latex
-$$\begin{aligned} \frac{1}{C_s} &= \frac{1}{C_1} + \frac{1}{C_2} + \frac{1}{C_3} \\ &= \frac{1}{3} + \frac{1}{6} + \frac{1}{9} \\ &= \frac{6+3+2}{18} \\ &= \frac{11}{18} \\[6pt] \implies C_s &= \frac{18}{11} \text{ F} \end{aligned}$$
+$$\begin{aligned} \frac{1}{C_s} &= \frac{1}{C_1} + \frac{1}{C_2} + \frac{1}{C_3} \\ &= \frac{1}{3} + \frac{1}{6} + \frac{1}{9} \\ &= \frac{6+3+2}{18} \\ &= \frac{11}{18} \\ \implies C_s &= \frac{18}{11} \text{ F} \end{aligned}$$
 ```
 
 ### Incorrect Equation Examples
@@ -107,7 +111,7 @@ $$\begin{aligned} \frac{1}{C_s} &= \frac{1}{C_1} + \frac{1}{C_2} + \frac{1}{C_3}
 
 ❌ BAD (splitting reciprocal inversion into separate block):
    $$\frac{1}{C_s} = \frac{11}{18}$$
-   $$C_s = \frac{18}{11}$$   ← Should be \\[6pt] \implies inside same block
+   $$C_s = \frac{18}{11}$$   ← Should be \implies inside same block
 ```
 
 ### Use Inline LaTeX for Variable References
