@@ -134,7 +134,10 @@ For questions involving calculations or mathematical functions, you **MUST** par
    - ❌ `$3(5) + 7 = 22$`
    - ❌ **DILARANG MENULIS OPERASI MATEMATIKA DI DALAM PLACEHOLDER:** `{{d * p}}`, `{{d * p - e}}`, `{{a + b}}`. Engine templating HANYA membaca nama variabel murni. Semua langkah perantara wajib didefinisikan di `variableFormulas.solutions` (misal: `d_p: "d * p"`), lalu dipanggil sebagai `{{d_p}}`.
 
-4. **Generate ≥5 Variable Sets**: Each set must satisfy all mathematical constraints (e.g., log domains, positive denominators, no division by zero).
+4. **Generate ≥5 Variable Sets (CRITICAL CONSTRAINT - AVOID REPEATING/NON-TERMINATING DECIMALS):**
+   - Each set must satisfy all mathematical constraints (e.g., log domains, positive denominators, no division by zero).
+   - **Pencegahan Koma Desimal Tak Berhingga (e.g., `2.666666666667`):** Saat mendesain variasi angka untuk operasi pembagian / pecahan (seperti $\frac{c_{num}}{c_{den}} \cdot x$), nilai variabel **WAJIB saling membagi habis (*divisible*)** atau menghasilkan bilangan bulat / desimal berhingga rapi. Contoh: jika $c_{den} = 3$, maka variabel pengali $x$ harus merupakan kelipatan dari $3$ ($3, 6, 9, \dots$), BUKAN bilangan sembarang seperti $4$ yang menghasilkan `2.6666...`.
+   - **Pecahan Simbolik di LaTeX:** Jika soal menginginkan hasil dalam bentuk pecahan $\frac{a}{b}$, jangan biarkan MathJS membaginya menjadi floating number desimal. Definisikan pembilang (`num`) dan penyebut (`den`) secara terpisah di YAML, lalu render sebagai `\frac{{{num}}}{{{den}}}` di Markdown.
 
 5. **Include Distractor Options**: All `opt1`, `opt2`, etc. must be in the variables array.
 
@@ -147,6 +150,9 @@ For questions involving calculations or mathematical functions, you **MUST** par
    - DO NOT use mustache braces: ~~`"{{b}} * {{x_val}}"`~~
    - DO NOT use `Math.` prefix: ~~`"Math.sqrt(x)"`~~
    - Use `mathjs` functions directly: `sqrt()`, `abs()`, `log()`, `pow()`, `sin()`, `cos()`
+
+8. **LaTeX Subscript / Superscript Compound Bracing:**
+   - Selalu bungkus basis logaritma majemuk atau eksponen dengan kurung kurawal ganda dalam LaTeX agar tidak terpecah oleh parser: `\log_{ { {{base}}^{{{a_pow}}} } }` atau `\log_{ {{a_val}} }`, dan `_{{{placeholder}}}` / `^{{{placeholder}}}` untuk placeholder variabel.
 
 Set `variableFormulas: null` ONLY for pure conceptual/theoretical questions (e.g., "Siapa penemu gravitasi?").
 
@@ -172,22 +178,35 @@ For `multiple_choice` and `multiple_select`, incorrect options **MUST be plausib
 
 Since option positions are randomized in the database, NEVER reference option letters in solutions:
 - ❌ "Jawaban yang benar adalah opsi D"
-- ✅ "Jadi, jawaban yang benar adalah ${{answer}}$."
+- ❌ "Maka pilihan yang tepat adalah C"
+- ✅ "Jadi, nilai dari $\log_{{{a_val}}} f(x)$ adalah **${{answer}}$**."
 
-## Conclusion Sentence (MANDATORY)
+## Conclusion Sentence (MANDATORY & CONTEXTUAL)
 
-The final paragraph of **ANY** solution (general or fast method) must ALWAYS be exactly:
+Kalimat penutup pembahasan **WAJIB bersifat kontekstual** (merujuk langsung pada apa yang ditanyakan di bagian `**Ditanya:**` / konteks soal), BUKAN template kalimat kaku yang selalu sama di setiap soal.
 
-```
-Jadi, jawaban yang benar adalah ${{answer}}$.
-```
-
-Or for text answers:
-```
-Jadi, jawaban yang benar adalah **[hasil]**.
+### Pola Baku:
+```markdown
+Jadi, [apa yang ditanyakan / konteks soal] adalah **${{kunci}}** [satuan jika ada].
 ```
 
-Never use weird phrasing like "jawaban cepatnya", "maka hasilnya", etc.
+### Contoh Penerapan:
+- **Soal Aljabar / Nilai Fungsi:**
+  - `**Ditanya:**` Nilai dari $\log_{{{a_val}}} f(x)$
+  - ✅ `Jadi, nilai dari $\log_{{{a_val}}} f(x)$ adalah **${{answer}}$**.`
+- **Soal Cerita / Hitungan Objek:**
+  - `**Ditanya:**` Jumlah buah milik adik sekarang
+  - ✅ `Jadi, jumlah buah yang dimiliki adik sekarang adalah **${{answer}}$ buah**.`
+- **Soal Fisika / Kimia:**
+  - `**Ditanya:**` Kecepatan akhir balok ($v_t$)
+  - ✅ `Jadi, kecepatan akhir balok tersebut adalah **${{v_t}}$ m/s**.`
+- **Soal Teori / Teks Murni:**
+  - ✅ `Jadi, organ yang berfungsi menyaring darah dalam tubuh adalah **{{answer}}**.`
+
+### Aturan Wajib:
+1. **Dilarang menyebut huruf opsi** (`opsi A`, `pilihan B`).
+2. **Wajib sinkron dengan variabel opsi benar:** Placeholder yang ditebalkan (`**${{kunci}}$**`) HARUS persis sama dengan placeholder di baris `- [x] ${{kunci}}`.
+3. Hindari kalimat penutup ambigu atau tidak tuntas seperti *"maka hasilnya adalah..."* atau *"jawaban cepatnya adalah..."*.
 
 ## Callout / Alert Rules
 
