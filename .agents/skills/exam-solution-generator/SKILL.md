@@ -109,6 +109,7 @@ Omit `Trik Cepat` ONLY for pure conceptual, definition, or direct recall questio
 
 See `references/quality-rules.md` for full rules on:
 - Multi-phase breakdown (`$$` block per phase)
+- **Write base formula/function before substitution:** Write the general form $g(x) = \dots$ before substituting numerical values $g(0) = \dots$ to keep the calculation flow clear for students.
 - Reciprocal inversion inside the same `\begin{aligned}` block
 - Vertical TeX equation layout (single `=` per line, `&=` per line, no horizontal chains, LHS variable on line 1 only)
 - Intermediate calculation steps & parameterization using `{{placeholder}}` syntax. **CRITICAL LATEX RULE:** If a placeholder is used inside a subscript or superscript, you MUST wrap the placeholder in extra LaTeX curly braces: `_{{{placeholder}}}` or `^{{{placeholder}}}` (e.g., `\log_{{{a}}}`, NOT `\log_{{a}}`). Otherwise, multi-digit numbers will render brokenly (e.g. `\log_2020`).

@@ -81,7 +81,9 @@ For key formulas and calculations, ALWAYS format math into clear, vertical step-
 
 5. **NO REPEATING LEFT-HAND VARIABLE:** The left-hand variable (e.g., `\frac{1}{C_s}` or `Q`) MUST appear **ONLY ONCE** on the first line. Subsequent lines MUST start directly with `&=` (e.g. `&= \frac{1}{3} + ...`).
 
-6. **NO JUMPING TO FINAL RESULT:** You MUST write explicit intermediate arithmetic evaluation lines (e.g., formula → substitution → powers/products evaluation → intermediate sums → final value) and include intermediate variables in `variableFormulas.solutions` (e.g., `"r1_sq": "r1^2"`, `"term1": "m1 * r1_sq"`).
+6. **NO JUMPING TO FINAL RESULT & MUST WRITE BASE FORMULA/FUNCTION BEFORE SUBSTITUTION:**
+   - You **MUST** write the base formula or general function form first before substituting numerical values (e.g., write the $g(x) = \dots$ line first, followed by the substitution line $g(0) = \dots$, and then subsequent arithmetic evaluation lines).
+   - Write explicit intermediate evaluation lines (formula $\rightarrow$ substitution $\rightarrow$ powers/products evaluation $\rightarrow$ final value) and define intermediate variables in `variableFormulas.solutions` (e.g., `"r1_sq": "r1^2"`, `"term1": "m1 * r1_sq"`).
 
 7. **NO NESTED OR DUPLICATED ALIGNED BLOCKS (CRITICAL):** NEVER nest `\begin{aligned}` inside another `\begin{aligned}`. NEVER output duplicate tags like `$$\begin{aligned} \begin{aligned}` or `\end{aligned} \end{aligned}$$`. Use exactly ONE `\begin{aligned}` and ONE `\end{aligned}` inside each `$$ ... $$` block.
 
@@ -93,9 +95,18 @@ For key formulas and calculations, ALWAYS format math into clear, vertical step-
 $$\begin{aligned} \frac{1}{C_s} &= \frac{1}{C_1} + \frac{1}{C_2} + \frac{1}{C_3} \\ &= \frac{1}{3} + \frac{1}{6} + \frac{1}{9} \\ &= \frac{6+3+2}{18} \\ &= \frac{11}{18} \\ \implies C_s &= \frac{18}{11} \text{ F} \end{aligned}$$
 ```
 
+Example of Function Evaluation & Substitution:
+```latex
+$$\begin{aligned} g(x) &= ax^2 + bx + c \\ g(0) &= a(0)^2 + b(0) + c \\ &= c \end{aligned}$$
+```
+
 ### Incorrect Equation Examples
 
 ```
+❌ BAD (direct substitution without initial general formula):
+   $$\begin{aligned} g(0) &= a(0)^2 + b(0) + c \\ &= c \end{aligned}$$
+   (Expected: write g(x) = ... on the first line before substituting)
+
 ❌ BAD (horizontal chain):
    Q = C_s × V = 18/11 × 220 = 18 × 20 = 360 C
 
