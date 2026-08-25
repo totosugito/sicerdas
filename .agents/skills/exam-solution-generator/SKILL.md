@@ -90,7 +90,8 @@ Must follow this structure:
 
 4. **`**Langkah Penyelesaian:**`** (bold label, standalone paragraph)
    - Optional: `> **Tip:**` callout with concise formula reminder (no emojis!)
-   - Numbered steps `1.`, `2.`, `3.` if multi-step, or regular paragraph if single step
+   - Multi-step solution (2+ langkah): Wajib gunakan format Heading 3 `### 🔹 Langkah 1: [Judul Langkah]`, `### 🔹 Langkah 2: [Judul Langkah]`, dst. (jangan gunakan teks bold datar `**Langkah 1: ...**`).
+   - Single step: Gunakan paragraf biasa tanpa heading langkah.
    - Each step should include friendly, easy-to-digest introductory narrative text AND equation blocks (`$$...$$`)
 
 5. **Conclusion:** `Jadi, jawaban yang benar adalah ${{answer}}$.` (or bold text result for prose answers)

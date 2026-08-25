@@ -55,9 +55,9 @@ Solution 2 (Trik Cepat) — OPTIONAL:
 
 ### Step Formatting Rules
 
-- **Single-step solution (ONLY 1 STEP):** Use a regular paragraph. Do NOT use `1.` numbered list — it looks awkward with only one item.
-- **Multi-step solution (2+ STEPS):** Use numbered list `1.`, `2.`, `3.` for each step.
-- **DO NOT** write words like "Langkah pertama", "Langkah 1", or "1." inside the text if already using numbered markdown list — the numbers render automatically.
+- **Single-step solution (ONLY 1 STEP):** Use a regular paragraph. Do NOT use `1.` numbered list or separate headings — it looks awkward with only one item.
+- **Multi-step solution (2+ STEPS):** Use Markdown Heading Level 3: `### 🔹 Langkah 1: [Judul Langkah]`, `### 🔹 Langkah 2: [Judul Langkah]`, dst.
+- **DO NOT** write flat bold lines like `**Langkah 1: ...**` or `Langkah 1:` without Markdown Heading level 3, to maintain clear visual hierarchy and readable spacing across rich text and mobile screens.
 
 ### Bold Label Rules
 
