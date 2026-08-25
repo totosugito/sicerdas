@@ -72,6 +72,7 @@ Apply fixes in the following order. Each category is detailed in `references/com
 - Fix numbering: `1.`, `2.`, `3.` — fill gaps or fix duplicates
 - Remove stray page numbers, headers/footers from scanned documents
 - Remove excessive blank lines (more than 2 consecutive → 2)
+- Convert raw HTML tables (`<table>`, `<tr>`, `<td>`) to clean list format (`- **P:** ...`, `- **Q:** ...`) or GFM markdown tables (`| P | Q |`)
 
 #### 3.6 — Content Integrity Checks
 - Flag (but do NOT auto-fix) ambiguous content with `[REVIEW: ...]` comments

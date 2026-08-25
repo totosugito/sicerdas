@@ -89,6 +89,16 @@ For key formulas and calculations, ALWAYS format math into clear, vertical step-
 
 8. **DO NOT BREAK SINGLE DERIVATIONS INTO MULTIPLE `$$` BLOCKS:** A continuous vertical derivation (e.g., solving for x) MUST be placed inside a **SINGLE** `$$ \begin{aligned} ... \end{aligned} $$` block using `\\` for newlines. NEVER wrap every single line of the derivation into its own separate `$$` block!
 
+9. **NO INLINE TEXT ANNOTATIONS WITH `\quad` / `\qquad` (CRITICAL):**
+   - NEVER place procedural text annotations (e.g., `\quad \text{(masukkan } x = 2\text{)}` or `\qquad \text{(faktorkan)}`) beside math expressions inside `\begin{aligned}` or `$$ ... $$` blocks.
+   - This causes severe horizontal overflow on mobile screens and breaks responsive KaTeX rendering.
+   - Write all procedural context, substitution notes, or algebraic explanations as **standard Markdown sentences before or after** the equation block.
+
+10. **NO LAZY WRITING OR EQUATION ABBREVIATIONS WITH `...` (CRITICAL ANTI-LAZINESS):**
+    - NEVER truncate or abbreviate algebraic terms or calculation steps using dots or ellipsis (e.g., `x^2... = 0`, `ax + ... = 0`, `2x + \dots = 10`).
+    - Every equation line MUST write out all terms, variables, coefficients, and operations completely and explicitly from left to right.
+    - Ellipsis (`\dots`) is ONLY permitted when demonstrating infinite sequences or series (e.g., $1 + \frac{1}{2} + \frac{1}{4} + \dots$).
+
 ### Correct Equation Example
 
 ```latex

@@ -113,6 +113,8 @@ See `references/quality-rules.md` for full rules on:
 - **Write base formula/function before substitution:** Write the general form $g(x) = \dots$ before substituting numerical values $g(0) = \dots$ to keep the calculation flow clear for students.
 - Reciprocal inversion inside the same `\begin{aligned}` block
 - Vertical TeX equation layout (single `=` per line, `&=` per line, no horizontal chains, LHS variable on line 1 only)
+- **No inline annotations with `\quad` / `\qquad`:** Keep `$$ ... $$` blocks purely mathematical without horizontal notes like `\quad \text{(masukkan x = ...)}`. Write explanations in Markdown narrative before/after the block.
+- **Anti-Laziness / No Equation Ellipsis:** Strictly forbid writing `x^2... = 0` or lazy shortcuts. All terms and calculations must be written out completely.
 - Intermediate calculation steps & parameterization using `{{placeholder}}` syntax. **CRITICAL LATEX RULE:** If a placeholder is used inside a subscript or superscript, you MUST wrap the placeholder in extra LaTeX curly braces: `_{{{placeholder}}}` or `^{{{placeholder}}}` (e.g., `\log_{{{a}}}`, NOT `\log_{{a}}`). Otherwise, multi-digit numbers will render brokenly (e.g. `\log_2020`).
 - Statement Reasoning (`Pernyataan SEBAB Alasan`) handling
 
@@ -122,7 +124,21 @@ See `references/quality-rules.md` for full rules on:
 2. Use the same filename as the source (e.g., `ori/q01.md` → `solution/q01.md`).
 3. **CRITICAL:** The output file MUST contain the complete question structure, NOT just the `## Pembahasan`. You MUST write the parameterized `## Soal` and `## Opsi` sections into the file as well, strictly following `references/solution-format-spec.md`.
 
-### Step 7 — Report
+### Step 7 — Run Validator & Sanitizer (CRITICAL)
+
+After writing the solution markdown files, you **MUST** run the validation and auto-sanitization script:
+
+```bash
+python3 .agents/skills/exam-solution-generator/scripts/validate_solution_markdown.py <target_directory>/solution --fix
+```
+
+This script will automatically:
+- Fix any horizontal equation chains (`a = b = c = ...`) into vertical `\begin{aligned}` blocks with `&=`.
+- Ensure LaTeX subscript/superscript placeholders are cleanly braced (`_{{{var}}}`).
+- Verify YAML frontmatter syntax, question types, and MathJS solutions format.
+- Report any remaining syntax or structural errors so you can fix them immediately before finishing.
+
+### Step 8 — Report
 
 Report a summary to the user:
 - Number of questions processed
@@ -134,4 +150,5 @@ Report a summary to the user:
 - **Tone & Persona (CRITICAL):** Target audience is Elementary (SD), Middle (SMP), and High School (SMA) students. Use a highly simplified, casual, friendly, and accessible tone—like a teacher explaining directly to a student. STRICTLY AVOID rigid academic jargon, hyper-formal language, or convoluted sentences (e.g., do NOT use "Transformasi Ekstraksi", "Ekuivalensi ordinat"). Use simple, everyday instructions (e.g., "Jadikan satu ruas", "Cari titik potongnya", "Masukkan nilainya"). **CRITICAL:** Do NOT use small talk or conversational greetings like "Halo adik-adik!", "Halo apa kabar", etc. Simple transitions like "Mari kita bahas" are acceptable, but generally prefer getting straight to the point. **CRITICAL:** Avoid overly infantile, dramatic, or bizarre analogies (e.g., do NOT say "masuk ke dalam perut fungsi" for composite functions, or "kurva tabrakan" for intersecting lines). Keep the language simple but mathematically sound (e.g., use "masukkan nilai g(x) ke dalam fungsi f", or "titik di mana kedua kurva bertemu/berpotongan").
 - **Parameterize All Math:** Use `{{placeholder}}` inside LaTeX and prose; define derived intermediate steps and final answers in `variableFormulas.solutions` using bare mathjs syntax (no `{{}}`, no `Math.`).
 - **Contextual Conclusion & No Option Letters:** Never write "opsi D" or "jawaban A" (positions are randomized). Selalu buat kalimat penutup yang kontekstual langsung menjawab apa yang ditanyakan (contoh: `Jadi, nilai dari $\log_{{{a_val}}} f(x)$ adalah **${{kunci}}$**.`, atau `Jadi, jumlah buah milik adik adalah **${{kunci}}$ buah**.`), dan pastikan placeholder yang dipanggil SAMA PERSIS dengan variabel di opsi benar `- [x] {{kunci}}`.
+- **No Raw HTML Elements (CRITICAL):** DILARANG KERAS menyisakan tag HTML seperti `<table>`, `<tr>`, `<td>`, `<th>`, `<div>` di `## Soal` atau `## Pembahasan`. Jika ada tabel kuantitas $P$ dan $Q$ pada soal mentah/input, konversi menjadi format daftar berbutir (bullet list): `- **Kuantitas P:** ...` dan `- **Kuantitas Q:** ...` atau tabel GFM Markdown.
 - **Strict Format Compliance:** Refer to `references/solution-format-spec.md` for exact frontmatter schema and section header tags.

@@ -87,8 +87,11 @@ def clean_tex_aligned_block(tex: str) -> str:
                 cleaned_lines.append(f"&= {p}")
             continue
 
+        # If line is purely a template variable like {{eq2}}, don't force &= prefix
+        is_template_var = bool(re.match(r"^\{\{\s*[\w_]+\s*\}\}$", line.strip()))
+
         if idx == 0:
-            if "=" in line and "&=" not in line:
+            if not is_template_var and "=" in line and "&=" not in line:
                 line = line.replace("=", "&=", 1)
             # Track first LHS if it's a simple variable (like 'y', 'D', 'f(x)')
             if "&=" in line:
@@ -111,7 +114,7 @@ def clean_tex_aligned_block(tex: str) -> str:
                     line = f"&= {right.strip()}"
                 else:
                     line = f"{left} &= {right.strip()}"
-            elif not line.startswith("&=") and not line.startswith("&"):
+            elif not is_template_var and not line.startswith("&=") and not line.startswith("&"):
                 line = f"&= {line}"
             cleaned_lines.append(f"{prefix}{line}")
 
@@ -244,6 +247,19 @@ def create_numbered_list_item(text: str, children: list = None) -> dict:
         "props": {},
         "content": text_to_inline_content(text),
         "children": children or []
+    }
+
+
+def create_heading_block(text: str, level: int = 3) -> dict:
+    """Creates a BlockNote heading block (level 1, 2, or 3)."""
+    valid_level = min(max(level, 1), 3)
+    return {
+        "type": "heading",
+        "props": {
+            "level": valid_level
+        },
+        "content": text_to_inline_content(text),
+        "children": []
     }
 
 
@@ -536,6 +552,17 @@ def parse_solution_section(sol_text: str, base_dir: Path, skip_missing_svg: bool
             i += 1
             continue
 
+        # Markdown Heading: #, ##, ###, ####
+        heading_match = re.match(r'^(#{1,6})\s+(.+)$', line.strip())
+        if heading_match:
+            flush_numbered_items()
+            h_hashes = heading_match.group(1)
+            h_text = heading_match.group(2).strip()
+            level = len(h_hashes)
+            blocks.append(create_heading_block(h_text, level))
+            i += 1
+            continue
+
         # Regular paragraph (may contain bold labels and inline math)
         flush_numbered_items()
         blocks.append(create_paragraph_block(line.strip()))
@@ -580,6 +607,16 @@ def parse_question_content(soal_text: str, base_dir: Path, skip_missing_svg: boo
         if img_match:
             _, img_blocks = process_image_tags(line.strip(), base_dir, skip_missing_svg)
             blocks.extend(img_blocks)
+            i += 1
+            continue
+
+        # Markdown Heading
+        heading_match = re.match(r'^(#{1,6})\s+(.+)$', line.strip())
+        if heading_match:
+            h_hashes = heading_match.group(1)
+            h_text = heading_match.group(2).strip()
+            level = len(h_hashes)
+            blocks.append(create_heading_block(h_text, level))
             i += 1
             continue
 
