@@ -62,7 +62,6 @@ export async function createUserService(params: CreateUserParams): Promise<Creat
       userId: insertedUser.id,
       accountId: insertedUser.id,
       providerId: "credential",
-      issuer: "local:credential",
       password: hashedPassword,
       createdAt: new Date(),
       updatedAt: new Date(),
