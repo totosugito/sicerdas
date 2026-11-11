@@ -24,3 +24,5 @@ bun.lock
 bugreport*
 *.g.dart
 .migration
+/backup/
+*.sql.gz

@@ -24,3 +24,17 @@ scp -r -P 22 ./dist/* sicerdas@202.155.94.190:/var/www/sicerdas.com/frontend
 ```bash
 scp -r -P 22 ./backend/dist sicerdas@202.155.94.190:/var/www/sicerdas.com/backend/
 ```
+
+## SINKRONISASI DATABASE DARI VPS KE LOKAL
+
+Mengambil dump database `sicerdas` langsung dari server VPS via SSH stream (tanpa meninggalkan file sementara di VPS), menyimpannya ke `backup/sicerdas_<timestamp>.sql.gz`, dan langsung mereplace database lokal.
+
+```bash
+# Opsi 1: Dari root sicerdas
+bun run db:sync_vps
+# atau
+./scripts/sync-db-from-vps.sh
+
+# Opsi 2: Dari folder backend
+cd backend && bun run db:sync_vps
+```

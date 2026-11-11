@@ -10,11 +10,15 @@
     "dev:frontend": "cd frontend && bun run dev",
     "build:frontend": "cd frontend && bun run build",
     "desktop:dev": "cd desktop && bun run dev",
-    "desktop:build": "cd desktop && bun run build"
+    "desktop:build": "cd desktop && bun run build",
+    "db:sync_vps": "bash scripts/sync-db-from-vps.sh"
   },
   "packageManager": "bun@1.3.14",
   "dependencies": {
     "canvas": "^3.2.3",
     "echarts": "^6.1.0"
+  },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@^1.6.0"
   }
 }
