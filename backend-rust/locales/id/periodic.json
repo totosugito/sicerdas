@@ -1,0 +1,7 @@
+{
+    "periodic": {
+        "elementNotFound": "Elemen dengan nomor atom %{atomicNumber} tidak ditemukan",
+        "success": "Berhasil mengambil data elemen",
+        "downloadFailed": "Gagal mengunduh data tabel periodik"
+    }
+}

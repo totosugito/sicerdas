@@ -1,0 +1,48 @@
+{
+    "user": {
+        "sessions": {
+            "tokenRequired": "Token sesi diperlukan",
+            "sessionNotFound": "Sesi tidak ditemukan",
+            "accessDenied": "Anda tidak memiliki izin untuk mencabut sesi ini",
+            "sessionRevoked": "Sesi berhasil dihapus"
+        },
+        "sessionsList": {
+            "success": "Daftar sesi berhasil diambil"
+        },
+        "noValidUpdateData": "Tidak ada data pembaruan yang valid",
+        "userNotFound": "Pengguna tidak ditemukan",
+        "userUpdatedSuccessfully": "Data pengguna berhasil diperbarui",
+        "currentPasswordRequired": "Kata sandi saat ini diperlukan",
+        "newPasswordRequired": "Kata sandi baru diperlukan",
+        "passwordsMustBeDifferent": "Kata sandi baru harus berbeda dari kata sandi saat ini",
+        "accountNotFound": "Akun pengguna tidak ditemukan",
+        "accountHasNoPassword": "Akun pengguna tidak memiliki kata sandi yang disetel",
+        "currentPasswordIncorrect": "Kata sandi saat ini salah",
+        "passwordUpdatedSuccessfully": "Kata sandi berhasil diperbarui",
+        "invalidFileType": "Jenis file tidak valid. Hanya file gambar JPEG, JPG, dan PNG yang diizinkan.",
+        "fileSizeTooLarge": "Ukuran file harus kurang dari 5MB",
+        "noFileUploaded": "Tidak ada file yang diunggah",
+        "avatarRemovedSuccessfully": "Avatar berhasil dihapus",
+        "avatarUpdatedSuccessfully": "Avatar berhasil diperbarui",
+        "missingUserId": "ID pengguna (id) wajib disertakan dalam permintaan",
+        "list": {
+            "success": "Daftar pengguna berhasil diambil"
+        },
+        "details": {
+            "success": "Detail pengguna berhasil diambil"
+        },
+        "create": {
+            "success": "Pengguna berhasil dibuat",
+            "emailExists": "Email sudah digunakan oleh pengguna lain"
+        },
+        "update": {
+            "success": "Pengguna berhasil diperbarui",
+            "emailExists": "Email sudah digunakan oleh pengguna lain",
+            "cannotBanSelf": "Anda tidak dapat mengubah status blokir akun Anda sendiri."
+        },
+        "delete": {
+            "success": "Pengguna berhasil dihapus",
+            "inUse": "Pengguna tidak dapat dihapus karena masih memiliki data terkait (konten, laporan, dll)"
+        }
+    }
+}

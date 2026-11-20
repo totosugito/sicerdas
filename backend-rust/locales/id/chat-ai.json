@@ -1,0 +1,22 @@
+{
+    "chatAi": {
+        "model": {
+            "create": {
+                "success": "Model AI berhasil dibuat",
+                "exists": "Model dengan nama atau identifier tersebut sudah ada"
+            },
+            "update": {
+                "success": "Model AI berhasil diperbarui",
+                "notFound": "Model AI tidak ditemukan"
+            },
+            "detail": {
+                "success": "Berhasil mengambil detail model AI",
+                "notFound": "Model AI tidak ditemukan"
+            },
+            "stats": {
+                "success": "Statistik AI berhasil diambil",
+                "error": "Gagal mengambil statistik AI"
+            }
+        }
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "report": {
+        "create": {
+            "success": "Terima kasih atas laporan Anda. Kami akan segera meninjaunya.",
+            "error": "Gagal mengirim laporan. Silakan coba lagi nanti."
+        }
+    }
+}
