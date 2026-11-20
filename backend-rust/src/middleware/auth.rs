@@ -5,7 +5,7 @@ use crate::modules::auth::crypto::verify_signed_cookie_value;
 use crate::modules::auth::services::session::get_session_by_token;
 use crate::modules::auth::types::{AuthSessionInfo, AuthUser};
 use axum::{
-    extract::FromRequestParts,
+    extract::{FromRequestParts, OptionalFromRequestParts},
     http::{header, request::Parts},
 };
 use axum_extra::extract::CookieJar;
@@ -73,6 +73,26 @@ impl FromRequestParts<AppState> for AuthSession {
     }
 }
 
+impl OptionalFromRequestParts<AppState> for AuthSession {
+    type Rejection = AppError;
+
+    async fn from_request_parts(
+        parts: &mut Parts,
+        state: &AppState,
+    ) -> Result<Option<Self>, Self::Rejection> {
+        let Some(token) = extract_token(parts, state) else {
+            return Ok(None);
+        };
+        let Some(data) = get_session_by_token(state, &token).await? else {
+            return Ok(None);
+        };
+        Ok(Some(AuthSession {
+            user: data.user,
+            session: data.session,
+        }))
+    }
+}
+
 impl FromRequestParts<AppState> for RequireAdmin {
     type Rejection = AppError;
 
@@ -86,7 +106,7 @@ impl FromRequestParts<AppState> for RequireAdmin {
             .map(|r| r.0)
             .unwrap_or(Lang::Id);
 
-        let session = AuthSession::from_request_parts(parts, state).await?;
+        let session = <AuthSession as FromRequestParts<AppState>>::from_request_parts(parts, state).await?;
         if session.user.role != "admin" {
             return Err(AppError::Forbidden(translate(
                 lang,

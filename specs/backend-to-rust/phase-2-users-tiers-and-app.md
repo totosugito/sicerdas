@@ -72,6 +72,7 @@
 ---
 
 ## 6. Phase 2 Acceptance Criteria
-- [ ] All 17 `users/*` routes pass parity checks (including avatar upload/resize and session cache invalidation).
-- [ ] All 6 `tier/*`, 5 `app/*`, 6 `version/*`, 16 `education/*`, 1 `content-report/*`, 1 `periodic-table/*`, and 4 `ai/model/*` routes return matching JSON shapes and `PaginationMeta`.
-- [ ] Version/App `moka` caches invalidate cleanly on admin create/update/delete.
+- [x] All 17 `users/*` routes pass parity checks (including avatar upload/resize and session cache invalidation).
+- [x] All 6 `tier/*`, 5 `app/*`, 6 `version/*`, 16 `education/*`, 1 `content-report/*`, 1 `periodic-table/*`, and 4 `ai/model/*` routes return matching JSON shapes and `PaginationMeta`.
+- [x] Version/App `moka` caches invalidate cleanly on admin create/update/delete.
+- [x] Verified via `cargo test` (`4 passed`), `scripts/smoke-phase2.sh` (`passed=56 failed=0`, including `RequireAdmin` `403` checks), and Chrome E2E (`/periodic-table` + Hydrogen detail, `/users/profile`, `/users/admin/list-users`).

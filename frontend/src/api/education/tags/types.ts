@@ -1,19 +1,36 @@
-import type {
-  TagData,
-  TagSimpleData,
-  TagListParams,
-  CreateTagParams,
-  UpdateTagParams,
-} from "backend/src/modules/education/index.ts";
-import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+import type { BaseResponse, PaginationMeta } from "@/api/types";
 
-export type {
-  TagData,
-  TagSimpleData,
-  TagListParams,
-  CreateTagParams,
-  UpdateTagParams,
-};
+export interface TagData {
+  id: string;
+  name: string;
+  description: string | null;
+  isActive: boolean;
+  totalQuestions: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TagSimpleData {
+  value: string;
+  label: string;
+}
+
+export interface TagListParams {
+  search?: string;
+  isActive?: boolean;
+  sortBy?: string;
+  sortOrder?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface CreateTagParams {
+  name: string;
+  description?: string;
+  isActive?: boolean;
+}
+
+export type UpdateTagParams = Partial<CreateTagParams>;
 
 export interface TagListResponse extends BaseResponse {
   data: {

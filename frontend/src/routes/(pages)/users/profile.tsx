@@ -30,7 +30,7 @@ import {
   type UserDetailsData,
   type SessionData,
 } from "@/api/users";
-import type { BaseResponse } from "backend/src/types/index.ts";
+import type { BaseResponse } from "@/api/types";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
 import { string_to_date } from "@/lib/my-utils";
 import { useAuth } from "@/hooks/use-auth";

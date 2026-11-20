@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
-import type { BaseResponse } from "backend/src/types/index.ts";
+import type { BaseResponse } from "@/api/types";
 import type { ChangePasswordBody } from "../types";
 
 export const useChangeUserPasswordMutation = () => {

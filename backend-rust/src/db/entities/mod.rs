@@ -1,5 +1,14 @@
+pub mod ai_api_logs;
+pub mod ai_models;
+pub mod app_tier;
+pub mod app_version;
+pub mod content_report;
+pub mod education_categories;
+pub mod education_grades;
+pub mod education_tags;
 pub mod users;
 pub mod users_accounts;
 pub mod users_profiles;
 pub mod users_sessions;
+pub mod users_stats;
 pub mod users_verifications;

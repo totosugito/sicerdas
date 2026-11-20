@@ -1,0 +1,14 @@
+pub mod avatar_update;
+pub mod ban_user;
+pub mod change_password;
+pub mod create_user;
+pub mod delete_user;
+pub mod list_users;
+pub mod reset_password;
+pub mod revoke_other_sessions;
+pub mod revoke_session;
+pub mod sessions_list;
+pub mod update_profile;
+pub mod update_user;
+pub mod user_details;
+pub mod user_stats;

@@ -215,10 +215,9 @@ export function DataTable<TData extends RowData = any>({
         )}
       >
         <Table
-          className={cn(
-            "border-separate border-spacing-0 border-none w-full",
-            showSideBorders ? "" : "[&>div]:overflow-x-hidden px-[1px]",
-          )}
+          // no padding on the <table> itself: with w-full it made the table 1px wider than its container,
+          // so a horizontal scrollbar showed on every table
+          className="border-separate border-spacing-0 border-none w-full"
         >
           <TableHeader
             className={cn(
@@ -262,7 +261,10 @@ export function DataTable<TData extends RowData = any>({
                             onMouseDown: header.getResizeHandler(),
                             onTouchStart: header.getResizeHandler(),
                             className:
-                              "absolute top-0 h-full w-0 cursor-col-resize user-select-none touch-none -right-0 z-10 flex justify-center before:absolute before:w-px before:inset-y-0 before:bg-border before:translate-x-px",
+                              // the 1px line sits just inside the cell's right edge; drawn outside it (translate-x-px),
+                              // the last column's line made every table 1-2px wider than its container. It shows only on
+                              // hover: always drawn, it doubled the cell's own border-r into two separator lines
+                              "absolute top-0 h-full w-0 cursor-col-resize user-select-none touch-none right-px z-10 flex justify-center before:absolute before:w-px before:inset-y-0 before:bg-primary/60 before:opacity-0 group-hover:before:opacity-100 before:transition-opacity",
                           }}
                         />
                       )}

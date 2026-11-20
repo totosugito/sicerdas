@@ -1,5 +1,6 @@
 use crate::config::AppConfig;
 use crate::locales::locale_middleware;
+use crate::platform::storage::StorageClient;
 use crate::routes::api_router;
 use axum::{
     extract::{DefaultBodyLimit, Request},
@@ -26,13 +27,16 @@ pub struct AppState {
     pub db: DatabaseConnection,
     pub config: AppConfig,
     pub http: reqwest::Client,
+    pub storage: StorageClient,
     pub session_cache: Cache<String, serde_json::Value>,
     pub oauth_state_cache: Cache<String, String>,
+    pub read_cache: Cache<String, serde_json::Value>,
     pub started_at: Instant,
 }
 
 impl AppState {
     pub fn new(db: DatabaseConnection, config: AppConfig) -> Self {
+        let storage = StorageClient::from_config(&config);
         let session_cache = Cache::builder()
             .max_capacity(10_000)
             .time_to_live(Duration::from_secs(60))
@@ -41,13 +45,19 @@ impl AppState {
             .max_capacity(10_000)
             .time_to_live(Duration::from_secs(600))
             .build();
+        let read_cache = Cache::builder()
+            .max_capacity(1_000)
+            .time_to_live(Duration::from_secs(300))
+            .build();
 
         Self {
             db,
             config,
             http: reqwest::Client::new(),
+            storage,
             session_cache,
             oauth_state_cache,
+            read_cache,
             started_at: Instant::now(),
         }
     }

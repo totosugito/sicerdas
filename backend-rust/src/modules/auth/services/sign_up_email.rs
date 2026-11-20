@@ -88,6 +88,7 @@ pub async fn execute(
     users_profiles::ActiveModel {
         id: Set(user_id),
         school: Set(None),
+        education_level: Set(None),
         grade: Set(None),
         phone: Set(None),
         address: Set(None),

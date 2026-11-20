@@ -353,6 +353,7 @@ async fn upsert_google_user_and_session(
             users_profiles::ActiveModel {
                 id: Set(existing.id),
                 school: Set(None),
+                education_level: Set(None),
                 grade: Set(None),
                 phone: Set(None),
                 address: Set(None),
@@ -412,6 +413,7 @@ async fn upsert_google_user_and_session(
         users_profiles::ActiveModel {
             id: Set(user_id),
             school: Set(None),
+            education_level: Set(None),
             grade: Set(None),
             phone: Set(None),
             address: Set(None),

@@ -1,21 +1,49 @@
-import type {
-  GradeData,
-  GradeSimpleData,
-  GradeListParams,
-  GradeSimpleParams,
-  CreateGradeParams,
-  UpdateGradeParams,
-} from "backend/src/modules/education/index.ts";
-import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+import type { BaseResponse, PaginationMeta } from "@/api/types";
 
-export type {
-  GradeData,
-  GradeSimpleData,
-  GradeListParams,
-  GradeSimpleParams,
-  CreateGradeParams,
-  UpdateGradeParams,
-};
+export interface GradeData {
+  id: number;
+  grade: string;
+  name: string;
+  desc: string | null;
+  extra: unknown;
+  isDefault: boolean;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
+export interface GradeSimpleData {
+  value: string;
+  label: string;
+}
+
+export interface GradeListParams {
+  search?: string;
+  sortBy?: string;
+  sortOrder?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface GradeSimpleParams {
+  page?: number;
+  limit?: number;
+  isDefault?: boolean;
+}
+
+export interface CreateGradeParams {
+  grade: string;
+  name: string;
+  desc?: string;
+  extra?: unknown;
+  isDefault?: boolean;
+}
+
+export interface UpdateGradeParams {
+  name?: string;
+  desc?: string;
+  extra?: unknown;
+  isDefault?: boolean;
+}
 
 export interface GradeListResponse extends BaseResponse {
   data: {

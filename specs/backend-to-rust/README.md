@@ -1,7 +1,7 @@
 # Backend Migration Plan: Fastify/TypeScript → Rust (`backend-rust`)
 
 ## Overview
-This directory contains the multi-phase specification for migrating the `sicerdas` backend from [backend](file:///home/toto/Documents/sicerdas/backend) (Fastify v5 + TypeScript + Drizzle ORM + `better-auth`) to a new Rust workspace at `/home/toto/Documents/sicerdas/backend-rust`, following the [fullstack-rust](file:///home/toto/Documents/sicerdas/.agents/skills/fullstack-rust/SKILL.md) skill blueprint.
+This directory contains the multi-phase specification for migrating the `sicerdas` backend from [backend](file:///home/toto/Documents/sicerdas/backend) (Fastify v5 + TypeScript + Drizzle ORM + `better-auth`) to a new Rust workspace at `/home/toto/Documents/sicerdas/backend-rust`, following the [my-fullstack-rust](file:///home/toto/Documents/sicerdas/.agents/skills/my-fullstack-rust/SKILL.md) skill blueprint.
 
 ### Target Rust Stack (Replacing Fastify/TS)
 - **Web & Middleware:** `axum` (`0.8`, `multipart`) + `axum-extra` (`0.10`, `cookie`) + `tokio` (`1`) + `tower-http` (`0.6`, `cors`, `compression-gzip`, `trace`, `set-header`, `fs`) + `tower_governor` (rate limiting).
@@ -39,7 +39,7 @@ See [library-mapping.md](./library-mapping.md) for the complete package-by-packa
 | Phase | Spec File | Scope | Routes |
 | :--- | :--- | :--- | :--- |
 | **Phase 1** | [phase-1-auth-and-foundation.md](./phase-1-auth-and-foundation.md) | **Done & Verified (CLI, Chrome Web, Resend OTP, Android Emulator)** — `backend-rust` workspace, config, Postgres pool, middleware, i18n, health routes, and auth (`better-auth` compat, Google Web + Mobile ID-token, Resend OTP; `RequireAdmin` 403 awaits Phase 2 admin routes) | `health/*` (3) + `auth/*` (5 + `/api/auth/*`) |
-| **Phase 2** | [phase-2-users-tiers-and-app.md](./phase-2-users-tiers-and-app.md) | Users (self-service + admin), Tiers, App/Version, Education taxonomy, Content Report, Periodic Table, AI Models | `users/*` (17), `tier/*` (6), `app/*` (5), `version/*` (6), `education/*` (16), `content-report/*` (1), `periodic-table/*` (1), `ai/model/*` (4) |
+| **Phase 2** | [phase-2-users-tiers-and-app.md](./phase-2-users-tiers-and-app.md) | **Done & Verified (CLI + Chrome Web)** — Users (self-service + admin), Tiers, App/Version, Education taxonomy, Content Report, Periodic Table, AI Models (`RequireAdmin` 403 + `moka` cache invalidation verified) | `users/*` (17), `tier/*` (6), `app/*` (5), `version/*` (6), `education/*` (16), `content-report/*` (1), `periodic-table/*` (1), `ai/model/*` (4) |
 | **Phase 3** | [phase-3-books-and-courses.md](./phase-3-books-and-courses.md) | Books (public, user interactions, PDF proxy, admin stats) & Courses (courses, chapters, lectures, lecture-texts, enrollments, progress, stats) | `book/*` (12) + `course/*` (40) |
 | **Phase 4** | [phase-4-exam-and-jobs.md](./phase-4-exam-and-jobs.md) | Exam engine (subjects, passages, questions, options, solutions, tags, packages, sections, sessions, leaderboard, stats) & 8 daily cron jobs | `exam/*` (72 active) + 8 daily jobs |
 | **Phase 5** | [phase-5-cutover-and-static.md](./phase-5-cutover-and-static.md) | Static `/uploads/`, S3/R2 parity, OpenAPI/Scalar (optional), dual-port parity verification, mobile/desktop checks, and cutover | Static + full parity |

@@ -16,7 +16,6 @@ test
 .vscode
 .tanstack
 scripts/venv
-skills
 uploads
 logs
 .vite-hooks

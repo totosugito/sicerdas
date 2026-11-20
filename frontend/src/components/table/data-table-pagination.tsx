@@ -160,24 +160,25 @@ export function DataTablePagination({
   return (
     <div
       className={cn(
-        "flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto sm:flex-row sm:gap-8",
+        // wraps instead of overflowing: page numbers of a long list (e.g. "10.001") would otherwise push it sideways
+        "flex w-full flex-wrap items-center justify-between gap-x-8 gap-y-3",
         className,
       )}
     >
       <div>
         {showPageLabel && (
           <div className="flex items-center justify-center text-sm text-foreground">
-            {t(($) => $.labels.row)} {totalRowsCount > 0 ? startIndex : 0}
-            <span className={"text-foreground px-[2px]"}>-</span>
-            {endIndex}
+            {t(($) => $.labels.row)} {(totalRowsCount > 0 ? startIndex : 0).toLocaleString("id-ID")}
+            <span className={"text-foreground px-[2px]"}>–</span>
+            {endIndex.toLocaleString("id-ID")}
             <span className={"text-foreground px-[2px]"}>{t(($) => $.labels.of)}</span>
-            {totalRowsCount}
+            {totalRowsCount.toLocaleString("id-ID")}
           </div>
         )}
       </div>
 
       {totalRowsCount >= (pageSizeOptions?.[0] ?? 5) && (
-        <div className="flex flex-col-reverse items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
+        <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
           {showPageSize && (
             <div className="flex items-center space-x-2">
               <Select
@@ -186,8 +187,10 @@ export function DataTablePagination({
                   handlePageSizeChange(Number(value));
                 }}
               >
-                <SelectTrigger className="w-[8.3rem]">
-                  <SelectValue placeholder={String(currentPageSize)} />
+                <SelectTrigger className="w-auto min-w-[8.3rem]">
+                  <SelectValue placeholder={String(currentPageSize)}>
+                    {`${currentPageSize} ${t(($) => $.labels.pagination.rowsPerPage)}`}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectPositioner side="top">
                   <SelectContent>
@@ -202,10 +205,10 @@ export function DataTablePagination({
             </div>
           )}
 
-          <Pagination>
-            <PaginationContent className="inline-flex gap-0 -space-x-px rounded-md shadow-xs rtl:space-x-reverse">
-              {totalPages > 0 &&
-                pageNumbers.map((page: number, index: number) => (
+          {totalPages > 1 && (
+            <Pagination className="mx-0 w-auto">
+              <PaginationContent className="inline-flex gap-0 -space-x-px rounded-md shadow-xs rtl:space-x-reverse">
+                {pageNumbers.map((page: number, index: number) => (
                   <PaginationItem
                     key={index}
                     className="[&:first-child>a]:rounded-s-md [&:last-child>a]:rounded-e-md"
@@ -223,13 +226,14 @@ export function DataTablePagination({
                           handlePageChange(page);
                         }}
                       >
-                        {page + 1}
+                        {(page + 1).toLocaleString("id-ID")}
                       </PaginationLink>
                     )}
                   </PaginationItem>
                 ))}
-            </PaginationContent>
-          </Pagination>
+              </PaginationContent>
+            </Pagination>
+          )}
         </div>
       )}
     </div>

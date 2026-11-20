@@ -15,9 +15,11 @@ hex = "0.4"
 hmac = "0.12"
 image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp"] }
 indexmap = { version = "2", features = ["serde"] }
+md-5 = "0.10"
 moka = { version = "0.12", features = ["future"] }
 rand = "0.8"
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
+rust_decimal = { version = "1", features = ["serde-with-float"] }
 scrypt = { version = "0.11", default-features = false }
 sea-orm = { version = "1.1", features = [
     "sqlx-postgres",
@@ -26,6 +28,7 @@ sea-orm = { version = "1.1", features = [
     "with-chrono",
     "with-uuid",
     "with-json",
+    "with-rust_decimal",
 ] }
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order", "raw_value"] }

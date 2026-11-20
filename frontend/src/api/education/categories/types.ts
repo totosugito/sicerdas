@@ -1,21 +1,47 @@
-import type {
-  CategoryData,
-  CategorySimpleData,
-  CategoryListParams,
-  CategorySimpleParams,
-  CreateCategoryParams,
-  UpdateCategoryParams,
-} from "backend/src/modules/education/index.ts";
-import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+import type { BaseResponse, PaginationMeta } from "@/api/types";
 
-export type {
-  CategoryData,
-  CategorySimpleData,
-  CategoryListParams,
-  CategorySimpleParams,
-  CreateCategoryParams,
-  UpdateCategoryParams,
-};
+export interface CategoryData {
+  id: string;
+  name: string;
+  description: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CategorySimpleData {
+  value: string;
+  label: string;
+  key: string;
+}
+
+export interface CategoryListParams {
+  search?: string;
+  isActive?: boolean;
+  sortBy?: string;
+  sortOrder?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface CategorySimpleParams {
+  page?: number;
+  limit?: number;
+}
+
+export interface CreateCategoryParams {
+  name: string;
+  key?: string;
+  description?: string;
+  isActive?: boolean;
+}
+
+export interface UpdateCategoryParams {
+  name: string;
+  key?: string;
+  description?: string;
+  isActive?: boolean;
+}
 
 export interface CategoryListResponse extends BaseResponse {
   data: {

@@ -1,1 +1,9 @@
+pub mod ai;
+pub mod app;
 pub mod auth;
+pub mod content_report;
+pub mod education;
+pub mod periodic_table;
+pub mod tier;
+pub mod users;
+pub mod version;

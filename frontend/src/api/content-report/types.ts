@@ -1,13 +1,19 @@
-import type {
-  CreateReportParams,
-  CreateReportData,
-} from "backend/src/modules/content-report/index.ts";
-import type { BaseResponse } from "backend/src/types/index.ts";
+import type { BaseResponse, EnumContentType, EnumReportReason } from "@/api/types";
 
-export type {
-  CreateReportParams,
-  CreateReportData,
-};
+export interface CreateReportParams {
+  name: string;
+  email: string;
+  title: string;
+  contentType: EnumContentType;
+  referenceId: string;
+  reason: EnumReportReason;
+  description?: string;
+  extra?: Record<string, unknown>;
+}
+
+export interface CreateReportData {
+  id: string;
+}
 
 export interface CreateReportResponse extends BaseResponse {
   data: CreateReportData;

@@ -1,8 +1,10 @@
 use axum::{
-    extract::Request,
+    extract::{FromRequestParts, Request},
+    http::request::Parts,
     middleware::Next,
     response::Response,
 };
+use std::convert::Infallible;
 use serde_json::Value;
 use std::collections::HashMap;
 use std::sync::OnceLock;
@@ -21,6 +23,18 @@ pub struct RequestLocale(pub Lang);
 impl RequestLocale {
     pub fn t(&self, key: LocaleKey) -> String {
         translate(self.0, key)
+    }
+}
+
+impl<S: Send + Sync> FromRequestParts<S> for RequestLocale {
+    type Rejection = Infallible;
+
+    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
+        Ok(parts
+            .extensions
+            .get::<RequestLocale>()
+            .copied()
+            .unwrap_or(RequestLocale(Lang::Id)))
     }
 }
 
