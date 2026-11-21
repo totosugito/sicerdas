@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { useLoginMutation, type LoginResponse } from "@/api/auth/login";
+import { useLoginMutation, type AuthResponseData } from "@/api/auth/login";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { SignInForm } from "@/features/auth/sign-in";
 import { useState } from "react";
@@ -37,7 +37,7 @@ function LoginComponent() {
     loginMutation.mutate(
       { body: data },
       {
-        onSuccess: (response: LoginResponse) => {
+        onSuccess: (response: AuthResponseData) => {
           if (response.success) {
             const defaultPath = isAdminString(response.user.role || "")
               ? APP_CONFIG.path.defaultAdmin

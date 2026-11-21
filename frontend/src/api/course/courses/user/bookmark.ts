@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { BookmarkResponse } from "../types";
+import type { BookmarkResponseT } from "../types";
 
 export const useBookmarkCourse = () => {
   const queryClient = useQueryClient();
@@ -12,7 +12,7 @@ export const useBookmarkCourse = () => {
         url: `${AppApi.course.courses.user.bookmark}/${courseId}`,
         withCredentials: true,
       });
-      return response as BookmarkResponse;
+      return response as BookmarkResponseT;
     },
     onSuccess: (_, courseId) => {
       queryClient.invalidateQueries({ queryKey: ["course-courses-detail", courseId] });

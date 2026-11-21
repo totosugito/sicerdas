@@ -80,4 +80,3 @@ export type PaginatedLectureTextSimpleResponse = CourseLectureTextApiResponse<{
 export type LectureTextDetailResponse = CourseLectureTextApiResponse<LectureTextItem>;
 export type CreateLectureTextResponse = CourseLectureTextApiResponse<LectureTextItem>;
 export type UpdateLectureTextResponse = CourseLectureTextApiResponse<LectureTextItem>;
-export type DeleteLectureTextResponse = BaseResponse;

@@ -1,9 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import type { ListCustomRequest, ListCustomPackagesResponse } from "../types";
+import type { ListCustomQueryParams, CustomPracticeListResponse } from "../types";
 
-export const useListCustomPackages = (params: ListCustomRequest = {}) => {
+export const useListCustomPackages = (params: ListCustomQueryParams = {}) => {
   return useQuery({
     queryKey: ["exam-packages", "user", "list-custom", params],
     queryFn: async () => {
@@ -16,7 +16,7 @@ export const useListCustomPackages = (params: ListCustomRequest = {}) => {
         url: AppApi.exam.packages.user.listCustom + "?" + searchParams.toString(),
         withCredentials: true,
       });
-      return response as ListCustomPackagesResponse;
+      return response as CustomPracticeListResponse;
     },
   });
 };

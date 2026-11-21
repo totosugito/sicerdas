@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { RatingResponse } from "../types";
+import type { RatingResponseT } from "../types";
 
 export const useRateCourse = () => {
   const queryClient = useQueryClient();
@@ -13,7 +13,7 @@ export const useRateCourse = () => {
         body: { rating },
         withCredentials: true,
       });
-      return response as RatingResponse;
+      return response as RatingResponseT;
     },
     onSuccess: (_, { courseId }) => {
       queryClient.invalidateQueries({ queryKey: ["course-courses-detail", courseId] });

@@ -1,7 +1,6 @@
 export type {
   PublicSectionItemT,
   AdminSectionItemT,
-  AdminSectionDetailData,
   AdminSimpleSectionItemT,
   AdminSectionListParams,
   AdminSectionSimpleParams,
@@ -16,16 +15,6 @@ export type {
   PaginatedSectionSimpleListResponse,
   UpdateSectionRequest,
   SectionQuestionItem,
-  ExamPackageSection,
-  SectionDetailItem,
-  ExamPackageSectionResponse,
-  ExamPackageSectionDetailResponse,
-  ListSectionsResponse,
-  ListSectionRequest,
-  CreateSectionRequest,
-  ListSectionSimpleRequest,
-  ListSectionsSimpleResponse,
-  SectionSimpleItem,
 } from "./types";
 
 // Admin exports

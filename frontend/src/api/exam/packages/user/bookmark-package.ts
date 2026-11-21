@@ -1,11 +1,11 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import type { BookmarkPackageRequest, BookmarkPackageResponse } from "../types";
+import type { UpdateBookmarkParams, BookmarkPackageResponse } from "../types";
 
 export const useBookmarkPackage = () => {
   return useMutation({
-    mutationFn: async (body: BookmarkPackageRequest) => {
+    mutationFn: async (body: UpdateBookmarkParams) => {
       const response = await fetchApi({
         method: "POST",
         url: AppApi.exam.packages.user.bookmark,

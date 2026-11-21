@@ -41,7 +41,6 @@ export interface AdminSectionItemT {
   updatedAt: string;
 }
 
-export type AdminSectionDetailData = AdminSectionItemT;
 
 export interface AdminSimpleSectionItemT {
   value: string;
@@ -92,7 +91,7 @@ export interface SectionResponse<T = unknown> extends BaseResponse {
 }
 
 export type PublicListSectionsResponse = SectionResponse<PublicSectionItemT[]>;
-export type AdminSectionDetailResponse = SectionResponse<AdminSectionDetailData>;
+export type AdminSectionDetailResponse = SectionResponse<AdminSectionItemT>;
 export type CreateSectionResponse = SectionResponse<{ id: string }>;
 
 export interface PaginatedSectionListResponse<T> extends BaseResponse {
@@ -123,13 +122,3 @@ export interface SectionQuestionItem {
   order: number;
 }
 
-export type ExamPackageSection = AdminSectionItemT;
-export type SectionDetailItem = AdminSectionDetailData;
-export type ExamPackageSectionResponse = SectionResponse;
-export type ExamPackageSectionDetailResponse = AdminSectionDetailResponse;
-export type ListSectionsResponse = AdminListSectionsResponse;
-export type ListSectionRequest = AdminSectionListParams;
-export type CreateSectionRequest = CreateSectionParams;
-export type ListSectionSimpleRequest = AdminSectionSimpleParams;
-export type ListSectionsSimpleResponse = PaginatedSectionSimpleListResponse;
-export type SectionSimpleItem = AdminSimpleSectionItemT;

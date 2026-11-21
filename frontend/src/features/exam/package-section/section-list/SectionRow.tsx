@@ -3,16 +3,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ExamPackageSection } from "@/api/exam/package-sections";
+import { AdminSectionItemT } from "@/api/exam/package-sections";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 import { LongText } from "@/components/ui/long-text";
 
 interface SectionRowProps {
-  section: ExamPackageSection;
+  section: AdminSectionItemT;
   onDelete: (id: string, title: string) => void;
-  onEdit: (section: ExamPackageSection) => void;
+  onEdit: (section: AdminSectionItemT) => void;
 }
 
 export const SectionRow = ({ section, onDelete, onEdit }: SectionRowProps) => {

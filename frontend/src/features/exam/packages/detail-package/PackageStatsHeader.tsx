@@ -1,12 +1,12 @@
 import React from "react";
-import { ExamPackage } from "@/api/exam/packages";
+import { AdminPackageItem } from "@/api/exam/packages";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Bookmark, Star, Clock, Trophy, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PackageStatsHeaderProps {
-  pkg: ExamPackage;
+  pkg: AdminPackageItem;
   isLoading?: boolean;
 }
 

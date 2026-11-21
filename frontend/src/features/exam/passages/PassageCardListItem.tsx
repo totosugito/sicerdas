@@ -1,5 +1,5 @@
 import React from "react";
-import { ExamPassage } from "@/api/exam/passages";
+import { PassageResponseItemT } from "@/api/exam/passages";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { MoreHorizontal, Pencil, Trash2, BookOpen, Clock, HelpCircle, Hash } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,8 +20,8 @@ import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 
 interface PassageCardListItemProps {
-  passage: ExamPassage;
-  onDelete: (passage: ExamPassage) => void;
+  passage: PassageResponseItemT;
+  onDelete: (passage: PassageResponseItemT) => void;
 }
 
 export function PassageCardListItem({ passage, onDelete }: PassageCardListItemProps) {

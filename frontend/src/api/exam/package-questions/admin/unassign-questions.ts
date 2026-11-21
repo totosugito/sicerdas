@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import type { UnassignPackageQuestionsParams, CommonResponse } from "../types";
+import type { UnassignPackageQuestionsParams, BaseResponse } from "../types";
 
 export const useUnassignPackageQuestions = () => {
   return useMutation({
@@ -13,7 +13,7 @@ export const useUnassignPackageQuestions = () => {
         body,
         withCredentials: true,
       });
-      return response as CommonResponse;
+      return response as BaseResponse;
     },
   });
 };

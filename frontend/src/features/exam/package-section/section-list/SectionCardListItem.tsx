@@ -1,5 +1,5 @@
 import React from "react";
-import { ExamPackageSection } from "@/api/exam/package-sections";
+import { AdminSectionItemT } from "@/api/exam/package-sections";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import {
   MoreHorizontal,
@@ -28,9 +28,9 @@ import { Link } from "@tanstack/react-router";
 import { AppRoute } from "@/constants/app-route";
 
 interface SectionCardListItemProps {
-  section: ExamPackageSection;
-  onEdit: (section: ExamPackageSection) => void;
-  onDelete: (section: ExamPackageSection) => void;
+  section: AdminSectionItemT;
+  onEdit: (section: AdminSectionItemT) => void;
+  onDelete: (section: AdminSectionItemT) => void;
 }
 
 export function SectionCardListItem({ section, onEdit, onDelete }: SectionCardListItemProps) {

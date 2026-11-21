@@ -5,7 +5,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import {
   useCreatePackageSection,
   useUpdatePackageSection,
-  ExamPackageSection,
+  AdminSectionItemT,
 } from "@/api/exam/package-sections";
 import React from "react";
 import { useListPackageSimple } from "@/api/exam/packages";
@@ -19,7 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export type DialogSectionFormProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  section?: ExamPackageSection | null;
+  section?: AdminSectionItemT | null;
   packageId?: string;
   packageIdDisabled?: boolean;
   onSuccess?: () => void;

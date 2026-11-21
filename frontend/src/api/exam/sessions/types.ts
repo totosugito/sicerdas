@@ -136,10 +136,6 @@ export interface AllSessionHistoryItemT extends SessionHistoryItemT {
   packageId: string;
 }
 
-export type QuestionData = QuestionDataT;
-export type PassageData = PassageDataT;
-export type OptionData = OptionDataT;
-export type EvaluationData = EvaluationDataT;
 
 export interface SessionResponse<T> extends BaseResponse {
   data: T;

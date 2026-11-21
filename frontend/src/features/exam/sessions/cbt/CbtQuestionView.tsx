@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { QuestionData, PassageData, OptionData, EvaluationData } from "@/api/exam/sessions";
+import { QuestionDataT, PassageDataT, OptionDataT, EvaluationDataT } from "@/api/exam/sessions";
 import { HtmlViewer } from "@/components/custom/blocknote";
 
 import { ExamSessionMode, EXAM_STATUS_STYLES, EnumExamStatus } from "@/constants/exam-var";
@@ -20,10 +20,10 @@ import { CbtSolutionView } from "./CbtSolutionView";
 import { EnumExamSessionMode } from "@/api/exam/types";
 
 interface CbtQuestionViewProps {
-  question: QuestionData;
-  passage?: PassageData | null;
-  options: OptionData[];
-  evaluation?: EvaluationData | null;
+  question: QuestionDataT;
+  passage?: PassageDataT | null;
+  options: OptionDataT[];
+  evaluation?: EvaluationDataT | null;
   selectedOptionId: string | null;
   mode: ExamSessionMode;
   questionOrder: number;

@@ -3,7 +3,7 @@ import {
   useListPackage,
   useDeletePackage,
   useClonePackage,
-  ExamPackage,
+  AdminPackageItem,
   ListPackagesResponse,
 } from "@/api/exam/packages";
 import { EnumExamType } from "@/api/exam/types";
@@ -102,10 +102,10 @@ function AdminExamPackagesPage() {
   // Dialog & Modal States
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState<ExamPackage | null>(null);
+  const [selectedPackage, setSelectedPackage] = useState<AdminPackageItem | null>(null);
 
   // Handlers
-  const handleDelete = (pkg: ExamPackage) => {
+  const handleDelete = (pkg: AdminPackageItem) => {
     setSelectedPackage(pkg);
     setShowDeleteDialog(true);
   };
@@ -124,7 +124,7 @@ function AdminExamPackagesPage() {
     });
   };
 
-  const handleClone = (pkg: ExamPackage) => {
+  const handleClone = (pkg: AdminPackageItem) => {
     setSelectedPackage(pkg);
     setShowCloneDialog(true);
   };

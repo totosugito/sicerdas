@@ -1,4 +1,4 @@
-import { ExamPackage, ListPackagesResponse } from "@/api/exam/packages";
+import { AdminPackageItem, ListPackagesResponse } from "@/api/exam/packages";
 import {
   DataTable,
   useDataTable,
@@ -35,8 +35,8 @@ interface PackageTableProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
-  onDelete: (pkg: ExamPackage) => void;
-  onClone?: (pkg: ExamPackage) => void;
+  onDelete: (pkg: AdminPackageItem) => void;
+  onClone?: (pkg: AdminPackageItem) => void;
   showPagination?: boolean;
 }
 
@@ -55,8 +55,8 @@ export function PackageTable({
 }: PackageTableProps) {
   const { t } = useAppTranslation();
 
-  const columns: CustomColumnDef<ExamPackage>[] = [
-    createRowNumberColumn<ExamPackage>({
+  const columns: CustomColumnDef<AdminPackageItem>[] = [
+    createRowNumberColumn<AdminPackageItem>({
       id: "no",
       size: 50,
       paginationData: paginationData,

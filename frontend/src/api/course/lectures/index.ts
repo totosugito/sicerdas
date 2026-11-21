@@ -6,7 +6,6 @@ export type {
   LectureDetailResponse,
   CreateLectureResponse,
   UpdateLectureResponse,
-  DeleteLectureResponse,
   CreateLectureRequest,
   UpdateLectureRequest,
 } from "./types";

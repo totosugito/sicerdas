@@ -1,4 +1,4 @@
-import { ExamPackageSection } from "@/api/exam/package-sections";
+import { AdminSectionItemT } from "@/api/exam/package-sections";
 import {
   DndContext,
   closestCenter,
@@ -13,11 +13,11 @@ import { ChevronDown, ChevronRight, FolderRoot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface SectionListProps {
-  items: ExamPackageSection[];
+  items: AdminSectionItemT[];
   sensors: SensorDescriptor<SensorOptions>[];
   onDragEnd: (event: DragEndEvent) => void;
   onDelete: (id: string, title: string) => void;
-  onEdit: (section: ExamPackageSection) => void;
+  onEdit: (section: AdminSectionItemT) => void;
 }
 
 export const SectionList = ({ items, sensors, onDragEnd, onDelete, onEdit }: SectionListProps) => {
@@ -101,7 +101,7 @@ export const SectionList = ({ items, sensors, onDragEnd, onDelete, onEdit }: Sec
               );
             }
 
-            const section = entry.data as ExamPackageSection;
+            const section = entry.data as AdminSectionItemT;
             const groupName = section.groupName || "";
             const isHidden = groupName && collapsedGroups[groupName];
 

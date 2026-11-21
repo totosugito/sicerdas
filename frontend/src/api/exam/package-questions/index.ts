@@ -5,13 +5,9 @@ export type {
   UnassignPackageQuestionsParams,
   SyncPackageQuestionsOrderParams,
   AssignResult,
-  CommonResponse,
+  BaseResponse,
   ListPackageQuestionsResponse,
   AssignPackageQuestionsResponse,
-  ListPackageQuestionsRequest,
-  AssignPackageQuestionsRequest,
-  UnassignPackageQuestionsRequest,
-  SyncPackageQuestionsOrderRequest,
 } from "./types";
 
 export { useAssignPackageQuestions } from "./admin/assign-questions";

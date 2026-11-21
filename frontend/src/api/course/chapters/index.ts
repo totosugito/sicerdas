@@ -6,7 +6,6 @@ export type {
   ChapterDetailResponse,
   CreateChapterResponse,
   UpdateChapterResponse,
-  DeleteChapterResponse,
   CreateChapterRequest,
   UpdateChapterRequest,
 } from "./types";

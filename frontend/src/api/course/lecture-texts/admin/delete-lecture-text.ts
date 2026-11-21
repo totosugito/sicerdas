@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
-import type { DeleteLectureTextResponse } from "../types";
+import type { BaseResponse } from "@/api/types";
 
 export function useDeleteLectureText() {
   return useMutation({
@@ -11,7 +11,7 @@ export function useDeleteLectureText() {
         url: AppApi.course.lectureTexts.admin.delete.replace(":id", id),
         withCredentials: true,
       });
-      return response as DeleteLectureTextResponse;
+      return response as BaseResponse;
     },
   });
 }

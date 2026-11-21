@@ -61,7 +61,6 @@ export interface PublicPackageItem {
   userInteraction: PackageUserInteraction | null;
 }
 
-export type PublicPackageDetailData = PublicPackageItem;
 
 export interface AdminPackageItem {
   id: string;
@@ -88,7 +87,6 @@ export interface AdminPackageItem {
   stats: PackageStatsInfo;
 }
 
-export type AdminPackageDetailData = AdminPackageItem;
 
 export interface AdminSimplePackageItemT {
   value: string;
@@ -245,10 +243,6 @@ export interface FilterParamsCategoryData {
   }[];
 }
 
-export type GenerateCustomRequest = GenerateCustomParams;
-export type ListCustomRequest = ListCustomQueryParams;
-export type BookmarkPackageRequest = UpdateBookmarkParams;
-export type RatePackageRequest = UpdateRatingParams;
 export interface PackageFormValues {
   categoryId: string;
   title: string;
@@ -262,21 +256,18 @@ export interface PackageFormValues {
   thumbnail?: string | null;
   newThumbnailFile?: File | null;
 }
-export type ListCustomPackagesResponse = CustomPracticeListResponse;
 
 export interface ExamPackageResponse<T = unknown> extends BaseResponse {
   data: T;
 }
 
-export type ExamPackage = AdminPackageItem;
-export type PublicExamPackage = PublicPackageItem;
 
-export type ExamPackageDetailResponse = ExamPackageResponse<AdminPackageDetailData>;
-export type PublicDetailPackageResponse = ExamPackageResponse<PublicPackageDetailData>;
+export type ExamPackageDetailResponse = ExamPackageResponse<AdminPackageItem>;
+export type PublicDetailPackageResponse = ExamPackageResponse<PublicPackageItem>;
 export type ExamFilterParamsResponse = ExamPackageResponse<FilterParamsCategoryData[]>;
 export type BookmarkPackageResponse = ExamPackageResponse<BookmarkResponseDataT>;
 export type RatePackageResponse = ExamPackageResponse<RatingResponseDataT>;
-export type DetailPackageResponse = ExamPackageResponse<AdminPackageDetailData>;
+export type DetailPackageResponse = ExamPackageResponse<AdminPackageItem>;
 export type CreatePackageResponse = ExamPackageResponse<{ id: string }>;
 export type ThumbnailResponse = ExamPackageResponse<ThumbnailResponseDataT>;
 export type GenerateCustomResponse = ExamPackageResponse<{ packageId: string; sectionId: string }>;

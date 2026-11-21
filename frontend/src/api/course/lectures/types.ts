@@ -45,7 +45,6 @@ export type LectureListResponse = CourseLectureApiResponse<LectureItem[]>;
 export type LectureDetailResponse = CourseLectureApiResponse<LectureItem>;
 export type CreateLectureResponse = CourseLectureApiResponse<LectureItem>;
 export type UpdateLectureResponse = CourseLectureApiResponse<LectureItem>;
-export type DeleteLectureResponse = BaseResponse;
 
 export interface CreateLectureRequest extends AdminCreateLectureInput {}
 

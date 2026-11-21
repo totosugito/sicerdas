@@ -10,7 +10,6 @@ export type {
   AdminUpdateLectureTextInput,
   CreateLectureTextResponse,
   UpdateLectureTextResponse,
-  DeleteLectureTextResponse,
 } from "./types";
 
 // Admin exports

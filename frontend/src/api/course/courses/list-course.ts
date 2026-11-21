@@ -1,9 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import type { PublicCourseListParams, PaginatedCourseListResponse } from "./types";
+import type { CourseListQueryParams, PaginatedCourseListResponse } from "./types";
 
-export const useListCourseClient = (params: PublicCourseListParams) => {
+export const useListCourseClient = (params: CourseListQueryParams) => {
   return useQuery({
     queryKey: ["course-courses-list", params],
     queryFn: async () => {

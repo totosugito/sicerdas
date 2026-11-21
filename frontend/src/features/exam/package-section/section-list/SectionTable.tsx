@@ -1,4 +1,4 @@
-import { ExamPackageSection, ListSectionsResponse } from "@/api/exam/package-sections";
+import { AdminSectionItemT, AdminListSectionsResponse } from "@/api/exam/package-sections";
 import {
   DataTable,
   useDataTable,
@@ -28,7 +28,7 @@ import { AppRoute } from "@/constants/app-route";
 import { LongText } from "@/components/ui/long-text";
 
 interface SectionTableProps {
-  data: ListSectionsResponse;
+  data: AdminListSectionsResponse;
   isLoading: boolean;
   paginationData: PaginationData;
   onPaginationChange?: (pagination: { page: number; limit: number }) => void;
@@ -36,8 +36,8 @@ interface SectionTableProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
-  onDelete: (section: ExamPackageSection) => void;
-  onEdit: (section: ExamPackageSection) => void;
+  onDelete: (section: AdminSectionItemT) => void;
+  onEdit: (section: AdminSectionItemT) => void;
   showPagination?: boolean;
   showToolbar?: boolean;
 }
@@ -58,8 +58,8 @@ export function SectionTable({
 }: SectionTableProps) {
   const { t } = useAppTranslation();
 
-  const columns: CustomColumnDef<ExamPackageSection>[] = [
-    createRowNumberColumn<ExamPackageSection>({
+  const columns: CustomColumnDef<AdminSectionItemT>[] = [
+    createRowNumberColumn<AdminSectionItemT>({
       id: "no",
       size: 50,
       paginationData: paginationData,

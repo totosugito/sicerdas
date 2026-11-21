@@ -118,7 +118,7 @@ frontend/src/
    - Use `BaseResponse` and `PaginationMeta` from `@/api/types` (`frontend/src/api/types.ts`).
 3. **Define Endpoint Types Once, Re-export via `types.ts`**
    - Define endpoint-specific request/response interfaces directly in `frontend/src/api/<domain>/<endpoint>.ts` right next to `fetchApi(...)`.
-   - Use `BaseResponse` directly for endpoints that only return `{ success, message }` (avoid creating redundant type aliases like `type FooResponse = BaseResponse`).
+   - Use `BaseResponse` directly for endpoints that only return `{ success, message }` — never create redundant type aliases (such as `type FooResponse = BaseResponse`, `type FooRequest = FooParams`, or `type FooItem = FooItemT`).
    - Keep shared domain DTOs/enums (e.g., `AuthUser`, `EnumUserRole`, `AdminCoinItem`) in `frontend/src/api/<domain>/types.ts`, and re-export the endpoint types from the files in that folder (`export type { ... } from "./<endpoint>"`) so routes/components have a single clean domain import path.
 4. **Verify Rust Parity**
    - Always cross-check field names (`camelCase`), nullability (`Option<T>` → `T | null`), and status/response shapes against `backend-rust/src/modules/<domain>/types.rs`.

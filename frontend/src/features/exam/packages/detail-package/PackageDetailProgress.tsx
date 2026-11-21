@@ -1,4 +1,4 @@
-import type { PublicPackageDetailData } from "@/api/exam/packages";
+import type { PublicPackageItem } from "@/api/exam/packages";
 import { EnumExamPackageUserStatus } from "@/api/exam/types";
 import { Progress } from "@/components/ui/progress";
 import { useAppTranslation } from "@/lib/i18n-typed";
@@ -6,7 +6,7 @@ import { LayoutGrid, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PackageDetailProgressProps {
-  pkg: PublicPackageDetailData;
+  pkg: PublicPackageItem;
 }
 
 export const PackageDetailProgress = ({ pkg }: PackageDetailProgressProps) => {

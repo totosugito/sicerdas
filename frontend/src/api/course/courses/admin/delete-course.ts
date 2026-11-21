@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useMutation } from "@tanstack/react-query";
-import type { DeleteCourseResponse } from "../types";
+import type { BaseResponse } from "../types";
 
 export const useDeleteCourse = () => {
   return useMutation({
@@ -12,7 +12,7 @@ export const useDeleteCourse = () => {
         url: AppApi.course.courses.admin.delete.replace(":id", id),
         withCredentials: true,
       });
-      return response as DeleteCourseResponse;
+      return response as BaseResponse;
     },
   });
 };

@@ -45,7 +45,6 @@ export interface PassageSimpleListParams {
   limit?: number;
 }
 
-export type ExamPassage = PassageResponseItemT;
 
 export interface PassageFormValues {
   title?: string;

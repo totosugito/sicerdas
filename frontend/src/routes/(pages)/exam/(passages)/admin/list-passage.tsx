@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   useListPassage,
   useDeletePassage,
-  ExamPassage,
+  PassageResponseItemT,
   ListPassagesResponse,
 } from "@/api/exam/passages";
 import { useQueryClient } from "@tanstack/react-query";
@@ -97,10 +97,10 @@ function AdminExamPassagesPage() {
 
   // Dialog & Modal States
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [selectedPassage, setSelectedPassage] = useState<ExamPassage | null>(null);
+  const [selectedPassage, setSelectedPassage] = useState<PassageResponseItemT | null>(null);
 
   // Handlers
-  const handleDelete = (passage: ExamPassage) => {
+  const handleDelete = (passage: PassageResponseItemT) => {
     setSelectedPassage(passage);
     setShowDeleteDialog(true);
   };

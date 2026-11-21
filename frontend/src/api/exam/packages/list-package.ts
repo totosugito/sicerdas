@@ -1,7 +1,7 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import type { PublicExamPackage, PaginationMeta } from "./types";
+import type { PublicPackageItem, PaginationMeta } from "./types";
 
 export interface ListPackageClientRequest {
   categoryId?: string;
@@ -18,7 +18,7 @@ export interface ListPackagesClientResponse {
   success: boolean;
   message: string;
   data: {
-    items: PublicExamPackage[];
+    items: PublicPackageItem[];
     meta: PaginationMeta;
   };
 }

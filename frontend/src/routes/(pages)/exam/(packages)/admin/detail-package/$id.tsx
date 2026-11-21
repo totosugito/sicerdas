@@ -14,7 +14,7 @@ import {
   useListPackageSection,
   useDeletePackageSection,
   useUpdatePackageSection,
-  ExamPackageSection,
+  AdminSectionItemT,
 } from "@/api/exam/package-sections";
 import { useDetailPackage } from "@/api/exam/packages";
 import { PackageStatsHeader } from "@/features/exam/packages/detail-package/PackageStatsHeader";
@@ -44,14 +44,14 @@ function DetailPackagePage() {
   const deleteMutation = useDeletePackageSection();
   const updateMutation = useUpdatePackageSection();
 
-  const [items, setItems] = useState<ExamPackageSection[]>([]);
+  const [items, setItems] = useState<AdminSectionItemT[]>([]);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [sectionToDelete, setSectionToDelete] = useState<{ id: string; title: string } | null>(
     null,
   );
 
   const [showFormModal, setShowFormModal] = useState(false);
-  const [selectedSection, setSelectedSection] = useState<ExamPackageSection | null>(null);
+  const [selectedSection, setSelectedSection] = useState<AdminSectionItemT | null>(null);
 
   useEffect(() => {
     if (data?.data?.items) {
@@ -72,7 +72,7 @@ function DetailPackagePage() {
     setShowDeleteDialog(true);
   };
 
-  const handleEdit = (section: ExamPackageSection) => {
+  const handleEdit = (section: AdminSectionItemT) => {
     setSelectedSection(section);
     setShowFormModal(true);
   };

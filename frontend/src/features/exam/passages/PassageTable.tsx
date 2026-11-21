@@ -1,4 +1,4 @@
-import { ExamPassage, ListPassagesResponse } from "@/api/exam/passages";
+import { PassageResponseItemT, ListPassagesResponse } from "@/api/exam/passages";
 import {
   DataTable,
   useDataTable,
@@ -35,7 +35,7 @@ interface PassageTableProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: string, sortOrder: "asc" | "desc") => void;
-  onDelete: (passage: ExamPassage) => void;
+  onDelete: (passage: PassageResponseItemT) => void;
   showPagination?: boolean;
   showToolbar?: boolean;
 }
@@ -55,8 +55,8 @@ export function PassageTable({
 }: PassageTableProps) {
   const { t } = useAppTranslation();
 
-  const columns: CustomColumnDef<ExamPassage>[] = [
-    createRowNumberColumn<ExamPassage>({
+  const columns: CustomColumnDef<PassageResponseItemT>[] = [
+    createRowNumberColumn<PassageResponseItemT>({
       id: "no",
       size: 50,
       paginationData: paginationData,

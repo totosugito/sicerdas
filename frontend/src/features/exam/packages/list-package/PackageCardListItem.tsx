@@ -1,5 +1,5 @@
 import React from "react";
-import { ExamPackage } from "@/api/exam/packages";
+import { AdminPackageItem } from "@/api/exam/packages";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ActiveStatusBadge, ClonedBadge, NewBadge } from "@/features/components";
 import { Button } from "@/components/ui/button";
@@ -32,9 +32,9 @@ import { string_to_locale_date } from "@/lib/my-utils";
 import { EnumExamType } from "@/api/exam/types";
 
 interface PackageCardListItemProps {
-  pkg: ExamPackage;
-  onDelete: (pkg: ExamPackage) => void;
-  onClone?: (pkg: ExamPackage) => void;
+  pkg: AdminPackageItem;
+  onDelete: (pkg: AdminPackageItem) => void;
+  onClone?: (pkg: AdminPackageItem) => void;
 }
 
 export function PackageCardListItem({ pkg, onDelete, onClone }: PackageCardListItemProps) {

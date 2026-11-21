@@ -34,7 +34,6 @@ export type ChapterListResponse = CourseChapterApiResponse<ChapterItem[]>;
 export type ChapterDetailResponse = CourseChapterApiResponse<ChapterItem>;
 export type CreateChapterResponse = CourseChapterApiResponse<ChapterItem>;
 export type UpdateChapterResponse = CourseChapterApiResponse<ChapterItem>;
-export type DeleteChapterResponse = BaseResponse;
 
 export interface CreateChapterRequest extends AdminCreateChapterInput {}
 

@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEmailOtpForgetPasswordMutation } from "@/api/auth/email-otp-forget-password";
 import type {
   EmailOtpForgetPasswordRequest,
-  EmailOtpForgetPasswordResponse,
   BaseResponse,
 } from "@/api/auth/types";
 
@@ -36,7 +35,7 @@ function ForgetPasswordComponent() {
         body: data,
       },
       {
-        onSuccess: (responseData: EmailOtpForgetPasswordResponse) => {
+        onSuccess: (responseData: BaseResponse) => {
           const message = responseData?.message || t(($) => $.auth.forgetPassword.successMessage);
           setSuccessMessage(message);
           setIsSuccess(true);

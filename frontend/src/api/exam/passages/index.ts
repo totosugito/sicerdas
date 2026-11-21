@@ -1,7 +1,6 @@
 export {
-    type ExamPassage,
-    type PassageFormValues,
     type PassageResponseItemT,
+    type PassageFormValues,
     type ListPassagesResponse,
     type ListPassagesSimpleResponse,
     type PassageDetailResponse,

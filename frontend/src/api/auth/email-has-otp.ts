@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
-import type { EmailHasOtpResponse } from "./types";
+import type { EmailHasOtpResponseData } from "./types";
 
 export const useEmailHasOtpQuery = (email: string | undefined) => {
   return useQuery({
@@ -17,7 +17,7 @@ export const useEmailHasOtpQuery = (email: string | undefined) => {
         body: { email },
         headers: { "Content-Type": "application/json" },
       });
-      return response as EmailHasOtpResponse;
+      return response as EmailHasOtpResponseData;
     },
     enabled: !!email, // Only run the query if email exists
     retry: false, // Don't retry on failure

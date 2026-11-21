@@ -53,7 +53,6 @@ export interface QuestionResponse<T = unknown> extends BaseResponse {
   data: T;
 }
 
-export type CommonResponse = BaseResponse;
 
 export type ListPackageQuestionsResponse = QuestionResponse<{
   items: PackageQuestionItemT[];
@@ -62,7 +61,3 @@ export type ListPackageQuestionsResponse = QuestionResponse<{
 
 export type AssignPackageQuestionsResponse = QuestionResponse<AssignResult | undefined>;
 
-export type ListPackageQuestionsRequest = PackageQuestionListParams;
-export type AssignPackageQuestionsRequest = AssignPackageQuestionsParams;
-export type UnassignPackageQuestionsRequest = UnassignPackageQuestionsParams;
-export type SyncPackageQuestionsOrderRequest = SyncPackageQuestionsOrderParams;

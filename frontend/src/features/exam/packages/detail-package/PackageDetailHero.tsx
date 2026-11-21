@@ -1,4 +1,4 @@
-import type { PublicPackageDetailData } from "@/api/exam/packages";
+import type { PublicPackageItem } from "@/api/exam/packages";
 import { NewBadge, GradeBadge, CategoryBadge } from "@/features/components";
 import { Button } from "@/components/ui/button";
 import { useAppTranslation } from "@/lib/i18n-typed";
@@ -8,7 +8,7 @@ import { Heart, Star, ImageOff } from "lucide-react";
 import { useState } from "react";
 
 interface PackageDetailHeroProps {
-  pkg: PublicPackageDetailData;
+  pkg: PublicPackageItem;
   isFavorite: boolean;
   onToggleFavorite: () => void;
   onRatingClick: () => void;

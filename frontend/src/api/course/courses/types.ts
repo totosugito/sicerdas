@@ -161,10 +161,7 @@ export type CourseDetailResponse = CourseApiResponse<CourseItem>;
 export type CourseUserDetailResponse = CourseApiResponse<CourseUserDetail>;
 export type CreateCourseResponse = CourseApiResponse<CourseItem>;
 export type UpdateCourseResponse = CourseApiResponse<CourseItem>;
-export type DeleteCourseResponse = BaseResponse;
 export type ThumbnailResponse = CourseApiResponse<ThumbnailResponseDataT>;
-export type RatingResponse = RatingResponseT;
-export type BookmarkResponse = BookmarkResponseT;
 
 export interface PaginatedCourseListResponse extends BaseResponse {
   data: {
@@ -173,8 +170,6 @@ export interface PaginatedCourseListResponse extends BaseResponse {
   };
 }
 
-export type AdminCourseListParams = CourseListQueryParams;
-export type PublicCourseListParams = CourseListQueryParams;
 
 export interface UpdateCourseRequest extends AdminUpdateCourseInput {
   id: string;

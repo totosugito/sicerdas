@@ -4,7 +4,7 @@ import {
   useEmailOtpForgetPasswordMutation,
   useEmailHasOtpQuery,
 } from "@/api/auth";
-import type { EmailOtpVerifyForgetPasswordResponse, BaseResponse } from "@/api/auth/types";
+import type { EmailOtpVerifyForgetPasswordResponseData, BaseResponse } from "@/api/auth/types";
 
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { ShieldCheck, Timer, Loader2, RotateCcw } from "lucide-react";
@@ -98,7 +98,7 @@ function OtpVerificationComponent() {
     emailOtpVerifyForgetPasswordMutation.mutate(
       { body: { email: search.email || "", otp: data.otp } },
       {
-        onSuccess: (response: EmailOtpVerifyForgetPasswordResponse) => {
+        onSuccess: (response: EmailOtpVerifyForgetPasswordResponseData) => {
           if (response?.data?.valid) {
             navigate({
               to: AppRoute.auth.otpResetPassword.url,

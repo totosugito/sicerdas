@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
-import type { EmailOtpVerifyForgetPasswordRequest, EmailOtpVerifyForgetPasswordResponse, BaseResponse } from "./types";
+import type { EmailOtpVerifyForgetPasswordRequest, EmailOtpVerifyForgetPasswordResponseData, BaseResponse } from "./types";
 
 
 export const useEmailOtpVerifyForgetPasswordMutation = () => {
-  return useMutation<EmailOtpVerifyForgetPasswordResponse, BaseResponse, { body: EmailOtpVerifyForgetPasswordRequest }>({
+  return useMutation<EmailOtpVerifyForgetPasswordResponseData, BaseResponse, { body: EmailOtpVerifyForgetPasswordRequest }>({
     mutationKey: ["emailOtpVerifyForgetPassword"],
     mutationFn: async ({ body }: { body: EmailOtpVerifyForgetPasswordRequest }) => {
       const response = await fetchApi({
@@ -14,7 +14,7 @@ export const useEmailOtpVerifyForgetPasswordMutation = () => {
         body: body,
         headers: { "Content-Type": "application/json" },
       });
-      return response as EmailOtpVerifyForgetPasswordResponse;
+      return response as EmailOtpVerifyForgetPasswordResponseData;
     },
   });
 };

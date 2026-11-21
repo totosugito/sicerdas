@@ -4,18 +4,18 @@ import { fetchApi } from "@/lib/fetch-api";
 import { AppApi } from "@/constants/app-api";
 import { AuthProps, LoginFormValues } from "@/types/auth";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import type { LoginResponse, BaseResponse } from "./types";
+import type { AuthResponseData, BaseResponse } from "./types";
 
-export type { LoginResponse };
+export type { AuthResponseData };
 
 export const useLoginMutation = () => {
   const auth = useAuth();
 
   const { t } = useAppTranslation();
-  return useMutation<LoginResponse, BaseResponse, { body: LoginFormValues | FormData }>({
+  return useMutation<AuthResponseData, BaseResponse, { body: LoginFormValues | FormData }>({
     mutationKey: ["login"],
     mutationFn: async ({ body }: { body: LoginFormValues | FormData }) => {
-      const response: LoginResponse = await fetchApi({
+      const response: AuthResponseData = await fetchApi({
         method: "POST",
         url: AppApi.auth.signIn,
         body: body,

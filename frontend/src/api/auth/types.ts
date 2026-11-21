@@ -52,8 +52,3 @@ export interface AuthResponseData {
 
 export type { BaseResponse };
 
-export type EmailOtpForgetPasswordResponse = BaseResponse;
-export type EmailOtpVerifyForgetPasswordResponse = EmailOtpVerifyForgetPasswordResponseData;
-export type EmailHasOtpResponse = EmailHasOtpResponseData;
-export type EmailOtpResetPasswordResponse = BaseResponse;
-export type LoginResponse = AuthResponseData;

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
-import { OptionData, EvaluationData } from "@/api/exam/sessions";
+import { OptionDataT, EvaluationDataT } from "@/api/exam/sessions";
 import { useCbtStore } from "@/stores/useCbtStore";
 import { cn } from "@/lib/utils";
 import { useAppTranslation } from "@/lib/i18n-typed";
@@ -10,9 +10,9 @@ import { ExamSessionMode, EnumExamStatus, EXAM_STATUS_STYLES } from "@/constants
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 interface CbtAnswerPadProps {
-  options: OptionData[];
+  options: OptionDataT[];
   selectedOptionId: string | null;
-  evaluation?: EvaluationData | null;
+  evaluation?: EvaluationDataT | null;
   mode: ExamSessionMode;
   hasAnswered: boolean;
   onOptionSelect: (optionId: string) => void;

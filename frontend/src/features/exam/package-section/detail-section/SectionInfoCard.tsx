@@ -1,4 +1,4 @@
-import { SectionDetailItem } from "@/api/exam/package-sections/types";
+import { AdminSectionItemT } from "@/api/exam/package-sections/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Layers, Calendar, ArrowRight } from "lucide-react";
@@ -6,7 +6,7 @@ import { useAppTranslation } from "@/lib/i18n-typed";
 import { string_to_locale_date } from "@/lib/my-utils";
 
 interface SectionInfoCardProps {
-  section: SectionDetailItem;
+  section: AdminSectionItemT;
 }
 
 export function SectionInfoCard({ section }: SectionInfoCardProps) {

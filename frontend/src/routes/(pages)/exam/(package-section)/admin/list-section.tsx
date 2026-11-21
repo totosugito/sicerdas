@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   useListPackageSection,
   useDeletePackageSection,
-  ExamPackageSection,
-  ListSectionsResponse,
+  AdminSectionItemT,
+  AdminListSectionsResponse,
 } from "@/api/exam/package-sections";
 import { useQueryClient } from "@tanstack/react-query";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
@@ -101,7 +101,7 @@ function AdminExamPackageSectionsPage() {
   // Dialog & Modal States
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
-  const [selectedSection, setSelectedSection] = useState<ExamPackageSection | null>(null);
+  const [selectedSection, setSelectedSection] = useState<AdminSectionItemT | null>(null);
 
   // Handlers
   const handleAdd = () => {
@@ -109,12 +109,12 @@ function AdminExamPackageSectionsPage() {
     setShowFormModal(true);
   };
 
-  const handleEdit = (section: ExamPackageSection) => {
+  const handleEdit = (section: AdminSectionItemT) => {
     setSelectedSection(section);
     setShowFormModal(true);
   };
 
-  const handleDelete = (section: ExamPackageSection) => {
+  const handleDelete = (section: AdminSectionItemT) => {
     setSelectedSection(section);
     setShowDeleteDialog(true);
   };
@@ -213,7 +213,7 @@ function AdminExamPackageSectionsPage() {
             />
           ) : viewMode === "table" ? (
             <SectionTable
-              data={data as ListSectionsResponse}
+              data={data as AdminListSectionsResponse}
               isLoading={isLoading}
               paginationData={data?.data.meta as PaginationData}
               setSearch={(newSearch) => {

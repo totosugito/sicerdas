@@ -1,9 +1,9 @@
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
 import { useQuery } from "@tanstack/react-query";
-import type { ExamPackageResponse, PublicPackageDetailData } from "./types";
+import type { ExamPackageResponse, PublicPackageItem } from "./types";
 
-export type PublicDetailPackageResponse = ExamPackageResponse<PublicPackageDetailData>;
+export type PublicDetailPackageResponse = ExamPackageResponse<PublicPackageItem>;
 
 export interface DetailPackageClientRequest {
   id: string;

@@ -1,11 +1,11 @@
-import type { PublicPackageDetailData } from "@/api/exam/packages";
+import type { PublicPackageItem } from "@/api/exam/packages";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { Clock, HelpCircle, LayoutGrid, LucideIcon, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { string_to_locale_date } from "@/lib/my-utils";
 
 interface PackageDetailInfoProps {
-  pkg: PublicPackageDetailData;
+  pkg: PublicPackageItem;
 }
 
 const InfoCard = ({

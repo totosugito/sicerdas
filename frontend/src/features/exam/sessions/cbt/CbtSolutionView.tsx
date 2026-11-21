@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Sparkles, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { EvaluationData } from "@/api/exam/sessions";
+import { EvaluationDataT } from "@/api/exam/sessions";
 import { HtmlViewer } from "@/components/custom/blocknote";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { cn } from "@/lib/utils";
 
 interface CbtSolutionViewProps {
-  evaluation: EvaluationData;
+  evaluation: EvaluationDataT;
   showSolution: boolean;
   onHide?: () => void;
   textSizeClass?: string;
