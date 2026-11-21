@@ -10,7 +10,7 @@ This directory contains the multi-phase specification for migrating the `sicerda
 - **Caching, Storage & Media:** `moka` (`0.12`, `future` single-flight TTL cache), `aws-config` + `aws-sdk-s3` (S3/R2 + local `/uploads/`), `image` (`0.25`, `jpeg`, `png`, `webp`) replacing `sharp`.
 - **Serialization, Config, i18n & Logging:** `serde` + `serde_json` (`preserve_order`, `raw_value`), `chrono` / `time`, `uuid`, `dotenvy`, `build.rs` compile-time typed `LocaleKey` (`locales/id/*.json` default), `tracing` + `tracing-subscriber` + `tracing-appender`.
 
-See [library-mapping.md](./library-mapping.md) for the complete package-by-package replacement table.
+See [library-mapping.md](./library-mapping.md) for the complete package-by-package replacement table and [parity-report.md](./parity-report.md) for the 72-endpoint Fastify vs Rust parity test table.
 
 ---
 
