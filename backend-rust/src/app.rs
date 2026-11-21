@@ -118,6 +118,7 @@ pub fn build_app(state: AppState) -> Router {
 
 #[derive(Serialize)]
 struct NotFoundBody {
+    success: bool,
     message: &'static str,
 }
 
@@ -125,6 +126,7 @@ async fn not_found_handler() -> impl IntoResponse {
     (
         StatusCode::NOT_FOUND,
         Json(NotFoundBody {
+            success: false,
             message: "Not Found",
         }),
     )

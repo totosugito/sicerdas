@@ -30,6 +30,7 @@
 ---
 
 ## 4. Production Cutover Checklist
-- [ ] `cd backend-rust && cargo build --release && cargo test` passes with zero errors.
+- [x] `cd backend-rust && cargo build --release && cargo test` passes with zero errors (`4 passed; 0 failed`).
+- [x] `/uploads/` static serving (`Cross-Origin-Resource-Policy: cross-origin`), `{ success: false, message }` 404 normalization, cross-phase smoke parity, and `frontend/` `bun run build` verified.
 - [ ] Systemd/process manager switches port `5550` from `backend/` to `backend-rust` binary, and daily cron invokes `backend-rust` job subcommands.
 - [ ] Monitor `logs/` for `Slow request detected` or `5xx` errors for 24–48 hours; keep `backend/` as cold rollback until verified.
