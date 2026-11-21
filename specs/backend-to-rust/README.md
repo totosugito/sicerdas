@@ -75,3 +75,28 @@ Run end-to-end checks against the real frontend using **one long-lived Chrome** 
    - REA has no file-upload action: test avatar/thumbnail uploads with `curl -b <cookiejar> -X PATCH .../avatar -F image=@file.png`, then reload the page in Chrome to verify the image renders.
    - Verify mutations in PostgreSQL directly (e.g. `users_sessions`, `exam_sessions`, `course_enrollments`), not only in the UI.
    - Reverse any account changes made during testing (e.g., change password back, clean up throwaway test rows).
+
+---
+
+## Database Restore & High-Volume Job Indexes
+When restoring a fresh VPS dump locally (`backup/sicerdas_latest.sql.gz`):
+
+1. **Drop/recreate & restore:**
+   ```bash
+   PGPASSWORD=a psql -h localhost -U postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'sicerdas' AND pid <> pg_backend_pid();"
+   PGPASSWORD=a psql -h localhost -U postgres -c "DROP DATABASE IF EXISTS sicerdas;"
+   PGPASSWORD=a psql -h localhost -U postgres -c "CREATE DATABASE sicerdas;"
+   gunzip -c backup/sicerdas_latest.sql.gz | PGPASSWORD=a psql -h localhost -U postgres -d sicerdas -q
+   ```
+2. **Push Drizzle schema (use a PTY if running from a non-interactive/agent shell):**
+   `drizzle-kit push --force` prompts interactively for new enums (such as `stats_period_type`) and requires a real TTY (`process.stdin.isTTY`).
+   - **Interactive terminal:** `cd backend && NODE_ENV=development bunx drizzle-kit push --force` (press `Enter` on enum prompt).
+   - **Non-interactive / agent shell:** Wrap in Python `pty.openpty()` sending `\r` on prompts (~2.5s).
+3. **Apply high-volume job indexes:**
+   ```bash
+   PGPASSWORD=a psql -h localhost -U postgres -d sicerdas -f specs/backend-to-rust/migrations/0001_high_volume_job_indexes.sql
+   ```
+4. **Run daily jobs:**
+   ```bash
+   cd backend-rust && ./target/debug/sicerdas-backend job daily-all
+   ```

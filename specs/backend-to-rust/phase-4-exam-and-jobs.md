@@ -50,7 +50,7 @@
 ---
 
 ## 3. Daily Scheduled Jobs (`backend-rust/src/jobs/`)
-Ported all 8 daily jobs as `backend-rust` CLI subcommands (`backend-rust job <name>` or `backend-rust job daily-all`) with `pg_try_advisory_lock` single-flight locking, execution audit logging to `job_logs` (`group='daily'`, `status='running'|'success'|'failed'`, `duration_ms`, `error`), and high-volume indexes in [0001_high_volume_job_indexes.sql](file:///home/toto/Documents/sicerdas/backend-rust/migrations/0001_high_volume_job_indexes.sql):
+Ported all 8 daily jobs as `backend-rust` CLI subcommands (`backend-rust job <name>` or `backend-rust job daily-all`) with `pg_try_advisory_lock` single-flight locking, execution audit logging to `job_logs` (`group='daily'`, `status='running'|'success'|'failed'`, `duration_ms`, `error`), and high-volume indexes in [0001_high_volume_job_indexes.sql](./migrations/0001_high_volume_job_indexes.sql):
 1. `archive-guest-events`: Per-batch (`5,000` rows) atomic `DELETE ... FOR UPDATE SKIP LOCKED RETURNING` rolling guest (`user_id IS NULL`) book view/download counts older than 30 days into `book_event_stats.legacy_stats` (for 10M+ rows, monthly range partitioning on `app_event_history.created_at` is recommended).
 2. `clean-stale-sessions` (`EXAM_STALE_SESSION_DAYS`, default 30): Marks stale `in_progress` exam sessions as `abandoned` in `FOR UPDATE SKIP LOCKED` batches.
 3. `compute-course-stats`: Reconciles `course_chapters`, `courses`, and `course_stats` counters via SQL CTEs with `IS DISTINCT FROM` guards.
@@ -66,3 +66,12 @@ Ported all 8 daily jobs as `backend-rust` CLI subcommands (`backend-rust job <na
 - [x] All 72 active `exam/*` routes pass parity checks, including full exam lifecycle (`start` → `question` → `save-answer` → `submit` → `details` → `user-stats` / `leaderboard`).
 - [x] All 8 daily jobs run cleanly via `backend-rust` CLI (`job daily-all`) and record execution telemetry in `job_logs`.
 - [x] `frontend/src/api/exam/` decoupled from `backend/*` imports (`tsc --noEmit` 0 errors).
+
+---
+
+## 5. Fresh VPS Restore & Migration Runbook (Non-Interactive PTY)
+When restoring a fresh VPS dump locally before running `backend-rust`, `drizzle-kit push --force` prompts interactively for new enums (such as `stats_period_type`) and requires a real TTY (`process.stdin.isTTY`). In non-interactive/agent shells, run it inside a PTY (e.g. Python `pty.openpty()`) so it resolves automatically without hanging:
+1. Terminate connections, drop/recreate `sicerdas`, and restore `backup/sicerdas_latest.sql.gz`.
+2. Run `NODE_ENV=development bunx drizzle-kit push --force` inside a PTY (`pty.openpty()`, sending `\r` on prompts).
+3. Apply `specs/backend-to-rust/migrations/0001_high_volume_job_indexes.sql`.
+4. Run `./target/debug/sicerdas-backend job daily-all`.
