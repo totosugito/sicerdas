@@ -1,0 +1,9 @@
+pub mod create_course;
+pub mod delete_course;
+pub mod detail_course;
+pub mod filter_params;
+pub mod interactions;
+pub mod list_course;
+pub mod structure_course;
+pub mod thumbnail_course;
+pub mod update_course;

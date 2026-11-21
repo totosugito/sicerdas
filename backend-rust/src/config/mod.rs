@@ -33,6 +33,7 @@ pub struct AppConfig {
     pub log_slow_threshold_ms: u64,
     pub password_reset_rate_limit: u32,
     pub password_reset_rate_limit_window_ms: u64,
+    pub content_counter_window_ms: u64,
 }
 
 impl AppConfig {
@@ -159,6 +160,10 @@ impl AppConfig {
                 .ok()
                 .and_then(|v| v.parse().ok())
                 .unwrap_or(60 * 60 * 1000),
+            content_counter_window_ms: env::var("CONTENT_COUNTER_WINDOW_MS")
+                .ok()
+                .and_then(|v| v.parse().ok())
+                .unwrap_or(24 * 60 * 60 * 1000),
         }
     }
 }

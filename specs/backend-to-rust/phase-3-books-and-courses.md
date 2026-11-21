@@ -63,5 +63,5 @@
 ---
 
 ## 3. Phase 3 Acceptance Criteria
-- [ ] All 12 `book/*` routes pass parity checks, including `proxy-pdf` streaming and user bookmark/rating/history.
-- [ ] All 40 `course/*` routes pass parity checks, including chapter/lecture reordering, BlockNote `lecture-texts` JSON round-tripping, thumbnail upload, and enrollment/progress transactions.
+- [x] All 12 `book/*` routes pass parity checks, including `proxy-pdf` streaming and user bookmark/rating/history.
+- [x] All 40 `course/*` routes pass parity checks, including chapter/lecture reordering, BlockNote `lecture-texts` JSON round-tripping, thumbnail upload, and enrollment/progress transactions.

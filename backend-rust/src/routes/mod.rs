@@ -1,7 +1,9 @@
 pub mod ai;
 pub mod app;
 pub mod auth;
+pub mod book;
 pub mod content_report;
+pub mod course;
 pub mod education;
 pub mod health;
 pub mod periodic_table;
@@ -17,7 +19,9 @@ pub fn api_router() -> Router<AppState> {
         .nest("/ai", ai::router())
         .nest("/app", app::router())
         .nest("/auth", auth::router())
+        .nest("/book", book::router())
         .nest("/content-report", content_report::router())
+        .nest("/course", course::router())
         .nest("/education", education::router())
         .nest("/health", health::router())
         .nest("/periodic-table", periodic_table::router())
