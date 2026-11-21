@@ -1,11 +1,41 @@
-import type {
-  LectureItem,
-  AdminCreateLectureInput,
-  AdminUpdateLectureInput,
-} from "backend/src/modules/course/lectures/lectures.schema.ts";
-import type { BaseResponse } from "backend/src/types/index.ts";
+import type { BaseResponse } from "@/api/types";
+import type { EnumLectureType } from "@/api/course/types";
 
-export type { LectureItem, AdminCreateLectureInput, AdminUpdateLectureInput };
+export interface LectureItem {
+  id: string;
+  title: string | null;
+  description: string | null;
+  chapterId: string;
+  createdByUserId: string | null;
+  type: EnumLectureType;
+  referenceUrl: string | null;
+  extra: any;
+  isActive: boolean;
+  position: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminCreateLectureInput {
+  chapterId: string;
+  title: string;
+  description?: string;
+  type?: EnumLectureType;
+  referenceUrl?: string;
+  extra?: any;
+  position?: string;
+  isActive?: boolean;
+}
+
+export interface AdminUpdateLectureInput {
+  title?: string;
+  description?: string;
+  type?: EnumLectureType;
+  referenceUrl?: string;
+  extra?: any;
+  position?: string;
+  isActive?: boolean;
+}
 
 export interface CourseLectureApiResponse<T = unknown> extends BaseResponse {
   data: T;

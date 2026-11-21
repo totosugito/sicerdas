@@ -16,8 +16,7 @@
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@/*": ["./src/*"],
-      "backend/*": ["../backend/*"]
+      "@/*": ["./src/*"]
     },
     "noEmit": true,
     "types": ["vite/client"]

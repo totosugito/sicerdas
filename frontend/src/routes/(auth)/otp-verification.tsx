@@ -53,13 +53,13 @@ function OtpVerificationComponent() {
   const [resendSuccess, setResendSuccess] = useState<boolean>(false);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    let interval: ReturnType<typeof setInterval> | null = null;
     if (showTimer && timer > 0) {
       interval = setInterval(() => {
         setTimer((prev) => {
           if (prev <= 1) {
             setCanResend(true);
-            clearInterval(interval as NodeJS.Timeout);
+            clearInterval(interval as ReturnType<typeof setInterval>);
             return 0;
           }
           return prev - 1;

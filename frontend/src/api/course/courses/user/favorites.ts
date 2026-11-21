@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
-import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
-import type { FavoriteCourseItem, FavoritesResponseT } from "backend/src/modules/course/courses/courses.schema.ts";
+import type { FavoriteCourseItem, FavoritesResponseT } from "../types";
 
 export type { FavoriteCourseItem };
 export type FavoriteCoursesResponse = FavoritesResponseT;

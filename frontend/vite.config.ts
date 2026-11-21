@@ -39,10 +39,6 @@ export default defineConfig({
         find: "@",
         replacement: `${path.resolve(__dirname, "src")}/`,
       },
-      {
-        find: "backend",
-        replacement: `${path.resolve(__dirname, "../backend")}/`,
-      },
     ],
     extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json", ".scss"],
   },

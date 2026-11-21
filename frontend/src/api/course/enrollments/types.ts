@@ -1,7 +1,20 @@
-import type { UserCourseItem } from "backend/src/modules/course/enrollments/enrollments.schema.ts";
-import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+import type { BaseResponse, PaginationMeta } from "@/api/types";
 
-export type { UserCourseItem };
+export interface UserCourseItem {
+  enrollmentId: string;
+  status: string;
+  enrolledAt: string;
+  completedAt: string | null;
+  course: {
+    id: string;
+    courseCode: string;
+    courseName: string;
+    courseDescription: string | null;
+    thumbnail: string | null;
+    price: number;
+  };
+}
+
 export interface UserCourseListResponse extends BaseResponse {
   data: UserCourseItem[];
   pagination: PaginationMeta;

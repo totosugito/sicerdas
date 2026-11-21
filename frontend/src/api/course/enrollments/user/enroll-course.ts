@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { AppApi } from "@/constants/app-api";
 import { fetchApi } from "@/lib/fetch-api";
-import type { BaseResponse } from "backend/src/types/index.ts";
+import type { BaseResponse } from "@/api/types";
 
 export function useEnrollCourse() {
   return useMutation<BaseResponse, unknown, string>({

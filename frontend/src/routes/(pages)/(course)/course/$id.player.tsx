@@ -10,7 +10,7 @@ import { ErrorPageDetails } from "@/components/general";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AppRoute } from "@/constants/app-route";
-import { EnumLectureType } from "backend/src/db/schema/course/enums.ts";
+import { EnumLectureType } from "@/api/course/types";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { showNotifError, showNotifSuccess } from "@/lib/show-notif";
 import { useStartSession } from "@/api/exam/sessions";
