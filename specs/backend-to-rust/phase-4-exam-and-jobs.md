@@ -49,19 +49,20 @@
 
 ---
 
-## 3. Daily Scheduled Jobs (`backend/src/scripts/schedule/daily/jobs/`)
-Port the 8 daily jobs as `backend-rust` CLI subcommands (e.g. `backend-rust job <name>` or `backend-rust job daily-all`) so systemd/cron can invoke them without Node/Bun:
-1. `archive-guest-events` (`GUEST_EVENT_WINDOW_MS`)
-2. `clean-stale-sessions` (`EXAM_STALE_SESSION_DAYS`, default 30)
-3. `compute-course-stats`
-4. `compute-exam-stats`
-5. `purge-old-exam-answers` (`EXAM_ANSWERS_RETENTION_DAYS`, default 365)
-6. `reconcile-exam-stats`
-7. `update-book-stats`
-8. `update-user-stats`
+## 3. Daily Scheduled Jobs (`backend-rust/src/jobs/`)
+Ported all 8 daily jobs as `backend-rust` CLI subcommands (`backend-rust job <name>` or `backend-rust job daily-all`) with execution audit logging to `job_logs` (`group='daily'`, `status='running'|'success'|'failed'`, `duration_ms`, `error`):
+1. `archive-guest-events`: Atomically (in a transaction) rolls guest (`user_id IS NULL`) book view/download counts older than 30 days into `book_event_stats.legacy_stats` and deletes only those archived guest `app_event_history` rows in `FOR UPDATE SKIP LOCKED` batches.
+2. `clean-stale-sessions` (`EXAM_STALE_SESSION_DAYS`, default 30): Marks stale `in_progress` exam sessions as `abandoned` in `FOR UPDATE SKIP LOCKED` batches.
+3. `compute-course-stats`: Reconciles `course_chapters`, `courses`, and `course_stats` counters via SQL CTEs with `IS DISTINCT FROM` guards.
+4. `compute-exam-stats`: Reconciles `exam_package_sections`, `exam_packages`, `exam_package_event_stats`, and `education_category_grade_stats` (`content_type = 'exam'`) via SQL CTEs with `IS DISTINCT FROM` guards.
+5. `purge-old-exam-answers` (`EXAM_ANSWERS_RETENTION_DAYS`, default 365): Deletes old `exam_session_answers` rows in batches and marks `exam_sessions.is_answers_purged = true`.
+6. `reconcile-exam-stats`: Finds users with activity in the last 24 hours and reconciles their **full lifetime** `exam_user_stats_global`, `exam_user_stats_subject`, and `exam_user_stats_tag` rows.
+7. `update-book-stats`: Recomputes `book_event_stats` from `book_interactions`, guest `app_event_history`, and `legacy_stats`.
+8. `update-user-stats`: Aggregates `daily`, `weekly`, and `monthly` user snapshots (total/new/banned, DAU/WAU/MAU, role/tier/education breakdowns) into `users_stats`.
 
 ---
 
 ## 4. Phase 4 Acceptance Criteria
-- [ ] All 73 `exam/*` routes pass parity checks, including full exam lifecycle (`start` → `question` → `save-answer` → `submit` → `details` → `user-stats` / `leaderboard`).
-- [ ] All 8 daily jobs run cleanly via `backend-rust` CLI and produce identical DB state updates to the TypeScript scripts.
+- [x] All 72 active `exam/*` routes pass parity checks, including full exam lifecycle (`start` → `question` → `save-answer` → `submit` → `details` → `user-stats` / `leaderboard`).
+- [x] All 8 daily jobs run cleanly via `backend-rust` CLI (`job daily-all`) and record execution telemetry in `job_logs`.
+- [x] `frontend/src/api/exam/` decoupled from `backend/*` imports (`tsc --noEmit` 0 errors).

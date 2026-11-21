@@ -1,5 +1,5 @@
 use chrono::{Duration, Utc};
-use sea_orm::{DatabaseConnection, DbBackend, FromQueryResult, Statement, Value};
+use sea_orm::{DatabaseConnection, DbBackend, FromQueryResult, Statement, TransactionTrait, Value};
 
 #[derive(Debug, FromQueryResult)]
 struct CountRow {
@@ -8,6 +8,7 @@ struct CountRow {
 
 pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
     let cutoff = Utc::now() - Duration::days(30);
+    let txn = db.begin().await.map_err(|e| e.to_string())?;
 
     let updated = CountRow::find_by_statement(Statement::from_sql_and_values(
         DbBackend::Postgres,
@@ -39,7 +40,7 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
         "#,
         vec![Value::ChronoDateTimeUtc(Some(Box::new(cutoff)))],
     ))
-    .one(db)
+    .one(&txn)
     .await
     .map_err(|e| e.to_string())?
     .map(|r| r.count)
@@ -56,6 +57,7 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
                 FROM app_event_history
                 WHERE created_at < $1
                   AND content_type = 'book'
+                  AND user_id IS NULL
                   AND action IN ('view', 'download')
                 LIMIT $2
                 FOR UPDATE SKIP LOCKED
@@ -72,7 +74,7 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
                 Value::BigInt(Some(BATCH_SIZE)),
             ],
         ))
-        .one(db)
+        .one(&txn)
         .await
         .map_err(|e| e.to_string())?
         .map(|r| r.count)
@@ -84,6 +86,7 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
         }
     }
 
+    txn.commit().await.map_err(|e| e.to_string())?;
     tracing::info!(updated, total_deleted, "[Job] archive-guest-events complete");
     Ok(())
 }

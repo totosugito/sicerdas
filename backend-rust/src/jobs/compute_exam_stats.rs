@@ -126,6 +126,41 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
     .await
     .map_err(|e| e.to_string())?;
 
+    db.execute(Statement::from_sql_and_values(
+        DbBackend::Postgres,
+        r#"
+        WITH grade_exam_stats AS (
+            SELECT
+                category_id,
+                education_grade_id,
+                COUNT(*)::int AS calc_total_count,
+                COUNT(*) FILTER (
+                    WHERE is_active = true AND active_sections > 0 AND active_questions > 0
+                )::int AS calc_active_count
+            FROM exam_packages
+            WHERE exam_type = 'official'
+              AND education_grade_id IS NOT NULL
+            GROUP BY category_id, education_grade_id
+        )
+        INSERT INTO education_category_grade_stats (
+            category_id, education_grade_id, content_type, total_count, active_count, updated_at
+        )
+        SELECT
+            category_id, education_grade_id, 'exam', calc_total_count, calc_active_count, NOW()
+        FROM grade_exam_stats
+        ON CONFLICT (category_id, education_grade_id, content_type) DO UPDATE SET
+            total_count = EXCLUDED.total_count,
+            active_count = EXCLUDED.active_count,
+            updated_at = NOW()
+        WHERE
+            education_category_grade_stats.total_count IS DISTINCT FROM EXCLUDED.total_count OR
+            education_category_grade_stats.active_count IS DISTINCT FROM EXCLUDED.active_count
+        "#,
+        vec![],
+    ))
+    .await
+    .map_err(|e| e.to_string())?;
+
     tracing::info!("[Job] compute-exam-stats complete");
     Ok(())
 }

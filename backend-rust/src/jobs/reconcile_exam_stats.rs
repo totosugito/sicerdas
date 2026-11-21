@@ -4,7 +4,14 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
     db.execute(Statement::from_sql_and_values(
         DbBackend::Postgres,
         r#"
-        WITH global_stats AS (
+        WITH affected_users AS (
+            SELECT DISTINCT es.user_id
+            FROM exam_sessions es
+            LEFT JOIN exam_session_answers esa ON esa.session_id = es.id
+            WHERE es.updated_at >= NOW() - INTERVAL '24 hours'
+               OR esa.created_at >= NOW() - INTERVAL '24 hours'
+        ),
+        global_stats AS (
             SELECT
                 es.user_id,
                 COUNT(DISTINCT CASE WHEN es.status = 'completed' THEN es.id END)::int AS total_exams_taken,
@@ -15,8 +22,7 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
                 MAX(es.updated_at) AS last_active_at
             FROM exam_sessions es
             LEFT JOIN exam_session_answers esa ON esa.session_id = es.id
-            WHERE es.updated_at >= NOW() - INTERVAL '24 hours'
-               OR esa.created_at >= NOW() - INTERVAL '24 hours'
+            WHERE es.user_id IN (SELECT user_id FROM affected_users)
             GROUP BY es.user_id
         )
         INSERT INTO exam_user_stats_global (
@@ -48,7 +54,14 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
     db.execute(Statement::from_sql_and_values(
         DbBackend::Postgres,
         r#"
-        WITH subject_stats AS (
+        WITH affected_users AS (
+            SELECT DISTINCT es.user_id
+            FROM exam_sessions es
+            LEFT JOIN exam_session_answers esa ON esa.session_id = es.id
+            WHERE es.updated_at >= NOW() - INTERVAL '24 hours'
+               OR esa.created_at >= NOW() - INTERVAL '24 hours'
+        ),
+        subject_stats AS (
             SELECT
                 es.user_id,
                 eq.subject_id,
@@ -59,8 +72,7 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
             FROM exam_sessions es
             INNER JOIN exam_session_answers esa ON esa.session_id = es.id
             INNER JOIN exam_questions eq ON eq.id = esa.question_id
-            WHERE es.updated_at >= NOW() - INTERVAL '24 hours'
-               OR esa.created_at >= NOW() - INTERVAL '24 hours'
+            WHERE es.user_id IN (SELECT user_id FROM affected_users)
             GROUP BY es.user_id, eq.subject_id
         )
         INSERT INTO exam_user_stats_subject (
@@ -89,7 +101,14 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
     db.execute(Statement::from_sql_and_values(
         DbBackend::Postgres,
         r#"
-        WITH tag_stats AS (
+        WITH affected_users AS (
+            SELECT DISTINCT es.user_id
+            FROM exam_sessions es
+            LEFT JOIN exam_session_answers esa ON esa.session_id = es.id
+            WHERE es.updated_at >= NOW() - INTERVAL '24 hours'
+               OR esa.created_at >= NOW() - INTERVAL '24 hours'
+        ),
+        tag_stats AS (
             SELECT
                 es.user_id,
                 eqt.tag_id,
@@ -100,8 +119,7 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
             FROM exam_sessions es
             INNER JOIN exam_session_answers esa ON esa.session_id = es.id
             INNER JOIN exam_question_tags eqt ON eqt.question_id = esa.question_id
-            WHERE es.updated_at >= NOW() - INTERVAL '24 hours'
-               OR esa.created_at >= NOW() - INTERVAL '24 hours'
+            WHERE es.user_id IN (SELECT user_id FROM affected_users)
             GROUP BY es.user_id, eqt.tag_id
         )
         INSERT INTO exam_user_stats_tag (
