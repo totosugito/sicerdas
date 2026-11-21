@@ -4,7 +4,14 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
     db.execute(Statement::from_sql_and_values(
         DbBackend::Postgres,
         r#"
-        WITH book_interactions_agg AS (
+        WITH affected_books AS (
+            SELECT id AS book_id FROM books WHERE updated_at >= NOW() - INTERVAL '24 hours'
+            UNION
+            SELECT book_id FROM book_interactions WHERE updated_at >= NOW() - INTERVAL '24 hours'
+            UNION
+            SELECT reference_id AS book_id FROM app_event_history WHERE content_type = 'book' AND created_at >= NOW() - INTERVAL '24 hours'
+        ),
+        book_interactions_agg AS (
             SELECT
                 book_id,
                 COALESCE(SUM(CASE WHEN rating > 0.00 THEN 1 ELSE 0 END), 0)::int AS calc_rating_count,
@@ -12,6 +19,7 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
                 COALESCE(SUM(view_count), 0)::int AS logged_in_views,
                 COALESCE(SUM(download_count), 0)::int AS logged_in_downloads
             FROM book_interactions
+            WHERE book_id IN (SELECT book_id FROM affected_books)
             GROUP BY book_id
         ),
         guest_stats_agg AS (
@@ -22,6 +30,7 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
             FROM app_event_history
             WHERE content_type = 'book'
               AND user_id IS NULL
+              AND reference_id IN (SELECT book_id FROM affected_books)
             GROUP BY reference_id
         )
         UPDATE book_event_stats bes
@@ -36,15 +45,10 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
             view_count = COALESCE(bia.logged_in_views, 0) + COALESCE(gsa.guest_views, 0) + COALESCE((bes.legacy_stats->>'viewCount')::int, 0),
             download_count = COALESCE(bia.logged_in_downloads, 0) + COALESCE(gsa.guest_downloads, 0) + COALESCE((bes.legacy_stats->>'downloadCount')::int, 0),
             updated_at = NOW()
-        FROM books b
-        LEFT JOIN book_interactions_agg bia ON bia.book_id = b.id
-        LEFT JOIN guest_stats_agg gsa ON gsa.book_id = b.id
-        WHERE bes.book_id = b.id
-          AND (
-            b.updated_at >= NOW() - INTERVAL '24 hours' OR
-            EXISTS (SELECT 1 FROM book_interactions bi WHERE bi.book_id = b.id AND bi.updated_at >= NOW() - INTERVAL '24 hours') OR
-            EXISTS (SELECT 1 FROM app_event_history aeh WHERE aeh.reference_id = b.id AND aeh.content_type = 'book' AND aeh.created_at >= NOW() - INTERVAL '24 hours')
-          )
+        FROM affected_books ab
+        LEFT JOIN book_interactions_agg bia ON bia.book_id = ab.book_id
+        LEFT JOIN guest_stats_agg gsa ON gsa.book_id = ab.book_id
+        WHERE bes.book_id = ab.book_id
           AND (
             bes.view_count IS DISTINCT FROM (COALESCE(bia.logged_in_views, 0) + COALESCE(gsa.guest_views, 0) + COALESCE((bes.legacy_stats->>'viewCount')::int, 0)) OR
             bes.download_count IS DISTINCT FROM (COALESCE(bia.logged_in_downloads, 0) + COALESCE(gsa.guest_downloads, 0) + COALESCE((bes.legacy_stats->>'downloadCount')::int, 0)) OR

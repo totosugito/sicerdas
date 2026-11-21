@@ -50,14 +50,14 @@
 ---
 
 ## 3. Daily Scheduled Jobs (`backend-rust/src/jobs/`)
-Ported all 8 daily jobs as `backend-rust` CLI subcommands (`backend-rust job <name>` or `backend-rust job daily-all`) with execution audit logging to `job_logs` (`group='daily'`, `status='running'|'success'|'failed'`, `duration_ms`, `error`):
-1. `archive-guest-events`: Atomically (in a transaction) rolls guest (`user_id IS NULL`) book view/download counts older than 30 days into `book_event_stats.legacy_stats` and deletes only those archived guest `app_event_history` rows in `FOR UPDATE SKIP LOCKED` batches.
+Ported all 8 daily jobs as `backend-rust` CLI subcommands (`backend-rust job <name>` or `backend-rust job daily-all`) with `pg_try_advisory_lock` single-flight locking, execution audit logging to `job_logs` (`group='daily'`, `status='running'|'success'|'failed'`, `duration_ms`, `error`), and high-volume indexes in [0001_high_volume_job_indexes.sql](file:///home/toto/Documents/sicerdas/backend-rust/migrations/0001_high_volume_job_indexes.sql):
+1. `archive-guest-events`: Per-batch (`5,000` rows) atomic `DELETE ... FOR UPDATE SKIP LOCKED RETURNING` rolling guest (`user_id IS NULL`) book view/download counts older than 30 days into `book_event_stats.legacy_stats` (for 10M+ rows, monthly range partitioning on `app_event_history.created_at` is recommended).
 2. `clean-stale-sessions` (`EXAM_STALE_SESSION_DAYS`, default 30): Marks stale `in_progress` exam sessions as `abandoned` in `FOR UPDATE SKIP LOCKED` batches.
 3. `compute-course-stats`: Reconciles `course_chapters`, `courses`, and `course_stats` counters via SQL CTEs with `IS DISTINCT FROM` guards.
-4. `compute-exam-stats`: Reconciles `exam_package_sections`, `exam_packages`, `exam_package_event_stats`, and `education_category_grade_stats` (`content_type = 'exam'`) via SQL CTEs with `IS DISTINCT FROM` guards.
+4. `compute-exam-stats`: Reconciles `exam_package_sections`, `exam_packages`, `exam_package_event_stats` (filtering to `affected_packages` in last 24h), and `education_category_grade_stats` (`content_type = 'exam'`) via SQL CTEs with `IS DISTINCT FROM` guards.
 5. `purge-old-exam-answers` (`EXAM_ANSWERS_RETENTION_DAYS`, default 365): Deletes old `exam_session_answers` rows in batches and marks `exam_sessions.is_answers_purged = true`.
 6. `reconcile-exam-stats`: Finds users with activity in the last 24 hours and reconciles their **full lifetime** `exam_user_stats_global`, `exam_user_stats_subject`, and `exam_user_stats_tag` rows.
-7. `update-book-stats`: Recomputes `book_event_stats` from `book_interactions`, guest `app_event_history`, and `legacy_stats`.
+7. `update-book-stats`: Materializes `affected_books` from the last 24h first, then recomputes `book_event_stats` from `book_interactions`, guest `app_event_history`, and `legacy_stats` only for those books.
 8. `update-user-stats`: Aggregates `daily`, `weekly`, and `monthly` user snapshots (total/new/banned, DAU/WAU/MAU, role/tier/education breakdowns) into `users_stats`.
 
 ---

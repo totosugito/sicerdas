@@ -17,6 +17,15 @@ struct JobLogIdRow {
     id: i32,
 }
 
+fn job_lock_key(name: &str) -> i64 {
+    let mut hash: u64 = 0xcbf29ce484222325;
+    for b in name.as_bytes() {
+        hash ^= *b as u64;
+        hash = hash.wrapping_mul(0x100000001b3);
+    }
+    (hash & 0x7fff_ffff_ffff_ffff) as i64
+}
+
 pub async fn run_job(db: &DatabaseConnection, name: &str) -> Result<(), String> {
     match name {
         "daily-all" => {
@@ -48,6 +57,20 @@ pub async fn run_job(db: &DatabaseConnection, name: &str) -> Result<(), String> 
 }
 
 async fn run_one_logged(db: &DatabaseConnection, name: &str) -> Result<(), String> {
+    let lock_id = job_lock_key(name);
+    let pool = db.get_postgres_connection_pool();
+    let mut lock_conn = pool.acquire().await.map_err(|e| e.to_string())?;
+    let acquired: bool = sea_orm::sqlx::query_scalar("SELECT pg_try_advisory_lock($1)")
+        .bind(lock_id)
+        .fetch_one(&mut *lock_conn)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    if !acquired {
+        tracing::warn!(job = name, "Skipping job because another instance holds the advisory lock");
+        return Ok(());
+    }
+
     tracing::info!(job = name, "Running daily scheduled job");
     let started = Instant::now();
 
@@ -119,6 +142,13 @@ async fn run_one_logged(db: &DatabaseConnection, name: &str) -> Result<(), Strin
             }
         }
     }
+
+    let _: Option<bool> = sea_orm::sqlx::query_scalar("SELECT pg_advisory_unlock($1)")
+        .bind(lock_id)
+        .fetch_optional(&mut *lock_conn)
+        .await
+        .ok()
+        .flatten();
 
     res
 }

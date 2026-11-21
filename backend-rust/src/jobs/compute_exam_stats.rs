@@ -79,7 +79,12 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
     db.execute(Statement::from_sql_and_values(
         DbBackend::Postgres,
         r#"
-        WITH interaction_stats AS (
+        WITH affected_packages AS (
+            SELECT DISTINCT package_id
+            FROM exam_package_interactions
+            WHERE updated_at >= NOW() - INTERVAL '24 hours'
+        ),
+        interaction_stats AS (
             SELECT
                 package_id,
                 COALESCE(SUM(view_count), 0)::int AS calc_view_count,
@@ -94,7 +99,7 @@ pub async fn run(db: &DatabaseConnection) -> Result<(), String> {
                     ELSE 0.00
                 END AS calc_rating
             FROM exam_package_interactions
-            WHERE updated_at >= NOW() - INTERVAL '24 hours'
+            WHERE package_id IN (SELECT package_id FROM affected_packages)
             GROUP BY package_id
         )
         INSERT INTO exam_package_event_stats (
