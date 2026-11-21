@@ -19,7 +19,11 @@ pub fn resolve_avatar_url(config: &AppConfig, avatar_path: Option<&str>) -> Opti
         return Some(raw.to_string());
     }
     let clean = raw.trim_start_matches('/');
-    let uploads_dir = config.upload_dir.trim_matches('/');
+    let uploads_dir = std::path::Path::new(&config.upload_dir)
+        .file_name()
+        .and_then(|s| s.to_str())
+        .unwrap_or("uploads")
+        .trim_matches('/');
     if config.use_s3_storage {
         if let Some(s3_url) = config.s3_public_url.as_deref() {
             return Some(format!(
