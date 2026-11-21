@@ -1,0 +1,9 @@
+pub mod course_chapters;
+pub mod course_enrollments;
+pub mod course_lecture_texts;
+pub mod course_lectures;
+pub mod course_stats;
+pub mod course_user_progress;
+pub mod course_user_stats_category;
+pub mod course_user_stats_global;
+pub mod courses;

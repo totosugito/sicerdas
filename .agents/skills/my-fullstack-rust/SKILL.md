@@ -31,7 +31,7 @@ Use this blueprint whenever creating or updating fullstack features in `mining-m
 ### PostgreSQL + SeaORM (`src/db/`)
 - **Config**: Reads `DATABASE_URL` or `POSTGRES_HOST` / `POSTGRES_PORT` / `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` (with fallback to `../backend/.env`).
 - **Pool Settings (`src/db/mod.rs`)**: `max_connections(4)`, `min_connections(1)`, `connect_timeout(5s)`, `idle_timeout(5s)`, `sqlx_logging(false)` — tuned for low-memory VPS deployments.
-- **Data Access**: Use SeaORM entities in `src/db/entities/` for standard CRUD and transactions; use `Statement::from_sql_and_values` for complex read/aggregation queries.
+- **Data Access**: Use SeaORM entities in `src/db/entities/<domain>/` (e.g., `src/db/entities/course/`, `src/db/entities/exam/`, re-exported in `src/db/entities/mod.rs`) for standard CRUD and transactions; use `Statement::from_sql_and_values` for complex read/aggregation queries.
 
 ### Better Auth Compatibility (`src/modules/auth/` & `src/middleware/auth.rs`)
 - **Tables**: Uses the shared Better Auth PostgreSQL schema (`users`, `users_accounts`, `users_sessions`, `users_profiles`, `users_verifications`).
@@ -60,7 +60,7 @@ backend-rust/
     ├── error/mod.rs                   # AppError (400/401/403/404/409/422/500) -> { success: false, message }
     ├── middleware/auth.rs             # AuthSession & RequireAdmin Axum extractors
     ├── types/response.rs              # ApiResponse<T>, ErrorResponse, PaginationMeta
-    ├── db/entities/                   # SeaORM entities
+    ├── db/entities/                   # SeaORM entities grouped by domain (<domain>/mod.rs + <table>.rs, re-exported in mod.rs)
     ├── platform/storage.rs            # Local disk & S3/R2 file storage helpers
     ├── modules/<domain>/
     │   ├── mod.rs

@@ -1,5 +1,5 @@
 use crate::app::AppState;
-use crate::db::entities::content_report::{self, ReportStatus};
+use crate::db::entities::content_report::content_report::{self, ReportStatus};
 use crate::error::AppError;
 use crate::locales::{LocaleKey, RequestLocale};
 use crate::modules::content_report::types::{CreateReportBody, CreateReportData};

@@ -1,30 +1,21 @@
-pub mod ai_api_logs;
-pub mod ai_models;
-pub mod app_event_history;
-pub mod app_tier;
-pub mod app_version;
-pub mod book_category;
-pub mod book_event_stats;
-pub mod book_group;
-pub mod book_group_stats;
-pub mod book_interactions;
-pub mod books;
+pub mod ai;
+pub mod app;
+pub mod book;
 pub mod content_report;
-pub mod course_chapters;
-pub mod course_enrollments;
-pub mod course_lecture_texts;
-pub mod course_lectures;
-pub mod course_stats;
-pub mod course_user_progress;
-pub mod course_user_stats_category;
-pub mod course_user_stats_global;
-pub mod courses;
-pub mod education_categories;
-pub mod education_grades;
-pub mod education_tags;
+pub mod course;
+pub mod education;
 pub mod users;
-pub mod users_accounts;
-pub mod users_profiles;
-pub mod users_sessions;
-pub mod users_stats;
-pub mod users_verifications;
+
+pub use ai::{ai_api_logs, ai_models};
+pub use app::{app_event_history, app_tier, app_version};
+pub use book::{
+    book_category, book_event_stats, book_group, book_group_stats, book_interactions, books,
+};
+pub use course::{
+    course_chapters, course_enrollments, course_lecture_texts, course_lectures, course_stats,
+    course_user_progress, course_user_stats_category, course_user_stats_global, courses,
+};
+pub use education::{education_categories, education_grades, education_tags};
+pub use users::{
+    users_accounts, users_profiles, users_sessions, users_stats, users_verifications,
+};

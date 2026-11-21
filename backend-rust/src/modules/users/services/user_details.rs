@@ -1,5 +1,5 @@
 use crate::app::AppState;
-use crate::db::entities::{users, users_accounts, users_profiles};
+use crate::db::entities::users::{users, users_accounts, users_profiles};
 use crate::error::AppError;
 use crate::locales::{LocaleKey, RequestLocale};
 use crate::modules::auth::services::session::resolve_avatar_url;

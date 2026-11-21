@@ -1,5 +1,5 @@
 use crate::app::AppState;
-use crate::db::entities::users;
+use crate::db::entities::users::users;
 use crate::db::entities::users_stats::{self, StatsPeriodType};
 use crate::error::AppError;
 use crate::modules::users::types::{

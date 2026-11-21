@@ -1,5 +1,5 @@
 use crate::db::entities::app_version::ContentType;
-use crate::db::entities::content_report::ReportReason;
+use crate::db::entities::content_report::content_report::ReportReason;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use uuid::Uuid;

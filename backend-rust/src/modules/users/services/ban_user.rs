@@ -1,5 +1,5 @@
 use crate::app::AppState;
-use crate::db::entities::{users, users_sessions};
+use crate::db::entities::users::{users, users_sessions};
 use crate::error::AppError;
 use crate::locales::{LocaleKey, RequestLocale};
 use crate::modules::users::types::BanUserBody;

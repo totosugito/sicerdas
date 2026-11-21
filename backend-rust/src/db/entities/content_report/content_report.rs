@@ -1,4 +1,4 @@
-use super::app_version::ContentType;
+use crate::db::entities::app_version::ContentType;
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 

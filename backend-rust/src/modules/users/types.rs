@@ -1,5 +1,5 @@
 use crate::app::AppState;
-use crate::db::entities::users::UserRole;
+use crate::db::entities::users::users::UserRole;
 use crate::db::entities::users_stats::StatsPeriodType;
 use crate::error::AppError;
 use crate::locales::{LocaleKey, RequestLocale};

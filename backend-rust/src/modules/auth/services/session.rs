@@ -1,6 +1,6 @@
 use crate::app::AppState;
 use crate::config::AppConfig;
-use crate::db::entities::{users, users_profiles, users_sessions};
+use crate::db::entities::users::{users, users_profiles, users_sessions};
 use crate::error::AppError;
 use crate::locales::{tr, LocaleKey};
 use crate::modules::auth::crypto::{generate_session_token, sign_cookie_value};

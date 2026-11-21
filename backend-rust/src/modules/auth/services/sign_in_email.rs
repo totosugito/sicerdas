@@ -1,5 +1,5 @@
 use crate::app::AppState;
-use crate::db::entities::{users, users_accounts};
+use crate::db::entities::users::{users, users_accounts};
 use crate::error::AppError;
 use crate::locales::{translate, Lang, LocaleKey};
 use crate::modules::auth::crypto::verify_password;
