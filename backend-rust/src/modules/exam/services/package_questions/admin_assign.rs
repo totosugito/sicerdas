@@ -1,7 +1,6 @@
 use crate::app::AppState;
 use crate::db::entities::exam::exam_package_questions;
 use crate::error::AppError;
-use crate::locales::{translate, Lang, LocaleKey};
 use crate::modules::exam::types::{AssignPackageQuestionsBody, AssignPackageQuestionsData};
 use crate::modules::exam::utils::{sync_package, sync_section};
 use sea_orm::{

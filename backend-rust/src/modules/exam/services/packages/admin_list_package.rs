@@ -1,6 +1,5 @@
 use crate::app::AppState;
 use crate::error::AppError;
-use crate::locales::{translate, Lang, LocaleKey};
 use crate::modules::exam::types::{
     AdminPackageItem, AdminPackageListBody, AdminPackageListData, PackageCategoryRef,
     PackageGradeRef, PackageStatsInfo,

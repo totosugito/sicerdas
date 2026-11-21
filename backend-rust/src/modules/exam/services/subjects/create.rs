@@ -8,6 +8,7 @@ use sea_orm::{ActiveModelTrait, DbBackend, FromQueryResult, Set, Statement};
 use uuid::Uuid;
 
 #[derive(Debug, FromQueryResult)]
+#[allow(dead_code)]
 struct IdRow {
     id: Uuid,
 }

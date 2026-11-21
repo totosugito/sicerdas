@@ -1,6 +1,5 @@
 use crate::app::AppState;
 use crate::error::AppError;
-use crate::locales::{translate, Lang, LocaleKey};
 use crate::modules::exam::types::{
     FavoritePackageCategory, FavoritePackageInteraction, FavoritePackageItem,
     FavoritePackageStats, FavoritesBody,
@@ -8,7 +7,7 @@ use crate::modules::exam::types::{
 use crate::modules::exam::utils::get_package_thumbnail_url;
 use crate::types::response::PaginationMeta;
 use chrono::{DateTime, Utc};
-use sea_orm::{ConnectionTrait, DbBackend, FromQueryResult, Statement, Value};
+use sea_orm::{DbBackend, FromQueryResult, Statement, Value};
 use uuid::Uuid;
 
 #[derive(Debug, FromQueryResult)]

@@ -12,7 +12,9 @@ pub enum AppError {
     Forbidden(String),
     NotFound(String),
     Conflict(String),
+    #[allow(dead_code)]
     Unprocessable(String),
+    #[allow(dead_code)]
     TooManyRequests(String),
     Internal(String),
 }
