@@ -1,23 +1,53 @@
-import type {
-  PackageQuestionItemT,
-  PackageQuestionListParams,
-  AssignPackageQuestionsParams,
-  UnassignPackageQuestionsParams,
-  SyncPackageQuestionsOrderParams,
-  AssignResult,
-} from "backend/src/modules/exam/package-questions/index.ts";
-import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+import type { BaseResponse, PaginationMeta } from "@/api/types";
 
-export type {
-  PackageQuestionItemT,
-  PackageQuestionListParams,
-  AssignPackageQuestionsParams,
-  UnassignPackageQuestionsParams,
-  SyncPackageQuestionsOrderParams,
-  AssignResult,
-  BaseResponse,
-  PaginationMeta,
-};
+export type { BaseResponse, PaginationMeta };
+
+export interface PackageQuestionItemT {
+  packageId: string;
+  sectionId: string;
+  questionId: string;
+  order: number;
+  question: {
+    id: string;
+    content: Record<string, unknown>[];
+    type: string;
+    difficulty: string;
+    subjectName: string | null;
+  };
+  section?: {
+    id: string;
+    title: string;
+  };
+}
+
+export interface PackageQuestionListParams {
+  packageId: string;
+  sectionId?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface AssignPackageQuestionsParams {
+  packageId: string;
+  sectionId: string;
+  questionIds: string[];
+}
+
+export interface UnassignPackageQuestionsParams {
+  packageId: string;
+  questionIds: string[];
+}
+
+export interface SyncPackageQuestionsOrderParams {
+  packageId: string;
+  sectionId: string;
+  updates: { questionId: string; order: number }[];
+}
+
+export interface AssignResult {
+  totalAssigned: number;
+  totalSkipped: number;
+}
 
 export interface QuestionResponse<T = unknown> extends BaseResponse {
   data: T;

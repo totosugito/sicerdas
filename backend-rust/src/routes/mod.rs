@@ -5,6 +5,7 @@ pub mod book;
 pub mod content_report;
 pub mod course;
 pub mod education;
+pub mod exam;
 pub mod health;
 pub mod periodic_table;
 pub mod tier;
@@ -23,6 +24,7 @@ pub fn api_router() -> Router<AppState> {
         .nest("/content-report", content_report::router())
         .nest("/course", course::router())
         .nest("/education", education::router())
+        .nest("/exam", exam::router())
         .nest("/health", health::router())
         .nest("/periodic-table", periodic_table::router())
         .nest("/tier", tier::router())

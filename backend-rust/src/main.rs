@@ -2,6 +2,7 @@ mod app;
 mod config;
 mod db;
 mod error;
+mod jobs;
 mod locales;
 mod middleware;
 mod modules;
@@ -42,6 +43,19 @@ async fn main() {
     let db = db::connect_db(&config)
         .await
         .expect("Failed to connect to PostgreSQL");
+
+    let args: Vec<String> = std::env::args().collect();
+    if args.get(1).map(|s| s.as_str()) == Some("job") {
+        let Some(job_name) = args.get(2) else {
+            eprintln!("Usage: {} job <job-name|daily-all>", args[0]);
+            std::process::exit(1);
+        };
+        if let Err(err) = jobs::run_job(&db, job_name).await {
+            tracing::error!(job = %job_name, error = %err, "Scheduled job failed");
+            std::process::exit(1);
+        }
+        return;
+    }
 
     let addr: SocketAddr = format!("{}:{}", config.host, config.port)
         .parse()

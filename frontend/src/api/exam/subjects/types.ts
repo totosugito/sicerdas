@@ -1,19 +1,39 @@
-import type {
-  SubjectData,
-  SubjectSimpleData,
-  SubjectListParams,
-  CreateSubjectParams,
-  UpdateSubjectParams,
-} from "backend/src/modules/exam/subjects/index.ts";
-import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+import type { BaseResponse, PaginationMeta } from "@/api/types";
 
-export type {
-  SubjectData,
-  SubjectSimpleData,
-  SubjectListParams,
-  CreateSubjectParams,
-  UpdateSubjectParams,
-};
+export interface SubjectData {
+  id: string;
+  name: string;
+  description: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SubjectSimpleData {
+  value: string;
+  label: string;
+}
+
+export interface SubjectListParams {
+  search?: string;
+  isActive?: boolean;
+  sortBy?: "name" | "createdAt" | "updatedAt" | "isActive";
+  sortOrder?: "asc" | "desc";
+  page?: number;
+  limit?: number;
+}
+
+export interface CreateSubjectParams {
+  name: string;
+  description?: string | null;
+  isActive?: boolean;
+}
+
+export interface UpdateSubjectParams {
+  name?: string;
+  description?: string | null;
+  isActive?: boolean;
+}
 
 export interface SubjectListResponse extends BaseResponse {
   data: {

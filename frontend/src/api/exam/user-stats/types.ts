@@ -1,21 +1,60 @@
-import type {
-  GlobalStatsData,
-  SubjectStatsData,
-  TagStatsData,
-  ActivityData,
-  SubjectStatsParams,
-  TagStatsParams,
-} from "backend/src/modules/exam/user-stats/index.ts";
-import type { BaseResponse, PaginationMeta } from "backend/src/types/index.ts";
+import type { BaseResponse, PaginationMeta } from "@/api/types";
 
-export type {
-  GlobalStatsData,
-  SubjectStatsData,
-  TagStatsData,
-  ActivityData,
-  SubjectStatsParams,
-  TagStatsParams,
-};
+export interface GlobalStatsData {
+  userId: string;
+  totalExamsTaken: number;
+  totalQuestionsAnswered: number;
+  totalCorrectAnswers: number;
+  totalWrongAnswers: number;
+  averageScore: string;
+  accuracyRate: string;
+  lastActiveAt: string | null;
+  updatedAt: string;
+}
+
+export interface SubjectStatsData {
+  id: string;
+  subjectId: string;
+  subjectName: string;
+  totalQuestionsAnswered: number;
+  totalCorrect: number;
+  totalWrong: number;
+  accuracyRate: string;
+  updatedAt: string;
+}
+
+export interface TagStatsData {
+  id: string;
+  tagId: string;
+  tagName: string;
+  totalQuestionsAnswered: number;
+  totalCorrect: number;
+  totalWrong: number;
+  accuracyRate: string;
+  updatedAt: string;
+}
+
+export interface ActivityData {
+  date: string;
+  totalQuestions: number;
+  totalCorrect: number;
+  totalWrong: number;
+  totalSessions: number;
+}
+
+export interface SubjectStatsParams {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  order?: "asc" | "desc";
+}
+
+export interface TagStatsParams {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  order?: "asc" | "desc";
+}
 
 export interface GlobalStatsResponse extends BaseResponse {
   data: GlobalStatsData | null;

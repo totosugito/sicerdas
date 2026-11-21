@@ -4,6 +4,7 @@ pub mod book;
 pub mod content_report;
 pub mod course;
 pub mod education;
+pub mod exam;
 pub mod users;
 
 pub use ai::{ai_api_logs, ai_models};
