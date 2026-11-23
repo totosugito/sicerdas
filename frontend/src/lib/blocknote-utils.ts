@@ -14,17 +14,25 @@ export function blocknote_to_text(
   try {
     return content
       .map((block: any) => {
-        if (options.includeMath) {
-          if (block.type === "equation") {
-            return block.props?.latex || "";
+        if (block.type === "mathBlock") {
+          if (!options.includeMath) return "";
+          if (typeof block.content === "string") return block.content;
+          if (Array.isArray(block.content)) {
+            return block.content.map((c: any) => c.text || "").join("");
           }
+          return "";
         }
 
         if (block.content && Array.isArray(block.content)) {
           return block.content
             .map((item: any) => {
-              if (options.includeMath && item.type === "latex") {
-                return item.props?.latex || "";
+              if (item.type === "math") {
+                if (!options.includeMath) return "";
+                if (typeof item.content === "string") return item.content;
+                if (Array.isArray(item.content)) {
+                  return item.content.map((c: any) => c.text || "").join("");
+                }
+                return "";
               }
               return item.text || "";
             })

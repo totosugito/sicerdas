@@ -1,6 +1,6 @@
 import path from "path";
 import { fileURLToPath } from "url";
-import { defineConfig } from "vite-plus";
+import { defineConfig, lazyPlugins } from "vite-plus";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,7 +23,7 @@ export default defineConfig({
     },
     ignorePatterns: ["dist/**"],
   },
-  plugins: [
+  plugins: lazyPlugins(() => [
     tanstackRouter({
       target: "react",
       autoCodeSplitting: true,
@@ -32,7 +32,7 @@ export default defineConfig({
     }),
     react(),
     tailwindcss(),
-  ],
+  ]),
   resolve: {
     alias: [
       {

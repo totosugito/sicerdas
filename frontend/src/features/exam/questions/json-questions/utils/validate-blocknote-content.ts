@@ -27,11 +27,17 @@ const extractInlineContent = (node: any): any[] => {
         },
       ];
     }
-    if (node.type === "latex") {
+    if (node.type === "math") {
+      const content =
+        typeof node.content === "string"
+          ? [{ type: "text", text: node.content, styles: {} }]
+          : Array.isArray(node.content)
+            ? node.content
+            : [];
       return [
         {
-          type: "latex",
-          props: node.props || { latex: "", displayMode: false },
+          type: "math",
+          content,
         },
       ];
     }
@@ -104,10 +110,12 @@ export const validateAndRepairBlockNoteContent = (
     // Automatically repair missing properties to prevent BlockNote crashes
     if (!block.props) block.props = {};
 
-    if (block.type === "math" || block.type === "equation") {
-      if (!block.props.textAlignment) block.props.textAlignment = "left";
-      if (!block.props.textColor) block.props.textColor = "default";
-      if (block.props.fontSize === undefined) block.props.fontSize = 18;
+    if (block.type === "mathBlock") {
+      if (typeof block.content === "string") {
+        block.content = [{ type: "text", text: block.content, styles: {} }];
+      } else if (!Array.isArray(block.content)) {
+        block.content = [];
+      }
     } else if (block.type === "alert") {
       if (!block.props.type) block.props.type = "info";
     }
@@ -130,7 +138,7 @@ export const validateAndRepairBlockNoteContent = (
             (typeof item === "object" &&
               item !== null &&
               item.type !== "text" &&
-              item.type !== "latex" &&
+              item.type !== "math" &&
               (item.content || item.children || VALID_BLOCK_TYPES.includes(item.type))),
         );
 
@@ -166,4 +174,3 @@ export const validateAndRepairBlockNoteContent = (
 
   return { isValid: true };
 };
-

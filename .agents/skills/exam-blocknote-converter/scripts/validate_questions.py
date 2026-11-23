@@ -36,10 +36,10 @@ VALID_BLOCK_TYPES = {
     "paragraph", "heading", "bulletListItem", "numberedListItem",
     "checkListItem", "table", "image", "video", "audio", "file", "codeBlock",
     # Custom blocks
-    "equation", "alert", "chart",
+    "mathBlock", "alert", "chart",
 }
 
-VALID_INLINE_TYPES = {"text", "latex", "link"}
+VALID_INLINE_TYPES = {"text", "math", "link"}
 
 VALID_QUESTION_TYPES = {
     "multiple_choice", "multiple_select", "essay", "statement_reasoning"
@@ -231,11 +231,11 @@ class QuestionValidator:
                                     f"{prefix} -> solution[{idx}] ({stype}): Missing mandatory conclusion '{CONCLUSION_SENTENCE}...'!"
                                 )
 
-                        # Check for incomplete fast_method (missing equations)
+                        # Check for incomplete fast_method (missing mathBlock)
                         if stype == "fast_method":
                             block_types = [b.get("type") for b in content_list if isinstance(b, dict)]
-                            if "equation" not in block_types:
-                                self.warnings.append(f"{prefix} -> solution[{idx}] (fast_method): Missing 'equation' block for explicit calculation steps!")
+                            if "mathBlock" not in block_types:
+                                self.warnings.append(f"{prefix} -> solution[{idx}] (fast_method): Missing 'mathBlock' for explicit calculation steps!")
 
                     self._check_option_letter_leak(sol, f"{prefix} -> solution[{idx}]")
 
@@ -267,9 +267,17 @@ class QuestionValidator:
                 if not content:
                     self.errors.append(f"{location}[{idx}]: 'alert' block has empty content: []. Text/math must be inside alert.content.")
 
-            # Check equation blocks for alignment and horizontal chaining
-            if btype == "equation":
-                latex = block.get("props", {}).get("latex", "")
+            # Check mathBlock blocks for alignment and horizontal chaining
+            if btype == "mathBlock":
+                content = block.get("content", [])
+                if isinstance(content, str):
+                    latex = content
+                elif isinstance(content, list):
+                    latex = "".join(
+                        c.get("text", "") for c in content if isinstance(c, dict)
+                    )
+                else:
+                    latex = ""
                 if isinstance(latex, str):
                     # Rule 1: No horizontal equation chaining (2+ '=' signs without \begin{aligned})
                     if latex.count("=") >= 2 and "\\begin{aligned}" not in latex:
@@ -337,11 +345,11 @@ class QuestionValidator:
                     f"{location}[{idx}]: Unknown inline content type '{itype}'. "
                     f"Expected one of {VALID_INLINE_TYPES}."
                 )
-            # Validate latex inline has required props
-            if itype == "latex":
-                props = item.get("props", {})
-                if not isinstance(props, dict) or "latex" not in props:
-                    self.errors.append(f"{location}[{idx}]: Inline 'latex' node missing 'props.latex'.")
+            # Validate math inline has content
+            if itype == "math":
+                content = item.get("content")
+                if not isinstance(content, (list, str)) or not content:
+                    self.errors.append(f"{location}[{idx}]: Inline 'math' node missing 'content'.")
 
     def _validate_option(self, opt: dict, location: str):
         """Validate a single option object for both block structure and required fields."""
@@ -365,11 +373,11 @@ class QuestionValidator:
             if not isinstance(content_block, dict):
                 continue
             btype = content_block.get("type")
-            # Options MUST use paragraph + inline latex, NEVER equation blocks
-            if btype == "equation":
+            # Options MUST use paragraph + inline math, NEVER mathBlock blocks
+            if btype == "mathBlock":
                 self.errors.append(
-                    f"{location} -> content[{cidx}]: Option uses 'equation' block! "
-                    f"Options MUST use 'paragraph' + inline latex to prevent UI layout breakage."
+                    f"{location} -> content[{cidx}]: Option uses 'mathBlock' block! "
+                    f"Options MUST use 'paragraph' + inline math to prevent UI layout breakage."
                 )
 
     def _validate_variable_formulas(self, vf: dict, location: str):

@@ -26,11 +26,8 @@ function parseTextToInlineNodes(text: string, baseStyles: any = {}): any[] {
       // Math node
       const latex = match[1] || match[2];
       result.push({
-        type: "latex",
-        props: {
-          latex: latex,
-          displayMode: !!match[1],
-        },
+        type: "math",
+        content: [{ type: "text", text: latex, styles: {} }],
       });
     } else if (match[3]) {
       // Bold text node
@@ -82,34 +79,57 @@ export function injectVariablesIntoBlocks(
                 hasReplacement = true;
               }
             });
-            
+
             // If we replaced a variable and the new text contains math or bold syntax, parse it
             if (hasReplacement && (newText.includes("$") || newText.includes("**"))) {
               return parseTextToInlineNodes(newText, inlineItem.styles);
             }
-            
+
             return { ...inlineItem, text: newText };
           }
-          if (inlineItem.type === "latex" && inlineItem.props?.latex) {
-            let newLatex = inlineItem.props.latex;
-            Object.entries(variables).forEach(([key, value]) => {
-              const placeholder = `{{${key}}}`;
-              newLatex = newLatex.split(placeholder).join(String(value));
-            });
-            return { ...inlineItem, props: { ...inlineItem.props, latex: newLatex } };
+          if (inlineItem.type === "math" && inlineItem.content) {
+            const replaceStr = (str: string) => {
+              let res = str;
+              Object.entries(variables).forEach(([key, value]) => {
+                res = res.split(`{{${key}}}`).join(String(value));
+              });
+              return res;
+            };
+            const newContent =
+              typeof inlineItem.content === "string"
+                ? replaceStr(inlineItem.content)
+                : Array.isArray(inlineItem.content)
+                  ? inlineItem.content.map((c: any) =>
+                      c.type === "text" && typeof c.text === "string"
+                        ? { ...c, text: replaceStr(c.text) }
+                        : c,
+                    )
+                  : inlineItem.content;
+            return { ...inlineItem, content: newContent };
           }
           return inlineItem;
         });
       }
 
-      // Replace in specific block types (like equation)
-      if (newItem.type === "equation" && newItem.props?.latex) {
-        let newLatex = newItem.props.latex;
-        Object.entries(variables).forEach(([key, value]) => {
-          const placeholder = `{{${key}}}`;
-          newLatex = newLatex.split(placeholder).join(String(value));
-        });
-        newItem.props = { ...newItem.props, latex: newLatex };
+      // Replace in specific block types (like mathBlock)
+      if (newItem.type === "mathBlock" && newItem.content) {
+        const replaceStr = (str: string) => {
+          let res = str;
+          Object.entries(variables).forEach(([key, value]) => {
+            res = res.split(`{{${key}}}`).join(String(value));
+          });
+          return res;
+        };
+        newItem.content =
+          typeof newItem.content === "string"
+            ? replaceStr(newItem.content)
+            : Array.isArray(newItem.content)
+              ? newItem.content.map((c: any) =>
+                  c.type === "text" && typeof c.text === "string"
+                    ? { ...c, text: replaceStr(c.text) }
+                    : c,
+                )
+              : newItem.content;
       }
 
       // Replace in image blocks (url and caption)
@@ -121,11 +141,11 @@ export function injectVariablesIntoBlocks(
           newUrl = newUrl.split(placeholder).join(String(value));
           newCaption = newCaption.split(placeholder).join(String(value));
         });
-        
+
         if (newUrl.startsWith("../")) {
           newUrl = `./${newUrl}`;
         }
-        
+
         newItem.props = { ...newItem.props, url: newUrl, caption: newCaption };
       }
 

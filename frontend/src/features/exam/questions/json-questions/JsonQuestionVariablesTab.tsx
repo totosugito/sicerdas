@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronDown, Database } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { JsonEditor, githubDarkTheme } from "json-edit-react";
+import { JsonEditor, defaultTheme } from "json-edit-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { VariableFormulas } from "@/api/exam/questions/types";
@@ -33,7 +33,10 @@ export function JsonQuestionVariablesTab({
         <CardHeader className="flex flex-row items-center justify-between space-y-0 px-0 pt-0 pb-4 bg-muted/5">
           <CollapsibleTrigger
             render={
-              <button type="button" className="flex flex-col text-left gap-1 cursor-pointer group flex-1">
+              <button
+                type="button"
+                className="flex flex-col text-left gap-1 cursor-pointer group flex-1"
+              >
                 <div className="flex items-center gap-2">
                   <CardTitle className="text-xl">
                     {t(($) => $.exam.questions.edit.variables.title)}
@@ -58,10 +61,7 @@ export function JsonQuestionVariablesTab({
               <JsonEditor
                 data={initialData}
                 setData={(newData) => onUpdate(newData as VariableFormulas)}
-                theme={githubDarkTheme}
-                restrictEdit={false}
-                restrictAdd={false}
-                restrictDelete={false}
+                theme={defaultTheme}
                 maxWidth="100%"
               />
             </div>

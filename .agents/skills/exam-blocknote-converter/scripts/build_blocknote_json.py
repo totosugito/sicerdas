@@ -127,7 +127,7 @@ def clean_tex_aligned_block(tex: str) -> str:
 def text_to_inline_content(text: str, base_styles: dict = None) -> list:
     """
     Parses a text string into a list of BlockNote inline nodes:
-    [{"type": "text", ...}, {"type": "latex", ...}]
+    [{"type": "text", ...}, {"type": "math", ...}]
     Handles $$math$$, $math$, **bold**, and *italic* simultaneously.
     """
     if not text:
@@ -160,11 +160,12 @@ def text_to_inline_content(text: str, base_styles: dict = None) -> list:
         if match.group(1) or match.group(2):
             latex_code = clean_latex_string(match.group(1) or match.group(2))
             inline_nodes.append({
-                "type": "latex",
-                "props": {
-                    "latex": latex_code,
-                    "displayMode": bool(match.group(1))
-                }
+                "type": "math",
+                "content": [{
+                    "type": "text",
+                    "text": latex_code,
+                    "styles": {}
+                }]
             })
         elif match.group(3):
             # Bold
@@ -205,15 +206,17 @@ def create_paragraph_block(text: str) -> dict:
 
 
 def create_equation_block(latex: str) -> dict:
-    """Creates a BlockNote equation block (standalone math)."""
+    """Creates a BlockNote mathBlock (standalone math)."""
     cleaned_latex = clean_latex_string(latex)
     cleaned_latex = clean_tex_aligned_block(cleaned_latex)
     return {
-        "type": "equation",
-        "props": {
-            "latex": cleaned_latex
-        },
-        "content": [],
+        "type": "mathBlock",
+        "props": {},
+        "content": [{
+            "type": "text",
+            "text": cleaned_latex,
+            "styles": {}
+        }],
         "children": []
     }
 

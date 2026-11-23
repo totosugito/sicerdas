@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/shadcn/style.css";
-import "katex/dist/katex.min.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
 import { cn } from "@/lib/utils";
@@ -39,32 +38,23 @@ export const BlockNoteStatic = ({
         .ProseMirror-trailingBreak {
           display: none !important;
         }
-        /* Allow KaTeX formulas to overflow naturally without clipping */
+        /* Allow math formulas to overflow naturally without clipping */
         .bn-editor,
         .bn-block-content,
         .bn-block-outer,
-        .bn-block,
-        .bn-equation-host,
-        .bn-equation {
+        .bn-block {
           overflow: visible !important;
         }
-        .bn-equation {
-          padding: 0.5rem 0.75rem !important;
-          min-height: auto !important;
-        }
-        .katex-display {
-          margin: 0 !important;
-        }
-        /* Definitively hide scrollbars in equation blocks even when they are compact/fit-content */
-        .bn-editor [data-content-type="equation"] * {
+        /* Hide scrollbars in mathBlock blocks */
+        .bn-editor [data-content-type="mathBlock"] * {
           scrollbar-width: none !important;
           -ms-overflow-style: none !important;
         }
-        .bn-editor [data-content-type="equation"] *::-webkit-scrollbar {
+        .bn-editor [data-content-type="mathBlock"] *::-webkit-scrollbar {
           display: none !important;
         }
-        /* Remove any borders/focus rings when clicking equation blocks in static view */
-        .bn-editor [data-content-type="equation"] > div {
+        /* Remove any borders/focus rings when clicking mathBlock in static view */
+        .bn-editor [data-content-type="mathBlock"] > div {
           border: none !important;
           outline: none !important;
           box-shadow: none !important;
@@ -102,10 +92,7 @@ export const BlockNoteStatic = ({
   }, [editor, safeContent]);
 
   return (
-    <div
-      className={cn("border bg-card transition-all", className)}
-      style={{ minHeight }}
-    >
+    <div className={cn("border bg-card transition-all", className)} style={{ minHeight }}>
       {styleTag}
       <BlockNoteView
         editor={editor}

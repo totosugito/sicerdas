@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, lazyPlugins } from "vite-plus";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import fs from "fs";
@@ -29,11 +29,26 @@ function devFsApiPlugin() {
           const filePath = url.searchParams.get("path") || "";
           if (fs.existsSync(filePath)) {
             const ext = path.extname(filePath).toLowerCase();
-            const binaryExts = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".ico", ".svg", ".pdf"];
+            const binaryExts = [
+              ".png",
+              ".jpg",
+              ".jpeg",
+              ".gif",
+              ".webp",
+              ".bmp",
+              ".ico",
+              ".svg",
+              ".pdf",
+            ];
             if (binaryExts.includes(ext)) {
               const buffer = fs.readFileSync(filePath);
               const base64 = buffer.toString("base64");
-              const mime = ext === ".svg" ? "image/svg+xml" : ext === ".pdf" ? "application/pdf" : `image/${ext.slice(1)}`;
+              const mime =
+                ext === ".svg"
+                  ? "image/svg+xml"
+                  : ext === ".pdf"
+                    ? "application/pdf"
+                    : `image/${ext.slice(1)}`;
               res.setHeader("Content-Type", "application/json");
               res.end(JSON.stringify({ base64, mime }));
             } else {
@@ -49,7 +64,9 @@ function devFsApiPlugin() {
         }
         if (url.pathname === "/api/fs/write") {
           let body = "";
-          req.on("data", (chunk: any) => { body += chunk; });
+          req.on("data", (chunk: any) => {
+            body += chunk;
+          });
           req.on("end", () => {
             try {
               const { path: filePath, content } = JSON.parse(body);
@@ -71,7 +88,7 @@ function devFsApiPlugin() {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), devFsApiPlugin()],
+  plugins: lazyPlugins(() => [react(), tailwindcss(), devFsApiPlugin()]),
   clearScreen: false,
   server: {
     host: "127.0.0.1",

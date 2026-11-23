@@ -32,7 +32,7 @@ export type FormBlockNoteProps = {
 };
 
 import { schema, getAlertSlashMenuItem } from "./lib/blocknote-config";
-import { getMathSlashMenuItems } from "./block/math";
+import { getMathSlashMenuItems } from "@blocknote/math-block";
 import { getChartSlashMenuItem } from "./block/charts";
 import "@/assets/custom-blocknote.css";
 
@@ -137,7 +137,7 @@ export const FormBlockNote = ({
 
   // Fix for mouse scroll not working in BlockNote menus when inside a Radix Dialog.
   // This is because Radix UI's scroll lock intercepts wheel events on the body/window.
-  // We use a MutationObserver to attach an onWheel handler that stops propagation 
+  // We use a MutationObserver to attach an onWheel handler that stops propagation
   // to every BlockNote menu as it's added to the DOM (since they are portalled).
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -151,9 +151,15 @@ export const FormBlockNote = ({
         mutation.addedNodes.forEach((node) => {
           if (node instanceof HTMLElement) {
             // Target the suggestion menu and other portalled menus
-            const menus = node.matches(".bn-suggestion-menu, .bn-side-menu, .bn-formatting-toolbar, .bn-drag-handle-menu")
+            const menus = node.matches(
+              ".bn-suggestion-menu, .bn-side-menu, .bn-formatting-toolbar, .bn-drag-handle-menu",
+            )
               ? [node]
-              : Array.from(node.querySelectorAll(".bn-suggestion-menu, .bn-side-menu, .bn-formatting-toolbar, .bn-drag-handle-menu"));
+              : Array.from(
+                  node.querySelectorAll(
+                    ".bn-suggestion-menu, .bn-side-menu, .bn-formatting-toolbar, .bn-drag-handle-menu",
+                  ),
+                );
 
             menus.forEach((m) => attachWheelStop(m as HTMLElement));
           }
@@ -164,7 +170,10 @@ export const FormBlockNote = ({
     observer.observe(document.body, { childList: true, subtree: true });
 
     // Also try to find already existing menus
-    document.querySelectorAll(".bn-suggestion-menu, .bn-side-menu, .bn-formatting-toolbar, .bn-drag-handle-menu")
+    document
+      .querySelectorAll(
+        ".bn-suggestion-menu, .bn-side-menu, .bn-formatting-toolbar, .bn-drag-handle-menu",
+      )
       .forEach((m) => attachWheelStop(m as HTMLElement));
 
     return () => observer.disconnect();
@@ -194,12 +203,7 @@ export const FormBlockNote = ({
           }
         }}
       >
-        <BlockNoteView
-          editor={editor}
-          theme={resolvedTheme}
-          editable={!disabled}
-          slashMenu={false}
-        >
+        <BlockNoteView editor={editor} theme={resolvedTheme} editable={!disabled} slashMenu={false}>
           <SuggestionMenuController
             triggerCharacter={"/"}
             getItems={async (query) => {

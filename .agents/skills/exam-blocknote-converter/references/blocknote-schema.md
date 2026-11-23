@@ -6,33 +6,34 @@ This document defines all valid block and inline content types for the exam syst
 
 These are the ONLY types allowed at the root of any `content` array:
 
-| Type | Props | Content | Usage |
-|------|-------|---------|-------|
-| `paragraph` | `{}` | Inline content array | Standard text block |
-| `heading` | `{"level": 1\|2\|3}` | Inline content array | Section headers |
-| `bulletListItem` | `{}` | Inline content array | Unordered list items |
-| `numberedListItem` | `{}` | Inline content array | Ordered list items |
-| `checkListItem` | `{"checked": boolean}` | Inline content array | Checkbox list items |
-| `equation` | `{"latex": "..."}` | `[]` (empty) | Standalone display math |
-| `alert` | `{"type": "tip"\|"info"\|"warning"\|"success"\|"error"}` | Inline content array (MUST NOT be empty) | Callout/highlight boxes |
-| `chart` | `{"chartData": "<JSON string>"}` | `[]` (empty) | Interactive charts |
-| `image` | `{"url": "...", "caption": "..."}` | `[]` (empty) | Images |
-| `table` | `{}` | Table-specific content | Data tables |
-| `codeBlock` | `{"language": "..."}` | `[]` (empty) | Code snippets |
-| `video` / `audio` / `file` | `{"url": "..."}` | `[]` (empty) | Embedded media / attachments |
+| Type                       | Props                                                    | Content                                           | Usage                        |
+| -------------------------- | -------------------------------------------------------- | ------------------------------------------------- | ---------------------------- |
+| `paragraph`                | `{}`                                                     | Inline content array                              | Standard text block          |
+| `heading`                  | `{"level": 1\|2\|3}`                                     | Inline content array                              | Section headers              |
+| `bulletListItem`           | `{}`                                                     | Inline content array                              | Unordered list items         |
+| `numberedListItem`         | `{}`                                                     | Inline content array                              | Ordered list items           |
+| `checkListItem`            | `{"checked": boolean}`                                   | Inline content array                              | Checkbox list items          |
+| `mathBlock`                | `{}`                                                     | `[{"type": "text", "text": "...", "styles": {}}]` | Standalone display math      |
+| `alert`                    | `{"type": "tip"\|"info"\|"warning"\|"success"\|"error"}` | Inline content array (MUST NOT be empty)          | Callout/highlight boxes      |
+| `chart`                    | `{"chartData": "<JSON string>"}`                         | `[]` (empty)                                      | Interactive charts           |
+| `image`                    | `{"url": "...", "caption": "..."}`                       | `[]` (empty)                                      | Images                       |
+| `table`                    | `{}`                                                     | Table-specific content                            | Data tables                  |
+| `codeBlock`                | `{"language": "..."}`                                    | `[]` (empty)                                      | Code snippets                |
+| `video` / `audio` / `file` | `{"url": "..."}`                                         | `[]` (empty)                                      | Embedded media / attachments |
 
 ## Valid Inline Content Types
 
 These go INSIDE a block's `content` array:
 
-| Type | Properties | Usage |
-|------|-----------|-------|
-| `text` | `{"text": "...", "styles": {}}` | Plain or styled text |
-| `latex` | `{"props": {"latex": "...", "displayMode": false}}` | Inline math expression |
+| Type   | Properties                                                     | Usage                  |
+| ------ | -------------------------------------------------------------- | ---------------------- |
+| `text` | `{"text": "...", "styles": {}}`                                | Plain or styled text   |
+| `math` | `{"content": [{"type": "text", "text": "...", "styles": {}}]}` | Inline math expression |
 
 ### Text Styles
 
 The `styles` object on `text` nodes supports:
+
 - `{"bold": true}` — Bold text
 - `{"italic": true}` — Italic text
 - `{"underline": true}` — Underlined text
@@ -42,76 +43,84 @@ The `styles` object on `text` nodes supports:
 ## JSON Structures
 
 ### Paragraph with plain text
+
 ```json
 {
   "type": "paragraph",
-  "content": [
-    {"type": "text", "text": "Diketahui sebuah segitiga...", "styles": {}}
-  ]
+  "content": [{ "type": "text", "text": "Diketahui sebuah segitiga...", "styles": {} }]
 }
 ```
 
 ### Paragraph with inline math
+
 ```json
 {
   "type": "paragraph",
   "content": [
-    {"type": "text", "text": "Jika ", "styles": {}},
-    {"type": "latex", "props": {"latex": "x^2 + y^2 = r^2", "displayMode": false}},
-    {"type": "text", "text": ", maka tentukan nilai r.", "styles": {}}
+    { "type": "text", "text": "Jika ", "styles": {} },
+    { "type": "math", "content": [{ "type": "text", "text": "x^2 + y^2 = r^2", "styles": {} }] },
+    { "type": "text", "text": ", maka tentukan nilai r.", "styles": {} }
   ]
 }
 ```
 
-### Standalone equation block
+### Standalone mathBlock
+
 ```json
 {
-  "type": "equation",
-  "props": {"latex": "\\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}"},
-  "content": []
+  "type": "mathBlock",
+  "props": {},
+  "content": [{ "type": "text", "text": "\\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}", "styles": {} }]
 }
 ```
 
-### Alert / Callout block (Text + Inline Latex)
+### Alert / Callout block (Text + Inline Math)
+
 ```json
 {
   "type": "alert",
-  "props": {"type": "tip"},
+  "props": { "type": "tip" },
   "content": [
-    {"type": "text", "text": "Jarak jatuh: ", "styles": {}},
-    {"type": "latex", "props": {"latex": "\\Delta h = \\frac{1}{2} g t^2", "displayMode": false}}
+    { "type": "text", "text": "Jarak jatuh: ", "styles": {} },
+    {
+      "type": "math",
+      "content": [{ "type": "text", "text": "\\Delta h = \\frac{1}{2} g t^2", "styles": {} }]
+    }
   ]
 }
 ```
 
 ### Numbered List Item with Children
+
 ```json
 {
   "type": "numberedListItem",
-  "content": [
-    {"type": "text", "text": "Masukkan nilai yang diketahui:", "styles": {}}
-  ],
+  "content": [{ "type": "text", "text": "Masukkan nilai yang diketahui:", "styles": {} }],
   "children": [
     {
-      "type": "equation",
-      "props": {"latex": "x = 5"},
-      "content": []
+      "type": "mathBlock",
+      "props": {},
+      "content": [{ "type": "text", "text": "x = 5", "styles": {} }]
     }
   ]
 }
 ```
 
 ### Numbered List Item (Equation Only, No Description)
+
 ```json
 {
   "type": "numberedListItem",
   "content": [
     {
-      "type": "latex",
-      "props": {
-        "latex": "{{res}} = {{ans}} \\times 10^6 \\text{ J/m}^3",
-        "displayMode": false
-      }
+      "type": "math",
+      "content": [
+        {
+          "type": "text",
+          "text": "{{res}} = {{ans}} \\times 10^6 \\text{ J/m}^3",
+          "styles": {}
+        }
+      ]
     }
   ],
   "children": []
@@ -119,6 +128,7 @@ The `styles` object on `text` nodes supports:
 ```
 
 ### Chart block
+
 ```json
 {
   "type": "chart",
@@ -132,22 +142,26 @@ The `styles` object on `text` nodes supports:
 ## Database Enums
 
 ### Question `type`
+
 - `"multiple_choice"` — Pilihan ganda (satu jawaban benar)
 - `"multiple_select"` — Pilihan ganda (banyak jawaban benar)
 - `"essay"` — Uraian/esai
 - `"statement_reasoning"` — Pernyataan Benar/Salah
 
 ### Question `difficulty`
+
 - `"easy"` — LOTS / Hafalan (C1-C2)
 - `"medium"` — MOTS / Penerapan (C3)
 - `"hard"` — HOTS / Analisis (C4-C6)
 
 ### Question `scoringStrategy`
+
 - `"all_or_nothing"` — Benar semua atau salah (default)
 - `"partial"` — Nilai parsial
 - `"partial_with_penalty"` — Parsial dengan pengurangan
 
 ### Solution `solutionType`
+
 - `"general"` — Cara biasa/konseptual
 - `"fast_method"` — Cara cepat/trik
 - `"tips"` — Kiat umum

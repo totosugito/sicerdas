@@ -43,7 +43,7 @@ Follow these critical conversion rules:
 
 #### 3.1 Block Structure Rule
 
-**All text must be inside block objects.** Never put `{"type": "text"}` at the root of a `content` array. Always wrap in `paragraph`, `heading`, `bulletListItem`, `equation`, or `alert`.
+**All text must be inside block objects.** Never put `{"type": "text"}` at the root of a `content` array. Always wrap in `paragraph`, `heading`, `bulletListItem`, `mathBlock`, or `alert`.
 
 ```
 ❌ BAD:  "content": [{"type": "text", "text": "...", "styles": {}}]
@@ -52,32 +52,37 @@ Follow these critical conversion rules:
 
 #### 3.2 Math Rendering — Two Types
 
-| Markdown Pattern | BlockNote Type | Usage |
-|-----------------|---------------|-------|
-| `$...$` (inline) | `{"type": "latex", "props": {"latex": "...", "displayMode": false}}` | Inside a `paragraph` block's `content` array |
-| `$$...$$` (display) | `{"type": "equation", "props": {"latex": "..."}, "content": []}` | Standalone block-level equation |
+| Markdown Pattern    | BlockNote Type                                                                                   | Usage                                        |
+| ------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| `$...$` (inline)    | `{"type": "math", "content": [{"type": "text", "text": "...", "styles": {}}]}`                   | Inside a `paragraph` block's `content` array |
+| `$$...$$` (display) | `{"type": "mathBlock", "props": {}, "content": [{"type": "text", "text": "...", "styles": {}}]}` | Standalone block-level equation              |
 
-Strip `$` and `$$` wrappers from the source. Put the raw LaTeX into the `latex` prop.
+Strip `$` and `$$` wrappers from the source. Put the raw LaTeX into a plain `text` node inside the `content` array.
 
 #### 3.3 Option Formatting (CRITICAL)
 
-ALL options MUST be formatted as a `paragraph` block containing inline `text` or `latex` objects (with `"displayMode": false`), NEVER as an `equation` block. `equation` blocks render full-width and break the option UI layout.
+ALL options MUST be formatted as a `paragraph` block containing inline `text` or `math` objects, NEVER as a `mathBlock`. `mathBlock` blocks render full-width and break the option UI layout.
 
 ```json
 {
   "isCorrect": true,
   "score": 1,
   "order": 0,
-  "content": [{
-    "type": "paragraph",
-    "props": {},
-    "content": [{"type": "latex", "props": {"latex": "{{opt1}}", "displayMode": false}}],
-    "children": []
-  }]
+  "content": [
+    {
+      "type": "paragraph",
+      "props": {},
+      "content": [
+        { "type": "math", "content": [{ "type": "text", "text": "{{opt1}}", "styles": {} }] }
+      ],
+      "children": []
+    }
+  ]
 }
 ```
 
 Parse options from the checkbox list format:
+
 - `- [x] text` → `isCorrect: true, score: 1`
 - `- [ ] text` → `isCorrect: false, score: 0`
 
@@ -86,20 +91,21 @@ Parse options from the checkbox list format:
 Convert `**text**` in markdown to `{"type": "text", "text": "text", "styles": {"bold": true}}`.
 
 Separate bold labels from regular text into distinct `text` objects:
+
 ```json
 [
-  {"type": "text", "text": "Diketahui: ", "styles": {"bold": true}},
-  {"type": "text", "text": "massa benda m = 5 kg", "styles": {}}
+  { "type": "text", "text": "Diketahui: ", "styles": { "bold": true } },
+  { "type": "text", "text": "massa benda m = 5 kg", "styles": {} }
 ]
 ```
 
 #### 3.5 List Items
 
-| Markdown | BlockNote Type | Rule |
-|----------|---------------|------|
-| `- item` | `bulletListItem` | Always |
-| `1. step` `2. step` (2+ items) | `numberedListItem` | Use for multi-step solutions |
-| `1. step` (single item) | `paragraph` | Use `paragraph` instead to avoid awkward (1) badge |
+| Markdown                       | BlockNote Type     | Rule                                               |
+| ------------------------------ | ------------------ | -------------------------------------------------- |
+| `- item`                       | `bulletListItem`   | Always                                             |
+| `1. step` `2. step` (2+ items) | `numberedListItem` | Use for multi-step solutions                       |
+| `1. step` (single item)        | `paragraph`        | Use `paragraph` instead to avoid awkward (1) badge |
 
 **CRITICAL — NO EMPTY CONTENT:** The primary text of a numbered/bullet item MUST be inside the block's own `"content"` array. NEVER leave `"content": []` empty.
 
@@ -107,22 +113,22 @@ Separate bold labels from regular text into distinct `text` objects:
 
 Convert blockquotes with bold prefix to `alert` blocks:
 
-| Markdown | Alert Type |
-|----------|-----------|
-| `> **Tip:** text` | `"tip"` |
-| `> **Info:** text` | `"info"` |
+| Markdown                 | Alert Type  |
+| ------------------------ | ----------- |
+| `> **Tip:** text`        | `"tip"`     |
+| `> **Info:** text`       | `"info"`    |
 | `> **Peringatan:** text` | `"warning"` |
-| `> **Sukses:** text` | `"success"` |
+| `> **Sukses:** text`     | `"success"` |
 
 **CRITICAL:** Text and inline math nodes MUST be placed directly inside `alert.content`. NEVER leave `"content": []` empty on an `alert` block.
 
 ```json
 {
   "type": "alert",
-  "props": {"type": "tip"},
+  "props": { "type": "tip" },
   "content": [
-    {"type": "text", "text": "Substitusi langsung ", "styles": {}},
-    {"type": "latex", "props": {"latex": "x = {{x}}", "displayMode": false}}
+    { "type": "text", "text": "Substitusi langsung ", "styles": {} },
+    { "type": "math", "content": [{ "type": "text", "text": "x = {{x}}", "styles": {} }] }
   ]
 }
 ```
@@ -133,17 +139,17 @@ When a question references an image (e.g., `![caption](../imgs/image.png)`):
 
 1. Extract the URL and caption from the markdown image syntax.
 2. Insert a BlockNote `image` block using the original URL (do NOT encode to Base64):
-     ```json
-     {
-       "type": "image",
-       "props": {
-         "url": "../imgs/image.png",
-         "caption": "Deskripsi gambar"
-       },
-       "content": [],
-       "children": []
-     }
-     ```
+   ```json
+   {
+     "type": "image",
+     "props": {
+       "url": "../imgs/image.png",
+       "caption": "Deskripsi gambar"
+     },
+     "content": [],
+     "children": []
+   }
+   ```
 
 #### 3.8 Equation Alignment Validation
 
@@ -159,16 +165,17 @@ Use the `clean_tex_aligned_block()` function in `scripts/build_blocknote_json.py
 
 Each `## Pembahasan: ...` section maps to a solution object:
 
-| Section Heading | solutionType | title |
-|----------------|-------------|-------|
-| `## Pembahasan: Cara Konseptual` | `"general"` | `"Cara Konseptual"` |
-| `## Pembahasan: Trik Cepat` | `"fast_method"` | `"Trik Cepat"` |
+| Section Heading                  | solutionType    | title               |
+| -------------------------------- | --------------- | ------------------- |
+| `## Pembahasan: Cara Konseptual` | `"general"`     | `"Cara Konseptual"` |
+| `## Pembahasan: Trik Cepat`      | `"fast_method"` | `"Trik Cepat"`      |
 
 Every question MUST have at least one `general` solution.
 
 #### 3.10 Statement Reasoning
 
 For `type: statement_reasoning`:
+
 - `## Soal` → `content` field
 - `## Alasan` → `reasonContent` field
 - `## Opsi` → exactly 2 options: "Benar" and "Salah"
@@ -182,13 +189,14 @@ python3 .agents/skills/exam-blocknote-converter/scripts/validate_questions.py <o
 ```
 
 The validator checks:
+
 - Required fields presence (`type`, `difficulty`, `content`, `solutions`, `tags`, `maxScore`, `scoringStrategy`)
 - Valid block types against allowlist
 - No root-level `text` nodes (must be wrapped in `paragraph`)
 - Empty `content: []` on `alert`, `numberedListItem`, and other inline-content blocks
 - Horizontal equation chain detection
 - Repeated LHS variable in `\begin{aligned}`
-- Option format (rejects `equation` blocks in options)
+- Option format (rejects `mathBlock` blocks in options)
 - Exactly 1 correct option for `multiple_choice`
 - Mandatory `general` solution type
 - Conclusion sentence presence: `"Jadi, jawaban yang benar adalah"`
@@ -222,22 +230,22 @@ Fix any errors or warnings flagged by the validator.
 ❌ BAD:  Empty alert content followed by paragraph:
         {"type": "alert", "props": {"type": "tip"}, "content": []},
         {"type": "paragraph", "content": [{"type": "text", "text": "Cara Cepat: ..."}]}
-✅ GOOD: Text and inline latex directly inside alert.content:
-        {"type": "alert", "props": {"type": "tip"}, "content": [{"type": "text", "text": "Cara Cepat: ...", "styles": {}}, {"type": "latex", "props": {"latex": "...", "displayMode": false}}]}
+✅ GOOD: Text and inline math directly inside alert.content:
+        {"type": "alert", "props": {"type": "tip"}, "content": [{"type": "text", "text": "Cara Cepat: ...", "styles": {}}, {"type": "math", "content": [{"type": "text", "text": "...", "styles": {}}]}]}
 
-❌ BAD:  "type": "math", "props": {"equation": "..."}
-✅ GOOD: "type": "equation", "props": {"latex": "..."}
+❌ BAD:  "type": "equation", "props": {"latex": "..."}
+✅ GOOD: "type": "mathBlock", "props": {}, "content": [{"type": "text", "text": "...", "styles": {}}]
 
 ❌ BAD:  Repeating left variable & horizontal '=' chains:
-        "latex": "\\begin{aligned} \\frac{1}{C_s} = \\frac{1}{C_1} + \\frac{1}{C_2} \\\\ \\frac{1}{C_s} = \\frac{1}{3} + \\frac{1}{6} = \\frac{3}{6} = \\frac{1}{2} \\end{aligned}"
+        "\\begin{aligned} \\frac{1}{C_s} = \\frac{1}{C_1} + \\frac{1}{C_2} \\\\ \\frac{1}{C_s} = \\frac{1}{3} + \\frac{1}{6} = \\frac{3}{6} = \\frac{1}{2} \\end{aligned}"
 ✅ GOOD: Left variable ONLY once on line 1, &= per line, \\implies for inversion:
-        "latex": "\\begin{aligned} \\frac{1}{C_s} &= \\frac{1}{C_1} + \\frac{1}{C_2} + \\frac{1}{C_3} \\\\ &= \\frac{1}{3} + \\frac{1}{6} + \\frac{1}{9} \\\\ &= \\frac{6+3+2}{18} \\\\ &= \\frac{11}{18} \\\\ \\implies C_s &= \\frac{18}{11} \\text{ F} \\end{aligned}"
+        "\\begin{aligned} \\frac{1}{C_s} &= \\frac{1}{C_1} + \\frac{1}{C_2} + \\frac{1}{C_3} \\\\ &= \\frac{1}{3} + \\frac{1}{6} + \\frac{1}{9} \\\\ &= \\frac{6+3+2}{18} \\\\ &= \\frac{11}{18} \\\\ \\implies C_s &= \\frac{18}{11} \\text{ F} \\end{aligned}"
 
 ❌ BAD:  Mixing "$x^2$" in text strings
-✅ GOOD: Split into text + inline latex: {"type": "text"}, {"type": "latex", "props": {...}}, {"type": "text"}
+✅ GOOD: Split into text + inline math: {"type": "text"}, {"type": "math", "content": [{"type": "text", "text": "...", "styles": {}}]}, {"type": "text"}
 
-❌ BAD:  Options using "equation" block (renders full-width, breaks UI)
-✅ GOOD: Options using "paragraph" with inline "latex" (displayMode: false)
+❌ BAD:  Options using "mathBlock" block (renders full-width, breaks UI)
+✅ GOOD: Options using "paragraph" with inline "math"
 
 ❌ BAD:  Single-step solution using numberedListItem (renders awkward (1) badge):
         {"type": "numberedListItem", "content": [{"type": "text", "text": "Substitusikan..."}]}

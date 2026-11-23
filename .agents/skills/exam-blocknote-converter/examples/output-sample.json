@@ -17,11 +17,14 @@
             "styles": {}
           },
           {
-            "type": "latex",
-            "props": {
-              "latex": "3x + 7",
-              "displayMode": false
-            }
+            "type": "math",
+            "content": [
+              {
+                "type": "text",
+                "text": "3x + 7",
+                "styles": {}
+              }
+            ]
           },
           {
             "type": "text",
@@ -29,11 +32,14 @@
             "styles": {}
           },
           {
-            "type": "latex",
-            "props": {
-              "latex": "x = {{x}}",
-              "displayMode": false
-            }
+            "type": "math",
+            "content": [
+              {
+                "type": "text",
+                "text": "x = {{x}}",
+                "styles": {}
+              }
+            ]
           },
           {
             "type": "text",
@@ -52,11 +58,14 @@
             "props": {},
             "content": [
               {
-                "type": "latex",
-                "props": {
-                  "latex": "{{opt1}}",
-                  "displayMode": false
-                }
+                "type": "math",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{{opt1}}",
+                    "styles": {}
+                  }
+                ]
               }
             ],
             "children": []
@@ -73,11 +82,14 @@
             "props": {},
             "content": [
               {
-                "type": "latex",
-                "props": {
-                  "latex": "{{opt2}}",
-                  "displayMode": false
-                }
+                "type": "math",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{{opt2}}",
+                    "styles": {}
+                  }
+                ]
               }
             ],
             "children": []
@@ -94,11 +106,14 @@
             "props": {},
             "content": [
               {
-                "type": "latex",
-                "props": {
-                  "latex": "{{opt3}}",
-                  "displayMode": false
-                }
+                "type": "math",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{{opt3}}",
+                    "styles": {}
+                  }
+                ]
               }
             ],
             "children": []
@@ -115,11 +130,14 @@
             "props": {},
             "content": [
               {
-                "type": "latex",
-                "props": {
-                  "latex": "{{opt4}}",
-                  "displayMode": false
-                }
+                "type": "math",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{{opt4}}",
+                    "styles": {}
+                  }
+                ]
               }
             ],
             "children": []
@@ -154,11 +172,14 @@
                 "styles": {}
               },
               {
-                "type": "latex",
-                "props": {
-                  "latex": "f(x) = 3x + 7",
-                  "displayMode": false
-                }
+                "type": "math",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "f(x) = 3x + 7",
+                    "styles": {}
+                  }
+                ]
               },
               {
                 "type": "text",
@@ -166,11 +187,14 @@
                 "styles": {}
               },
               {
-                "type": "latex",
-                "props": {
-                  "latex": "x = {{x}}",
-                  "displayMode": false
-                }
+                "type": "math",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "x = {{x}}",
+                    "styles": {}
+                  }
+                ]
               }
             ],
             "children": []
@@ -192,11 +216,14 @@
                 "styles": {}
               },
               {
-                "type": "latex",
-                "props": {
-                  "latex": "3x + 7",
-                  "displayMode": false
-                }
+                "type": "math",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "3x + 7",
+                    "styles": {}
+                  }
+                ]
               }
             ],
             "children": []
@@ -251,11 +278,14 @@
                 "styles": {}
               },
               {
-                "type": "latex",
-                "props": {
-                  "latex": "{{x}}",
-                  "displayMode": false
-                }
+                "type": "math",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{{x}}",
+                    "styles": {}
+                  }
+                ]
               },
               {
                 "type": "text",
@@ -266,11 +296,15 @@
             "children": []
           },
           {
-            "type": "equation",
-            "props": {
-              "latex": "\\begin{aligned} f({{x}}) &= 3({{x}}) + 7 \\\\ &= {{term1}} + 7 \\\\ &= {{answer}} \\end{aligned}"
-            },
-            "content": [],
+            "type": "mathBlock",
+            "props": {},
+            "content": [
+              {
+                "type": "text",
+                "text": "\\begin{aligned} f({{x}}) &= 3({{x}}) + 7 \\\\ &= {{term1}} + 7 \\\\ &= {{answer}} \\end{aligned}",
+                "styles": {}
+              }
+            ],
             "children": []
           },
           {
@@ -283,11 +317,14 @@
                 "styles": {}
               },
               {
-                "type": "latex",
-                "props": {
-                  "latex": "{{answer}}",
-                  "displayMode": false
-                }
+                "type": "math",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{{answer}}",
+                    "styles": {}
+                  }
+                ]
               },
               {
                 "type": "text",
@@ -317,11 +354,14 @@
                 "styles": {}
               },
               {
-                "type": "latex",
-                "props": {
-                  "latex": "x = {{x}}",
-                  "displayMode": false
-                }
+                "type": "math",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "x = {{x}}",
+                    "styles": {}
+                  }
+                ]
               }
             ],
             "children": []
@@ -339,11 +379,15 @@
             "children": []
           },
           {
-            "type": "equation",
-            "props": {
-              "latex": "3({{x}}) + 7 = {{answer}}"
-            },
-            "content": [],
+            "type": "mathBlock",
+            "props": {},
+            "content": [
+              {
+                "type": "text",
+                "text": "3({{x}}) + 7 = {{answer}}",
+                "styles": {}
+              }
+            ],
             "children": []
           },
           {
@@ -356,11 +400,14 @@
                 "styles": {}
               },
               {
-                "type": "latex",
-                "props": {
-                  "latex": "{{answer}}",
-                  "displayMode": false
-                }
+                "type": "math",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{{answer}}",
+                    "styles": {}
+                  }
+                ]
               },
               {
                 "type": "text",
@@ -416,9 +463,6 @@
         "answer": "3 * x + 7"
       }
     },
-    "tags": [
-      "Matematika",
-      "Aljabar"
-    ]
+    "tags": ["Matematika", "Aljabar"]
   }
 ]

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppTranslation } from "@/lib/i18n-typed";
-import { JsonEditor, githubDarkTheme } from "json-edit-react";
+import { JsonEditor, defaultTheme } from "json-edit-react";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 import { VariableFormulas } from "@/api/exam/questions/types";
@@ -52,10 +52,7 @@ export function QuestionVariablesTab({
             setData={(newData) => {
               setLocalData(newData);
             }}
-            theme={githubDarkTheme}
-            restrictEdit={false}
-            restrictAdd={false}
-            restrictDelete={false}
+            theme={defaultTheme}
             maxWidth="100%"
           />
         </div>
