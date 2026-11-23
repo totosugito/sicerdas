@@ -38,7 +38,12 @@ export function JsonQuestionOptionsTab({
 
   useEffect(() => {
     if (initialOptions) {
-      const sorted = [...initialOptions].sort((a, b) => (a.order || 0) - (b.order || 0));
+      const sorted = [...initialOptions]
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .map((opt, idx) => ({
+          ...opt,
+          id: opt.id || `temp-opt-${idx}`,
+        }));
       setItems(sorted);
     }
   }, [initialOptions]);
@@ -115,7 +120,10 @@ export function JsonQuestionOptionsTab({
         <CardHeader className="flex flex-row items-center justify-between space-y-0 px-0 pt-0 pb-4 bg-muted/5">
           <CollapsibleTrigger
             render={
-              <button type="button" className="flex flex-col text-left gap-1 cursor-pointer group flex-1">
+              <button
+                type="button"
+                className="flex flex-col text-left gap-1 cursor-pointer group flex-1"
+              >
                 <div className="flex items-center gap-2">
                   <CardTitle className="text-xl">{t(($) => $.exam.options.title)}</CardTitle>
                   <ChevronDown

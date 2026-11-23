@@ -33,11 +33,18 @@ export function JsonQuestionSolutionsTab({
   const [solutionToDelete, setSolutionToDelete] = useState<string | null>(null);
 
   const [showFormModal, setShowFormModal] = useState(false);
-  const [selectedSolution, setSelectedSolution] = useState<QuestionSolutionResponseItemT | null>(null);
+  const [selectedSolution, setSelectedSolution] = useState<QuestionSolutionResponseItemT | null>(
+    null,
+  );
 
   useEffect(() => {
     if (initialSolutions) {
-      const sorted = [...initialSolutions].sort((a, b) => (a.order || 0) - (b.order || 0));
+      const sorted = [...initialSolutions]
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .map((sol, idx) => ({
+          ...sol,
+          id: sol.id || `temp-sol-${idx}`,
+        }));
       setItems(sorted as QuestionSolutionResponseItemT[]);
     }
   }, [initialSolutions]);
@@ -116,7 +123,10 @@ export function JsonQuestionSolutionsTab({
         <CardHeader className="flex flex-row items-center justify-between space-y-0 px-0 pt-0 pb-4 bg-muted/5">
           <CollapsibleTrigger
             render={
-              <button type="button" className="flex flex-col text-left gap-1 cursor-pointer group flex-1">
+              <button
+                type="button"
+                className="flex flex-col text-left gap-1 cursor-pointer group flex-1"
+              >
                 <div className="flex items-center gap-2">
                   <CardTitle className="text-xl">{t(($) => $.exam.solutions.title)}</CardTitle>
                   <ChevronDown

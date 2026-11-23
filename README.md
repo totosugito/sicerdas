@@ -15,6 +15,7 @@ npm install
 ```
 
 ## copy frontend to server
+
 ```bash
 scp -r -P 22 ./dist/* sicerdas@202.155.94.190:/var/www/sicerdas.com/frontend
 ```
@@ -37,4 +38,26 @@ bun run db:sync_vps
 
 # Opsi 2: Dari folder backend
 cd backend && bun run db:sync_vps
+```
+
+## RUN BACKEND RUST (`backend-rust`)
+
+Pastikan PostgreSQL lokal sudah berjalan (database `sicerdas` di `localhost:5432`) dan konfigurasi di `backend-rust/.env` sudah sesuai.
+
+```bash
+# Development mode (port 5550)
+cd backend-rust
+cargo run
+
+# Build & run release mode
+cd backend-rust
+cargo build --release
+./target/release/sicerdas-backend
+```
+
+Untuk menjalankan `desktop` bersama `backend-rust`:
+
+```bash
+# Dari root sicerdas (port 1552, mengarah ke http://127.0.0.1:5550 di desktop/.env)
+bun run desktop:dev
 ```

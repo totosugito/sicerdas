@@ -22,12 +22,12 @@ export const OptionList = ({ items, sensors, onDragEnd, onDelete, onEdit }: Opti
     <div className="flex flex-col gap-4 pl-3">
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext
-          items={items.map((item) => item.id)}
+          items={items.map((item, index) => item.id ?? `opt-${index}`)}
           strategy={verticalListSortingStrategy}
         >
           {items.map((item, index) => (
             <OptionRow
-              key={item.id}
+              key={item.id ?? `opt-${index}`}
               option={item}
               index={index}
               onDelete={onDelete}
