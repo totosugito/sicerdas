@@ -90,7 +90,7 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
                 field={field}
                 item={signUpFormData.form.name}
                 leftIcon={<User />}
-                className="h-10 rounded-md bg-background/50 focus:bg-background transition-colors"
+                className="h-10 rounded-xl bg-background/50 focus:bg-background transition-colors"
                 showMessage={true}
               />
             )}
@@ -102,7 +102,7 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
                 field={field}
                 item={signUpFormData.form.email}
                 leftIcon={<Mail />}
-                className="h-10 rounded-md bg-background/50 focus:bg-background transition-colors"
+                className="h-10 rounded-xl bg-background/50 focus:bg-background transition-colors"
                 showMessage={true}
               />
             )}
@@ -114,7 +114,7 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
                 field={field}
                 item={signUpFormData.form.password}
                 leftIcon={<Lock />}
-                className="h-10 rounded-md bg-background/50 focus:bg-background transition-colors"
+                className="h-10 rounded-xl bg-background/50 focus:bg-background transition-colors"
                 showMessage={true}
               />
             )}
@@ -123,7 +123,7 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
 
         <Button
           type="submit"
-          className="w-full font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all active:scale-[0.99] mt-2"
+          className="w-full h-10 rounded-xl font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all active:scale-[0.99] mt-2"
           size="lg"
           disabled={loading}
         >
@@ -140,7 +140,7 @@ export const SignUpForm = ({ onFormSubmit, loading, errorMessage }: Props) => {
           )}
         </Button>
 
-        <div className="text-center pt-3 border-t border-border/40">
+        <div className="text-center pt-4 border-t border-border/40">
           <p className="text-xs sm:text-sm text-muted-foreground">
             {t(($) => $.auth.signUp.alreadyHaveAccount)}{" "}
             <Link

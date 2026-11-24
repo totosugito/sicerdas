@@ -70,7 +70,8 @@ function SignUpComponent() {
     return (
       <AuthLayout>
         <AuthHeader
-          icon={<CheckCircle2 className="w-7 h-7 text-emerald-500" />}
+          variant="success"
+          icon={<CheckCircle2 />}
           title={t(($) => $.auth.signUp.signUpSuccessTitle)}
         />
         <div className="text-center space-y-6 animate-in fade-in-50 duration-200">
@@ -97,7 +98,8 @@ function SignUpComponent() {
     return (
       <AuthLayout>
         <AuthHeader
-          icon={<AlertCircle className="w-7 h-7 text-destructive" />}
+          variant="destructive"
+          icon={<AlertCircle />}
           title={t(($) => $.auth.signUp.signUpFailedTitle)}
         />
         <div className="text-center space-y-6 animate-in fade-in-50 duration-200">
@@ -145,4 +147,3 @@ function SignUpComponent() {
     </AuthLayout>
   );
 }
-

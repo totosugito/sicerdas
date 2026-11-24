@@ -180,7 +180,7 @@ function RouteComponent() {
   const sections = sectionsRes?.data || [];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 w-full">
       <PageTitle
         title={t(($) => $.exam.packages.detail.title)}
         description={t(($) => $.exam.packages.detail.description)}

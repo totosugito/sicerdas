@@ -42,12 +42,12 @@ export function AndroidAppSection() {
   };
 
   return (
-    <section className="py-8 md:py-12 px-4 sm:px-6 relative overflow-hidden bg-gradient-to-b from-muted/30 via-background to-muted/20">
+    <section className="py-8 md:py-12 relative overflow-hidden bg-gradient-to-b from-muted/30 via-background to-muted/20">
       {/* Glow decorative orbs */}
       <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-80 h-80 bg-primary/10 rounded-full blur-[100px] pointer-events-none -z-10" />
       <div className="absolute bottom-10 left-10 w-72 h-72 bg-accent/10 rounded-full blur-[90px] pointer-events-none -z-10" />
 
-      <div className="container mx-auto max-w-6xl">
+      <div className="app-container">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           {/* Left Column: Content */}
           <motion.div
@@ -85,9 +85,7 @@ export function AndroidAppSection() {
                   <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                   </div>
-                  <span className="text-xs sm:text-sm font-medium text-foreground">
-                    {feature}
-                  </span>
+                  <span className="text-xs sm:text-sm font-medium text-foreground">{feature}</span>
                 </motion.div>
               ))}
             </div>

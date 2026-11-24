@@ -1,9 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEmailOtpForgetPasswordMutation } from "@/api/auth/email-otp-forget-password";
-import type {
-  EmailOtpForgetPasswordRequest,
-  BaseResponse,
-} from "@/api/auth/types";
+import type { EmailOtpForgetPasswordRequest, BaseResponse } from "@/api/auth/types";
 
 import { useAppTranslation } from "@/lib/i18n-typed";
 import { AlertCircle, CheckCircle2, Mail, ArrowRight, RotateCcw } from "lucide-react";
@@ -58,7 +55,8 @@ function ForgetPasswordComponent() {
     return (
       <AuthLayout>
         <AuthHeader
-          icon={<CheckCircle2 className="w-7 h-7 text-emerald-500" />}
+          variant="success"
+          icon={<CheckCircle2 />}
           title={t(($) => $.auth.forgetPassword.successTitle)}
         />
         <div className="text-center space-y-6 animate-in fade-in-50 duration-200">
@@ -85,7 +83,8 @@ function ForgetPasswordComponent() {
     return (
       <AuthLayout>
         <AuthHeader
-          icon={<AlertCircle className="w-7 h-7 text-destructive" />}
+          variant="destructive"
+          icon={<AlertCircle />}
           title={t(($) => $.auth.forgetPassword.failTitle)}
         />
         <div className="text-center space-y-6 animate-in fade-in-50 duration-200">
@@ -133,4 +132,3 @@ function ForgetPasswordComponent() {
     </AuthLayout>
   );
 }
-

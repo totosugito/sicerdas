@@ -1,58 +1,73 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { usePeriodicElementQuery } from '@/api/periodic-table/periodic-table'
+import { createFileRoute } from "@tanstack/react-router";
+import { usePeriodicElementQuery } from "@/api/periodic-table/periodic-table";
 import {
-  ElementErrorDisplay, ElementSkeleton, ElementHero, ElementNavigation,
-  ElectronView, ElementOverview, ElementClassification, ElementDimension, ElementNotes, ElementThermal, ElementBulkPhysical, ElementElectrical, ElementMagnetic, ElementAbundances, ElementReactivity, ElementHealthSafety, ElementNuclear
-} from '@/features/periodic-table/element-details'
-import { useAppTranslation } from '@/lib/i18n-typed'
-import { useAppStore } from '@/stores/useAppStore'
-import { useAuthStore } from '@/stores/useAuthStore'
-import { getElementStyle } from '@/features/periodic-table/utils/element-styles'
+  ElementErrorDisplay,
+  ElementSkeleton,
+  ElementHero,
+  ElementNavigation,
+  ElectronView,
+  ElementOverview,
+  ElementClassification,
+  ElementDimension,
+  ElementNotes,
+  ElementThermal,
+  ElementBulkPhysical,
+  ElementElectrical,
+  ElementMagnetic,
+  ElementAbundances,
+  ElementReactivity,
+  ElementHealthSafety,
+  ElementNuclear,
+} from "@/features/periodic-table/element-details";
+import { useAppTranslation } from "@/lib/i18n-typed";
+import { useAppStore } from "@/stores/useAppStore";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { getElementStyle } from "@/features/periodic-table/utils/element-styles";
 
-export const Route = createFileRoute('/(pages)/(periodic-table)/periodic/element/$id')({
+export const Route = createFileRoute("/(pages)/(periodic-table)/periodic/element/$id")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   const { t } = useAppTranslation();
-  const { id } = Route.useParams()
+  const { id } = Route.useParams();
   const store = useAppStore();
   const { viewMode } = store.periodicTable;
-  const language = useAuthStore(state => state.language);
+  const language = useAuthStore((state) => state.language);
 
-  const { data: element, isLoading, isError, error } = usePeriodicElementQuery({ atomicNumber: parseInt(id), language });
+  const {
+    data: element,
+    isLoading,
+    isError,
+    error,
+  } = usePeriodicElementQuery({ atomicNumber: parseInt(id), language });
   const { elementExpandedSections, setElementExpandedSection } = useAppStore();
   const expandedSections = elementExpandedSections;
 
   const toggleSection = (section: string) => {
     setElementExpandedSection(section, !elementExpandedSections[section]);
-  }
-
+  };
 
   if (isLoading) {
-    return <ElementSkeleton />
+    return <ElementSkeleton />;
   }
 
   if (isError) {
-    return (
-      <ElementErrorDisplay
-        error={error}
-        atomicNumber={parseInt(id)}
-      />
-    );
+    return <ElementErrorDisplay error={error} atomicNumber={parseInt(id)} />;
   }
 
   const elementStyle = getElementStyle(element?.atomicGroup as string, viewMode).element ?? "";
   const atomColor = getElementStyle(element?.atomicGroup as string, viewMode).atomColor ?? "";
   return (
-    <div className="gap-4 flex flex-col">
+    <div className="w-full gap-4 flex flex-col">
       {element && (
         <>
           {/* Element Hero */}
           <ElementHero element={element} theme={viewMode} />
 
           {/* Navigation */}
-          <ElementNavigation theme={viewMode}
+          <ElementNavigation
+            theme={viewMode}
             previous={element.navigation?.prev ?? undefined}
             next={element.navigation?.next ?? undefined}
             elementStyle={elementStyle}
@@ -148,5 +163,5 @@ function RouteComponent() {
         </>
       )}
     </div>
-  )
+  );
 }

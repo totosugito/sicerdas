@@ -167,7 +167,7 @@ function RouteComponent() {
 
   return (
     <div className="page-container-no-top">
-      <div className="flex flex-col lg:flex-row gap-6 pt-6">
+      <div className="flex flex-col lg:flex-row gap-6 pt-6 w-full">
         <aside className="hidden lg:block w-70 flex-shrink-0">
           <Card>
             <CardContent className="p-5">
@@ -282,7 +282,7 @@ function RouteComponent() {
                 pageIndex={currentPage - 1}
                 setPageIndex={(newPageIndex) => handlePageChange(newPageIndex + 1)}
                 pageSize={urlLimit ?? pageStore.limit ?? 12}
-                setPageSize={() => { }}
+                setPageSize={() => {}}
                 rowsCount={totalExams}
                 paginationData={{
                   page: currentPage,

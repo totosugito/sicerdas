@@ -10,8 +10,8 @@ export function CTASection() {
   const { t } = useAppTranslation();
 
   return (
-    <section className="py-8 md:py-12 px-4 sm:px-6 relative overflow-hidden">
-      <div className="container mx-auto max-w-6xl">
+    <section className="py-8 md:py-12 relative overflow-hidden">
+      <div className="app-container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

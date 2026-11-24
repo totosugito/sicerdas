@@ -7,11 +7,11 @@ import { LectureTextForm, LectureTextFormValues } from "@/features/course/lectur
 import { AppRoute } from "@/constants/app-route";
 import { EnumContentStatus } from "@/api/types";
 
-export const Route = createFileRoute(
-  "/(pages)/(course)/lecture-texts/admin/edit-lecture-text/$id",
-)({
-  component: EditLectureTextPage,
-});
+export const Route = createFileRoute("/(pages)/(course)/lecture-texts/admin/edit-lecture-text/$id")(
+  {
+    component: EditLectureTextPage,
+  },
+);
 
 function EditLectureTextPage() {
   const { id } = Route.useParams();
@@ -28,12 +28,12 @@ function EditLectureTextPage() {
       values instanceof FormData
         ? values
         : {
-          title: values.title.trim(),
-          content: values.content || [],
-          categoryId: values.categoryId || null,
-          educationGradeId: values.educationGradeId || null,
-          status: values.status || EnumContentStatus.DRAFT,
-        };
+            title: values.title.trim(),
+            content: values.content || [],
+            categoryId: values.categoryId || null,
+            educationGradeId: values.educationGradeId || null,
+            status: values.status || EnumContentStatus.DRAFT,
+          };
 
     updateMutation.mutate(
       {
@@ -42,7 +42,9 @@ function EditLectureTextPage() {
       },
       {
         onSuccess: (res) => {
-          showNotifSuccess({ message: res.message || t(($) => $.course.lectureTexts.updateSuccess) });
+          showNotifSuccess({
+            message: res.message || t(($) => $.course.lectureTexts.updateSuccess),
+          });
         },
         onError: (err: any) => {
           showNotifError({ message: err.message || t(($) => $.labels.error) });
@@ -53,7 +55,7 @@ function EditLectureTextPage() {
 
   if (isError) {
     return (
-      <div className="container mx-auto p-4 md:p-6">
+      <div className="w-full">
         <ErrorContainer
           title={t(($) => $.labels.error)}
           message={error?.message || "Gagal memuat detail artikel"}
@@ -66,7 +68,7 @@ function EditLectureTextPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto p-4 md:p-6 space-y-6">
+      <div className="w-full space-y-6">
         <div className="h-10 bg-muted animate-pulse rounded-xl w-1/3" />
         <div className="h-96 bg-muted animate-pulse rounded-2xl" />
       </div>

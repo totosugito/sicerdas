@@ -9,14 +9,37 @@
 ## Tone & Pedagogical Style
 
 You **MUST** adopt a friendly, natural, and conversational teaching tone, as if a teacher is explaining to students in class:
+
 - **Extract Key Terms & Implicit Information**: Always explain implicit meanings in the "Diketahui:" section. For instance, "berhenti" implies final velocity $v = 0$, and "dilepas" implies initial velocity $v_0 = 0$. Provide explicit explanatory notes for students.
-- **Detailed Step-by-Step Explanation**: Do not just give brief mathematical commands (e.g., "Substitute..."). Explain the *reasoning* behind each step, especially in the "Konsep dan Rumus Dasar" section.
+- **Detailed Step-by-Step Explanation**: Do not just give brief mathematical commands (e.g., "Substitute..."). Explain the _reasoning_ behind each step, especially in the "Konsep dan Rumus Dasar" section.
 - **AVOID** stiff, purely instructional, or robotic phrasing.
-- **Use smooth transitions** between steps (e.g., *"Nah, setelah rumusnya dapat, kita masukkan nilainya..."*).
+- **Use smooth transitions** between steps (e.g., _"Selanjutnya, kita substitusikan nilainya ke dalam rumus..."_).
+- **Use Mathematically Accurate Terminology — NO Non-Mathematical Mechanical Phrasing (CRITICAL):**
+  - Explanations must be easy to understand **without** sacrificing mathematical accuracy.
+  - **STRICTLY FORBIDDEN** to use non-mathematical or purely mechanical slang such as:
+    - ❌ _"angka 3 langsung habis dicoret"_ / _"dicoret"_ $\rightarrow$ ✅ Gunakan: _"faktor 3 pada pembilang dan penyebut saling membagi habis ($\frac{3}{3} = 1$)"_ atau _"disederhanakan dengan membagi pembilang dan penyebut dengan 3"_.
+    - ❌ _"basis logaritma dan pangkat saling menghilangkan"_ $\rightarrow$ ✅ Gunakan: _"berdasarkan sifat dasar logaritma $\log\_{a}(a^{p}) = p$, nilainya sama dengan pangkatnya"_.
+    - ❌ _"masuk ke dalam perut fungsi"_, _"kurva tabrakan"_, _"menembus dinding cekungan"_, _"garis meleset"_ $\rightarrow$ ✅ Gunakan: _"substitusikan fungsi $g(x)$ ke dalam fungsi $f$"_, _"kedua kurva berpotongan"_, _"melalui titik di daerah dalam parabola ($y > x^{2}$)"_, _"tidak memotong kurva"_.
 
-## Solution Structure (MANDATORY)
+## Solution Structure & Student-First Pedagogy (MANDATORY)
 
-Solutions are written for **school students**. They must be **complete, sequential, and easy to understand**.
+Solutions are written for **all school students, especially those who are still in the learning stage (do NOT assume the student is already clever or advanced)**. Every explanation must be **structured, concrete, sequential, and completely free of mental leaps**.
+
+### Pedagogical Design Rules for `Cara Konseptual` vs `Trik Cepat` (CRITICAL)
+
+1. **No Premature Calculations in `**Diketahui:**`:**
+   - Write the given information cleanly as presented in the question (e.g., `- Nilai $x = {{b}}^{-1}$`). Do NOT perform algebraic conversions inside `Diketahui` (leave $x = {{b}}^{-1} = \frac{1}{{{b}}}$ for Step 1 so the student sees the progression in order).
+2. **Structured Numbered Points in `**Konsep dan Rumus Dasar:**`:**
+   - When a problem involves 2 or more basic properties (e.g., negative exponent rule + logarithm power rule + identity $\log_a a = 1$), present them as a **numbered list (`1.`, `2.`, `3.`)** with clear bold labels instead of a single dense paragraph.
+   - Explain fundamental properties completely (e.g., show that $\log_a(a^p) = p \cdot \log_a a$ and $\log_a a = 1$, rather than telling the student to blindly memorize $\log_a(a^p) = p$).
+3. **Concrete Inside-Out Progression in `Cara Konseptual` (Distinct from `Trik Cepat`):**
+   - Students who are still learning understand concrete numbers much better than abstract nested symbols.
+   - In **`Cara Konseptual`**, always calculate from the **innermost / most concrete component outward** (e.g., Step 1: calculate the numerical value of $x$ and $g(x)$ $\rightarrow$ Step 2: substitute that number into $f(x)$ $\rightarrow$ Step 3: evaluate $\log_a f(x)$ using basic logarithm rules $p \cdot \log_a a = p \cdot 1 = p$).
+   - In **`Trik Cepat`**, show the **outside-in shortcut insight** (e.g., recognizing that the large base $a$ does not need to be calculated because $\log_a(a^{g(x)})$ simplifies directly to the exponent $g(x) = kx$, and then substituting $x = b^{-1}$).
+4. **One Small Visual Change per Line & Connect the Final Step to `**Ditanya:**`:**
+   - Never skip intermediate visual transitions inside `$$\begin{aligned} ... \end{aligned}$$` (neither in `Cara Konseptual` nor in `Trik Cepat`).
+   - If one step has two distinct sub-operations (such as converting $x = b^{-1}$ to $\frac{1}{b}$ and then plugging it into $g(x)$), split them into **two short `$$...$$` blocks** with a friendly connecting sentence.
+   - The final equation block of `Cara Konseptual` MUST explicitly start with the target expression asked in `**Ditanya:**` (e.g., $\log_{{{a}}} f(x) = \dots$), never ending abruptly on an intermediate variable like $g(x) = {{answer}}$.
 
 ### Mandatory Structure for Math/Physics Calculation Questions
 
@@ -26,30 +49,30 @@ Solution 1 (Cara Konseptual) — MANDATORY for ALL questions:
   - Bullet list of known variables/values
   - MANDATORY: Extract implicit hidden variables (e.g., "dilepas" → v₀ = 0)
   - MANDATORY: Include standard assumptions (e.g., g = 10 m/s²)
-  
+
   **Ditanya:** (bold label) + target variable/question
-  
+
   **Konsep dan Rumus Dasar:** (bold label, standalone header)
   Paragraph: MANDATORY theory explanation in friendly tone BEFORE calculating
-  
+
   **Langkah Penyelesaian:** (bold label, standalone header)
-  
+
   > **Tip:** Short formula reminder (optional, concise callout)
-  
+
   Numbered steps (1., 2., 3.) or single paragraph if only 1 step
   Each step with equation blocks as needed
-  
+
   Final paragraph: "Jadi, jawaban yang benar adalah ${{answer}}$."
 
 Solution 2 (Trik Cepat) — OPTIONAL:
   Only if a valid shortcut/trick exists. Omit for pure recall/definition questions.
-  
+
   > **Tip:** Shortcut name/formula
-  
+
   Paragraph: Explain how the shortcut applies BEFORE calculating
-  
+
   Equation blocks with calculation
-  
+
   Final paragraph: "Jadi, jawaban yang benar adalah ${{answer}}$."
 ```
 
@@ -106,6 +129,7 @@ $$\begin{aligned} \frac{1}{C_s} &= \frac{1}{C_1} + \frac{1}{C_2} + \frac{1}{C_3}
 ```
 
 Example of Function Evaluation & Substitution:
+
 ```latex
 $$\begin{aligned} g(x) &= ax^2 + bx + c \\ g(0) &= a(0)^2 + b(0) + c \\ &= c \end{aligned}$$
 ```
@@ -138,6 +162,7 @@ $$\begin{aligned} g(x) &= ax^2 + bx + c \\ g(0) &= a(0)^2 + b(0) + c \\ &= c \en
 ### Use Inline LaTeX for Variable References
 
 When referencing variables/values within explanatory text, use inline LaTeX:
+
 ```markdown
 Substitusikan nilai $x = {{x}}$ ke dalam fungsi $f(x) = 3x + 7$:
 ```
@@ -157,7 +182,7 @@ For questions involving calculations or mathematical functions, you **MUST** par
 
 4. **Generate ≥5 Variable Sets (CRITICAL CONSTRAINT - AVOID REPEATING/NON-TERMINATING DECIMALS):**
    - Each set must satisfy all mathematical constraints (e.g., log domains, positive denominators, no division by zero).
-   - **Pencegahan Koma Desimal Tak Berhingga (e.g., `2.666666666667`):** Saat mendesain variasi angka untuk operasi pembagian / pecahan (seperti $\frac{c_{num}}{c_{den}} \cdot x$), nilai variabel **WAJIB saling membagi habis (*divisible*)** atau menghasilkan bilangan bulat / desimal berhingga rapi. Contoh: jika $c_{den} = 3$, maka variabel pengali $x$ harus merupakan kelipatan dari $3$ ($3, 6, 9, \dots$), BUKAN bilangan sembarang seperti $4$ yang menghasilkan `2.6666...`.
+   - **Pencegahan Koma Desimal Tak Berhingga (e.g., `2.666666666667`):** Saat mendesain variasi angka untuk operasi pembagian / pecahan (seperti $\frac{c_{num}}{c_{den}} \cdot x$), nilai variabel **WAJIB saling membagi habis (_divisible_)** atau menghasilkan bilangan bulat / desimal berhingga rapi. Contoh: jika $c_{den} = 3$, maka variabel pengali $x$ harus merupakan kelipatan dari $3$ ($3, 6, 9, \dots$), BUKAN bilangan sembarang seperti $4$ yang menghasilkan `2.6666...`.
    - **Pecahan Simbolik di LaTeX:** Jika soal menginginkan hasil dalam bentuk pecahan $\frac{a}{b}$, jangan biarkan MathJS membaginya menjadi floating number desimal. Definisikan pembilang (`num`) dan penyebut (`den`) secara terpisah di YAML, lalu render sebagai `\frac{{{num}}}{{{den}}}` di Markdown.
 
 5. **Include Distractor Options**: All `opt1`, `opt2`, etc. must be in the variables array.
@@ -182,22 +207,24 @@ Set `variableFormulas: null` ONLY for pure conceptual/theoretical questions (e.g
 ### Plausible Distractors
 
 For `multiple_choice` and `multiple_select`, incorrect options **MUST be plausible**:
+
 - Results derived from common student misconceptions (wrong sign, unit conversion errors)
 - Results from almost-correct calculation steps
 - **NOT** arbitrary or obviously random numbers
 
 ### Scoring Logic
 
-| Type | maxScore | Correct options |
-|------|----------|----------------|
-| `multiple_choice` | `1` | Exactly 1 correct |
-| `multiple_select` | Total correct | 2+ correct |
-| `essay` | Defined by rubric | No options |
-| `statement_reasoning` | `1` | Exactly 1 correct (Benar or Salah) |
+| Type                  | maxScore          | Correct options                    |
+| --------------------- | ----------------- | ---------------------------------- |
+| `multiple_choice`     | `1`               | Exactly 1 correct                  |
+| `multiple_select`     | Total correct     | 2+ correct                         |
+| `essay`               | Defined by rubric | No options                         |
+| `statement_reasoning` | `1`               | Exactly 1 correct (Benar or Salah) |
 
 ### No Option Letter References (CRITICAL)
 
 Since option positions are randomized in the database, NEVER reference option letters in solutions:
+
 - ❌ "Jawaban yang benar adalah opsi D"
 - ❌ "Maka pilihan yang tepat adalah C"
 - ✅ "Jadi, nilai dari $\log_{{{a_val}}} f(x)$ adalah **${{answer}}$**."
@@ -207,11 +234,13 @@ Since option positions are randomized in the database, NEVER reference option le
 Kalimat penutup pembahasan **WAJIB bersifat kontekstual** (merujuk langsung pada apa yang ditanyakan di bagian `**Ditanya:**` / konteks soal), BUKAN template kalimat kaku yang selalu sama di setiap soal.
 
 ### Pola Baku:
+
 ```markdown
 Jadi, [apa yang ditanyakan / konteks soal] adalah **${{kunci}}** [satuan jika ada].
 ```
 
 ### Contoh Penerapan:
+
 - **Soal Aljabar / Nilai Fungsi:**
   - `**Ditanya:**` Nilai dari $\log_{{{a_val}}} f(x)$
   - ✅ `Jadi, nilai dari $\log_{{{a_val}}} f(x)$ adalah **${{answer}}$**.`
@@ -225,14 +254,22 @@ Jadi, [apa yang ditanyakan / konteks soal] adalah **${{kunci}}** [satuan jika ad
   - ✅ `Jadi, organ yang berfungsi menyaring darah dalam tubuh adalah **{{answer}}**.`
 
 ### Aturan Wajib:
+
 1. **Dilarang menyebut huruf opsi** (`opsi A`, `pilihan B`).
 2. **Wajib sinkron dengan variabel opsi benar:** Placeholder yang ditebalkan (`**${{kunci}}$**`) HARUS persis sama dengan placeholder di baris `- [x] ${{kunci}}`.
-3. Hindari kalimat penutup ambigu atau tidak tuntas seperti *"maka hasilnya adalah..."* atau *"jawaban cepatnya adalah..."*.
+3. Hindari kalimat penutup ambigu atau tidak tuntas seperti _"maka hasilnya adalah..."_ atau _"jawaban cepatnya adalah..."_.
 
-## Callout / Alert Rules
+## Callout / Alert Rules (`> **Tip:**` & `Trik Cepat`)
 
-- `> **Tip:**` callouts MUST contain a concrete formula, key mathematical identity, or specific shortcut equation (e.g., `> **Tip:** (\sqrt{x})^y = x^{y/2}`).
-- NEVER use generic procedural phrases like *"Memangkatkan kedua ruas secara langsung"*, *"Substitusi nilai"*, or *"Gunakan rumus"*.
+- **UNIVERSAL & SIMPLE FORMULAS ONLY — NO PLACEHOLDERS `{{...}}` OR SPECIFIC NUMBERS IN `> **Tip:**` (CRITICAL):**
+  - `> **Tip:**` callouts MUST contain a **clean, memorable mathematical identity, general theorem, or general shortcut formula** written with standard algebraic symbols.
+  - **STRICTLY FORBIDDEN** to write problem-specific numbers or `{{placeholder}}` variables inside `> **Tip:**`.
+  - **DO NOT** cram 4–5 abstract letters into a convoluted conditional sentence inside `> **Tip:**`. Keep it simple so a learning student immediately understands it (e.g., `> **Tip:** Sifat dasar logaritma: $\log_{a} \left(a^{p}\right) = p$ dan $b^{-1} = \frac{1}{b}$`).
+- **TRIK CEPAT MUST BE WRITTEN FOR STUDENTS WHO ARE STILL LEARNING (NO MENTAL LEAPS):**
+  - Never assume the student is already advanced. "Trik Cepat" means showing the student the **smart/direct insight** (e.g., recognizing that a large number like $2020$ is a distractor that doesn't need to be computed), **NOT** deleting intermediate algebraic lines and forcing the student to guess how line 1 jumped to line 2!
+  - **One Small Visual Change per Line in Equation Blocks:** Every line in `$$\begin{aligned} ... \end{aligned}$$` must change only one small part from the line above it (e.g., write $\log_{a} f(x) \rightarrow \log_{a}(a^{g(x)}) \rightarrow g(x) \rightarrow kx$, and $k \cdot b^{-1} \rightarrow k \cdot \frac{1}{b} \rightarrow \frac{k}{b}$).
+  - **Separate Distinct Thinking Phases:** Split distinct mental steps (e.g., simplifying the algebraic form vs. substituting the numerical value) into two short equation blocks with a friendly one-sentence bridge between them.
+- NEVER use generic procedural phrases like _"Memangkatkan kedua ruas secara langsung"_, _"Substitusi nilai"_, or _"Gunakan rumus"_.
 - If no distinct formula shortcut exists, OMIT the `> **Tip:**` blockquote entirely and start directly with narrative text.
 - DO NOT include emojis (💡, 🚀) — the UI renders icons automatically.
 - Keep callouts concise — short formula/identity reminders, not long narrative explanations.

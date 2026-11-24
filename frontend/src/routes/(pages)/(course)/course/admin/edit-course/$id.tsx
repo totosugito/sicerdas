@@ -4,22 +4,13 @@ import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageTitle, ErrorContainer } from "@/components/general";
 import { EnumContentStatus } from "@/api/types";
-import {
-  useUpdateCourse,
-  useDetailCourse,
-  useUploadCourseThumbnail,
-} from "@/api/course/courses";
+import { useUpdateCourse, useDetailCourse, useUploadCourseThumbnail } from "@/api/course/courses";
 import type { CourseFormValues, AdminUpdateCourseInput } from "@/api/course/courses";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 import { AppRoute } from "@/constants/app-route";
-import {
-  CourseForm,
-  CourseEditSkeleton,
-} from "@/features/course/courses/create-course";
+import { CourseForm, CourseEditSkeleton } from "@/features/course/courses/create-course";
 
-export const Route = createFileRoute(
-  "/(pages)/(course)/course/admin/edit-course/$id",
-)({
+export const Route = createFileRoute("/(pages)/(course)/course/admin/edit-course/$id")({
   component: AdminCourseEditPage,
 });
 
@@ -112,7 +103,7 @@ function AdminCourseEditPage() {
 
   if (isError || (!isLoading && !detailData?.data)) {
     return (
-      <div className="flex flex-col gap-6 w-full container mx-auto p-4 md:p-6">
+      <div className="flex flex-col gap-6 w-full">
         <div className="flex items-center gap-4">
           <PageTitle
             title={t(($) => $.course.courses.create.title)}

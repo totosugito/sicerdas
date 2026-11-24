@@ -135,10 +135,7 @@ function RouteComponent() {
     updateUrlParams(page, searchTerm);
   };
 
-  const handleFilterChange = (filters: {
-    categories: string[];
-    grades: number[];
-  }) => {
+  const handleFilterChange = (filters: { categories: string[]; grades: number[] }) => {
     updateUrlParams(1, searchTerm, filters);
   };
 
@@ -156,7 +153,7 @@ function RouteComponent() {
 
   if (isError) {
     return (
-      <div className="flex flex-1 w-full px-6 py-6">
+      <div className="page-container">
         <ErrorContainer
           className="min-h-[420px]"
           title={t(($) => $.labels.error)}
@@ -169,8 +166,8 @@ function RouteComponent() {
   }
 
   return (
-    <div className="flex flex-col flex-1 w-full px-6 pb-6">
-      <div className="flex flex-col lg:flex-row gap-6 pt-6">
+    <div className="page-container-no-top">
+      <div className="flex flex-col lg:flex-row gap-6 pt-6 w-full">
         {/* Sidebar Filters */}
         <aside className="hidden lg:block w-70 flex-shrink-0">
           <Card>
@@ -235,10 +232,7 @@ function RouteComponent() {
 
           {/* Courses Display */}
           {!isLoading && courses.length > 0 && (
-            <CourseCard
-              courses={courses}
-              viewMode={viewMode === "grid" ? "grid" : "list"}
-            />
+            <CourseCard courses={courses} viewMode={viewMode === "grid" ? "grid" : "list"} />
           )}
 
           {/* Empty State */}
@@ -253,10 +247,7 @@ function RouteComponent() {
               }
             >
               {(searchTerm || isAnyFilterActive) && (
-                <Button
-                  variant="outline"
-                  onClick={clearAllFilters}
-                >
+                <Button variant="outline" onClick={clearAllFilters}>
                   {t(($) => $.course.public.clearSearch)}
                 </Button>
               )}
@@ -270,7 +261,7 @@ function RouteComponent() {
                 pageIndex={currentPage - 1}
                 setPageIndex={(newPageIndex) => handlePageChange(newPageIndex + 1)}
                 pageSize={12}
-                setPageSize={() => { }}
+                setPageSize={() => {}}
                 rowsCount={totalCourses}
                 paginationData={{
                   page: currentPage,

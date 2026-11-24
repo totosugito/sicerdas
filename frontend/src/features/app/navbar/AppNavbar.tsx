@@ -106,12 +106,12 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
   };
 
   return (
-    <header className="sticky top-0 z-50 px-4 py-1 bg-card/70 flex h-12 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 backdrop-blur-xl ">
-      <div className={cn("navbar-size", "flex items-center justify-between w-full")}>
+    <header className="sticky top-0 z-50 py-1 bg-card/70 flex h-12 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 backdrop-blur-xl">
+      <div className={cn("navbar-size", "flex items-center justify-between")}>
         <div className="flex flex-row gap-4 items-center">
           {isShowSidebar ? (
             <>
-              <SidebarTrigger variant={"outline"} onClick={() => { }} />
+              <SidebarTrigger variant={"outline"} onClick={() => {}} />
               <Separator orientation={"vertical"} className={"h-6"} style={{ height: "20px" }} />
             </>
           ) : (
@@ -184,7 +184,10 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
                   )}
                 >
                   <Sun
-                    className={cn("mr-2 h-4 w-4", theme === "light" ? "text-primary-foreground" : "")}
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      theme === "light" ? "text-primary-foreground" : "",
+                    )}
                   />
                   {t(($) => $.labels.light)}
                 </DropdownMenuItem>
@@ -198,7 +201,10 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
                   )}
                 >
                   <Moon
-                    className={cn("mr-2 h-4 w-4", theme === "dark" ? "text-primary-foreground" : "")}
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      theme === "dark" ? "text-primary-foreground" : "",
+                    )}
                   />
                   {t(($) => $.labels.dark)}
                 </DropdownMenuItem>
@@ -281,7 +287,13 @@ export function AppNavbar({ isShowSidebar = false }: { isShowSidebar?: boolean }
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button render={<Link to={AppRoute.auth.signIn.url} />} nativeButton={false} variant="default" size="sm" className="px-3">
+            <Button
+              render={<Link to={AppRoute.auth.signIn.url} />}
+              nativeButton={false}
+              variant="default"
+              size="sm"
+              className="px-3"
+            >
               {t(($) => $.labels.login)}
             </Button>
           )}

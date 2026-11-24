@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function CourseEditSkeleton() {
   return (
-    <div className="flex flex-col gap-6 w-full container mx-auto p-4 md:p-6">
+    <div className="flex flex-col gap-6 w-full">
       <div className="flex items-center gap-4">
         <Skeleton className="h-8 w-1/3" />
       </div>

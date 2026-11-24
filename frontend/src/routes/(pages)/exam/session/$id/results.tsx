@@ -157,7 +157,7 @@ function SessionResultsComponent() {
   };
 
   return (
-    <div className={cn("page-container-no-top")}>
+    <div className={cn("page-container")}>
       <ResultsHeader
         title={t(($) => $.exam.sessions.results.title)}
         description={t(($) => $.exam.sessions.results.description)}

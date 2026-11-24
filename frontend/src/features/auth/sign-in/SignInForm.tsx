@@ -1,5 +1,6 @@
 import { useAppForm } from "@/components/ui/form-tanstack";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { LoginFormValues } from "@/types/auth";
 import { FormInput, FormPassword } from "@/components/forms";
 import { Loader2, Mail, Lock, LogIn, AlertCircle } from "lucide-react";
@@ -82,7 +83,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
                 field={field}
                 item={signInFormData.form.email}
                 leftIcon={<Mail />}
-                className="h-10 rounded-md bg-background/50 focus:bg-background transition-colors"
+                className="h-10 rounded-xl bg-background/50 focus:bg-background transition-colors"
                 showMessage={true}
               />
             )}
@@ -94,7 +95,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
                 field={field}
                 item={signInFormData.form.password}
                 leftIcon={<Lock />}
-                className="h-10 rounded-md bg-background/50 focus:bg-background transition-colors"
+                className="h-10 rounded-xl bg-background/50 focus:bg-background transition-colors"
                 showMessage={true}
               />
             )}
@@ -102,11 +103,8 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
         </div>
 
         <div className="flex items-center justify-between text-xs sm:text-sm pt-1">
-          <label className="flex items-center space-x-2 text-muted-foreground hover:text-foreground cursor-pointer select-none">
-            <input
-              type="checkbox"
-              className="rounded border-border text-primary focus:ring-primary/40"
-            />
+          <label className="flex items-center gap-2 text-muted-foreground hover:text-foreground cursor-pointer select-none">
+            <Checkbox />
             <span>{t(($) => $.labels.rememberMe)}</span>
           </label>
           <Link
@@ -119,7 +117,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
 
         <Button
           type="submit"
-          className="w-full font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all active:scale-[0.99] mt-2"
+          className="w-full h-10 rounded-xl font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all active:scale-[0.99] mt-2"
           size="lg"
           disabled={loading}
         >
@@ -153,7 +151,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
             <Button
               type="button"
               variant="outline"
-              className="w-full font-medium border-border/80 hover:bg-accent/60 transition-all active:scale-[0.99]"
+              className="w-full h-10 rounded-xl font-medium border-border/80 hover:bg-accent/60 transition-all active:scale-[0.99]"
               size="lg"
               onClick={onGoogleSignIn}
             >
@@ -180,7 +178,7 @@ export const SignInForm = ({ onFormSubmit, loading, errorMessage, onGoogleSignIn
           </div>
         )}
 
-        <div className="text-center pt-3 border-t border-border/40">
+        <div className="text-center pt-4 border-t border-border/40">
           <p className="text-xs sm:text-sm text-muted-foreground">
             {t(($) => $.auth.signIn.newUser)}{" "}
             <Link

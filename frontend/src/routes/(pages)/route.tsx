@@ -1,82 +1,82 @@
-import { AppNavbar } from '@/features/app'
-import { Footer } from '@/features/landing'
-import { createFileRoute, Outlet, useLocation } from '@tanstack/react-router'
-import { useState, useEffect, useMemo } from 'react'
-import { Button } from '@/components/ui/button'
-import { ChevronUp } from 'lucide-react'
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { useAuthStore } from '@/stores/useAuthStore'
-import { isAdmin } from '@/types/auth'
-import AppSidebar from '@/features/app/sidebar/AppSidebar'
-import { useAdminNav } from '@/constants/admin-nav'
-import { SidebarData } from '@/features/app/sidebar/types'
+import { AppNavbar } from "@/features/app";
+import { Footer } from "@/features/landing";
+import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import { useState, useEffect, useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { ChevronUp } from "lucide-react";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { isAdmin } from "@/types/auth";
+import AppSidebar from "@/features/app/sidebar/AppSidebar";
+import { useAdminNav } from "@/constants/admin-nav";
+import { SidebarData } from "@/features/app/sidebar/types";
 
-export const Route = createFileRoute('/(pages)')({
-    component: RouteComponent,
-})
+export const Route = createFileRoute("/(pages)")({
+  component: RouteComponent,
+});
 
 function RouteComponent() {
-    const [showGoToTop, setShowGoToTop] = useState(false)
-    const { user, openSideMenu, setOpenSideMenu } = useAuthStore()
-    const adminNav = useAdminNav()
-    const location = useLocation()
+  const [showGoToTop, setShowGoToTop] = useState(false);
+  const { user, openSideMenu, setOpenSideMenu } = useAuthStore();
+  const adminNav = useAdminNav();
+  const location = useLocation();
 
-    const isExamSession = useMemo(() => {
-        const path = location.pathname
-        return path.includes('/exam/session/') && !path.includes('/results')
-    }, [location.pathname])
+  const isExamSession = useMemo(() => {
+    const path = location.pathname;
+    return path.includes("/exam/session/") && !path.includes("/results");
+  }, [location.pathname]);
 
-    const showSidebar = useMemo(() => isAdmin(user), [user])
+  const showSidebar = useMemo(() => isAdmin(user), [user]);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            // Show the button when scrolled more than 300px
-            setShowGoToTop(window.scrollY > 300)
-        }
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show the button when scrolled more than 300px
+      setShowGoToTop(window.scrollY > 300);
+    };
 
-        // Add scroll event listener
-        window.addEventListener('scroll', handleScroll)
+    // Add scroll event listener
+    window.addEventListener("scroll", handleScroll);
 
-        // Clean up event listener on component unmount
-        return () => {
-            window.removeEventListener('scroll', handleScroll)
-        }
-    }, [])
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
-    const scrollToTop = () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        })
-    }
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
-    let webNav: Record<string, any> = {};
-    if (showSidebar) {
-        webNav = adminNav;
-    }
+  let webNav: Record<string, any> = {};
+  if (showSidebar) {
+    webNav = adminNav;
+  }
 
-    return (
-        <SidebarProvider open={openSideMenu} onOpenChange={setOpenSideMenu}>
-            {showSidebar && <AppSidebar navItems={webNav as SidebarData} />}
-            <SidebarInset>
-                <div className="flex flex-col min-h-screen w-full bg-background">
-                    <AppNavbar isShowSidebar={showSidebar} />
-                    <Outlet />
-                    {!isExamSession && <Footer />}
+  return (
+    <SidebarProvider open={openSideMenu} onOpenChange={setOpenSideMenu}>
+      {showSidebar && <AppSidebar navItems={webNav as SidebarData} />}
+      <SidebarInset>
+        <div className="flex flex-col min-h-screen w-full min-w-0 bg-background">
+          <AppNavbar isShowSidebar={showSidebar} />
+          <Outlet />
+          {!isExamSession && <Footer />}
 
-                    {/* Go to Top Button */}
-                    {!isExamSession && showGoToTop && (
-                        <Button
-                            onClick={scrollToTop}
-                            className="fixed bottom-8 right-8 z-50 rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300"
-                            size="icon"
-                            aria-label="Go to top"
-                        >
-                            <ChevronUp className="h-6 w-6" />
-                        </Button>
-                    )}
-                </div>
-            </SidebarInset>
-        </SidebarProvider >
-    )
+          {/* Go to Top Button */}
+          {!isExamSession && showGoToTop && (
+            <Button
+              onClick={scrollToTop}
+              className="fixed bottom-8 right-8 z-50 rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300"
+              size="icon"
+              aria-label="Go to top"
+            >
+              <ChevronUp className="h-6 w-6" />
+            </Button>
+          )}
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
 }

@@ -1,5 +1,13 @@
 import { motion } from "framer-motion";
-import { Search, Sparkles, X, ArrowRight, Smartphone, BookMarked, CheckCircle2 } from "lucide-react";
+import {
+  Search,
+  Sparkles,
+  X,
+  ArrowRight,
+  Smartphone,
+  BookMarked,
+  CheckCircle2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAppTranslation } from "@/lib/i18n-typed";
@@ -16,18 +24,22 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
   const stats = [
     { label: t(($) => $.landing.hero.stats.books), value: "9,000+", icon: BookMarked },
     { label: t(($) => $.landing.hero.stats.access), value: "100%", icon: CheckCircle2 },
-    { label: t(($) => $.landing.hero.stats.multiplatform), value: t(($) => $.landing.hero.stats.multiplatformVal), icon: Smartphone },
+    {
+      label: t(($) => $.landing.hero.stats.multiplatform),
+      value: t(($) => $.landing.hero.stats.multiplatformVal),
+      icon: Smartphone,
+    },
   ];
 
   return (
-    <section className="py-8 md:py-12 px-4 sm:px-6 relative overflow-hidden bg-gradient-to-b from-primary/5 via-background to-background">
+    <section className="py-8 md:py-12 relative overflow-hidden bg-gradient-to-b from-primary/5 via-background to-background">
       {/* Background ambient lighting and subtle grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
       <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-gradient-to-br from-primary/20 via-accent/15 to-transparent rounded-full blur-[100px] pointer-events-none -z-10" />
       <div className="absolute top-1/3 -left-32 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none -z-10" />
       <div className="absolute top-1/3 -right-32 w-80 h-80 bg-accent/10 rounded-full blur-3xl pointer-events-none -z-10" />
 
-      <div className="container mx-auto max-w-6xl relative z-10">
+      <div className="app-container relative z-10">
         {/* Centered Heading & Search Box */}
         <div className="max-w-3xl mx-auto text-center">
           {/* Badge Pill */}
@@ -133,7 +145,9 @@ export function HeroSection({ searchQuery, setSearchQuery, handleSearch }: HeroS
                   <Icon className="h-4 w-4" />
                 </div>
                 <div>
-                  <div className="text-sm sm:text-base font-bold text-foreground tracking-tight">{item.value}</div>
+                  <div className="text-sm sm:text-base font-bold text-foreground tracking-tight">
+                    {item.value}
+                  </div>
                   <div className="text-xs text-muted-foreground line-clamp-1">{item.label}</div>
                 </div>
               </div>

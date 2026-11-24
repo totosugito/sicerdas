@@ -15,7 +15,8 @@ export function QuickAccessSection() {
       icon: BookOpen,
       to: AppRoute.book.books.url,
       badge: t(($) => $.landing.quickAccess.portals.books.badge),
-      color: "from-blue-500/20 to-indigo-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30",
+      color:
+        "from-blue-500/20 to-indigo-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30",
       accentBg: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
       tags: ["KTSP 2006", "K13", "Kurikulum Merdeka"],
     },
@@ -25,7 +26,8 @@ export function QuickAccessSection() {
       icon: Atom,
       to: AppRoute.periodicTable.periodicTable.url,
       badge: t(($) => $.landing.quickAccess.portals.periodicTable.badge),
-      color: "from-emerald-500/20 to-teal-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+      color:
+        "from-emerald-500/20 to-teal-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
       accentBg: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
       tags: ["118 Unsur", "Isotop", "Kamus Kimia"],
     },
@@ -35,7 +37,8 @@ export function QuickAccessSection() {
       icon: Scale,
       to: AppRoute.constitution.pancasila.url,
       badge: t(($) => $.landing.quickAccess.portals.constitution.badge),
-      color: "from-amber-500/20 to-orange-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30",
+      color:
+        "from-amber-500/20 to-orange-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30",
       accentBg: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
       tags: ["Pancasila", "UUD 1945", "Amandemen I-IV"],
     },
@@ -45,19 +48,20 @@ export function QuickAccessSection() {
       icon: Award,
       to: AppRoute.exam.exams.url,
       badge: t(($) => $.landing.quickAccess.portals.quiz.badge),
-      color: "from-purple-500/20 to-pink-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30",
+      color:
+        "from-purple-500/20 to-pink-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30",
       accentBg: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
       tags: ["UTBK / SNBT", "CPNS", "Simulasi Mandiri"],
     },
   ];
 
   return (
-    <section className="py-8 md:py-12 px-4 sm:px-6 relative overflow-hidden bg-muted/30">
+    <section className="py-8 md:py-12 relative overflow-hidden bg-muted/30">
       {/* Background soft gradients */}
       <div className="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none -z-10" />
       <div className="absolute top-1/2 right-0 -translate-y-1/2 w-96 h-96 bg-accent/5 rounded-full blur-3xl pointer-events-none -z-10" />
 
-      <div className="container mx-auto max-w-6xl">
+      <div className="app-container">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}

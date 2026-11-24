@@ -1,45 +1,41 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { usePeriodicElementQuery } from '@/api/periodic-table/periodic-table'
-import {
-  ElementErrorDisplay, ElementSkeleton,
-} from '@/features/periodic-table/element-details'
-import {
-  ElementIsotope, ElementHeroIsotope,
-} from '@/features/periodic-table/element-isotope'
-import { useAppTranslation } from '@/lib/i18n-typed'
-import { useAppStore } from '@/stores/useAppStore'
-import { useAuthStore } from '@/stores/useAuthStore'
-import { getElementStyle } from '@/features/periodic-table/utils/element-styles'
+import { createFileRoute } from "@tanstack/react-router";
+import { usePeriodicElementQuery } from "@/api/periodic-table/periodic-table";
+import { ElementErrorDisplay, ElementSkeleton } from "@/features/periodic-table/element-details";
+import { ElementIsotope, ElementHeroIsotope } from "@/features/periodic-table/element-isotope";
+import { useAppTranslation } from "@/lib/i18n-typed";
+import { useAppStore } from "@/stores/useAppStore";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { getElementStyle } from "@/features/periodic-table/utils/element-styles";
 
-export const Route = createFileRoute('/(pages)/(periodic-table)/periodic/isotope/$id')({
+export const Route = createFileRoute("/(pages)/(periodic-table)/periodic/isotope/$id")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   const { t } = useAppTranslation();
-  const { id } = Route.useParams()
+  const { id } = Route.useParams();
   const store = useAppStore();
   const { viewMode } = store.periodicTable;
-  const language = useAuthStore(state => state.language);
+  const language = useAuthStore((state) => state.language);
 
-  const { data: element, isLoading, isError, error } = usePeriodicElementQuery({ atomicNumber: parseInt(id), language });
+  const {
+    data: element,
+    isLoading,
+    isError,
+    error,
+  } = usePeriodicElementQuery({ atomicNumber: parseInt(id), language });
 
   if (isLoading) {
-    return <ElementSkeleton />
+    return <ElementSkeleton />;
   }
 
   if (isError) {
-    return (
-      <ElementErrorDisplay
-        error={error}
-        atomicNumber={parseInt(id)}
-      />
-    );
+    return <ElementErrorDisplay error={error} atomicNumber={parseInt(id)} />;
   }
 
   const atomColor = getElementStyle(element?.atomicGroup as string, viewMode).atomColor ?? "";
   return (
-    <div className="container mx-auto gap-4 flex flex-col">
+    <div className="w-full gap-4 flex flex-col">
       {element && (
         <>
           <ElementHeroIsotope element={element} theme={viewMode} />
@@ -52,5 +48,5 @@ function RouteComponent() {
         </>
       )}
     </div>
-  )
+  );
 }

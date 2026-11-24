@@ -9,11 +9,7 @@ import { DialogModal } from "@/components/dialog";
 import { AppRoute } from "@/constants/app-route";
 import { useDetailCourse, useAdminCourseStructure } from "@/api/course/courses";
 import { CourseStructureChapter } from "@/api/course/courses/admin/structure-course";
-import {
-  useDeleteChapter,
-  useReorderChapter,
-  ChapterItem,
-} from "@/api/course/chapters";
+import { useDeleteChapter, useReorderChapter, ChapterItem } from "@/api/course/chapters";
 import { CourseStatsHeader } from "@/features/course/courses/detail-course/CourseStatsHeader";
 import { DialogChapterForm } from "@/features/course/courses/detail-course/DialogChapterForm";
 import { ChapterList } from "@/features/course/courses/detail-course/ChapterList";
@@ -22,9 +18,7 @@ import { Pencil, Plus, Layers, Trash2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { showNotifSuccess, showNotifError } from "@/lib/show-notif";
 
-export const Route = createFileRoute(
-  "/(pages)/(course)/course/admin/detail-course/$id",
-)({
+export const Route = createFileRoute("/(pages)/(course)/course/admin/detail-course/$id")({
   component: DetailCoursePage,
 });
 
@@ -138,7 +132,7 @@ function DetailCoursePage() {
 
   if (isError) {
     return (
-      <div className="flex flex-col w-full space-y-4 container mx-auto p-4 md:p-6">
+      <div className="flex flex-col w-full space-y-4">
         <ErrorContainer
           title={t(($) => $.labels.error)}
           message={error?.message || t(($) => $.course.courses.table.noData)}
@@ -240,12 +234,12 @@ function DetailCoursePage() {
             { text: t(($) => $.course.chapters.deleteConsequence1) },
             ...(chapterToDelete && chapterToDelete.lectures && chapterToDelete.lectures.length > 0
               ? [
-                {
-                  text: t(($) => $.course.chapters.deleteConsequenceWithCount, {
-                    count: chapterToDelete.lectures.length,
-                  }),
-                },
-              ]
+                  {
+                    text: t(($) => $.course.chapters.deleteConsequenceWithCount, {
+                      count: chapterToDelete.lectures.length,
+                    }),
+                  },
+                ]
               : []),
             { text: t(($) => $.course.chapters.deleteConsequence2) },
           ],

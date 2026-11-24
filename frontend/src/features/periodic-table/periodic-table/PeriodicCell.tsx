@@ -23,7 +23,7 @@ export const PeriodicCell = ({
   isHeaderHighlighted = false,
   isSearchMatch = false,
   isSearchActive = false,
-  theme = 'theme1', // Default theme
+  theme = "theme1", // Default theme
 }: PeriodicCellProps) => {
   const { atomicNumber, atomicSymbol, atomicName, atomicGroup } = element;
 
@@ -38,17 +38,23 @@ export const PeriodicCell = ({
       <div
         className={cn(
           "flex items-center justify-center transition-all duration-300 border",
-          isHeaderHighlighted
-            ? "bg-muted/95 shadow-sm"
-            : "bg-card/95 backdrop-blur-sm"
+          isHeaderHighlighted ? "bg-muted shadow-sm" : "bg-card",
         )}
-        style={{ width: element.idx === 0 ? `${cellSize / 2}px` : `${cellSize}px`, height: element.idy === 0 ? `${cellSize / 2}px` : `${cellSize}px` }}
+        style={{
+          width: element.idx === 0 ? `${cellSize / 2}px` : `${cellSize}px`,
+          height: element.idy === 0 ? `${cellSize / 2}px` : `${cellSize}px`,
+        }}
       >
-        <span className={cn(
-          "text-sm font-bold transition-colors",
-          isHeaderHighlighted ? "text-primary dark:text-primary-foreground" : "text-foreground dark:text-white/90"
-        )}>
-          {atomicSymbol}{((element.idy === 0) && (element.idx > 0)) ? (getColumnGroup(atomicSymbol)) : ""}
+        <span
+          className={cn(
+            "text-sm font-bold transition-colors",
+            isHeaderHighlighted
+              ? "text-primary dark:text-primary-foreground"
+              : "text-foreground dark:text-white/90",
+          )}
+        >
+          {atomicSymbol}
+          {element.idy === 0 && element.idx > 0 ? getColumnGroup(atomicSymbol) : ""}
         </span>
       </div>
     );
@@ -73,7 +79,7 @@ export const PeriodicCell = ({
         "h-auto w-full",
         "hover:scale-105 hover:shadow-lg",
         colorClass,
-        (isSearchActive && !isSearchMatch) ? "opacity-40 dark:opacity-30" : ""
+        isSearchActive && !isSearchMatch ? "opacity-40 dark:opacity-30" : "",
       )}
       style={{
         width: `${cellSize}px`,
@@ -82,16 +88,10 @@ export const PeriodicCell = ({
     >
       <div>
         {/* Atomic Number */}
-        <div className="absolute top-1 left-1 text-xs font-bold">
-          {displayNumber}
-        </div>
+        <div className="absolute top-1 left-1 text-xs font-bold">{displayNumber}</div>
 
         {/* Symbol - Main Focus */}
-        {displaySymbol && (
-          <div className="text-xl font-bold">
-            {displaySymbol}
-          </div>
-        )}
+        {displaySymbol && <div className="text-xl font-bold">{displaySymbol}</div>}
 
         {/* Element Name */}
         <div className="absolute bottom-1 left-1 right-1 text-center text-[0.7rem] font-medium truncate">

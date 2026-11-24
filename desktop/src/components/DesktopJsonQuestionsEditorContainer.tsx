@@ -20,7 +20,9 @@ interface DesktopJsonQuestionsEditorContainerProps {
   onExportSuccess?: () => void;
 }
 
-export function DesktopJsonQuestionsEditorContainer({ onExportSuccess }: DesktopJsonQuestionsEditorContainerProps) {
+export function DesktopJsonQuestionsEditorContainer({
+  onExportSuccess,
+}: DesktopJsonQuestionsEditorContainerProps) {
   const { t } = useAppTranslation();
 
   const [state, setState] = useState({
@@ -34,7 +36,7 @@ export function DesktopJsonQuestionsEditorContainer({ onExportSuccess }: Desktop
     variablesExpanded: true,
     reasonExpanded: true,
     previewExpanded: true,
-    tab: "edit",
+    tab: "preview",
   });
 
   const {
@@ -75,9 +77,7 @@ export function DesktopJsonQuestionsEditorContainer({ onExportSuccess }: Desktop
   const jsonQuestions = useAppStore((state) => state.jsonQuestions);
   const setJsonQuestions = useAppStore((state) => state.setJsonQuestions);
   const setJsonQuestionsGlobalParams = useAppStore((state) => state.setJsonQuestionsGlobalParams);
-  const setJsonQuestionsPackageParams = useAppStore(
-    (state) => state.setJsonQuestionsPackageParams,
-  );
+  const setJsonQuestionsPackageParams = useAppStore((state) => state.setJsonQuestionsPackageParams);
   const currentJsonFilePath = useAppStore((state) => state.currentJsonFilePath);
 
   const globalForm = useAppForm({

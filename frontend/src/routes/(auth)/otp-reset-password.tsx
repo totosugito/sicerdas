@@ -91,7 +91,8 @@ function ResetPasswordComponent() {
     return (
       <AuthLayout>
         <AuthHeader
-          icon={<CheckCircle2 className="w-7 h-7 text-emerald-500" />}
+          variant="success"
+          icon={<CheckCircle2 />}
           title={t(($) => $.auth.resetPassword.successTitle)}
         />
         <div className="text-center space-y-6 animate-in fade-in-50 duration-200">
@@ -118,7 +119,8 @@ function ResetPasswordComponent() {
     return (
       <AuthLayout>
         <AuthHeader
-          icon={<AlertCircle className="w-7 h-7 text-destructive" />}
+          variant="destructive"
+          icon={<AlertCircle />}
           title={t(($) => $.auth.resetPassword.errorTitle)}
         />
         <div className="text-center space-y-6 animate-in fade-in-50 duration-200">
@@ -169,7 +171,7 @@ function ResetPasswordComponent() {
         errorMessage={errorMessage}
       />
 
-      <div className="text-center pt-3 border-t border-border/40 mt-4">
+      <div className="text-center pt-4 border-t border-border/40 mt-4">
         <p className="text-xs sm:text-sm text-muted-foreground">
           {t(($) => $.auth.resetPassword.backToSignIn)}{" "}
           <Link
@@ -183,4 +185,3 @@ function ResetPasswordComponent() {
     </AuthLayout>
   );
 }
-

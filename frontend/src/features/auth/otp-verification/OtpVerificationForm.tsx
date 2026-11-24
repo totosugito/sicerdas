@@ -3,11 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, ShieldCheck, AlertCircle } from "lucide-react";
 import { useAppTranslation } from "@/lib/i18n-typed";
 import * as z from "zod";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 export type OtpVerificationFormValues = {
   email: string;
@@ -89,7 +85,7 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
                         <InputOTPSlot
                           key={index}
                           index={index}
-                          className="h-12 w-11 sm:w-12 text-xl font-bold rounded-xl border border-input bg-background/60 dark:bg-card/60 shadow-xs data-[state=active]:border-primary data-[state=active]:ring-2 data-[state=active]:ring-primary/20 transition-all"
+                          className="h-11 w-10 sm:h-12 sm:w-12 text-lg sm:text-xl font-bold rounded-xl border border-input bg-background/60 dark:bg-card/60 shadow-xs data-[state=active]:border-primary data-[state=active]:ring-2 data-[state=active]:ring-primary/20 transition-all"
                         />
                       ))}
                     </InputOTPGroup>
@@ -103,7 +99,7 @@ export const OtpVerificationForm = ({ onFormSubmit, loading, errorMessage, email
 
         <Button
           type="submit"
-          className="w-full font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all active:scale-[0.99] mt-2"
+          className="w-full h-10 rounded-xl font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all active:scale-[0.99] mt-2"
           size="lg"
           disabled={loading}
         >

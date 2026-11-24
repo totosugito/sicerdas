@@ -10,8 +10,8 @@ export function Footer() {
   const { t } = useAppTranslation();
 
   return (
-    <footer className="bg-card/50 border-t border-border/80 pt-8 pb-6 px-4 sm:px-6 relative z-10">
-      <div className="container mx-auto max-w-6xl">
+    <footer className="bg-card/50 border-t border-border/80 pt-8 pb-6 relative z-10">
+      <div className="app-container">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 mb-8">
           {/* Brand Column */}
           <div className="lg:col-span-4 flex flex-col gap-3">
@@ -145,9 +145,7 @@ export function Footer() {
               {t(($) => $.landing.footer.contact.title)}
             </h3>
             <div className="space-y-2 text-xs text-muted-foreground">
-              <p className="leading-relaxed">
-                {t(($) => $.landing.footer.aboutDesc)}
-              </p>
+              <p className="leading-relaxed">{t(($) => $.landing.footer.aboutDesc)}</p>
               <a
                 href={`mailto:${APP_CONFIG.app.mailTo}`}
                 className="inline-block text-primary hover:underline font-medium break-all"
@@ -159,7 +157,10 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border/60 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} {APP_CONFIG.app.name}. {t(($) => $.landing.footer.allRightsReserved)}</p>
+          <p>
+            © {new Date().getFullYear()} {APP_CONFIG.app.name}.{" "}
+            {t(($) => $.landing.footer.allRightsReserved)}
+          </p>
           <div className="flex items-center gap-4">
             <Link to={AppRoute.web.privacy.url} className="hover:text-foreground transition-colors">
               {t(($) => $.landing.footer.information.privacy)}

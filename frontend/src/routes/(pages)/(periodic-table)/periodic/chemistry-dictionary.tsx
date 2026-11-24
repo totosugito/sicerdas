@@ -1,95 +1,92 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useState, useMemo } from 'react'
-import { useAppTranslation } from '@/lib/i18n-typed'
-import { useAuthStore } from '@/stores/useAuthStore'
-import dictionaryDataEn from '@/data/table-periodic/periodic_dictionary_en.json'
-import dictionaryDataId from '@/data/table-periodic/periodic_dictionary_id.json'
-import { ChemistryCard, AlphabetFilter, ALPHABET_GROUPS, ChemistryHeader, SearchBar } from '@/features/periodic-table/chemistry-dictionary'
-import { LocalePagination } from '@/components/ui/locale-pagination'
+import { createFileRoute } from "@tanstack/react-router";
+import { useState, useMemo } from "react";
+import { useAppTranslation } from "@/lib/i18n-typed";
+import { useAuthStore } from "@/stores/useAuthStore";
+import dictionaryDataEn from "@/data/table-periodic/periodic_dictionary_en.json";
+import dictionaryDataId from "@/data/table-periodic/periodic_dictionary_id.json";
+import {
+  ChemistryCard,
+  AlphabetFilter,
+  ALPHABET_GROUPS,
+  ChemistryHeader,
+  SearchBar,
+} from "@/features/periodic-table/chemistry-dictionary";
+import { LocalePagination } from "@/components/ui/locale-pagination";
 
 // Define the dictionary entry type
 interface ChemistryTerm {
-  id: number
-  w: string
-  tr: string
+  id: number;
+  w: string;
+  tr: string;
 }
 
 function ChemistryDictionary() {
-  const { t } = useAppTranslation()
-  const authLanguage = useAuthStore((state) => state.language)
-  const [activeGroup, setActiveGroup] = useState('all')
-  const [currentPage, setCurrentPage] = useState(1)
-  const [searchTerm, setSearchTerm] = useState('')
-  const itemsPerPage = 12
+  const { t } = useAppTranslation();
+  const authLanguage = useAuthStore((state) => state.language);
+  const [activeGroup, setActiveGroup] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const itemsPerPage = 12;
 
   // Filter entries based on active group and search term
   const filteredTerms = useMemo(() => {
     // Select dictionary data based on current language from auth store
-    const dictionaryData = authLanguage === 'id' ? dictionaryDataId : dictionaryDataEn
-    let filtered = dictionaryData as ChemistryTerm[]
+    const dictionaryData = authLanguage === "id" ? dictionaryDataId : dictionaryDataEn;
+    let filtered = dictionaryData as ChemistryTerm[];
 
     // Apply alphabet group filter
-    if (activeGroup !== 'all') {
-      const group = ALPHABET_GROUPS.find(g => g.id === activeGroup)
+    if (activeGroup !== "all") {
+      const group = ALPHABET_GROUPS.find((g) => g.id === activeGroup);
       if (group) {
-        filtered = filtered.filter(entry =>
-          group.range.test(entry.w.charAt(0).toUpperCase())
-        )
+        filtered = filtered.filter((entry) => group.range.test(entry.w.charAt(0).toUpperCase()));
       }
     }
 
     // Apply search term filter
     if (searchTerm) {
-      const term = searchTerm.toLowerCase()
-      filtered = filtered.filter(entry =>
-        entry.w.toLowerCase().includes(term) ||
-        entry.tr.toLowerCase().includes(term)
-      )
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(
+        (entry) => entry.w.toLowerCase().includes(term) || entry.tr.toLowerCase().includes(term),
+      );
     }
 
-    return filtered
-  }, [activeGroup, searchTerm, authLanguage])
+    return filtered;
+  }, [activeGroup, searchTerm, authLanguage]);
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredTerms.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const paginatedTerms = filteredTerms.slice(startIndex, startIndex + itemsPerPage)
+  const totalPages = Math.ceil(filteredTerms.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedTerms = filteredTerms.slice(startIndex, startIndex + itemsPerPage);
 
   // Reset to first page when filters change
   const handleFilterChange = (groupId: string) => {
-    setActiveGroup(groupId)
-    setCurrentPage(1)
-  }
+    setActiveGroup(groupId);
+    setCurrentPage(1);
+  };
 
   const handleSearchChange = (term: string) => {
-    setSearchTerm(term)
-    setCurrentPage(1)
-  }
+    setSearchTerm(term);
+    setCurrentPage(1);
+  };
 
   return (
-    <div className="container mx-auto pt-6">
+    <div className="w-full">
       <ChemistryHeader
-        totalTerms={authLanguage === 'id' ? dictionaryDataId.length : dictionaryDataEn.length}
+        totalTerms={authLanguage === "id" ? dictionaryDataId.length : dictionaryDataEn.length}
       />
 
       {/* Search Bar */}
-      <SearchBar
-        searchTerm={searchTerm}
-        onSearchChange={handleSearchChange}
-      />
+      <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
 
       {/* Alphabet Group Navigation */}
-      <AlphabetFilter
-        activeGroup={activeGroup}
-        onGroupChange={handleFilterChange}
-      />
+      <AlphabetFilter activeGroup={activeGroup} onGroupChange={handleFilterChange} />
 
       {/* Results Info */}
       <div className="mb-4 text-sm text-muted-foreground text-center">
-        {t($ => $.periodicTable.chemistryDictionary.resultsInfo, {
+        {t(($) => $.periodicTable.chemistryDictionary.resultsInfo, {
           start: startIndex + 1,
           end: Math.min(startIndex + itemsPerPage, filteredTerms.length),
-          total: filteredTerms.length
+          total: filteredTerms.length,
         })}
       </div>
 
@@ -114,17 +111,17 @@ function ChemistryDictionary() {
       ) : (
         <div className="text-center py-12">
           <div className="text-lg font-medium text-foreground mb-2">
-            {t($ => $.periodicTable.chemistryDictionary.noEntriesFound.title)}
+            {t(($) => $.periodicTable.chemistryDictionary.noEntriesFound.title)}
           </div>
           <p className="text-muted-foreground">
-            {t($ => $.periodicTable.chemistryDictionary.noEntriesFound.description)}
+            {t(($) => $.periodicTable.chemistryDictionary.noEntriesFound.description)}
           </p>
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export const Route = createFileRoute('/(pages)/(periodic-table)/periodic/chemistry-dictionary')({
+export const Route = createFileRoute("/(pages)/(periodic-table)/periodic/chemistry-dictionary")({
   component: ChemistryDictionary,
-})
+});
