@@ -13,23 +13,23 @@ Each file represents **one question** and consists of two parts:
 
 ```yaml
 ---
-type: multiple_choice          # REQUIRED: multiple_choice | multiple_select | essay | statement_reasoning
-difficulty: easy               # REQUIRED: easy | medium | hard
-tags:                          # REQUIRED: 1-3 tags in Bahasa Indonesia
+type: multiple_choice # REQUIRED: multiple_choice | multiple_select | essay | statement_reasoning
+difficulty: easy # REQUIRED: easy | medium | hard
+tags: # REQUIRED: 1-3 tags in Bahasa Indonesia
   - Matematika
   - Aljabar
-maxScore: 1                    # REQUIRED: integer, default 1
+maxScore: 1 # REQUIRED: integer, default 1
 scoringStrategy: all_or_nothing # REQUIRED: all_or_nothing | partial | partial_with_penalty
-requiredTier: free             # OPTIONAL: free (default) | pro | enterprise
-isActive: true                 # OPTIONAL: default true
-variableFormulas:              # REQUIRED for math questions, null for pure conceptual
-  variables:                   # At least 5 sets
+requiredTier: free # OPTIONAL: free (default) | pro | enterprise
+isActive: true # OPTIONAL: default true
+variableFormulas: # REQUIRED for math questions, null for pure conceptual
+  variables: # At least 5 sets
     - { x: 5, opt1: 12, opt2: 15, opt3: 22, opt4: 35 }
     - { x: 3, opt1: 10, opt2: 13, opt3: 16, opt4: 21 }
     - { x: 8, opt1: 24, opt2: 28, opt3: 31, opt4: 40 }
     - { x: 10, opt1: 27, opt2: 32, opt3: 37, opt4: 45 }
     - { x: 4, opt1: 14, opt2: 17, opt3: 19, opt4: 25 }
-  solutions:                   # Derived calculations (bare mathjs syntax)
+  solutions: # Derived calculations (bare mathjs syntax)
     term1: "3 * x"
     answer: "3 * x + 7"
 ---
@@ -37,30 +37,30 @@ variableFormulas:              # REQUIRED for math questions, null for pure conc
 
 ### Frontmatter Field Rules
 
-| Field | Required | Rules |
-|-------|----------|-------|
-| `type` | ✅ | Has options → `multiple_choice` or `multiple_select`. No options → `essay`. Has Benar/Salah → `statement_reasoning`. |
-| `difficulty` | ✅ | Recall/memorization → `easy`. Application → `medium`. Analysis/HOTS → `hard`. |
-| `tags` | ✅ | 1–3 broad topic tags in Bahasa Indonesia. If source has chapter header (e.g., `# BAB 7: GETARAN DAN GELOMBANG`), extract chapter title as primary tag. |
-| `maxScore` | ✅ | Default `1` for single-answer MC or SR. Sum of scores for `multiple_select`. Rubric total for `essay`. |
-| `scoringStrategy` | ✅ | Default `all_or_nothing`. Use `partial` only for `multiple_select` or `essay`. |
-| `requiredTier` | ⬜ | Default `free`. Use `pro` or `enterprise` if specified. |
-| `isActive` | ⬜ | Default `true`. |
-| `variableFormulas` | ✅ | `null` for pure conceptual questions. Object with `variables` (≥5 sets) and `solutions` for math questions. |
+| Field              | Required | Rules                                                                                                                                                  |
+| ------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `type`             | ✅       | Has options → `multiple_choice` or `multiple_select`. No options → `essay`. Has Benar/Salah → `statement_reasoning`.                                   |
+| `difficulty`       | ✅       | Recall/memorization → `easy`. Application → `medium`. Analysis/HOTS → `hard`.                                                                          |
+| `tags`             | ✅       | 1–3 broad topic tags in Bahasa Indonesia. If source has chapter header (e.g., `# BAB 7: GETARAN DAN GELOMBANG`), extract chapter title as primary tag. |
+| `maxScore`         | ✅       | Default `1` for single-answer MC or SR. Sum of scores for `multiple_select`. Rubric total for `essay`.                                                 |
+| `scoringStrategy`  | ✅       | Default `all_or_nothing`. Use `partial` only for `multiple_select` or `essay`.                                                                         |
+| `requiredTier`     | ⬜       | Default `free`. Use `pro` or `enterprise` if specified.                                                                                                |
+| `isActive`         | ⬜       | Default `true`.                                                                                                                                        |
+| `variableFormulas` | ✅       | `null` for pure conceptual questions. Object with `variables` (≥5 sets) and `solutions` for math questions.                                            |
 
 ### variableFormulas Rules (CRITICAL)
- 
- - **`variables`**: Array of ≥5 objects. Each object maps placeholder names to numeric or string values. Must include `opt1`, `opt2`, etc.
- - **`solutions`**: Object mapping derived variable names to **plain numeric math expressions with bare variable names**.
-   - ✅ CORRECT (Pure Math): `"term1": "3 * x"`, `"answer": "3 * x + 7"`, `"r1_sq": "r1^2"`
-   - ❌ WRONG: `"term1": "3 * {{x}}"` (no mustache braces in solution formulas!)
-   - ❌ WRONG: `"answer": "Math.sqrt(x)"` (no `Math.` prefix! Use bare `sqrt(x)`)
-   - ❌ **STRICTLY FORBIDDEN (Ternary / If-Else / String Concatenation):**
-     - ❌ `"term": "m === -1 ? '-x' : 'x'"` (will fail in MathJS evaluation)
-     - ❌ `"g_eq": "term + ' + ' + c"` (no string concatenation)
-     - ❌ `"answer": "'1 dan 3 SAJA'"` (text answers should not be in `solutions`)
-   - **How to handle string/formatting variations:** If a variable is a formatted string or text (e.g., equations like `"-x + 3"` or `"2x - 5"`), specify the pre-formatted string directly inside each object in `variables` (e.g. `variables: [{ m: -1, eq: "-x + 3" }]`).
- - Use built-in `mathjs` functions directly: `sqrt()`, `abs()`, `log()`, `pow()`, `sin()`, `cos()`, `tan()`, `pi`, `e`
+
+- **`variables`**: Array of ≥5 objects. Each object maps placeholder names to numeric or string values. Must include `opt1`, `opt2`, etc.
+- **`solutions`**: Object mapping derived variable names to **plain numeric math expressions with bare variable names**.
+  - ✅ CORRECT (Pure Math): `"term1": "3 * x"`, `"answer": "3 * x + 7"`, `"r1_sq": "r1^2"`
+  - ❌ WRONG: `"term1": "3 * {{x}}"` (no mustache braces in solution formulas!)
+  - ❌ WRONG: `"answer": "Math.sqrt(x)"` (no `Math.` prefix! Use bare `sqrt(x)`)
+  - ❌ **STRICTLY FORBIDDEN (Ternary / If-Else / String Concatenation):**
+    - ❌ `"term": "m === -1 ? '-x' : 'x'"` (will fail in MathJS evaluation)
+    - ❌ `"g_eq": "term + ' + ' + c"` (no string concatenation)
+    - ❌ `"answer": "'1 dan 3 SAJA'"` (text answers should not be in `solutions`)
+  - **How to handle string/formatting variations:** If a variable is a formatted string or text (e.g., equations like `"-x + 3"` or `"2x - 5"`), specify the pre-formatted string directly inside each object in `variables` (e.g. `variables: [{ m: -1, eq: "-x + 3" }]`).
+- Use built-in `mathjs` functions directly: `sqrt()`, `abs()`, `log()`, `pow()`, `sin()`, `cos()`, `tan()`, `pi`, `e`
 
 ## Markdown Body Sections
 
@@ -77,6 +77,7 @@ Berapakah hasil dari $3x + 7$ jika $x = {{x}}$?
 ```
 
 For questions with images:
+
 ```markdown
 ## Soal
 
@@ -90,6 +91,7 @@ Tentukan resultan gaya pada benda tersebut.
 ### `## Opsi` — Answer Options
 
 Only for `multiple_choice`, `multiple_select`, and `statement_reasoning`. Uses checkbox list:
+
 - `- [ ]` for incorrect options
 - `- [x]` for correct option(s)
 
@@ -103,6 +105,7 @@ Only for `multiple_choice`, `multiple_select`, and `statement_reasoning`. Uses c
 ```
 
 For text-only options:
+
 ```markdown
 ## Opsi
 
@@ -113,6 +116,7 @@ For text-only options:
 ```
 
 For `statement_reasoning`, always exactly 2 options:
+
 ```markdown
 ## Opsi
 
@@ -132,72 +136,103 @@ Gaya gravitasi sebanding dengan massa benda dan berbanding terbalik dengan kuadr
 
 ### `## Pembahasan: Cara Konseptual` — General Solution (MANDATORY)
 
-The primary solution. Must follow the `Diketahui → Ditanya → Konsep → Langkah` structure.
+The primary solution. Must follow the `Diketahui → Ditanya → Konsep dan Rumus Dasar → Langkah Penyelesaian` structure, designed step-by-step for students who are still learning (concrete inside-out progression, no mental leaps, and `### 🔹 Langkah N:` headings for multi-step solutions).
 
 ```markdown
 ## Pembahasan: Cara Konseptual
 
 **Diketahui:**
-- Fungsi $f(x) = 3x + 7$
-- Nilai $x = {{x}}$
 
-**Ditanya:** Nilai dari $3x + 7$
+- Fungsi eksponen $f(x) = {{a}}^{g(x)}$
+- Fungsi $g(x) = {{k}}x$
+- Nilai $x = {{b}}^{-1}$
+
+**Ditanya:** Nilai dari $\log_{{{a}}} f(x)$
 
 **Konsep dan Rumus Dasar:**
 
-Untuk menentukan nilai dari suatu fungsi aljabar linier, substitusikan nilai variabel yang diketahui secara langsung ke dalam aljabar fungsi tersebut.
+Untuk menyelesaikan soal ini secara bertahap dan mudah diikuti, kita hitung terlebih dahulu nilai yang paling dalam (mulai dari nilai $x$, lalu nilai fungsi $g(x)$, hingga bentuk $f(x)$), baru kemudian menghitung nilai logaritmanya. Ada tiga sifat dasar yang kita gunakan:
+
+1. **Sifat pangkat negatif:** Bilangan berpangkat $-1$ nilainya sama dengan kebalikan pecahannya, yaitu $b^{-1} = \frac{1}{b}$.
+2. **Sifat pangkat pada logaritma:** Pangkat dari bilangan di dalam logaritma dapat diturunkan ke depan menjadi pengali, yaitu $\log_{a}\left(a^{p}\right) = p \cdot \log_{a} a$.
+3. **Sifat basis dan bilangan logaritma yang sama:** Jika basis dan bilangan di dalam logaritma sama, nilainya adalah $1$ ($\log_{a} a = 1$).
 
 **Langkah Penyelesaian:**
 
-Substitusikan nilai $x = {{x}}$ ke dalam fungsi $3x + 7$:
+> **Tip:** $\log_{a}\left(a^{p}\right) = p \cdot \log_{a} a = p$
 
-$$\begin{aligned} f({{x}}) &= 3({{x}}) + 7 \\ &= {{term1}} + 7 \\ &= {{answer}} \end{aligned}$$
+### 🔹 Langkah 1: Menghitung Nilai $g(x)$
 
-Jadi, jawaban yang benar adalah ${{answer}}$.
+Pertama, kita ubah bentuk pangkat negatif pada $x = {{b}}^{-1}$ menjadi pecahan biasa:
+
+$$\begin{aligned} x &= {{b}}^{-1} \\ &= \frac{1}{{{b}}} \end{aligned}$$
+
+Selanjutnya, masukkan nilai $x = \frac{1}{{{b}}}$ ke dalam rumus fungsi $g(x) = {{k}}x$:
+
+$$\begin{aligned} g(x) &= {{k}}x \\ g\left(\frac{1}{{{b}}}\right) &= {{k}} \cdot \frac{1}{{{b}}} \\ &= \frac{{{k}}}{{{b}}} \\ &= {{answer}} \end{aligned}$$
+
+### 🔹 Langkah 2: Menentukan Bentuk $f(x)$
+
+Setelah mendapatkan nilai $g(x) = {{answer}}$, kita masukkan angka tersebut ke dalam pangkat pada fungsi $f(x) = {{a}}^{g(x)}$:
+
+$$\begin{aligned} f(x) &= {{a}}^{g(x)} \\ &= {{a}}^{{{answer}}} \end{aligned}$$
+
+### 🔹 Langkah 3: Menghitung Nilai $\log_{{{a}}} f(x)$
+
+Terakhir, masukkan $f(x) = {{a}}^{{{answer}}}$ ke dalam logaritma yang ditanyakan, lalu gunakan sifat logaritma dengan menurunkan pangkatnya ke depan:
+
+$$\begin{aligned} \log_{{{a}}} f(x) &= \log_{{{a}}} \left({{a}}^{{{answer}}}\right) \\ &= {{answer}} \cdot \log_{{{a}}} {{a}} \\ &= {{answer}} \cdot 1 \\ &= {{answer}} \end{aligned}$$
+
+Jadi, nilai dari $\log_{{{a}}} f(x)$ adalah **${{answer}}$**.
 ```
 
 ### `## Pembahasan: Trik Cepat` — Fast Method Solution (OPTIONAL)
 
-Only include when a genuine calculation shortcut exists. Omit for pure conceptual/recall questions.
+Include when a genuine calculation shortcut or outside-in insight exists. Must still be written for students who are learning (universal formula without `{{...}}` in `> **Tip:**`, no skipped intermediate algebraic transitions inside `$$\begin{aligned}...\end{aligned}$$`, and separate thinking phases with a short bridge sentence).
 
 ```markdown
 ## Pembahasan: Trik Cepat
 
-> **Tip:** Substitusi langsung $x = {{x}}$
+> **Tip:** Sifat dasar logaritma: $\log_{a} \left(a^{p}\right) = p$ dan $b^{-1} = \frac{1}{b}$
 
-Perhitungan singkat tanpa menuliskan langkah umum panjang:
+Angka ${{a}}$ yang besar pada soal ini sebenarnya tidak perlu dihitung. Karena basis logaritma dan bilangan pokok perpangkatan pada $f(x) = {{a}}^{g(x)}$ sudah sama-sama ${{a}}$, maka nilai $\log_{{{a}}} f(x)$ langsung sama dengan pangkatnya saja, yaitu $g(x)$:
 
-$$3({{x}}) + 7 = {{answer}}$$
+$$\begin{aligned} \log_{{{a}}} f(x) &= \log_{{{a}}} \left({{a}}^{g(x)}\right) \\ &= g(x) \\ &= {{k}}x \end{aligned}$$
 
-Jadi, jawaban yang benar adalah ${{answer}}$.
+Selanjutnya, tinggal masukkan nilai $x = {{b}}^{-1}$ (ingat bahwa pangkat $-1$ artinya pecahan $\frac{1}{{{b}}}$):
+
+$$\begin{aligned} \log_{{{a}}} f(x) &= {{k}} \cdot {{b}}^{-1} \\ &= {{k}} \cdot \frac{1}{{{b}}} \\ &= \frac{{{k}}}{{{b}}} \\ &= {{answer}} \end{aligned}$$
+
+Jadi, nilai dari $\log_{{{a}}} f(x)$ adalah **${{answer}}$**.
 ```
 
 ## LaTeX Conventions
 
-| Pattern in Markdown | Meaning |
-|---------------------|---------|
-| `$...$` | Inline math expression |
-| `$$...$$` | Display / standalone math equation |
-| `$$\begin{aligned}...\end{aligned}$$` | Multi-line aligned equation |
+| Pattern in Markdown                   | Meaning                            |
+| ------------------------------------- | ---------------------------------- |
+| `$...$`                               | Inline math expression             |
+| `$$...$$`                             | Display / standalone math equation |
+| `$$\begin{aligned}...\end{aligned}$$` | Multi-line aligned equation        |
 
 For detailed equation quality rules (single equal sign per line, no horizontal chains, no repeated LHS, keeping reciprocal inversion in same block, intermediate steps), see [quality-rules.md](file:///home/toto/Documents/sicerdas/.agents/skills/exam-solution-generator/references/quality-rules.md).
 
 ### TeX Aligned Equation Example
+
 ```latex
 $$\begin{aligned} \frac{1}{C_s} &= \frac{1}{C_1} + \frac{1}{C_2} + \frac{1}{C_3} \\ &= \frac{1}{3} + \frac{1}{6} + \frac{1}{9} \\ &= \frac{6+3+2}{18} \\ &= \frac{11}{18} \\ \implies C_s &= \frac{18}{11} \text{ F} \end{aligned}$$
 ```
 
 ## Text Formatting Conventions
 
-| Pattern in Markdown | Meaning |
-|---------------------|---------|
-| `**Bold Text:**` | Bold label (labels only) |
-| `- list item` | Bullet list item |
-| `1. step text` | Numbered step |
-| `> **Tip:** text` | Tip callout box |
-| `> **Info:** text` | Info callout box |
-| `> **Peringatan:** text` | Warning callout box |
-| `![caption](file.png)` | Image reference |
+| Pattern in Markdown      | Meaning                  |
+| ------------------------ | ------------------------ |
+| `**Bold Text:**`         | Bold label (labels only) |
+| `- list item`            | Bullet list item         |
+| `1. step text`           | Numbered step            |
+| `> **Tip:** text`        | Tip callout box          |
+| `> **Info:** text`       | Info callout box         |
+| `> **Peringatan:** text` | Warning callout box      |
+| `![caption](file.png)`   | Image reference          |
 
 ### Bold Labels — Only These Labels Should Be Bold
 
@@ -208,32 +243,32 @@ $$\begin{aligned} \frac{1}{C_s} &= \frac{1}{C_1} + \frac{1}{C_2} + \frac{1}{C_3}
 
 Never bold entire paragraphs.
 
-### Numbered Steps vs Single Paragraph
+### Multi-Step Headings vs Single Paragraph
 
-- **2+ solution steps:** Use `1.`, `2.`, `3.` numbered list
-- **Only 1 step:** Use a regular paragraph (no `1.` prefix)
+- **2+ solution steps:** Use Markdown Heading 3 `### 🔹 Langkah 1: [Judul Langkah]`, `### 🔹 Langkah 2: [Judul Langkah]`, dst.
+- **Only 1 step:** Use a regular paragraph (no step heading)
 
 ### Callout / Alert Rules
 
 - DO NOT include emojis (💡, 🚀) — the UI renders icons automatically
-- Keep callouts concise — short formula reminders, not long explanations
+- Keep callouts concise — short universal formula reminders, not long explanations
+- NEVER include problem-specific numbers or `{{placeholder}}` variables inside `> **Tip:**`
 - Text and inline math go directly inside the blockquote
 - Supported types via bold prefix: `**Tip:**`, `**Info:**`, `**Peringatan:**`, `**Sukses:**`
 
-## Conclusion Sentence (MANDATORY)
+## Conclusion Sentence (MANDATORY & CONTEXTUAL)
 
-Every solution section (`Cara Konseptual` and `Trik Cepat`) MUST end with exactly:
+Every solution section (`Cara Konseptual` and `Trik Cepat`) MUST end with a contextual conclusion sentence answering what was asked in `**Ditanya:**`:
 
 ```
-Jadi, jawaban yang benar adalah ${{answer}}$.
+Jadi, [apa yang ditanyakan di Ditanya] adalah **${{answer}}$**.
 ```
 
 Or for text answers:
-```
-Jadi, jawaban yang benar adalah **[hasil]**.
-```
 
-Never use variations like "jawaban cepatnya", "maka hasilnya", etc.
+```
+Jadi, [apa yang ditanyakan di Ditanya] adalah **[hasil]**.
+```
 
 ## Parameterization in Text
 
@@ -282,6 +317,7 @@ Berapakah hasil dari $3x + 7$ jika $x = {{x}}$?
 ## Pembahasan: Cara Konseptual
 
 **Diketahui:**
+
 - Fungsi $f(x) = 3x + 7$
 - Nilai $x = {{x}}$
 
@@ -295,17 +331,7 @@ Untuk menentukan nilai dari suatu fungsi aljabar linier, substitusikan nilai var
 
 Substitusikan nilai $x = {{x}}$ ke dalam fungsi $3x + 7$:
 
-$$\begin{aligned} f({{x}}) &= 3({{x}}) + 7 \\ &= {{term1}} + 7 \\ &= {{answer}} \end{aligned}$$
+$$\begin{aligned} f(x) &= 3x + 7 \\ f({{x}}) &= 3({{x}}) + 7 \\ &= {{term1}} + 7 \\ &= {{answer}} \end{aligned}$$
 
-Jadi, jawaban yang benar adalah ${{answer}}$.
-
-## Pembahasan: Trik Cepat
-
-> **Tip:** Substitusi langsung $x = {{x}}$
-
-Perhitungan singkat tanpa menuliskan langkah umum panjang:
-
-$$3({{x}}) + 7 = {{answer}}$$
-
-Jadi, jawaban yang benar adalah ${{answer}}$.
+Jadi, hasil dari $3x + 7$ untuk $x = {{x}}$ adalah **${{answer}}$**.
 ```

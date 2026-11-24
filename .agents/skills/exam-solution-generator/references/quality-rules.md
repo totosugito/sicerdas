@@ -261,12 +261,17 @@ Jadi, [apa yang ditanyakan / konteks soal] adalah **${{kunci}}** [satuan jika ad
 
 ## Callout / Alert Rules (`> **Tip:**` & `Trik Cepat`)
 
-- **UNIVERSAL & SIMPLE FORMULAS ONLY — NO PLACEHOLDERS `{{...}}` OR SPECIFIC NUMBERS IN `> **Tip:**` (CRITICAL):**
-  - `> **Tip:**` callouts MUST contain a **clean, memorable mathematical identity, general theorem, or general shortcut formula** written with standard algebraic symbols.
-  - **STRICTLY FORBIDDEN** to write problem-specific numbers or `{{placeholder}}` variables inside `> **Tip:**`.
-  - **DO NOT** cram 4–5 abstract letters into a convoluted conditional sentence inside `> **Tip:**`. Keep it simple so a learning student immediately understands it (e.g., `> **Tip:** Sifat dasar logaritma: $\log_{a} \left(a^{p}\right) = p$ dan $b^{-1} = \frac{1}{b}$`).
+- **UNIVERSAL FORMULAS ONLY — NO PLACEHOLDERS `{{...}}` OR SPECIFIC NUMBERS IN `> **Tip:**` (CRITICAL):**
+  - `> **Tip:**` callouts MUST contain a **universal mathematical identity, general theorem, or general shortcut formula** written with standard algebraic symbols ($a, b, c, m, h, k, u, x_0$).
+  - **STRICTLY FORBIDDEN** to write problem-specific numbers or `{{placeholder}}` variables inside `> **Tip:**` (e.g., ❌ `> **Tip:** $(g \circ f)(x) = {{b}}(x^2 + {{a}}) + {{c}}$`, ❌ `> **Tip:** $(f \circ g)({{x0}}) = f(g({{x0}}))$`). A tip that is hardcoded to one problem's numbers is not a reusable formula!
+  - ✅ **Good examples:**
+    - `> **Tip:** $(f \circ g)(x) = f(g(x))$`
+    - `> **Tip:** $(ax + b)^{2} = a^{2}x^{2} + 2abx + b^{2}$`
+    - `> **Tip:** Uji titik $x = 0 \implies$ Suku konstanta $(g \circ f)(0) = g(f(0))$`
+    - `> **Tip:** Jika $f(p \cdot u) = c - k(p \cdot u)$, maka $f(t) = c - kt$`
 - **TRIK CEPAT MUST BE WRITTEN FOR STUDENTS WHO ARE STILL LEARNING (NO MENTAL LEAPS):**
   - Never assume the student is already advanced. "Trik Cepat" means showing the student the **smart/direct insight** (e.g., recognizing that a large number like $2020$ is a distractor that doesn't need to be computed), **NOT** deleting intermediate algebraic lines and forcing the student to guess how line 1 jumped to line 2!
+  - **Keep `> **Tip:**` Simple & Memorable:** Do not cram 4–5 abstract letters into a complex conditional rule inside `> **Tip:**`. State the clean core identity (e.g., `> **Tip:** Sifat dasar logaritma: $\log_{a} \left(a^{p}\right) = p$ dan $b^{-1} = \frac{1}{b}$`).
   - **One Small Visual Change per Line in Equation Blocks:** Every line in `$$\begin{aligned} ... \end{aligned}$$` must change only one small part from the line above it (e.g., write $\log_{a} f(x) \rightarrow \log_{a}(a^{g(x)}) \rightarrow g(x) \rightarrow kx$, and $k \cdot b^{-1} \rightarrow k \cdot \frac{1}{b} \rightarrow \frac{k}{b}$).
   - **Separate Distinct Thinking Phases:** Split distinct mental steps (e.g., simplifying the algebraic form vs. substituting the numerical value) into two short equation blocks with a friendly one-sentence bridge between them.
 - NEVER use generic procedural phrases like _"Memangkatkan kedua ruas secara langsung"_, _"Substitusi nilai"_, or _"Gunakan rumus"_.

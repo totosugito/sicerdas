@@ -1,22 +1,24 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { useAppTranslation, getTranslationKey } from '@/lib/i18n-typed';
-import { Trans } from 'react-i18next';
-import { createFileRoute } from '@tanstack/react-router';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-
+import React, { useState, useMemo, useCallback } from "react";
+import { useAppTranslation, getTranslationKey } from "@/lib/i18n-typed";
+import { Trans } from "react-i18next";
+import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger
-} from '@/components/ui/accordion';
-import { Search, X, ChevronDown, ChevronUp } from 'lucide-react';
-import butirPancasilaData from '@/data/constitution/butir_pancasila.json';
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Search } from "lucide-react";
+import butirPancasilaData from "@/data/constitution/butir_pancasila.json";
+import {
+  ConstitutionHero,
+  ConstitutionSearchBar,
+  highlightConstitutionText,
+  matchesConstitutionQuery,
+} from "@/features/constitution";
 
-// Define TypeScript interfaces for our data
 interface ButirItem {
   id: number;
   isi: string;
@@ -30,354 +32,199 @@ interface PancasilaItem {
   data: ButirItem[];
 }
 
-interface FilteredPancasilaItem extends PancasilaItem {
-  originalDataCount?: number;
+interface VisiblePancasilaItem extends PancasilaItem {
+  /** Total butir in this sila, regardless of the active search. */
+  totalCount: number;
+  /** Butir that actually match the search (0 when only the sila title matched). */
+  matchedCount: number;
 }
 
-// Define color map for cards
-const colorMap = {
-  1: 'from-red-50 to-white border-red-200 dark:from-gray-800 dark:to-gray-900 dark:border-gray-700',
-  2: 'from-white to-red-50 border-red-200 dark:from-gray-900 dark:to-gray-800 dark:border-gray-700',
-  3: 'from-red-50 to-white border-red-200 dark:from-gray-800 dark:to-gray-900 dark:border-gray-700',
-  4: 'from-white to-red-50 border-red-200 dark:from-gray-900 dark:to-gray-800 dark:border-gray-700',
-  5: 'from-red-50 to-white border-red-200 dark:from-gray-800 dark:to-gray-900 dark:border-gray-700'
-};
-
-// Sub-component for displaying a single Pancasila item
 const PancasilaCard: React.FC<{
-  sila: FilteredPancasilaItem;
+  sila: VisiblePancasilaItem;
   searchTerm: string;
   isExpanded: boolean;
-  iconMap: Record<number, React.ReactNode>;
-  highlightText: (text: string, query: string) => React.ReactNode;
-}> = ({ sila, searchTerm, isExpanded, iconMap, highlightText }) => {
+}> = ({ sila, searchTerm, isExpanded }) => {
   const { t } = useAppTranslation();
 
-  // Filter butir based on search term for display
-  const filteredButir = useMemo(() => {
-    if (!searchTerm.trim()) return sila.data;
-    return sila.data.filter(butir =>
-      butir.isi.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [sila.data, searchTerm]);
+  const isSearching = !!searchTerm.trim();
+  const isAutoExpanded = isExpanded || isSearching;
+  const silaLabel = t(($) => $.constitution.butirPancasila.sila);
 
-  // Use originalDataCount if available, otherwise use current data length
-  const silaCount = sila.originalDataCount ?? sila.data.length;
-  const matchingButirCount = searchTerm ? filteredButir.length : silaCount;
+  const countLabel =
+    isSearching && sila.matchedCount > 0
+      ? t(($) => $.constitution.butirPancasila.matchingButir, {
+          matchingCount: sila.matchedCount,
+          totalCount: sila.totalCount,
+        })
+      : t(($) => $.constitution.butirPancasila.butirPengamalanCount, {
+          count: sila.totalCount,
+        });
 
   return (
-    <Card
-      className={`bg-gradient-to-br ${colorMap[sila.id as keyof typeof colorMap]} border-2 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 dark:shadow-gray-900`}
-    >
-      <CardHeader>
-        <div className="flex items-start gap-4">
-          <div className="p-2 bg-white rounded-lg shadow-md border-2 border-red-200 dark:bg-gray-800 dark:border-gray-700">
-            <div className="text-red-600 dark:text-red-400">
-              {iconMap[sila.id]}
-            </div>
-          </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <Badge className={'bg-red-600 text-white hover:bg-red-700 dark:bg-red-400 dark:hover:bg-red-600 dark:text-gray-900'}>
-                {t($ => $.constitution.butirPancasila.sila)} {sila.id}
-              </Badge>
-            </div>
-            <CardTitle className="sm:text-lg text-gray-900 leading-tight dark:text-white">
-              {highlightText(sila.sila, searchTerm)}
-            </CardTitle>
-            <CardDescription className="text-gray-600 mt-2 dark:text-gray-300">
-              {searchTerm
-                ? t($ => $.constitution.butirPancasila.matchingButir, { matchingCount: matchingButirCount, totalCount: silaCount })
-                : t($ => $.constitution.butirPancasila.butirPengamalanCount, { count: silaCount })}
-            </CardDescription>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className='pt-0 pb-6'>
-        <Accordion className="w-full" defaultValue={isExpanded ? [`butir-${sila.id}`] : []}>
-          <AccordionItem value={`butir-${sila.id}`} className="border-none">
-            <AccordionTrigger className="text-red-700 hover:text-red-800 font-semibold hover:no-underline py-0 dark:text-red-400 dark:hover:text-red-300">
-              <span className="flex items-center gap-2">
-                {t($ => $.constitution.butirPancasila.viewButir)}
-              </span>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="mt-4 space-y-4">
-                {filteredButir.map((item: ButirItem) => (
-                  <div
-                    key={item.id}
-                    className="flex gap-4 p-4 bg-white rounded-lg shadow-sm border border-red-100 hover:border-red-300 transition-colors duration-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-gray-600"
-                  >
-                    <div className="flex-shrink-0">
-                      <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold text-sm dark:bg-red-400 dark:text-gray-900">
-                        {item.id}
-                      </div>
-                    </div>
-                    <p className="text-gray-700 leading-relaxed flex-1 dark:text-gray-300">
-                      {highlightText(item.isi, searchTerm)}
-                    </p>
-                  </div>
-                ))}
+    <Card className="border-border bg-card shadow-xs overflow-hidden">
+      <Accordion
+        key={`sila-${sila.id}-${isAutoExpanded}`}
+        multiple
+        className="w-full"
+        defaultValue={isAutoExpanded ? [`butir-${sila.id}`] : []}
+      >
+        <AccordionItem value={`butir-${sila.id}`} className="border-none">
+          {/* The whole header row is the trigger so the click target is large and obvious */}
+          <AccordionTrigger className="items-center gap-3 sm:gap-4 rounded-none p-4 sm:p-5 hover:bg-muted/40 hover:no-underline">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-muted/50 border border-border/80 p-1.5 flex items-center justify-center shrink-0">
+                <img
+                  src={sila.image}
+                  alt={`${silaLabel} ${sila.id}`}
+                  className="w-full h-full object-contain"
+                />
               </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </CardContent>
+              <div className="min-w-0 space-y-0.5">
+                <div className="text-xs font-medium text-muted-foreground">
+                  <span className="font-semibold text-red-600 dark:text-red-400">
+                    {silaLabel} {sila.id}
+                  </span>
+                  <span className="mx-1.5">·</span>
+                  {countLabel}
+                </div>
+                <div className="text-base sm:text-lg font-bold text-foreground leading-snug">
+                  {highlightConstitutionText(sila.sila, searchTerm)}
+                </div>
+              </div>
+            </div>
+          </AccordionTrigger>
+
+          <AccordionContent className="pb-0">
+            <div className="divide-y divide-border/60 border-t border-border/60 px-4 sm:px-5">
+              {sila.data.map((item: ButirItem) => (
+                <div key={item.id} className="flex gap-3 sm:gap-4 py-3">
+                  <span className="text-xs sm:text-sm font-semibold text-red-600 dark:text-red-400 tabular-nums w-6 shrink-0 pt-0.5">
+                    {item.id}.
+                  </span>
+                  <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed flex-1">
+                    {highlightConstitutionText(item.isi, searchTerm)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </Card>
   );
 };
 
-// Sub-component for displaying a single Pancasila item
-
-
-
-// Sub-component for the empty state
-const EmptyState: React.FC<{ searchTerm: string; clearSearch: () => void }> = ({ searchTerm, clearSearch }) => {
-  const { t } = useAppTranslation();
-  return (
-    <div className="text-center py-10">
-      <div className="mb-4 flex justify-center">
-        <div className="p-4 bg-gray-100 rounded-full dark:bg-gray-800">
-          <Search className="w-12 h-12 text-gray-400 dark:text-gray-500" />
-        </div>
-      </div>
-      <h3 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white">
-        {t($ => $.constitution.butirPancasila.noResultTitle)}
-      </h3>
-      <p className="text-gray-600 mb-4 dark:text-gray-400">
-        {t($ => $.constitution.butirPancasila.noResultDesc, { query: searchTerm })}
-      </p>
-      <Button
-        onClick={clearSearch}
-        className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 dark:bg-red-700 dark:hover:bg-red-800"
-      >
-        {t($ => $.constitution.butirPancasila.clearSearch)}
-      </Button>
-    </div>
-  );
-};
-
-export const Route = createFileRoute('/(pages)/constitution/butir-pancasila')({
+export const Route = createFileRoute("/(pages)/constitution/butir-pancasila")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const { t } = useAppTranslation();
-  // Search state
-  const [searchTerm, setSearchTerm] = useState('');
-  // Expand/collapse all state
+  const [searchTerm, setSearchTerm] = useState("");
   const [expandedAll, setExpandedAll] = useState(false);
 
-  // Toggle expand/collapse all
   const toggleExpandAll = useCallback(() => {
-    setExpandedAll(prev => !prev);
+    setExpandedAll((prev) => !prev);
   }, []);
 
-  // Clear search
   const clearSearch = useCallback(() => {
-    setSearchTerm('');
+    setSearchTerm("");
   }, []);
 
-  // Create iconMap using image paths from JSON data
-  const iconMap = useMemo(() => {
-    const map: Record<number, React.ReactNode> = {};
-    butirPancasilaData.forEach((item: PancasilaItem) => {
-      map[item.id] = <img src={item.image} alt={`${t($ => $.constitution.butirPancasila.sila)} ${item.id}`} className="w-8 h-8" />;
-    });
-    return map;
-  }, [t]);
+  // Single source of truth: the list, the per-card counts and the summary all derive from this.
+  const { visibleSila, butirCount } = useMemo(() => {
+    const isSearching = !!searchTerm.trim();
+    let totalMatchedButir = 0;
 
-  // Highlight text for search results
-  const highlightText = useCallback((text: string, query: string) => {
-    if (!query.trim()) return text;
+    const items: VisiblePancasilaItem[] = [];
+    for (const sila of butirPancasilaData as PancasilaItem[]) {
+      const base = { ...sila, totalCount: sila.data.length };
 
-    const parts = text.split(new RegExp(`(${query})`, 'gi'));
-    return parts.map((part, index) =>
-      part.toLowerCase() === query.toLowerCase() ? (
-        <mark key={index} className="bg-yellow-200 text-gray-900 px-1 rounded dark:bg-yellow-300 dark:text-gray-900">
-          {part}
-        </mark>
-      ) : (
-        part
-      )
-    );
-  }, []);
-
-  // Filter data based on search term
-  const filteredData = useMemo(() => {
-    if (!searchTerm.trim()) return butirPancasilaData;
-
-    const query = searchTerm.toLowerCase();
-    return butirPancasilaData
-      .map((sila: PancasilaItem) => {
-        const silaLower = sila.sila.toLowerCase();
-        const silaMatch = silaLower.includes(query);
-        const matchingButir = sila.data.filter((butir: ButirItem) =>
-          butir.isi.toLowerCase().includes(query)
-        );
-
-        if (silaMatch || matchingButir.length > 0) {
-          return {
-            ...sila,
-            data: matchingButir.length > 0 ? matchingButir : sila.data,
-            // Preserve original count
-            originalDataCount: sila.data.length
-          };
-        }
-        return null;
-      })
-      .filter((sila) => sila !== null) as FilteredPancasilaItem[];
-  }, [searchTerm]);
-
-  // Calculate total matching butir for search summary
-  const searchSummary = useMemo(() => {
-    if (!searchTerm.trim()) return { butirCount: 0, silaCount: 0 };
-
-    let butirCount = 0;
-
-    // Count how many silas have matching butir items
-    // Using the same logic as in the filtering to ensure consistency
-    const silaWithMatches = butirPancasilaData.reduce((count, sila) => {
-      const query = searchTerm.toLowerCase();
-      const silaLower = sila.sila.toLowerCase();
-      const silaMatch = silaLower.includes(query);
-      const hasMatchingButir = sila.data.some(butir =>
-        butir.isi.toLowerCase().includes(query)
-      );
-
-      if (silaMatch || hasMatchingButir) {
-        // Count matching butir items in this sila
-        sila.data.forEach(butir => {
-          if (butir.isi.toLowerCase().includes(query)) {
-            butirCount++;
-          }
-        });
-
-        return count + 1;
+      if (!isSearching) {
+        items.push({ ...base, matchedCount: sila.data.length });
+        continue;
       }
-      return count;
-    }, 0);
 
-    return {
-      butirCount,
-      // Show the count of silas that have matching butir items
-      silaCount: silaWithMatches
-    };
+      const matchedButir = sila.data.filter((b) => matchesConstitutionQuery(b.isi, searchTerm));
+      const titleMatch = matchesConstitutionQuery(sila.sila, searchTerm);
+      if (matchedButir.length === 0 && !titleMatch) continue;
+
+      totalMatchedButir += matchedButir.length;
+      items.push({
+        ...base,
+        // If only the title matched, still show the sila's butir so the card is not empty.
+        data: matchedButir.length > 0 ? matchedButir : sila.data,
+        matchedCount: matchedButir.length,
+      });
+    }
+
+    return { visibleSila: items, butirCount: totalMatchedButir };
   }, [searchTerm]);
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      <Card className="overflow-hidden">
-        <CardHeader className="bg-muted/30 border-b">
-          {/* Hero Section */}
-          <section className="relative py-6">
-            <div className="flex flex-col gap-2 mx-auto text-center">
-              <div className="mb-6 flex justify-center">
-                <div className="p-4 rounded-full shadow-sm transform hover:scale-110 transition-transform duration-300">
-                  <img src="/constitution/images/ic_pancasila.png" alt="Pancasila" className="w-24 h-24" />
-                </div>
-              </div>
-              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-                {t($ => $.constitution.butirPancasila.title)}
-              </h1>
-              <p className="text-lg text-gray-600 mb-8 mx-auto leading-relaxed dark:text-gray-300">
-                {t($ => $.constitution.butirPancasila.description)}
-              </p>
-              <div className="flex items-center justify-center gap-4">
-                <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
-                  {t($ => $.constitution.butirPancasila.fiveSila)}
-                </Badge>
-                <Badge className="bg-white hover:bg-gray-50 text-red-600 border-2 border-red-600 px-6 py-2 text-sm font-semibold dark:bg-gray-800 dark:text-red-400 dark:border-red-700 dark:hover:bg-gray-700">
-                  {t($ => $.constitution.butirPancasila.fortyFiveButir)}
-                </Badge>
-              </div>
-            </div>
-          </section>
-        </CardHeader>
+      <ConstitutionHero
+        title={t(($) => $.constitution.butirPancasila.title)}
+        description={t(($) => $.constitution.butirPancasila.description)}
+        badges={[
+          t(($) => $.constitution.butirPancasila.fiveSila),
+          t(($) => $.constitution.butirPancasila.fortyFiveButir),
+        ]}
+      >
+        <ConstitutionSearchBar
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          onClearSearch={clearSearch}
+          placeholder={t(($) => $.constitution.butirPancasila.searchPlaceholder)}
+          expandedAll={expandedAll}
+          onToggleExpandAll={toggleExpandAll}
+          openAllLabel={t(($) => $.constitution.butirPancasila.openAll)}
+          closeAllLabel={t(($) => $.constitution.butirPancasila.closeAll)}
+          summaryNode={
+            <Trans
+              i18nKey={getTranslationKey(($) => $.constitution.butirPancasila.foundResult)}
+              values={{
+                butirCount,
+                silaCount: visibleSila.length,
+              }}
+              components={{
+                1: <span className="font-bold text-red-600 dark:text-red-400" />,
+                3: <span className="font-bold text-red-600 dark:text-red-400" />,
+              }}
+            />
+          }
+        />
+      </ConstitutionHero>
 
-        <CardContent className="pt-4">
-          {/* Search Section */}
-          <section className="py-0">
-            <div className="mx-auto">
-              <div className="flex flex-row gap-4">
-                <div className="relative flex-1">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <Input
-                    type="text"
-                    placeholder={t($ => $.constitution.butirPancasila.searchPlaceholder)}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="px-12 h-10 text-lg border-2 border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 dark:border-gray-700 dark:focus:border-red-500 dark:focus:ring-red-900/30 dark:bg-gray-800 dark:text-white"
-                  />
-                  {searchTerm && (
-                    <Button
-                      onClick={clearSearch}
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors dark:hover:text-red-400"
-                    >
-                      <X className="w-5 h-5" />
-                    </Button>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    onClick={toggleExpandAll}
-                    size="lg"
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center gap-2 dark:bg-red-700 dark:hover:bg-red-800"
-                  >
-                    {expandedAll ? (
-                      <>
-                        <ChevronUp className="w-4 h-4" />
-                        {t($ => $.constitution.butirPancasila.closeAll)}
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="w-4 h-4" />
-                        {t($ => $.constitution.butirPancasila.openAll)}
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </div>
-              {searchTerm && (
-                <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
-                  <Trans
-                    i18nKey={getTranslationKey(($) => $.constitution.butirPancasila.foundResult)}
-                    values={{ butirCount: searchSummary.butirCount, silaCount: searchSummary.silaCount }}
-                    components={{ 1: <span className="font-semibold text-red-600 dark:text-red-400" />, 3: <span className="font-semibold text-red-600 dark:text-red-400" /> }}
-                  />
-                </p>
-              )}
+      {visibleSila.length === 0 ? (
+        <Card className="border-dashed border-border/80 bg-card/50">
+          <CardContent className="text-center py-12 flex flex-col items-center">
+            <div className="mb-4 p-4 bg-muted rounded-full">
+              <Search className="w-8 h-8 text-muted-foreground" />
             </div>
-          </section>
-        </CardContent>
-      </Card>
-
-      <div className='flex flex-col gap-6 w-full'>
-        {/* Content Section */}
-        <section className="">
-          <div className="mx-auto">
-            {filteredData.length === 0 ? (
-              <EmptyState searchTerm={searchTerm} clearSearch={clearSearch} />
-            ) : (
-              <div className="space-y-8">
-                {filteredData.map((sila) => (
-                  sila && (
-                    <PancasilaCard
-                      key={sila.id}
-                      sila={sila}
-                      searchTerm={searchTerm}
-                      isExpanded={expandedAll}
-                      iconMap={iconMap}
-                      highlightText={highlightText}
-                    />
-                  )))}
-              </div>
-            )}
-          </div>
-        </section>
-      </div>
+            <h3 className="text-lg font-bold text-foreground mb-1">
+              {t(($) => $.constitution.butirPancasila.noResultTitle)}
+            </h3>
+            <p className="text-sm text-muted-foreground mb-5 max-w-md">
+              {t(($) => $.constitution.butirPancasila.noResultDesc, { query: searchTerm })}
+            </p>
+            <Button onClick={clearSearch} variant="outline" className="rounded-xl">
+              {t(($) => $.constitution.butirPancasila.clearSearch)}
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          {visibleSila.map((sila) => (
+            <PancasilaCard
+              key={sila.id}
+              sila={sila}
+              searchTerm={searchTerm}
+              isExpanded={expandedAll}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

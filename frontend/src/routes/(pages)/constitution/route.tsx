@@ -1,12 +1,15 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { ConstitutionNav } from "@/features/constitution";
 
-export const Route = createFileRoute('/(pages)/constitution')({
-    component: RouteComponent,
-})
+export const Route = createFileRoute("/(pages)/constitution")({
+  component: RouteComponent,
+});
 
 function RouteComponent() {
-    return (
-        <div className='page-container'>
-            <Outlet />
-        </div>)
+  return (
+    <div className="page-container">
+      <ConstitutionNav />
+      <Outlet />
+    </div>
+  );
 }
