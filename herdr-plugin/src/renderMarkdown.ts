@@ -21,6 +21,8 @@ function formatInlineMarkdown(text: string): string {
   });
   // Bold **...**
   out = out.replace(/\*\*([^*]+?)\*\*/g, `${ANSI.bold}$1${ANSI.reset}`);
+  // Italic *...*
+  out = out.replace(/(?<!\*)\*(?!\s)([^*\n]+?)(?<!\s)\*(?!\*)/g, `${ANSI.italic}$1${ANSI.reset}`);
   // Inline code `...`
   out = out.replace(/`([^`]+?)`/g, `${ANSI.yellow}$1${ANSI.reset}`);
   // Markdown images ![alt](src)
