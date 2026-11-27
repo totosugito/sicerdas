@@ -36,7 +36,17 @@ export function buildVisibleTree(
   rootDir: string,
   expandedDirs: Set<string>,
   depth = 0,
+  visited = new Set<string>(),
 ): TreeItem[] {
+  let realRoot = rootDir;
+  try {
+    realRoot = fs.realpathSync(rootDir);
+  } catch {
+    return [];
+  }
+  if (visited.has(realRoot)) return [];
+  visited.add(realRoot);
+
   const items: TreeItem[] = [];
   const entries = readDirEntries(rootDir);
 
@@ -50,7 +60,7 @@ export function buildVisibleTree(
       expanded,
     });
     if (expanded) {
-      items.push(...buildVisibleTree(entry.path, expandedDirs, depth + 1));
+      items.push(...buildVisibleTree(entry.path, expandedDirs, depth + 1, visited));
     }
   }
 

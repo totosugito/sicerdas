@@ -15,8 +15,8 @@ export interface RenderResult {
 }
 
 function formatInlineMarkdown(text: string): string {
-  // Replace inline $...$ math first
-  let out = text.replace(/\$([^$\n]+?)\$/g, (_, expr) => {
+  // Replace inline $...$ math first (skip escaped \$)
+  let out = text.replace(/(?<!\\)\$([^$\n]+?)(?<!\\)\$/g, (_, expr) => {
     return `${ANSI.brightCyan}${latexToUnicode(expr)}${ANSI.reset}`;
   });
   // Bold **...**

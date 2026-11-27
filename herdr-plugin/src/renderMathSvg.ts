@@ -28,10 +28,12 @@ fs.mkdirSync(payload.outDir, { recursive: true });
 const results: Record<string, { file: string; width: number; height: number }> = {};
 
 for (const item of payload.items) {
+  const latex = String(item.latex ?? "").trim();
+  if (!latex) continue;
   const color = item.color || "#e5e7eb";
   const display = item.display !== false;
   const pxPerEx = item.pxPerEx || (display ? 11 : 9.5);
-  const cacheKey = `${display ? "D" : "I"}:${item.latex}`;
+  const cacheKey = `${display ? "D" : "I"}:${latex}`;
   const hash = crypto
     .createHash("sha1")
     .update(`${color}|${pxPerEx}|${cacheKey}`)
@@ -53,7 +55,7 @@ for (const item of payload.items) {
   }
 
   try {
-    const node = doc.convert(item.latex, { display });
+    const node = doc.convert(latex, { display });
     let svgStr = adaptor.innerHTML(node);
 
     const wEx = svgStr.match(/width="([\d.]+)ex"/);
